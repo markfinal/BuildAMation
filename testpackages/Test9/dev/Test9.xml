@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="e:\dev\prototypes\Opus\dev\bin\Debug\Schema\OpusPackageDependency.xsd">
+  <Package Name="C" Version="dev" />
+  <Package Name="NativeBuilder" Version="dev" />
+  <Package Name="VisualC" Version="9.0" />
+  <Package Name="Mingw" Version="3.4.5" />
+  <Package Name="VSSolutionBuilder" Version="dev" />
+  <Package Name="MakeFileBuilder" Version="dev" />
+  <Package Name="Gcc" Version="4.4" />
+  <Package Name="WindowsSDK" Version="6.0A" />
+</RequiredPackages>

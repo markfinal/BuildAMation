@@ -1,0 +1,6 @@
+-builder=Native
+-buildroot=build
+-platforms=win32
+-configurations=debug
+-C.toolchain=visualc
+-verbosity=2
