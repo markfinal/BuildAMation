@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opus", "Opus\Opus.csproj", "{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opus.Core", "Opus.Core\Opus.Core.csproj", "{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpusOptionInterfacePropertyGenerator", "OpusOptionInterfacePropertyGenerator\OpusOptionInterfacePropertyGenerator.csproj", "{EF379EAD-80F7-4741-8A24-6BD3F393F41B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF379EAD-80F7-4741-8A24-6BD3F393F41B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF379EAD-80F7-4741-8A24-6BD3F393F41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF379EAD-80F7-4741-8A24-6BD3F393F41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF379EAD-80F7-4741-8A24-6BD3F393F41B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

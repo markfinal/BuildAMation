@@ -1,0 +1,59 @@
+// <copyright file="ManagedCPlusPlusObjectFileCollection.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>VisualCCommon package</summary>
+// <author>Mark Final</author>
+namespace VisualCCommon
+{
+    /// <summary>
+    /// Managed C++ object file collection
+    /// </summary>
+    public class ManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    {
+        [C.LocalCompilerOptionsDelegate]
+        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            compilerOptions.CompileAsManaged = EManagedCompilation.CLR;
+        }
+    }
+
+    /// <summary>
+    /// Pure Managed C++ object file collection
+    /// </summary>
+    public class PureManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    {
+        [C.LocalCompilerOptionsDelegate]
+        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            compilerOptions.CompileAsManaged = EManagedCompilation.PureCLR;
+        }
+    }
+
+    /// <summary>
+    /// Safe Managed C++ object file collection
+    /// </summary>
+    public class SafeManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    {
+        [C.LocalCompilerOptionsDelegate]
+        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            compilerOptions.CompileAsManaged = EManagedCompilation.SafeCLR;
+        }
+    }
+
+    /// <summary>
+    /// Old Syntax Managed C++ object file collection
+    /// </summary>
+    public class OldSyntaxManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    {
+        [C.LocalCompilerOptionsDelegate]
+        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            compilerOptions.CompileAsManaged = EManagedCompilation.OldSyntaxCLR;
+        }
+    }
+}

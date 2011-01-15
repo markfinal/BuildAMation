@@ -1,0 +1,80 @@
+// <copyright file="WindowsSDK.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>WindowsSDK package</summary>
+// <author>Mark Final</author>
+namespace WindowsSDK
+{
+    public sealed class WindowsSDK : C.ThirdPartyModule
+    {
+        private static string installPath;
+        private static string bin32Path;
+        private static string bin64Path;
+        private static string lib32Path;
+        private static string lib64Path;
+        private static string includePath;
+
+        static WindowsSDK()
+        {
+            if (Opus.Core.State.Platform != EPlatform.Windows)
+            {
+                return;
+            }
+
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v7.1"))
+            {
+                if (null == key)
+                {
+                    throw new Opus.Core.Exception("WindowsSDK 7.1 was not installed");
+                }
+
+                installPath = key.GetValue("InstallationFolder") as string;
+                Opus.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
+
+                bin32Path = System.IO.Path.Combine(installPath, "bin");
+                bin64Path = System.IO.Path.Combine(bin32Path, "x64");
+
+                lib32Path = System.IO.Path.Combine(installPath, "lib");
+                lib64Path = System.IO.Path.Combine(lib32Path, "x64");
+
+                includePath = System.IO.Path.Combine(installPath, "include");
+            }
+        }
+
+        public WindowsSDK()
+        {
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
+        }
+
+        [C.ExportLinkerOptionsDelegate]
+        void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            if (target.Platform == "win32")
+            {
+                linkerOptions.LibraryPaths.Add(lib32Path, true);
+            }
+            else if (target.Platform == "win64")
+            {
+                linkerOptions.LibraryPaths.Add(lib64Path, true);
+            }
+            else
+            {
+                throw new Opus.Core.Exception(System.String.Format("Windows SDK is not supported for platform '{0}'; use win32 or win64", target.Platform));
+            }
+        }
+
+        [C.ExportCompilerOptionsDelegate]
+        void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            compilerOptions.IncludePaths.Add(includePath);
+        }
+
+        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+}

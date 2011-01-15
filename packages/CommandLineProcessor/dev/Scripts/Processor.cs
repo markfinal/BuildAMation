@@ -1,0 +1,78 @@
+// <copyright file="Processor.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>CommandLineProcessor package</summary>
+// <author>Mark Final</author>
+namespace CommandLineProcessor
+{
+    public static class Processor
+    {
+        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, string executablePath, System.Text.StringBuilder commandLineBuilder)
+        {
+            Opus.Core.Target target = node.Target;
+
+            System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            processStartInfo.FileName = executablePath;
+            processStartInfo.ErrorDialog = true;
+
+            System.Collections.Generic.Dictionary<string, string> requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
+            foreach (string requiredEnvVar in tool.RequiredEnvironmentVariables)
+            {
+                requiredEnvironmentVariables[requiredEnvVar] = processStartInfo.EnvironmentVariables[requiredEnvVar];
+                //Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);
+            }
+
+            processStartInfo.EnvironmentVariables.Clear();
+
+            foreach (System.Collections.Generic.KeyValuePair<string, string> requiredEnvVar in requiredEnvironmentVariables)
+            {
+                processStartInfo.EnvironmentVariables[requiredEnvVar.Key] = requiredEnvVar.Value;
+                //Core.Log.DebugMessage("Restored envvar '{0}' as '{1}'", requiredEnvVar.Key, requiredEnvVar.Value);
+            }
+
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            if (null != tool.EnvironmentPaths(target))
+            {
+                string path = null;
+                foreach (string env in tool.EnvironmentPaths(target))
+                {
+                    path = System.String.Format("{0}", env);
+                }
+                processStartInfo.EnvironmentVariables["PATH"] = path;
+                //Core.Log.DebugMessage("Path is '{0}'", path);
+            }
+            processStartInfo.Arguments = commandLineBuilder.ToString();
+
+            Opus.Core.Log.Detail("Commandline: '{0} {1}'", executablePath, processStartInfo.Arguments);
+
+            System.Diagnostics.Process process = null;
+            try
+            {
+                process = System.Diagnostics.Process.Start(processStartInfo);
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName));
+            }
+            if (null != process)
+            {
+                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(node.OutputDataReceived);
+                process.BeginOutputReadLine();
+
+                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(node.ErrorDataReceived);
+                process.BeginErrorReadLine();
+
+                // TODO: need to poll for an external cancel op? this currently waits forever
+                process.WaitForExit();
+                int exitCode = process.ExitCode;
+                //Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
+
+                return exitCode;
+            }
+
+            return -1;
+        }
+    }
+}

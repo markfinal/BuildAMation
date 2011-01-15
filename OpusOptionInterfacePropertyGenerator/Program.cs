@@ -1,0 +1,369 @@
+﻿// <copyright file="Program.cs" company="Mark Final">
+//  Opus
+// </copyright>
+// <summary>Opus Option Interface Property Generator</summary>
+// <author>Mark Final</author>
+namespace OpusOptionInterfacePropertyGenerator
+{
+    class Exception : System.Exception
+    {
+        public Exception(string message)
+            : base(message)
+        {
+        }
+    }
+
+    class Property
+    {
+        public Property()
+        {
+            this.Type = null;
+            this.Name = null;
+            this.HasGet = false;
+            this.HasSet = false;
+        }
+
+        public string Type
+        {
+            get;
+            set;
+        }
+
+        public bool IsValueType
+        {
+            get;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public bool HasGet
+        {
+            get;
+            set;
+        }
+
+        public bool HasSet
+        {
+            get;
+            set;
+        }
+    }
+
+    class Program
+    {
+        static string outputPathName = null;
+        static string[] inputPathNames = null;
+        static string outputNamespace = null;
+        static string outputClassName = null;
+        static System.Collections.Generic.List<Property> propertyList = new System.Collections.Generic.List<Property>();
+
+        static void ProcessArgs(string[] args)
+        {
+            if (0 == args.Length)
+            {
+                throw new Exception("Arguments required");
+            }
+
+            foreach (string arg in args)
+            {
+                if (arg.StartsWith("-o="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    outputPathName = split[1];
+                }
+                else if (arg.StartsWith("-i="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    string inputFilesString = split[1];
+                    inputPathNames = inputFilesString.Split(new char[] { ';' });
+                }
+                else if (arg.StartsWith("-n="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    outputNamespace = split[1];
+                }
+                else if (arg.StartsWith("-c="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    outputClassName = split[1];
+                }
+                else
+                {
+                    throw new Exception(System.String.Format("Unrecognized argument '{0}'", arg));
+                }
+            }
+        }
+
+        static void Validate()
+        {
+            if (null == outputPathName)
+            {
+                throw new Exception("No output file provided");
+            }
+
+            if (null == inputPathNames)
+            {
+                throw new Exception("No input files provided");
+            }
+
+            if (null == outputNamespace)
+            {
+                throw new Exception("No output namespace provided");
+            }
+
+            if (null == outputClassName)
+            {
+                throw new Exception("No output class name provided");
+            }
+        }
+
+        static string ReadLine(System.IO.TextReader reader)
+        {
+            string line = null;
+            do
+            {
+                line = reader.ReadLine();
+                if (null == line)
+                {
+                    break;
+                }
+                line = line.Trim();
+            }
+            while (0 == line.Length);
+            return line;
+        }
+
+        static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
+        {
+            for (int i = 0; i < tabCount; ++i)
+            {
+                writer.Write("    ");
+            }
+            if (0 == args.Length)
+            {
+                writer.Write(format);
+            }
+            else
+            {
+                writer.Write(format, args);
+            }
+        }
+
+        static void WriteLine(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
+        {
+            Write(writer, tabCount, format, args);
+            writer.Write(writer.NewLine);
+        }
+
+        static void Execute(string[] args)
+        {
+            // TODO:
+            // handle anything before an interface, e.g. enum
+            // handle comments
+            foreach (string inputPath in inputPathNames)
+            {
+                if (!System.IO.File.Exists(inputPath))
+                {
+                    throw new Exception(System.String.Format("Input file '{0}' does not exist", inputPath));
+                }
+                System.Console.WriteLine("\nInterface to read: '{0}'", inputPath);
+
+                using (System.IO.TextReader reader = new System.IO.StreamReader(inputPath))
+                {
+                    string line;
+
+                    // namespace
+                    line = ReadLine(reader);
+                    if (null == line)
+                    {
+                        throw new Exception("File is empty");
+                    }
+                    string[] namespaceStrings = line.Split(new char[] { ' ' });
+                    if (!namespaceStrings[0].Equals("namespace"))
+                    {
+                        throw new Exception("File does not start with namespace");
+                    }
+
+                    // opening namespace scope
+                    line = ReadLine(reader);
+                    if (!line.StartsWith("{"))
+                    {
+                        throw new Exception("No scope opened after namespace");
+                    }
+
+                    // interface
+                    line = ReadLine(reader);
+                    string[] interfaceStrings = line.Split(new char[] { ' ' });
+                    if ("public" != interfaceStrings[0] || "interface" != interfaceStrings[1])
+                    {
+                        throw new Exception("No public interface found");
+                    }
+                    System.Console.WriteLine("Interface found is '{0}'", interfaceStrings[2]);
+
+                    // opening interface scope
+                    line = ReadLine(reader);
+                    if (!line.StartsWith("{"))
+                    {
+                        throw new Exception("No scope opened after interface");
+                    }
+
+                    do
+                    {
+                        line = ReadLine(reader);
+                        if (line.StartsWith("}"))
+                        {
+                            break;
+                        }
+
+                        string[] propertyStrings = line.Split(new char[] { ' ' });
+                        System.Console.WriteLine("Property found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
+
+                        Property property = new Property();
+                        property.Name = propertyStrings[1];
+                        property.Type = propertyStrings[0];
+
+                        // determine if the type is value or reference
+                        string[] typeSplit = property.Type.Split(new char[] { '.' });
+                        string trueType = typeSplit[typeSplit.Length - 1];
+                        if (property.Type == "bool" || property.Type == "int" || (trueType.StartsWith("E") && System.Char.IsUpper(trueType[1])))
+                        {
+                            property.IsValueType = true;
+                            System.Console.WriteLine("\tIs ValueType");
+                        }
+                        else
+                        {
+                            property.IsValueType = false;
+                            System.Console.WriteLine("\tIs ReferenceType");
+                        }
+
+                        // opening property scope
+                        line = ReadLine(reader);
+                        if (!line.StartsWith("{"))
+                        {
+                            throw new Exception("No scope opened after property");
+                        }
+
+                        line = ReadLine(reader);
+                        if (line.Equals("get;"))
+                        {
+                            System.Console.WriteLine("\twith get");
+                            property.HasGet = true;
+                        }
+                        else if (line.Equals("set;"))
+                        {
+                            System.Console.WriteLine("\twith set");
+                            property.HasSet = true;
+                        }
+                        else
+                        {
+                            throw new Exception(System.String.Format("Unexpected string '{0}'", line));
+                        }
+
+                        line = ReadLine(reader);
+                        if (line.Equals("get;"))
+                        {
+                            System.Console.WriteLine("\twith get");
+                            property.HasGet = true;
+                        }
+                        else if (line.Equals("set;"))
+                        {
+                            System.Console.WriteLine("\twith set");
+                            property.HasSet = true;
+                        }
+                        else
+                        {
+                            throw new Exception(System.String.Format("Unexpected string '{0}'", line));
+                        }
+
+                        // closing property scope
+                        line = ReadLine(reader);
+                        if (!line.StartsWith("}"))
+                        {
+                            throw new Exception("No scope closed after property");
+                        }
+
+                        propertyList.Add(property);
+                    }
+                    while (true);
+
+                    if (0 == propertyList.Count)
+                    {
+                        throw new Exception("No properties were found in the interface");
+                    }
+                }
+            }
+
+            // write out C# file containing the properties
+            using (System.IO.TextWriter writer = new System.IO.StreamWriter(outputPathName))
+            {
+                WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
+                WriteLine(writer, 0, "// Command line:");
+                Write(writer, 0, "// ");
+                foreach (string arg in args)
+                {
+                    Write(writer, 0, "{0} ", arg);
+                }
+                Write(writer, 0, writer.NewLine);
+                WriteLine(writer, 0, "namespace {0}", outputNamespace);
+                WriteLine(writer, 0, "{");
+                WriteLine(writer, 1, "public partial class {0}", outputClassName);
+                WriteLine(writer, 1, "{");
+
+                foreach (Property property in propertyList)
+                {
+                    WriteLine(writer, 2, "public {0} {1}", property.Type, property.Name);
+                    WriteLine(writer, 2, "{");
+                    if (property.HasGet)
+                    {
+                        WriteLine(writer, 3, "get");
+                        WriteLine(writer, 3, "{");
+                        WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                        WriteLine(writer, 3, "}");
+                    }
+                    if (property.HasSet)
+                    {
+                        WriteLine(writer, 3, "set");
+                        WriteLine(writer, 3, "{");
+                        WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                        WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
+                        WriteLine(writer, 3, "}");
+                    }
+                    WriteLine(writer, 2, "}");
+                }
+
+                WriteLine(writer, 1, "}");
+                WriteLine(writer, 0, "}");
+            }
+            System.Console.WriteLine("Wrote file '{0}'", outputPathName);
+        }
+
+        static int Main(string[] args)
+        {
+            try
+            {
+                ProcessArgs(args);
+                Validate();
+                Execute(args);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("Local exception");
+                System.Console.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+                return -1;
+            }
+            catch (System.Exception ex)
+            {
+                System.Console.WriteLine("System exception");
+                System.Console.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+                return -2;
+            }
+
+            return 0;
+        }
+    }
+}
