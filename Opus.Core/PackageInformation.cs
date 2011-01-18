@@ -199,7 +199,7 @@ namespace Opus.Core
                 StringArray scripts = new StringArray();
                 if (System.IO.Directory.Exists(this.ScriptDirectory))
                 {
-                    string[] files = System.IO.Directory.GetFiles(this.ScriptDirectory, "*.cs");
+                    string[] files = System.IO.Directory.GetFiles(this.ScriptDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
                     if (files.Length > 0)
                     {
                         scripts.AddRange(files);
