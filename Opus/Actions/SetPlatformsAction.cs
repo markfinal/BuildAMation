@@ -65,7 +65,7 @@ namespace Opus
                 }
                 else
                 {
-                    Core.Log.DebugMessage("Adding configuration '{0}'", p.ToString());
+                    Core.Log.DebugMessage("Adding platform '{0}'", p.ToString());
                     buildPlatforms.Add(p);
                 }
             }
