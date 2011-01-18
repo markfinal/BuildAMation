@@ -8,9 +8,22 @@ namespace Qt
     public sealed class Qt : C.ThirdPartyModule
     {
         private static string installPath;
-        private static string binPath;
         private static string libPath;
         private static string includePath;
+
+        public static string BinPath
+        {
+            get;
+            private set;
+        }
+
+        public static string VersionString
+        {
+            get
+            {
+                return "2010.05";
+            }
+        }
 
         static Qt()
         {
@@ -28,7 +41,7 @@ namespace Qt
 
                     string qtPath = System.IO.Path.Combine(installPath, "qt");
 
-                    binPath = System.IO.Path.Combine(qtPath, "bin");
+                    BinPath = System.IO.Path.Combine(qtPath, "bin");
                     libPath = System.IO.Path.Combine(qtPath, "lib");
                     includePath = System.IO.Path.Combine(qtPath, "include");
                 }
