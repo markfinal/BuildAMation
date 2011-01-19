@@ -1,0 +1,11 @@
+19-Jan-2011 Adding Changelog.txt
+
+18-Jan-2011 When searching for script files, use a recursive directory search.
+
+18-Jan-2011 Fixed debug message typo; should be platform, not configuration.
+
+--------------------------------------------------------------------------------
+
+v0.00
+=====
+First version
