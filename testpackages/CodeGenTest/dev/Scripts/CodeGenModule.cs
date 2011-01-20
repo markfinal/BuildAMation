@@ -87,6 +87,7 @@ namespace CodeGenTest
 
         public CodeGeneratorTool()
         {
+            this.source.SetRelativePath(this, "source", "codegentool", "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CodeGeneratorTool_UpdateOptions);
         }
 
@@ -97,7 +98,7 @@ namespace CodeGenTest
         }
 
         [Opus.Core.SourceFiles]
-        C.ObjectFile source = new C.ObjectFile("source", "codegentool", "main.c");
+        C.ObjectFile source = new C.ObjectFile();
 
         [Opus.Core.DependentModules("win.*-.*-visualc")]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
@@ -144,7 +145,8 @@ namespace CodeGenTest
         {
             CodeGenOptions options = this.Options as CodeGenOptions;
             string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-            C.ObjectFile injectedFile = new C.ObjectFile(outputPath);
+            C.ObjectFile injectedFile = new C.ObjectFile();
+            injectedFile.SetGuaranteedAbsolutePath(outputPath);
 
             Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);

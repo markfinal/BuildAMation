@@ -8,8 +8,13 @@ namespace Test8
     {
         private const string WinVCTarget = "win.*-.*-visualc";
 
+        public ApplicationTest()
+        {
+            this.sourceFile.SetRelativePath(this, "source", "main.c");
+        }
+
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "main.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.RequiredModules]
         Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(

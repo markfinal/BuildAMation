@@ -11,7 +11,7 @@ namespace Qt
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
         {
             MocFile mocFile = node.Module as MocFile;
-            string sourceFilePath = mocFile.SourceFile.RelativePath;
+            string sourceFilePath = mocFile.SourceFile.AbsolutePath;
             string filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
             string mocDir = node.GetTargettedModuleBuildDirectory("src");
             string mocPath = System.IO.Path.Combine(mocDir, System.String.Format("moc_{0}.cpp", filename));

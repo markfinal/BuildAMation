@@ -85,8 +85,13 @@ namespace CodeGenTest2
             }
         }
 
+        public CodeGeneratorTool()
+        {
+            this.source.SetRelativePath(this, "source", "codegentool", "main.cs");
+        }
+
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File("source", "codegentool", "main.cs");
+        Opus.Core.File source = new Opus.Core.File();
     }
 
     /// <summary>
@@ -128,7 +133,8 @@ namespace CodeGenTest2
         {
             CodeGenOptions options = this.Options as CodeGenOptions;
             string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-            C.ObjectFile injectedFile = new C.ObjectFile(outputPath);
+            C.ObjectFile injectedFile = new C.ObjectFile();
+            injectedFile.SourceFile.SetGuaranteedAbsolutePath(outputPath);
 
             Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);

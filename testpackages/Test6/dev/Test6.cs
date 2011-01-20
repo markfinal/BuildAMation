@@ -22,17 +22,18 @@ namespace Test6
             {
                 this.UpdateOptions += this.OverrideOptionCollection;
 
-                C.ObjectFile mainObjectFile = new C.ObjectFile("source", "main.c");
+                C.ObjectFile mainObjectFile = new C.ObjectFile();
+                mainObjectFile.SetRelativePath(this, "source", "main.c");
                 mainObjectFile.UpdateOptions += MainUpdateOptionCollection;
                 this.Add(mainObjectFile);
 
                 if (Opus.Core.EConfiguration.Debug == target.Configuration)
                 {
-                    this.Add("source", "debug", "debug.c");
+                    this.AddRelativePaths(this, "source", "debug", "debug.c");
                 }
                 else
                 {
-                    this.Add("source", "optimized", "optimized.c");
+                    this.AddRelativePaths(this, "source", "optimized", "optimized.c");
                 }
             }
 

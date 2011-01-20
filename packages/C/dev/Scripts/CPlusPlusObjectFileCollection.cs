@@ -19,26 +19,20 @@ namespace C.CPlusPlus
             this.list.Add(objectFile);
         }
 
-        public void Add(params string[] fileParts)
+        public void AddRelativePaths(object owner, params string[] pathSegments)
         {
-            this.list.Add(new ObjectFile(fileParts));
-        }
-
-        public void AddUsingWildcards(params string[] fileParts)
-        {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(this);
+            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package for object '{0}'; package name used was '{1}'", this.GetType().FullName, this.GetType().Namespace), false);
+                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            Opus.Core.File path = new Opus.Core.File(fileParts);
-            string[] files = System.IO.Directory.GetFiles(package.Directory, path.RelativePath, System.IO.SearchOption.AllDirectories);
-            foreach (string file in files)
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(package.Directory, pathSegments);
+            foreach (string path in filePaths)
             {
-                string endPart = file.Remove(0, package.Directory.Length).TrimStart(new char[] { System.IO.Path.DirectorySeparatorChar });
-                string[] split = endPart.Split(new char[] { System.IO.Path.DirectorySeparatorChar });
-                this.list.Add(new ObjectFile(split));
+                ObjectFile objectFile = new ObjectFile();
+                objectFile.SourceFile.SetAbsolutePath(path);
+                this.list.Add(objectFile);
             }
         }
     }

@@ -14,9 +14,5 @@ namespace C.CPlusPlus
                                    C.ClassNames.CPlusPlusCompilerToolOptions)]
     public class ObjectFile : C.ObjectFile
     {
-        public ObjectFile(params string[] fileParts)
-            : base(fileParts)
-        {
-        }
     }
 }

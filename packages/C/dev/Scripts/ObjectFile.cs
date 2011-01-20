@@ -30,14 +30,9 @@ namespace C
             }
         }
 
-        public ObjectFile(string absoluteFilePath)
+        public Opus.Core.ModuleCollection GetNestedDependents(Opus.Core.Target target)
         {
-            this.SourceFile = new Opus.Core.File(absoluteFilePath);
-        }
-
-        public ObjectFile(params string[] fileParts)
-        {
-            this.SourceFile = new Opus.Core.File(fileParts);
+            return null;
         }
 
         public Opus.Core.File SourceFile
@@ -46,9 +41,29 @@ namespace C
             private set;
         }
 
-        public Opus.Core.ModuleCollection GetNestedDependents(Opus.Core.Target target)
+        public ObjectFile()
         {
-            return null;
+            this.SourceFile = new Opus.Core.File();
+        }
+
+        public void SetRelativePath(object owner, params string[] pathSegments)
+        {
+            this.SourceFile.SetRelativePath(owner, pathSegments);
+        }
+
+        public void SetPackageRelativePath(Opus.Core.PackageInformation package, params string[] pathSegments)
+        {
+            this.SourceFile.SetPackageRelativePath(package, pathSegments);
+        }
+
+        public void SetAbsolutePath(string absolutePath)
+        {
+            this.SourceFile.SetAbsolutePath(absolutePath);
+        }
+
+        public void SetGuaranteedAbsolutePath(string absolutePath)
+        {
+            this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
         }
     }
 }

@@ -1,0 +1,15 @@
+20-Jan-2011 Issue #18. The API for setting relative paths has been made more robust, but with the consequence that some file specifications have moved out of field initializers to class constructors.
+
+20-Jan-2011 Opus.Core.DependencyNodeEnumerator no longer throws an exception when the DependencyGraph is empty.
+
+19-Jan-2011 Adding Changelog.txt
+
+18-Jan-2011 When searching for script files, use a recursive directory search.
+
+18-Jan-2011 Fixed debug message typo; should be platform, not configuration.
+
+--------------------------------------------------------------------------------
+
+v0.00
+=====
+First version

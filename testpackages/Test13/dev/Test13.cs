@@ -12,7 +12,7 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.AddUsingWildcards("source", "*.cpp");
+                this.AddRelativePaths(this, "source", "*.cpp");
             }
 
             class MyMocFile : Qt.MocFile

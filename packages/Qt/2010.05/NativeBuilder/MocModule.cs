@@ -12,8 +12,7 @@ namespace NativeBuilder
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(toolExePath);
 
-            // TODO: this is very assuming of the base path - it would be ok if we were more explicit
-            string sourceFilePath = System.IO.Path.Combine(node.Package.Directory, mocFile.SourceFile.RelativePath);
+            string sourceFilePath = mocFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception(System.String.Format("Moc source file '{0}' does not exist", sourceFilePath));

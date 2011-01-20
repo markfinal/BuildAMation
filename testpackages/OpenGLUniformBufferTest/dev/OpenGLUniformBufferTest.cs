@@ -7,11 +7,16 @@ namespace OpenGLUniformBufferTest
         private const string winVCTarget = "win.*-.*-visualc";
         private const string winMingwTarget = "win.*-.*-mingw";
 
+        public GLUniformBufferTest()
+        {
+            this.headerFiles.AddRelativePaths(this, "source", "*.h");
+        }
+
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddUsingWildcards("source", "*.cpp");
+                this.AddRelativePaths(this, "source", "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_VCDefines);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_EnableException);
@@ -37,7 +42,7 @@ namespace OpenGLUniformBufferTest
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = Opus.Core.FileCollection.AddUsingWildcards(Opus.Core.State.PackageInfo["OpenGLUniformBufferTest"], "source", "*.h");
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(

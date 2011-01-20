@@ -41,8 +41,7 @@ namespace NativeBuilder
                 if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                 {
                     var sourcePath = field.GetValue(assembly);
-                    string relativePath = (sourcePath as Opus.Core.File).RelativePath;
-                    string absolutePath = System.IO.Path.Combine(node.Package.Directory, relativePath);
+                    string absolutePath = (sourcePath as Opus.Core.File).AbsolutePath;
                     if (!System.IO.File.Exists(absolutePath))
                     {
                         throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
