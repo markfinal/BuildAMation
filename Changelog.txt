@@ -1,3 +1,5 @@
+20-Jan-2011 Opus.Core.DependencyNodeEnumerator no longer throws an exception when the DependencyGraph is empty.
+
 19-Jan-2011 Adding Changelog.txt
 
 18-Jan-2011 When searching for script files, use a recursive directory search.

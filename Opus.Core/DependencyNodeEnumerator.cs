@@ -28,6 +28,11 @@ namespace Opus.Core
         
         public bool MoveNext()
         {
+            if (null == this.currentRankCollection)
+            {
+                return false;
+            }
+
             this.currentNodeIndex++;
             if (this.currentNodeIndex >= this.currentRankCollection.Count)
             {
@@ -67,7 +72,14 @@ namespace Opus.Core
         public void Reset()
         {
             this.currentRank = 0;
-            this.currentRankCollection = this.graph[this.currentRank];
+            if (this.graph.RankCount > this.currentRank)
+            {
+                this.currentRankCollection = this.graph[this.currentRank];
+            }
+            else
+            {
+                this.currentRankCollection = null;
+            }
             this.currentNodeIndex = -1;
         }
     }
