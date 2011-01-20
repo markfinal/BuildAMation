@@ -12,7 +12,7 @@ namespace Test12
         {
             public CommonSourceFiles()
             {
-                this.Add("source", "main.cpp");
+                this.AddRelativePaths(this, "source", "main.cpp");
             }
         }
 
@@ -20,7 +20,7 @@ namespace Test12
         {
             public WindowsSourceFiles()
             {
-                this.Add("source", "win", "win.cpp");
+                this.AddRelativePaths(this, "source", "win", "win.cpp");
             }
         }
 
@@ -28,7 +28,7 @@ namespace Test12
         {
             public UnixSourceFiles()
             {
-                this.Add("source", "unix", "unix.cpp");
+                this.AddRelativePaths(this, "source", "unix", "unix.cpp");
             }
         }
 

@@ -20,7 +20,7 @@ namespace MixedModeCpp
         {
             public SourceFiles()
             {
-                this.Add("source", "native.cpp");
+                this.AddRelativePaths(this, "source", "native.cpp");
             }
         }
 
@@ -28,7 +28,7 @@ namespace MixedModeCpp
         {
             public ManagedSourceFiles()
             {
-                this.Add("source", "managed.cpp");
+                this.AddRelativePaths(this, "source", "managed.cpp");
             }
         }
 

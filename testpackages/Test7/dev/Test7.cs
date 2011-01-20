@@ -8,6 +8,7 @@ namespace Test7
 
         public ExplicitDynamicLibrary()
         {
+            this.sourceFile.SetRelativePath(this, "source", "dynamiclibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
 
@@ -18,7 +19,7 @@ namespace Test7
         }
 
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "dynamiclibrary.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules(WinVCTarget)]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(

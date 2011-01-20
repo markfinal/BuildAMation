@@ -3,16 +3,26 @@ namespace Test10
 {
     class MyStaticLibrary : C.StaticLibrary
     {
+        public MyStaticLibrary()
+        {
+            this.sourceFile.SetRelativePath(this, "source", "stlib.c");
+        }
+
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "stlib.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
     }
 
     class MyDynamicLibrary : C.DynamicLibrary
     {
         private const string WinVCTarget = "win.*-.*-visualc";
 
+        public MyDynamicLibrary()
+        {
+            this.sourceFile.SetRelativePath(this, "source", "dylib.c");
+        }
+
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "dylib.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules(WinVCTarget)]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
@@ -29,8 +39,13 @@ namespace Test10
     {
         private const string WinVCTarget = "win.*-.*-visualc";
 
+        public MyStandaloneApp()
+        {
+            this.sourceFile.SetRelativePath(this, "source", "standaloneapp.c");
+        }
+
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "standaloneapp.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
@@ -52,8 +67,13 @@ namespace Test10
     {
         private const string WinVCTarget = "win.*-.*-visualc";
 
+        public DllDependentApp()
+        {
+            this.sourceFile.SetRelativePath(this, "source", "dlldependentapp.c");
+        }
+
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "dlldependentapp.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(

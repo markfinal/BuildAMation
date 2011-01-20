@@ -215,6 +215,11 @@ namespace Opus.Core
         public static PackageInformation GetOwningPackage(object obj)
         {
             System.Type objType = obj.GetType();
+            if (!typeof(IModule).IsAssignableFrom(objType))
+            {
+                throw new Exception(System.String.Format("Object '{0}' does not implement the Opus.Core.IModule interface", obj.ToString()));
+            }
+
             string packageName = objType.Namespace;
             PackageInformation package = State.PackageInfo[packageName];
             return package;

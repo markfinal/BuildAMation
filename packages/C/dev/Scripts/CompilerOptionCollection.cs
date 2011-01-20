@@ -71,7 +71,7 @@ namespace C
             ObjectFile objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)
             {
-                string sourcePathName = System.IO.Path.Combine(node.Package.Directory, (node.Module as ObjectFile).SourceFile.RelativePath);
+                string sourcePathName = (node.Module as ObjectFile).SourceFile.AbsolutePath;
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
             else

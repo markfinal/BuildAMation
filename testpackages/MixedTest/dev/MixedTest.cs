@@ -4,24 +4,30 @@ namespace MixedTest
     // Define module classes here
     class CSharpTest : CSharp.Executable
     {
+        public CSharpTest()
+        {
+            this.source.SetRelativePath(this, "source", "main.cs");
+        }
+
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File("source", "main.cs");
+        Opus.Core.File source = new Opus.Core.File();
     }
 
     class CApp : C.Application
     {
+        public CApp()
+        {
+            this.source.SetRelativePath(this, "source", "main.c");
+        }
+
         [Opus.Core.SourceFiles]
-        C.ObjectFile source = new C.ObjectFile("source", "main.c");
+        C.ObjectFile source = new C.ObjectFile();
 
         [Opus.Core.RequiredModules]
-        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(
-            typeof(CSharpTest)
-        );
+        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CSharpTest));
 
         [Opus.Core.DependentModules("win.*-.*-visualc")]
-        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
         [C.RequiredLibraries("win.*-.*-visualc")]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray(

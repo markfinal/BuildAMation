@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         public object Build(C.ObjectFile objectFile, Opus.Core.DependencyNode node, out bool success)
         {
-            string sourceFilePath = System.IO.Path.Combine(node.Package.Directory, objectFile.SourceFile.RelativePath);
+            string sourceFilePath = objectFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", sourceFilePath));

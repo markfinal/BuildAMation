@@ -64,7 +64,7 @@ namespace VSSolutionBuilder
                 }
             }
 
-            string sourceFilePath = System.IO.Path.Combine(node.Package.Directory, objectFile.SourceFile.RelativePath);
+            string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 
             ProjectFile sourceFile;
             if (!projectData.SourceFiles.Contains(sourceFilePath))

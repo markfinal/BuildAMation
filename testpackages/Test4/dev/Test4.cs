@@ -11,7 +11,7 @@ namespace Test4
         {
             public SourceFiles()
             {
-                this.Add("source", "dynamiclibrary.c");
+                this.AddRelativePaths(this, "source", "dynamiclibrary.c");
                 this.UpdateOptions += SetIncludePaths;
                 this.UpdateOptions += SetRuntimeLibrary;
             }
@@ -60,11 +60,12 @@ namespace Test4
     {
         public MyStaticLib()
         {
+            this.sourceFile.SetRelativePath(this, "source", "staticlibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
 
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "staticlibrary.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [C.ExportCompilerOptionsDelegate]
         private static void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)

@@ -15,12 +15,11 @@ namespace Test
         }
     }
 
-#if true
     sealed class TestCompile : C.ObjectFile
     {
         public TestCompile()
-            : base("source", "main.c")
         {
+            this.SetRelativePath(this, "source", "main.c");
             this.UpdateOptions += UpdateCompilerOptions;
         }
 
@@ -61,24 +60,20 @@ namespace Test
             }
         }
     }
-#endif
 
-#if true
     sealed class TestCompile2 : C.ObjectFile
     {
         public TestCompile2()
-            : base("source", "main.c")
         {
+            this.SetRelativePath(this, "source", "main.c");
         }
     }
-#endif
 
-#if true
     sealed class TestCompile3 : C.ObjectFileCollection
     {
         public TestCompile3()
         {
-            this.AddUsingWildcards("source", "*.c");
+            this.AddRelativePaths(this, "source", "*.c");
 
             this.UpdateOptions += OverrideOptionCollection;
         }
@@ -89,9 +84,7 @@ namespace Test
             compilerOptions.WarningsAsErrors = false;
         }
     }
-#endif
 
-#if true
     sealed class TestApplication1 : C.Application
     {
         private const string WinVCTarget = "win.*-.*-visualc";
@@ -100,7 +93,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.Add("source", "main.c");
+                this.AddRelativePaths(this, "source", "main.c");
 
                 this.UpdateOptions += OverrideOptionCollection;
             }
@@ -136,9 +129,7 @@ namespace Test
             "KERNEL32.lib"
         );
     }
-#endif
 
-#if true
     [Opus.Core.ModuleTargets(new string[] { "win.*-.*-.*" })]
     sealed class TestWindowsApplication1 : C.WindowsApplication
     {
@@ -148,7 +139,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.Add("source", "main.c");
+                this.AddRelativePaths(this, "source", "main.c");
             }
         }
 
@@ -165,5 +156,4 @@ namespace Test
             "KERNEL32.lib"
         );
     }
-#endif
 }

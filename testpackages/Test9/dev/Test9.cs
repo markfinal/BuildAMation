@@ -5,8 +5,8 @@ namespace Test9
     class CFile : C.ObjectFile
     {
         public CFile()
-            : base("source", "main_c.c")
         {
+            this.SetRelativePath(this, "source", "main_c.c");
         }
     }
 
@@ -14,15 +14,15 @@ namespace Test9
     {
         public CFileCollection()
         {
-            this.Add("source", "main_c.c");
+            this.AddRelativePaths(this, "source", "main_c.c");
         }
     }
 
     class CppFile : C.CPlusPlus.ObjectFile
     {
         public CppFile()
-            : base("source", "main_cpp.c")
         {
+            this.SetRelativePath(this, "source", "main_cpp.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFile_UpdateOptions);
         }
 
@@ -37,7 +37,7 @@ namespace Test9
     {
         public CppFileCollection()
         {
-            this.Add("source", "main_cpp.c");
+            this.AddRelativePaths(this, "source", "main_cpp.c");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFileCollection_UpdateOptions);
         }
@@ -78,7 +78,7 @@ namespace Test9
         {
             public CSourceFiles()
             {
-                this.Add("source", "library_c.c");
+                this.AddRelativePaths(this, "source", "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePaths);
             }
         }
@@ -87,8 +87,8 @@ namespace Test9
         {
             public CPlusPlusSourceFiles()
             {
-                this.Add("source", "library_cpp.c");
-                this.Add("source", "appmain_cpp.c");
+                this.AddRelativePaths(this, "source", "library_cpp.c");
+                this.AddRelativePaths(this, "source", "appmain_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CPlusPlusSourceFiles_UpdateOptions);
                 this.UpdateOptions += IncludePaths;
             }
@@ -115,6 +115,7 @@ namespace Test9
     {
         public CStaticLibraryFromFile()
         {
+            this.sourceFile.SetRelativePath(this, "source", "library_c.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
 
@@ -125,7 +126,7 @@ namespace Test9
         }
 
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "library_c.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
     }
 
     class CStaticLibraryFromCollection : C.StaticLibrary
@@ -134,7 +135,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.Add("source", "library_c.c");
+                this.AddRelativePaths(this, "source", "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
@@ -153,6 +154,7 @@ namespace Test9
     {
         public CppStaticLibraryFromFile()
         {
+            this.sourceFile.SetRelativePath(this, "source", "library_cpp.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
         }
@@ -170,7 +172,7 @@ namespace Test9
         }
 
         [Opus.Core.SourceFiles]
-        C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile("source", "library_cpp.c");
+        C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile();
     }
 
     class CppStaticLibaryFromCollection : C.StaticLibrary
@@ -179,7 +181,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.Add("source", "library_cpp.c");
+                this.AddRelativePaths(this, "source", "library_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
@@ -207,6 +209,7 @@ namespace Test9
 
         public CDynamicLibraryFromFile()
         {
+            this.sourceFile.SetRelativePath(this, "source", "library_c.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
 
@@ -217,7 +220,7 @@ namespace Test9
         }
 
         [Opus.Core.SourceFiles]
-        C.ObjectFile sourceFile = new C.ObjectFile("source", "library_c.c");
+        C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules(WinVCTarget)]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
@@ -238,7 +241,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.Add("source", "library_c.c");
+                this.AddRelativePaths(this, "source", "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
@@ -269,6 +272,7 @@ namespace Test9
 
         public CppDynamicLibraryFromFile()
         {
+            this.sourceFile.SetRelativePath(this, "source", "library_cpp.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
         }
@@ -286,7 +290,7 @@ namespace Test9
         }
 
         [Opus.Core.SourceFiles]
-        C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile("source", "library_cpp.c");
+        C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile();
 
         [Opus.Core.DependentModules(WinVCTarget)]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
@@ -307,7 +311,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.Add("source", "library_cpp.c");
+                this.AddRelativePaths(this, "source", "library_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }

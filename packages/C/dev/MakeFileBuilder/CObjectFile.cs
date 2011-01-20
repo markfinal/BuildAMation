@@ -29,7 +29,7 @@ namespace MakeFileBuilder
 
             Opus.Core.IOutputPaths ioutputFiles = objectFile.Options as Opus.Core.IOutputPaths;
 
-            string sourceFilePath = System.IO.Path.Combine(node.Package.Directory, objectFile.SourceFile.RelativePath);
+            string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);

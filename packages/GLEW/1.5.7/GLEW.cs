@@ -12,7 +12,7 @@ namespace GLEW
         {
             public SourceFiles()
             {
-                this.Add("glew-1.5.7", "src", "glew.c");
+                this.AddRelativePaths(this, "glew-1.5.7", "src", "glew.c");
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));
 

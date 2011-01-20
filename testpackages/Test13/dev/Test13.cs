@@ -12,7 +12,7 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.Add("source", "main.cpp");
+                this.AddRelativePaths(this, "source", "main.cpp");
             }
         }
 

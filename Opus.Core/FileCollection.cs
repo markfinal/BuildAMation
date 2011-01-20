@@ -65,23 +65,19 @@ namespace Opus.Core
             return this.filePaths.GetEnumerator();
         }
 
-        public static FileCollection AddUsingWildcards(PackageInformation package, params string[] pathParts)
+        public void AddRelativePaths(object owner, params string[] pathSegments)
         {
+            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Exception("Package is null. Cannot evaluate wildcarded paths");
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            FileCollection collection = new FileCollection();
-
-            Opus.Core.File path = new Opus.Core.File(pathParts);
-            string[] files = System.IO.Directory.GetFiles(package.Directory, path.RelativePath, System.IO.SearchOption.AllDirectories);
-            foreach (string file in files)
+            StringArray paths = File.GetFiles(package.Directory, pathSegments);
+            foreach (string path in paths)
             {
-                collection.Add(file);
+                this.filePaths.Add(path);
             }
-
-            return collection;
         }
     }
 }

@@ -4,12 +4,18 @@ namespace RenderTextureAndProcessor
     // Define module classes here
     class RenderTexture : C.WindowsApplication
     {
+        public RenderTexture()
+        {
+            this.headerFiles.AddRelativePaths(this, "source", "common", "*.h");
+            this.headerFiles.AddRelativePaths(this, "source", "rendertexture", "*.h");
+        }
+
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddUsingWildcards("source", "common", "*.cpp");
-                this.AddUsingWildcards("source", "rendertexture", "*.cpp");
+                this.AddRelativePaths(this, "source", "common", "*.cpp");
+                this.AddRelativePaths(this, "source", "rendertexture", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
@@ -31,10 +37,7 @@ namespace RenderTextureAndProcessor
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection(
-            Opus.Core.FileCollection.AddUsingWildcards(Opus.Core.State.PackageInfo["RenderTextureAndProcessor"], "source", "common", "*.h"),
-            Opus.Core.FileCollection.AddUsingWildcards(Opus.Core.State.PackageInfo["RenderTextureAndProcessor"], "source", "rendertexture", "*.h")
-        );
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
         [C.RequiredLibraries("win32-.*-visualc")]
         Opus.Core.StringArray requiredLibrariesVC = new Opus.Core.StringArray(
@@ -59,27 +62,26 @@ namespace RenderTextureAndProcessor
             typeof(OpenGLSDK.OpenGL)
         );
 
-#if true
         [Opus.Core.RequiredModules]
         Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(
             typeof(TextureProcessor)
         );
-#else
-        [Opus.Core.RequiredModules]
-        Opus.Core.TargetNameTypeArray requiredModules = new Opus.Core.TargetNameTypeArray(
-            new Opus.Core.TargetNameType("%1-optimized-%3", typeof(TextureProcessor))
-        );
-#endif
     }
 
     class TextureProcessor : C.Application
     {
+        public TextureProcessor()
+        {
+            this.headerFiles.AddRelativePaths(this, "source", "common", "*.h");
+            this.headerFiles.AddRelativePaths(this, "source", "textureprocessor", "*.h");
+        }
+
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddUsingWildcards("source", "common", "*.cpp");
-                this.AddUsingWildcards("source", "textureprocessor", "*.cpp");
+                this.AddRelativePaths(this, "source", "common", "*.cpp");
+                this.AddRelativePaths(this, "source", "textureprocessor", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
@@ -112,10 +114,7 @@ namespace RenderTextureAndProcessor
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection(
-            Opus.Core.FileCollection.AddUsingWildcards(Opus.Core.State.PackageInfo["RenderTextureAndProcessor"], "source", "common", "*.h"),
-            Opus.Core.FileCollection.AddUsingWildcards(Opus.Core.State.PackageInfo["RenderTextureAndProcessor"], "source", "textureprocessor", "*.h")
-        );
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
         [Opus.Core.DependentModules("win.*-.*-visualc")]
         Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(

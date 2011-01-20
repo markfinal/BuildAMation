@@ -10,7 +10,7 @@ namespace Test5
         {
             public SourceFiles()
             {
-                this.Add("source", "dynamicmain.c");
+                this.AddRelativePaths(this, "source", "dynamicmain.c");
             }
         }
 

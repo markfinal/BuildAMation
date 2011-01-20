@@ -10,51 +10,147 @@ namespace Opus.Core
         static private readonly string DirectorySeparatorString = new string(System.IO.Path.DirectorySeparatorChar, 1);
         static private readonly string AltDirectorySeparatorString = new string(System.IO.Path.AltDirectorySeparatorChar, 1);
 
-        private static bool ContainsDirectorySeparators(string filePart)
+        private string absolutePath = null;
+
+        private static bool ContainsDirectorySeparators(string pathSegment)
         {
-            bool containsSeparators = filePart.Contains(DirectorySeparatorString) || filePart.Contains(AltDirectorySeparatorString);
+            bool containsSeparators = pathSegment.Contains(DirectorySeparatorString) || pathSegment.Contains(AltDirectorySeparatorString);
             return containsSeparators;
         }
 
-        private static void ValidateFilePart(string filePart)
+        private static void ValidateFilePart(string pathSegment)
         {
-            if (ContainsDirectorySeparators(filePart))
+            if (ContainsDirectorySeparators(pathSegment))
             {
-                throw new Exception(System.String.Format("Individual file parts cannot contain directory separators; '{0}'", filePart));
+                throw new Exception(System.String.Format("Individual file parts cannot contain directory separators; '{0}'", pathSegment));
             }
         }
 
-        public File(params string[] fileParts)
+        private static string CombinePaths(string baseDirectory, params string[] pathSegments)
         {
-            if (1 == fileParts.Length && ContainsDirectorySeparators(fileParts[0]))
+            string combinedPath = baseDirectory;
+            for (int i = 0; i < pathSegments.Length; ++i)
             {
-                if (RelativePathUtilities.IsPathAbsolute(fileParts[0]))
+                ValidateFilePart(pathSegments[i]);
+                if (null == combinedPath)
                 {
-                    this.RelativePath = fileParts[0];
+                    combinedPath = pathSegments[i];
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Path '{0}' is not absolute but contains directory separators; please use the separated version", fileParts[0]));
+                    combinedPath = System.IO.Path.Combine(combinedPath, pathSegments[i]);
                 }
+            }
+
+            return combinedPath;
+        }
+
+        private void Initialize(string basePath, bool checkExists, params string[] pathSegments)
+        {
+            string absolutePath;
+            if (0 == pathSegments.Length)
+            {
+                if (checkExists && !System.IO.File.Exists(basePath))
+                {
+                    throw new Exception(System.String.Format("File '{0}' does not exist", basePath));
+                }
+
+                absolutePath = basePath;
             }
             else
             {
-                ValidateFilePart(fileParts[0]);
-                string fullSourcePath = fileParts[0];
-                for (int i = 1; i < fileParts.Length; ++i)
+                if (checkExists && !System.IO.Directory.Exists(basePath))
                 {
-                    ValidateFilePart(fileParts[i]);
-                    fullSourcePath = System.IO.Path.Combine(fullSourcePath, fileParts[i]);
+                    throw new Exception(System.String.Format("Base directory '{0}' does not exist", basePath));
                 }
 
-                this.RelativePath = fullSourcePath;
+                absolutePath = CombinePaths(basePath, pathSegments);
+            }
+
+            this.AbsolutePath = absolutePath;
+        }
+
+        public void SetRelativePath(object owner, params string[] pathSegments)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            this.SetPackageRelativePath(package, pathSegments);
+        }
+
+        public void SetPackageRelativePath(Opus.Core.PackageInformation package, params string[] pathSegments)
+        {
+            this.Initialize(package.Directory, true, pathSegments);
+        }
+
+        public void SetAbsolutePath(string absolutePath)
+        {
+            this.Initialize(absolutePath, true);
+        }
+
+        public void SetGuaranteedAbsolutePath(string absolutePath)
+        {
+            this.Initialize(absolutePath, false);
+        }
+
+        public static StringArray GetFiles(string baseDirectory, params string[] pathSegments)
+        {
+            bool runningOnMono = System.Type.GetType("Mono.Runtime") != null;
+            if (runningOnMono)
+            {
+                // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
+                // cannot use GetFiles with a pattern containing directories
+
+                string baseDir = baseDirectory;
+                int i = 0;
+                for (; i < pathSegments.Length; ++i)
+                {
+                    string baseDirTest = System.IO.Path.Combine(baseDir, pathSegments[i]);
+                    if (System.IO.Directory.Exists(baseDirTest))
+                    {
+                        baseDir = baseDirTest;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (i != pathSegments.Length - 1)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", baseDir, pathSegments[i]));
+                }
+
+                string[] files = System.IO.Directory.GetFiles(baseDir, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.AllDirectories);
+                return new StringArray(files);
+            }
+            else
+            {
+                string relativePath = CombinePaths(null, pathSegments);
+                string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.AllDirectories);
+                return new StringArray(files);
             }
         }
 
-        public string RelativePath
+        public string AbsolutePath
         {
-            get;
-            private set;
+            get
+            {
+                if (null == this.absolutePath)
+                {
+                    throw new Exception("File path has not been set", false);
+                }
+
+                return this.absolutePath;
+            }
+
+            private set
+            {
+                this.absolutePath = value;
+            }
         }
     }
 }
