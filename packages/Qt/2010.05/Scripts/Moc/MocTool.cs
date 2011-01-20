@@ -1,4 +1,4 @@
-[assembly: Opus.Core.RegisterTargetToolChain("qtmoctool", "Qt.Qt.VersionString")]
+[assembly: Opus.Core.RegisterTargetToolChain("moctool", "Qt.Qt.VersionString")]
 
 namespace Qt
 {

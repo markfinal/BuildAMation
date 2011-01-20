@@ -12,15 +12,19 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.Add("source", "main.cpp");
+                this.AddUsingWildcards("source", "*.cpp");
             }
 
-            class MocFiles : Qt.MocModule
+            class MyMocFile : Qt.MocFile
             {
+                public MyMocFile()
+                {
+                    this.SetPath(this, "source", "myobject.h");
+                }
             }
 
             [Opus.Core.DependentModules]
-            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MocFiles));
+            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFile));
         }
 
         [Opus.Core.SourceFiles]
