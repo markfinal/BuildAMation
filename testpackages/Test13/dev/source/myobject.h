@@ -8,7 +8,7 @@ class MyClass : public QObject
     Q_OBJECT
     
 public:
-    MyClass(QObject *parent2 = 0);
+    MyClass(QObject *parent = 0);
     ~MyClass();
     
 signals:
