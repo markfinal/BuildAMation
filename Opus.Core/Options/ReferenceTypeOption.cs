@@ -23,7 +23,7 @@ namespace Opus.Core
             System.ICloneable cloneable = this.Value as System.ICloneable;
             if (null == cloneable)
             {
-                throw new Exception(System.String.Format("ReferenceTypeOption type, '{0}', is not cloneable", typeof(T).GetType().ToString()));
+                throw new Exception(System.String.Format("ReferenceTypeOption type, '{0}', is not cloneable", typeof(T).GetType().ToString()), false);
             }
 
             ReferenceTypeOption<T> clonedOption = new ReferenceTypeOption<T>(cloneable.Clone() as T);
