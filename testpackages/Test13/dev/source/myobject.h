@@ -10,6 +10,8 @@ class MyClass : public QObject
 public:
     MyClass(QObject *parent = 0);
     ~MyClass();
+
+    void DoSomething();
     
 signals:
     void mySignal();

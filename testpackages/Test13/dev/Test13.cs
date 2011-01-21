@@ -15,16 +15,26 @@ namespace Test13
                 this.AddRelativePaths(this, "source", "*.cpp");
             }
 
+            /*
             class MyMocFile : Qt.MocFile
             {
                 public MyMocFile()
                 {
-                    this.SetPath(this, "source", "myobject.h");
+                    this.SetRelativePath(this, "source", "myobject.h");
+                }
+            }
+             */
+            class MyMocFiles : Qt.MocFileCollection
+            {
+                public MyMocFiles()
+                {
+                    this.AddRelativePaths(this, "source", "*.h");
                 }
             }
 
             [Opus.Core.DependentModules]
-            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFile));
+            //Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFile));
+            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFiles));
         }
 
         [Opus.Core.SourceFiles]

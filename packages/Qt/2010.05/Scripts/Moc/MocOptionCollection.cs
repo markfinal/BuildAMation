@@ -1,7 +1,17 @@
+// <copyright file="MocOptionCollection.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>Qt package</summary>
+// <author>Mark Final</author>
 namespace Qt
 {
     public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, Opus.Core.IOutputPaths
     {
+        public MocOptionCollection()
+            : base()
+        {
+        }
+
         private void SetDefaults(Opus.Core.DependencyNode node)
         {
             this.MocOutputPath = null;
@@ -10,11 +20,21 @@ namespace Qt
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
         {
-            MocFile mocFile = node.Module as MocFile;
-            string sourceFilePath = mocFile.SourceFile.AbsolutePath;
-            string filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
             string mocDir = node.GetTargettedModuleBuildDirectory("src");
-            string mocPath = System.IO.Path.Combine(mocDir, System.String.Format("moc_{0}.cpp", filename));
+            MocFile mocFile = node.Module as MocFile;
+            string mocPath;
+            if (null != mocFile)
+            {
+                string sourceFilePath = mocFile.SourceFile.AbsolutePath;
+                string filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
+                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("moc_{0}.cpp", filename));
+            }
+            else
+            {
+                // TODO: would like to have a null output path for a collection, but it doesn't work for cloning reference types
+                string filename = node.ModuleName;
+                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("moc_{0}.cpp", filename));
+            }
 
             this.MocOutputPath = mocPath;
         }

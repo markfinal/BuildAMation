@@ -1,3 +1,8 @@
+// <copyright file="MocTool.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>Qt package</summary>
+// <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("moctool", "Qt.Qt.VersionString")]
 
 namespace Qt

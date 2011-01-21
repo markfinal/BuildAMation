@@ -1,3 +1,8 @@
+// <copyright file="MocFile.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>Qt package</summary>
+// <author>Mark Final</author>
 namespace Qt
 {
     public class ExportMocOptionsDelegateAttribute : System.Attribute
@@ -9,15 +14,21 @@ namespace Qt
     }
 
     /// <summary>
-    /// Code generation of C++ source
+    /// Create meta data from a C++ header or source file
     /// </summary>
     [Opus.Core.AssignToolForModule(typeof(MocTool),
                                    typeof(ExportMocOptionsDelegateAttribute),
                                    typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(MocOptionCollection))]
-    public abstract class MocFile : Opus.Core.IModule, Opus.Core.IInjectModules
+    public class MocFile : Opus.Core.IModule, Opus.Core.IInjectModules
     {
-        public void SetPath(object owner, params string[] pathSegments)
+        public void SetAbsolutePath(string absolutePath)
+        {
+            this.SourceFile = new Opus.Core.File();
+            this.SourceFile.SetAbsolutePath(absolutePath);
+        }
+
+        public void SetRelativePath(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
