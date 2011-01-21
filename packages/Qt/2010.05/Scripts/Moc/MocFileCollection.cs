@@ -6,13 +6,13 @@
 namespace Qt
 {
     /// <summary>
-    /// Create meta data from a C++ header or source file
+    /// Create meta data from a collection of C++ header or source files
     /// </summary>
     [Opus.Core.AssignToolForModule(typeof(MocTool),
                                    typeof(ExportMocOptionsDelegateAttribute),
                                    typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(MocOptionCollection))]
-    public abstract class MocFileCollection : Opus.Core.IModule, Opus.Core.IInjectModules
+    public abstract class MocFileCollection : Opus.Core.IModule
     {
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();
 
@@ -43,22 +43,6 @@ namespace Qt
         }
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
-        Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
-        {
-            Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
-            foreach (MocFile mocFile in this.list)
-            {
-                MocOptionCollection options = mocFile.Options as MocOptionCollection;
-                string outputPath = options.MocOutputPath;
-                C.CPlusPlus.ObjectFile injectedFile = new C.CPlusPlus.ObjectFile();
-                injectedFile.SetGuaranteedAbsolutePath(outputPath);
-
-                moduleCollection.Add(injectedFile);
-            }
-
-            return moduleCollection;
-        }
 
         public void AddRelativePaths(object owner, params string[] pathSegments)
         {
