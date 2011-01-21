@@ -325,7 +325,49 @@ namespace Opus.Core
                         ModuleCollection injectedModules = injectModules.GetInjectedModules(node.Target);
                         foreach (IModule module in injectedModules)
                         {
-                            DependencyNode sourceOfDependency = node.ExternalDependentFor[0];
+                            DependencyNodeCollection externalDependencyForCollection = node.ExternalDependentFor;
+                            if (null == externalDependencyForCollection)
+                            {
+                                // check the parent, in case this was part of a collection
+                                if (null != node.Parent)
+                                {
+                                    externalDependencyForCollection = node.Parent.ExternalDependentFor;
+                                }
+                            }
+                            if (null == externalDependencyForCollection)
+                            {
+                                if (null != node.Parent)
+                                {
+                                    throw new Exception(System.String.Format("Node '{0}' nor its parent '{1}' are dependees", node.UniqueModuleName, node.Parent.UniqueModuleName), false);
+                                }
+                                else
+                                {
+                                    throw new Exception(System.String.Format("Node '{0}' is not a dependee", node.UniqueModuleName), false);
+                                }
+                            }
+
+                            DependencyNode sourceOfDependency = null;
+                            foreach (DependencyNode ext in externalDependencyForCollection)
+                            {
+                                foreach (DependencyNode extDep in ext.ExternalDependents)
+                                {
+                                    if (extDep == node || extDep == node.Parent)
+                                    {
+                                        sourceOfDependency = ext;
+                                        break;
+                                    }
+                                }
+
+                                if (null != sourceOfDependency)
+                                {
+                                    break;
+                                }
+                            }
+                            if (null == sourceOfDependency)
+                            {
+                                throw new Exception(System.String.Format("Unable to locate the dependency of '{0}'", module.GetType().ToString()), false);
+                            }
+
                             int childIndex;
                             if (sourceOfDependency.Children != null)
                             {
