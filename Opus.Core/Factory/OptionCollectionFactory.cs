@@ -13,12 +13,12 @@ namespace Opus.Core
         {
             if (!requiredOptionCollectionType.IsSubclassOf(optionCollectionType))
             {
-                throw new Exception(System.String.Format("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString()));
+                throw new Exception(System.String.Format("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString()),false);
             }
 
             if (null == requiredOptionCollectionType.GetConstructor(System.Type.EmptyTypes))
             {
-                throw new Exception(System.String.Format("Default constructor for type '{0}' does not exist", requiredOptionCollectionType.ToString()));
+                throw new Exception(System.String.Format("Default constructor for type '{0}' does not exist", requiredOptionCollectionType.ToString()), false);
             }
 
             BaseOptionCollection optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType) as BaseOptionCollection;
