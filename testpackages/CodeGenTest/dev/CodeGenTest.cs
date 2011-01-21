@@ -44,7 +44,7 @@ namespace CodeGenTest
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
 
-        [Opus.Core.DependentModules("win.*-.*-.visualc")]
+        [Opus.Core.DependentModules("win.*-.*-visualc")]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
         );
