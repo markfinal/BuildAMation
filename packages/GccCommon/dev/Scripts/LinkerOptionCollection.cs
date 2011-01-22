@@ -235,7 +235,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.AppendFormat("/L\"{0}\" ", includePath);
+                commandLineBuilder.AppendFormat("-L\"{0}\" ", includePath);
             }
         }
 
