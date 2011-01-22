@@ -1,3 +1,5 @@
+22-Jan-2011 Adding more required Gcc include paths when -nostdinc is used; this is to find headers like limits.h
+
 22-Jan-2011 Fixed adding linker search paths in GCC.
 
 22-Jan-2011 Added Qt-4.6.3 package.

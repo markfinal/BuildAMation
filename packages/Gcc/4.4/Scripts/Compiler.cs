@@ -24,6 +24,7 @@ namespace Gcc
 
             this.includeFolders.Add("/usr/include");
             this.includeFolders.Add("/usr/lib/gcc/i486-linux-gnu/4.4/include");
+            this.includeFolders.Add("/usr/lib/gcc/i486-linux-gnu/4.4/include-fixed");
         }
 
         public override string Executable(Opus.Core.Target target)
