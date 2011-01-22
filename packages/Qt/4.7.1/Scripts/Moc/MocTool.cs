@@ -16,8 +16,12 @@ namespace Qt
 
         public string Executable(Opus.Core.Target target)
         {
-            string QtBinPath = Qt.BinPath;
-            string mocExePath = System.IO.Path.Combine(QtBinPath, "moc.exe");
+            string mocExePath = System.IO.Path.Combine(Qt.BinPath, "moc");
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                mocExePath = mocExePath + "exe";
+            }
+
             return mocExePath;
         }
 

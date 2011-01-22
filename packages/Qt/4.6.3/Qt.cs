@@ -42,16 +42,20 @@ namespace Qt
                         throw new Opus.Core.Exception("Unable to locate InstallDir registry key for Qt 4.6.3");
                     }
                     Opus.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
-
-                    BinPath = System.IO.Path.Combine(installPath, "bin");
-                    libPath = System.IO.Path.Combine(installPath, "lib");
-                    includePath = System.IO.Path.Combine(installPath, "include");
                 }
+            }
+            else if (Opus.Core.OSUtilities.IsUnixHosting)
+            {
+                installPath = @"/usr/local/Trolltech/Qt-4.6.3"; // default installation directory
             }
             else
             {
                 throw new Opus.Core.Exception("Qt identification has not been implemented on non-Windows platforms yet");
             }
+
+            BinPath = System.IO.Path.Combine(installPath, "bin");
+            libPath = System.IO.Path.Combine(installPath, "lib");
+            includePath = System.IO.Path.Combine(installPath, "include");
         }
 
         public Qt()
