@@ -22,7 +22,21 @@ namespace Opus.Core
                     {
                         if (false != staticPropertyInfo.CanRead)
                         {
-                            versionString = staticPropertyInfo.GetGetMethod().Invoke(null, null) as string;
+                            try
+                            {
+                                versionString = staticPropertyInfo.GetGetMethod().Invoke(null, null) as string;
+                            }
+                            catch (System.Reflection.TargetInvocationException ex)
+                            {
+                                if (ex.InnerException.InnerException != null)
+                                {
+                                    throw ex.InnerException.InnerException;
+                                }
+                                else
+                                {
+                                    throw ex.InnerException;
+                                }
+                            }
                             break;
                         }
                     }

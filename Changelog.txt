@@ -1,3 +1,5 @@
+22-Jan-2011 Exceptions thrown at the point of toolchain registration are reported better.
+
 21-Jan-2011 Fixed bad regular expression in CodeGenTest-dev test package. This stopped the WindowsSDK from being added as a dependency.
 
 21-Jan-2011 Issue #21. Module injections did not work for module collections.
