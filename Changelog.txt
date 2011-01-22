@@ -1,3 +1,5 @@
+22-Jan-2011 OpusOptionInterfacePropertyGenerator allows for comments at the start of the interface file.
+
 22-Jan-2011 Exceptions thrown at the point of toolchain registration are reported better.
 
 21-Jan-2011 Fixed bad regular expression in CodeGenTest-dev test package. This stopped the WindowsSDK from being added as a dependency.

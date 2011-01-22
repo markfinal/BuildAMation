@@ -181,12 +181,16 @@ namespace OpusOptionInterfacePropertyGenerator
                     line = ReadLine(reader);
                     if (null == line)
                     {
-                        throw new Exception("File is empty");
+                        throw new Exception("Interface file is empty");
+                    }
+                    while (line.StartsWith("//"))
+                    {
+                        line = ReadLine(reader);
                     }
                     string[] namespaceStrings = line.Split(new char[] { ' ' });
                     if (!namespaceStrings[0].Equals("namespace"))
                     {
-                        throw new Exception("File does not start with namespace");
+                        throw new Exception(System.String.Format("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]));
                     }
 
                     // opening namespace scope
