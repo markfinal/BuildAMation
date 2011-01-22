@@ -1,3 +1,5 @@
+22-Jan-2011 Added Qt-4.6.3 package.
+
 22-Jan-2011 Issue #15. Added the Moc tool to Qt, with NativeBuilder support. Renamed Qt-2010.05 to Qt-4.7.1 as this system only needs the framework libraries, and not the full development SDK (and has VisualC support).
 
 22-Jan-2011 OpusOptionInterfacePropertyGenerator allows for comments at the start of the interface file.
