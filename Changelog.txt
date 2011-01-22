@@ -1,3 +1,5 @@
+22-Jan-2011 Correcting a typo constructing the Windows Qt Moc executable pathname.
+
 22-Jan-2011 Support for detecting Qt on Unix in the default installation location; updated Moc and a test package.
 
 22-Jan-2011 Adding more required Gcc include paths when -nostdinc is used; this is to find headers like limits.h

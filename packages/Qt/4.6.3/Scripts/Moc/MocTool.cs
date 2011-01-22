@@ -19,7 +19,7 @@ namespace Qt
             string mocExePath = System.IO.Path.Combine(Qt.BinPath, "moc");
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                mocExePath = mocExePath + "exe";
+                mocExePath = mocExePath + ".exe";
             }
 
             return mocExePath;
