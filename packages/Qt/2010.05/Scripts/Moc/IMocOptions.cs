@@ -18,5 +18,23 @@ namespace Qt
             get;
             set;
         }
+
+        C.DefineCollection Defines
+        {
+            get;
+            set;
+        }
+
+        bool DoNotGenerateIncludeStatement
+        {
+            get;
+            set;
+        }
+
+        bool DoNotDisplayWarnings
+        {
+            get;
+            set;
+        }
     }
 }

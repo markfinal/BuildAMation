@@ -21,7 +21,7 @@ namespace Qt
         {
             get
             {
-                return "2010.05";
+                return "4.7.1";
             }
         }
 
@@ -29,21 +29,23 @@ namespace Qt
         {
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\Windows\CurrentVersion\Uninstall\Qt SDK 2010.05 - C:_Qt_2010.05"))
+                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Trolltech\Versions\4.7.1"))
                 {
                     if (null == key)
                     {
-                        throw new Opus.Core.Exception("Qt 2010.05 was not installed");
+                        throw new Opus.Core.Exception("Qt libraries for 4.7.1 were not installed");
                     }
 
-                    installPath = key.GetValue("QTSDK_INSTDIR") as string;
+                    installPath = key.GetValue("InstallDir") as string;
+                    if (null == installPath)
+                    {
+                        throw new Opus.Core.Exception("Unable to locate InstallDir registry key for Qt 4.7.1");
+                    }
                     Opus.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
 
-                    string qtPath = System.IO.Path.Combine(installPath, "qt");
-
-                    BinPath = System.IO.Path.Combine(qtPath, "bin");
-                    libPath = System.IO.Path.Combine(qtPath, "lib");
-                    includePath = System.IO.Path.Combine(qtPath, "include");
+                    BinPath = System.IO.Path.Combine(installPath, "bin");
+                    libPath = System.IO.Path.Combine(installPath, "lib");
+                    includePath = System.IO.Path.Combine(installPath, "include");
                 }
             }
             else

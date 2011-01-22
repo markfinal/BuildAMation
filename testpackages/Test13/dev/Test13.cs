@@ -6,7 +6,9 @@ namespace Test13
     {
         private const string WinTarget = "win.*-.*-.*";
         private const string WinVCTarget = "win.*-.*-visualc";
+        private const string WinVCDebugTarget = "win.*-debug-visualc";
         private const string WinMingwTarget = "win.*-.*-mingw";
+        private const string WinMingwDebugTarget = "win.*-debug-mingw";
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
@@ -50,17 +52,17 @@ namespace Test13
             typeof(WindowsSDK.WindowsSDK)
         );
 
-        [C.RequiredLibraries(WinMingwTarget)]
+        [C.RequiredLibraries(WinMingwDebugTarget)]
         Opus.Core.StringArray winLibraries = new Opus.Core.StringArray(
-            "-lQtCore4",
-            "-lQtGui4"
+            "-lQtCored4",
+            "-lQtGuid4"
         );
 
-        [C.RequiredLibraries(WinVCTarget)]
+        [C.RequiredLibraries(WinVCDebugTarget)]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
-            "libQtCore4.a",
-            "libQtGui4.a"
+            "QtCored4.lib",
+            "QtGuid4.lib"
         );
     }
 }

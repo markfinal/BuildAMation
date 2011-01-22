@@ -16,6 +16,9 @@ namespace Qt
         {
             this.MocOutputPath = null;
             this.IncludePaths = new Opus.Core.DirectoryCollection();
+            this.Defines = new C.DefineCollection();
+            this.DoNotGenerateIncludeStatement = false;
+            this.DoNotDisplayWarnings = false;
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
@@ -43,6 +46,9 @@ namespace Qt
         {
             this["MocOutputPath"].PrivateData = new MocPrivateData(MocOutputPathCommandLine);
             this["IncludePaths"].PrivateData = new MocPrivateData(IncludePathsCommandLine);
+            this["Defines"].PrivateData = new MocPrivateData(DefinesCommandLine);
+            this["DoNotGenerateIncludeStatement"].PrivateData = new MocPrivateData(DoNotGenerateIncludeStatementCommandLine);
+            this["DoNotDisplayWarnings"].PrivateData = new MocPrivateData(DoNotDisplayWarningsCommandLine);
         }
 
         public MocOptionCollection(Opus.Core.DependencyNode node)
@@ -64,6 +70,33 @@ namespace Qt
             foreach (string directory in directoryCollectionOption.Value)
             {
                 commandLineBuilder.AppendFormat("-I\"{0}\" ", directory);
+            }
+        }
+
+        private static void DefinesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<C.DefineCollection> definesCollectionOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            foreach (string directory in definesCollectionOption.Value)
+            {
+                commandLineBuilder.AppendFormat("-D{0} ", directory);
+            }
+        }
+
+        private static void DoNotGenerateIncludeStatementCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Append("-i ");
+            }
+        }
+
+        private static void DoNotDisplayWarningsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Append("-nw ");
             }
         }
 
