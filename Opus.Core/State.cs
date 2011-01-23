@@ -17,10 +17,14 @@ namespace Opus.Core
         {
             ReadOnly = false;
 
+            System.Reflection.Assembly coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
+            System.Version version = coreAssembly.GetName().Version;
+
             AddCategory("Opus");
             string opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Add<string>("Opus", "Directory", opusDirectory);
-            Add<string>("Opus", "Version", "0.00");
+            Add<System.Version>("Opus", "Version", version);
+            Add<string>("Opus", "VersionString", System.String.Format("{0}.{1}", version.Major, version.Minor));
 
             string opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
             string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
@@ -166,12 +170,20 @@ namespace Opus.Core
                 return Get("Opus", "Directory") as string;
             }
         }
-        
-        public static string OpusVersion
+
+        public static System.Version OpusVersion
         {
             get
             {
-                return Get("Opus", "Version") as string;
+                return Get("Opus", "Version") as System.Version;
+            }
+        }
+ 
+        public static string OpusVersionString
+        {
+            get
+            {
+                return Get("Opus", "VersionString") as string;
             }
         }
 

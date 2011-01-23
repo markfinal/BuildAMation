@@ -1,3 +1,5 @@
+23-Jan-2011 Issue #9. Added versioning to package compilation; the define OPUS_CORE_VERSION_MAJOR_MINOR is set in the compiler, where MAJOR and MINOR are the major and minor versions of the Opus.Core.dll assembly. Added new Opus.Core.State functions; Version to get the System.Version and VersionString to get the reduced major/minor string version.
+
 23-Jan-2011 Fields marked as source files to C# assemblies can now be either Opus.Core.File or Opus.Core.FileCollection.
 
 23-Jan-2011 Removed GetNestedDependents from Opus.Core.IModule and added it to its own interface Opus.Core.INestedDependents. Not all modules expect to have nested dependencies, so should not have to implement this function.

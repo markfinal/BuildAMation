@@ -16,7 +16,7 @@ namespace Opus
         private static void displayInfo(Core.EVerboseLevel level)
         {
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
-            Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersion);
+            Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
             Core.Log.Message(level, "Working dir  : '{0}'", Core.State.WorkingDirectory);
             Core.Log.Message(level, "");
         }

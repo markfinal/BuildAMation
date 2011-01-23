@@ -7,6 +7,16 @@ namespace Opus.Core
 {
     public static class PackageUtilities
     {
+        public static string OpusVersionDefineForCompiler
+        {
+            get
+            {
+                System.Version coreVersion = State.OpusVersion;
+                string coreVersionDefine = System.String.Format("OPUS_CORE_VERSION_{0}_{1}", coreVersion.Major, coreVersion.Minor);
+                return coreVersionDefine;
+            }
+        }
+
         public static bool CompilePackageIntoAssembly()
         {
             if (0 == State.PackageInfo.Count)
@@ -102,6 +112,10 @@ namespace Opus.Core
                     // apparently, some versions of Mono don't support the /platform option
                     compilerOptions += " /platform:anycpu";
                 }
+
+                // version number
+                compilerOptions += " /define:" + OpusVersionDefineForCompiler;
+
                 compilerParameters.CompilerOptions = compilerOptions;
                 compilerParameters.EmbeddedResources.Add(resourceFilePathName);
 
