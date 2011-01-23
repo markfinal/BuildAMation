@@ -16,9 +16,7 @@ namespace Opus.Core
             get;
             set;
         }
-
-        ModuleCollection GetNestedDependents(Core.Target target);
-        
+       
         void ExecuteOptionUpdate(Core.Target target);
     }
 }

@@ -12,7 +12,7 @@ namespace Qt
                                    typeof(ExportMocOptionsDelegateAttribute),
                                    typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(MocOptionCollection))]
-    public abstract class MocFileCollection : Opus.Core.IModule
+    public abstract class MocFileCollection : Opus.Core.IModule, Opus.Core.INestedDependents
     {
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();
 

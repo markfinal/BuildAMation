@@ -26,10 +26,5 @@ namespace C
                 this.UpdateOptions(this, target);
             }
         }
-
-        public Opus.Core.ModuleCollection GetNestedDependents(Opus.Core.Target target)
-        {
-            return null;
-        }
     }
 }

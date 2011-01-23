@@ -233,9 +233,15 @@ namespace Opus.Core
                         }
                     }
 
-                    ModuleCollection nestedDependentModules = node.Module.GetNestedDependents(node.Target);
-                    if (nestedDependentModules != null)
+                    if (node.Module is INestedDependents)
                     {
+                        INestedDependents nestedDependentsInterface = node.Module as INestedDependents;
+                        ModuleCollection nestedDependentModules = nestedDependentsInterface.GetNestedDependents(node.Target);
+                        if (null == nestedDependentModules)
+                        {
+                            throw new Exception(System.String.Format("Module '{0}' implements Opus.Core.INestedDependents but returns null"));
+                        }
+
                         int childIndex = 0;
                         foreach (IModule nestedModule in nestedDependentModules)
                         {

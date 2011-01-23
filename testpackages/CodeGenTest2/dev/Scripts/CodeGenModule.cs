@@ -111,11 +111,6 @@ namespace CodeGenTest2
             }
         }
 
-        public Opus.Core.ModuleCollection GetNestedDependents(Opus.Core.Target target)
-        {
-            return null;
-        }
-
         public Opus.Core.BaseOptionCollection Options
         {
             get;
