@@ -6,11 +6,11 @@ namespace CSharpTest1
     {
         public SimpleLibrary()
         {
-            this.source.SetRelativePath(this, "source", "simpletest.cs");
+            this.source.AddRelativePaths(this, "source", "simpletest.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.FileCollection source = new Opus.Core.FileCollection();
     }
 
     class SimpleExecutable : CSharp.Executable

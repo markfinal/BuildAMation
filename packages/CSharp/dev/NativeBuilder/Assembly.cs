@@ -40,20 +40,47 @@ namespace NativeBuilder
                 var sourceFileAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
                 if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                 {
-                    var sourcePath = field.GetValue(assembly);
-                    string absolutePath = (sourcePath as Opus.Core.File).AbsolutePath;
-                    if (!System.IO.File.Exists(absolutePath))
+                    var sourceField = field.GetValue(assembly);
+                    if (sourceField is Opus.Core.File)
                     {
-                        throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
-                    }
+                        string absolutePath = (sourceField as Opus.Core.File).AbsolutePath;
+                        if (!System.IO.File.Exists(absolutePath))
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
+                        }
 
-                    if (Opus.Core.OSUtilities.IsWindowsHosting)
-                    {
-                        // TODO: Win32 csc is fussy about directory separators
-                        // remove this when paths are constructed better
-                        absolutePath = absolutePath.Replace('/', '\\');
+                        if (Opus.Core.OSUtilities.IsWindowsHosting)
+                        {
+                            // TODO: Win32 csc is fussy about directory separators
+                            // remove this when paths are constructed better
+                            absolutePath = absolutePath.Replace('/', '\\');
+                        }
+                        sourceFiles.Add(absolutePath);
                     }
-                    sourceFiles.Add(absolutePath);
+                    else if (sourceField is Opus.Core.FileCollection)
+                    {
+                        Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                        foreach (string absolutePath in sourceCollection)
+                        {
+                            if (!System.IO.File.Exists(absolutePath))
+                            {
+                                throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
+                            }
+
+                            string correctedPath = absolutePath;
+                            if (Opus.Core.OSUtilities.IsWindowsHosting)
+                            {
+                                // TODO: Win32 csc is fussy about directory separators
+                                // remove this when paths are constructed better
+                                correctedPath = correctedPath.Replace('/', '\\');
+                            }
+                            sourceFiles.Add(correctedPath);
+                        }
+                    }
+                    else
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                    }
                 }
             }
 

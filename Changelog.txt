@@ -1,3 +1,5 @@
+23-Jan-2011 Fields marked as source files to C# assemblies can now be either Opus.Core.File or Opus.Core.FileCollection.
+
 23-Jan-2011 Removed GetNestedDependents from Opus.Core.IModule and added it to its own interface Opus.Core.INestedDependents. Not all modules expect to have nested dependencies, so should not have to implement this function.
 
 22-Jan-2011 Correcting a typo constructing the Windows Qt Moc executable pathname.

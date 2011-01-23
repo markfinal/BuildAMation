@@ -1,6 +1,6 @@
 namespace SimpleAssembly
 {
-    public class Program
+    public class Program2
     {
         public static int Main(params string[] args)
         {
