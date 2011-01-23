@@ -69,8 +69,7 @@ namespace Opus.Core
             System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
 
-            bool runningOnMono = System.Type.GetType("Mono.Runtime") != null;
-            if (runningOnMono)
+            if (State.RunningMono)
             {
                 Log.DebugMessage("Compiling assembly for Mono");
             }
@@ -81,7 +80,7 @@ namespace Opus.Core
 
                 System.CodeDom.Compiler.CompilerParameters compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
                 compilerParameters.TreatWarningsAsErrors = true;
-                if (!runningOnMono)
+                if (!State.RunningMono)
                 {
                     compilerParameters.WarningLevel = 4;
                 }
@@ -98,7 +97,7 @@ namespace Opus.Core
                 {
                     compilerParameters.IncludeDebugInformation = true;
                     compilerOptions += " /optimize-";
-                    if (runningOnMono)
+                    if (State.RunningMono)
                     {
                         compilerOptions += " /define:DEBUG";
                     }
@@ -107,7 +106,7 @@ namespace Opus.Core
                 {
                     compilerOptions += " /optimize+";
                 }
-                if (!runningOnMono)
+                if (!State.RunningMono)
                 {
                     // apparently, some versions of Mono don't support the /platform option
                     compilerOptions += " /platform:anycpu";

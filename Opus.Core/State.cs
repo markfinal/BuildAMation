@@ -25,6 +25,7 @@ namespace Opus.Core
             Add<string>("Opus", "Directory", opusDirectory);
             Add<System.Version>("Opus", "Version", version);
             Add<string>("Opus", "VersionString", System.String.Format("{0}.{1}", version.Major, version.Minor));
+            Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
             string opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
             string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
@@ -184,6 +185,14 @@ namespace Opus.Core
             get
             {
                 return Get("Opus", "VersionString") as string;
+            }
+        }
+
+        public static bool RunningMono
+        {
+            get
+            {
+                return (bool)Get("Opus", "RunningMono");
             }
         }
 

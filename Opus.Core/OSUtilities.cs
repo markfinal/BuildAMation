@@ -11,8 +11,7 @@ namespace Opus.Core
         {
             get
             {
-                bool runningOnMono = System.Type.GetType("Mono.Runtime") != null;
-                if (runningOnMono)
+                if (State.RunningMono)
                 {
                     // TODO: need to figure out a way of doing this
                     return false;

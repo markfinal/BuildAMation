@@ -98,8 +98,7 @@ namespace Opus.Core
 
         public static StringArray GetFiles(string baseDirectory, params string[] pathSegments)
         {
-            bool runningOnMono = System.Type.GetType("Mono.Runtime") != null;
-            if (runningOnMono)
+            if (State.RunningMono)
             {
                 // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
                 // cannot use GetFiles with a pattern containing directories
