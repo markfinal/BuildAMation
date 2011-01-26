@@ -1,4 +1,4 @@
-﻿// <copyright file="DependencyGraph.cs" company="Mark Final">
+// <copyright file="DependencyGraph.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -322,7 +322,6 @@ namespace Opus.Core
             do
             {
                 DependencyNodeCollection nodeCollection = this.rankList[currentRank];
-                int childRank = currentRank + 1;
                 foreach (DependencyNode node in nodeCollection)
                 {
                     IInjectModules injectModules = node.Module as IInjectModules;
