@@ -1,3 +1,5 @@
+26-Jan-2011 Fixing unused variable warnings compiling Opus in MonoDevelop
+
 23-Jan-2011 Issue #6. Added command line configuration argument to Qt; -Qt.installpath=<path> to override Opus searching for the Qt install directory.
 
 23-Jan-2011 Added Opus.Core.State.RunningMono to detect whether Mono is being used.

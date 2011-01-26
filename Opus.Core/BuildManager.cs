@@ -1,4 +1,4 @@
-﻿// <copyright file="BuildManager.cs" company="Mark Final">
+// <copyright file="BuildManager.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -114,8 +114,6 @@ namespace Opus.Core
         public bool Execute()
         {
             Log.Info("Build started");
-
-            string buildRoot = Core.State.BuildRoot;
 
             this.active = true;
             System.Threading.ThreadPool.QueueUserWorkItem(this.OutputErrorProcessingThread, this);
