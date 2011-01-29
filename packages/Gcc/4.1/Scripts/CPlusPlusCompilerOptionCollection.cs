@@ -12,10 +12,20 @@ namespace Gcc
             base.InitializeDefaults(node);
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
-            string cppIncludePath = System.IO.Path.Combine(compilerInstance.IncludeDirectoryPaths(node.Target)[0], "c++");
-            cppIncludePath = System.IO.Path.Combine(cppIncludePath, "4.1");
+
+            string cppIncludePath = System.String.Format("{0}/c++/4.1", compilerInstance.IncludeDirectoryPaths(node.Target)[0]);
+            if (!System.IO.Directory.Exists(cppIncludePath))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist", cppIncludePath), false);
+            }
+            string cppIncludePath2 = System.String.Format("{0}/{1}", cppIncludePath, compilerInstance.PlatformSubPath);
+            if (!System.IO.Directory.Exists(cppIncludePath2))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist", cppIncludePath2), false);
+            }
+
             this.SystemIncludePaths.Add(null, cppIncludePath);
-            this.SystemIncludePaths.Add(null, System.IO.Path.Combine(cppIncludePath, "i486-linux-gnu"));
+            this.SystemIncludePaths.Add(null, cppIncludePath2);
         }
 
         public CPlusPlusCompilerOptionCollection()

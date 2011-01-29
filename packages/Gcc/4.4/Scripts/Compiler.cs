@@ -23,19 +23,9 @@ namespace Gcc
             this.binPath = toolChainInstance.BinPath(target);
 
             this.includeFolders.Add("/usr/include");
-            string gccIncludeFolder;
-            string gccIncludeFixedFolder;
-            if (Opus.Core.OSUtilities.Is64BitHosting)
-            {
-                gccIncludeFolder = "/usr/lib/gcc/x86_64-linux-gnu/4.4/include";
-                gccIncludeFixedFolder = "/usr/lib/gcc/x86_64-linux-gnu/4.4/include-fixed";
-            }
-            else
-            {
-                gccIncludeFolder = "/usr/lib/gcc/i486-linux-gnu/4.4/include";
-                gccIncludeFixedFolder = "/usr/lib/gcc/i486-linux-gnu/4.4/include-fixed";
-            }
-            
+            string gccIncludeFolder = System.String.Format("/usr/lib/gcc/{0}/4.4/include", this.PlatformSubPath);
+            string gccIncludeFixedFolder = System.String.Format("/usr/lib/gcc/{0}/4.4/include-fixed", this.PlatformSubPath);
+
             if (!System.IO.Directory.Exists(gccIncludeFolder))
             {
                 throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFolder), false);

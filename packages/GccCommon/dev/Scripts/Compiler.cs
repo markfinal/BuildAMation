@@ -16,5 +16,23 @@ namespace GccCommon
         }
 
         public abstract Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target);
+
+        public string PlatformSubPath
+        {
+            get
+            {
+                string subPath;
+                if (Opus.Core.OSUtilities.Is64BitHosting)
+                {
+                    subPath = "x86_64-linux-gnu";
+                }
+                else
+                {
+                    subPath = "i486-linux-gnu";
+                }
+
+                return subPath;
+            }
+        }
     }
 }
