@@ -1,3 +1,5 @@
+29-Jan-2011 Fixed compilation of Mingw-4.5.0 package.
+
 26-Jan-2011 Fixing unused variable warnings compiling Opus in MonoDevelop
 
 23-Jan-2011 Issue #6. Added command line configuration argument to Qt; -Qt.installpath=<path> to override Opus searching for the Qt install directory.

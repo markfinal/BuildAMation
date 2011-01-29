@@ -14,7 +14,7 @@ namespace Mingw
 
         public CCompiler(Opus.Core.Target target)
         {
-            if ((target.Platform != "win32") && (target.Platform != "win64"))
+            if (!Opus.Core.OSUtilities.IsWindows(target.Platform))
             {
                 throw new Opus.Core.Exception("Mingw compiler is only supported under win32 and win64 platforms");
             }
