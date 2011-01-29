@@ -19,7 +19,7 @@ namespace MakeFileBuilder
 
     public sealed class MakeFileBuilderRecipe
     {
-        private System.Collections.Generic.Dictionary<string, string> OutputFiles
+        private Opus.Core.OutputPaths OutputPaths
         {
             get;
             set;
@@ -102,8 +102,7 @@ namespace MakeFileBuilder
             this.TopLevelMakeFilePath = topLevelMakeFilePath;
             this.Includes = new Opus.Core.StringArray();
 
-            Opus.Core.IOutputPaths outputFiles = node.Module.Options as Opus.Core.IOutputPaths;
-            this.OutputFiles = outputFiles.GetOutputPaths();
+            this.OutputPaths = node.Module.Options.OutputPaths;
             this.InputFiles = inputFiles;
             this.Rules = rules;
 
@@ -129,7 +128,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.Log.MessageAll("Output files:");
-            foreach (System.Collections.Generic.KeyValuePair<string, string> outputFile in this.OutputFiles)
+            foreach (System.Collections.Generic.KeyValuePair<object, string> outputFile in this.OutputPaths)
             {
                 Opus.Core.Log.MessageAll("{0} = {1}", outputFile.Key, outputFile.Value);
             }
@@ -177,7 +176,7 @@ namespace MakeFileBuilder
             }
 
             writer.WriteLine("# Outputs as variables");
-            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputFiles[mainOutputFile], this.TopLevelMakeFilePath, "$(CURDIR)");
+            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[mainOutputFile], this.TopLevelMakeFilePath, "$(CURDIR)");
             string variableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFile);
             writer.WriteLine("{0} := {1}", variableName, relativeOutputPath);
             if (null != this.DirectoriesToCreate)
@@ -192,7 +191,7 @@ namespace MakeFileBuilder
 
             if (null != secondaryOutputFile)
             {
-                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputFiles[secondaryOutputFile], this.TopLevelMakeFilePath, "$(CURDIR)");
+                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[secondaryOutputFile], this.TopLevelMakeFilePath, "$(CURDIR)");
                 if (altRelativeOutputPath != relativeOutputPath)
                 {
                     string altVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, secondaryOutputFile);
@@ -236,13 +235,13 @@ namespace MakeFileBuilder
             }
             else
             {
-                writer.WriteLine("{0}: {1}", this.OutputFiles[mainOutputFile], prerequisites);
+                writer.WriteLine("{0}: {1}", this.OutputPaths[mainOutputFile], prerequisites);
             }
             foreach (string rule in this.Rules)
             {
                 string refactoredRule = rule;
 
-                refactoredRule = refactoredRule.Replace(this.OutputFiles[mainOutputFile], "$@");
+                refactoredRule = refactoredRule.Replace(this.OutputPaths[mainOutputFile], "$@");
                 refactoredRule = refactoredRule.Replace(this.InputFiles[0], "$<");
 
                 writer.WriteLine("\t{0}", refactoredRule);

@@ -5,22 +5,11 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport, Opus.Core.IOutputPaths
+    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport//, Opus.Core.IOutputPaths
     {
         private enum EOutputFile
         {
-            LibraryFile = 0
-        }
-
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
+            LibraryFile = (1 << 0)
         }
 
         private void SetDelegates(Opus.Core.Target target)
@@ -55,9 +44,9 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.LibraryFile))
+                if (this.OutputPaths.Has(EOutputFile.LibraryFile))
                 {
-                    return this.outputFileMap[EOutputFile.LibraryFile];
+                    return this.OutputPaths[EOutputFile.LibraryFile];
                 }
                 else
                 {
@@ -69,11 +58,11 @@ namespace VisualCCommon
             {
                 if (value != null)
                 {
-                    this.outputFileMap[EOutputFile.LibraryFile] = value;
+                    this.OutputPaths[EOutputFile.LibraryFile] = value;
                 }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.LibraryFile))
+                else if (this.OutputPaths.Has(EOutputFile.LibraryFile))
                 {
-                    this.outputFileMap.Remove(EOutputFile.LibraryFile);
+                    this.OutputPaths.Remove(EOutputFile.LibraryFile);
                 }
             }
         }

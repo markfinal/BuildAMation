@@ -105,8 +105,7 @@ namespace NativeBuilder
             }
 
             Opus.Core.StringArray inputFiles = dependentObjectFiles;
-            Opus.Core.IOutputPaths outputPaths = staticLibrary.Options as Opus.Core.IOutputPaths;
-            Opus.Core.StringArray outputFiles = new Opus.Core.StringArray(outputPaths.GetOutputPaths().Values);
+            Opus.Core.StringArray outputFiles = staticLibrary.Options.OutputPaths.Paths;
             if (!RequiresBuilding(outputFiles, inputFiles))
             {
                 Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

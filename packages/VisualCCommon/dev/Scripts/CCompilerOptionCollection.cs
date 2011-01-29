@@ -6,24 +6,13 @@
 namespace VisualCCommon
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport, Opus.Core.IOutputPaths
+    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport//, Opus.Core.IOutputPaths
     {
         private enum EOutputFile
         {
-            ObjectFile = 0,
-            PDBFile,
-            PreprocessedFile,
-        }
-
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
+            ObjectFile       = (1 << 0),
+            PDBFile          = (1 << 1),
+            PreprocessedFile = (1 << 2),
         }
 
         private void SetDelegates(Opus.Core.Target target)
@@ -127,9 +116,9 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.ObjectFile))
+                if (this.OutputPaths.Has(EOutputFile.ObjectFile))
                 {
-                    return this.outputFileMap[EOutputFile.ObjectFile];
+                    return this.OutputPaths[EOutputFile.ObjectFile];
                 }
                 else
                 {
@@ -141,11 +130,11 @@ namespace VisualCCommon
             {
                 if (value != null)
                 {
-                    this.outputFileMap[EOutputFile.ObjectFile] = value;
+                    this.OutputPaths[EOutputFile.ObjectFile] = value;
                 }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.ObjectFile))
+                else if (this.OutputPaths.Has(EOutputFile.ObjectFile))
                 {
-                    this.outputFileMap.Remove(EOutputFile.ObjectFile);
+                    this.OutputPaths.Remove(EOutputFile.ObjectFile);
                 }
             }
         }
@@ -154,9 +143,9 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.PreprocessedFile))
+                if (this.OutputPaths.Has(EOutputFile.PreprocessedFile))
                 {
-                    return this.outputFileMap[EOutputFile.PreprocessedFile];
+                    return this.OutputPaths[EOutputFile.PreprocessedFile];
                 }
                 else
                 {
@@ -168,11 +157,11 @@ namespace VisualCCommon
             {
                 if (value != null)
                 {
-                    this.outputFileMap[EOutputFile.PreprocessedFile] = value;
+                    this.OutputPaths[EOutputFile.PreprocessedFile] = value;
                 }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.PreprocessedFile))
+                else if (this.OutputPaths.Has(EOutputFile.PreprocessedFile))
                 {
-                    this.outputFileMap.Remove(EOutputFile.PreprocessedFile);
+                    this.OutputPaths.Remove(EOutputFile.PreprocessedFile);
                 }
             }
         }
@@ -181,9 +170,9 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.PDBFile))
+                if (this.OutputPaths.Has(EOutputFile.PDBFile))
                 {
-                    return this.outputFileMap[EOutputFile.PDBFile];
+                    return this.OutputPaths[EOutputFile.PDBFile];
                 }
                 else
                 {
@@ -195,11 +184,11 @@ namespace VisualCCommon
             {
                 if (value != null)
                 {
-                    this.outputFileMap[EOutputFile.PDBFile] = value;
+                    this.OutputPaths[EOutputFile.PDBFile] = value;
                 }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.PDBFile))
+                else if (this.OutputPaths.Has(EOutputFile.PDBFile))
                 {
-                    this.outputFileMap.Remove(EOutputFile.PDBFile);
+                    this.OutputPaths.Remove(EOutputFile.PDBFile);
                 }
             }
         }
