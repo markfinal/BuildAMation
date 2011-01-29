@@ -13,10 +13,10 @@ namespace Opus.Core
             {
                 if (State.RunningMono)
                 {
-					// TODO: System.Environment.GetEnvironmentVariable("HOSTTYPE") returns null instead of something like "x86_64"
-					// TODO: this is a hack and a big assumption that you're not running a 32-bit OS on a 64-bit processor
-					bool is64Bit = (8 == System.IntPtr.Size);
-					return is64Bit;
+                    // TODO: System.Environment.GetEnvironmentVariable("HOSTTYPE") returns null instead of something like "x86_64"
+                    // TODO: this is a hack and a big assumption that you're not running a 32-bit OS on a 64-bit processor
+                    bool is64Bit = (8 == System.IntPtr.Size);
+                    return is64Bit;
                 }
                 else
                 {
