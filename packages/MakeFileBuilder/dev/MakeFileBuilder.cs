@@ -128,7 +128,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.Log.MessageAll("Output files:");
-            foreach (System.Collections.Generic.KeyValuePair<object, string> outputFile in this.OutputPaths)
+            foreach (System.Collections.Generic.KeyValuePair<Opus.Core.FlagsBase, string> outputFile in this.OutputPaths)
             {
                 Opus.Core.Log.MessageAll("{0} = {1}", outputFile.Key, outputFile.Value);
             }
@@ -144,14 +144,14 @@ namespace MakeFileBuilder
             }
         }
 
-        public void Write(System.IO.TextWriter writer, string mainOutputFile)
+        public void Write(System.IO.TextWriter writer, Opus.Core.FlagsBase mainOutputFileFlag)
         {
-            Write(writer, mainOutputFile, null);
+            Write(writer, mainOutputFileFlag, null);
         }
 
-        public void Write(System.IO.TextWriter writer, string mainOutputFile, string secondaryOutputFile)
+        public void Write(System.IO.TextWriter writer, Opus.Core.FlagsBase mainOutputFileFlag, Opus.Core.FlagsBase secondaryOutputFileFlag)
         {
-            this.MainVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFile);
+            this.MainVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag.ToString());
 
             if (this.Includes.Count > 0)
             {
@@ -176,8 +176,8 @@ namespace MakeFileBuilder
             }
 
             writer.WriteLine("# Outputs as variables");
-            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[mainOutputFile], this.TopLevelMakeFilePath, "$(CURDIR)");
-            string variableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFile);
+            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[mainOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
+            string variableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag);
             writer.WriteLine("{0} := {1}", variableName, relativeOutputPath);
             if (null != this.DirectoriesToCreate)
             {
@@ -189,12 +189,12 @@ namespace MakeFileBuilder
             }
             writer.WriteLine("");
 
-            if (null != secondaryOutputFile)
+            if (null != secondaryOutputFileFlag)
             {
-                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[secondaryOutputFile], this.TopLevelMakeFilePath, "$(CURDIR)");
+                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[secondaryOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
                 if (altRelativeOutputPath != relativeOutputPath)
                 {
-                    string altVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, secondaryOutputFile);
+                    string altVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, secondaryOutputFileFlag.ToString());
                     writer.WriteLine("{0} := {1}", altVariableName, altRelativeOutputPath);
                     writer.WriteLine("# add dependency on main output");
                     writer.WriteLine("$({0}): $({1})", altVariableName, this.MainVariableName);
@@ -235,13 +235,13 @@ namespace MakeFileBuilder
             }
             else
             {
-                writer.WriteLine("{0}: {1}", this.OutputPaths[mainOutputFile], prerequisites);
+                writer.WriteLine("{0}: {1}", this.OutputPaths[mainOutputFileFlag], prerequisites);
             }
             foreach (string rule in this.Rules)
             {
                 string refactoredRule = rule;
 
-                refactoredRule = refactoredRule.Replace(this.OutputPaths[mainOutputFile], "$@");
+                refactoredRule = refactoredRule.Replace(this.OutputPaths[mainOutputFileFlag], "$@");
                 refactoredRule = refactoredRule.Replace(this.InputFiles[0], "$<");
 
                 writer.WriteLine("\t{0}", refactoredRule);

@@ -5,26 +5,17 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, Opus.Core.IOutputPaths
+    public sealed class CompilerOutputPathFlag : C.CompilerOutputPathFlag
     {
-        private enum EOutputFile
+        private CompilerOutputPathFlag(string name)
+            : base(name)
         {
-            ObjectFile = 0,
-            PreprocessedFile
         }
+    }
 
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
-        }
-
+    // Not sealed since the C++ compiler inherits from it
+    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common compiler options
@@ -95,26 +86,12 @@ namespace MingwCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.ObjectFile))
-                {
-                    return this.outputFileMap[EOutputFile.ObjectFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.ObjectFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.ObjectFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.ObjectFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.ObjectFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.ObjectFile] = value;
             }
         }
 
@@ -122,26 +99,12 @@ namespace MingwCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.PreprocessedFile))
-                {
-                    return this.outputFileMap[EOutputFile.PreprocessedFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.PreprocessedFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.PreprocessedFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.PreprocessedFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile] = value;
             }
         }
 

@@ -5,26 +5,16 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, Opus.Core.IOutputPaths
+    public sealed class LinkerOutputPathFlag : C.LinkerOutputPathFlag
     {
-        private enum EOutputFile
+        private LinkerOutputPathFlag(string name)
+            : base(name)
         {
-            OutputFile = 0,
-            StaticImportLibraryFile,
-            MapFile
         }
+    }
 
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
-        }
-
+    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common linker options
@@ -77,25 +67,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.OutputFile))
-                {
-                    return this.outputFileMap[EOutputFile.OutputFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.Executable];
             }
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.OutputFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.OutputFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.OutputFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.Executable] = value;
             }
         }
 
@@ -103,25 +79,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.StaticImportLibraryFile))
-                {
-                    return this.outputFileMap[EOutputFile.StaticImportLibraryFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary];
             }
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.StaticImportLibraryFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.StaticImportLibraryFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.StaticImportLibraryFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary] = value;
             }
         }
 
@@ -129,25 +91,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.MapFile))
-                {
-                    return this.outputFileMap[EOutputFile.MapFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.MapFile];
             }
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.MapFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.MapFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.MapFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.MapFile] = value;
             }
         }
 

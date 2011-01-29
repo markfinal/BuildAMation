@@ -5,7 +5,18 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
-    public partial class OptionCollection : Opus.Core.BaseOptionCollection, IOptions, CommandLineProcessor.ICommandLineSupport, Opus.Core.IOutputPaths
+    public sealed class CSharpOutputFileFlags : Opus.Core.FlagsBase
+    {
+        public static readonly CSharpOutputFileFlags AssemblyFile = new CSharpOutputFileFlags("AssemblyFile");
+        public static readonly CSharpOutputFileFlags ProgramDatabaseFile = new CSharpOutputFileFlags("ProgramDatabaseFile");
+
+        private CSharpOutputFileFlags(string name)
+            : base(name)
+        {
+        }
+    }
+
+    public partial class OptionCollection : Opus.Core.BaseOptionCollection, IOptions, CommandLineProcessor.ICommandLineSupport
     {
         private void InitializeDefaults(Opus.Core.DependencyNode node)
         {
@@ -82,25 +93,11 @@ namespace CSharp
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.OutputFile))
-                {
-                    return this.outputFileMap[EOutputFile.OutputFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CSharpOutputFileFlags.AssemblyFile];
             }
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.OutputFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.OutputFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.OutputFile);
-                }
+                this.OutputPaths[CSharpOutputFileFlags.AssemblyFile] = value;
             }
         }
 
@@ -108,25 +105,11 @@ namespace CSharp
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.ProgramDatabaseFile))
-                {
-                    return this.outputFileMap[EOutputFile.ProgramDatabaseFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CSharpOutputFileFlags.ProgramDatabaseFile];
             }
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.ProgramDatabaseFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.ProgramDatabaseFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.ProgramDatabaseFile);
-                }
+                this.OutputPaths[CSharpOutputFileFlags.ProgramDatabaseFile] = value;
             }
         }
 
@@ -134,23 +117,6 @@ namespace CSharp
         {
             this.OutputName = node.ModuleName;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory("bin");
-        }
-
-        private enum EOutputFile
-        {
-            OutputFile = 0,
-            ProgramDatabaseFile
-        }
-
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
         }
 
         protected static void TargetSetHandler(object sender, Opus.Core.Option option)

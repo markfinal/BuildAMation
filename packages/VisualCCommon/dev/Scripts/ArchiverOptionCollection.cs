@@ -5,13 +5,16 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport//, Opus.Core.IOutputPaths
+    public sealed class ArchiverOutputPathFlag : C.ArchiverOutputPathFlag
     {
-        private enum EOutputFile
+        private ArchiverOutputPathFlag(string name)
+            : base(name)
         {
-            LibraryFile = (1 << 0)
         }
+    }
 
+    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common archiver options
@@ -44,26 +47,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.LibraryFile))
-                {
-                    return this.OutputPaths[EOutputFile.LibraryFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[ArchiverOutputPathFlag.LibraryFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.LibraryFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.LibraryFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.LibraryFile);
-                }
+                this.OutputPaths[ArchiverOutputPathFlag.LibraryFile] = value;
             }
         }
 

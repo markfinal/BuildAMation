@@ -5,16 +5,18 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions, VisualStudioProcessor.IVisualStudioSupport//, Opus.Core.IOutputPaths
+    public sealed class LinkerOutputPathFlag : C.LinkerOutputPathFlag
     {
-        public enum EOutputFile
-        {
-            OutputFile              = (1<<0),
-            StaticImportLibraryFile = (1<<1),
-            MapFile                 = (1<<2),
-            ProgramDatabaseFile     = (1<<3)
-        }
+        public static readonly LinkerOutputPathFlag ProgramDatabaseFile = new LinkerOutputPathFlag("ProgramDatabaseFile");
 
+        private LinkerOutputPathFlag(string name)
+            : base(name)
+        {
+        }
+    }
+
+    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions, VisualStudioProcessor.IVisualStudioSupport
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common linker options
@@ -56,25 +58,11 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.OutputFile))
-                {
-                    return this.OutputPaths[EOutputFile.OutputFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.Executable];
             }
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.OutputFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.OutputFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.OutputFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.Executable] = value;
             }
         }
 
@@ -82,26 +70,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.StaticImportLibraryFile))
-                {
-                    return this.OutputPaths[EOutputFile.StaticImportLibraryFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.StaticImportLibraryFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.StaticImportLibraryFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.StaticImportLibraryFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary] = value;
             }
         }
 
@@ -109,25 +83,11 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.MapFile))
-                {
-                    return this.OutputPaths[EOutputFile.MapFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.MapFile];
             }
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.MapFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.MapFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.MapFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.MapFile] = value;
             }
         }
 
@@ -135,26 +95,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.ProgramDatabaseFile))
-                {
-                    return this.OutputPaths[EOutputFile.ProgramDatabaseFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[LinkerOutputPathFlag.ProgramDatabaseFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.ProgramDatabaseFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.ProgramDatabaseFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.ProgramDatabaseFile);
-                }
+                this.OutputPaths[LinkerOutputPathFlag.ProgramDatabaseFile] = value;
             }
         }
 

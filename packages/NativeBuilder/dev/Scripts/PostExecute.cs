@@ -31,6 +31,7 @@ namespace NativeBuilder
                     Opus.Core.Log.MessageAll("\t\tDependee node is {0}", dependees[0].UniqueModuleName);
                 }
 
+#if false
                 System.Type moduleType = node.Module.GetType();
                 var copyToParentAttributes = moduleType.GetCustomAttributes(typeof(Opus.Core.CopyToParentAttribute), false);
 
@@ -64,6 +65,7 @@ namespace NativeBuilder
                 // a) their output directory
                 // b) the list of files in that directory
                 // I think we can rule out multiple output directoriess
+#endif
             }
         }
     }

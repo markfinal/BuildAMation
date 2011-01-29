@@ -7,34 +7,32 @@ namespace Opus.Core
 {
     public sealed class OutputPaths : System.Collections.IEnumerable
     {
-        private System.Collections.Generic.Dictionary<object, string> fileDictionary = new System.Collections.Generic.Dictionary<object, string>();
+        private System.Collections.Generic.Dictionary<FlagsBase, string> fileDictionary = new System.Collections.Generic.Dictionary<FlagsBase, string>();
 
-        private void CheckKeyType(object key)
-        {
-            if (!key.GetType().IsEnum)
-            {
-                throw new Exception(System.String.Format("OutputFile key '{0}' is not of enum type", key.ToString()), false);
-            }
-        }
-
-        public void Add(object key, string pathName)
-        {
-            this.CheckKeyType(key);
-            this.fileDictionary[key] = pathName;
-        }
-
-        public string this[object key]
+        public string this[FlagsBase key]
         {
             get
             {
-                this.CheckKeyType(key);
-                return this.fileDictionary[key];
+                if (this.Has(key))
+                {
+                    return this.fileDictionary[key];
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             set
             {
-                this.CheckKeyType(key);
-                this.fileDictionary[key] = value;
+                if (value != null)
+                {
+                    this.fileDictionary[key] = value;
+                }
+                else if (this.Has(key))
+                {
+                    this.fileDictionary.Remove(key);
+                }
             }
         }
 
@@ -43,17 +41,10 @@ namespace Opus.Core
             return this.fileDictionary.GetEnumerator();
         }
 
-        public bool Has(object key)
+        public bool Has(FlagsBase key)
         {
-            this.CheckKeyType(key);
             bool containsKey = this.fileDictionary.ContainsKey(key);
             return containsKey;
-        }
-
-        public void Remove(object key)
-        {
-            this.CheckKeyType(key);
-            this.fileDictionary.Remove(key);
         }
 
         public StringArray Paths

@@ -5,16 +5,19 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport//, Opus.Core.IOutputPaths
+    public class CompilerOutputPathFlag : C.CompilerOutputPathFlag
     {
-        private enum EOutputFile
-        {
-            ObjectFile       = (1 << 0),
-            PDBFile          = (1 << 1),
-            PreprocessedFile = (1 << 2),
-        }
+        public static readonly CompilerOutputPathFlag SharedProgramDatabaseFile = new CompilerOutputPathFlag("SharedProgramDatabaseFile");
 
+        private CompilerOutputPathFlag(string name)
+            : base(name)
+        {
+        }
+    }
+
+    // Not sealed since the C++ compiler inherits from it
+    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common compiler options
@@ -116,26 +119,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.ObjectFile))
-                {
-                    return this.OutputPaths[EOutputFile.ObjectFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.ObjectFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.ObjectFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.ObjectFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.ObjectFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.ObjectFile] = value;
             }
         }
 
@@ -143,26 +132,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.PreprocessedFile))
-                {
-                    return this.OutputPaths[EOutputFile.PreprocessedFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.PreprocessedFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.PreprocessedFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.PreprocessedFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile] = value;
             }
         }
 
@@ -170,26 +145,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.OutputPaths.Has(EOutputFile.PDBFile))
-                {
-                    return this.OutputPaths[EOutputFile.PDBFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.SharedProgramDatabaseFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.OutputPaths[EOutputFile.PDBFile] = value;
-                }
-                else if (this.OutputPaths.Has(EOutputFile.PDBFile))
-                {
-                    this.OutputPaths.Remove(EOutputFile.PDBFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.SharedProgramDatabaseFile] = value;
             }
         }
 

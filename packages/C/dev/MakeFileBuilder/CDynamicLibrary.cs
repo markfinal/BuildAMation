@@ -99,7 +99,7 @@ namespace MakeFileBuilder
             string makeFileVariableName = null;
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
             {
-                recipe.Write(makeFileWriter, "OutputFile", "StaticImportLibraryFile");
+                recipe.Write(makeFileWriter, C.LinkerOutputPathFlag.Executable, C.LinkerOutputPathFlag.StaticImportLibrary);
                 makeFileTargetName = recipe.TargetName;
                 makeFileVariableName = recipe.VariableName;
             }
