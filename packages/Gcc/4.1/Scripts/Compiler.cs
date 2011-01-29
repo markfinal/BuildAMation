@@ -16,15 +16,37 @@ namespace Gcc
         {
             if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
             {
-                throw new Opus.Core.Exception("Gcc compiler is only supported under unix32 and unix64 platforms");
+                throw new Opus.Core.Exception("Gcc compiler is only supported under unix32 and unix64 platforms", false);
             }
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
 
             this.includeFolders.Add("/usr/include");
-            this.includeFolders.Add("/usr/lib/gcc/i486-linux-gnu/4.1/include");
-            this.includeFolders.Add("/usr/lib/gcc/i486-linux-gnu/4.1/include-fixed");
+            string gccIncludeFolder;
+            string gccIncludeFixedFolder;
+            if (Opus.Core.OSUtilities.Is64BitHosting)
+            {
+                gccIncludeFolder = "/usr/lib/gcc/x86_64-linux-gnu/4.1/include";
+                gccIncludeFixedFolder = "/usr/lib/gcc/x86_64-linux-gnu/4.1/include-fixed";
+            }
+            else
+            {
+                gccIncludeFolder = "/usr/lib/gcc/i486-linux-gnu/4.1/include";
+                gccIncludeFixedFolder = "/usr/lib/gcc/i486-linux-gnu/4.1/include-fixed";
+            }
+            
+            if (!System.IO.Directory.Exists(gccIncludeFolder))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFolder), false);
+            }
+            this.includeFolders.Add(gccIncludeFolder);
+            
+            if (!System.IO.Directory.Exists(gccIncludeFolder))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+            }
+            this.includeFolders.Add(gccIncludeFixedFolder);
         }
 
         public override string Executable(Opus.Core.Target target)
