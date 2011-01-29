@@ -9,6 +9,17 @@ namespace Opus.Core
     {
         protected System.Collections.Generic.Dictionary<string, Option> table = new System.Collections.Generic.Dictionary<string, Option>();
 
+        public OutputPaths OutputPaths
+        {
+            get;
+            private set;
+        }
+
+        public BaseOptionCollection()
+        {
+            this.OutputPaths = new OutputPaths();
+        }
+
         public Option this[string key]
         {
             get

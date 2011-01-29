@@ -7,7 +7,7 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public void PostExecute(System.Collections.Generic.List<object> dataList)
+        public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
         {
             Opus.Core.Log.DebugMessage("PostExecute for VSSolutionBuilder");
 

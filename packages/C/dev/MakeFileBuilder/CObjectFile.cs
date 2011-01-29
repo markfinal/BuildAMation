@@ -27,8 +27,6 @@ namespace MakeFileBuilder
                 executable = compilerTool.Executable(target);
             }
 
-            Opus.Core.IOutputPaths ioutputFiles = objectFile.Options as Opus.Core.IOutputPaths;
-
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
@@ -58,7 +56,7 @@ namespace MakeFileBuilder
             string makeFileVariableName = null;
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
             {
-                recipe.Write(makeFileWriter, "ObjectFile");
+                recipe.Write(makeFileWriter, C.CompilerOutputPathFlag.ObjectFile);
                 makeFileTargetName = recipe.TargetName;
                 makeFileVariableName = recipe.VariableName;
             }

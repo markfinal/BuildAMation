@@ -16,11 +16,10 @@ namespace NativeBuilder
             }
 
             C.CompilerOptionCollection compilerOptions = objectFile.Options as C.CompilerOptionCollection;
-            Opus.Core.IOutputPaths outputPaths = objectFile.Options as Opus.Core.IOutputPaths;
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);
-            Opus.Core.StringArray outputFiles = new Opus.Core.StringArray(outputPaths.GetOutputPaths().Values);
+            Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
             if (!RequiresBuilding(outputFiles, inputFiles))
             {
                 Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

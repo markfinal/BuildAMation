@@ -5,27 +5,19 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport, Opus.Core.IOutputPaths
+    public class CompilerOutputPathFlag : C.CompilerOutputPathFlag
     {
-        private enum EOutputFile
-        {
-            ObjectFile = 0,
-            PDBFile,
-            PreprocessedFile,
-        }
+        public static readonly CompilerOutputPathFlag SharedProgramDatabaseFile = new CompilerOutputPathFlag("SharedProgramDatabaseFile");
 
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
+        private CompilerOutputPathFlag(string name)
+            : base(name)
         {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
         }
+    }
 
+    // Not sealed since the C++ compiler inherits from it
+    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common compiler options
@@ -127,26 +119,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.ObjectFile))
-                {
-                    return this.outputFileMap[EOutputFile.ObjectFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.ObjectFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.ObjectFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.ObjectFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.ObjectFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.ObjectFile] = value;
             }
         }
 
@@ -154,26 +132,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.PreprocessedFile))
-                {
-                    return this.outputFileMap[EOutputFile.PreprocessedFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.PreprocessedFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.PreprocessedFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.PreprocessedFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile] = value;
             }
         }
 
@@ -181,26 +145,12 @@ namespace VisualCCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.PDBFile))
-                {
-                    return this.outputFileMap[EOutputFile.PDBFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[CompilerOutputPathFlag.SharedProgramDatabaseFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.PDBFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.PDBFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.PDBFile);
-                }
+                this.OutputPaths[CompilerOutputPathFlag.SharedProgramDatabaseFile] = value;
             }
         }
 

@@ -5,24 +5,16 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions, Opus.Core.IOutputPaths
+    public sealed class ArchiverOutputPathFlag : C.ArchiverOutputPathFlag
     {
-        private enum EOutputFile
+        private ArchiverOutputPathFlag(string name)
+            : base(name)
         {
-            LibraryFile = 0
         }
+    }
 
-        private System.Collections.Generic.Dictionary<EOutputFile, string> outputFileMap = new System.Collections.Generic.Dictionary<EOutputFile, string>();
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> pathMap = new System.Collections.Generic.Dictionary<string, string>();
-            foreach (System.Collections.Generic.KeyValuePair<EOutputFile, string> file in this.outputFileMap)
-            {
-                pathMap.Add(file.Key.ToString(), file.Value);
-            }
-            return pathMap;
-        }
-
+    public partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
+    {
         private void SetDelegates(Opus.Core.Target target)
         {
             // common archiver options
@@ -58,26 +50,12 @@ namespace MingwCommon
         {
             get
             {
-                if (this.outputFileMap.ContainsKey(EOutputFile.LibraryFile))
-                {
-                    return this.outputFileMap[EOutputFile.LibraryFile];
-                }
-                else
-                {
-                    return null;
-                }
+                return this.OutputPaths[ArchiverOutputPathFlag.LibraryFile];
             }
 
             set
             {
-                if (value != null)
-                {
-                    this.outputFileMap[EOutputFile.LibraryFile] = value;
-                }
-                else if (this.outputFileMap.ContainsKey(EOutputFile.LibraryFile))
-                {
-                    this.outputFileMap.Remove(EOutputFile.LibraryFile);
-                }
+                this.OutputPaths[ArchiverOutputPathFlag.LibraryFile] = value;
             }
         }
 

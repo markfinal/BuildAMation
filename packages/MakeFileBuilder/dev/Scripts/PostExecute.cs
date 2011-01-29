@@ -35,14 +35,15 @@ namespace MakeFileBuilder
             }
         }
 
-        public void PostExecute(System.Collections.Generic.List<object> dataList)
+        public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
         {
             Opus.Core.Log.DebugMessage("PostExecute for MakeFiles");
 
             string targetList = null;
             UniquePathCollection environmentPaths = new UniquePathCollection();
-            foreach (MakeFileData data in dataList)
+            foreach (Opus.Core.DependencyNode node in nodeCollection)
             {
+                MakeFileData data = node.Data as MakeFileData;
                 if (data != null)
                 {
                     if (data.Target != null)
@@ -91,8 +92,9 @@ namespace MakeFileBuilder
                     makeFileWriter.WriteLine("");
 
                     makeFileWriter.WriteLine("# include all sub-makefiles");
-                    foreach (MakeFileData data in dataList)
+                    foreach (Opus.Core.DependencyNode node in nodeCollection)
                     {
+                        MakeFileData data = node.Data as MakeFileData;
                         if (data != null)
                         {
                             Opus.Core.Log.DebugMessage("\t'{0}' - target '{1}'", data.File, data.Target);

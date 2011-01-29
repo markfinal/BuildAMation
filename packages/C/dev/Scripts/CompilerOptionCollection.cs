@@ -5,6 +5,17 @@
 // <author>Mark Final</author>
 namespace C
 {
+    public class CompilerOutputPathFlag : Opus.Core.FlagsBase
+    {
+        public static readonly CompilerOutputPathFlag ObjectFile = new CompilerOutputPathFlag("ObjectFile");
+        public static readonly CompilerOutputPathFlag PreprocessedFile = new CompilerOutputPathFlag("PreprocessedFile");
+
+        protected CompilerOutputPathFlag(string name)
+            : base(name)
+        {
+        }
+    }
+
     public abstract class CompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         // TODO:  no reason why this can't be a static utility function

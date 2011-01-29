@@ -5,11 +5,28 @@
 // <author>Mark Final</author>
 namespace Qt
 {
-    public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, Opus.Core.IOutputPaths
+    public sealed class MocOutputPathFlag : Opus.Core.FlagsBase
+    {
+        public static MocOutputPathFlag MocGeneratedSourceFile = new MocOutputPathFlag("MocGeneratedSourceFile");
+
+        private MocOutputPathFlag(string name)
+            : base(name)
+        {
+        }
+    }
+
+    public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         public MocOptionCollection()
             : base()
         {
+        }
+
+        public MocOptionCollection(Opus.Core.DependencyNode node)
+        {
+            this.SetDefaults(node);
+            this.SetNodeOwnership(node);
+            this.SetDelegates(node);
         }
 
         private void SetDefaults(Opus.Core.DependencyNode node)
@@ -51,11 +68,11 @@ namespace Qt
             this["DoNotDisplayWarnings"].PrivateData = new MocPrivateData(DoNotDisplayWarningsCommandLine);
         }
 
-        public MocOptionCollection(Opus.Core.DependencyNode node)
+        private static void MocOutputPathSetHandler(object sender, Opus.Core.Option option)
         {
-            this.SetDefaults(node);
-            this.SetNodeOwnership(node);
-            this.SetDelegates(node);
+            MocOptionCollection options = sender as MocOptionCollection;
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            options.OutputPaths[MocOutputPathFlag.MocGeneratedSourceFile] = stringOption.Value;
         }
 
         private static void MocOutputPathCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -116,16 +133,6 @@ namespace Qt
             }
 
             return dirsToCreate;
-        }
-
-        System.Collections.Generic.Dictionary<string, string> Opus.Core.IOutputPaths.GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> map = new System.Collections.Generic.Dictionary<string, string>();
-            if (null != this.MocOutputPath)
-            {
-                map.Add("OutputMocSourceFile", this.MocOutputPath);
-            }
-            return map;
         }
     }
 }

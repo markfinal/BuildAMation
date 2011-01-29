@@ -1,3 +1,5 @@
+29-Jan-2011 Removed Opus.Core.IOutputPaths. Instead, Opus.Core.BaseOptionCollections has a property to assign new OutputPaths via a dictionary mechanism of a key (to identify different files) and a string (for the pathname of said file). The key must be derived from Opus.Core.FlagsBase, which is a class that simulates a derivable enum of values that are power of 2 (bitfield flags). OptionCollections are now simpler to implement.
+
 29-Jan-2011 Fixed compilation of Mingw-4.5.0 package.
 
 26-Jan-2011 Fixing unused variable warnings compiling Opus in MonoDevelop

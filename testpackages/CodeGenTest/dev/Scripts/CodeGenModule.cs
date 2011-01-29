@@ -23,25 +23,65 @@ namespace CodeGenTest
         }
     }
 
-    public partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, Opus.Core.IOutputPaths
+    public sealed class CodeGenOutputFileFlags : Opus.Core.FlagsBase
+    {
+        public static CodeGenOutputFileFlags GeneratedSourceFile = new CodeGenOutputFileFlags("GeneratedSourceFile");
+
+        private CodeGenOutputFileFlags(string name)
+            : base(name)
+        {
+        }
+    }
+
+    public sealed partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         public CodeGenOptions(Opus.Core.DependencyNode node)
             : base()
         {
+            this.SetDefaults(node);
+            this.SetDelegates(node);
+        }
+
+        private void SetGeneratedFilePath()
+        {
+            if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
+            {
+                string outputPath = System.IO.Path.Combine(this.OutputSourceDirectory, this.OutputName) + ".c";
+                this.OutputPaths[CodeGenOutputFileFlags.GeneratedSourceFile] = outputPath;
+            }
+        }
+
+        private void SetDefaults(Opus.Core.DependencyNode node)
+        {
             this.OutputSourceDirectory = node.GetTargettedModuleBuildDirectory("src");
             this.OutputName = "function";
+        }
 
+        private void SetDelegates(Opus.Core.DependencyNode node)
+        {
             this["OutputSourceDirectory"].PrivateData = new PrivateData(OutputSourceDirectoryCommandLine);
             this["OutputName"].PrivateData = new PrivateData(OutputNameCommandLine);
         }
 
-        protected static void OutputSourceDirectoryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputSourceDirectorySetHandler(object sender, Opus.Core.Option option)
+        {
+            CodeGenOptions options = sender as CodeGenOptions;
+            options.SetGeneratedFilePath();
+        }
+
+        private static void OutputSourceDirectoryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.AppendFormat("{0} ", stringOption.Value);
         }
 
-        protected static void OutputNameCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputNameSetHandler(object sender, Opus.Core.Option option)
+        {
+            CodeGenOptions options = sender as CodeGenOptions;
+            options.SetGeneratedFilePath();
+        }
+
+        private static void OutputNameCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.AppendFormat("{0} ", stringOption.Value);
@@ -62,16 +102,6 @@ namespace CodeGenTest
             }
 
             return dirsToCreate;
-        }
-
-        public System.Collections.Generic.Dictionary<string, string> GetOutputPaths()
-        {
-            System.Collections.Generic.Dictionary<string, string> map = new System.Collections.Generic.Dictionary<string, string>();
-            if (this.OutputSourceDirectory != null && this.OutputName != null)
-            {
-                map.Add("OutputSourceFile", System.IO.Path.Combine(this.OutputSourceDirectory, this.OutputName) + ".c");
-            }
-            return map;
         }
     }
 

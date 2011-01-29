@@ -93,7 +93,7 @@ namespace MakeFileBuilder
             string makeFileVariableName = null;
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
             {
-                recipe.Write(makeFileWriter, "LibraryFile");
+                recipe.Write(makeFileWriter, C.ArchiverOutputPathFlag.LibraryFile);
                 makeFileTargetName = recipe.TargetName;
                 makeFileVariableName = recipe.VariableName;
             }
