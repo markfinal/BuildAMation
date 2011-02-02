@@ -181,10 +181,10 @@ namespace MakeFileBuilder
             writer.WriteLine("{0} := {1}", variableName, relativeOutputPath);
             if (null != this.DirectoriesToCreate)
             {
-                writer.WriteLine("# Dependencies on directories to create");
+                writer.WriteLine("# Order-only dependencies on directories to create");
                 foreach (System.Collections.Generic.KeyValuePair<string, string> dirToCreate in this.DirectoriesToCreate)
                 {
-                    writer.WriteLine("$({0}): $({1})", variableName, dirToCreate.Key);
+                    writer.WriteLine("$({0}): | $({1})", variableName, dirToCreate.Key);
                 }
             }
             writer.WriteLine("");
