@@ -68,7 +68,7 @@ namespace Opus.Core
             if (this.agentWorkingList.Count > 0)
             {
                 System.Threading.ManualResetEvent[] agentsDone = this.agentsDone.ToArray(typeof(System.Threading.ManualResetEvent)) as System.Threading.ManualResetEvent[];
-                int finishedAgentIndex = System.Threading.WaitHandle.WaitAny(agentsDone);
+                int finishedAgentIndex = System.Threading.WaitHandle.WaitAny(agentsDone, 0);
                 if (System.Threading.WaitHandle.WaitTimeout != finishedAgentIndex)
                 {
                     BuildAgent finishedAgent = this.agentWorkingList[finishedAgentIndex] as BuildAgent;
@@ -152,6 +152,8 @@ namespace Opus.Core
                         nodeWork.CompletedEvent += new DependencyNode.CompleteEventHandler(CompletedNode);
                         this.AddAgentToWorkingList(agent);
                         agent.Execute(nodeWork);
+
+                        Log.Info("\t{0}% Scheduled", this.scheduler.PercentageScheduled);
                     }
                     else
                     {
@@ -171,8 +173,6 @@ namespace Opus.Core
                     // yield time slice until agents have finished
                     System.Threading.Thread.Sleep(1);
                 }
-
-                Log.Info("\t{0}% Scheduled", this.scheduler.PercentageScheduled);
             }
 
             // wait for all agents to finish
