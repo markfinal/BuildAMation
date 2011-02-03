@@ -1,3 +1,5 @@
+03-Feb-2011 Issue #25 Do not use a blocking wait to determine if agents are free.
+
 02-Feb-2011 Makefile dependencies between output files and their parent directories are now ORDER ONLY dependencies, which requires Make 3.80 and above (http://www.gnu.org/software/hello/manual/make/Prerequisite-Types.html) but avoids problems that the directory timestamp changes as files are added to it, which can cause unnecessary rebuilds.
 
 29-Jan-2011 Issue #23. Further fixes to include paths on 64-bit Linux, but this time for g++.
