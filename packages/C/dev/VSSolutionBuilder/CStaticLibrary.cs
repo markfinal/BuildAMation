@@ -33,14 +33,17 @@ namespace VSSolutionBuilder
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
-            if (!projectData.Configurations.Contains(configurationName))
+            lock (projectData.Configurations)
             {
-                configuration = new ProjectConfiguration(configurationName, (staticLibrary.Options as C.IArchiverOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
-                projectData.Configurations.Add(configuration);
-            }
-            else
-            {
-                configuration = projectData.Configurations[configurationName];
+                if (!projectData.Configurations.Contains(configurationName))
+                {
+                    configuration = new ProjectConfiguration(configurationName, (staticLibrary.Options as C.IArchiverOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
+                    projectData.Configurations.Add(configuration);
+                }
+                else
+                {
+                    configuration = projectData.Configurations[configurationName];
+                }
             }
 
             System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
@@ -55,10 +58,13 @@ namespace VSSolutionBuilder
                     Opus.Core.FileCollection headerFileCollection = field.GetValue(staticLibrary) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        if (!projectData.HeaderFiles.Contains(headerPath))
+                        lock (projectData.HeaderFiles)
                         {
-                            ProjectFile headerFile = new ProjectFile(headerPath);
-                            projectData.HeaderFiles.Add(headerFile);
+                            if (!projectData.HeaderFiles.Contains(headerPath))
+                            {
+                                ProjectFile headerFile = new ProjectFile(headerPath);
+                                projectData.HeaderFiles.Add(headerFile);
+                            }
                         }
                     }
                 }
@@ -71,7 +77,7 @@ namespace VSSolutionBuilder
             if (null == vcCLLibrarianTool)
             {
                 vcCLLibrarianTool = new ProjectTool(toolName);
-                configuration.AddTool(vcCLLibrarianTool);
+                configuration.AddToolIfMissing(vcCLLibrarianTool);
 
                 string outputDirectory = (staticLibrary.Options as C.ArchiverOptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;

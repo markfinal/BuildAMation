@@ -46,36 +46,42 @@ namespace VSSolutionBuilder
             this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);
 
             ProjectConfiguration configuration;
-            if (!projectData.Configurations.Contains(configurationName))
+            lock (projectData.Configurations)
             {
-                configuration = new ProjectConfiguration(configurationName, (objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
-
-                C.CompilerOptionCollection options = objectFile.Options as C.CompilerOptionCollection;
-                configuration.IntermediateDirectory = options.OutputDirectoryPath;
-
-                projectData.Configurations.Add(configuration);
-            }
-            else
-            {
-                configuration = projectData.Configurations[configurationName];
-                if ((C.ECharacterSet)configuration.CharacterSet != ((objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet)
+                if (!projectData.Configurations.Contains(configurationName))
                 {
-                    throw new Opus.Core.Exception("Inconsistent character set in project");
+                    configuration = new ProjectConfiguration(configurationName, (objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
+
+                    C.CompilerOptionCollection options = objectFile.Options as C.CompilerOptionCollection;
+                    configuration.IntermediateDirectory = options.OutputDirectoryPath;
+
+                    projectData.Configurations.Add(configuration);
+                }
+                else
+                {
+                    configuration = projectData.Configurations[configurationName];
+                    if ((C.ECharacterSet)configuration.CharacterSet != ((objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet)
+                    {
+                        throw new Opus.Core.Exception("Inconsistent character set in project");
+                    }
                 }
             }
 
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 
             ProjectFile sourceFile;
-            if (!projectData.SourceFiles.Contains(sourceFilePath))
+            lock (projectData.SourceFiles)
             {
-                sourceFile = new ProjectFile(sourceFilePath);
-                sourceFile.FileConfigurations = new ProjectFileConfigurationCollection();
-                projectData.SourceFiles.Add(sourceFile);
-            }
-            else
-            {
-                sourceFile = projectData.SourceFiles[sourceFilePath];
+                if (!projectData.SourceFiles.Contains(sourceFilePath))
+                {
+                    sourceFile = new ProjectFile(sourceFilePath);
+                    sourceFile.FileConfigurations = new ProjectFileConfigurationCollection();
+                    projectData.SourceFiles.Add(sourceFile);
+                }
+                else
+                {
+                    sourceFile = projectData.SourceFiles[sourceFilePath];
+                }
             }
 
             // TODO: this expression needs to be refactored
@@ -119,10 +125,7 @@ namespace VSSolutionBuilder
                 ProjectTool vcCLCompilerTool = new ProjectTool(toolName);
 
                 // if the main configuration does not yet have an instance of this tool, add it (could happen if a single ObjectFile is added to a library or application)
-                if (!configuration.HasTool(toolName))
-                {
-                    configuration.AddTool(vcCLCompilerTool);
-                }
+                configuration.AddToolIfMissing(vcCLCompilerTool);
 
                 // need to add each configuration a source file is applicable to in order to determine exclusions later
                 ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);

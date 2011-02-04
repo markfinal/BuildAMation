@@ -90,15 +90,14 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public void AddTool(ProjectTool tool)
+        public void AddToolIfMissing(ProjectTool tool)
         {
-            if (this.Tools.Contains(tool.Name))
+            lock (this.Tools)
             {
-                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' already exists in configuration '{1}'", tool.Name, this.Name));
-            }
-            else
-            {
-                this.Tools.Add(tool);
+                if (!this.HasTool(tool.Name))
+                {
+                    this.Tools.Add(tool);
+                }
             }
         }
 
@@ -110,13 +109,16 @@ namespace VSSolutionBuilder
 
         public ProjectTool GetTool(string toolName)
         {
-            if (this.Tools.Contains(toolName))
+            lock (this.Tools)
             {
-                return this.Tools[toolName];
-            }
-            else
-            {
-                return null;
+                if (this.Tools.Contains(toolName))
+                {
+                    return this.Tools[toolName];
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

@@ -27,7 +27,7 @@ namespace VSSolutionBuilder
             if (null == vcCLCompilerTool)
             {
                 vcCLCompilerTool = new ProjectTool(toolName);
-                configuration.AddTool(vcCLCompilerTool);
+                configuration.AddToolIfMissing(vcCLCompilerTool);
 
                 if (objectFileCollection.Options is VisualStudioProcessor.IVisualStudioSupport)
                 {
