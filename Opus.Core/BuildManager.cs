@@ -15,7 +15,7 @@ namespace Opus.Core
         private System.Collections.ArrayList agentWorkingList;
         private System.Collections.ArrayList agentFreeList;
 
-        class Pair
+        private class OutputQueueData
         {
             public DependencyNode node;
             public System.Text.StringBuilder output;
@@ -23,7 +23,7 @@ namespace Opus.Core
         }
 
         private System.Threading.ManualResetEvent allOutputComplete = new System.Threading.ManualResetEvent(false);
-        private System.Collections.Generic.Queue<Pair> outputQueue = new System.Collections.Generic.Queue<Pair>();
+        private System.Collections.Generic.Queue<OutputQueueData> outputQueue = new System.Collections.Generic.Queue<OutputQueueData>();
 
         public BuildManager(DependencyGraph graph)
         {
@@ -233,58 +233,64 @@ namespace Opus.Core
         {
             node.CompletedEvent -= this.CompletedNode;
 
-            Pair pair = new Pair();
-            pair.node = node;
-            pair.output = node.OutputStringBuilder;
-            pair.error = node.ErrorStringBuilder;
+            OutputQueueData OutputQueueData = new OutputQueueData();
+            OutputQueueData.node = node;
+            OutputQueueData.output = node.OutputStringBuilder;
+            OutputQueueData.error = node.ErrorStringBuilder;
 
-            this.outputQueue.Enqueue(pair);
+            lock (this.outputQueue)
+            {
+                this.outputQueue.Enqueue(OutputQueueData);
+            }
         }
 
         private void OutputErrorProcessingThread(object state)
         {
             BuildManager buildManager = state as BuildManager;
-            System.Collections.Generic.Queue<Pair> outputQueue = buildManager.outputQueue;
+            System.Collections.Generic.Queue<OutputQueueData> outputQueue = buildManager.outputQueue;
 
             while (buildManager.active || outputQueue.Count > 0)
             {
                 int queueSize = outputQueue.Count;
                 if (outputQueue.Count > 0)
                 {
-                    Pair outputPair = outputQueue.Dequeue();
-
-                    if (null == outputPair)
+                    OutputQueueData outputOutputQueueData = null;
+                    lock (outputQueue)
                     {
-                        throw new Exception(System.String.Format("Output Queue contained a null reference; there was {0} items before the last dequeue", queueSize));
+                        outputOutputQueueData = outputQueue.Dequeue();
+                    }
+                    if (null == outputOutputQueueData)
+                    {
+                        throw new Exception(System.String.Format("Output Queue contained a null reference; there was {0} items before the last dequeue", queueSize), false);
                     }
 
                     bool preamble = false;
-                    if (outputPair.output.Length > 0)
+                    if (outputOutputQueueData.output.Length > 0)
                     {
-                        string[] lines = outputPair.output.ToString().Split(new char[] { '\n' });
+                        string[] lines = outputOutputQueueData.output.ToString().Split(new char[] { '\n' });
                         foreach (string line in lines)
                         {
                             if (line.Length > 0)
                             {
                                 if (!preamble)
                                 {
-                                    Log.DebugMessage("**** Output from Node {0}", outputPair.node.UniqueModuleName);
+                                    Log.DebugMessage("**** Output from Node {0}", outputOutputQueueData.node.UniqueModuleName);
                                     preamble = true;
                                 }
                                 Log.Info("\tMessage '{0}'", line);
                             }
                         }
                     }
-                    if (outputPair.error.Length > 0)
+                    if (outputOutputQueueData.error.Length > 0)
                     {
-                        string[] lines = outputPair.error.ToString().Split(new char[] { '\n' });
+                        string[] lines = outputOutputQueueData.error.ToString().Split(new char[] { '\n' });
                         foreach (string line in lines)
                         {
                             if (line.Length > 0)
                             {
                                 if (!preamble)
                                 {
-                                    Log.DebugMessage("**** Output from Node {0}", outputPair.node.UniqueModuleName);
+                                    Log.DebugMessage("**** Output from Node {0}", outputOutputQueueData.node.UniqueModuleName);
                                     preamble = true;
                                 }
                                 Log.Info("\tError '{0}'", line);

@@ -1,3 +1,5 @@
+04-Feb-2011 Issue #27. Adding synchronization to the output text dequeue to avoid null reference exceptions in multi threaded builds (I hope).
+
 04-Feb-2011 Issue #26. Additional synchronization is needed in VisualStudio solution builds when using multiple build agents.
 
 03-Feb-2011 Issue #25 Do not use a blocking wait to determine if agents are free.
