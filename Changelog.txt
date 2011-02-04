@@ -1,3 +1,5 @@
+04-Feb-2011 Issue #26. Additional synchronization is needed in VisualStudio solution builds when using multiple build agents.
+
 03-Feb-2011 Issue #25 Do not use a blocking wait to determine if agents are free.
 
 02-Feb-2011 Makefile dependencies between output files and their parent directories are now ORDER ONLY dependencies, which requires Make 3.80 and above (http://www.gnu.org/software/hello/manual/make/Prerequisite-Types.html) but avoids problems that the directory timestamp changes as files are added to it, which can cause unnecessary rebuilds.

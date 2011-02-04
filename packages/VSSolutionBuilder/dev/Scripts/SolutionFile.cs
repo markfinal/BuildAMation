@@ -42,11 +42,14 @@ namespace VSSolutionBuilder
                 {
                     foreach (ProjectConfiguration configuration in projectData.Configurations)
                     {
-                        if (!sourceFile.FileConfigurations.Contains(configuration.Name))
+                        lock (sourceFile.FileConfigurations)
                         {
-                            ProjectTool tool = new ProjectTool("VCCLCompilerTool");
-                            ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, tool, true);
-                            sourceFile.FileConfigurations.Add(fileConfiguration);
+                            if (!sourceFile.FileConfigurations.Contains(configuration.Name))
+                            {
+                                ProjectTool tool = new ProjectTool("VCCLCompilerTool");
+                                ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, tool, true);
+                                sourceFile.FileConfigurations.Add(fileConfiguration);
+                            }
                         }
                     }
                 }
