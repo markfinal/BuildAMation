@@ -23,19 +23,19 @@ namespace MakeFileBuilder
         public string File
         {
             get;
-            set;
+            private set;
         }
 
         public string Target
         {
             get;
-            set;
+            private set;
         }
 
         public string Variable
         {
             get;
-            set;
+            private set;
         }
 
         public bool Included
@@ -47,7 +47,7 @@ namespace MakeFileBuilder
         public Opus.Core.StringArray EnvironmentPaths
         {
             get;
-            set;
+            private set;
         }
     }
 }

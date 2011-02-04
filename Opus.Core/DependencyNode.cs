@@ -363,5 +363,23 @@ namespace Opus.Core
             string childModuleName = System.String.Format("{0}.{1}{2}", parentName, childName, childIndex);
             return childModuleName;
         }
+
+        public void FilterOutputPaths(FlagsBase filter, StringArray paths)
+        {
+            Opus.Core.BaseOptionCollection options = this.Module.Options;
+            if (null == options)
+            {
+                return;
+            }
+
+            Opus.Core.OutputPaths outputPaths = options.OutputPaths;
+            foreach (System.Collections.Generic.KeyValuePair<Opus.Core.FlagsBase, string> o in outputPaths)
+            {
+                if (o.Key.Includes(filter))
+                {
+                    paths.Add(o.Value);
+                }
+            }
+        }
     }
 }

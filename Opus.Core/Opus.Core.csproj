@@ -84,6 +84,7 @@
     <Compile Include="Interfaces\IGlobalOptionCollectionOverride.cs" />
     <Compile Include="Interfaces\IInjectModules.cs" />
     <Compile Include="Interfaces\IModule.cs" />
+    <Compile Include="Interfaces\IModuleCollection.cs" />
     <Compile Include="Interfaces\INestedDependents.cs" />
     <Compile Include="Interfaces\ITargetFilters.cs" />
     <Compile Include="Interfaces\ITool.cs" />

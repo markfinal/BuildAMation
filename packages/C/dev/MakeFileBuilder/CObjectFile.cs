@@ -50,13 +50,13 @@ namespace MakeFileBuilder
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
 
-            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, inputFiles, commandLines, this.topLevelMakeFilePath);
+            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, inputFiles, null, commandLines, this.topLevelMakeFilePath);
 
             string makeFileTargetName = null;
             string makeFileVariableName = null;
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
             {
-                recipe.Write(makeFileWriter, C.CompilerOutputPathFlag.ObjectFile);
+                recipe.Write(makeFileWriter, C.OutputFileFlags.ObjectFile);
                 makeFileTargetName = recipe.TargetName;
                 makeFileVariableName = recipe.VariableName;
             }

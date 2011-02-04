@@ -5,14 +5,6 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public sealed class CompilerOutputPathFlag : C.CompilerOutputPathFlag
-    {
-        private CompilerOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
     {
@@ -90,12 +82,12 @@ namespace GccCommon
         {
             get
             {
-                return this.OutputPaths[CompilerOutputPathFlag.ObjectFile];
+                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
             }
 
             set
             {
-                this.OutputPaths[CompilerOutputPathFlag.ObjectFile] = value;
+                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
             }
         }
 
@@ -103,12 +95,12 @@ namespace GccCommon
         {
             get
             {
-                return this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile];
+                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
             }
 
             set
             {
-                this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile] = value;
+                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
             }
         }
 

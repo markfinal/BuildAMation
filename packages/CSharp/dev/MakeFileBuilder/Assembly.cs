@@ -3,21 +3,32 @@
 // </copyright>
 // <summary>CSharp package</summary>
 // <author>Mark Final</author>
-namespace NativeBuilder
+namespace MakeFileBuilder
 {
-    public partial class NativeBuilder
+    public partial class MakeFileBuilder
     {
         public object Build(CSharp.Assembly assembly, Opus.Core.DependencyNode node, out System.Boolean success)
         {
             Opus.Core.Target target = node.Target;
             CSharp.OptionCollection options = assembly.Options as CSharp.OptionCollection;
 
+            Opus.Core.StringArray inputVariables = new Opus.Core.StringArray();
+            System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (node.ExternalDependents != null)
             {
-                Opus.Core.StringArray dependentAssemblies = new Opus.Core.StringArray();
-                node.ExternalDependents.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, dependentAssemblies);
+                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                {
+                    if (null != dependentNode.Data)
+                    {
+                        Opus.Core.StringArray assemblyPaths = new Opus.Core.StringArray();
+                        dependentNode.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, assemblyPaths);
+                        options.References.AddRange(assemblyPaths);
 
-                options.References.AddRange(dependentAssemblies);
+                        MakeFileData data = dependentNode.Data as MakeFileData;
+                        inputVariables.Add(data.Variable);
+                        dataArray.Add(data);
+                    }
+                }
             }
 
             Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
@@ -76,25 +87,11 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("There were no source files specified for the module '{0}'", node.ModuleName), false);
             }
 
-            Opus.Core.StringArray outputFiles = assembly.Options.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, sourceFiles))
-            {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
-                success = true;
-                return null;
-            }
-
             System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
-
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
-                foreach (string directoryPath in directoriesToCreate)
-                {
-                    NativeBuilder.MakeDirectory(directoryPath);
-                }
             }
             else
             {
@@ -108,12 +105,39 @@ namespace NativeBuilder
 
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
             string executablePath = compilerInstance.Executable(target);
+
+            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
+            commandLines.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString()));
+
+            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, sourceFiles, inputVariables, commandLines, this.topLevelMakeFilePath);
+
+            foreach (MakeFileData data in dataArray)
+            {
+                if (!data.Included)
+                {
+                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
+                    recipe.Includes.Add(relativeDataFile);
+                    data.Included = true;
+                }
+            }
+
+            string makeFile = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
+            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
+
+            string makeFileTargetName = null;
+            string makeFileVariableName = null;
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
+            {
+                recipe.Write(makeFileWriter, CSharp.OutputFileFlags.AssemblyFile);
+                makeFileTargetName = recipe.TargetName;
+                makeFileVariableName = recipe.VariableName;
+            }
+
+            success = true;
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-
-            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
-            success = (0 == exitCode);
-
-            return null;
+            MakeFileData returnData = new MakeFileData(makeFile, makeFileTargetName, makeFileVariableName, compilerTool.EnvironmentPaths(target));
+            return returnData;
         }
     }
 }

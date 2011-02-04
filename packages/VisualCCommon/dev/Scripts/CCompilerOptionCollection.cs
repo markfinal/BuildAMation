@@ -5,16 +5,6 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public class CompilerOutputPathFlag : C.CompilerOutputPathFlag
-    {
-        public static readonly CompilerOutputPathFlag SharedProgramDatabaseFile = new CompilerOutputPathFlag("SharedProgramDatabaseFile");
-
-        private CompilerOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport
     {
@@ -119,12 +109,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[CompilerOutputPathFlag.ObjectFile];
+                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
             }
 
             set
             {
-                this.OutputPaths[CompilerOutputPathFlag.ObjectFile] = value;
+                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
             }
         }
 
@@ -132,12 +122,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile];
+                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
             }
 
             set
             {
-                this.OutputPaths[CompilerOutputPathFlag.PreprocessedFile] = value;
+                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
             }
         }
 
@@ -145,12 +135,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[CompilerOutputPathFlag.SharedProgramDatabaseFile];
+                return this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase];
             }
 
             set
             {
-                this.OutputPaths[CompilerOutputPathFlag.SharedProgramDatabaseFile] = value;
+                this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = value;
             }
         }
 

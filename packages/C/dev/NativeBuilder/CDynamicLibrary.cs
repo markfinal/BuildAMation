@@ -14,113 +14,30 @@ namespace NativeBuilder
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
             C.ILinkerOptions linkerOptions = dynamicLibrary.Options as C.ILinkerOptions;
 
-            // dependent files
+            // find dependent object files
             Opus.Core.StringArray dependentObjectFiles = new Opus.Core.StringArray();
-            if (node.Children != null)
+            if (null != node.Children)
             {
-                foreach (Opus.Core.DependencyNode node1 in node.Children)
-                {
-                    if (node1.Module is C.ObjectFileCollection)
-                    {
-                        foreach (Opus.Core.DependencyNode node2 in node1.Children)
-                        {
-                            if (node2.Module is C.ObjectFile)
-                            {
-                                C.CompilerOptionCollection options = node2.Module.Options as C.CompilerOptionCollection;
-                                dependentObjectFiles.Add(options.ObjectFilePath);
-                            }
-                            else
-                            {
-                                throw new Opus.Core.Exception(System.String.Format("Unexpected type for dependent: '{0}'. Should be of type C.ObjectFile", node2.Module.GetType().ToString()));
-                            }
-                        }
-                    }
-                    else if (node1.Module is C.CPlusPlus.ObjectFileCollection)
-                    {
-                        foreach (Opus.Core.DependencyNode node2 in node1.Children)
-                        {
-                            if (node2.Module is C.CPlusPlus.ObjectFile)
-                            {
-                                C.CompilerOptionCollection options = node2.Module.Options as C.CompilerOptionCollection;
-                                dependentObjectFiles.Add(options.ObjectFilePath);
-                            }
-                            else
-                            {
-                                throw new Opus.Core.Exception(System.String.Format("Unexpected type for dependent: '{0}'. Should be of type CPlusPlus.ObjectFile", node2.Module.GetType().ToString()));
-                            }
-                        }
-                    }
-                    else if (node1.Module is C.ObjectFile)
-                    {
-                        C.CompilerOptionCollection options = node1.Module.Options as C.CompilerOptionCollection;
-                        dependentObjectFiles.Add(options.ObjectFilePath);
-                    }
-                    else if (node1.Module is C.CPlusPlus.ObjectFile)
-                    {
-                        C.CompilerOptionCollection options = node1.Module.Options as C.CompilerOptionCollection;
-                        dependentObjectFiles.Add(options.ObjectFilePath);
-                    }
-                    else if (node1.Module is C.StaticLibrary)
-                    {
-                        C.ArchiverOptionCollection options = node1.Module.Options as C.ArchiverOptionCollection;
-                        linkerOptions.Libraries.AddToFront(options.LibraryFilePath);
-                    }
-                    else if (node1.Module is C.ThirdPartyModule)
-                    {
-                        // do nothing
-                    }
-                    else
-                    {
-                        throw new Opus.Core.Exception(System.String.Format("Unexpected type for dependent: '{0}'", node1.Module.GetType().ToString()));
-                    }
-                }
+                node.Children.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
             }
-            if (node.ExternalDependents != null)
+            if (null != node.ExternalDependents)
             {
-                foreach (Opus.Core.DependencyNode node1 in node.ExternalDependents)
-                {
-                    if (node1.Module is C.ObjectFileCollection)
-                    {
-                        foreach (Opus.Core.DependencyNode node2 in node1.ExternalDependents)
-                        {
-                            if (node2.Module is C.ObjectFile)
-                            {
-                                C.CompilerOptionCollection options = node2.Module.Options as C.CompilerOptionCollection;
-                                dependentObjectFiles.Add(options.ObjectFilePath);
-                            }
-                            else
-                            {
-                                throw new Opus.Core.Exception("Unexpected type");
-                            }
-                        }
-                    }
-                    else if (node1.Module is C.ObjectFile)
-                    {
-                        C.CompilerOptionCollection options = node1.Module.Options as C.CompilerOptionCollection;
-                        dependentObjectFiles.Add(options.ObjectFilePath);
-                    }
-                    else if (node1.Module is C.StaticLibrary)
-                    {
-                        C.ArchiverOptionCollection options = node1.Module.Options as C.ArchiverOptionCollection;
-                        linkerOptions.Libraries.AddToFront(options.LibraryFilePath);
-                    }
-                    else if (node1.Module is C.HeaderLibrary)
-                    {
-                        // do nothing
-                    }
-                    else if (node1.Module is C.ThirdPartyModule)
-                    {
-                        // do nothing
-                    }
-                    else
-                    {
-                        throw new Opus.Core.Exception(System.String.Format("Unexpected type for dependent: '{0}'", node1.Module.GetType().ToString()));
-                    }
-                }
+                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
             }
             if (0 == dependentObjectFiles.Count)
             {
                 throw new Opus.Core.Exception("There are no object files to link");
+            }
+
+            // find dependent library files
+            if (null != node.ExternalDependents)
+            {
+                Opus.Core.StringArray dependentLibraryFiles = new Opus.Core.StringArray();
+                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
+                foreach (string libraryPath in dependentLibraryFiles)
+                {
+                    linkerOptions.Libraries.AddToFront(libraryPath);
+                }
             }
 
             Opus.Core.StringArray inputFiles = dependentObjectFiles;

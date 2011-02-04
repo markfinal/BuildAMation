@@ -105,5 +105,20 @@ namespace Opus.Core
                 return complete;
             }
         }
+
+        public void FilterOutputPaths(FlagsBase filter, StringArray paths)
+        {
+            foreach (DependencyNode node in this.list)
+            {
+                if (node.Module is IModuleCollection)
+                {
+                    node.Children.FilterOutputPaths(filter, paths);
+                }
+                else
+                {
+                    node.FilterOutputPaths(filter, paths);
+                }
+            }
+        }
     }
 }

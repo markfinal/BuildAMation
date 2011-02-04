@@ -5,17 +5,6 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
-    public sealed class CSharpOutputFileFlags : Opus.Core.FlagsBase
-    {
-        public static readonly CSharpOutputFileFlags AssemblyFile = new CSharpOutputFileFlags("AssemblyFile");
-        public static readonly CSharpOutputFileFlags ProgramDatabaseFile = new CSharpOutputFileFlags("ProgramDatabaseFile");
-
-        private CSharpOutputFileFlags(string name)
-            : base(name)
-        {
-        }
-    }
-
     public partial class OptionCollection : Opus.Core.BaseOptionCollection, IOptions, CommandLineProcessor.ICommandLineSupport
     {
         private void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -93,11 +82,11 @@ namespace CSharp
         {
             get
             {
-                return this.OutputPaths[CSharpOutputFileFlags.AssemblyFile];
+                return this.OutputPaths[OutputFileFlags.AssemblyFile];
             }
             set
             {
-                this.OutputPaths[CSharpOutputFileFlags.AssemblyFile] = value;
+                this.OutputPaths[OutputFileFlags.AssemblyFile] = value;
             }
         }
 
@@ -105,11 +94,11 @@ namespace CSharp
         {
             get
             {
-                return this.OutputPaths[CSharpOutputFileFlags.ProgramDatabaseFile];
+                return this.OutputPaths[OutputFileFlags.ProgramDatabaseFile];
             }
             set
             {
-                this.OutputPaths[CSharpOutputFileFlags.ProgramDatabaseFile] = value;
+                this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = value;
             }
         }
 

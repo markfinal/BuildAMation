@@ -5,14 +5,6 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public sealed class ArchiverOutputPathFlag : C.ArchiverOutputPathFlag
-    {
-        private ArchiverOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     public partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
     {
         private void SetDelegates(Opus.Core.Target target)
@@ -50,12 +42,12 @@ namespace MingwCommon
         {
             get
             {
-                return this.OutputPaths[ArchiverOutputPathFlag.LibraryFile];
+                return this.OutputPaths[C.OutputFileFlags.StaticLibrary];
             }
 
             set
             {
-                this.OutputPaths[ArchiverOutputPathFlag.LibraryFile] = value;
+                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = value;
             }
         }
 

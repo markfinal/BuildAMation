@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public abstract class ObjectFileCollectionBase : Opus.Core.IModule, Opus.Core.INestedDependents
+    public abstract class ObjectFileCollectionBase : Opus.Core.IModuleCollection
     {
         protected System.Collections.Generic.List<ObjectFile> list = new System.Collections.Generic.List<ObjectFile>();
 

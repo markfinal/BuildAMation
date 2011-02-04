@@ -12,18 +12,6 @@ namespace C
         Windows = 2
     }
 
-    public class LinkerOutputPathFlag : Opus.Core.FlagsBase
-    {
-        public static readonly LinkerOutputPathFlag Executable = new LinkerOutputPathFlag("Executable");
-        public static readonly LinkerOutputPathFlag StaticImportLibrary = new LinkerOutputPathFlag("StaticImportLibrary");
-        public static readonly LinkerOutputPathFlag MapFile = new LinkerOutputPathFlag("MapFile");
-
-        protected LinkerOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     public abstract class LinkerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         // TODO:  no reason why this can't be a static utility function

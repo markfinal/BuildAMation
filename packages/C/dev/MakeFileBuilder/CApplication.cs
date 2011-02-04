@@ -15,47 +15,29 @@ namespace MakeFileBuilder
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
 
             // dependents
-            Opus.Core.StringArray inputs = new Opus.Core.StringArray();
+            Opus.Core.StringArray inputVariables = new Opus.Core.StringArray();
             System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
-                foreach (Opus.Core.DependencyNode node1 in node.Children)
+                foreach (Opus.Core.DependencyNode childNode in node.Children)
                 {
-                    if ((node1.Module is C.ObjectFileCollectionBase) || (node1.Module is C.ObjectFile) || (node1.Module is C.StaticLibrary) || (node1.Module is C.DynamicLibrary))
+                    if (null != childNode.Data)
                     {
-                        MakeFileData data = node1.Data as MakeFileData;
-                        inputs.Add(data.Variable);
+                        MakeFileData data = childNode.Data as MakeFileData;
+                        inputVariables.Add(data.Variable);
                         dataArray.Add(data);
-                    }
-                    else
-                    {
-                        throw new Opus.Core.Exception(System.String.Format("Unexpected type '{0}'", node1.Module.ToString()));
                     }
                 }
             }
             if (null != node.ExternalDependents)
             {
-                foreach (Opus.Core.DependencyNode node1 in node.ExternalDependents)
+                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
                 {
-                    if ((node1.Module is C.ObjectFileCollectionBase) || (node1.Module is C.ObjectFile))
+                    if (null != dependentNode.Data)
                     {
-                        MakeFileData data = node1.Data as MakeFileData;
-                        inputs.Add(data.Target);
+                        MakeFileData data = dependentNode.Data as MakeFileData;
+                        inputVariables.Add(data.Variable);
                         dataArray.Add(data);
-                    }
-                    else if ((node1.Module is C.StaticLibrary) || (node1.Module is C.DynamicLibrary))
-                    {
-                        MakeFileData data = node1.Data as MakeFileData;
-                        inputs.Add(data.Variable);
-                        dataArray.Add(data);
-                    }
-                    else if (node1.Module is C.ThirdPartyModule)
-                    {
-                        // do nothing
-                    }
-                    else
-                    {
-                        throw new Opus.Core.Exception(System.String.Format("Unexpected type '{0}'", node1.Module.ToString()));
                     }
                 }
             }
@@ -85,7 +67,7 @@ namespace MakeFileBuilder
             Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
             commandLines.Add(System.String.Format("\"{0}\" {1} $(filter %{2},$^) $(filter %{3},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension, toolchain.StaticLibraryExtension));
 
-            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, inputs, commandLines, this.topLevelMakeFilePath);
+            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
 
             foreach (MakeFileData data in dataArray)
             {
@@ -105,7 +87,7 @@ namespace MakeFileBuilder
             string makeFileVariableName = null;
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
             {
-                recipe.Write(makeFileWriter, C.LinkerOutputPathFlag.Executable);
+                recipe.Write(makeFileWriter, C.OutputFileFlags.Executable);
                 makeFileTargetName = recipe.TargetName;
                 makeFileVariableName = recipe.VariableName;
             }

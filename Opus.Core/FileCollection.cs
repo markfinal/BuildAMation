@@ -44,6 +44,14 @@ namespace Opus.Core
             this.filePaths.Insert(0, absolutePath);
         }
 
+        public void AddRange(StringArray absolutePathArray)
+        {
+            foreach (string path in absolutePathArray)
+            {
+                this.filePaths.Add(path);
+            }
+        }
+
         public string this[int index]
         {
             get
