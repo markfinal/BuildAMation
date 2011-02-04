@@ -1,3 +1,13 @@
+04-Feb-2011 Issue #28 The build scheduler was not taking external dependencies and required dependencies into account. In multi threaded builds, this resulted in an incorrect evaluation order of nodes in the graph.
+
+04-Feb-2011 Issue #27. Adding synchronization to the output text dequeue to avoid null reference exceptions in multi threaded builds (I hope).
+
+04-Feb-2011 Issue #26. Additional synchronization is needed in VisualStudio solution builds when using multiple build agents.
+
+03-Feb-2011 Issue #25 Do not use a blocking wait to determine if agents are free.
+
+02-Feb-2011 Makefile dependencies between output files and their parent directories are now ORDER ONLY dependencies, which requires Make 3.80 and above (http://www.gnu.org/software/hello/manual/make/Prerequisite-Types.html) but avoids problems that the directory timestamp changes as files are added to it, which can cause unnecessary rebuilds.
+
 29-Jan-2011 Issue #23. Further fixes to include paths on 64-bit Linux, but this time for g++.
 
 29-Jan-2011 Issue #23. GCC internal include paths are different on 64-bit Linux to 32-bit.
