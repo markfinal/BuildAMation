@@ -55,9 +55,21 @@ namespace Opus.Core
                 {
                     foreach (DependencyNode node in rankCollection)
                     {
-                        DependencyNodeCollection dependents = node.Children;
+                        DependencyNodeCollection dependents = new DependencyNodeCollection();
+                        if (null != node.Children)
+                        {
+                            dependents.AddRange(node.Children);
+                        }
+                        if (null != node.ExternalDependents)
+                        {
+                            dependents.AddRange(node.ExternalDependents);
+                        }
+                        if (null != node.RequiredDependents)
+                        {
+                            dependents.AddRange(node.RequiredDependents);
+                        }
                         bool dependentsComplete = true;
-                        if (null != dependents)
+                        if (0 != dependents.Count)
                         {
                             dependentsComplete = dependents.Complete;
                         }

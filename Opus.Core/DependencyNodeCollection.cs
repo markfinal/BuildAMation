@@ -24,6 +24,14 @@ namespace Opus.Core
             this.list.Add(item);
         }
 
+        public void AddRange(DependencyNodeCollection itemCollection)
+        {
+            foreach (DependencyNode item in itemCollection)
+            {
+                this.list.Add(item);
+            }
+        }
+
         public void Clear()
         {
             this.list.Clear();
