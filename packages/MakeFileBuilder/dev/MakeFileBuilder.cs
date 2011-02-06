@@ -136,7 +136,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.Log.DebugMessage("Output files:");
-            foreach (System.Collections.Generic.KeyValuePair<Opus.Core.FlagsBase, string> outputFile in this.OutputPaths)
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputFile in this.OutputPaths)
             {
                 Opus.Core.Log.DebugMessage("{0} = {1}", outputFile.Key, outputFile.Value);
             }
@@ -171,12 +171,12 @@ namespace MakeFileBuilder
             }
         }
 
-        public void Write(System.IO.TextWriter writer, Opus.Core.FlagsBase mainOutputFileFlag)
+        public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag)
         {
             Write(writer, mainOutputFileFlag, null);
         }
 
-        public void Write(System.IO.TextWriter writer, Opus.Core.FlagsBase mainOutputFileFlag, Opus.Core.FlagsBase secondaryOutputFileFlag)
+        public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag, System.Enum secondaryOutputFileFlag)
         {
             this.MainVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag.ToString());
 

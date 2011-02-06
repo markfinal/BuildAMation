@@ -33,4 +33,13 @@ namespace Test5
             "KERNEL32.lib"
         );
     }
+
+    class Publish : FileUtilities.CopyFiles
+    {
+        [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
+        Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(Test4.MyDynamicLib));
+
+        [FileUtilities.DestinationDirectory(FileUtilities.EDirectoryChoice.TargetBuildDirectory)]
+        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(MyDynamicLibTestApp));
+    }
 }

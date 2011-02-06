@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
+#if false
 namespace Opus.Core
 {
     public class FlagsBase
@@ -82,3 +83,4 @@ namespace Opus.Core
         }
     }
 }
+#endif

@@ -364,7 +364,7 @@ namespace Opus.Core
             return childModuleName;
         }
 
-        public void FilterOutputPaths(FlagsBase filter, StringArray paths)
+        public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
             Opus.Core.BaseOptionCollection options = this.Module.Options;
             if (null == options)
@@ -372,10 +372,21 @@ namespace Opus.Core
                 return;
             }
 
+            System.Type filterType = filter.GetType();
+            int filterValue = System.Convert.ToInt32(filter);
+
             Opus.Core.OutputPaths outputPaths = options.OutputPaths;
-            foreach (System.Collections.Generic.KeyValuePair<Opus.Core.FlagsBase, string> o in outputPaths)
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
             {
-                if (o.Key.Includes(filter))
+                if (o.Key.GetType() != filterType)
+                {
+                    throw new Exception("Incompatible enum type comparison", false);
+                }
+
+                int keyValue = System.Convert.ToInt32(o.Key);
+
+                if (filterValue == (keyValue & filterValue))
+                //if (o.Key.Includes(filter))
                 {
                     paths.Add(o.Value);
                 }

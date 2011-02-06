@@ -7,9 +7,9 @@ namespace Opus.Core
 {
     public sealed class OutputPaths : System.Collections.IEnumerable
     {
-        private System.Collections.Generic.Dictionary<FlagsBase, string> fileDictionary = new System.Collections.Generic.Dictionary<FlagsBase, string>();
+        private System.Collections.Generic.Dictionary<System.Enum, string> fileDictionary = new System.Collections.Generic.Dictionary<System.Enum, string>();
 
-        public string this[FlagsBase key]
+        public string this[System.Enum key]
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Opus.Core
             return this.fileDictionary.GetEnumerator();
         }
 
-        public bool Has(FlagsBase key)
+        public bool Has(System.Enum key)
         {
             bool containsKey = this.fileDictionary.ContainsKey(key);
             return containsKey;

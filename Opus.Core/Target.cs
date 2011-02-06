@@ -205,8 +205,17 @@ namespace Opus.Core
                 return false;
             }
 
-            bool keysMatch = lhs.Key == rhs.Key;
-            return keysMatch;
+            if (!lhs.IsComplete || !rhs.IsComplete)
+            {
+                bool platformMatch = lhs.Platform == rhs.Platform;
+                bool configurationMatch = lhs.Configuration == rhs.Configuration;
+                return platformMatch && configurationMatch;
+            }
+            else
+            {
+                bool keysMatch = lhs.Key == rhs.Key;
+                return keysMatch;
+            }
         }
 
         public static bool operator !=(Target lhs, Target rhs)

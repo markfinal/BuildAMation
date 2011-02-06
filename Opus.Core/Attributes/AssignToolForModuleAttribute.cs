@@ -13,7 +13,10 @@ namespace Opus.Core
             // do nothing - all properties are null
         }
 
-        public AssignToolForModuleAttribute(System.Type toolType, System.Type exportAttributeType, System.Type localAttributeType, string toolOptionsClassName)
+        public AssignToolForModuleAttribute(System.Type toolType,
+                                            System.Type exportAttributeType,
+                                            System.Type localAttributeType,
+                                            string toolOptionsClassName)
         {
             this.ToolType = toolType;
             this.ExportType = exportAttributeType;
@@ -22,7 +25,10 @@ namespace Opus.Core
             this.OptionsType = null;
         }
 
-        public AssignToolForModuleAttribute(System.Type toolType, System.Type exportAttributeType, System.Type localAttributeType, System.Type optionsType)
+        public AssignToolForModuleAttribute(System.Type toolType,
+                                            System.Type exportAttributeType,
+                                            System.Type localAttributeType,
+                                            System.Type optionsType)
         {
             this.ToolType = toolType;
             this.ExportType = exportAttributeType;

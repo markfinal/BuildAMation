@@ -9,6 +9,7 @@ namespace Opus.Core
     {
         public static string GetToolchainImplementation(System.Type moduleType)
         {
+            // TODO: should this start at moduleType.BaseType?
             System.Type toolchainType = moduleType;
             string toolchainImplementation = null;
             for (;;)
@@ -27,7 +28,7 @@ namespace Opus.Core
                 toolchainType = toolchainType.BaseType;
                 if (null == toolchainType)
                 {
-                    throw new Exception(System.String.Format("Unable to locate an identifiable toolchain for module '{0}'", moduleType.ToString()));
+                    throw new Exception(System.String.Format("Unable to locate an identifiable toolchain for module '{0}'", moduleType.ToString()), false);
                 }
             }
 

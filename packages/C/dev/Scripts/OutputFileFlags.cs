@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
+#if false
     public sealed class OutputFileFlags : Opus.Core.FlagsBase
     {
         public static readonly OutputFileFlags ObjectFile = new OutputFileFlags("ObjectFile");
@@ -22,17 +23,20 @@ namespace C
             : base(name)
         {
         }
-
-#if false
-        private OutputFileFlags(string name, int value)
-            : base(name, value)
-        {
-        }
-
-        private OutputFileFlags(Opus.Core.FlagsBase flags)
-            : base(flags.ToString(), flags.InternalValue)
-        {
-        }
+    }
 #endif
+
+    [System.Flags]
+    public enum OutputFileFlags
+    {
+        ObjectFile = (1 << 0),
+        PreprocessedFile = (1 << 1),
+        StaticLibrary = (1 << 2),
+        Executable = (1 << 3),
+        StaticImportLibrary = (1 << 4),
+        MapFile = (1 << 5),
+
+        CompilerProgramDatabase = (1 << 6),
+        LinkerProgramDatabase = (1 << 7)
     }
 }

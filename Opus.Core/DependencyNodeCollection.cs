@@ -114,7 +114,7 @@ namespace Opus.Core
             }
         }
 
-        public void FilterOutputPaths(FlagsBase filter, StringArray paths)
+        public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
             foreach (DependencyNode node in this.list)
             {

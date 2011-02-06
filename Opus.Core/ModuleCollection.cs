@@ -14,6 +14,14 @@ namespace Opus.Core
             this.list.Add(item);
         }
 
+        public void AddRange(ModuleCollection itemCollection)
+        {
+            foreach (IModule module in itemCollection)
+            {
+                this.list.Add(module);
+            }
+        }
+
         public void Clear()
         {
             this.list.Clear();
