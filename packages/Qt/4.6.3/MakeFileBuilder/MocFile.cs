@@ -3,9 +3,9 @@
 // </copyright>
 // <summary>Qt package</summary>
 // <author>Mark Final</author>
-namespace NativeBuilder
+namespace MakeFileBuilder
 {
-    public partial class NativeBuilder
+    public partial class MakeFileBuilder
     {
         public object Build(Qt.MocFile mocFile, Opus.Core.DependencyNode node, out System.Boolean success)
         {
@@ -23,25 +23,14 @@ namespace NativeBuilder
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
-            Opus.Core.StringArray outputFiles = mocFile.Options.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, inputFiles))
-            {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
-                success = true;
-                return null;
-            }
+            Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
+            node.FilterOutputPaths(Qt.MocOutputPathFlag.MocGeneratedSourceFile, outputFiles);
 
             System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
-
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
-                foreach (string directoryPath in directoriesToCreate)
-                {
-                    NativeBuilder.MakeDirectory(directoryPath);
-                }
             }
             else
             {
@@ -50,10 +39,28 @@ namespace NativeBuilder
 
             commandLineBuilder.AppendFormat("\"{0}\"", sourceFilePath);
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, toolExePath, commandLineBuilder);
-            success = (0 == exitCode);
+            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
+            commandLines.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString());
 
-            return null;
+            string makeFile = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
+            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
+
+            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, inputFiles, null, commandLines, this.topLevelMakeFilePath);
+
+            string makeFileTargetName = null;
+            string makeFileVariableName = null;
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
+            {
+                recipe.Write(makeFileWriter, Qt.MocOutputPathFlag.MocGeneratedSourceFile);
+                makeFileTargetName = recipe.TargetName;
+                makeFileVariableName = recipe.VariableName;
+            }
+
+            success = true;
+
+            MakeFileData returnData = new MakeFileData(makeFile, makeFileTargetName, makeFileVariableName, tool.EnvironmentPaths(target));
+            return returnData;
         }
     }
 }

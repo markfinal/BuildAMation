@@ -23,16 +23,6 @@ namespace CodeGenTest
         }
     }
 
-    public sealed class CodeGenOutputFileFlags : Opus.Core.FlagsBase
-    {
-        public static CodeGenOutputFileFlags GeneratedSourceFile = new CodeGenOutputFileFlags("GeneratedSourceFile");
-
-        private CodeGenOutputFileFlags(string name)
-            : base(name)
-        {
-        }
-    }
-
     public sealed partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         public CodeGenOptions(Opus.Core.DependencyNode node)
@@ -47,7 +37,7 @@ namespace CodeGenTest
             if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
             {
                 string outputPath = System.IO.Path.Combine(this.OutputSourceDirectory, this.OutputName) + ".c";
-                this.OutputPaths[CodeGenOutputFileFlags.GeneratedSourceFile] = outputPath;
+                this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
             }
         }
 

@@ -58,7 +58,7 @@ namespace Qt
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Qt identification has not been implemented on non-Windows platforms yet");
+                    throw new Opus.Core.Exception("Qt identification has not been implemented on non-Windows and Linux platforms yet");
                 }
             }
 

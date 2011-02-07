@@ -1,14 +1,13 @@
 // <copyright file="OutputFileFlags.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>CSharp package</summary>
+// <summary>Qt package</summary>
 // <author>Mark Final</author>
-namespace CSharp
+namespace Qt
 {
     [System.Flags]
     public enum OutputFileFlags
     {
-        AssemblyFile = (1 << 0),
-        ProgramDatabaseFile = (1 << 1)
+        MocGeneratedSourceFile = (1 << 0)
     }
 }

@@ -300,8 +300,6 @@ namespace Opus.Core
                     this.IncrementNodeRank(dependentNode, ranksToMove);
                 }
             }
-
-            // TODO: not sure about these - they cause empty rank collections to appear
             if (node.RequiredDependents != null)
             {
                 foreach (DependencyNode requiredNode in node.RequiredDependents)
