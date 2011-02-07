@@ -22,7 +22,7 @@ namespace NativeBuilder
             {
                 case FileUtilities.EDirectoryChoice.TargetBuildDirectory:
                     {
-                        //destinationDirectory = destinationModule.Options.
+                        // TODO: fix this
                         destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[C.OutputFileFlags.Executable]);
                     }
                     break;
@@ -51,7 +51,7 @@ namespace NativeBuilder
                 }
             }
 
-            success = (0 != returnValue);
+            success = (0 == returnValue);
             return null;
         }
     }

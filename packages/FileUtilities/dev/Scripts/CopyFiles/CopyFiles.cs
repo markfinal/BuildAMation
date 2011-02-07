@@ -115,12 +115,6 @@ namespace FileUtilities
                 }
             }
 
-#if false
-            Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
-            moduleCollection.AddRange(sourceModules);
-            moduleCollection.AddRange(destinationModules);
-#endif
-
             this.SourceModules = sourceModules;
             this.DestinationModule = destinationModule;
 
