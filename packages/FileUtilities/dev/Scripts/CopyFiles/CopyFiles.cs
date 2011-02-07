@@ -57,7 +57,7 @@ namespace FileUtilities
             private set;
         }
 
-        public EDirectoryChoice DirectoryChoiceFlags
+        public System.Enum DirectoryOutputFlags
         {
             get;
             private set;
@@ -87,7 +87,7 @@ namespace FileUtilities
                         Opus.Core.IModule sourceModule = Opus.Core.ModuleUtilities.GetModule(sourceModuleType, incompleteTarget);
                         if (null == sourceModule)
                         {
-                            throw new Opus.Core.Exception("Can't find source module");
+                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}", sourceModuleType.FullName, this.GetType().FullName), false);
                         }
 
                         this.SourceOutputFlags = sourceModuleAttribute.OutputFlags;
@@ -104,13 +104,18 @@ namespace FileUtilities
                     Opus.Core.TypeArray destinationModuleTypes = field.GetValue(this) as Opus.Core.TypeArray;
                     foreach (System.Type destinationModuleType in destinationModuleTypes)
                     {
+                        if (null != destinationModule)
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("Only one destination module may be provided for module '{0}'", this.GetType().FullName), false);
+                        }
+
                         destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, incompleteTarget);
                         if (null == destinationModule)
                         {
-                            throw new Opus.Core.Exception("Can't find destination module");
+                            throw new Opus.Core.Exception(System.String.Format("Can't find destination module of type '{0}' in module '{1}", destinationModuleType.FullName, this.GetType().FullName), false);
                         }
 
-                        this.DirectoryChoiceFlags = destinationModuleAttribute.DirectoryChoice;
+                        this.DirectoryOutputFlags = destinationModuleAttribute.OutputFlags;
                     }
                 }
             }

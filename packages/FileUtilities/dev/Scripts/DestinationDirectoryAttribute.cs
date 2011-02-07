@@ -8,13 +8,18 @@ namespace FileUtilities
     [System.AttributeUsage(System.AttributeTargets.Field)]
     public sealed class DestinationDirectoryAttribute : Opus.Core.DependentModulesAttribute
     {
-        public DestinationDirectoryAttribute(EDirectoryChoice directoryChoice)
+        public DestinationDirectoryAttribute(object flags)
             : base()
         {
-            this.DirectoryChoice = directoryChoice;
+            if (!flags.GetType().IsEnum)
+            {
+                throw new Opus.Core.Exception("Object is not of enum type");
+            }
+
+            this.OutputFlags = flags as System.Enum;
         }
 
-        public EDirectoryChoice DirectoryChoice
+        public System.Enum OutputFlags
         {
             get;
             private set;

@@ -39,7 +39,7 @@ namespace Test5
         [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(Test4.MyDynamicLib));
 
-        [FileUtilities.DestinationDirectory(FileUtilities.EDirectoryChoice.TargetBuildDirectory)]
+        [FileUtilities.DestinationDirectory(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(MyDynamicLibTestApp));
     }
 }

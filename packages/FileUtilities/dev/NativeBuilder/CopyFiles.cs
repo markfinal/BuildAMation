@@ -16,20 +16,10 @@ namespace NativeBuilder
                 sourceModule.Options.FilterOutputPaths(sourceOutputPaths, sourceFiles);
             }
 
-            string destinationDirectory;
             Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
-            switch (copyFiles.DirectoryChoiceFlags)
-            {
-                case FileUtilities.EDirectoryChoice.TargetBuildDirectory:
-                    {
-                        // TODO: fix this
-                        destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[C.OutputFileFlags.Executable]);
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Undefined directory choice flags");
-            }
+            Opus.Core.StringArray destinationPaths = new Opus.Core.StringArray();
+            destinationModule.Options.FilterOutputPaths(copyFiles.DirectoryOutputFlags, destinationPaths);
+            string destinationDirectory = System.IO.Path.GetDirectoryName(destinationPaths[0]);
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
             string executablePath = tool.Executable(node.Target);
