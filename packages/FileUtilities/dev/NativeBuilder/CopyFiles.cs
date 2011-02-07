@@ -37,6 +37,16 @@ namespace NativeBuilder
             int returnValue = -1;
             foreach (string sourcePath in sourceFiles)
             {
+                string destinationFile = System.IO.Path.Combine(destinationDirectory, System.IO.Path.GetFileName(sourcePath));
+
+                bool requiresBuilding = NativeBuilder.RequiresBuilding(destinationFile, sourcePath);
+                if (!requiresBuilding)
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    returnValue = 0;
+                    continue;
+                }
+
                 System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {

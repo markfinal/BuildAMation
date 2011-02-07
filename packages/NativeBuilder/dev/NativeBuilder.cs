@@ -18,6 +18,35 @@ namespace NativeBuilder
             }
         }
 
+        public static bool RequiresBuilding(string outputPath, string inputPath)
+        {
+            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            {
+                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                {
+                    return true;
+                }
+            }
+
+            System.DateTime inputFileDate = System.IO.File.GetLastWriteTime(inputPath);
+            if (System.IO.File.Exists(outputPath))
+            {
+                System.DateTime outputFileDate = System.IO.File.GetLastWriteTime(outputPath);
+                if (inputFileDate.CompareTo(outputFileDate) > 0)
+                {
+                    Opus.Core.Log.DebugMessage("Input file '{0}' is newer than output file '{1}'. Requires build.", inputPath, outputPath);
+                    return true;
+                }
+            }
+            else
+            {
+                Opus.Core.Log.DebugMessage("Output file '{0}' does not exist. Requires build.", outputPath);
+                return true;
+            }
+
+            return false;
+        }
+
         // TODO: what if some of the paths passed in are directories? And what if they don't exist?
         public static bool RequiresBuilding(Opus.Core.StringArray outputFiles, Opus.Core.StringArray inputFiles)
         {
