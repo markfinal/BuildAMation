@@ -69,11 +69,11 @@ namespace C
                 System.Reflection.PropertyInfo toolchainOptionCollectionProperty = optionCollectionType.GetProperty("ToolchainOptionCollection");
                 if (null == toolchainOptionCollectionProperty)
                 {
-                    throw new Opus.Core.Exception("OptionCollection has no property called ToolchainOptionCollection");
+                    throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' has no property called 'ToolchainOptionCollection'", optionCollectionType.FullName), false);
                 }
                 if (!toolchainOptionCollectionProperty.CanRead)
                 {
-                    throw new Opus.Core.Exception("OptionCollection has no get method in the ToolchainOptionCollection property");
+                    throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' has no get method in the 'ToolchainOptionCollection' property", optionCollectionType.FullName), false);
                 }
                 System.Reflection.MethodInfo toolchainOptionCollectionPropertyGet = toolchainOptionCollectionProperty.GetGetMethod();
 

@@ -19,6 +19,8 @@ namespace FileUtilities
                                    typeof(ExportOptionsDelegateAttribute),
                                    typeof(LocalOptionsDelegateAttribute),
                                    typeof(CopyFilesOptionCollection))]
+    // TODO: kind of need a different interface to nested dependents which allows
+    // the system to inspect a module
     public class CopyFiles : Opus.Core.IModule, Opus.Core.INestedDependents
     {
         public void ExecuteOptionUpdate(Opus.Core.Target target)
@@ -43,7 +45,7 @@ namespace FileUtilities
             private set;
         }
 
-        public Opus.Core.ModuleCollection DestinationModules
+        public Opus.Core.IModule DestinationModule
         {
             get;
             private set;
@@ -66,7 +68,7 @@ namespace FileUtilities
             Opus.Core.Target incompleteTarget = new Opus.Core.Target(target.Platform, target.Configuration);
 
             Opus.Core.ModuleCollection sourceModules = new Opus.Core.ModuleCollection();
-            Opus.Core.ModuleCollection destinationModules = new Opus.Core.ModuleCollection();
+            Opus.Core.IModule destinationModule = null;
 
             System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.NonPublic |
                                                           System.Reflection.BindingFlags.Public |
@@ -102,27 +104,27 @@ namespace FileUtilities
                     Opus.Core.TypeArray destinationModuleTypes = field.GetValue(this) as Opus.Core.TypeArray;
                     foreach (System.Type destinationModuleType in destinationModuleTypes)
                     {
-                        Opus.Core.IModule destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, incompleteTarget);
+                        destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, incompleteTarget);
                         if (null == destinationModule)
                         {
                             throw new Opus.Core.Exception("Can't find destination module");
                         }
 
                         this.DirectoryChoiceFlags = destinationModuleAttribute.DirectoryChoice;
-
-                        destinationModules.Add(destinationModule);
                     }
                 }
             }
 
+#if false
             Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.AddRange(sourceModules);
             moduleCollection.AddRange(destinationModules);
+#endif
 
             this.SourceModules = sourceModules;
-            this.DestinationModules = destinationModules;
+            this.DestinationModule = destinationModule;
 
-            return moduleCollection;
+            return new Opus.Core.ModuleCollection();
         }
     }
 }

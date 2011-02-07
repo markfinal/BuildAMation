@@ -75,7 +75,7 @@ namespace Opus.Core
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
 
             Target targetUsed = target;
-            bool isComplete = targetUsed.IsComplete;
+            bool isComplete = targetUsed.IsFullyFormed;
             bool consistentToolChain = targetUsed.Toolchain == toolchainImplementation; // TODO: not sure if this one is necessary at this point as it should've been checked before this call
             if (!isComplete || !consistentToolChain)
             {
@@ -293,9 +293,6 @@ namespace Opus.Core
                     this.IncrementNodeRank(childNode, ranksToMove);
                 }
             }
-
-            // TODO: not sure about these - they cause empty rank collections to appear
-            /*
             if (node.ExternalDependents != null)
             {
                 foreach (DependencyNode dependentNode in node.ExternalDependents)
@@ -303,6 +300,8 @@ namespace Opus.Core
                     this.IncrementNodeRank(dependentNode, ranksToMove);
                 }
             }
+
+            // TODO: not sure about these - they cause empty rank collections to appear
             if (node.RequiredDependents != null)
             {
                 foreach (DependencyNode requiredNode in node.RequiredDependents)
@@ -310,7 +309,6 @@ namespace Opus.Core
                     this.IncrementNodeRank(requiredNode, ranksToMove);
                 }
             }
-             */
 
             this[node.Rank].Remove(node);
             this.AddDependencyNodeToCollection(node, node.Rank + ranksToMove);

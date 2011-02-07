@@ -9,7 +9,7 @@ namespace Opus.Core
     {
         public Target(EPlatform platform, EConfiguration configuration)
         {
-            this.IsComplete = false;
+            this.IsFullyFormed = false;
 
             this.Platform = platform;
             this.Configuration = configuration;
@@ -18,7 +18,7 @@ namespace Opus.Core
 
         public Target(Target incompleteTarget, string toolchainImplementation)
         {
-            this.IsComplete = true;
+            this.IsFullyFormed = true;
             this.Platform = incompleteTarget.Platform;
             this.Configuration = incompleteTarget.Configuration;
             this.Toolchain = toolchainImplementation;
@@ -28,7 +28,7 @@ namespace Opus.Core
 
         public Target(EPlatform platform, EConfiguration configuration, string toolchain)
         {
-            this.IsComplete = true;
+            this.IsFullyFormed = true;
             this.Platform = platform;
             this.Configuration = configuration;
             this.Toolchain = toolchain;
@@ -36,7 +36,7 @@ namespace Opus.Core
 
         private void AddToGlobalCollection()
         {
-            if (!this.IsComplete)
+            if (!this.IsFullyFormed)
             {
                 return;
             }
@@ -47,7 +47,7 @@ namespace Opus.Core
             }
         }
 
-        public bool IsComplete
+        public bool IsFullyFormed
         {
             get;
             private set;
@@ -57,7 +57,7 @@ namespace Opus.Core
         {
             get
             {
-                if (this.IsComplete)
+                if (this.IsFullyFormed)
                 {
                     string key = System.String.Format("{0}-{1}-{2}", this.Platform.ToString().ToLower(), this.Configuration.ToString().ToLower(), this.Toolchain);
                     return key;
@@ -77,6 +77,11 @@ namespace Opus.Core
             {
                 if (null == this.directoryName)
                 {
+                    if (!State.Has(this.Toolchain, "Version"))
+                    {
+                        throw new Exception(System.String.Format("No 'Version' property registered for toolchain '{0}'. Is there a missing Opus.Core.RegisterTargetToolChain attribute?", this.Toolchain), false);
+                    }
+
                     string versionString = State.Get(this.Toolchain, "Version") as string;
                     string directoryName = System.String.Format("{0}-{1}{2}-{3}", this.Platform.ToString().ToLower(), this.Toolchain, versionString, this.Configuration.ToString().ToLower());
                     this.directoryName = directoryName.ToLower();
@@ -144,7 +149,7 @@ namespace Opus.Core
 
         public object Clone()
         {
-            if (!this.IsComplete)
+            if (!this.IsFullyFormed)
             {
                 throw new Exception("Cannot clone an incomplete Target");
             }
@@ -205,7 +210,7 @@ namespace Opus.Core
                 return false;
             }
 
-            if (!lhs.IsComplete || !rhs.IsComplete)
+            if (!lhs.IsFullyFormed || !rhs.IsFullyFormed)
             {
                 bool platformMatch = lhs.Platform == rhs.Platform;
                 bool configurationMatch = lhs.Configuration == rhs.Configuration;

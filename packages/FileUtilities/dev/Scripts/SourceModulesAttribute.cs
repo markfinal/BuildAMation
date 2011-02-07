@@ -6,9 +6,10 @@
 namespace FileUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class SourceModulesAttribute : System.Attribute
+    public sealed class SourceModulesAttribute : Opus.Core.DependentModulesAttribute
     {
         public SourceModulesAttribute(object flags)
+            : base()
         {
             if (!flags.GetType().IsEnum)
             {

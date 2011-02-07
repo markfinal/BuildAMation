@@ -6,9 +6,10 @@
 namespace FileUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class DestinationDirectoryAttribute : System.Attribute
+    public sealed class DestinationDirectoryAttribute : Opus.Core.DependentModulesAttribute
     {
         public DestinationDirectoryAttribute(EDirectoryChoice directoryChoice)
+            : base()
         {
             this.DirectoryChoice = directoryChoice;
         }

@@ -372,25 +372,7 @@ namespace Opus.Core
                 return;
             }
 
-            System.Type filterType = filter.GetType();
-            int filterValue = System.Convert.ToInt32(filter);
-
-            Opus.Core.OutputPaths outputPaths = options.OutputPaths;
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
-            {
-                if (o.Key.GetType() != filterType)
-                {
-                    throw new Exception("Incompatible enum type comparison", false);
-                }
-
-                int keyValue = System.Convert.ToInt32(o.Key);
-
-                if (filterValue == (keyValue & filterValue))
-                //if (o.Key.Includes(filter))
-                {
-                    paths.Add(o.Value);
-                }
-            }
+            options.FilterOutputPaths(filter, paths);
         }
     }
 }

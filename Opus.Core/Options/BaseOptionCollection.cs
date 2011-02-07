@@ -139,5 +139,28 @@ namespace Opus.Core
                 this[optionName] = new Core.ReferenceTypeOption<Type>(value);
             }
         }
+
+        public void FilterOutputPaths(System.Enum filter, StringArray paths)
+        {
+            System.Type filterType = filter.GetType();
+            int filterValue = System.Convert.ToInt32(filter);
+
+            Opus.Core.OutputPaths outputPaths = this.OutputPaths;
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
+            {
+                if (o.Key.GetType() != filterType)
+                {
+                    throw new Exception("Incompatible enum type comparison", false);
+                }
+
+                int keyValue = System.Convert.ToInt32(o.Key);
+
+                if (keyValue == (filterValue & keyValue))
+                //if (o.Key.Includes(filter))
+                {
+                    paths.Add(o.Value);
+                }
+            }
+        }
     }
 }
