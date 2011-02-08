@@ -93,12 +93,20 @@ namespace Test13
 
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
-        public PublishDynamicLibraries()
+        public PublishDynamicLibraries(Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtCored4.dll");
-                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGuid4.dll");
+                if (Opus.Core.EConfiguration.Debug == target.Configuration)
+                {
+                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtCored4.dll");
+                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGuid4.dll");
+                }
+                else
+                {
+                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtCore4.dll");
+                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGui4.dll");
+                }
             }
             else if (Opus.Core.OSUtilities.IsUnixHosting)
             {
