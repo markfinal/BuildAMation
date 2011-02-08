@@ -121,6 +121,10 @@ namespace MakeFileBuilder
             }
 
             CommandLineProcessor.ICommandLineSupport commandLineOption = node.Module.Options as CommandLineProcessor.ICommandLineSupport;
+            if (null == commandLineOption)
+            {
+                throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' does not implement the CommandLineProcessor.ICommandLineSupport interface", node.Module.Options.GetType().ToString()), false);
+            }
             System.Collections.Generic.Dictionary<string, string> dirsToCreateMap = new System.Collections.Generic.Dictionary<string, string>();
             int dirCount = 0;
             foreach (string dir in commandLineOption.DirectoriesToCreate())
