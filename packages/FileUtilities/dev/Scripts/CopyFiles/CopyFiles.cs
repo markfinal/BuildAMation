@@ -75,12 +75,6 @@ namespace FileUtilities
             private set;
         }
 
-        public bool CreateDirectory
-        {
-            get;
-            private set;
-        }
-
         public Opus.Core.TypeArray IdentifyExternalDependencies(Opus.Core.Target target)
         {
             Opus.Core.TypeArray externalDependents = new Opus.Core.TypeArray();
@@ -165,7 +159,12 @@ namespace FileUtilities
 
                     Opus.Core.DirectoryCollection destinationDirectoryPaths = field.GetValue(this) as Opus.Core.DirectoryCollection;
                     this.DestinationDirectory = destinationDirectoryPaths[0].GetAbsolutePath();
-                    this.CreateDirectory = destinationDirectoryAttribute.CreateDirectory;
+
+                    this.UpdateOptions += delegate(Opus.Core.IModule dModule, Opus.Core.Target dTarget)
+                    {
+                        CopyFilesOptionCollection options = dModule.Options as CopyFilesOptionCollection;
+                        options.DestinationDirectory = this.DestinationDirectory;
+                    };
                 }
             }
 

@@ -10,13 +10,6 @@ namespace FileUtilities
     {
         public DestinationDirectoryPathAttribute()
         {
-            this.CreateDirectory = false;
-        }
-
-        public bool CreateDirectory
-        {
-            get;
-            set;
         }
     }
 }

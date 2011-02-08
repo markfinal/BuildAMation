@@ -29,6 +29,21 @@ namespace NativeBuilder
                 return null;
             }
 
+            if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
+            {
+                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
+
+                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                foreach (string directoryPath in directoriesToCreate)
+                {
+                    NativeBuilder.MakeDirectory(directoryPath);
+                }
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Linker options does not support command line translation");
+            }
+
             Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
             string destinationDirectory = null;
             if (null != destinationModule)
@@ -40,10 +55,6 @@ namespace NativeBuilder
             else
             {
                 destinationDirectory = copyFiles.DestinationDirectory;
-                if (copyFiles.CreateDirectory)
-                {
-                    NativeBuilder.MakeDirectory(destinationDirectory);
-                }
             }
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
