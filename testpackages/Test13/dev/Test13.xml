@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\dev\GoogleCode\Opus\branches\qtmoc\bin\Debug\Schema\OpusPackageDependency.xsd">
+<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\GoogleCode\Opus\branches\gather\bin\Debug\Schema\OpusPackageDependency.xsd">
   <Package Name="C" Version="dev" />
+  <Package Name="FileUtilities" Version="dev" />
   <Package Name="Gcc" Version="4.4" />
   <Package Name="MakeFileBuilder" Version="dev" />
   <Package Name="Mingw" Version="3.4.5" />

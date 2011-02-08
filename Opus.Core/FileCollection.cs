@@ -87,5 +87,19 @@ namespace Opus.Core
                 this.filePaths.Add(path);
             }
         }
+
+        public void AddRelativePaths(string baseDirectory, string relativePath)
+        {
+            if (!System.IO.Directory.Exists(baseDirectory))
+            {
+                throw new Exception(System.String.Format("Base directory '{0}' does not exist", baseDirectory), false);
+            }
+
+            StringArray paths = File.GetFiles(baseDirectory, relativePath);
+            foreach (string path in paths)
+            {
+                this.filePaths.Add(path);
+            }
+        }
     }
 }

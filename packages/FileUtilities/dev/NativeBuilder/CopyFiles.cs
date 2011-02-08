@@ -15,11 +15,36 @@ namespace NativeBuilder
             {
                 sourceModule.Options.FilterOutputPaths(sourceOutputPaths, sourceFiles);
             }
+            if (null != copyFiles.SourceFiles)
+            {
+                foreach (string path in copyFiles.SourceFiles)
+                {
+                    sourceFiles.Add(path);
+                }
+            }
+            if (0 == sourceFiles.Count)
+            {
+                Opus.Core.Log.DebugMessage("No files to copy");
+                success = true;
+                return null;
+            }
 
             Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
-            Opus.Core.StringArray destinationPaths = new Opus.Core.StringArray();
-            destinationModule.Options.FilterOutputPaths(copyFiles.DirectoryOutputFlags, destinationPaths);
-            string destinationDirectory = System.IO.Path.GetDirectoryName(destinationPaths[0]);
+            string destinationDirectory = null;
+            if (null != destinationModule)
+            {
+                Opus.Core.StringArray destinationPaths = new Opus.Core.StringArray();
+                destinationModule.Options.FilterOutputPaths(copyFiles.DirectoryOutputFlags, destinationPaths);
+                destinationDirectory = System.IO.Path.GetDirectoryName(destinationPaths[0]);
+            }
+            else
+            {
+                destinationDirectory = copyFiles.DestinationDirectory;
+                if (copyFiles.CreateDirectory)
+                {
+                    NativeBuilder.MakeDirectory(destinationDirectory);
+                }
+            }
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
             string executablePath = tool.Executable(node.Target);

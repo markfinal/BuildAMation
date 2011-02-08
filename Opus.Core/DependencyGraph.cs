@@ -207,6 +207,20 @@ namespace Opus.Core
                 foreach (DependencyNode node in rankNodes)
                 {
                     TypeArray externalDependentModuleTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
+                    TypeArray additionalExternalDependentModuleTypes = null;
+                    IIdentifyExternalDependencies identifyExternalDependencies = node.Module as IIdentifyExternalDependencies;
+                    if (null != identifyExternalDependencies)
+                    {
+                        additionalExternalDependentModuleTypes = identifyExternalDependencies.IdentifyExternalDependencies(node.Target);
+                        if (null != externalDependentModuleTypes)
+                        {
+                            externalDependentModuleTypes.AddRange(additionalExternalDependentModuleTypes);
+                        }
+                        else
+                        {
+                            externalDependentModuleTypes = additionalExternalDependentModuleTypes;
+                        }
+                    }
                     if (externalDependentModuleTypes != null)
                     {
                         foreach (System.Type dependentModuleType in externalDependentModuleTypes)
@@ -381,6 +395,7 @@ namespace Opus.Core
 
                             // TODO: would like to override the name in a better way
                             DependencyNode newNode = new DependencyNode(module, sourceOfDependency, sourceOfDependency.Target, childIndex, true);
+                            newNode.AddExternalDependent(node);
                             this.AddDependencyNodeToCollection(newNode, node.Rank - 1);
 
                             // module inherits the options from the source of the dependency

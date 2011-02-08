@@ -90,5 +90,28 @@ namespace Test13
             "-lQtGui"
         );
     }
+
+    class PublishDynamicLibraries : FileUtilities.CopyFiles
+    {
+        public PublishDynamicLibraries()
+        {
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtCored4.dll");
+                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGuid4.dll");
+            }
+            else if (Opus.Core.OSUtilities.IsUnixHosting)
+            {
+                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "libQtCore.so");
+                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "libQtGui.so");
+            }
+        }
+
+        [Opus.Core.SourceFiles]
+        Opus.Core.FileCollection sourceFiles = new Opus.Core.FileCollection();
+
+        [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
+        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(QtApplication));
+    }
 }
  

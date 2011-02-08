@@ -34,12 +34,30 @@ namespace Test5
         );
     }
 
-    class Publish : FileUtilities.CopyFiles
+    class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(Test4.MyDynamicLib));
 
-        [FileUtilities.DestinationDirectory(C.OutputFileFlags.Executable)]
+        [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(MyDynamicLibTestApp));
+    }
+
+    [Opus.Core.ModuleTargets("win.*-.*-.*")]
+    class PublishPDBs : FileUtilities.CopyFiles
+    {
+        public PublishPDBs()
+        {
+            this.destinationDirectory.Add(@"c:\PDBs", false);
+        }
+
+        [FileUtilities.SourceModules(C.OutputFileFlags.LinkerProgramDatabase)]
+        Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(
+            typeof(Test4.MyDynamicLib),
+            typeof(MyDynamicLibTestApp)
+        );
+
+        [FileUtilities.DestinationDirectoryPath(CreateDirectory=true)]
+        Opus.Core.DirectoryCollection destinationDirectory = new Opus.Core.DirectoryCollection();
     }
 }

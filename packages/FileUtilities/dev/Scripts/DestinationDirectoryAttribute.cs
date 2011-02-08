@@ -1,4 +1,4 @@
-// <copyright file="DestinationDirectoryAttribute.cs" company="Mark Final">
+// <copyright file="DestinationModuleDirectoryAttribute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>FileUtilities package</summary>
@@ -6,9 +6,9 @@
 namespace FileUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class DestinationDirectoryAttribute : Opus.Core.DependentModulesAttribute
+    public sealed class DestinationModuleDirectoryAttribute : Opus.Core.DependentModulesAttribute
     {
-        public DestinationDirectoryAttribute(object flags)
+        public DestinationModuleDirectoryAttribute(object flags)
             : base()
         {
             if (!flags.GetType().IsEnum)

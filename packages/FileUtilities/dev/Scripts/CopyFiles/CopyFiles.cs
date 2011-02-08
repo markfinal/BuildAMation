@@ -21,7 +21,7 @@ namespace FileUtilities
                                    typeof(CopyFilesOptionCollection))]
     // TODO: kind of need a different interface to nested dependents which allows
     // the system to inspect a module
-    public class CopyFiles : Opus.Core.IModule, Opus.Core.INestedDependents
+    public class CopyFiles : Opus.Core.IModule, Opus.Core.IIdentifyExternalDependencies
     {
         public void ExecuteOptionUpdate(Opus.Core.Target target)
         {
@@ -38,6 +38,12 @@ namespace FileUtilities
         }
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
+
+        public Opus.Core.FileCollection SourceFiles
+        {
+            get;
+            private set;
+        }
 
         public Opus.Core.ModuleCollection SourceModules
         {
@@ -63,8 +69,22 @@ namespace FileUtilities
             private set;
         }
 
-        public Opus.Core.ModuleCollection GetNestedDependents(Opus.Core.Target target)
+        public string DestinationDirectory
         {
+            get;
+            private set;
+        }
+
+        public bool CreateDirectory
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.TypeArray IdentifyExternalDependencies(Opus.Core.Target target)
+        {
+            Opus.Core.TypeArray externalDependents = new Opus.Core.TypeArray();
+
             Opus.Core.Target incompleteTarget = new Opus.Core.Target(target.Platform, target.Configuration);
 
             Opus.Core.ModuleCollection sourceModules = new Opus.Core.ModuleCollection();
@@ -82,6 +102,7 @@ namespace FileUtilities
                     SourceModulesAttribute sourceModuleAttribute = sourceModuleAttributes[0] as SourceModulesAttribute;
 
                     Opus.Core.TypeArray sourceModuleTypes = field.GetValue(this) as Opus.Core.TypeArray;
+                    externalDependents.AddRange(sourceModuleTypes);
                     foreach (System.Type sourceModuleType in sourceModuleTypes)
                     {
                         Opus.Core.IModule sourceModule = Opus.Core.ModuleUtilities.GetModule(sourceModuleType, incompleteTarget);
@@ -96,12 +117,30 @@ namespace FileUtilities
                     }
                 }
 
-                var destinationModuleAttributes = field.GetCustomAttributes(typeof(DestinationDirectoryAttribute), false);
+                var sourceFilesAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
+                if (1 == sourceFilesAttributes.Length)
+                {
+                    Opus.Core.SourceFilesAttribute sourceFilesAttribute = sourceFilesAttributes[0] as Opus.Core.SourceFilesAttribute;
+
+                    Opus.Core.FileCollection sourceFileCollection = field.GetValue(this) as Opus.Core.FileCollection;
+                    foreach (string file in sourceFileCollection)
+                    {
+                        if (!System.IO.File.Exists(file))
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("Source file '{0}' for module '{1}' does not exist", file, this.GetType().FullName), false);
+                        }
+                    }
+
+                    this.SourceFiles = sourceFileCollection;
+                }
+
+                var destinationModuleAttributes = field.GetCustomAttributes(typeof(DestinationModuleDirectoryAttribute), false);
                 if (1 == destinationModuleAttributes.Length)
                 {
-                    DestinationDirectoryAttribute destinationModuleAttribute = destinationModuleAttributes[0] as DestinationDirectoryAttribute;
+                    DestinationModuleDirectoryAttribute destinationModuleAttribute = destinationModuleAttributes[0] as DestinationModuleDirectoryAttribute;
 
                     Opus.Core.TypeArray destinationModuleTypes = field.GetValue(this) as Opus.Core.TypeArray;
+                    externalDependents.AddRange(destinationModuleTypes);
                     foreach (System.Type destinationModuleType in destinationModuleTypes)
                     {
                         if (null != destinationModule)
@@ -118,12 +157,22 @@ namespace FileUtilities
                         this.DirectoryOutputFlags = destinationModuleAttribute.OutputFlags;
                     }
                 }
+
+                var destinationDirectoryAttributes = field.GetCustomAttributes(typeof(DestinationDirectoryPathAttribute), false);
+                if (1 == destinationDirectoryAttributes.Length)
+                {
+                    DestinationDirectoryPathAttribute destinationDirectoryAttribute = destinationDirectoryAttributes[0] as DestinationDirectoryPathAttribute;
+
+                    Opus.Core.DirectoryCollection destinationDirectoryPaths = field.GetValue(this) as Opus.Core.DirectoryCollection;
+                    this.DestinationDirectory = destinationDirectoryPaths[0].GetAbsolutePath();
+                    this.CreateDirectory = destinationDirectoryAttribute.CreateDirectory;
+                }
             }
 
             this.SourceModules = sourceModules;
             this.DestinationModule = destinationModule;
 
-            return new Opus.Core.ModuleCollection();
+            return externalDependents;
         }
     }
 }
