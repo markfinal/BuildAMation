@@ -57,7 +57,7 @@ namespace Test5
             typeof(MyDynamicLibTestApp)
         );
 
-        [FileUtilities.DestinationDirectoryPath(CreateDirectory=true)]
+        [FileUtilities.DestinationDirectoryPath]
         Opus.Core.DirectoryCollection destinationDirectory = new Opus.Core.DirectoryCollection();
     }
 }
