@@ -18,5 +18,11 @@ namespace Opus.Core
         }
        
         void ExecuteOptionUpdate(Core.Target target);
+
+        DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
     }
 }

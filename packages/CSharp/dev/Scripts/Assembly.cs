@@ -21,6 +21,12 @@ namespace CSharp
             set;
         }
 
+        public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
     }
 }

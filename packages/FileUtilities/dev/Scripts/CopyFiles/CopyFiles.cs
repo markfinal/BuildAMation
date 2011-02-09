@@ -37,6 +37,12 @@ namespace FileUtilities
             set;
         }
 
+        public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         public Opus.Core.FileCollection SourceFiles

@@ -137,6 +137,12 @@ namespace CodeGenTest2
             set;
         }
 
+        public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         [Opus.Core.RequiredModules]

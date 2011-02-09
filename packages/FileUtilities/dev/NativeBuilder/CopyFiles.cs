@@ -44,8 +44,8 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
-            Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
             string destinationDirectory = null;
+            Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
             if (null != destinationModule)
             {
                 Opus.Core.StringArray destinationPaths = new Opus.Core.StringArray();

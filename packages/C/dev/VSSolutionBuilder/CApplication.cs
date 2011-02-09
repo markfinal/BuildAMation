@@ -118,7 +118,7 @@ namespace VSSolutionBuilder
             }
 
             success = true;
-            return null;
+            return projectData;
         }
     }
 }

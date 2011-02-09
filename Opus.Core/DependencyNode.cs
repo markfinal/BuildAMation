@@ -148,6 +148,7 @@ namespace Opus.Core
         {
             this.Initialize(module.GetType(), parent, target, childIndex, nestedModule);
             this.Module = module;
+            module.OwningNode = this;
         }
         
         public DependencyNode(System.Type moduleType, DependencyNode parent, Target target, int childIndex, bool nestedModule)
@@ -172,6 +173,7 @@ namespace Opus.Core
             }
 
             this.Module = module;
+            module.OwningNode = this;
         }
 
         public Target Target
