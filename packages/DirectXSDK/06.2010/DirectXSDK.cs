@@ -14,6 +14,11 @@ namespace DirectXSDK
 
         static Direct3D9()
         {
+            if (!Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                throw new Opus.Core.Exception("DirectX package only valid on Windows", false);
+            }
+
             const string registryPath = @"Microsoft\DirectX\Microsoft DirectX SDK (June 2010)";
             using (Microsoft.Win32.RegistryKey dxInstallLocation = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(registryPath))
             {
