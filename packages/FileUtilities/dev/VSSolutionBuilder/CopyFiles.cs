@@ -41,6 +41,7 @@ namespace VSSolutionBuilder
             {
                 commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"\n\r", sourceFile, destinationDirectory);
             }
+
             lock (vcPostBuildEventTool)
             {
                 const string attributeName = "CommandLine";
@@ -84,45 +85,7 @@ namespace VSSolutionBuilder
                     return null;
                 }
 
-#if true
                 PostBuildEventCopyFiles(sourceModule, destinationDirectory, sourceFiles);
-#else
-                Opus.Core.DependencyNode sourceModuleNode = sourceModule.OwningNode;
-                ProjectData nodeProjectData = sourceModuleNode.Data as ProjectData;
-
-                ProjectConfigurationCollection configCollection = nodeProjectData.Configurations;
-                string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(sourceModuleNode.Target);
-                ProjectConfiguration configuration = configCollection[configurationName];
-
-                string toolName = "VCPostBuildEventTool";
-                ProjectTool vcPostBuildEventTool = configuration.GetTool(toolName);
-                if (null == vcPostBuildEventTool)
-                {
-                    vcPostBuildEventTool = new ProjectTool(toolName);
-                    configuration.AddToolIfMissing(vcPostBuildEventTool);
-                }
-
-                System.Text.StringBuilder commandLine = new System.Text.StringBuilder();
-                commandLine.AppendFormat("IF NOT EXIST \"{0}\" MKDIR \"{0}\"\n\r", destinationDirectory);
-                foreach (string sourceFile in sourceFiles)
-                {
-                    commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"\n\r", sourceFile, destinationDirectory);
-                }
-                lock (vcPostBuildEventTool)
-                {
-                    const string attributeName = "CommandLine";
-                    if (vcPostBuildEventTool.HasAttribute(attributeName))
-                    {
-                        string currentValue = vcPostBuildEventTool[attributeName];
-                        currentValue += commandLine.ToString();
-                        vcPostBuildEventTool[attributeName] = currentValue;
-                    }
-                    else
-                    {
-                        vcPostBuildEventTool.AddAttribute(attributeName, commandLine.ToString());
-                    }
-                }
-#endif
             }
 
             if (null != copyFiles.SourceFiles)
