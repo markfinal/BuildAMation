@@ -33,6 +33,7 @@ namespace Test8
         );
     }
 
+    [Opus.Core.ModuleTargets(new string[] { "win.*-.*-.*" })]
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
