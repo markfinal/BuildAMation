@@ -61,7 +61,7 @@ namespace VisualCCommon
 
             this.WarningLevel = EWarningLevel.Level4;
 
-            this.DebugType = EDebugType.ProgramDatabase;
+            this.DebugType = EDebugType.Embedded;
 
             // TODO: can this be done via an option delegate from the VSSolutionBuilder?
             if (Opus.Core.State.BuilderName == "VSSolution")

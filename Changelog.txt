@@ -1,3 +1,5 @@
+10-Feb-2011 Issue #30 Default VisualC debug symbols is set to Embedded to avoid compilation errors with multithreaded builds and PDBs.
+
 10-Feb-2011 Each IModule now has an OwningNode property which is it's associated DependencyNode.
             Injected modules inherit the external dependency from the node that generated them. This ensures correct scheduling in multithreaded builds.
             Output paths are now a required feature of classes derived from Opus.Core.BaseOptionCollection, and are able to filter them via a specified enum whose values are bitfields.
@@ -8,7 +10,7 @@
             MakeFile construction has been overhauled with respect to whether Make variables or Targets are used.
             Added MakeFile generation support for CSharp Assembly modules.
             Added MakeFile generation support for Qt Moc.
-            Added FileUtilities package, with a CopyFiles module. This can be used, for example, to copy dependent dynamic libraries to an executable's directory.
+            Issue #8 Added FileUtilities package, with a CopyFiles module. This can be used, for example, to copy dependent dynamic libraries to an executable's directory.
 
 04-Feb-2011 Issue #28 The build scheduler was not taking external dependencies and required dependencies into account. In multi threaded builds, this resulted in an incorrect evaluation order of nodes in the graph.
 
