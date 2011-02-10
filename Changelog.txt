@@ -1,3 +1,5 @@
+10-Feb-2011 Added testpackages/Test14 to exercise a dynamic library linking against another dynamic library.
+
 10-Feb-2011 Issue #30 Default VisualC debug symbols is set to Embedded to avoid compilation errors with multithreaded builds and PDBs.
 
 10-Feb-2011 Each IModule now has an OwningNode property which is it's associated DependencyNode.
