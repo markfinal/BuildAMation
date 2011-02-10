@@ -12,13 +12,16 @@ namespace C
         public void Add(object toAdd)
         {
             string define = toAdd as string;
-            if (!this.defines.Contains(define))
+            lock (this.defines)
             {
-                this.defines.Add(define);
-            }
-            else
-            {
-                Opus.Core.Log.DebugMessage("The define '{0}' is already present", define);
+                if (!this.defines.Contains(define))
+                {
+                    this.defines.Add(define);
+                }
+                else
+                {
+                    Opus.Core.Log.DebugMessage("The define '{0}' is already present", define);
+                }
             }
         }
 

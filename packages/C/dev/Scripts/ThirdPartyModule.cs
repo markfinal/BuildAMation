@@ -31,6 +31,12 @@ namespace C
             }
         }
 
+        public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         public abstract Opus.Core.StringArray Libraries(Opus.Core.Target target);
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;

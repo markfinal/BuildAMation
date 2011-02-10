@@ -37,7 +37,7 @@ namespace Opus.Core
         {
             if (checkForExistence && !System.IO.Directory.Exists(absoluteDirectoryPath))
             {
-                throw new Opus.Core.Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath));
+                throw new Opus.Core.Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath), false);
             }
 
             PackageAndDirectoryPath pap = new PackageAndDirectoryPath(null, absoluteDirectoryPath);

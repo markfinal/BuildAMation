@@ -14,14 +14,13 @@ namespace NativeBuilder
             Qt.MocOptionCollection toolOptions = mocFile.Options as Qt.MocOptionCollection;
             string toolExePath = tool.Executable(target);
 
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-            inputFiles.Add(toolExePath);
-
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception(System.String.Format("Moc source file '{0}' does not exist", sourceFilePath));
             }
+
+            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
             Opus.Core.StringArray outputFiles = mocFile.Options.OutputPaths.Paths;

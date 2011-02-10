@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\dev\prototypes\Opus\dev\bin32\Debug\Schema\OpusPackageDependency.xsd">
+<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\GoogleCode\Opus\branches\gather\bin\Debug\Schema\OpusPackageDependency.xsd">
+  <Package Name="MakeFileBuilder" Version="dev" />
   <Package Name="Mingw" Version="3.4.5" />
   <Package Name="NativeBuilder" Version="dev" />
   <Package Name="OpenGLSDK" Version="dev" />

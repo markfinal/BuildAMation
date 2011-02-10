@@ -59,4 +59,14 @@ namespace CSharpTest1
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SimpleLibrary));
     }
+
+    class PublishAssembliesForExecutable2 : FileUtilities.CopyFiles
+    {
+        [FileUtilities.SourceModules(CSharp.OutputFileFlags.AssemblyFile)]
+        Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(SimpleLibrary));
+
+        [FileUtilities.DestinationModuleDirectory(CSharp.OutputFileFlags.AssemblyFile)]
+        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(Executable2));
+    }
+
 }

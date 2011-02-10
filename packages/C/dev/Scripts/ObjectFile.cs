@@ -22,6 +22,12 @@ namespace C
             set;
         }
 
+        public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         public void ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (null != this.UpdateOptions)

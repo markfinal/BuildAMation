@@ -5,16 +5,6 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class LinkerOutputPathFlag : C.LinkerOutputPathFlag
-    {
-        public static readonly LinkerOutputPathFlag ProgramDatabaseFile = new LinkerOutputPathFlag("ProgramDatabaseFile");
-
-        private LinkerOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions, VisualStudioProcessor.IVisualStudioSupport
     {
         private void SetDelegates(Opus.Core.Target target)
@@ -58,11 +48,11 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.Executable];
+                return this.OutputPaths[C.OutputFileFlags.Executable];
             }
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.Executable] = value;
+                this.OutputPaths[C.OutputFileFlags.Executable] = value;
             }
         }
 
@@ -70,12 +60,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary];
+                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
             }
 
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary] = value;
+                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
             }
         }
 
@@ -83,11 +73,11 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.MapFile];
+                return this.OutputPaths[C.OutputFileFlags.MapFile];
             }
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.MapFile] = value;
+                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
             }
         }
 
@@ -95,12 +85,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.ProgramDatabaseFile];
+                return this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase];
             }
 
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.ProgramDatabaseFile] = value;
+                this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = value;
             }
         }
 

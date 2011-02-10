@@ -33,6 +33,14 @@ namespace Opus.Core
             this.list.AddRange(itemsToAdd);
         }
 
+        public void AddRange(Array<T> array)
+        {
+            foreach (T item in array)
+            {
+                this.list.Add(item);
+            }
+        }
+
         public void Clear()
         {
             this.list.Clear();

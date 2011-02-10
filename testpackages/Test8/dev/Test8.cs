@@ -32,4 +32,14 @@ namespace Test8
             "dbghelp.lib"
         );
     }
+
+    [Opus.Core.ModuleTargets(new string[] { "win.*-.*-.*" })]
+    class PublishDynamicLibraries : FileUtilities.CopyFiles
+    {
+        [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
+        Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(Test7.ExplicitDynamicLibrary));
+
+        [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
+        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(ApplicationTest));
+    }
 }

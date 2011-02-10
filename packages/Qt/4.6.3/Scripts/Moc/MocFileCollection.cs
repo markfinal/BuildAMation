@@ -12,7 +12,7 @@ namespace Qt
                                    typeof(ExportMocOptionsDelegateAttribute),
                                    typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(MocOptionCollection))]
-    public abstract class MocFileCollection : Opus.Core.IModule, Opus.Core.INestedDependents
+    public abstract class MocFileCollection : Opus.Core.IModuleCollection
     {
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();
 
@@ -37,6 +37,12 @@ namespace Qt
         }
 
         public Opus.Core.BaseOptionCollection Options
+        {
+            get;
+            set;
+        }
+
+        public Opus.Core.DependencyNode OwningNode
         {
             get;
             set;

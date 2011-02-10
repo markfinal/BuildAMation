@@ -5,16 +5,6 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public class ArchiverOutputPathFlag : Opus.Core.FlagsBase
-    {
-        public static readonly ArchiverOutputPathFlag LibraryFile = new ArchiverOutputPathFlag("LibraryFile");
-
-        protected ArchiverOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     public abstract class ArchiverOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         protected virtual void InitializeDefaults(Opus.Core.DependencyNode node)

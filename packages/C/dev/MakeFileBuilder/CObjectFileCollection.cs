@@ -11,20 +11,31 @@ namespace MakeFileBuilder
         {
             Opus.Core.Target target = node.Target;
 
-            string dependents = null;
-            foreach (Opus.Core.DependencyNode node1 in node.Children)
+            Opus.Core.StringArray dependents = new Opus.Core.StringArray();
+            foreach (Opus.Core.DependencyNode childNode in node.Children)
             {
-                MakeFileData data = node1.Data as MakeFileData;
+                MakeFileData data = childNode.Data as MakeFileData;
                 // TODO: handle this better for more dependents
-                dependents += System.String.Format("$({0}) ", data.Variable);
+                if (null == data.Variable)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("MakeFile Variable for '{0}' is empty", childNode.UniqueModuleName), false);
+                }
+                dependents.Add(System.String.Format("$({0})", data.Variable));
             }
             if (null != node.ExternalDependents)
             {
-                foreach (Opus.Core.DependencyNode node1 in node.ExternalDependents)
+                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
                 {
-                    MakeFileData data = node1.Data as MakeFileData;
-                    // TODO: handle this better for more dependents
-                    dependents += System.String.Format("$({0}) ", data.Variable);
+                    if (null != dependentNode.Data)
+                    {
+                        MakeFileData data = dependentNode.Data as MakeFileData;
+                        if (null == data.Variable)
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("MakeFile Variable for '{0}' is empty", dependentNode.UniqueModuleName), false);
+                        }
+                        // TODO: handle this better for more dependents
+                        dependents.Add(System.String.Format("$({0})", data.Variable));
+                    }
                 }
             }
 
@@ -38,9 +49,9 @@ namespace MakeFileBuilder
             string makeFileVariableName = null;
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
             {
-                foreach (Opus.Core.DependencyNode node1 in node.Children)
+                foreach (Opus.Core.DependencyNode childNode in node.Children)
                 {
-                    MakeFileData data = node1.Data as MakeFileData;
+                    MakeFileData data = childNode.Data as MakeFileData;
                     if (!data.Included)
                     {
                         string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
@@ -50,9 +61,9 @@ namespace MakeFileBuilder
                 }
                 if (null != node.ExternalDependents)
                 {
-                    foreach (Opus.Core.DependencyNode node1 in node.ExternalDependents)
+                    foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
                     {
-                        MakeFileData data = node1.Data as MakeFileData;
+                        MakeFileData data = dependentNode.Data as MakeFileData;
                         if (!data.Included)
                         {
                             string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
@@ -66,7 +77,7 @@ namespace MakeFileBuilder
                 {
                     makeFileTargetName = System.String.Format("{0}_{1}", uniqueModuleName, target.Key);
                     makeFileWriter.WriteLine(".PHONY: {0}", makeFileTargetName);
-                    makeFileWriter.WriteLine("{0}: {1}", makeFileTargetName, dependents);
+                    makeFileWriter.WriteLine("{0}: {1}", makeFileTargetName, dependents.ToString(' '));
                 }
                 else
                 {

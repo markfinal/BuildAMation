@@ -5,14 +5,6 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public sealed class LinkerOutputPathFlag : C.LinkerOutputPathFlag
-    {
-        private LinkerOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions
     {
         private void SetDelegates(Opus.Core.Target target)
@@ -67,11 +59,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.Executable];
+                return this.OutputPaths[C.OutputFileFlags.Executable];
             }
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.Executable] = value;
+                this.OutputPaths[C.OutputFileFlags.Executable] = value;
             }
         }
 
@@ -79,11 +71,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary];
+                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
             }
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.StaticImportLibrary] = value;
+                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
             }
         }
 
@@ -91,11 +83,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             get
             {
-                return this.OutputPaths[LinkerOutputPathFlag.MapFile];
+                return this.OutputPaths[C.OutputFileFlags.MapFile];
             }
             set
             {
-                this.OutputPaths[LinkerOutputPathFlag.MapFile] = value;
+                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
             }
         }
 

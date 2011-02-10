@@ -5,13 +5,19 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public abstract class ObjectFileCollectionBase : Opus.Core.IModule, Opus.Core.INestedDependents
+    public abstract class ObjectFileCollectionBase : Opus.Core.IModuleCollection
     {
         protected System.Collections.Generic.List<ObjectFile> list = new System.Collections.Generic.List<ObjectFile>();
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         public Opus.Core.BaseOptionCollection Options
+        {
+            get;
+            set;
+        }
+
+        public Opus.Core.DependencyNode OwningNode
         {
             get;
             set;

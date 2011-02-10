@@ -5,16 +5,6 @@
 // <author>Mark Final</author>
 namespace Qt
 {
-    public sealed class MocOutputPathFlag : Opus.Core.FlagsBase
-    {
-        public static MocOutputPathFlag MocGeneratedSourceFile = new MocOutputPathFlag("MocGeneratedSourceFile");
-
-        private MocOutputPathFlag(string name)
-            : base(name)
-        {
-        }
-    }
-
     public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         public MocOptionCollection()
@@ -72,7 +62,7 @@ namespace Qt
         {
             MocOptionCollection options = sender as MocOptionCollection;
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            options.OutputPaths[MocOutputPathFlag.MocGeneratedSourceFile] = stringOption.Value;
+            options.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = stringOption.Value;
         }
 
         private static void MocOutputPathCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

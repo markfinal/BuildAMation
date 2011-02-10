@@ -31,6 +31,12 @@ namespace MakeFileBuilder
             set;
         }
 
+        private Opus.Core.StringArray InputVariables
+        {
+            get;
+            set;
+        }
+
         private Opus.Core.StringArray Rules
         {
             get;
@@ -96,6 +102,7 @@ namespace MakeFileBuilder
 
         public MakeFileBuilderRecipe(Opus.Core.DependencyNode node,
                                      Opus.Core.StringArray inputFiles,
+                                     Opus.Core.StringArray inputVariables,
                                      Opus.Core.StringArray rules,
                                      string topLevelMakeFilePath)
         {
@@ -104,6 +111,7 @@ namespace MakeFileBuilder
 
             this.OutputPaths = node.Module.Options.OutputPaths;
             this.InputFiles = inputFiles;
+            this.InputVariables = inputVariables;
             this.Rules = rules;
 
             this.ModulePrefixName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
@@ -113,6 +121,10 @@ namespace MakeFileBuilder
             }
 
             CommandLineProcessor.ICommandLineSupport commandLineOption = node.Module.Options as CommandLineProcessor.ICommandLineSupport;
+            if (null == commandLineOption)
+            {
+                throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' does not implement the CommandLineProcessor.ICommandLineSupport interface", node.Module.Options.GetType().ToString()), false);
+            }
             System.Collections.Generic.Dictionary<string, string> dirsToCreateMap = new System.Collections.Generic.Dictionary<string, string>();
             int dirCount = 0;
             foreach (string dir in commandLineOption.DirectoriesToCreate())
@@ -127,29 +139,48 @@ namespace MakeFileBuilder
                 this.DirectoriesToCreate = dirsToCreateMap;
             }
 
-            Opus.Core.Log.MessageAll("Output files:");
-            foreach (System.Collections.Generic.KeyValuePair<Opus.Core.FlagsBase, string> outputFile in this.OutputPaths)
+            Opus.Core.Log.DebugMessage("Output files:");
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputFile in this.OutputPaths)
             {
-                Opus.Core.Log.MessageAll("{0} = {1}", outputFile.Key, outputFile.Value);
+                Opus.Core.Log.DebugMessage("{0} = {1}", outputFile.Key, outputFile.Value);
             }
-            Opus.Core.Log.MessageAll("Input files:");
-            foreach (string inputFile in inputFiles)
+            if (null != inputFiles)
             {
-                Opus.Core.Log.MessageAll(inputFile);
+                Opus.Core.Log.DebugMessage("Input files:");
+                foreach (string inputFile in inputFiles)
+                {
+                    Opus.Core.Log.DebugMessage(inputFile);
+                }
             }
-            Opus.Core.Log.MessageAll("Rules:");
+            else
+            {
+                Opus.Core.Log.DebugMessage("There were no input files");
+            }
+            if (null != inputVariables)
+            {
+                Opus.Core.Log.DebugMessage("Input variables:");
+                foreach (string inputVariable in inputVariables)
+                {
+                    Opus.Core.Log.DebugMessage(inputVariable);
+                }
+            }
+            else
+            {
+                Opus.Core.Log.DebugMessage("There were no input variables");
+            }
+            Opus.Core.Log.DebugMessage("Rules:");
             foreach (string irule in rules)
             {
-                Opus.Core.Log.MessageAll(irule);
+                Opus.Core.Log.DebugMessage(irule);
             }
         }
 
-        public void Write(System.IO.TextWriter writer, Opus.Core.FlagsBase mainOutputFileFlag)
+        public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag)
         {
             Write(writer, mainOutputFileFlag, null);
         }
 
-        public void Write(System.IO.TextWriter writer, Opus.Core.FlagsBase mainOutputFileFlag, Opus.Core.FlagsBase secondaryOutputFileFlag)
+        public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag, System.Enum secondaryOutputFileFlag)
         {
             this.MainVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag.ToString());
 
@@ -217,16 +248,19 @@ namespace MakeFileBuilder
 
             writer.WriteLine("# Rules");
             string prerequisites = null;
-            foreach (string inputFile in this.InputFiles)
+            if (null != this.InputFiles)
             {
-                if (System.IO.File.Exists(inputFile))
+                foreach (string inputFile in this.InputFiles)
                 {
                     string relativeInputPath = Opus.Core.RelativePathUtilities.GetPath(inputFile, this.TopLevelMakeFilePath, "$(CURDIR)");
                     prerequisites += System.String.Format("{0} ", relativeInputPath);
                 }
-                else
+            }
+            if (null != this.InputVariables)
+            {
+                foreach (string inputVariable in this.InputVariables)
                 {
-                    prerequisites += System.String.Format("$({0}) ", inputFile);
+                    prerequisites += System.String.Format("$({0}) ", inputVariable);
                 }
             }
             if (null != this.MainVariableName)
@@ -242,7 +276,20 @@ namespace MakeFileBuilder
                 string refactoredRule = rule;
 
                 refactoredRule = refactoredRule.Replace(this.OutputPaths[mainOutputFileFlag], "$@");
-                refactoredRule = refactoredRule.Replace(this.InputFiles[0], "$<");
+                if (null != this.InputFiles)
+                {
+                    string inputFile = this.InputFiles[0];
+                    string quotedInputFile = System.String.Format("\"{0}\"", inputFile);
+                    if (refactoredRule.Contains(quotedInputFile))
+                    {
+                        string fileExtension = System.IO.Path.GetExtension(inputFile);
+                        refactoredRule = refactoredRule.Replace(quotedInputFile, System.String.Format("$(filter %{0},$^)", fileExtension));
+                    }
+                }
+                else if (null != this.InputVariables)
+                {
+                    refactoredRule = refactoredRule.Replace(this.InputVariables[0], "$<");
+                }
 
                 writer.WriteLine("\t{0}", refactoredRule);
             }

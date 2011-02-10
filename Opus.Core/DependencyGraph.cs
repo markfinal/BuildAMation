@@ -75,7 +75,7 @@ namespace Opus.Core
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
 
             Target targetUsed = target;
-            bool isComplete = targetUsed.IsComplete;
+            bool isComplete = targetUsed.IsFullyFormed;
             bool consistentToolChain = targetUsed.Toolchain == toolchainImplementation; // TODO: not sure if this one is necessary at this point as it should've been checked before this call
             if (!isComplete || !consistentToolChain)
             {
@@ -207,6 +207,20 @@ namespace Opus.Core
                 foreach (DependencyNode node in rankNodes)
                 {
                     TypeArray externalDependentModuleTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
+                    TypeArray additionalExternalDependentModuleTypes = null;
+                    IIdentifyExternalDependencies identifyExternalDependencies = node.Module as IIdentifyExternalDependencies;
+                    if (null != identifyExternalDependencies)
+                    {
+                        additionalExternalDependentModuleTypes = identifyExternalDependencies.IdentifyExternalDependencies(node.Target);
+                        if (null != externalDependentModuleTypes)
+                        {
+                            externalDependentModuleTypes.AddRange(additionalExternalDependentModuleTypes);
+                        }
+                        else
+                        {
+                            externalDependentModuleTypes = additionalExternalDependentModuleTypes;
+                        }
+                    }
                     if (externalDependentModuleTypes != null)
                     {
                         foreach (System.Type dependentModuleType in externalDependentModuleTypes)
@@ -293,9 +307,6 @@ namespace Opus.Core
                     this.IncrementNodeRank(childNode, ranksToMove);
                 }
             }
-
-            // TODO: not sure about these - they cause empty rank collections to appear
-            /*
             if (node.ExternalDependents != null)
             {
                 foreach (DependencyNode dependentNode in node.ExternalDependents)
@@ -310,7 +321,6 @@ namespace Opus.Core
                     this.IncrementNodeRank(requiredNode, ranksToMove);
                 }
             }
-             */
 
             this[node.Rank].Remove(node);
             this.AddDependencyNodeToCollection(node, node.Rank + ranksToMove);
@@ -385,6 +395,7 @@ namespace Opus.Core
 
                             // TODO: would like to override the name in a better way
                             DependencyNode newNode = new DependencyNode(module, sourceOfDependency, sourceOfDependency.Target, childIndex, true);
+                            newNode.AddExternalDependent(node);
                             this.AddDependencyNodeToCollection(newNode, node.Rank - 1);
 
                             // module inherits the options from the source of the dependency

@@ -148,6 +148,7 @@ namespace Opus.Core
         {
             this.Initialize(module.GetType(), parent, target, childIndex, nestedModule);
             this.Module = module;
+            module.OwningNode = this;
         }
         
         public DependencyNode(System.Type moduleType, DependencyNode parent, Target target, int childIndex, bool nestedModule)
@@ -172,6 +173,7 @@ namespace Opus.Core
             }
 
             this.Module = module;
+            module.OwningNode = this;
         }
 
         public Target Target
@@ -362,6 +364,17 @@ namespace Opus.Core
             string childName = childModuleType.Name;
             string childModuleName = System.String.Format("{0}.{1}{2}", parentName, childName, childIndex);
             return childModuleName;
+        }
+
+        public void FilterOutputPaths(System.Enum filter, StringArray paths)
+        {
+            Opus.Core.BaseOptionCollection options = this.Module.Options;
+            if (null == options)
+            {
+                return;
+            }
+
+            options.FilterOutputPaths(filter, paths);
         }
     }
 }

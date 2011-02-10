@@ -60,6 +60,12 @@ namespace Qt
             set;
         }
 
+        public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         public Opus.Core.ModuleCollection GetInjectedModules(Opus.Core.Target target)

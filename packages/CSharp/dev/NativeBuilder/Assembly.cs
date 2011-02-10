@@ -14,23 +14,10 @@ namespace NativeBuilder
 
             if (node.ExternalDependents != null)
             {
-                foreach (Opus.Core.DependencyNode externalDependent in node.ExternalDependents)
-                {
-                    if (externalDependent.Module is CSharp.Library)
-                    {
-                        CSharp.OptionCollection libraryOptions = externalDependent.Module.Options as CSharp.OptionCollection;
-                        options.References.Add(libraryOptions.OutputFilePath);
-                    }
-                    else if (externalDependent.Module is CSharp.Module)
-                    {
-                        CSharp.OptionCollection moduleOptions = externalDependent.Module.Options as CSharp.OptionCollection;
-                        options.References.Add(moduleOptions.OutputFilePath);
-                    }
-                    else
-                    {
-                        throw new Opus.Core.Exception(System.String.Format("Dependent of type '{0}' not supported", externalDependent.Module.GetType().ToString()));
-                    }
-                }
+                Opus.Core.StringArray dependentAssemblies = new Opus.Core.StringArray();
+                node.ExternalDependents.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, dependentAssemblies);
+
+                options.References.AddRange(dependentAssemblies);
             }
 
             Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
