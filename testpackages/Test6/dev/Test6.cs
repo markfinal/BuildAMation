@@ -4,8 +4,6 @@ namespace Test6
     // Define module classes here
     class ConditionalApplication : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         // TODO: derive C.SourceFiles from this attribute?
         [Opus.Core.SourceFiles]
         private SourceFiles sourceFiles;
@@ -57,14 +55,10 @@ namespace Test6
             compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test6"], @"include/platform");
         }
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }

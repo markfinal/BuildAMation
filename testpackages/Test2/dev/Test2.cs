@@ -26,8 +26,6 @@ namespace Test2
 
     sealed class Application : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         sealed class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -45,14 +43,10 @@ namespace Test2
             typeof(Test3.Library2)
         );
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }

@@ -3,11 +3,9 @@ namespace Test8
 {
     // Define module classes here
 
-    [Opus.Core.ModuleTargets(new string[] { "win.*-.*-.*" })]
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
     class ApplicationTest : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public ApplicationTest()
         {
             this.sourceFile.SetRelativePath(this, "source", "main.c");
@@ -21,19 +19,19 @@ namespace Test8
             typeof(Test7.ExplicitDynamicLibrary)
         );
 
-        [Opus.Core.DependentModules(WinVCTarget)]
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
         );
 
-        [C.RequiredLibraries(WinVCTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "dbghelp.lib"
         );
     }
 
-    [Opus.Core.ModuleTargets(new string[] { "win.*-.*-.*" })]
+    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows)]
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]

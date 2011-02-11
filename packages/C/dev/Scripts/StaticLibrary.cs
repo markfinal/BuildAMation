@@ -50,9 +50,9 @@ namespace C
                 if (attributes.Length > 0)
                 {
                     Opus.Core.ITargetFilters targetFilters = attributes[0] as Opus.Core.ITargetFilters;
-                    if (!target.MatchFilters(targetFilters.TargetFilters))
+                    if (!target.MatchFilters(targetFilters))
                     {
-                        Opus.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.TargetFilters, target.ToString());
+                        Opus.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.ToString(), target.ToString());
                         continue;
                     }
 

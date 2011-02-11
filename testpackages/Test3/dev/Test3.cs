@@ -15,7 +15,6 @@ namespace Test3
             [C.ExportCompilerOptionsDelegate]
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                //C.CompilerOptionCollection compilerOptions = module.Options as C.CompilerOptionCollection;
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test3"], @"include");
             }

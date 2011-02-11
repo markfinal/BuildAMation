@@ -1,3 +1,5 @@
+11-Feb-2011 Opus.Core.ITargetFilters changed so that Platform, Configuration and Toolchains are specified by named properties. Added abstract Opus.Core.BaseTargetFilteredAttribute which each of the filter attributes derives from; these default to filters of any platforms, any configurations and any toolchain. Specific filters can now be set up via optional named arguments in the attributes.
+
 10-Feb-2011 Added support for Unix/Gcc to Test14
 
 10-Feb-2011 Added testpackages/Test14 to exercise a dynamic library linking against another dynamic library.

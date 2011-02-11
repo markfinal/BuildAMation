@@ -158,6 +158,28 @@ namespace Opus.Core
             return clonedTarget;
         }
 
+#if true
+        public bool MatchFilters(ITargetFilters filterInterface)
+        {
+            if (0 == (filterInterface.Platform & this.Platform))
+            {
+                return false;
+            }
+            if (0 == (filterInterface.Configuration & this.Configuration))
+            {
+                return false;
+            }
+            foreach (string toolchain in filterInterface.Toolchains)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToString().ToLower(), toolchain.ToLower()))
+                {
+                    Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), this.Key);
+                    return true;
+                }
+            }
+            return false;
+        }
+#else
         public bool MatchFilters(string[] filters)
         {
             bool match = false;
@@ -190,6 +212,7 @@ namespace Opus.Core
 
             return match;
         }
+#endif
 
         public int CompareTo(object obj)
         {

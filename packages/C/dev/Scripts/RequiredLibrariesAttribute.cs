@@ -6,32 +6,11 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class RequiredLibrariesAttribute : System.Attribute, Opus.Core.ITargetFilters, Opus.Core.IFieldAttributeProcessor
+    public sealed class RequiredLibrariesAttribute : Opus.Core.BaseTargetFilteredAttribute, Opus.Core.IFieldAttributeProcessor
     {
-        public RequiredLibrariesAttribute()
-        {
-            this.TargetFilters = new string[] { ".*-.*-.*" };
-        }
-
-        public RequiredLibrariesAttribute(string filter)
-        {
-            this.TargetFilters = new string[] { filter };
-        }
-
-        public RequiredLibrariesAttribute(string[] filters)
-        {
-            this.TargetFilters = filters;
-        }
-
-        public string[] TargetFilters
-        {
-            get;
-            set;
-        }
-
         void Opus.Core.IFieldAttributeProcessor.Execute(object sender, Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (!target.MatchFilters(this.TargetFilters))
+            if (!target.MatchFilters(this))
             {
                 return;
             }

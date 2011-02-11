@@ -64,22 +64,22 @@ namespace Opus.Core
                         throw new Exception(System.String.Format("More than one attribute not supported on field '{0}'", fieldInfo.Name));
                     }
 
-                    string[] targetFilters = attributes[0].TargetFilters;
-                    bool targetFiltersMatch = target.MatchFilters(targetFilters);
+                    bool targetFiltersMatch = target.MatchFilters(attributes[0]);
                     if (targetFiltersMatch)
                     {
                         System.Type[] values = null;
-                        if (fieldInfo.GetValue(module) is Array<System.Type>)
+                        var fieldValue = fieldInfo.GetValue(module);
+                        if (fieldValue is Array<System.Type>)
                         {
-                            values = (fieldInfo.GetValue(module) as Array<System.Type>).ToArray();
+                            values = (fieldValue as Array<System.Type>).ToArray();
                         }
-                        else if (fieldInfo.GetValue(module) is System.Type[])
+                        else if (fieldValue is System.Type[])
                         {
-                            values = fieldInfo.GetValue(module) as System.Type[];
+                            values = fieldValue as System.Type[];
                         }
                         else
                         {
-                            throw new Exception(System.String.Format("{0} field in {1} must be of type System.Type[], Opus.Core.TypeArray or Opus.Core.Array<System.Type>", typeof(T).ToString(), module.ToString()), false);
+                            throw new Exception(System.String.Format("{0} field in {1} is of type {2} but must be of type System.Type[], Opus.Core.TypeArray or Opus.Core.Array<System.Type>", typeof(T).ToString(), module.ToString(), fieldValue.GetType()), false);
                         }
 
                         dependentsList.AddRange(values);

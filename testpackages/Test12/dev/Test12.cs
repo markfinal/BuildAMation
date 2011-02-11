@@ -4,10 +4,6 @@ namespace Test12
     // Define module classes here
     class MyOpenGLApplication : C.WindowsApplication
     {
-        private const string WinTarget = "win.*-.*-.*";
-        private const string UnixTarget = "unix.*-.*-.*";
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         class CommonSourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public CommonSourceFiles()
@@ -34,23 +30,21 @@ namespace Test12
 
         [Opus.Core.SourceFiles]
         CommonSourceFiles commonSourceFiles = new CommonSourceFiles();
-        [Opus.Core.SourceFiles(WinTarget)]
+        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]
         WindowsSourceFiles windowsSourceFiles = new WindowsSourceFiles();
-        [Opus.Core.SourceFiles(UnixTarget)]
+        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         UnixSourceFiles unixSourceFiles = new UnixSourceFiles();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray windowsVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        Opus.Core.TypeArray windowsVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray windowsVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib"
         );
 
-        [C.RequiredLibraries(UnixTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Unix)]
         Opus.Core.StringArray unixLibraries = new Opus.Core.StringArray(
             "-lX11"
         );

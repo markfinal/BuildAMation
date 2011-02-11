@@ -6,27 +6,33 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public class SourceFilesAttribute : System.Attribute, ITargetFilters
+    public class SourceFilesAttribute : BaseTargetFilteredAttribute
     {
+#if false
         public SourceFilesAttribute()
         {
-            this.TargetFilters = new string[] { ".*-.*-.*" };
+            this.Platform = EPlatform.All;
+            this.Configuration = EConfiguration.All;
+            this.Toolchains = new string[] { ".*" };
         }
 
-        public SourceFilesAttribute(string filter)
-        {
-            this.TargetFilters = new string[] { filter };
-        }
-
-        public SourceFilesAttribute(string[] filters)
-        {
-            this.TargetFilters = filters;
-        }
-
-        public string[] TargetFilters
+        public EPlatform Platform
         {
             get;
             set;
         }
+
+        public EConfiguration Configuration
+        {
+            get;
+            set;
+        }
+
+        public string[] Toolchains
+        {
+            get;
+            set;
+        }
+#endif
     }
 }

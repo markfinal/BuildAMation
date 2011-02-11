@@ -6,27 +6,33 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
-    public sealed class ModuleTargetsAttribute : System.Attribute, ITargetFilters
+    public sealed class ModuleTargetsAttribute : BaseTargetFilteredAttribute//System.Attribute, ITargetFilters
     {
+#if false
         public ModuleTargetsAttribute()
         {
-            this.TargetFilters = new string[] { ".*-.*-.*" };
+            this.Platform = EPlatform.All;
+            this.Configuration = EConfiguration.All;
+            this.Toolchains = new string[] { ".*" };
         }
 
-        public ModuleTargetsAttribute(string filter)
-        {
-            this.TargetFilters = new string[] { filter };
-        }
-
-        public ModuleTargetsAttribute(string[] filters)
-        {
-            this.TargetFilters = filters;
-        }
-
-        public string[] TargetFilters
+        public EPlatform Platform
         {
             get;
             set;
         }
+
+        public EConfiguration Configuration
+        {
+            get;
+            set;
+        }
+
+        public string[] Toolchains
+        {
+            get;
+            set;
+        }
+#endif
     }
 }

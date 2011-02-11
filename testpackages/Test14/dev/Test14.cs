@@ -27,7 +27,7 @@ namespace Test14
         [Opus.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
-        [Opus.Core.DependentModules("win.*-.*-visualc")]
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc"})]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 
@@ -58,7 +58,7 @@ namespace Test14
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(DynamicLibraryA));
 
-        [Opus.Core.DependentModules("win.*-.*-visualc")]
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 

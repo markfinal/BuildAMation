@@ -14,8 +14,6 @@ namespace Test10
 
     class MyDynamicLibrary : C.DynamicLibrary
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public MyDynamicLibrary()
         {
             this.sourceFile.SetRelativePath(this, "source", "dylib.c");
@@ -24,21 +22,15 @@ namespace Test10
         [Opus.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[]{"visualc"})]
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class MyStandaloneApp : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public MyStandaloneApp()
         {
             this.sourceFile.SetRelativePath(this, "source", "standaloneapp.c");
@@ -48,25 +40,17 @@ namespace Test10
         C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(MyStaticLibrary)
-        );
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyStaticLibrary));
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray windowsDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray windowsDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class DllDependentApp : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public DllDependentApp()
         {
             this.sourceFile.SetRelativePath(this, "source", "dlldependentapp.c");
@@ -76,19 +60,13 @@ namespace Test10
         C.ObjectFile sourceFile = new C.ObjectFile();
 
         [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(MyDynamicLibrary)
-        );
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyDynamicLibrary));
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray windowsDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray windowsDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class PublishDynamicLibraries : FileUtilities.CopyFiles

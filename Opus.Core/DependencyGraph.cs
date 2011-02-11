@@ -85,9 +85,9 @@ namespace Opus.Core
             ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)
             {
-                if (!targetUsed.MatchFilters(moduleTargetFilters[0].TargetFilters))
+                if (!targetUsed.MatchFilters(moduleTargetFilters[0]))
                 {
-                    Log.DebugMessage("Module '{0}' with filters '{1}' does not match target '{2}'", moduleType.ToString(), moduleTargetFilters[0].TargetFilters, targetUsed.ToString());
+                    Log.DebugMessage("Module '{0}' with filters '{1}' does not match target '{2}'", moduleType.ToString(), moduleTargetFilters[0].ToString(), targetUsed.ToString());
                     return null;
                 }
             }

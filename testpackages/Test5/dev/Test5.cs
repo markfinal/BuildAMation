@@ -4,8 +4,6 @@ namespace Test5
     // Define module classes here
     class MyDynamicLibTestApp : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -23,15 +21,11 @@ namespace Test5
             typeof(Test4.MyStaticLib)
         );
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class PublishDynamicLibraries : FileUtilities.CopyFiles
@@ -43,7 +37,7 @@ namespace Test5
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(MyDynamicLibTestApp));
     }
 
-    [Opus.Core.ModuleTargets("win.*-.*-.*")]
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
     class PublishPDBs : FileUtilities.CopyFiles
     {
         public PublishPDBs()

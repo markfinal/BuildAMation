@@ -44,21 +44,7 @@ namespace Opus
 
             foreach (string platform in this.Platforms)
             {
-                Core.EPlatform p = Core.EPlatform.Invalid;
-                foreach (Core.EPlatform plat in System.Enum.GetValues(typeof(Core.EPlatform)))
-                {
-                    if (plat.ToString().ToLower() == platform)
-                    {
-                        p = plat;
-                        break;
-                    }
-                }
-
-                if (Core.EPlatform.Invalid == p)
-                {
-                    throw new Core.Exception(System.String.Format("Platform '{0}' not recognized", platform));
-                }
-
+                Core.EPlatform p = Core.Platform.FromString(platform);
                 if (buildPlatforms.Contains(p))
                 {
                     throw new Core.Exception(System.String.Format("Platform '{0}' already specified", platform), false);

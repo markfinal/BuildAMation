@@ -39,7 +39,7 @@ namespace RenderTextureAndProcessor
         [C.HeaderFiles]
         Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
-        [C.RequiredLibraries("win32-.*-visualc")]
+        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.StringArray requiredLibrariesVC = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "GDI32.lib",
@@ -49,23 +49,21 @@ namespace RenderTextureAndProcessor
             "SHELL32.lib"
         );
 
-        [C.RequiredLibraries("win32-.*-mingw")]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "mingw" })]
         Opus.Core.StringArray requiredLibrariesMingw = new Opus.Core.StringArray(
             "-lws2_32",
             "-lopengl32",
             "-lgdi32"
         );
 
-        [Opus.Core.DependentModules("win32-.*-visualc")]
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK),
             typeof(OpenGLSDK.OpenGL)
         );
 
         [Opus.Core.RequiredModules]
-        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(
-            typeof(TextureProcessor)
-        );
+        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(TextureProcessor));
     }
 
     class TextureProcessor : C.Application
@@ -99,16 +97,14 @@ namespace RenderTextureAndProcessor
             }
         }
 
-        [C.RequiredLibraries("win32-.*-visualc")]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray requiredLibrariesVC = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "WS2_32.lib"
         );
 
-        [C.RequiredLibraries("win32-.*-mingw")]
-        Opus.Core.StringArray requiredLibrariesMingw = new Opus.Core.StringArray(
-            "-lws2_32"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "mingw" })]
+        Opus.Core.StringArray requiredLibrariesMingw = new Opus.Core.StringArray("-lws2_32");
 
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
@@ -116,9 +112,7 @@ namespace RenderTextureAndProcessor
         [C.HeaderFiles]
         Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
-        [Opus.Core.DependentModules("win.*-.*-visualc")]
-        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 }

@@ -44,21 +44,7 @@ namespace Opus
 
             foreach (string configuration in this.Configurations)
             {
-                Core.EConfiguration c = Core.EConfiguration.Invalid;
-                foreach (Core.EConfiguration config in System.Enum.GetValues(typeof(Core.EConfiguration)))
-                {
-                    if (config.ToString().ToLower() == configuration)
-                    {
-                        c = config;
-                        break;
-                    }
-                }
-
-                if (Core.EConfiguration.Invalid == c)
-                {
-                    throw new Core.Exception(System.String.Format("Configuration '{0}' not recognized", configuration), false);
-                }
-
+                Core.EConfiguration c = Core.Configuration.FromString(configuration);
                 if (buildConfigurations.Contains(c))
                 {
                     throw new Core.Exception(System.String.Format("Configuration '{0}' already specified", configuration), false);

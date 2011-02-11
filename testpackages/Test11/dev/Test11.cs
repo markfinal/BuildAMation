@@ -4,8 +4,6 @@ namespace Test11
     // Define module classes here
     class CrossPlatformApplication : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public CrossPlatformApplication()
         {
             this.commonSourceFile.SetRelativePath(this, "source", "main.c");
@@ -16,20 +14,16 @@ namespace Test11
         [Opus.Core.SourceFiles]
         C.ObjectFile commonSourceFile = new C.ObjectFile();
 
-        [Opus.Core.SourceFiles("win.*-.*-.*")]
+        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]
         C.ObjectFile winSourceFile = new C.ObjectFile();
 
-        [Opus.Core.SourceFiles("unix.*-.*-.*")]
+        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         C.ObjectFile unixSourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray WinVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
+        Opus.Core.TypeArray WinVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray WinVCLibraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray WinVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }

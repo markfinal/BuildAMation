@@ -49,7 +49,7 @@ namespace Direct3DTriangle
             typeof(WindowsSDK.WindowsSDK)
         );
 
-        [C.RequiredLibraries(winVCTarget)]
+        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib",

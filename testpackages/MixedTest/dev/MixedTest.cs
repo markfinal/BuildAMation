@@ -26,12 +26,10 @@ namespace MixedTest
         [Opus.Core.RequiredModules]
         Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CSharpTest));
 
-        [Opus.Core.DependentModules("win.*-.*-visualc")]
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries("win.*-.*-visualc")]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }

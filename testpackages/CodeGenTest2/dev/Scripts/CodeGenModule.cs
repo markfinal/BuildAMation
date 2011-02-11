@@ -146,9 +146,7 @@ namespace CodeGenTest2
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         [Opus.Core.RequiredModules]
-        protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(
-            typeof(CodeGeneratorTool)
-        );
+        protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CodeGeneratorTool));
 
         public Opus.Core.ModuleCollection GetInjectedModules(Opus.Core.Target target)
         {

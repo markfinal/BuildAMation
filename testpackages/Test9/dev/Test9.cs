@@ -105,10 +105,8 @@ namespace Test9
         [Opus.Core.SourceFiles]
         CPlusPlusSourceFiles cppSourceFiles = new CPlusPlusSourceFiles();
 
-        [Opus.Core.DependentModules(new string[] { "win.*-.*-visualc" })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 
     class CStaticLibraryFromFile : C.StaticLibrary
@@ -205,8 +203,6 @@ namespace Test9
 
     class CDynamicLibraryFromFile : C.DynamicLibrary
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public CDynamicLibraryFromFile()
         {
             this.sourceFile.SetRelativePath(this, "source", "library_c.c");
@@ -222,21 +218,15 @@ namespace Test9
         [Opus.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class CDynamicLibraryFromCollection : C.DynamicLibrary
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -255,21 +245,15 @@ namespace Test9
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class CppDynamicLibraryFromFile : C.DynamicLibrary
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         public CppDynamicLibraryFromFile()
         {
             this.sourceFile.SetRelativePath(this, "source", "library_cpp.c");
@@ -292,21 +276,15 @@ namespace Test9
         [Opus.Core.SourceFiles]
         C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
     class CppDynamicLibaryFromCollection : C.DynamicLibrary
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
@@ -332,14 +310,10 @@ namespace Test9
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }

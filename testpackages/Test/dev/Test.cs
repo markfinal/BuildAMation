@@ -87,8 +87,6 @@ namespace Test
 
     sealed class TestApplication1 : C.Application
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         sealed class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -119,22 +117,16 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
-    [Opus.Core.ModuleTargets(new string[] { "win.*-.*-.*" })]
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
     sealed class TestWindowsApplication1 : C.WindowsApplication
     {
-        private const string WinVCTarget = "win.*-.*-visualc";
-
         sealed class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -146,14 +138,10 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(new string[] { "win.*-.*-visualc" })]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }

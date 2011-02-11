@@ -4,9 +4,6 @@ namespace OpenGLUniformBufferTest
     // Define module classes here
     class GLUniformBufferTest : C.WindowsApplication
     {
-        private const string winVCTarget = "win.*-.*-visualc";
-        private const string winMingwTarget = "win.*-.*-mingw";
-
         public GLUniformBufferTest()
         {
             this.headerFiles.AddRelativePaths(this, "source", "*.h");
@@ -50,7 +47,7 @@ namespace OpenGLUniformBufferTest
             typeof(GLEW.GLEWStatic)
         );
 
-        [C.RequiredLibraries(winVCTarget)]
+        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib",
@@ -58,7 +55,7 @@ namespace OpenGLUniformBufferTest
             "OPENGL32.lib"
         );
 
-        [C.RequiredLibraries(winMingwTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "mingw" })]
         Opus.Core.StringArray winMingwLibraries = new Opus.Core.StringArray(
             "-lgdi32",
             "-lopengl32"

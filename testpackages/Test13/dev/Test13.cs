@@ -4,6 +4,7 @@ namespace Test13
     // Define module classes here
     class QtApplication : C.Application
     {
+#if false
         private const string WinTarget = "win.*-.*-.*";
         private const string WinVCTarget = "win.*-.*-visualc";
         private const string WinVCDebugTarget = "win.*-debug-visualc";
@@ -12,6 +13,7 @@ namespace Test13
         private const string WinMingwDebugTarget = "win.*-debug-mingw";
         private const string WinMingwOptimizedTarget = "win.*-optimized-mingw";
         private const string UnixGccTarget = "unix.*-.*-gcc";
+#endif
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
@@ -46,45 +48,39 @@ namespace Test13
         SourceFiles sourceFiles = new SourceFiles();
 
         [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(Qt.Qt)
-        );
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(Qt.Qt));
 
-        [Opus.Core.DependentModules(WinVCTarget)]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(WinMingwDebugTarget)]
+        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Configuration=Opus.Core.EConfiguration.Debug, Toolchains=new string[] { "mingw" })]
         Opus.Core.StringArray winMingwDebugLibraries = new Opus.Core.StringArray(
             "-lQtCored4",
             "-lQtGuid4"
         );
 
-        [C.RequiredLibraries(WinMingwOptimizedTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, Toolchains = new string[] { "mingw" })]
         Opus.Core.StringArray winMingwOptimizedLibraries = new Opus.Core.StringArray(
             "-lQtCore4",
             "-lQtGui4"
         );
 
-        [C.RequiredLibraries(WinVCTarget)]
-        Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
-            "KERNEL32.lib"
-        );
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");
 
-        [C.RequiredLibraries(WinVCDebugTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration=Opus.Core.EConfiguration.Debug, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray winVCDebugLibraries = new Opus.Core.StringArray(
             "QtCored4.lib",
             "QtGuid4.lib"
         );
 
-        [C.RequiredLibraries(WinVCOptimizedTarget)]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray winVCOptimizedLibraries = new Opus.Core.StringArray(
             "QtCore4.lib",
             "QtGui4.lib"
         );
 
-        [C.RequiredLibraries(UnixGccTarget)]
+        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Unix, Toolchains=new string[] { "gcc" })]
         Opus.Core.StringArray unixGCCLibraries = new Opus.Core.StringArray(
             "-lQtCore",
             "-lQtGui"

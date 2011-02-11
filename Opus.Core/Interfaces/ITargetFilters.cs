@@ -7,7 +7,19 @@ namespace Opus.Core
 {
     public interface ITargetFilters
     {
-        string[] TargetFilters
+        EPlatform Platform
+        {
+            get;
+            set;
+        }
+
+        EConfiguration Configuration
+        {
+            get;
+            set;
+        }
+
+        string[] Toolchains
         {
             get;
             set;

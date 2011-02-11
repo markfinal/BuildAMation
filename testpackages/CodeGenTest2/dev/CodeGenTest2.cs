@@ -36,17 +36,13 @@ namespace CodeGenTest2
             }
 
             [Opus.Core.DependentModules]
-            Opus.Core.TypeArray vcDependencies = new Opus.Core.TypeArray(
-                typeof(TestAppGeneratedSource)
-            );
+            Opus.Core.TypeArray vcDependencies = new Opus.Core.TypeArray(typeof(TestAppGeneratedSource));
         }
 
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
 
-        [Opus.Core.DependentModules("win.*-.*-visualc")]
-        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc"})]
+        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 }
