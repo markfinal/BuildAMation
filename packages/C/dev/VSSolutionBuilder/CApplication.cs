@@ -24,7 +24,7 @@ namespace VSSolutionBuilder
                     string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), node.ModuleName);
                     projectPathName += ".vcproj";
 
-                    projectData = new ProjectData(node.ModuleName, projectPathName);
+                    projectData = new ProjectData(node.ModuleName, projectPathName, node.Package.Directory);
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(node.ModuleName, projectData);
                 }

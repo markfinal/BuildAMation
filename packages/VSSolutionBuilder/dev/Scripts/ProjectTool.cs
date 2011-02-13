@@ -89,54 +89,54 @@ namespace VSSolutionBuilder
             return base.GetHashCode();
         }
 
-        public void Serialize(System.Xml.XmlWriter xmlWriter, ProjectConfiguration configuration, System.Uri projectUri)
+        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, ProjectConfiguration configuration, System.Uri projectUri)
         {
             string projectName = configuration.Project.Name;
             string outputDirectory = configuration.OutputDirectory;
             string intermediateDirectory = configuration.IntermediateDirectory;
 
-            xmlWriter.WriteStartElement("Tool");
+            System.Xml.XmlElement toolElement = document.CreateElement("Tool");
+
+            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
-                foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
-                {
-                    string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
-                    xmlWriter.WriteAttributeString(attribute.Key, value);
-                }
+                string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                toolElement.SetAttribute(attribute.Key, value);
             }
-            xmlWriter.WriteEndElement();
+
+            return toolElement;
         }
 
-        public void Serialize(System.Xml.XmlWriter xmlWriter, ProjectFileConfiguration configuration, System.Uri projectUri, ProjectTool parent)
+        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, ProjectFileConfiguration configuration, System.Uri projectUri, ProjectTool parent)
         {
             string projectName = configuration.Configuration.Project.Name;
             string outputDirectory = configuration.Configuration.OutputDirectory;
             string intermediateDirectory = configuration.Configuration.IntermediateDirectory;
 
-            xmlWriter.WriteStartElement("Tool");
-            {
-                foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
-                {
-                    // this is necessary in case the parent (from the ProjectConfiguration) is
-                    // a C interface, while the ProjectFileConfiguration tool is C++
-                    if ((parent != null) && (parent.HasAttribute(attribute.Key)))
-                    {
-                        string thisValue = attribute.Value;
-                        string parentValue = parent[attribute.Key];
+            System.Xml.XmlElement toolElement = document.CreateElement("Tool");
 
-                        if ("Name" == attribute.Key || thisValue != parentValue)
-                        {
-                            thisValue = VSSolutionBuilder.RefactorPathForVCProj(thisValue, outputDirectory, intermediateDirectory, projectName, projectUri);
-                            xmlWriter.WriteAttributeString(attribute.Key, thisValue);
-                        }
-                    }
-                    else
+            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            {
+                // this is necessary in case the parent (from the ProjectConfiguration) is
+                // a C interface, while the ProjectFileConfiguration tool is C++
+                if ((parent != null) && (parent.HasAttribute(attribute.Key)))
+                {
+                    string thisValue = attribute.Value;
+                    string parentValue = parent[attribute.Key];
+
+                    if ("Name" == attribute.Key || thisValue != parentValue)
                     {
-                        string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
-                        xmlWriter.WriteAttributeString(attribute.Key, value);
+                        thisValue = VSSolutionBuilder.RefactorPathForVCProj(thisValue, outputDirectory, intermediateDirectory, projectName, projectUri);
+                        toolElement.SetAttribute(attribute.Key, thisValue);
                     }
                 }
+                else
+                {
+                    string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                    toolElement.SetAttribute(attribute.Key, value);
+                }
             }
-            xmlWriter.WriteEndElement();
+
+            return toolElement;
         }
     }
 }

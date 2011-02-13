@@ -32,7 +32,7 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public void Serialize(System.Xml.XmlWriter xmlWriter, System.Uri projectUri)
+        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, System.Uri projectUri)
         {
             ProjectTool parentTool = null;
             foreach (ProjectTool tool in this.Configuration.Tools)
@@ -48,28 +48,28 @@ namespace VSSolutionBuilder
             {
                 if (this.Tool.Equals(parentTool) && !this.ExcludedFromBuild)
                 {
-                    return;
+                    return null;
                 }
             }
 
-            xmlWriter.WriteStartElement("FileConfiguration");
+            System.Xml.XmlElement fileConfigurationElement = document.CreateElement("FileConfiguration");
+
+            fileConfigurationElement.SetAttribute("Name", this.Configuration.Name);
+            if (this.ExcludedFromBuild)
             {
-                xmlWriter.WriteAttributeString("Name", this.Configuration.Name);
-                if (this.ExcludedFromBuild)
-                {
-                    xmlWriter.WriteAttributeString("ExcludedFromBuild", this.ExcludedFromBuild.ToString());
+                fileConfigurationElement.SetAttribute("ExcludedFromBuild", this.ExcludedFromBuild.ToString());
 
-                    if (this.Tool.AttributeCount > 1) // always 1 because of the name
-                    {
-                        this.Tool.Serialize(xmlWriter, this, projectUri, parentTool);
-                    }
-                }
-                else
+                if (this.Tool.AttributeCount > 1) // always 1 because of the name
                 {
-                    this.Tool.Serialize(xmlWriter, this, projectUri, parentTool);
+                    fileConfigurationElement.AppendChild(this.Tool.Serialize(document, this, projectUri, parentTool));
                 }
             }
-            xmlWriter.WriteEndElement();
+            else
+            {
+                fileConfigurationElement.AppendChild(this.Tool.Serialize(document, this, projectUri, parentTool));
+            }
+
+            return fileConfigurationElement;
         }
     }
 }

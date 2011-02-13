@@ -59,5 +59,20 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception(System.String.Format("There is no ProjectFile for source path '{0}'", sourcePathName));
             }
         }
+
+        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, string filterName, System.Uri projectUri, System.Uri packageDirectoryUri)
+        {
+            System.Xml.XmlElement sourceFilesFilterElement = document.CreateElement("Filter");
+            sourceFilesFilterElement.SetAttribute("Name", filterName);
+
+            foreach (ProjectFile file in this.list)
+            {
+                string fileRelativeToPackage = Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, packageDirectoryUri);
+                string[] splitFileDirs = fileRelativeToPackage.Split(System.IO.Path.DirectorySeparatorChar);
+                file.Serialize(document, sourceFilesFilterElement, projectUri, splitFileDirs, 0);
+            }
+
+            return sourceFilesFilterElement;
+        }
     }
 }

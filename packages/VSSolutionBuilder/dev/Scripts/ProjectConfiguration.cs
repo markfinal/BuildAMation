@@ -122,7 +122,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void Serialize(System.Xml.XmlWriter xmlWriter, System.Uri projectUri)
+        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, System.Uri projectUri)
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {
@@ -133,23 +133,23 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception("Project character set is undefined");
             }
 
-            xmlWriter.WriteStartElement("Configuration");
-            {
-                xmlWriter.WriteAttributeString("Name", this.Name);
-                xmlWriter.WriteAttributeString("OutputDirectory", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
-                xmlWriter.WriteAttributeString("IntermediateDirectory", Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri));
-                xmlWriter.WriteAttributeString("ConfigurationType", this.Type.ToString("D"));
-                xmlWriter.WriteAttributeString("CharacterSet", this.CharacterSet.ToString("D"));
+            System.Xml.XmlElement configurationElement = document.CreateElement("Configuration");
 
-                if (this.Tools.Count > 0)
+            configurationElement.SetAttribute("Name", this.Name);
+            configurationElement.SetAttribute("OutputDirectory", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
+            configurationElement.SetAttribute("IntermediateDirectory", Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri));
+            configurationElement.SetAttribute("ConfigurationType", this.Type.ToString("D"));
+            configurationElement.SetAttribute("CharacterSet", this.CharacterSet.ToString("D"));
+
+            if (this.Tools.Count > 0)
+            {
+                foreach (ProjectTool tool in this.Tools)
                 {
-                    foreach (ProjectTool tool in this.Tools)
-                    {
-                        tool.Serialize(xmlWriter, this, projectUri);
-                    }
+                    configurationElement.AppendChild(tool.Serialize(document, this, projectUri));
                 }
             }
-            xmlWriter.WriteEndElement();
+
+            return configurationElement;
         }
     }
 }
