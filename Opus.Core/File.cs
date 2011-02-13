@@ -123,13 +123,13 @@ namespace Opus.Core
                     throw new Opus.Core.Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", baseDir, pathSegments[i]));
                 }
 
-                string[] files = System.IO.Directory.GetFiles(baseDir, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.AllDirectories);
+                string[] files = System.IO.Directory.GetFiles(baseDir, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
                 return new StringArray(files);
             }
             else
             {
                 string relativePath = CombinePaths(null, pathSegments);
-                string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.AllDirectories);
+                string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
                 return new StringArray(files);
             }
         }
