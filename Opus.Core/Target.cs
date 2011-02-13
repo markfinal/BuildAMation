@@ -158,61 +158,44 @@ namespace Opus.Core
             return clonedTarget;
         }
 
-#if true
+        public bool HasPlatform(EPlatform platforms)
+        {
+            bool hasPlatform = (0 != (this.Platform & platforms));
+            return hasPlatform;
+        }
+
+        public bool HasConfiguration(EConfiguration configurations)
+        {
+            bool hasConfiguration = (0 != (this.Configuration & configurations));
+            return hasConfiguration;
+        }
+
+        public bool HasToolchain(string toolchain)
+        {
+            bool hasToolchain = System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToLower(), toolchain.ToLower());
+            return hasToolchain;
+        }
+
         public bool MatchFilters(ITargetFilters filterInterface)
         {
-            if (0 == (filterInterface.Platform & this.Platform))
+            if (!this.HasPlatform(filterInterface.Platform))
             {
                 return false;
             }
-            if (0 == (filterInterface.Configuration & this.Configuration))
+            if (!this.HasConfiguration(filterInterface.Configuration))
             {
                 return false;
             }
             foreach (string toolchain in filterInterface.Toolchains)
             {
-                if (System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToString().ToLower(), toolchain.ToLower()))
+                if (this.HasToolchain(toolchain))
                 {
-                    Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), this.Key);
+                    Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), this.ToString());
                     return true;
                 }
             }
             return false;
         }
-#else
-        public bool MatchFilters(string[] filters)
-        {
-            bool match = false;
-
-            foreach (string filter in filters)
-            {
-                string[] components = filter.Split('-');
-                if (components.Length < 3)
-                {
-                    throw new Exception(System.String.Format("Target, '{0}', was malformed; should be platform-toolchain-configuration", filter));
-                }
-
-                if (!System.Text.RegularExpressions.Regex.IsMatch(this.Platform.ToString().ToLower(), components[0]))
-                {
-                    continue;
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(this.Configuration.ToString().ToLower(), components[1]))
-                {
-                    continue;
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain, components[2]))
-                {
-                    continue;
-                }
-
-                Log.DebugMessage("Target filter '{0}' matches target '{1}'", filter, this.Key);
-                match = true;
-                break;
-            }
-
-            return match;
-        }
-#endif
 
         public int CompareTo(object obj)
         {
