@@ -7,12 +7,48 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        [Opus.Core.EmptyBuildFunction]
         public object Build(C.HeaderLibrary headerLibrary, Opus.Core.DependencyNode node, out bool success)
         {
-            // TODO: find the files and add to the appropriate collection
+            Opus.Core.Target target = node.Target;
 
-#if false
+            ProjectData projectData = null;
+            // TODO: want to remove this
+            lock (this.solutionFile.ProjectDictionary)
+            {
+                if (this.solutionFile.ProjectDictionary.ContainsKey(node.ModuleName))
+                {
+                    projectData = this.solutionFile.ProjectDictionary[node.ModuleName];
+                }
+                else
+                {
+                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), node.ModuleName);
+                    projectPathName += ".vcproj";
+
+                    projectData = new ProjectData(node.ModuleName, projectPathName, node.Package.Directory);
+                    projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
+                    this.solutionFile.ProjectDictionary.Add(node.ModuleName, projectData);
+                }
+            }
+
+            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+
+            ProjectConfiguration configuration;
+            lock (projectData.Configurations)
+            {
+                if (!projectData.Configurations.Contains(configurationName))
+                {
+                    // arbitrary character set, as nothing is built
+                    configuration = new ProjectConfiguration(configurationName, C.ECharacterSet.NotSet, projectData);
+                    projectData.Configurations.Add(configuration);
+                }
+                else
+                {
+                    configuration = projectData.Configurations[configurationName];
+                }
+            }
+
+            configuration.Type = EProjectConfigurationType.Utility;
+
             System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
                                                                System.Reflection.BindingFlags.Public |
                                                                System.Reflection.BindingFlags.NonPublic;
@@ -25,18 +61,20 @@ namespace VSSolutionBuilder
                     Opus.Core.FileCollection headerFileCollection = field.GetValue(headerLibrary) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        if (!projectData.HeaderFiles.Contains(headerPath))
+                        lock (projectData.HeaderFiles)
                         {
-                            ProjectFile headerFile = new ProjectFile(headerPath);
-                            projectData.HeaderFiles.Add(headerFile);
+                            if (!projectData.HeaderFiles.Contains(headerPath))
+                            {
+                                ProjectFile headerFile = new ProjectFile(headerPath);
+                                projectData.HeaderFiles.Add(headerFile);
+                            }
                         }
                     }
                 }
             }
-#endif
 
             success = true;
-            return null;
+            return projectData;
         }
     }
 }

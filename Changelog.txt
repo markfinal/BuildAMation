@@ -1,3 +1,5 @@
+13-Feb-2011 C.HeaderLibrary now includes a Utility vcproj when using the VSSolutionBuilder.
+
 13-Feb-2011 Issue #31. Opus.Core.File.GetFiles no longer recurses into all subdirectories. Wildcarded subdirectories need to be explicitly specified.
 
 13-Feb-2011 VSSolutionBuilder serialization rewrite, which allows sub-filters for files, so that the disk directory hierarchy is maintained in the VisualStudio project.

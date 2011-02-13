@@ -92,11 +92,6 @@ namespace VSSolutionBuilder
 
         public void Serialize()
         {
-            if (0 == this.SourceFiles.Count)
-            {
-                throw new Opus.Core.Exception(System.String.Format("There are no source files for '{0}'", this.Name));
-            }
-
             try
             {
                 System.Uri projectLocationUri = new System.Uri(this.PathName, System.UriKind.RelativeOrAbsolute);

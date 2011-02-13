@@ -19,6 +19,15 @@ namespace VSSolutionBuilder
             this.Project = project;
         }
 
+        public ProjectConfiguration(string name, C.ECharacterSet characterSet, ProjectData project)
+        {
+            this.Name = name;
+            this.type = EProjectConfigurationType.Undefined;
+            this.CharacterSet = (EProjectCharacterSet)characterSet;
+            this.Tools = new ProjectToolCollection();
+            this.Project = project;
+        }
+
         public string Name
         {
             get;
