@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace DirectXSDK
 {
-    // TODO: potentially this should be called Direct3D9, and then Direct3D10, and Direct3D11 and so on
+    // TODO: need to add modules for Direct3D10, Direct3D11, and the other DX components
     class Direct3D9 : C.ThirdPartyModule
     {
         private static string installLocation;
@@ -52,14 +52,15 @@ namespace DirectXSDK
             {
                 throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
             }
-            linkerOptions.LibraryPaths.Add(Opus.Core.State.PackageInfo["DirectXSDK"], platformLibraryPath);
+
+            linkerOptions.LibraryPaths.AddAbsoluteDirectory(platformLibraryPath, true);
         }
 
         [C.ExportCompilerOptionsDelegate]
         void Direct3D9_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["DirectXSDK"], includePath);
+            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
         }
 
         public override Opus.Core.StringArray Libraries(Opus.Core.Target target)

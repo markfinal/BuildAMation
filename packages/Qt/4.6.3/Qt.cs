@@ -78,14 +78,14 @@ namespace Qt
         void Qt_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
-            linkerOptions.LibraryPaths.Add(libPath, true);
+            linkerOptions.LibraryPaths.AddAbsoluteDirectory(libPath, true);
         }
 
         [C.ExportCompilerOptionsDelegate]
         void Qt_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(includePath, true);
+            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
         }
 
         [C.ExportCompilerOptionsDelegate]

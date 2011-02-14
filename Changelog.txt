@@ -1,3 +1,6 @@
+14-Feb-2011 Opus.Core.DirectoryCollection.Add(string,bool) renamed to AddAbsoluteDirectory.
+            Implemented Add and AddRange methods on Opus.Core.DirectoryCollection that accept a module, e.g. this object in an update options instance delegate.
+
 13-Feb-2011 C.HeaderLibrary now includes a Utility vcproj when using the VSSolutionBuilder.
 
 13-Feb-2011 Issue #31. Opus.Core.File.GetFiles no longer recurses into all subdirectories. Wildcarded subdirectories need to be explicitly specified.

@@ -386,11 +386,11 @@ namespace CSharp
 
             if (null != this.OutputFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
             }
             if (null != this.ProgramDatabaseFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.ProgramDatabaseFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ProgramDatabaseFilePath), false);
             }
 
             return directoriesToCreate;

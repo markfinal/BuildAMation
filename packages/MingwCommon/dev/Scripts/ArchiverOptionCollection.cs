@@ -113,7 +113,7 @@ namespace MingwCommon
 
             if (null != this.LibraryFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.LibraryFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.LibraryFilePath), false);
             }
 
             return directoriesToCreate;

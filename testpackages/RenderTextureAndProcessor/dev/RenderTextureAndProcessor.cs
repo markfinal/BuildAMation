@@ -28,7 +28,7 @@ namespace RenderTextureAndProcessor
 
                 {
                     C.ICCompilerOptions options = module.Options as C.ICCompilerOptions;
-                    options.IncludePaths.Add(Opus.Core.State.PackageInfo["RenderTextureAndProcessor"], @"source/common");
+                    options.IncludePaths.Add(this, @"source/common");
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace RenderTextureAndProcessor
 
                 {
                     C.ICCompilerOptions options = module.Options as C.ICCompilerOptions;
-                    options.IncludePaths.Add(Opus.Core.State.PackageInfo["RenderTextureAndProcessor"], @"source/common");
+                    options.IncludePaths.Add(this, @"source/common");
                 }
             }
         }

@@ -33,7 +33,7 @@ namespace Opus.Core
             return false;
         }
 
-        public void Add(string absoluteDirectoryPath, bool checkForExistence)
+        public void AddAbsoluteDirectory(string absoluteDirectoryPath, bool checkForExistence)
         {
             if (checkForExistence && !System.IO.Directory.Exists(absoluteDirectoryPath))
             {
@@ -64,6 +64,17 @@ namespace Opus.Core
             }
         }
 
+        public void Add(object owner, string relativePath)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            this.Add(package, relativePath);
+        }
+
         public void AddRange(Opus.Core.PackageInformation package, string[] relativePaths)
         {
             foreach (string path in relativePaths)
@@ -78,6 +89,28 @@ namespace Opus.Core
             {
                 this.Add(package, path);
             }
+        }
+
+        public void AddRange(object owner, string[] relativePaths)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            this.AddRange(package, relativePaths);
+        }
+
+        public void AddRange(object owner, Opus.Core.StringArray relativePaths)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            this.AddRange(package, relativePaths);
         }
 
         public PackageAndDirectoryPath this[int index]

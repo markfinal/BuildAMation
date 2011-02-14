@@ -16,7 +16,7 @@ namespace Test2
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test2"], @"include");
+                compilerOptions.IncludePaths.Add(this, @"include");
             }
         }
 

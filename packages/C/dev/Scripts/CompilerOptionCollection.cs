@@ -49,7 +49,7 @@ namespace C
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.Toolchain.ToUpper()));
 
             compilerOptions.IncludePaths = new Opus.Core.DirectoryCollection();
-            compilerOptions.IncludePaths.Add(".", true); // explicitly add the one that is assumed
+            compilerOptions.IncludePaths.AddAbsoluteDirectory(".", true); // explicitly add the one that is assumed
 
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
         }

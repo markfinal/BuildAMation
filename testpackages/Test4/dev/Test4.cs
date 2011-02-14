@@ -15,10 +15,10 @@ namespace Test4
             }
 
             [C.ExportCompilerOptionsDelegate]
-            private static void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+            private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test4"], @"include");
+                compilerOptions.IncludePaths.Add(this, "include");
             }
 
             // TODO: this should be in the ExportToolchainOptionsDelegate?
@@ -60,10 +60,10 @@ namespace Test4
         C.ObjectFile sourceFile = new C.ObjectFile();
 
         [C.ExportCompilerOptionsDelegate]
-        private static void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test4"], @"include");
+            compilerOptions.IncludePaths.Add(this, @"include");
         }
     }
 }

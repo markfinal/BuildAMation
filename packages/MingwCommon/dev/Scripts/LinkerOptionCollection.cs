@@ -245,11 +245,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
 
             if (null != this.OutputFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
             }
             if (null != this.StaticImportLibraryFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.StaticImportLibraryFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.StaticImportLibraryFilePath), false);
             }
 
             return directoriesToCreate;

@@ -38,7 +38,14 @@ namespace Test6
             private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test6"], @"include");
+                compilerOptions.IncludePaths.Add(this, @"include");
+            }
+
+            private void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                compilerOptions.Defines.Add("MAIN_C");
+                compilerOptions.IncludePaths.Add(this, @"include/platform");
             }
         }
 
@@ -46,13 +53,6 @@ namespace Test6
         {
             C.ILinkerOptions options = module.Options as C.ILinkerOptions;
             //options.DebugSymbols = false;
-        }
-
-        private static void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
-        {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.Defines.Add("MAIN_C");
-            compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test6"], @"include/platform");
         }
 
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]

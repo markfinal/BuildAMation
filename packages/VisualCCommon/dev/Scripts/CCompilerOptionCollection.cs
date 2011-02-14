@@ -744,11 +744,11 @@ namespace VisualCCommon
 
             if (null != this.ObjectFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.ObjectFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ObjectFilePath), false);
             }
             if (null != this.ProgramDatabaseFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.ProgramDatabaseFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ProgramDatabaseFilePath), false);
             }
 
             return directoriesToCreate;

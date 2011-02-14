@@ -10,10 +10,10 @@ namespace Test7
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
 
-        private static void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(Opus.Core.State.PackageInfo["Test7"], @"include");
+            compilerOptions.IncludePaths.Add(this, @"include");
         }
 
         [Opus.Core.SourceFiles]

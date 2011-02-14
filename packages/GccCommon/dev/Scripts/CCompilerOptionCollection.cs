@@ -343,7 +343,7 @@ namespace GccCommon
 
             if (null != this.ObjectFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.ObjectFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ObjectFilePath), false);
             }
 
             return directoriesToCreate;

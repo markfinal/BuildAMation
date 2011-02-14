@@ -34,7 +34,7 @@ namespace VisualCCommon
             Opus.Core.Target target = node.Target;
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
-            this.LibraryPaths.Add(toolChainInstance.LibPath(target), true);
+            this.LibraryPaths.AddAbsoluteDirectory(toolChainInstance.LibPath(target), true);
 
             this.SetDelegates(target);
         }
@@ -530,11 +530,11 @@ namespace VisualCCommon
 
             if (null != this.OutputFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
             }
             if (null != this.StaticImportLibraryFilePath)
             {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.StaticImportLibraryFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.StaticImportLibraryFilePath), false);
             }
 
             return directoriesToCreate;
