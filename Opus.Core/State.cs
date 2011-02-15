@@ -292,6 +292,10 @@ namespace Opus.Core
 
                 string buildRootPath = buildRootUri.AbsolutePath;
                 buildRootPath = System.Uri.UnescapeDataString(buildRootPath);
+                if (OSUtilities.IsWindowsHosting)
+                {
+                    buildRootPath = buildRootPath.Replace('/', '\\');
+                }
 
                 Set("System", "BuildRoot", buildRootPath);
             }

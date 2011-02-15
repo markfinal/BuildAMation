@@ -1,3 +1,5 @@
+15-Feb-2011 Opus.Core.State.BuildRoot no longer uses an incorrect directory separator on Windows. Simplified some plugin code because of this fix.
+
 14-Feb-2011 Opus.Core.DirectoryCollection.Add(string,bool) renamed to AddAbsoluteDirectory.
             Implemented Add and AddRange methods on Opus.Core.DirectoryCollection that accept a module, e.g. this object in an update options instance delegate.
 

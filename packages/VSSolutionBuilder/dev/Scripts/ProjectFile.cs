@@ -7,15 +7,9 @@ namespace VSSolutionBuilder
 {
     public sealed class ProjectFile
     {
-        public static string ConvertDirectorySeparators(string pathName)
-        {
-            string fixedPathName = pathName.Replace('/', '\\');
-            return fixedPathName;
-        }
-
         public ProjectFile(string pathName)
         {
-            this.RelativePath = ConvertDirectorySeparators(pathName);
+            this.RelativePath = pathName;
         }
 
         public string RelativePath

@@ -29,11 +29,9 @@ namespace VSSolutionBuilder
 
         public bool Contains(string sourcePathName)
         {
-            string convertedSourcePathName = ProjectFile.ConvertDirectorySeparators(sourcePathName);
-
             foreach (ProjectFile projectFile in this.list)
             {
-                if (convertedSourcePathName == projectFile.RelativePath)
+                if (sourcePathName == projectFile.RelativePath)
                 {
                     return true;
                 }
@@ -46,11 +44,9 @@ namespace VSSolutionBuilder
         {
             get
             {
-                string convertedSourcePathName = ProjectFile.ConvertDirectorySeparators(sourcePathName);
-
                 foreach (ProjectFile projectFile in this.list)
                 {
-                    if (convertedSourcePathName == projectFile.RelativePath)
+                    if (sourcePathName == projectFile.RelativePath)
                     {
                         return projectFile;
                     }

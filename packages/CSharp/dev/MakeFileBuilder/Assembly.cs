@@ -47,12 +47,6 @@ namespace MakeFileBuilder
                             throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
                         }
 
-                        if (Opus.Core.OSUtilities.IsWindowsHosting)
-                        {
-                            // TODO: Win32 csc is fussy about directory separators
-                            // remove this when paths are constructed better
-                            absolutePath = absolutePath.Replace('/', '\\');
-                        }
                         sourceFiles.Add(absolutePath);
                     }
                     else if (sourceField is Opus.Core.FileCollection)
@@ -65,14 +59,7 @@ namespace MakeFileBuilder
                                 throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
                             }
 
-                            string correctedPath = absolutePath;
-                            if (Opus.Core.OSUtilities.IsWindowsHosting)
-                            {
-                                // TODO: Win32 csc is fussy about directory separators
-                                // remove this when paths are constructed better
-                                correctedPath = correctedPath.Replace('/', '\\');
-                            }
-                            sourceFiles.Add(correctedPath);
+                            sourceFiles.Add(absolutePath);
                         }
                     }
                     else
