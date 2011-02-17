@@ -38,15 +38,7 @@ namespace Opus.Core
                 throw new Exception(System.String.Format("Missing constructor: '{0}(DependencyNode)'", requiredOptionCollectionType.ToString()), false);
             }
 
-            BaseOptionCollection optionCollection = null;
-            try
-            {
-                optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType, new object[] { owningNode }) as BaseOptionCollection;
-            }
-            catch (System.Reflection.TargetInvocationException ex)
-            {
-                throw ex.InnerException;
-            }
+            BaseOptionCollection optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType, new object[] { owningNode }) as BaseOptionCollection;
 
             DerivedType derivedOptionCollection = optionCollection as DerivedType;
             return derivedOptionCollection;

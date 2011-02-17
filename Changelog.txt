@@ -1,3 +1,5 @@
+17-Feb-2011 Don't catch System.Reflection.TargetInvocationException too soon, or relevant stack trace information is lost upon a rethrow.
+
 15-Feb-2011 Opus.Core.State.BuildRoot no longer uses an incorrect directory separator on Windows. Simplified some plugin code because of this fix.
 
 14-Feb-2011 Opus.Core.DirectoryCollection.Add(string,bool) renamed to AddAbsoluteDirectory.

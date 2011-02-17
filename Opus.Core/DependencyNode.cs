@@ -133,14 +133,7 @@ namespace Opus.Core
                 }
                 System.Reflection.MethodInfo method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
                 System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(new System.Type[] { toolOptionCollectionType, exportType, localType });
-                try
-                {
-                    this.Module.Options = genericMethod.Invoke(null, new object[] { this, className }) as BaseOptionCollection;
-                }
-                catch (System.Reflection.TargetInvocationException ex)
-                {
-                    throw ex.InnerException;
-                }
+                this.Module.Options = genericMethod.Invoke(null, new object[] { this, className }) as BaseOptionCollection;
             }
         }
 

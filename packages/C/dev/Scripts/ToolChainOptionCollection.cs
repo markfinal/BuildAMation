@@ -34,15 +34,7 @@ namespace C
             // Cannot use the OptionUtilities here, as there is no Node to assign these options to
             System.Reflection.MethodInfo method = typeof(Opus.Core.OptionCollectionFactory).GetMethod("CreateOptionCollection", new System.Type[] { typeof(Opus.Core.DependencyNode) });
             System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(new System.Type[] { toolchainOptionsType });
-            ToolchainOptionCollection instance = null;
-            try
-            {
-                instance = genericMethod.Invoke(null, new object[] { node }) as ToolchainOptionCollection;
-            }
-            catch (System.Reflection.TargetInvocationException ex)
-            {
-                throw ex.InnerException;
-            }
+            ToolchainOptionCollection instance = genericMethod.Invoke(null, new object[] { node }) as ToolchainOptionCollection;
             return instance;
         }
 

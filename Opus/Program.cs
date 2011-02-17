@@ -46,6 +46,21 @@ namespace Opus
                 }
                 System.Environment.ExitCode = -1;
             }
+            catch (System.Reflection.TargetInvocationException exception)
+            {
+                Core.Log.ErrorMessage("*** Reflection Exception (type {0}) ***", exception.GetType().ToString());
+                if (exception.InnerException != null)
+                {
+                    Core.Log.ErrorMessage("Inner exception: {0}, {1}", exception.InnerException.GetType().ToString(), exception.InnerException.Message);
+                    Core.Log.ErrorMessage("\n" + exception.InnerException.StackTrace.ToString());
+                }
+                else
+                {
+                    Core.Log.ErrorMessage(exception.Message);
+                    Core.Log.ErrorMessage("\n" + exception.StackTrace.ToString());
+                }
+                System.Environment.ExitCode = -2;
+            }
             catch (System.Exception exception)
             {
                 Core.Log.ErrorMessage("*** System Exception (type {0}) ***", exception.GetType().ToString());

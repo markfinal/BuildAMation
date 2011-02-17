@@ -19,15 +19,7 @@ namespace Opus.Core
         {
             CheckModuleTypeForInterface(moduleType);
 
-            IModule module = null;
-            try
-            {
-                module = System.Activator.CreateInstance(moduleType) as IModule;
-            }
-            catch (System.Reflection.TargetInvocationException exception)
-            {
-                throw exception.InnerException;
-            }
+            IModule module = System.Activator.CreateInstance(moduleType) as IModule;
 
             return module;
         }
