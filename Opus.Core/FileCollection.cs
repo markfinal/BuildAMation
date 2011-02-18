@@ -39,11 +39,6 @@ namespace Opus.Core
             this.filePaths.Add(absolutePath);
         }
 
-        public void AddToFront(string absolutePath)
-        {
-            this.filePaths.Insert(0, absolutePath);
-        }
-
         public void AddRange(StringArray absolutePathArray)
         {
             foreach (string path in absolutePathArray)

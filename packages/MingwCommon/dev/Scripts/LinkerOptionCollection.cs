@@ -200,12 +200,12 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
                     commandLineBuilder.AppendFormat("\"{0}\" ", includePath);
                 }
             }
-            commandLineBuilder.Append("--end-group ");
+            commandLineBuilder.Append("-Wl,--end-group ");
         }
 
         private static void LibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            commandLineBuilder.Append("--start-group ");
+            commandLineBuilder.Append("-Wl,--start-group ");
             LinkerOptionCollection options = sender as LinkerOptionCollection;
             Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             foreach (string libraryPath in libraryPathsOption.Value)

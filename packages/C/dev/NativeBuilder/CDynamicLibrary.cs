@@ -34,10 +34,7 @@ namespace NativeBuilder
             {
                 Opus.Core.StringArray dependentLibraryFiles = new Opus.Core.StringArray();
                 node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
-                foreach (string libraryPath in dependentLibraryFiles)
-                {
-                    linkerOptions.Libraries.AddToFront(libraryPath);
-                }
+                linkerOptions.Libraries.AddRange(dependentLibraryFiles);
             }
 
             Opus.Core.StringArray inputFiles = dependentObjectFiles;
