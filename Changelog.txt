@@ -1,3 +1,5 @@
+18-Feb-2011 Issue #33. Fixing dependency checking for C.Application and C.DynamicLibrary in the NativeBuilder that was not checking the timestamps for static and import libraries.
+
 18-Feb-2011 Issue #32. Correctly passing recursive symbols resolution options to the GCC linker, with the -Wl, prefix. This resolves undefined reference errors when libraries are specified in the incorrect order.
 
 17-Feb-2011 Don't catch System.Reflection.TargetInvocationException too soon, or relevant stack trace information is lost upon a rethrow.

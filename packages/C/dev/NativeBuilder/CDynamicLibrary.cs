@@ -30,14 +30,19 @@ namespace NativeBuilder
             }
 
             // find dependent library files
+            Opus.Core.StringArray dependentLibraryFiles = null;
             if (null != node.ExternalDependents)
             {
-                Opus.Core.StringArray dependentLibraryFiles = new Opus.Core.StringArray();
+                dependentLibraryFiles = new Opus.Core.StringArray();
                 node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
                 linkerOptions.Libraries.AddRange(dependentLibraryFiles);
             }
 
             Opus.Core.StringArray inputFiles = dependentObjectFiles;
+            if (null != dependentLibraryFiles)
+            {
+                inputFiles.AddRange(dependentLibraryFiles);
+            }
             Opus.Core.StringArray outputFiles = dynamicLibrary.Options.OutputPaths.Paths;
             if (!RequiresBuilding(outputFiles, inputFiles))
             {
