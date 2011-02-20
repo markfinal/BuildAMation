@@ -1,3 +1,4 @@
+20-Feb-2011 Fixes to C.ObjectFileCollection for VisualStudio project generation in the case of there being no source files yet (can happen while starting to create a project).
 
 18-Feb-2011 Issue #33. Fixing dependency checking for C.Application and C.DynamicLibrary in the NativeBuilder that was not checking the timestamps for static and import libraries.
 
