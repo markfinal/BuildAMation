@@ -22,6 +22,8 @@ namespace Opus.Core
             {
                 throw new Exception("There can only be one Graph created");
             }
+
+            this.ExecutedNodes = new DependencyNodeCollection();
         }
 
         public int RankCount
@@ -50,6 +52,12 @@ namespace Opus.Core
                 }
                 return this.rankList[rank];
             }
+        }
+
+        public DependencyNodeCollection ExecutedNodes
+        {
+            get;
+            private set;
         }
         
         public void AddTopLevelModule(System.Type moduleType, Target target)

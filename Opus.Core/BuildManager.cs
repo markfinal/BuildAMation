@@ -310,17 +310,10 @@ namespace Opus.Core
         private void PostExecute()
         {
             System.Reflection.MethodInfo postExecuteMethod = this.Builder.GetType().GetMethod("PostExecute", new System.Type[] { typeof(DependencyNodeCollection) });
-            // TODO: this should probably only execute over changed nodes
-            if ((this.graph.TotalNodeCount > 0) && (null != postExecuteMethod))
+
+            if ((this.graph.ExecutedNodes.Count > 0) && (null != postExecuteMethod))
             {
-                DependencyNodeCollection nodeCollection = new DependencyNodeCollection();
-
-                foreach (DependencyNode node in this.graph)
-                {
-                    nodeCollection.Add(node);
-                }
-
-                postExecuteMethod.Invoke(this.Builder, new object[] { nodeCollection });
+                postExecuteMethod.Invoke(this.Builder, new object[] { this.graph.ExecutedNodes });
             }
         }
     }
