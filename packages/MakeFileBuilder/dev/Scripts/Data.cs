@@ -7,25 +7,52 @@ namespace MakeFileBuilder
 {
     public sealed class MakeFileData
     {
+#if false
         // TODO: instead of Target and Variable, define an enum to class the data
         public MakeFileData(string file,
                             string target,
                             string variable,
                             Opus.Core.StringArray environmentPaths)
         {
-            this.File = file;
+            this.MakeFilePath = file;
             this.Target = target;
             this.Variable = variable;
             this.Included = false;
             this.EnvironmentPaths = environmentPaths;
         }
+#endif
 
-        public string File
+        public MakeFileData(string makeFilePath,
+                            MakeFileTargetDictionary targetDictionary,
+                            MakeFileVariableDictionary variableDictionary,
+                            Opus.Core.StringArray environmentPaths)
+        {
+            this.MakeFilePath = makeFilePath;
+            this.TargetDictionary = targetDictionary;
+            this.VariableDictionary = variableDictionary;
+            this.EnvironmentPaths = environmentPaths;
+            this.Included = false;
+        }
+
+        public string MakeFilePath
         {
             get;
             private set;
         }
 
+#if true
+        public MakeFileTargetDictionary TargetDictionary
+        {
+            get;
+            private set;
+        }
+
+        public MakeFileVariableDictionary VariableDictionary
+        {
+            get;
+            private set;
+        }
+#else
         public string Target
         {
             get;
@@ -37,6 +64,7 @@ namespace MakeFileBuilder
             get;
             private set;
         }
+#endif
 
         public bool Included
         {

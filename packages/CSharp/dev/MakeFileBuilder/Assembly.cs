@@ -25,7 +25,7 @@ namespace MakeFileBuilder
                         options.References.AddRange(assemblyPaths);
 
                         MakeFileData data = dependentNode.Data as MakeFileData;
-                        inputVariables.Add(data.Variable);
+                        inputVariables.Add(data.VariableDictionary[CSharp.OutputFileFlags.AssemblyFile]);
                         dataArray.Add(data);
                     }
                 }
@@ -102,7 +102,7 @@ namespace MakeFileBuilder
             {
                 if (!data.Included)
                 {
-                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
+                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
                     recipe.Includes.Add(relativeDataFile);
                     data.Included = true;
                 }
