@@ -29,13 +29,25 @@ namespace MakeFileBuilder
         }
     }
 
-    public sealed class MakeFileVariableDictionary : System.Collections.Generic.Dictionary<System.Enum, string>
+    public sealed class MakeFileVariableDictionary : System.Collections.Generic.Dictionary<System.Enum, Opus.Core.StringArray>
     {
         public void Append(MakeFileVariableDictionary dictionary)
         {
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> itemPair in dictionary)
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> itemPair in dictionary)
             {
                 this.Add(itemPair.Key, itemPair.Value);
+            }
+        }
+
+        public new void Add(System.Enum key, Opus.Core.StringArray value)
+        {
+            if (this.ContainsKey(key))
+            {
+                this[key].AddRange(value);
+            }
+            else
+            {
+                base.Add(key, value);
             }
         }
     }
@@ -153,7 +165,7 @@ namespace MakeFileBuilder
 
 #if true
         public MakeFile(Opus.Core.DependencyNode node,
-                                     string topLevelMakeFilePath)
+                        string topLevelMakeFilePath)
         {
             this.TopLevelMakeFilePath = topLevelMakeFilePath;
             this.ExportedTargets = new MakeFileTargetDictionary();
@@ -302,44 +314,118 @@ namespace MakeFileBuilder
                     writer.WriteLine("");
                 }
 
-                string exportVariableName = System.String.Format("{0}_Variable", mainVariableName);
-                writer.WriteLine("# Output variable");
-                string relativeOutputPath = this.RelativePath(this.OutputPaths[rule.TargetType]);
-                writer.WriteLine(exportVariableName + " := " + relativeOutputPath);
-                writer.WriteLine("");
-                this.ExportedVariables.Add(rule.TargetType, exportVariableName);
-
-                if (null != outputDirectoriesVariable)
+                string mainExportVariableName = null;
+                if (rule.ExportVariable)
                 {
-                    writer.WriteLine("# Order-only dependencies on directories to create");
-                    writer.WriteLine("$({0}): | $({1})", exportVariableName, outputDirectoriesVariable);
+                    foreach (System.Enum outputType in rule.OutputTypes)
+                    {
+                        string exportVariableName = System.String.Format("{0}_{1}_Variable", mainVariableName, outputType.ToString());
+                        if (outputType.Equals(rule.TargetType))
+                        {
+                            mainExportVariableName = exportVariableName;
+                        }
+                        writer.WriteLine("# Output variable");
+
+                        if (rule.ExportTarget)
+                        {
+                            string relativeOutputPath = this.RelativePath(this.OutputPaths[outputType]);
+                            writer.WriteLine(exportVariableName + " := " + relativeOutputPath);
+                            writer.WriteLine("");
+                        }
+                        else
+                        {
+                            System.Text.StringBuilder variableAndValue = new System.Text.StringBuilder();
+                            variableAndValue.AppendFormat("{0} := ", exportVariableName);
+                            foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
+                            {
+                                foreach (string pre in prerequisite.Value)
+                                {
+                                    variableAndValue.AppendFormat("$({0}) ", pre);
+                                }
+                            }
+                            if (null != rule.InputFiles)
+                            {
+                                foreach (string prerequisiteFile in rule.InputFiles)
+                                {
+                                    string relativePrerequisiteFile = this.RelativePath(prerequisiteFile);
+                                    variableAndValue.AppendFormat("{0} ", relativePrerequisiteFile);
+                                }
+                            }
+
+                            writer.WriteLine(variableAndValue.ToString());
+                            writer.WriteLine("");
+                        }
+
+                        Opus.Core.StringArray exportedVariables = new Opus.Core.StringArray();
+                        exportedVariables.Add(exportVariableName);
+                        this.ExportedVariables.Add(rule.TargetType, exportedVariables);
+
+                        if (null != outputDirectoriesVariable)
+                        {
+                            writer.WriteLine("# Order-only dependencies on directories to create");
+                            writer.WriteLine("$({0}): | $({1})", exportVariableName, outputDirectoriesVariable);
+                            writer.WriteLine("");
+                        }
+                    }
+                }
+
+                if (rule.ExportTarget && null != mainExportVariableName)
+                {
+                    string exportTargetName = System.String.Format("{0}_{1}_Target", mainVariableName, rule.TargetType.ToString());
+                    writer.WriteLine("# Output target");
+                    if (rule.TargetIsPhony)
+                    {
+                        writer.WriteLine(".PHONY");
+                    }
+                    writer.WriteLine(exportTargetName + ": $(" + mainExportVariableName + ")");
+                    writer.WriteLine("");
+                    this.ExportedTargets.Add(rule.TargetType, exportTargetName);
+
+                    System.Text.StringBuilder targetAndPrerequisites = new System.Text.StringBuilder();
+                    if (null != mainExportVariableName)
+                    {
+                        targetAndPrerequisites.AppendFormat("$({0}): ", mainExportVariableName);
+                    }
+                    else
+                    {
+                        string targetName = System.String.Format("{0}_{1}_Target", mainVariableName, rule.TargetType.ToString());
+                        if (rule.TargetIsPhony)
+                        {
+                            writer.WriteLine(".PHONY: {0}", targetName);
+                        }
+                        targetAndPrerequisites.AppendFormat("{0}: ", targetName);
+                        if (rule.ExportTarget)
+                        {
+                            this.ExportedTargets.Add(rule.TargetType, targetName);
+                        }
+                    }
+                    foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
+                    {
+                        foreach (string pre in prerequisite.Value)
+                        {
+                            targetAndPrerequisites.AppendFormat("$({0}) ", pre);
+                        }
+                    }
+                    if (null != rule.InputFiles)
+                    {
+                        foreach (string prerequisiteFile in rule.InputFiles)
+                        {
+                            string relativePrerequisiteFile = this.RelativePath(prerequisiteFile);
+                            targetAndPrerequisites.AppendFormat("{0} ", relativePrerequisiteFile);
+                        }
+                    }
+
+                    writer.WriteLine("# Rule");
+                    writer.WriteLine(targetAndPrerequisites.ToString());
+                    if (null != rule.Recipes)
+                    {
+                        foreach (string recipe in rule.Recipes)
+                        {
+                            writer.WriteLine("\t" + recipe);
+                        }
+                    }
                     writer.WriteLine("");
                 }
-
-                string exportTargetName = System.String.Format("{0}_Target", mainVariableName);
-                writer.WriteLine("# Output target");
-                writer.WriteLine(exportTargetName + ": $(" + exportVariableName + ")");
-                writer.WriteLine("");
-                this.ExportedTargets.Add(rule.TargetType, exportTargetName);
-
-                System.Text.StringBuilder targetAndPrerequisites = new System.Text.StringBuilder();
-                targetAndPrerequisites.AppendFormat("$({0}): ", exportVariableName);
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> prerequisite in rule.InputVariables)
-                {
-                    targetAndPrerequisites.AppendFormat("$({0}) ", prerequisite.Value);
-                }
-                foreach (string prerequisiteFile in rule.InputFiles)
-                {
-                    string relativePrerequisiteFile = this.RelativePath(prerequisiteFile);
-                    targetAndPrerequisites.AppendFormat("{0} ", relativePrerequisiteFile);
-                }
-                writer.WriteLine("# Rule");
-                writer.WriteLine(targetAndPrerequisites.ToString());
-                foreach (string recipe in rule.Recipes)
-                {
-                    writer.WriteLine("\t" + recipe);
-                }
-                writer.WriteLine("");
             }
         }
 
@@ -461,9 +547,12 @@ namespace MakeFileBuilder
 
                 System.Text.StringBuilder targetAndPrerequisites = new System.Text.StringBuilder();
                 targetAndPrerequisites.AppendFormat("$({0}): ", exportVariableName);
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> prerequisite in rule.InputVariables)
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
                 {
-                    targetAndPrerequisites.AppendFormat("$({0}) ", prerequisite.Value);
+                    foreach (string pre in prerequisite.Value)
+                    {
+                        targetAndPrerequisites.AppendFormat("$({0}) ", pre);
+                    }
                 }
                 writer.WriteLine("# Goal Rule");
                 writer.WriteLine(targetAndPrerequisites.ToString());

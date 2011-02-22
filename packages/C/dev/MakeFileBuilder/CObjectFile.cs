@@ -58,7 +58,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(objectFile.Options.OutputPaths.Types, C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

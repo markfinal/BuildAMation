@@ -65,12 +65,13 @@ namespace MakeFileBuilder
 #if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(C.OutputFileFlags.StaticLibrary, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
+            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths.Types, C.OutputFileFlags.StaticLibrary, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
             makeFile.RuleArray.Add(rule);
 #else
             MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
 #endif
 
+#if false
             foreach (MakeFileData data in dataArray)
             {
                 if (!data.Included)
@@ -80,6 +81,7 @@ namespace MakeFileBuilder
                     data.Included = true;
                 }
             }
+#endif
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
@@ -93,7 +95,7 @@ namespace MakeFileBuilder
 #endif
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-                makeFile.Write(makeFileWriter, C.OutputFileFlags.StaticLibrary);
+                makeFile.Write(makeFileWriter);
 #if false
                 makeFileTargetName = makeFile.TargetName;
                 makeFileVariableName = makeFile.VariableName;

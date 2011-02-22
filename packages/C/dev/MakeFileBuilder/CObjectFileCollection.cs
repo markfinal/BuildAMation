@@ -11,7 +11,7 @@ namespace MakeFileBuilder
         {
             Opus.Core.Target target = node.Target;
 
-            Opus.Core.StringArray dependents = new Opus.Core.StringArray();
+            MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();
             Opus.Core.Array<MakeFileData> childDataArray = new Opus.Core.Array<MakeFileData>();
             foreach (Opus.Core.DependencyNode childNode in node.Children)
             {
@@ -23,7 +23,7 @@ namespace MakeFileBuilder
                 }
 
                 childDataArray.Add(data);
-                dependents.Add(data.VariableDictionary[C.OutputFileFlags.ObjectFile]);
+                dependents.Add(C.OutputFileFlags.ObjectFile, data.VariableDictionary[C.OutputFileFlags.ObjectFile]);
 #else
                 // TODO: handle this better for more dependents
                 if (null == data.Variable)
@@ -51,12 +51,12 @@ namespace MakeFileBuilder
                         if (hasObjectFile)
                         {
                             childDataArray.Add(data);
-                            dependents.Add(System.String.Format("$({0})", data.VariableDictionary[C.OutputFileFlags.ObjectFile]));
+                            dependents.Add(C.OutputFileFlags.ObjectFile, data.VariableDictionary[C.OutputFileFlags.ObjectFile]);
                         }
                         else if (hasStaticImportFile)
                         {
                             childDataArray.Add(data);
-                            dependents.Add(System.String.Format("$({0})", data.VariableDictionary[C.OutputFileFlags.StaticImportLibrary]));
+                            dependents.Add(C.OutputFileFlags.StaticImportLibrary, data.VariableDictionary[C.OutputFileFlags.StaticImportLibrary]);
                         }
 
 #else
@@ -77,16 +77,19 @@ namespace MakeFileBuilder
 #if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+            MakeFileRule rule = new MakeFileRule(objectFileCollection.Options.OutputPaths.Types, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, dependents);
             if (null == node.Parent)
             {
                 // phony target
-                MakeFileRule rule = new MakeFileRule(node.UniqueModuleName, dependents);
-                makeFile.RuleArray.Add(rule);
+                rule.ExportTarget = true;
+                rule.TargetIsPhony = true;
             }
             else
             {
-                // variable rule with no 
+                // variable rule with no target
+                rule.ExportVariable = true;
             }
+            makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
@@ -95,7 +98,7 @@ namespace MakeFileBuilder
 
             MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             success = true;
-            return null;
+            return returnData;
 #else
             string uniqueModuleName = node.UniqueModuleName;
 

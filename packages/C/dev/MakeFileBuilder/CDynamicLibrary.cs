@@ -74,11 +74,10 @@ namespace MakeFileBuilder
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             // TODO: the target type isn't exactly right, as there are two outputs from a single command
-            MakeFileRule rule = new MakeFileRule(C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
+            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths.Types, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
             makeFile.RuleArray.Add(rule);
 #else
             MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
-#endif
             foreach (MakeFileData data in dataArray)
             {
                 if (!data.Included)
@@ -88,6 +87,7 @@ namespace MakeFileBuilder
                     data.Included = true;
                 }
             }
+#endif
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
@@ -99,8 +99,9 @@ namespace MakeFileBuilder
 #endif
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-                makeFile.Write(makeFileWriter, C.OutputFileFlags.Executable, C.OutputFileFlags.StaticImportLibrary);
+                makeFile.Write(makeFileWriter);
 #if false
+                makeFile.Write(makeFileWriter, C.OutputFileFlags.Executable, C.OutputFileFlags.StaticImportLibrary);
                 makeFileTargetName = makeFile.TargetName;
                 makeFileVariableName = makeFile.VariableName;
 #endif
