@@ -50,6 +50,20 @@ namespace MakeFileBuilder
                 base.Add(key, value);
             }
         }
+
+        public Opus.Core.StringArray Variables
+        {
+            get
+            {
+                Opus.Core.StringArray variables = new Opus.Core.StringArray();
+                foreach (Opus.Core.StringArray item in this.Values)
+                {
+                    variables.AddRange(item);
+                }
+
+                return variables;
+            }
+        }
     }
 
     public sealed class MakeFile
@@ -358,7 +372,7 @@ namespace MakeFileBuilder
 
                         Opus.Core.StringArray exportedVariables = new Opus.Core.StringArray();
                         exportedVariables.Add(exportVariableName);
-                        this.ExportedVariables.Add(rule.TargetType, exportedVariables);
+                        this.ExportedVariables.Add(outputType, exportedVariables);
 
                         if (null != outputDirectoriesVariable)
                         {

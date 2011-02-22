@@ -21,14 +21,22 @@ namespace Opus.Core
 
         public void Add(DependencyNode item)
         {
-            this.list.Add(item);
+            if (!this.list.Contains(item))
+            {
+                this.list.Add(item);
+            }
+            else
+            {
+                Log.MessageAll("Node is already present '{0}'", item.ToString());
+                //throw new Exception(System.String.Format("Node is already present '{0}'", item.ToString()));
+            }
         }
 
         public void AddRange(DependencyNodeCollection itemCollection)
         {
             foreach (DependencyNode item in itemCollection)
             {
-                this.list.Add(item);
+                this.Add(item);
             }
         }
 

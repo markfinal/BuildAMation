@@ -20,21 +20,24 @@ namespace MakeFileBuilder
                     {
                         MakeFileData data = sourceModule.OwningNode.Data as MakeFileData;
                         sourceFileDataArray.Add(data);
-                        dependentVariables.Append(data.VariableDictionary);
+                        dependentVariables.Add(sourceOutputPaths, data.VariableDictionary[sourceOutputPaths]);
                     }
                 }
             }
 
             Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
             string destinationDirectory = null;
+            System.Enum destinationOutputFlags;
             if (null != destinationModule)
             {
                 Opus.Core.StringArray destinationPaths = new Opus.Core.StringArray();
                 destinationModule.Options.FilterOutputPaths(copyFiles.DirectoryOutputFlags, destinationPaths);
+                destinationOutputFlags = copyFiles.DirectoryOutputFlags;
                 destinationDirectory = System.IO.Path.GetDirectoryName(destinationPaths[0]);
             }
             else
             {
+                destinationOutputFlags = sourceOutputPaths;
                 destinationDirectory = copyFiles.DestinationDirectory;
             }
 
@@ -57,8 +60,8 @@ namespace MakeFileBuilder
                 }
 #endif
 
-                Opus.Core.StringArray inputVariables = new Opus.Core.StringArray(data.VariableDictionary.Values);
-                string target = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, data.VariableDictionary.Values);
+                //Opus.Core.StringArray inputVariables = data.VariableDictionary.Variables;
+                string target = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, data.VariableDictionary[destinationOutputFlags]);
 
                 System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
                 commandLineBuilder.AppendFormat("\"{0}\" ", toolExecutablePath);
@@ -71,8 +74,9 @@ namespace MakeFileBuilder
                 commandLines.Add(commandLineBuilder.ToString());
 
 #if true
-                MakeFileRule rule = new MakeFileRule(copyFiles.Options.OutputPaths.Types, sourceOutputPaths, target, dependentVariables);
-                rule.Recipes.Add(commandLineBuilder.ToString());
+                MakeFileRule rule = new MakeFileRule(new Opus.Core.Array<System.Enum>(destinationOutputFlags), destinationOutputFlags, target, dependentVariables, commandLines);
+                rule.ExportTarget = true;
+                rule.ExportVariable = true;
 #else
                 MakeFileRule rule = new MakeFileRule(target, inputVariables, commandLines);
 #endif

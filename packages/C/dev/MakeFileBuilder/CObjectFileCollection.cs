@@ -77,7 +77,7 @@ namespace MakeFileBuilder
 #if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(objectFileCollection.Options.OutputPaths.Types, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, dependents);
+            MakeFileRule rule = new MakeFileRule(objectFileCollection.Options.OutputPaths.Types, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, dependents, null);
             if (null == node.Parent)
             {
                 // phony target

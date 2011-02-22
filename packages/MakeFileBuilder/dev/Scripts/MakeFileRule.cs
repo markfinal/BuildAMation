@@ -11,12 +11,14 @@ namespace MakeFileBuilder
         public MakeFileRule(Opus.Core.Array<System.Enum> outputTypes,
                             System.Enum targetType,
                             string target,
-                            MakeFileVariableDictionary prerequisiteVariables)
+                            MakeFileVariableDictionary prerequisiteVariables,
+                            Opus.Core.StringArray recipes)
         {
             this.OutputTypes = outputTypes;
             this.TargetType = targetType;
             this.Target = target;
             this.InputVariables = prerequisiteVariables;
+            this.Recipes = recipes;
         }
 
         public MakeFileRule(Opus.Core.Array<System.Enum> outputTypes, 
