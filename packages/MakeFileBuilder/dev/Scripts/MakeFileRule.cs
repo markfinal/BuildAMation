@@ -8,27 +8,27 @@ namespace MakeFileBuilder
     // TODO: might need a base class rule, and add from therel
     public sealed class MakeFileRule
     {
-        public MakeFileRule(Opus.Core.Array<System.Enum> outputTypes,
+        public MakeFileRule(Opus.Core.OutputPaths outputPaths,
                             System.Enum targetType,
                             string target,
                             MakeFileVariableDictionary prerequisiteVariables,
                             Opus.Core.StringArray recipes)
         {
-            this.OutputTypes = outputTypes;
+            this.OutputPaths = outputPaths;
             this.TargetType = targetType;
             this.Target = target;
             this.InputVariables = prerequisiteVariables;
             this.Recipes = recipes;
         }
 
-        public MakeFileRule(Opus.Core.Array<System.Enum> outputTypes, 
+        public MakeFileRule(Opus.Core.OutputPaths outputPaths, 
                             System.Enum targetType,
                             string target,
                             Opus.Core.DirectoryCollection directoriesToCreate,
                             Opus.Core.StringArray inputFiles,
                             Opus.Core.StringArray recipes)
         {
-            this.OutputTypes = outputTypes;
+            this.OutputPaths = outputPaths;
             this.TargetType = targetType;
             this.Target = target;
             this.DirectoriesToCreate = directoriesToCreate;
@@ -39,14 +39,14 @@ namespace MakeFileBuilder
             this.ExportVariable = true;
         }
 
-        public MakeFileRule(Opus.Core.Array<System.Enum> outputTypes, 
+        public MakeFileRule(Opus.Core.OutputPaths outputPaths, 
                             System.Enum targetType,
                             string target,
                             Opus.Core.DirectoryCollection directoriesToCreate,
                             MakeFileVariableDictionary inputVariables,
                             Opus.Core.StringArray recipes)
         {
-            this.OutputTypes = outputTypes;
+            this.OutputPaths = outputPaths;
             this.TargetType = targetType;
             this.Target = target;
             this.DirectoriesToCreate = directoriesToCreate;
@@ -56,7 +56,7 @@ namespace MakeFileBuilder
             this.ExportVariable = true;
         }
 
-        public Opus.Core.Array<System.Enum> OutputTypes
+        public Opus.Core.OutputPaths OutputPaths
         {
             get;
             private set;

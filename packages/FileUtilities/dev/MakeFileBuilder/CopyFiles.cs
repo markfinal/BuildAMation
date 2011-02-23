@@ -60,8 +60,8 @@ namespace MakeFileBuilder
                 }
 #endif
 
-                //Opus.Core.StringArray inputVariables = data.VariableDictionary.Variables;
-                string target = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, data.VariableDictionary[destinationOutputFlags]);
+                // TODO: why is there a space at the end of the variable name?
+                string destinationPathName = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, data.VariableDictionary[destinationOutputFlags]);
 
                 System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
                 commandLineBuilder.AppendFormat("\"{0}\" ", toolExecutablePath);
@@ -74,7 +74,9 @@ namespace MakeFileBuilder
                 commandLines.Add(commandLineBuilder.ToString());
 
 #if true
-                MakeFileRule rule = new MakeFileRule(new Opus.Core.Array<System.Enum>(destinationOutputFlags), destinationOutputFlags, target, dependentVariables, commandLines);
+                Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
+                outputPaths[destinationOutputFlags] = destinationPathName;
+                MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, dependentVariables, commandLines);
                 rule.ExportTarget = true;
                 rule.ExportVariable = true;
 #else

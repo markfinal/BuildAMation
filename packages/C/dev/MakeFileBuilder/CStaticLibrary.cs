@@ -65,7 +65,7 @@ namespace MakeFileBuilder
 #if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths.Types, C.OutputFileFlags.StaticLibrary, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
+            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths, C.OutputFileFlags.StaticLibrary, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
             makeFile.RuleArray.Add(rule);
 #else
             MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);

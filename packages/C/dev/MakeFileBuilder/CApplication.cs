@@ -73,7 +73,7 @@ namespace MakeFileBuilder
 #if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(application.Options.OutputPaths.Types, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
+            MakeFileRule rule = new MakeFileRule(application.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
             makeFile.RuleArray.Add(rule);
 #else
             MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);

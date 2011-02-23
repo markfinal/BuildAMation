@@ -86,11 +86,13 @@ namespace MakeFileBuilder
             private set;
         }
 
+#if false
         private Opus.Core.OutputPaths OutputPaths
         {
             get;
             set;
         }
+#endif
 
         private Opus.Core.StringArray InputFiles
         {
@@ -185,7 +187,7 @@ namespace MakeFileBuilder
             this.ExportedTargets = new MakeFileTargetDictionary();
             this.ExportedVariables = new MakeFileVariableDictionary();
             this.RuleArray = new Opus.Core.Array<MakeFileRule>();
-            this.OutputPaths = node.Module.Options.OutputPaths;
+            //this.OutputPaths = node.Module.Options.OutputPaths;
             this.ModulePrefixName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
 
 #if false
@@ -331,7 +333,7 @@ namespace MakeFileBuilder
                 string mainExportVariableName = null;
                 if (rule.ExportVariable)
                 {
-                    foreach (System.Enum outputType in rule.OutputTypes)
+                    foreach (System.Enum outputType in rule.OutputPaths.Types)
                     {
                         string exportVariableName = System.String.Format("{0}_{1}_Variable", mainVariableName, outputType.ToString());
                         if (outputType.Equals(rule.TargetType))
@@ -342,7 +344,7 @@ namespace MakeFileBuilder
 
                         if (rule.ExportTarget)
                         {
-                            string relativeOutputPath = this.RelativePath(this.OutputPaths[outputType]);
+                            string relativeOutputPath = this.RelativePath(rule.OutputPaths[outputType]);
                             writer.WriteLine(exportVariableName + " := " + relativeOutputPath);
                             writer.WriteLine("");
                         }
@@ -443,6 +445,7 @@ namespace MakeFileBuilder
             }
         }
 
+#if false
         public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag)
         {
             Write(writer, mainOutputFileFlag, null);
@@ -479,7 +482,7 @@ namespace MakeFileBuilder
 #endif
 
             writer.WriteLine("# Outputs as variables");
-            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[mainOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
+            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(rule.OutputPaths[mainOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
             string variableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag);
             writer.WriteLine("{0} := {1}", variableName, relativeOutputPath);
 #if false
@@ -496,7 +499,7 @@ namespace MakeFileBuilder
 
             if (null != secondaryOutputFileFlag)
             {
-                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(this.OutputPaths[secondaryOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
+                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(rule.OutputPaths[secondaryOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
                 if (altRelativeOutputPath != relativeOutputPath)
                 {
                     string altVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, secondaryOutputFileFlag.ToString());
@@ -543,7 +546,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                writer.WriteLine("{0}: {1}", this.OutputPaths[mainOutputFileFlag], prerequisites);
+                writer.WriteLine("{0}: {1}", rule.OutputPaths[mainOutputFileFlag], prerequisites);
             }
 
 #if true
@@ -612,5 +615,6 @@ namespace MakeFileBuilder
             writer.WriteLine("");
 #endif
         }
+#endif
     }
 }

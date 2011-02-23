@@ -74,7 +74,7 @@ namespace MakeFileBuilder
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             // TODO: the target type isn't exactly right, as there are two outputs from a single command
-            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths.Types, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
+            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
             makeFile.RuleArray.Add(rule);
 #else
             MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
