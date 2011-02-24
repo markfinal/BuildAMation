@@ -88,6 +88,29 @@ namespace MakeFileBuilder
                 return variables;
             }
         }
+
+        public MakeFileVariableDictionary Filter(System.Enum filterKeys)
+        {
+            int filterKeysAsInt = System.Convert.ToInt32(filterKeys);
+
+            MakeFileVariableDictionary filtered = new MakeFileVariableDictionary();
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> pair in this)
+            {
+                int pairKeyAsInt = System.Convert.ToInt32(pair.Key);
+
+                if (pairKeyAsInt == (filterKeysAsInt & pairKeyAsInt))
+                {
+                    filtered.Add(pair.Key, pair.Value);
+                }
+            }
+
+            if (0 == filtered.Count)
+            {
+                throw new Opus.Core.Exception(System.String.Format("No matching variable types were found for '{0}'", filterKeys.ToString()), false);
+            }
+
+            return filtered;
+        }
     }
 
     public sealed class MakeFile
@@ -375,7 +398,7 @@ namespace MakeFileBuilder
                         {
                             mainExportVariableName = exportVariableName;
                         }
-                        writer.WriteLine("# Output variable");
+                        writer.WriteLine("# Output variable: '{0}'", outputType.ToString());
 
                         if (rule.ExportTarget)
                         {

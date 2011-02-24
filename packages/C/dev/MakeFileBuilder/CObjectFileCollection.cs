@@ -77,16 +77,18 @@ namespace MakeFileBuilder
 #if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(objectFileCollection.Options.OutputPaths, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, dependents, null);
+            MakeFileRule rule = new MakeFileRule(objectFileCollection.Options.OutputPaths, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null);
             if (null == node.Parent)
             {
                 // phony target
                 rule.ExportTarget = true;
+                rule.ExportVariable = false;
                 rule.TargetIsPhony = true;
             }
             else
             {
                 // variable rule with no target
+                rule.ExportTarget = false;
                 rule.ExportVariable = true;
             }
             makeFile.RuleArray.Add(rule);

@@ -80,9 +80,11 @@ namespace MakeFileBuilder
 #if true
                 Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
                 outputPaths[destinationOutputFlags] = destinationPathName;
-                MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, data.VariableDictionary, commandLines);
-                rule.ExportTarget = true;
-                rule.ExportVariable = true;
+
+                Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
+                directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
+
+                MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, data.VariableDictionary.Filter(sourceOutputPaths), commandLines);
 #else
                 MakeFileRule rule = new MakeFileRule(target, inputVariables, commandLines);
 #endif

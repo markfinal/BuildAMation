@@ -8,6 +8,7 @@ namespace MakeFileBuilder
     // TODO: might need a base class rule, and add from therel
     public sealed class MakeFileRule
     {
+#if false
         public MakeFileRule(Opus.Core.OutputPaths outputPaths,
                             System.Enum targetType,
                             string target,
@@ -20,6 +21,7 @@ namespace MakeFileBuilder
             this.InputVariables = prerequisiteVariables;
             this.Recipes = recipes;
         }
+#endif
 
         public MakeFileRule(Opus.Core.OutputPaths outputPaths, 
                             System.Enum targetType,

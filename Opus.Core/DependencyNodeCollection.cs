@@ -27,8 +27,7 @@ namespace Opus.Core
             }
             else
             {
-                Log.MessageAll("Node is already present '{0}'", item.ToString());
-                //throw new Exception(System.String.Format("Node is already present '{0}'", item.ToString()));
+                Log.DebugMessage("Not duplicating already presen Node in the collection: '{0}'", item.ToString());
             }
         }
 
