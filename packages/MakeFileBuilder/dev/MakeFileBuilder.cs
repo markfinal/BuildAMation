@@ -133,14 +133,6 @@ namespace MakeFileBuilder
             private set;
         }
 
-#if false
-        private Opus.Core.OutputPaths OutputPaths
-        {
-            get;
-            set;
-        }
-#endif
-
         private Opus.Core.StringArray InputFiles
         {
             get;
@@ -152,22 +144,6 @@ namespace MakeFileBuilder
             get;
             set;
         }
-
-#if false
-        private Opus.Core.StringArray Rules
-        {
-            get;
-            set;
-        }
-#endif
-
-#if false
-        private System.Collections.Generic.Dictionary<string, string> DirectoriesToCreate
-        {
-            get;
-            set;
-        }
-#endif
 
         private string ModulePrefixName
         {
@@ -226,7 +202,12 @@ namespace MakeFileBuilder
             private set;
         }
 
-#if true
+        public static string InstanceName(Opus.Core.DependencyNode node)
+        {
+            string instanceName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
+            return instanceName;
+        }
+
         public MakeFile(Opus.Core.DependencyNode node,
                         string topLevelMakeFilePath)
         {
@@ -234,111 +215,8 @@ namespace MakeFileBuilder
             this.ExportedTargets = new MakeFileTargetDictionary();
             this.ExportedVariables = new MakeFileVariableDictionary();
             this.RuleArray = new Opus.Core.Array<MakeFileRule>();
-            //this.OutputPaths = node.Module.Options.OutputPaths;
-            this.ModulePrefixName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
-
-#if false
-            CommandLineProcessor.ICommandLineSupport commandLineOption = node.Module.Options as CommandLineProcessor.ICommandLineSupport;
-            if (null == commandLineOption)
-            {
-                throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' does not implement the CommandLineProcessor.ICommandLineSupport interface", node.Module.Options.GetType().ToString()), false);
-            }
-            System.Collections.Generic.Dictionary<string, string> dirsToCreateMap = new System.Collections.Generic.Dictionary<string, string>();
-            int dirCount = 0;
-            foreach (string dir in commandLineOption.DirectoriesToCreate())
-            {
-                string relativeDir = Opus.Core.RelativePathUtilities.GetPath(dir, topLevelMakeFilePath, "$(CURDIR)");
-                string variableName = System.String.Format("{0}_BuildDirectory{1}", this.ModulePrefixName, dirCount);
-                dirsToCreateMap.Add(variableName, relativeDir);
-                ++dirCount;
-            }
-            if (dirsToCreateMap.Count > 0)
-            {
-                this.DirectoriesToCreate = dirsToCreateMap;
-            }
-#endif
+            this.ModulePrefixName = InstanceName(node);
         }
-#else
-        public MakeFile(Opus.Core.DependencyNode node,
-                                     Opus.Core.StringArray inputFiles,
-                                     Opus.Core.StringArray inputVariables,
-                                     Opus.Core.StringArray rules,
-                                     string topLevelMakeFilePath)
-        {
-            this.ExportedTargets = new Opus.Core.StringArray();
-            this.RuleArray = new Opus.Core.Array<MakeFileRule>();
-            this.TopLevelMakeFilePath = topLevelMakeFilePath;
-            this.Includes = new Opus.Core.StringArray();
-
-            this.OutputPaths = node.Module.Options.OutputPaths;
-            this.InputFiles = inputFiles;
-            this.InputVariables = inputVariables;
-            this.Rules = rules;
-
-            this.ModulePrefixName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
-            if (null == node.Parent)
-            {
-                this.TargetName = this.ModulePrefixName;
-            }
-
-            CommandLineProcessor.ICommandLineSupport commandLineOption = node.Module.Options as CommandLineProcessor.ICommandLineSupport;
-            if (null == commandLineOption)
-            {
-                throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' does not implement the CommandLineProcessor.ICommandLineSupport interface", node.Module.Options.GetType().ToString()), false);
-            }
-            System.Collections.Generic.Dictionary<string, string> dirsToCreateMap = new System.Collections.Generic.Dictionary<string, string>();
-            int dirCount = 0;
-            foreach (string dir in commandLineOption.DirectoriesToCreate())
-            {
-                string relativeDir = Opus.Core.RelativePathUtilities.GetPath(dir, topLevelMakeFilePath, "$(CURDIR)");
-                string variableName = System.String.Format("{0}_BuildDirectory{1}", this.ModulePrefixName, dirCount);
-                dirsToCreateMap.Add(variableName, relativeDir);
-                ++dirCount;
-            }
-            if (dirsToCreateMap.Count > 0)
-            {
-                this.DirectoriesToCreate = dirsToCreateMap;
-            }
-
-            Opus.Core.Log.DebugMessage("Output files:");
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputFile in this.OutputPaths)
-            {
-                Opus.Core.Log.DebugMessage("{0} = {1}", outputFile.Key, outputFile.Value);
-            }
-            if (null != inputFiles)
-            {
-                Opus.Core.Log.DebugMessage("Input files:");
-                foreach (string inputFile in inputFiles)
-                {
-                    Opus.Core.Log.DebugMessage(inputFile);
-                }
-            }
-            else
-            {
-                Opus.Core.Log.DebugMessage("There were no input files");
-            }
-            if (null != inputVariables)
-            {
-                Opus.Core.Log.DebugMessage("Input variables:");
-                foreach (string inputVariable in inputVariables)
-                {
-                    Opus.Core.Log.DebugMessage(inputVariable);
-                }
-            }
-            else
-            {
-                Opus.Core.Log.DebugMessage("There were no input variables");
-            }
-            if (rules != null)
-            {
-                Opus.Core.Log.DebugMessage("Rules:");
-                foreach (string irule in rules)
-                {
-                    Opus.Core.Log.DebugMessage(irule);
-                }
-            }
-        }
-#endif
 
         public void Write(System.IO.TextWriter writer)
         {
@@ -346,17 +224,6 @@ namespace MakeFileBuilder
             {
                 return;
             }
-
-#if false
-            if (this.Includes.Count > 0)
-            {
-                foreach (string includePath in this.Includes)
-                {
-                    writer.WriteLine("include {0}", includePath);
-                }
-                writer.WriteLine("");
-            }
-#endif
 
             int ruleCount = this.RuleArray.Count;
             int ruleIndex = 0;
@@ -394,7 +261,7 @@ namespace MakeFileBuilder
                     foreach (System.Enum outputType in rule.OutputPaths.Types)
                     {
                         string exportVariableName = System.String.Format("{0}_{1}_Variable", mainVariableName, outputType.ToString());
-                        if (outputType.Equals(rule.TargetType))
+                        if (outputType.Equals(rule.PrimaryOutputType))
                         {
                             mainExportVariableName = exportVariableName;
                         }
@@ -445,7 +312,7 @@ namespace MakeFileBuilder
 
                 if (rule.ExportTarget && null != mainExportVariableName)
                 {
-                    string exportTargetName = System.String.Format("{0}_{1}_Target", mainVariableName, rule.TargetType.ToString());
+                    string exportTargetName = System.String.Format("{0}_{1}_Target", mainVariableName, rule.PrimaryOutputType.ToString());
                     writer.WriteLine("# Output target");
                     if (rule.TargetIsPhony)
                     {
@@ -453,7 +320,7 @@ namespace MakeFileBuilder
                     }
                     writer.WriteLine(exportTargetName + ": $(" + mainExportVariableName + ")");
                     writer.WriteLine("");
-                    this.ExportedTargets.Add(rule.TargetType, exportTargetName);
+                    this.ExportedTargets.Add(rule.PrimaryOutputType, exportTargetName);
 
                     System.Text.StringBuilder targetAndPrerequisites = new System.Text.StringBuilder();
                     if (null != mainExportVariableName)
@@ -462,7 +329,7 @@ namespace MakeFileBuilder
                     }
                     else
                     {
-                        string targetName = System.String.Format("{0}_{1}_Target", mainVariableName, rule.TargetType.ToString());
+                        string targetName = System.String.Format("{0}_{1}_Target", mainVariableName, rule.PrimaryOutputType.ToString());
                         if (rule.TargetIsPhony)
                         {
                             writer.WriteLine(".PHONY: {0}", targetName);
@@ -470,7 +337,7 @@ namespace MakeFileBuilder
                         targetAndPrerequisites.AppendFormat("{0}: ", targetName);
                         if (rule.ExportTarget)
                         {
-                            this.ExportedTargets.Add(rule.TargetType, targetName);
+                            this.ExportedTargets.Add(rule.PrimaryOutputType, targetName);
                         }
                     }
                     foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
@@ -502,177 +369,5 @@ namespace MakeFileBuilder
                 }
             }
         }
-
-#if false
-        public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag)
-        {
-            Write(writer, mainOutputFileFlag, null);
-        }
-
-        public void Write(System.IO.TextWriter writer, System.Enum mainOutputFileFlag, System.Enum secondaryOutputFileFlag)
-        {
-            this.MainVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag.ToString());
-
-#if false
-            if (this.Includes.Count > 0)
-            {
-                foreach (string includePath in this.Includes)
-                {
-                    writer.WriteLine("include {0}", includePath);
-                }
-                writer.WriteLine("");
-            }
-#endif
-
-#if false
-            if (null != this.DirectoriesToCreate)
-            {
-                writer.WriteLine("# Define directories to create");
-                string linearizedDirsToCreate = null;
-                foreach (System.Collections.Generic.KeyValuePair<string, string> dirToCreate in this.DirectoriesToCreate)
-                {
-                    writer.WriteLine("{0} = {1}", dirToCreate.Key, dirToCreate.Value);
-                    linearizedDirsToCreate += System.String.Format("$({0}) ", dirToCreate.Key);
-                }
-                writer.WriteLine("builddirs += {0}", linearizedDirsToCreate);
-                writer.WriteLine("");
-            }
-#endif
-
-            writer.WriteLine("# Outputs as variables");
-            string relativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(rule.OutputPaths[mainOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
-            string variableName = System.String.Format("{0}_{1}", this.ModulePrefixName, mainOutputFileFlag);
-            writer.WriteLine("{0} := {1}", variableName, relativeOutputPath);
-#if false
-            if (null != this.DirectoriesToCreate)
-            {
-                writer.WriteLine("# Order-only dependencies on directories to create");
-                foreach (System.Collections.Generic.KeyValuePair<string, string> dirToCreate in this.DirectoriesToCreate)
-                {
-                    writer.WriteLine("$({0}): | $({1})", variableName, dirToCreate.Key);
-                }
-            }
-#endif
-            writer.WriteLine("");
-
-            if (null != secondaryOutputFileFlag)
-            {
-                string altRelativeOutputPath = Opus.Core.RelativePathUtilities.GetPath(rule.OutputPaths[secondaryOutputFileFlag], this.TopLevelMakeFilePath, "$(CURDIR)");
-                if (altRelativeOutputPath != relativeOutputPath)
-                {
-                    string altVariableName = System.String.Format("{0}_{1}", this.ModulePrefixName, secondaryOutputFileFlag.ToString());
-                    writer.WriteLine("{0} := {1}", altVariableName, altRelativeOutputPath);
-                    writer.WriteLine("# add dependency on main output");
-                    writer.WriteLine("$({0}): $({1})", altVariableName, this.MainVariableName);
-                    this.SecondaryVariableName = altVariableName;
-                    writer.WriteLine("");
-                }
-            }
-
-            if (null != this.TargetName)
-            {
-                if (null == this.MainVariableName)
-                {
-                    throw new Opus.Core.Exception("Oops, no make variable");
-                }
-
-                writer.WriteLine("# Target so that this output can be created");
-                writer.WriteLine("{0}: $({1})", this.TargetName, this.MainVariableName);
-                writer.WriteLine("");
-            }
-
-            writer.WriteLine("# Rules");
-            string prerequisites = null;
-            if (null != this.InputFiles)
-            {
-                foreach (string inputFile in this.InputFiles)
-                {
-                    string relativeInputPath = Opus.Core.RelativePathUtilities.GetPath(inputFile, this.TopLevelMakeFilePath, "$(CURDIR)");
-                    prerequisites += System.String.Format("{0} ", relativeInputPath);
-                }
-            }
-            if (null != this.InputVariables)
-            {
-                foreach (string inputVariable in this.InputVariables)
-                {
-                    prerequisites += System.String.Format("$({0}) ", inputVariable);
-                }
-            }
-            if (null != this.MainVariableName)
-            {
-                writer.WriteLine("$({0}): {1}", this.MainVariableName, prerequisites);
-            }
-            else
-            {
-                writer.WriteLine("{0}: {1}", rule.OutputPaths[mainOutputFileFlag], prerequisites);
-            }
-
-#if true
-            string mainVariableName = this.ModulePrefixName;
-            foreach (MakeFileRule rule in this.RuleArray)
-            {
-                string exportVariableName = System.String.Format("{0}_GOALVARIABLE", mainVariableName);
-                writer.WriteLine("# Goal variable");
-                writer.WriteLine(exportVariableName + " := " + rule.Target);
-
-                string exportTargetName = System.String.Format("{0}_GOALTARGET", mainVariableName);
-                writer.WriteLine("# Goal target");
-                writer.WriteLine(exportTargetName + ": $(" + exportVariableName + ")");
-                this.ExportedTargets.Add(rule.TargetType, exportTargetName);
-
-                System.Text.StringBuilder targetAndPrerequisites = new System.Text.StringBuilder();
-                targetAndPrerequisites.AppendFormat("$({0}): ", exportVariableName);
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
-                {
-                    foreach (string pre in prerequisite.Value)
-                    {
-                        targetAndPrerequisites.AppendFormat("$({0}) ", pre);
-                    }
-                }
-                writer.WriteLine("# Goal Rule");
-                writer.WriteLine(targetAndPrerequisites.ToString());
-
-                foreach (string recipe in rule.Recipes)
-                {
-                    writer.WriteLine("\t" + recipe);
-                }
-            }
-#else
-            foreach (string rule in this.Rules)
-            {
-                string refactoredRule = rule;
-
-                refactoredRule = refactoredRule.Replace(this.OutputPaths[mainOutputFileFlag], "$@");
-                if (null != this.InputFiles)
-                {
-                    string inputFile = this.InputFiles[0];
-                    string quotedInputFile = System.String.Format("\"{0}\"", inputFile);
-                    if (refactoredRule.Contains(quotedInputFile))
-                    {
-                        string fileExtension = System.IO.Path.GetExtension(inputFile);
-                        refactoredRule = refactoredRule.Replace(quotedInputFile, System.String.Format("$(filter %{0},$^)", fileExtension));
-                    }
-                }
-                else if (null != this.InputVariables)
-                {
-                    refactoredRule = refactoredRule.Replace(this.InputVariables[0], "$<");
-                }
-
-                writer.WriteLine("\t{0}", refactoredRule);
-            }
-            writer.WriteLine("");
-#endif
-
-#if false
-            string dirsToClean = null;
-            foreach (System.Collections.Generic.KeyValuePair<string, string> dirToCreate in this.DirectoriesToCreate)
-            {
-                dirsToClean += System.String.Format("$({0}) ", dirToCreate.Key);
-            }
-            writer.WriteLine("dirstodelete += {0}", dirsToClean);
-            writer.WriteLine("");
-#endif
-        }
-#endif
     }
 }

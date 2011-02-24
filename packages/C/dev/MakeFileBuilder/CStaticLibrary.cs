@@ -59,52 +59,30 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Archiver options does not support command line translation");
             }
 
-            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-            commandLines.Add(System.String.Format("\"{0}\" {1} $(filter %{2},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension));
-
-#if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths, C.OutputFileFlags.StaticLibrary, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
-            makeFile.RuleArray.Add(rule);
-#else
-            MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
-#endif
+            string recipe = System.String.Format("\"{0}\" {1}$(filter %{2},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension);
+            // replace primary target with $@
+            C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
+            recipe = recipe.Replace(staticLibrary.Options.OutputPaths[primaryOutput], "$@");
 
-#if false
-            foreach (MakeFileData data in dataArray)
-            {
-                if (!data.Included)
-                {
-                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
-                    makeFile.Includes.Add(relativeDataFile);
-                    data.Included = true;
-                }
-            }
-#endif
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+
+            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, recipes);
+            makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
 
-#if true
-            MakeFileTargetDictionary exportedTargetDictionary = null;
-            MakeFileVariableDictionary exportedVariableDictionary = null;
-#else
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-#endif
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
                 makeFile.Write(makeFileWriter);
-#if false
-                makeFileTargetName = makeFile.TargetName;
-                makeFileVariableName = makeFile.VariableName;
-#endif
             }
 
             success = true;
-            exportedTargetDictionary = makeFile.ExportedTargets;
-            exportedVariableDictionary = makeFile.ExportedVariables;
+            MakeFileTargetDictionary exportedTargetDictionary = makeFile.ExportedTargets;
+            MakeFileVariableDictionary exportedVariableDictionary = makeFile.ExportedVariables;
             MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, archiverTool.EnvironmentPaths(target));
             return returnData;
         }

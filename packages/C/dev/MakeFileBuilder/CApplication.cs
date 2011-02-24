@@ -67,46 +67,34 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
-            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-            commandLines.Add(System.String.Format("\"{0}\" {1} $(filter %{2},$^) $(filter %{3},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension, toolchain.StaticLibraryExtension));
-
-#if true
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
-
-            MakeFileRule rule = new MakeFileRule(application.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, commandLines);
-            makeFile.RuleArray.Add(rule);
-#else
-            MakeFile makeFile = new MakeFile(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
-#endif
-
-#if false
-            foreach (MakeFileData data in dataArray)
+            string recipe = System.String.Format("\"{0}\" {1}$(filter %{2},$^) $(filter %{3},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension, toolchain.StaticLibraryExtension);
+            // replace primary target with $@
+            C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
+            recipe = recipe.Replace(application.Options.OutputPaths[primaryOutput], "$@");
+            string instanceName = MakeFile.InstanceName(node);
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in application.Options.OutputPaths)
             {
-                if (!data.Included)
+                if (!outputPath.Key.Equals(primaryOutput))
                 {
-                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
-                    makeFile.Includes.Add(relativeDataFile);
-                    data.Included = true;
+                    string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
+                    recipe = recipe.Replace(application.Options.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
                 }
             }
-#endif
+
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+
+            MakeFileRule rule = new MakeFileRule(application.Options.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, recipes);
+            makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
 
-#if false
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-#endif
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-#if true
                 makeFile.Write(makeFileWriter);
-#else
-                makeFile.Write(makeFileWriter, C.OutputFileFlags.Executable);
-                makeFileTargetName = makeFile.TargetName;
-                makeFileVariableName = makeFile.VariableName;
-#endif
             }
 
             success = true;
