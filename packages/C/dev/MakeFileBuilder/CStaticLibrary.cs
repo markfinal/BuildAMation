@@ -69,7 +69,7 @@ namespace MakeFileBuilder
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
-            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, recipes);
+            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
@@ -83,7 +83,7 @@ namespace MakeFileBuilder
             success = true;
             MakeFileTargetDictionary exportedTargetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariableDictionary = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, archiverTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, exportedTargetDictionary, exportedVariableDictionary, archiverTool.EnvironmentPaths(target));
             return returnData;
         }
     }

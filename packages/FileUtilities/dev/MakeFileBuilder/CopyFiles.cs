@@ -11,7 +11,7 @@ namespace MakeFileBuilder
         {
             System.Enum sourceOutputPaths = copyFiles.SourceOutputFlags;
             System.Collections.Generic.List<MakeFileData> sourceFileDataArray = new System.Collections.Generic.List<MakeFileData>();
-            //MakeFileVariableDictionary dependentVariables = new MakeFileVariableDictionary();
+            Opus.Core.StringArray sourceFiles = null;
             foreach (Opus.Core.IModule sourceModule in copyFiles.SourceModules)
             {
                 if (sourceModule.Options.OutputPaths.Has(sourceOutputPaths))
@@ -20,9 +20,22 @@ namespace MakeFileBuilder
                     {
                         MakeFileData data = sourceModule.OwningNode.Data as MakeFileData;
                         sourceFileDataArray.Add(data);
-                        //dependentVariables.Add(sourceOutputPaths, data.VariableDictionary[sourceOutputPaths]);
                     }
                 }
+            }
+            if (null != copyFiles.SourceFiles)
+            {
+                sourceFiles = new Opus.Core.StringArray();
+                foreach (string path in copyFiles.SourceFiles)
+                {
+                    sourceFiles.Add(path);
+                }
+            }
+            if (0 == sourceFileDataArray.Count && null == sourceFiles)
+            {
+                Opus.Core.Log.DebugMessage("No files to copy");
+                success = true;
+                return null;
             }
 
             Opus.Core.IModule destinationModule = copyFiles.DestinationModule;
@@ -50,45 +63,46 @@ namespace MakeFileBuilder
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
             string toolExecutablePath = tool.Executable(node.Target);
 
+            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            commandLineBuilder.AppendFormat("\"{0}\" ", toolExecutablePath);
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                commandLineBuilder.Append("/c COPY $< $@");
+            }
+            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
+            commandLines.Add(commandLineBuilder.ToString());
+
+            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
+            directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
+
             foreach (MakeFileData data in sourceFileDataArray)
             {
-#if false
-                if (!data.Included)
-                {
-                    recipe.Includes.Add(data.MakeFilePath);
-                    data.Included = true;
-                }
-#endif
-
                 Opus.Core.StringArray variableDictionary = data.VariableDictionary[destinationOutputFlags];
                 if (1 != variableDictionary.Count)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Variable dictionary from Makefile '{0}' holds {1} entries for flags {2}, but requires only one", data.MakeFilePath, variableDictionary.Count, destinationOutputFlags.ToString()));
                 }
+
                 string destinationPathName = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, variableDictionary[0]);
 
-                System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
-                commandLineBuilder.AppendFormat("\"{0}\" ", toolExecutablePath);
-                if (Opus.Core.OSUtilities.IsWindowsHosting)
-                {
-                    commandLineBuilder.Append("/c COPY $< $@");
-                }
-
-                Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-                commandLines.Add(commandLineBuilder.ToString());
-
-#if true
                 Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
                 outputPaths[destinationOutputFlags] = destinationPathName;
 
-                Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-                directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
-
-                MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, data.VariableDictionary.Filter(sourceOutputPaths), commandLines);
-#else
-                MakeFileRule rule = new MakeFileRule(target, inputVariables, commandLines);
-#endif
+                MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, data.VariableDictionary.Filter(sourceOutputPaths), null, commandLines);
                 makeFile.RuleArray.Add(rule);
+            }
+            if (null != sourceFiles)
+            {
+                foreach (string sourceFile in sourceFiles)
+                {
+                    string destinationPathName = System.String.Format("{0}{1}$(notdir {2})", destinationDirectory, System.IO.Path.DirectorySeparatorChar, sourceFile);
+
+                    Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
+                    outputPaths[destinationOutputFlags] = destinationPathName;
+
+                    MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, null, new Opus.Core.StringArray(sourceFile), commandLines);
+                    makeFile.RuleArray.Add(rule);
+                }
             }
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
@@ -98,7 +112,7 @@ namespace MakeFileBuilder
 
             success = true;
 
-            MakeFileData nodeData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            MakeFileData nodeData = new MakeFileData(makeFilePath, node.Parent != null, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             return nodeData;
         }
     }

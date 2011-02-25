@@ -31,22 +31,9 @@ namespace MakeFileBuilder
                     if (null != dependentNode.Data)
                     {
                         MakeFileData data = dependentNode.Data as MakeFileData;
-                        bool hasObjectFile = data.VariableDictionary.ContainsKey(C.OutputFileFlags.ObjectFile);
-                        bool hasStaticImportFile = data.VariableDictionary.ContainsKey(C.OutputFileFlags.StaticImportLibrary);
-                        if (!hasObjectFile && !hasStaticImportFile)
+                        foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> makeVariable in data.VariableDictionary)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("MakeFile Variable for '{0}' is missing", dependentNode.UniqueModuleName), false);
-                        }
-
-                        if (hasObjectFile)
-                        {
-                            childDataArray.Add(data);
-                            dependents.Add(C.OutputFileFlags.ObjectFile, data.VariableDictionary[C.OutputFileFlags.ObjectFile]);
-                        }
-                        else if (hasStaticImportFile)
-                        {
-                            childDataArray.Add(data);
-                            dependents.Add(C.OutputFileFlags.StaticImportLibrary, data.VariableDictionary[C.OutputFileFlags.StaticImportLibrary]);
+                            dependents.Add(makeVariable.Key, makeVariable.Value);
                         }
                     }
                 }
@@ -58,7 +45,7 @@ namespace MakeFileBuilder
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             // no output paths because this rule has no recipe
-            MakeFileRule rule = new MakeFileRule(null, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null);
+            MakeFileRule rule = new MakeFileRule(null, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null, null);
             if (null == node.Parent)
             {
                 // phony target
@@ -71,7 +58,7 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             success = true;
             return returnData;
         }

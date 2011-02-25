@@ -46,11 +46,14 @@ namespace MakeFileBuilder
                 MakeFileData data = node.Data as MakeFileData;
                 if (data != null)
                 {
-                    foreach (Opus.Core.StringArray targetNames in data.TargetDictionary.Values)
+                    if (!data.HasParent)
                     {
-                        foreach (string targetName in targetNames)
+                        foreach (Opus.Core.StringArray targetNames in data.TargetDictionary.Values)
                         {
-                            targetList += targetName + " ";
+                            foreach (string targetName in targetNames)
+                            {
+                                targetList += targetName + " ";
+                            }
                         }
                     }
 

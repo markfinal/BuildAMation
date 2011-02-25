@@ -8,10 +8,11 @@ namespace MakeFileBuilder
     // TODO: might need a base class rule, and add from therel
     public sealed class MakeFileRule
     {
-        public MakeFileRule(Opus.Core.OutputPaths outputPaths, 
+        public MakeFileRule(Opus.Core.OutputPaths outputPaths,
                             System.Enum primaryOutputType,
                             string target,
                             Opus.Core.DirectoryCollection directoriesToCreate,
+                            MakeFileVariableDictionary inputVariables,
                             Opus.Core.StringArray inputFiles,
                             Opus.Core.StringArray recipes)
         {
@@ -19,25 +20,8 @@ namespace MakeFileBuilder
             this.PrimaryOutputType = primaryOutputType;
             this.Target = target;
             this.DirectoriesToCreate = directoriesToCreate;
-            this.InputVariables = new MakeFileVariableDictionary();
-            this.InputFiles = inputFiles;
-            this.Recipes = recipes;
-            this.ExportTarget = true;
-            this.ExportVariable = true;
-        }
-
-        public MakeFileRule(Opus.Core.OutputPaths outputPaths,
-                            System.Enum primaryOutputType,
-                            string target,
-                            Opus.Core.DirectoryCollection directoriesToCreate,
-                            MakeFileVariableDictionary inputVariables,
-                            Opus.Core.StringArray recipes)
-        {
-            this.OutputPaths = outputPaths;
-            this.PrimaryOutputType = primaryOutputType;
-            this.Target = target;
-            this.DirectoriesToCreate = directoriesToCreate;
             this.InputVariables = inputVariables;
+            this.InputFiles = inputFiles;
             this.Recipes = recipes;
             this.ExportTarget = true;
             this.ExportVariable = true;

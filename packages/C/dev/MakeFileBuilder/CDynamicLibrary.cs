@@ -86,7 +86,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, recipes);
+            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
@@ -100,7 +100,7 @@ namespace MakeFileBuilder
             success = true;
             MakeFileTargetDictionary exportedTargets = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariables = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, linkerTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, exportedTargets, exportedVariables, linkerTool.EnvironmentPaths(target));
             return returnData;
         }
     }

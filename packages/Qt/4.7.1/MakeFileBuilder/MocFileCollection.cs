@@ -23,53 +23,26 @@ namespace MakeFileBuilder
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
-            string uniqueModuleName = node.UniqueModuleName;
-
-#if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
-#else
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-#endif
+
+            // no output paths because this rule has no recipe
+            MakeFileRule rule = new MakeFileRule(null, Qt.OutputFileFlags.MocGeneratedSourceFileCollection, node.UniqueModuleName, null, dependents, null, null);
+            if (null == node.Parent)
+            {
+                // phony target
+                rule.TargetIsPhony = true;
+            }
+            makeFile.RuleArray.Add(rule);
+
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-#if true
                 makeFile.Write(makeFileWriter);        
-#else
-                foreach (Opus.Core.DependencyNode childNode in node.Children)
-                {
-                    MakeFileData data = childNode.Data as MakeFileData;
-                    if (!data.Included)
-                    {
-                        string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
-                        makeFileWriter.WriteLine("include {0}", relativeDataFile);
-                        data.Included = true;
-                    }
-                }
-
-                if (null != node.Parent || null != node.ExternalDependentFor)
-                {
-                    makeFileVariableName = System.String.Format("{0}_{1}_Output", uniqueModuleName, target.Key);
-                    makeFileWriter.WriteLine("{0} = {1}", makeFileVariableName, dependents);
-                }
-                else
-                {
-                    makeFileTargetName = System.String.Format("{0}_{1}", uniqueModuleName, target.Key);
-                    makeFileWriter.WriteLine(".PHONY: {0}", makeFileTargetName);
-                    makeFileWriter.WriteLine("{0}: {1}", makeFileTargetName, dependents.ToString(' '));
-                }
-#endif
             }
 
             success = true;
 
-#if true
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             return returnData;
-#else
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFileTargetName, makeFileVariableName, null);
-            return returnData;
-#endif
         }
     }
 }

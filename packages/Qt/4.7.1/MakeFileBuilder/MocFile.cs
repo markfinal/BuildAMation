@@ -49,10 +49,9 @@ namespace MakeFileBuilder
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
-#if true
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(mocFile.Options.OutputPaths, Qt.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(mocFile.Options.OutputPaths, Qt.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
@@ -62,25 +61,8 @@ namespace MakeFileBuilder
 
             success = true;
 
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, tool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, makeFile.ExportedTargets, makeFile.ExportedVariables, tool.EnvironmentPaths(target));
             return returnData;
-#else
-            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, inputFiles, null, commandLines, this.topLevelMakeFilePath);
-
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
-            {
-                recipe.Write(makeFileWriter, Qt.MocOutputPathFlag.MocGeneratedSourceFile);
-                makeFileTargetName = recipe.TargetName;
-                makeFileVariableName = recipe.VariableName;
-            }
-
-            success = true;
-
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFileTargetName, makeFileVariableName, tool.EnvironmentPaths(target));
-            return returnData;
-#endif
         }
     }
 }

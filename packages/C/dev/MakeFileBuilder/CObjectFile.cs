@@ -58,7 +58,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(objectFile.Options.OutputPaths, C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(objectFile.Options.OutputPaths, C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
@@ -68,7 +68,7 @@ namespace MakeFileBuilder
 
             MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, compilerTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, targetDictionary, variableDictionary, compilerTool.EnvironmentPaths(target));
 
             success = true;
             return returnData;

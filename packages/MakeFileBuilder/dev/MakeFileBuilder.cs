@@ -222,7 +222,7 @@ namespace MakeFileBuilder
         {
             if (0 == this.RuleArray.Count)
             {
-                return;
+                throw new Opus.Core.Exception(System.String.Format("MakeFile '{0}' has no rules", this.ModulePrefixName), false);
             }
 
             int ruleCount = this.RuleArray.Count;
@@ -379,11 +379,14 @@ namespace MakeFileBuilder
                             this.ExportedTargets.Add(rule.PrimaryOutputType, targetName);
                         }
                     }
-                    foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
+                    if (null != rule.InputVariables)
                     {
-                        foreach (string pre in prerequisite.Value)
+                        foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
                         {
-                            targetAndPrerequisites.AppendFormat("$({0}) ", pre);
+                            foreach (string pre in prerequisite.Value)
+                            {
+                                targetAndPrerequisites.AppendFormat("$({0}) ", pre);
+                            }
                         }
                     }
                     if (null != rule.InputFiles)
