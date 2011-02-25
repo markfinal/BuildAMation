@@ -17,10 +17,59 @@ namespace VSSolutionBuilder
             }
 
             Opus.Core.Target target = node.Target;
+
+            ProjectData projectData = null;
+            // TODO: want to remove this
+            lock (this.solutionFile.ProjectDictionary)
+            {
+                if (this.solutionFile.ProjectDictionary.ContainsKey(node.ModuleName))
+                {
+                    projectData = this.solutionFile.ProjectDictionary[node.ModuleName];
+                }
+                else
+                {
+                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), node.ModuleName);
+                    projectPathName += ".vcproj";
+
+                    projectData = new ProjectData(node.ModuleName, projectPathName, node.Package.Directory);
+                    projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
+                    this.solutionFile.ProjectDictionary.Add(node.ModuleName, projectData);
+                }
+            }
+
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
-            ProjectData projectData = this.solutionFile.ProjectDictionary[node.ModuleName];
-            ProjectConfiguration configuration = projectData.Configurations[configurationName];
+            // TODO: want to remove this
+            lock (this.solutionFile.ProjectConfigurations)
+            {
+                if (!this.solutionFile.ProjectConfigurations.ContainsKey(configurationName))
+                {
+                    this.solutionFile.ProjectConfigurations.Add(configurationName, new System.Collections.Generic.List<ProjectData>());
+                }
+            }
+            this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);
+
+            ProjectConfiguration configuration;
+            lock (projectData.Configurations)
+            {
+                if (!projectData.Configurations.Contains(configurationName))
+                {
+                    configuration = new ProjectConfiguration(configurationName, (objectFileCollection.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
+
+                    C.CompilerOptionCollection options = objectFileCollection.Options as C.CompilerOptionCollection;
+                    configuration.IntermediateDirectory = options.OutputDirectoryPath;
+
+                    projectData.Configurations.Add(configuration);
+                }
+                else
+                {
+                    configuration = projectData.Configurations[configurationName];
+                    if ((C.ECharacterSet)configuration.CharacterSet != ((objectFileCollection.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet)
+                    {
+                        throw new Opus.Core.Exception("Inconsistent character set in project");
+                    }
+                }
+            }
 
             string toolName = "VCCLCompilerTool";
             ProjectTool vcCLCompilerTool = configuration.GetTool(toolName);
