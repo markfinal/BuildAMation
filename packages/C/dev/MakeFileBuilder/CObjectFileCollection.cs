@@ -57,19 +57,12 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(objectFileCollection.Options.OutputPaths, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null);
+            // no output paths because this rule has no recipe
+            MakeFileRule rule = new MakeFileRule(null, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null);
             if (null == node.Parent)
             {
                 // phony target
-                rule.ExportTarget = true;
-                rule.ExportVariable = false;
                 rule.TargetIsPhony = true;
-            }
-            else
-            {
-                // variable rule with no target
-                rule.ExportTarget = false;
-                rule.ExportVariable = true;
             }
             makeFile.RuleArray.Add(rule);
 
