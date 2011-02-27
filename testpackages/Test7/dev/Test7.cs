@@ -10,6 +10,7 @@ namespace Test7
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
 
+        [C.ExportCompilerOptionsDelegate]
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;

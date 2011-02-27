@@ -89,8 +89,27 @@ namespace Opus.Core
 
                     if (null != dependentNode.Children)
                     {
-                        //Core.IModule dependentModule = dependentNode.Module;
                         foreach (Core.DependencyNode childOfDependent in dependentNode.Children)
+                        {
+                            Core.IModule childModule = childOfDependent.Module;
+                            System.Type childType = childModule.GetType();
+                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target);
+                        }
+                    }
+                }
+            }
+
+            if (null != node.RequiredDependents)
+            {
+                foreach (Core.DependencyNode requiredNode in node.RequiredDependents)
+                {
+                    Core.Log.DebugMessage("Required dependent '{0}' of '{1}'", requiredNode.UniqueModuleName, node.UniqueModuleName);
+
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, requiredNode);
+
+                    if (null != requiredNode.Children)
+                    {
+                        foreach (Core.DependencyNode childOfDependent in requiredNode.Children)
                         {
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();

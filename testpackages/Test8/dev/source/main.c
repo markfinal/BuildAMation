@@ -1,9 +1,4 @@
-#if 0
 #include "dynamiclibrary.h"
-#else
-// faked while we don't have include paths
-typedef int (*ExportedFunction_t)(int);
-#endif
 
 #include <Windows.h>
 #if defined(_MSC_VER)
