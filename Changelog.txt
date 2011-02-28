@@ -1,3 +1,5 @@
+28-Feb-2011 Allow script modules to derive from an abstract module base class. Allow this to work for C.DynamicLibrary modules.
+
 27-Feb-2011 Opus.Core.RequiredModules now really do export the option collections that have the appropriate meta markup.
 
 25-Feb-2011 Updated Opus .csproj and .sln for SharpDevelop 4.0.
