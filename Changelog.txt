@@ -1,3 +1,5 @@
+01-Mar-2011 Opus.Core.DependencyNode unique module names now use the namespace (package name) to avoid class (module) name collisions.
+
 01-Mar-2011 Add detection code for circular dependencies in external and required dependents.
 
 28-Feb-2011 Following on from the previous fix, allow C.DynamicLibrary to be inherited for GCC builds.

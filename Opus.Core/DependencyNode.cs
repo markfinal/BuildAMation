@@ -70,7 +70,7 @@ namespace Opus.Core
                 }
                 this.Package = package;
                 this.ModuleName = moduleType.Name;
-                this.UniqueModuleName = this.ModuleName;
+                this.UniqueModuleName = moduleType.FullName;
             }
             else
             {

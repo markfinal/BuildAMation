@@ -225,7 +225,7 @@ namespace Opus.Core
                     {
                         foreach (System.Type dependentModuleType in externalDependentModuleTypes)
                         {
-                            DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.Name, node.Target, currentRank, nodesToMove);
+                            DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove);
 
                             if (newNode.Module is IInjectModules)
                             {
@@ -241,7 +241,7 @@ namespace Opus.Core
                     {
                         foreach (System.Type requiredModuleType in externalRequiredModuleTypes)
                         {
-                            DependencyNode newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.Name, node.Target, currentRank, nodesToMove);
+                            DependencyNode newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.FullName, node.Target, currentRank, nodesToMove);
 
                             node.AddRequiredDependent(newNode);
                         }
@@ -272,7 +272,7 @@ namespace Opus.Core
 
                                 if (newNode.Parent != node)
                                 {
-                                    throw new Exception(System.String.Format("Node '{0}' that already existed in the graph currently has parent '{1}' but should be '{2}'", newNode.UniqueModuleName, newNode.Parent.UniqueModuleName, node.UniqueModuleName));
+                                    throw new Exception(System.String.Format("Node '{0}' that already existed in the graph currently has parent '{1}' but should be '{2}'", newNode.UniqueModuleName, newNode.Parent.UniqueModuleName, node.UniqueModuleName), false);
                                 }
                             }
                             else
