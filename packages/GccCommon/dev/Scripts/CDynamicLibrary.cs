@@ -8,7 +8,7 @@ namespace C
     public partial class DynamicLibrary
     {
         [LocalCompilerOptionsDelegate]
-        private static void DynamicLibrarySetPositionIndependentCode(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void DynamicLibrarySetPositionIndependentCode(Opus.Core.IModule module, Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsUnix(target.Platform))
             {

@@ -12,7 +12,8 @@ namespace Opus.Core
             System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.NonPublic |
                                                           System.Reflection.BindingFlags.Public |
                                                           System.Reflection.BindingFlags.Static |
-                                                          System.Reflection.BindingFlags.Instance;
+                                                          System.Reflection.BindingFlags.Instance |
+                                                          System.Reflection.BindingFlags.FlattenHierarchy;
             System.Reflection.MethodInfo[] methods = type.GetMethods(bindingFlags);
             foreach (System.Reflection.MethodInfo method in methods)
             {
