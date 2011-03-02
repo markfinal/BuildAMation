@@ -46,7 +46,11 @@ namespace MakeFileBuilder
                 MakeFileData data = node.Data as MakeFileData;
                 if (data != null)
                 {
-                    if (!data.HasParent)
+                    // if a node has no parent, then it is a good choice for exposing the
+                    // target for in the main Makefile. However, some false-positives can
+                    // arise from this for orphaned modules that are dependents from child
+                    // modules (e.g. code generators)
+                    if (null == node.Parent)
                     {
                         foreach (Opus.Core.StringArray targetNames in data.TargetDictionary.Values)
                         {

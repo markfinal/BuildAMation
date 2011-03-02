@@ -112,7 +112,7 @@ namespace MakeFileBuilder
 
             success = true;
 
-            MakeFileData nodeData = new MakeFileData(makeFilePath, node.Parent != null, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            MakeFileData nodeData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             return nodeData;
         }
     }

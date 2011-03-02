@@ -68,7 +68,7 @@ namespace MakeFileBuilder
 
             MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, targetDictionary, variableDictionary, compilerTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, compilerTool.EnvironmentPaths(target));
 
             success = true;
             return returnData;

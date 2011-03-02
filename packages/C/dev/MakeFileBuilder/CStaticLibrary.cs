@@ -83,7 +83,7 @@ namespace MakeFileBuilder
             success = true;
             MakeFileTargetDictionary exportedTargetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariableDictionary = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, exportedTargetDictionary, exportedVariableDictionary, archiverTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, archiverTool.EnvironmentPaths(target));
             return returnData;
         }
     }

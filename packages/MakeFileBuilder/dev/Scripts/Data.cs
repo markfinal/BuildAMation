@@ -8,13 +8,11 @@ namespace MakeFileBuilder
     public sealed class MakeFileData
     {
         public MakeFileData(string makeFilePath,
-                            bool hasParent,
                             MakeFileTargetDictionary targetDictionary,
                             MakeFileVariableDictionary variableDictionary,
                             Opus.Core.StringArray environmentPaths)
         {
             this.MakeFilePath = makeFilePath;
-            this.HasParent = hasParent;
             this.TargetDictionary = targetDictionary;
             this.VariableDictionary = variableDictionary;
             this.EnvironmentPaths = environmentPaths;
@@ -22,12 +20,6 @@ namespace MakeFileBuilder
         }
 
         public string MakeFilePath
-        {
-            get;
-            private set;
-        }
-
-        public bool HasParent
         {
             get;
             private set;

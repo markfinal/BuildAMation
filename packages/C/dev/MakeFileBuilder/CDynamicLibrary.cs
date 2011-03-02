@@ -100,7 +100,7 @@ namespace MakeFileBuilder
             success = true;
             MakeFileTargetDictionary exportedTargets = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariables = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, node.Parent != null, exportedTargets, exportedVariables, linkerTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, linkerTool.EnvironmentPaths(target));
             return returnData;
         }
     }
