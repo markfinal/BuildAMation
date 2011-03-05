@@ -1,3 +1,5 @@
+05-Mar-2011 Gcc requires -m32 to be passed when building a 32-bit application on a 64-bit OS.
+
 01-Mar-2011 Opus.Core.DependencyNode unique module names now use the namespace (package name) to avoid class (module) name collisions.
 
 01-Mar-2011 Add detection code for circular dependencies in external and required dependents.
