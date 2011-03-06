@@ -25,10 +25,7 @@ namespace MingwCommon
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine);
 
             // compiler specific options
-            if (target.Platform == Opus.Core.EPlatform.Unix64)
-            {
-                this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
-            }
+            this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
             this["StrictAliasing"].PrivateData = new PrivateData(StrictAliasingCommandLine);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLine);
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLine);
@@ -39,10 +36,7 @@ namespace MingwCommon
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
-            if (target.Platform == Opus.Core.EPlatform.Win64)
-            {
-                this["64bit"] = new Opus.Core.ValueTypeOption<bool>(true);
-            }
+            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(target.Platform == Opus.Core.EPlatform.Win64);
 
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {
@@ -290,6 +284,10 @@ namespace MingwCommon
             if (sixtyFourBitOption.Value)
             {
                 commandLineBuilder.Append("-m64 ");
+            }
+            else
+            {
+                commandLineBuilder.Append("-m32 ");
             }
         }
 
