@@ -75,21 +75,30 @@ namespace MakeFileBuilder
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
             directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
 
+            Opus.Core.StringArray destinationPathNames = new Opus.Core.StringArray();
             foreach (MakeFileData data in sourceFileDataArray)
             {
-                Opus.Core.StringArray variableDictionary = data.VariableDictionary[destinationOutputFlags];
-                if (1 != variableDictionary.Count)
+                Opus.Core.StringArray variableDictionary = data.VariableDictionary[sourceOutputPaths];
+                foreach (string variable in variableDictionary)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Variable dictionary from Makefile '{0}' holds {1} entries for flags {2}, but requires only one", data.MakeFilePath, variableDictionary.Count, destinationOutputFlags.ToString()));
+                    string destinationPathName = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, variable);
+                    if (destinationPathNames.Contains(destinationPathName))
+                    {
+                        Opus.Core.Log.DebugMessage("Target pathname '{0}' has already been defined", destinationPathName);
+                        continue;
+                    }
+
+                    Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
+                    outputPaths[destinationOutputFlags] = destinationPathName;
+
+                    MakeFileVariableDictionary singleEntry = new MakeFileVariableDictionary();
+                    singleEntry.Add(sourceOutputPaths, new Opus.Core.StringArray(variable));
+
+                    MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, singleEntry, null, commandLines);
+                    makeFile.RuleArray.Add(rule);
+
+                    destinationPathNames.Add(destinationPathName);
                 }
-
-                string destinationPathName = System.String.Format("{0}{1}$(notdir $({2}))", destinationDirectory, System.IO.Path.DirectorySeparatorChar, variableDictionary[0]);
-
-                Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
-                outputPaths[destinationOutputFlags] = destinationPathName;
-
-                MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, data.VariableDictionary.Filter(sourceOutputPaths), null, commandLines);
-                makeFile.RuleArray.Add(rule);
             }
             if (null != sourceFiles)
             {
