@@ -25,6 +25,10 @@ namespace FileUtilities
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target)
         {
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                commandLineStringBuilder.Append("/c COPY ");
+            }
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
         }
 

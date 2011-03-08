@@ -54,26 +54,32 @@ namespace MakeFileBuilder
                 destinationDirectory = copyFiles.DestinationDirectory;
             }
 
+            FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
+            string toolExecutablePath = tool.Executable(node.Target);
+
+            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
+            {
+                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, node.Target);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Linker options does not support command line translation");
+            }
+
+            string recipe = System.String.Format("\"{0}\" {1}$< $@", toolExecutablePath, commandLineBuilder.ToString());
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+
+            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
+            directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
+
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
             Opus.Core.Log.DebugMessage("Makefile path : '{0}'", makeFilePath);
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
-
-            FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-            string toolExecutablePath = tool.Executable(node.Target);
-
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
-            commandLineBuilder.AppendFormat("\"{0}\" ", toolExecutablePath);
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
-            {
-                commandLineBuilder.Append("/c COPY $< $@");
-            }
-            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-            commandLines.Add(commandLineBuilder.ToString());
-
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-            directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
 
             Opus.Core.StringArray destinationPathNames = new Opus.Core.StringArray();
             foreach (MakeFileData data in sourceFileDataArray)
@@ -94,7 +100,7 @@ namespace MakeFileBuilder
                     MakeFileVariableDictionary singleEntry = new MakeFileVariableDictionary();
                     singleEntry.Add(sourceOutputPaths, new Opus.Core.StringArray(variable));
 
-                    MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, singleEntry, null, commandLines);
+                    MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, singleEntry, null, recipes);
                     makeFile.RuleArray.Add(rule);
 
                     destinationPathNames.Add(destinationPathName);
@@ -109,7 +115,7 @@ namespace MakeFileBuilder
                     Opus.Core.OutputPaths outputPaths = new Opus.Core.OutputPaths();
                     outputPaths[destinationOutputFlags] = destinationPathName;
 
-                    MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, null, new Opus.Core.StringArray(sourceFile), commandLines);
+                    MakeFileRule rule = new MakeFileRule(outputPaths, destinationOutputFlags, node.UniqueModuleName, directoriesToCreate, null, new Opus.Core.StringArray(sourceFile), recipes);
                     makeFile.RuleArray.Add(rule);
                 }
             }
