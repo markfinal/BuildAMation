@@ -5,7 +5,6 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    // TODO: might need a base class rule, and add from therel
     public sealed class MakeFileRule
     {
         public MakeFileRule(Opus.Core.OutputPaths outputPaths,
@@ -25,6 +24,7 @@ namespace MakeFileBuilder
             this.Recipes = recipes;
             this.ExportTarget = true;
             this.ExportVariable = true;
+            this.TargetIsPhony = false;
         }
 
         public Opus.Core.OutputPaths OutputPaths
