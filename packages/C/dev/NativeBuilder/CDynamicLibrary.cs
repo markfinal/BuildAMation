@@ -35,10 +35,10 @@ namespace NativeBuilder
             {
                 dependentLibraryFiles = new Opus.Core.StringArray();
                 node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
-                linkerOptions.Libraries.AddRange(dependentLibraryFiles);
             }
 
-            Opus.Core.StringArray inputFiles = dependentObjectFiles;
+            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+            inputFiles.AddRange(dependentObjectFiles);
             if (null != dependentLibraryFiles)
             {
                 inputFiles.AddRange(dependentLibraryFiles);
@@ -81,6 +81,9 @@ namespace NativeBuilder
 
             // object files must come before everything else, for some compilers
             commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));
+
+            // then libraries
+            linkerInstance.AppendLibrariesToCommandLine(commandLineBuilder, linkerOptions, dependentLibraryFiles);
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);

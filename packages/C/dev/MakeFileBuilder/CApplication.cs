@@ -67,7 +67,12 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
-            string recipe = System.String.Format("\"{0}\" {1}$(filter %{2},$^) $(filter %{3},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension, toolchain.StaticLibraryExtension);
+            System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
+            recipeBuilder.AppendFormat("\"{0}\" {1}$(filter %{2},$^) ", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension);
+            Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
+            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibraryExtension));
+            linkerInstance.AppendLibrariesToCommandLine(recipeBuilder, node.Module.Options as C.ILinkerOptions, dependentLibraries);
+            string recipe = recipeBuilder.ToString();
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
             recipe = recipe.Replace(application.Options.OutputPaths[primaryOutput], "$@");

@@ -17,8 +17,8 @@ namespace MingwCommon
             this["IgnoreStandardLibraries"].PrivateData = new PrivateData(IgnoreStandardLibrariesCommandLine);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLine);
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLine);
-            this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLine);
-            this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLine);
+            this["Libraries"].PrivateData = new PrivateData(null);
+            this["StandardLibraries"].PrivateData = new PrivateData(null);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLine);
 
             // linker specific options
@@ -186,31 +186,6 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             foreach (string includePath in includePathsOption.Value)
             {
                 commandLineBuilder.AppendFormat("-L\"{0}\" ", includePath);
-            }
-        }
-
-        private static void StandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            if (options.IgnoreStandardLibraries)
-            {
-                Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
-                foreach (string includePath in includePathsOption.Value)
-                {
-                    commandLineBuilder.AppendFormat("\"{0}\" ", includePath);
-                }
-            }
-            commandLineBuilder.Append("-Wl,--end-group ");
-        }
-
-        private static void LibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            commandLineBuilder.Append("-Wl,--start-group ");
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
-            foreach (string libraryPath in libraryPathsOption.Value)
-            {
-                commandLineBuilder.AppendFormat("\"{0}\" ", libraryPath);
             }
         }
 

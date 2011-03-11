@@ -17,8 +17,8 @@ namespace VisualCCommon
             this["IgnoreStandardLibraries"].PrivateData = new PrivateData(IgnoreStandardLibrariesCommandLine, IgnoreStandardLibrariesVisualStudio);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLine, DynamicLibraryVisualStudio);
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLine, LibraryPathsVisualStudio);
-            this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLine, StandardLibrariesVisualStudio);
-            this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLine, LibrariesVisualStudio);
+            this["StandardLibraries"].PrivateData = new PrivateData(null, StandardLibrariesVisualStudio);
+            this["Libraries"].PrivateData = new PrivateData(null, LibrariesVisualStudio);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLine, GenerateMapFileVisualStudio);
 
             // linker specific options
@@ -425,19 +425,6 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void StandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            if (options.IgnoreStandardLibraries)
-            {
-                Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
-                foreach (string includePath in includePathsOption.Value)
-                {
-                    commandLineBuilder.AppendFormat("\"{0}\" ", includePath);
-                }
-            }
-        }
-
         private static VisualStudioProcessor.ToolAttributeDictionary StandardLibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
         {
             LinkerOptionCollection options = sender as LinkerOptionCollection;
@@ -458,15 +445,6 @@ namespace VisualCCommon
             else
             {
                 return null;
-            }
-        }
-
-        private static void LibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
-            foreach (string libraryPath in librariesOption.Value)
-            {
-                commandLineBuilder.AppendFormat("\"{0}\" ", libraryPath);
             }
         }
 

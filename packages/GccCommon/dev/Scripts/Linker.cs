@@ -15,5 +15,21 @@ namespace GccCommon
         }
 
         public abstract Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target);
+
+        protected override string StartLibraryList
+        {
+            get
+            {
+                return "-Wl,--start-group ";
+            }
+        }
+
+        protected override string EndLibraryList
+        {
+            get
+            {
+                return "-Wl,--end-group ";
+            }
+        }
     }
 }

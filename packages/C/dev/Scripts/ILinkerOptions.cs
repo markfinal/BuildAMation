@@ -19,6 +19,8 @@ namespace C
             set;
         }
 
+        // TODO: rename this, as it's confusing
+        // to e.g. ManuallySpecifyStandardLibraries
         bool IgnoreStandardLibraries
         {
             get;
