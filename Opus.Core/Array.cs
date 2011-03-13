@@ -35,6 +35,11 @@ namespace Opus.Core
 
         public void AddRange(Array<T> array)
         {
+            if (this == array)
+            {
+                throw new Exception("Cannot add an array to itself", false);
+            }
+
             foreach (T item in array)
             {
                 this.list.Add(item);

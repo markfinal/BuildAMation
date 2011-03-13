@@ -46,9 +46,19 @@ namespace MakeFileBuilder
                 MakeFileData data = node.Data as MakeFileData;
                 if (data != null)
                 {
-                    if (data.Target != null)
+                    // if a node has no parent, then it is a good choice for exposing the
+                    // target for in the main Makefile. However, some false-positives can
+                    // arise from this for orphaned modules that are dependents from child
+                    // modules (e.g. code generators)
+                    if (null == node.Parent)
                     {
-                        targetList += data.Target + " ";
+                        foreach (Opus.Core.StringArray targetNames in data.TargetDictionary.Values)
+                        {
+                            foreach (string targetName in targetNames)
+                            {
+                                targetList += targetName + " ";
+                            }
+                        }
                     }
 
                     if (data.EnvironmentPaths != null)
@@ -86,10 +96,13 @@ namespace MakeFileBuilder
                     makeFileWriter.WriteLine(".SUFFIXES:");
                     makeFileWriter.WriteLine("");
 
-                    makeFileWriter.WriteLine("# Environment PATH for all tools");
-                    makeFileWriter.WriteLine("INITIALPATH := $(PATH)");
-                    makeFileWriter.WriteLine("PATH := {0}$(INITIALPATH)", environmentPaths.ToString());
-                    makeFileWriter.WriteLine("");
+                    if (null != environmentPaths)
+                    {
+                        makeFileWriter.WriteLine("# Environment PATH for all tools");
+                        makeFileWriter.WriteLine("INITIALPATH := $(PATH)");
+                        makeFileWriter.WriteLine("PATH := {0}$(INITIALPATH)", environmentPaths.ToString());
+                        makeFileWriter.WriteLine("");
+                    }
 
                     makeFileWriter.WriteLine("# include all sub-makefiles");
                     foreach (Opus.Core.DependencyNode node in nodeCollection)
@@ -97,10 +110,10 @@ namespace MakeFileBuilder
                         MakeFileData data = node.Data as MakeFileData;
                         if (data != null)
                         {
-                            Opus.Core.Log.DebugMessage("\t'{0}' - target '{1}'", data.File, data.Target);
-                            if (!data.Included)
+                            //Opus.Core.Log.DebugMessage("\t'{0}' - target '{1}'", data.MakeFilePath, data.Target);
+                            //if (!data.Included)
                             {
-                                string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
+                                string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
                                 makeFileWriter.WriteLine("include {0}", relativeDataFile);
                             }
                         }
@@ -108,7 +121,7 @@ namespace MakeFileBuilder
                     makeFileWriter.WriteLine("");
 
                     makeFileWriter.WriteLine("# Create any directories necessary");
-                    makeFileWriter.WriteLine("$(sort $(dirstomake)):");
+                    makeFileWriter.WriteLine("$(sort $(builddirs)):");
                     if (Opus.Core.OSUtilities.IsWindowsHosting)
                     {
                         makeFileWriter.WriteLine("\t-mkdir $@");
@@ -119,16 +132,16 @@ namespace MakeFileBuilder
                     }
                     makeFileWriter.WriteLine("");
 
-                    makeFileWriter.WriteLine("# Delete any directories required");
+                    makeFileWriter.WriteLine("# Delete generated files");
                     makeFileWriter.WriteLine(".PHONY: clean");
                     makeFileWriter.WriteLine("clean:");
                     if (Opus.Core.OSUtilities.IsWindowsHosting)
                     {
-                        makeFileWriter.WriteLine("\t-rmdir /S /Q $(sort $(dirstodelete)) 2>nul");
+                        makeFileWriter.WriteLine("\t-rmdir /S /Q $(sort $(builddirs)) 2>nul");
                     }
                     else
                     {
-                        makeFileWriter.WriteLine("\t-rm -f -r $(sort $(dirstodelete)) >nul");
+                        makeFileWriter.WriteLine("\t-rm -f -r $(sort $(builddirs)) >nul");
                     }
                     makeFileWriter.WriteLine("");
                 }

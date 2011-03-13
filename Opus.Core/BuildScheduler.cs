@@ -83,6 +83,7 @@ namespace Opus.Core
                             }
                             else
                             {
+                                this.graph.ExecutedNodes.Add(node);
                                 return node;
                             }
                         }

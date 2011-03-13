@@ -28,7 +28,8 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("There are no object files to archive");
             }
 
-            Opus.Core.StringArray inputFiles = dependentObjectFiles;
+            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+            inputFiles.AddRange(dependentObjectFiles);
             Opus.Core.StringArray outputFiles = staticLibrary.Options.OutputPaths.Paths;
             if (!RequiresBuilding(outputFiles, inputFiles))
             {

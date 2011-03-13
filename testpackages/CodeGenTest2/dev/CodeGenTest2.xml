@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="/mnt/hgfs/development/prototypes/Opus/dev/bin/Debug/Schema/OpusPackageDependency.xsd">
+<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\GoogleCode\Opus\branches\makefiles\bin\Debug\Schema\OpusPackageDependency.xsd">
   <Package Name="CSharp" Version="dev" />
   <Package Name="DotNetFramework" Version="2.0.50727" />
   <Package Name="Gcc" Version="4.4" />
+  <Package Name="MakeFileBuilder" Version="dev" />
   <Package Name="Mingw" Version="3.4.5" />
   <Package Name="NativeBuilder" Version="dev" />
   <Package Name="VisualC" Version="9.0" />

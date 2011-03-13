@@ -4,17 +4,6 @@ namespace Test13
     // Define module classes here
     class QtApplication : C.Application
     {
-#if false
-        private const string WinTarget = "win.*-.*-.*";
-        private const string WinVCTarget = "win.*-.*-visualc";
-        private const string WinVCDebugTarget = "win.*-debug-visualc";
-        private const string WinVCOptimizedTarget = "win.*-optimized-visualc";
-        private const string WinMingwTarget = "win.*-.*-mingw";
-        private const string WinMingwDebugTarget = "win.*-debug-mingw";
-        private const string WinMingwOptimizedTarget = "win.*-optimized-mingw";
-        private const string UnixGccTarget = "unix.*-.*-gcc";
-#endif
-
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()

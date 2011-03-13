@@ -11,51 +11,37 @@ namespace MakeFileBuilder
         {
             Opus.Core.Target target = node.Target;
 
-            Opus.Core.StringArray dependents = new Opus.Core.StringArray();
+            MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();
             foreach (Opus.Core.DependencyNode childNode in node.Children)
             {
                 MakeFileData data = childNode.Data as MakeFileData;
                 // TODO: handle this better for more dependents
-                dependents.Add(System.String.Format("$({0})", data.Variable));
+                dependents.Append(data.VariableDictionary);
             }
 
-            string makeFile = MakeFileBuilder.GetMakeFilePathName(node);
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
+            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
-            string uniqueModuleName = node.UniqueModuleName;
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
+            // no output paths because this rule has no recipe
+            MakeFileRule rule = new MakeFileRule(null, Qt.OutputFileFlags.MocGeneratedSourceFileCollection, node.UniqueModuleName, null, dependents, null, null);
+            if (null == node.Parent)
             {
-                foreach (Opus.Core.DependencyNode childNode in node.Children)
-                {
-                    MakeFileData data = childNode.Data as MakeFileData;
-                    if (!data.Included)
-                    {
-                        string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
-                        makeFileWriter.WriteLine("include {0}", relativeDataFile);
-                        data.Included = true;
-                    }
-                }
+                // phony target
+                rule.TargetIsPhony = true;
+            }
+            makeFile.RuleArray.Add(rule);
 
-                if (null != node.Parent || null != node.ExternalDependentFor)
-                {
-                    makeFileVariableName = System.String.Format("{0}_{1}_Output", uniqueModuleName, target.Key);
-                    makeFileWriter.WriteLine("{0} = {1}", makeFileVariableName, dependents);
-                }
-                else
-                {
-                    makeFileTargetName = System.String.Format("{0}_{1}", uniqueModuleName, target.Key);
-                    makeFileWriter.WriteLine(".PHONY: {0}", makeFileTargetName);
-                    makeFileWriter.WriteLine("{0}: {1}", makeFileTargetName, dependents.ToString(' '));
-                }
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            {
+                makeFile.Write(makeFileWriter);        
             }
 
             success = true;
 
-            MakeFileData returnData = new MakeFileData(makeFile, makeFileTargetName, makeFileVariableName, null);
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             return returnData;
         }
     }

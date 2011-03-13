@@ -22,5 +22,13 @@ namespace MingwCommon
                 return ".a";
             }
         }
+
+        public override string StaticImportLibraryExtension
+        {
+            get
+            {
+                return this.StaticLibraryExtension;
+            }
+        }
     }
 }

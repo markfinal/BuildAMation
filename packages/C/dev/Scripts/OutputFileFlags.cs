@@ -14,8 +14,9 @@ namespace C
         Executable = (1 << 3),
         StaticImportLibrary = (1 << 4),
         MapFile = (1 << 5),
+        ObjectFileCollection = (1 << 6),
 
-        CompilerProgramDatabase = (1 << 6),
-        LinkerProgramDatabase = (1 << 7)
+        CompilerProgramDatabase = (1 << 7),
+        LinkerProgramDatabase = (1 << 8)
     }
 }

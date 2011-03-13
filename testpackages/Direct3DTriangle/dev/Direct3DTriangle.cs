@@ -2,10 +2,9 @@
 namespace Direct3DTriangle
 {
     // Define module classes here
+    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
     class D3D9TriangleTest : C.WindowsApplication
     {
-        private const string winVCTarget = "win.*-.*-visualc";
-
         public D3D9TriangleTest()
         {
             this.headerFiles.AddRelativePaths(this, "source", "*.h");

@@ -193,6 +193,7 @@ namespace Opus
 
                     xmlWriter.WriteStartElement("ItemGroup");
                     {
+                        // script files
                         {
                             Core.StringArray scripts = package.Scripts;
                             if (null != scripts)
@@ -216,6 +217,31 @@ namespace Opus
                                 }
                             }
                         }
+
+                        // builder scripts
+                        {
+                            Core.StringArray builderScripts = package.BuilderScripts;
+                            if (null != builderScripts)
+                            {
+                                foreach (string scriptFile in builderScripts)
+                                {
+                                    xmlWriter.WriteStartElement("Compile");
+                                    xmlWriter.WriteAttributeString("Include", scriptFile);
+                                    {
+                                        xmlWriter.WriteStartElement("Link");
+                                        {
+                                            string linkFilename = scriptFile.Replace(package.Directory, "");
+                                            linkFilename = linkFilename.TrimStart(new char[] { System.IO.Path.DirectorySeparatorChar });
+                                            xmlWriter.WriteValue(linkFilename);
+                                            xmlWriter.WriteEndElement();
+                                        }
+
+                                        xmlWriter.WriteEndElement();
+                                    }
+                                }
+                            }
+                        }
+
                         xmlWriter.WriteEndElement();
                     }
 

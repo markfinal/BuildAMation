@@ -15,7 +15,7 @@ namespace MakeFileBuilder
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
 
             // dependents
-            Opus.Core.StringArray inputVariables = new Opus.Core.StringArray();
+            MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
             System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
@@ -24,7 +24,7 @@ namespace MakeFileBuilder
                     if (null != childNode.Data)
                     {
                         MakeFileData data = childNode.Data as MakeFileData;
-                        inputVariables.Add(data.Variable);
+                        inputVariables.Append(data.VariableDictionary);
                         dataArray.Add(data);
                     }
                 }
@@ -36,7 +36,7 @@ namespace MakeFileBuilder
                     if (null != dependentNode.Data)
                     {
                         MakeFileData data = dependentNode.Data as MakeFileData;
-                        inputVariables.Add(data.Variable);
+                        inputVariables.Append(data.VariableDictionary);
                         dataArray.Add(data);
                     }
                 }
@@ -54,46 +54,62 @@ namespace MakeFileBuilder
             }
 
             System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (dynamicLibrary.Options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = dynamicLibrary.Options as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+
+                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
-            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-            commandLines.Add(System.String.Format("\"{0}\" {1} $(filter %{2},$^) $(filter %{3},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension, toolchain.StaticLibraryExtension));
-
-            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, null, inputVariables, commandLines, this.topLevelMakeFilePath);
-
-            foreach (MakeFileData data in dataArray)
+            System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
+            recipeBuilder.AppendFormat("\"{0}\" {1}$(filter %{2},$^) ", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension);
+            Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
+            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibraryExtension));
+            if (toolchain.StaticLibraryExtension != toolchain.StaticImportLibraryExtension)
             {
-                if (!data.Included)
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibraryExtension));
+            }
+            linkerInstance.AppendLibrariesToCommandLine(recipeBuilder, node.Module.Options as C.ILinkerOptions, dependentLibraries);
+            string recipe = recipeBuilder.ToString();
+            // replace primary target with $@
+            C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
+            recipe = recipe.Replace(dynamicLibrary.Options.OutputPaths[primaryOutput], "$@");
+            string instanceName = MakeFile.InstanceName(node);
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibrary.Options.OutputPaths)
+            {
+                if (!outputPath.Key.Equals(primaryOutput))
                 {
-                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
-                    recipe.Includes.Add(relativeDataFile);
-                    data.Included = true;
+                    string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
+                    recipe = recipe.Replace(dynamicLibrary.Options.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
                 }
             }
 
-            string makeFile = MakeFileBuilder.GetMakeFilePathName(node);
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
 
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+
+            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            makeFile.RuleArray.Add(rule);
+
+            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-                recipe.Write(makeFileWriter, C.OutputFileFlags.Executable, C.OutputFileFlags.StaticImportLibrary);
-                makeFileTargetName = recipe.TargetName;
-                makeFileVariableName = recipe.VariableName;
+                makeFile.Write(makeFileWriter);
             }
 
             success = true;
-            MakeFileData returnData = new MakeFileData(makeFile, makeFileTargetName, makeFileVariableName, linkerTool.EnvironmentPaths(target));
+            MakeFileTargetDictionary exportedTargets = makeFile.ExportedTargets;
+            MakeFileVariableDictionary exportedVariables = makeFile.ExportedVariables;
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, linkerTool.EnvironmentPaths(target));
             return returnData;
         }
     }

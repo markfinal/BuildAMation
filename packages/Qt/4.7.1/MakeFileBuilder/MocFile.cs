@@ -24,13 +24,16 @@ namespace MakeFileBuilder
             inputFiles.Add(sourceFilePath);
 
             Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
-            node.FilterOutputPaths(Qt.MocOutputPathFlag.MocGeneratedSourceFile, outputFiles);
+            node.FilterOutputPaths(Qt.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
 
             System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+
+                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
@@ -39,27 +42,26 @@ namespace MakeFileBuilder
 
             commandLineBuilder.AppendFormat("\"{0}\"", sourceFilePath);
 
-            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-            commandLines.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString());
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString());
 
-            string makeFile = MakeFileBuilder.GetMakeFilePathName(node);
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
+            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
-            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, inputFiles, null, commandLines, this.topLevelMakeFilePath);
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
+            MakeFileRule rule = new MakeFileRule(mocFile.Options.OutputPaths, Qt.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            makeFile.RuleArray.Add(rule);
+
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-                recipe.Write(makeFileWriter, Qt.MocOutputPathFlag.MocGeneratedSourceFile);
-                makeFileTargetName = recipe.TargetName;
-                makeFileVariableName = recipe.VariableName;
+                makeFile.Write(makeFileWriter);
             }
 
             success = true;
 
-            MakeFileData returnData = new MakeFileData(makeFile, makeFileTargetName, makeFileVariableName, tool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, tool.EnvironmentPaths(target));
             return returnData;
         }
     }

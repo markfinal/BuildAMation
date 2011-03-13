@@ -29,9 +29,11 @@ namespace NativeBuilder
                 return null;
             }
 
+            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
             if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, node.Target);
 
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
@@ -73,14 +75,11 @@ namespace NativeBuilder
                     continue;
                 }
 
-                System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
-                if (Opus.Core.OSUtilities.IsWindowsHosting)
-                {
-                    commandLineBuilder.Append("/c COPY ");
-                }
-                commandLineBuilder.AppendFormat("\"{0}\" \"{1}\"", sourcePath, destinationDirectory);
+                System.Text.StringBuilder sourceCommandLineBuilder = new System.Text.StringBuilder();
+                sourceCommandLineBuilder.Append(commandLineBuilder.ToString());
+                sourceCommandLineBuilder.AppendFormat("\"{0}\" \"{1}\"", sourcePath, destinationDirectory);
 
-                returnValue = CommandLineProcessor.Processor.Execute(node, tool, executablePath, commandLineBuilder);
+                returnValue = CommandLineProcessor.Processor.Execute(node, tool, executablePath, sourceCommandLineBuilder);
                 if (0 != returnValue)
                 {
                     break;

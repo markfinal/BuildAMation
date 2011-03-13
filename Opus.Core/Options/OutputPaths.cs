@@ -47,6 +47,14 @@ namespace Opus.Core
             return containsKey;
         }
 
+        public Array<System.Enum> Types
+        {
+            get
+            {
+                return new Array<System.Enum>(this.fileDictionary.Keys);
+            }
+        }
+
         public StringArray Paths
         {
             get

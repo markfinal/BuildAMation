@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             Opus.Core.Target target = node.Target;
             CSharp.OptionCollection options = assembly.Options as CSharp.OptionCollection;
 
-            Opus.Core.StringArray inputVariables = new Opus.Core.StringArray();
+            MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
             System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (node.ExternalDependents != null)
             {
@@ -25,7 +25,7 @@ namespace MakeFileBuilder
                         options.References.AddRange(assemblyPaths);
 
                         MakeFileData data = dependentNode.Data as MakeFileData;
-                        inputVariables.Add(data.Variable);
+                        inputVariables.Add(CSharp.OutputFileFlags.AssemblyFile, data.VariableDictionary[CSharp.OutputFileFlags.AssemblyFile]);
                         dataArray.Add(data);
                     }
                 }
@@ -75,10 +75,13 @@ namespace MakeFileBuilder
             }
 
             System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+
+                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
@@ -93,37 +96,26 @@ namespace MakeFileBuilder
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
             string executablePath = compilerInstance.Executable(target);
 
-            Opus.Core.StringArray commandLines = new Opus.Core.StringArray();
-            commandLines.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString()));
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString()));
 
-            MakeFileBuilderRecipe recipe = new MakeFileBuilderRecipe(node, sourceFiles, inputVariables, commandLines, this.topLevelMakeFilePath);
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            foreach (MakeFileData data in dataArray)
+            MakeFileRule rule = new MakeFileRule(assembly.Options.OutputPaths, CSharp.OutputFileFlags.AssemblyFile, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            makeFile.RuleArray.Add(rule);
+
+            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
+
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-                if (!data.Included)
-                {
-                    string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.File, this.topLevelMakeFilePath, "$(CURDIR)");
-                    recipe.Includes.Add(relativeDataFile);
-                    data.Included = true;
-                }
-            }
-
-            string makeFile = MakeFileBuilder.GetMakeFilePathName(node);
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFile));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFile);
-
-            string makeFileTargetName = null;
-            string makeFileVariableName = null;
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFile))
-            {
-                recipe.Write(makeFileWriter, CSharp.OutputFileFlags.AssemblyFile);
-                makeFileTargetName = recipe.TargetName;
-                makeFileVariableName = recipe.VariableName;
+                makeFile.Write(makeFileWriter);
             }
 
             success = true;
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-            MakeFileData returnData = new MakeFileData(makeFile, makeFileTargetName, makeFileVariableName, compilerTool.EnvironmentPaths(target));
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, compilerTool.EnvironmentPaths(target));
             return returnData;
         }
     }

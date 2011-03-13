@@ -47,5 +47,21 @@ namespace VisualCCommon
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             return toolChainInstance.Environment;
         }
+
+        protected override string StartLibraryList
+        {
+            get
+            {
+                return "";
+            }
+        }
+
+        protected override string EndLibraryList
+        {
+            get
+            {
+                return "";
+            }
+        }
     }
 }

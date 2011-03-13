@@ -8,6 +8,7 @@ namespace Qt
     [System.Flags]
     public enum OutputFileFlags
     {
-        MocGeneratedSourceFile = (1 << 0)
+        MocGeneratedSourceFile = (1 << 0),
+        MocGeneratedSourceFileCollection = (1 << 1)
     }
 }

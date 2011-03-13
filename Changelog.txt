@@ -1,3 +1,18 @@
+13-Mar-2011 MakeFile update
+            MakeFileBuilder now allows adding multiple rules to a MakeFile.
+            Added classes MakeFileVariableDictionary and MakeFileTargetDictionary to store intermediate and output Make variables and targets, mapped by type.
+            All sub-MakeFiles are now included at the top-level, which reduces issues of multiply-included MakeFiles when there are multiple dependencies.
+            C.HeaderLibrary module type supported by MakeFiles.
+            Libraries are no longer handled by the OptionCollection mechanism, in order to support GCC --start-group and --end-group bounds. The linker supplies a utility function, AppendLibrariesToCommandLine, to append these properly.
+            Top-level MakeFile selectively specifies the targets to append to 'all'.
+            Builder PostExecute method only executes over those DependencyNodes that were run by the scheduler, in the order scheduled.
+            Package debug projects now include any builder-specific scripts for the top level package.
+            Also fixed Native builder duplicate dependent libraries in C.Application, C.DynamicLibrary.
+            C.OutputFileFlags also now understands the concept of the ObjectFileCollection.
+            C.Toolchain now also exposes the StaticImportLibraryExtension. This is needed for MakeFiles for Unix shared objects.
+            FileUtilities.CopyFiles has a cleaner command line exposure.
+            CodeGenTest test packages now support MakeFiles.
+
 05-Mar-2011 Gcc requires -m32 to be passed when building a 32-bit application on a 64-bit OS.
 
 01-Mar-2011 Opus.Core.DependencyNode unique module names now use the namespace (package name) to avoid class (module) name collisions.
