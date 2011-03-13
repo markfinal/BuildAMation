@@ -16,7 +16,6 @@ namespace MakeFileBuilder
             this.TargetDictionary = targetDictionary;
             this.VariableDictionary = variableDictionary;
             this.EnvironmentPaths = environmentPaths;
-            this.Included = false;
         }
 
         public string MakeFilePath
@@ -35,12 +34,6 @@ namespace MakeFileBuilder
         {
             get;
             private set;
-        }
-
-        public bool Included
-        {
-            get;
-            set;
         }
 
         public Opus.Core.StringArray EnvironmentPaths

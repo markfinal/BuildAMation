@@ -27,7 +27,7 @@ namespace Opus.Core
             }
             else
             {
-                Log.DebugMessage("Not duplicating already presen Node in the collection: '{0}'", item.ToString());
+                Log.DebugMessage("Not duplicating already present Node in the collection: '{0}'", item.ToString());
             }
         }
 

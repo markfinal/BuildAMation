@@ -110,12 +110,8 @@ namespace MakeFileBuilder
                         MakeFileData data = node.Data as MakeFileData;
                         if (data != null)
                         {
-                            //Opus.Core.Log.DebugMessage("\t'{0}' - target '{1}'", data.MakeFilePath, data.Target);
-                            //if (!data.Included)
-                            {
-                                string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
-                                makeFileWriter.WriteLine("include {0}", relativeDataFile);
-                            }
+                            string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
+                            makeFileWriter.WriteLine("include {0}", relativeDataFile);
                         }
                     }
                     makeFileWriter.WriteLine("");
