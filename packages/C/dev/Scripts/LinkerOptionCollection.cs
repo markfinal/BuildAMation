@@ -31,7 +31,7 @@ namespace C
             Opus.Core.EConfiguration configuration = target.Configuration;
 
             linkerOptions.SubSystem = ESubsystem.NotSet;
-            linkerOptions.IgnoreStandardLibraries = true;
+            linkerOptions.DoNotAutoIncludeStandardLibraries = true;
             if (Opus.Core.EConfiguration.Debug == configuration)
             {
                 linkerOptions.DebugSymbols = true;

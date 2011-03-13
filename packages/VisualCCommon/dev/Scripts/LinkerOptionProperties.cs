@@ -29,16 +29,16 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
             }
         }
-        public bool IgnoreStandardLibraries
+        public bool DoNotAutoIncludeStandardLibraries
         {
             get
             {
-                return this.GetValueTypeOption<bool>("IgnoreStandardLibraries");
+                return this.GetValueTypeOption<bool>("DoNotAutoIncludeStandardLibraries");
             }
             set
             {
-                this.SetValueTypeOption<bool>("IgnoreStandardLibraries", value);
-                this.ProcessNamedSetHandler("IgnoreStandardLibrariesSetHandler", this["IgnoreStandardLibraries"]);
+                this.SetValueTypeOption<bool>("DoNotAutoIncludeStandardLibraries", value);
+                this.ProcessNamedSetHandler("DoNotAutoIncludeStandardLibrariesSetHandler", this["DoNotAutoIncludeStandardLibraries"]);
             }
         }
         public bool DebugSymbols

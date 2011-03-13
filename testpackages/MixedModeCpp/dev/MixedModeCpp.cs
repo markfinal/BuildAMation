@@ -13,7 +13,7 @@ namespace MixedModeCpp
         void TestApplication_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ILinkerOptions options = module.Options as C.ILinkerOptions;
-            options.IgnoreStandardLibraries = false;
+            options.DoNotAutoIncludeStandardLibraries = false;
         }
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection

@@ -14,7 +14,7 @@ namespace MingwCommon
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLine);
-            this["IgnoreStandardLibraries"].PrivateData = new PrivateData(IgnoreStandardLibrariesCommandLine);
+            this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLine);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLine);
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLine);
             this["Libraries"].PrivateData = new PrivateData(null);
@@ -28,7 +28,7 @@ namespace MingwCommon
         {
             base.InitializeDefaults(node);
 
-            this.IgnoreStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
             Opus.Core.Target target = node.Target;
 
@@ -157,7 +157,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             }
         }
 
-        private static void IgnoreStandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotAutoIncludeStandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)

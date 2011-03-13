@@ -33,12 +33,12 @@ namespace C
                                                  ILinkerOptions linkerOptions,
                                                  Opus.Core.StringArray otherLibraryPaths)
         {
-            if ((linkerOptions.IgnoreStandardLibraries && linkerOptions.StandardLibraries.Count > 0) ||
+            if ((linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0) ||
                 (linkerOptions.Libraries.Count > 0) ||
                 ((null != otherLibraryPaths) && (otherLibraryPaths.Count > 0)))
             {
                 commandLineBuilder.Append(this.StartLibraryList);
-                if (linkerOptions.IgnoreStandardLibraries)
+                if (linkerOptions.DoNotAutoIncludeStandardLibraries)
                 {
                     foreach (string standardLibraryPath in linkerOptions.StandardLibraries)
                     {

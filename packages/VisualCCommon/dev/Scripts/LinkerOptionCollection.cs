@@ -14,7 +14,7 @@ namespace VisualCCommon
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine, OutputTypeVisualStudio);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine, DebugSymbolsVisualStudio);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLine, SubSystemVisualStudio);
-            this["IgnoreStandardLibraries"].PrivateData = new PrivateData(IgnoreStandardLibrariesCommandLine, IgnoreStandardLibrariesVisualStudio);
+            this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLine, DoNotAutoIncludeStandardLibrariesVisualStudio);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLine, DynamicLibraryVisualStudio);
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLine, LibraryPathsVisualStudio);
             this["StandardLibraries"].PrivateData = new PrivateData(null, StandardLibrariesVisualStudio);
@@ -266,7 +266,7 @@ namespace VisualCCommon
             }
         }
 
-        private static void IgnoreStandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotAutoIncludeStandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
@@ -275,7 +275,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary IgnoreStandardLibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary DoNotAutoIncludeStandardLibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -428,7 +428,7 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary StandardLibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
         {
             LinkerOptionCollection options = sender as LinkerOptionCollection;
-            if (options.IgnoreStandardLibraries)
+            if (options.DoNotAutoIncludeStandardLibraries)
             {
                 Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> standardLibraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
                 System.Text.StringBuilder standardLibraryPaths = new System.Text.StringBuilder();
