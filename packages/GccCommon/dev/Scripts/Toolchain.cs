@@ -22,5 +22,13 @@ namespace GccCommon
                 return ".a";
             }
         }
+
+        public override string StaticImportLibraryExtension
+        {
+            get
+            {
+                return ".so";
+            }
+        }
     }
 }

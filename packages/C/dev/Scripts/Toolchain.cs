@@ -31,6 +31,11 @@ namespace C
             get;
         }
 
+        public abstract string StaticImportLibraryExtension
+        {
+            get;
+        }
+
         public static string BinaryOutputSubDirectory
         {
             get

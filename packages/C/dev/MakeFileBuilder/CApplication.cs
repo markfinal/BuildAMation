@@ -71,6 +71,10 @@ namespace MakeFileBuilder
             recipeBuilder.AppendFormat("\"{0}\" {1}$(filter %{2},$^) ", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension);
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
             dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibraryExtension));
+            if (toolchain.StaticLibraryExtension != toolchain.StaticImportLibraryExtension)
+            {
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibraryExtension));
+            }
             linkerInstance.AppendLibrariesToCommandLine(recipeBuilder, node.Module.Options as C.ILinkerOptions, dependentLibraries);
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
