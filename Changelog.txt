@@ -1,3 +1,5 @@
+13-Mar-2011 Set Opus version from 0.1 to 0.10.
+
 13-Mar-2011 Fix typo in DependencyNodeCollection.
             Remove now unused MakeFileData.Included property.
 
