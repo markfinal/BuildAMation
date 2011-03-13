@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+
+v0.10
+=====
+
 13-Mar-2011 Rename C.ILinkerOptions from IgnoreStandardLibraries property to DoNotAutoIncludeStandardLibraries for clarity.
 
 13-Mar-2011 Set Opus version from 0.1 to 0.10.
