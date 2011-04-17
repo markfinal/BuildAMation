@@ -19,6 +19,26 @@ namespace QtCreatorBuilder
             C.LinkerOptionCollection linkerOptionCollection = node.Module.Options as C.LinkerOptionCollection;
             C.ILinkerOptions linkerOptions = node.Module.Options as C.ILinkerOptions;
             C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
+            {
+                CommandLineProcessor.ICommandLineSupport commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Linker options does not support command line translation");
+            }
+
+            // find dependent library files
+            Opus.Core.StringArray dependentLibraryFiles = null;
+            if (null != node.ExternalDependents)
+            {
+                dependentLibraryFiles = new Opus.Core.StringArray();
+                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
+            }
 
             string proFilePath = QtCreatorBuilder.GetProFilePath(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(proFilePath));
@@ -86,11 +106,110 @@ namespace QtCreatorBuilder
                     proFileWriter.WriteLine(sourcesStatement.ToString());
                 }
 
-                // cflags
+                // cflags and include paths
                 {
                     Opus.Core.StringArray cflags = nodeData["CFLAGS"];
                     // TODO: need to replace "<X>" with $$quote(<X>)
-                    proFileWriter.WriteLine("QMAKE_CFLAGS += {0}", cflags.ToString());
+                    System.Text.StringBuilder cflagsStatement = new System.Text.StringBuilder();
+                    System.Text.StringBuilder includePathsStatement = new System.Text.StringBuilder();
+                    cflagsStatement.Append("QMAKE_CFLAGS += ");
+                    includePathsStatement.AppendFormat("INCLUDEPATH += ");
+                    foreach (string cflag in cflags)
+                    {
+                        if (cflag.StartsWith("-o") || cflag.StartsWith("/Fo"))
+                        {
+                            // don't include any output path
+                            continue;
+                        }
+
+                        string cflagModified = cflag;
+                        if (cflag.Contains("\""))
+                        {
+                            int indexOfFirstQuote = cflag.IndexOf('"');
+                            cflagModified = cflag.Substring(0, indexOfFirstQuote);
+                            cflagModified += "$$quote(";
+                            int indexOfLastQuote = cflag.IndexOf('"', indexOfFirstQuote + 1);
+                            cflagModified += cflag.Substring(indexOfFirstQuote + 1, indexOfLastQuote - indexOfFirstQuote - 1);
+                            cflagModified += ")";
+                            cflagModified += cflag.Substring(indexOfLastQuote + 1);
+                        }
+
+                        if (cflagModified.StartsWith("-I") || cflagModified.StartsWith("/I"))
+                        {
+                            // strip the include path command
+                            cflagModified = cflagModified.Remove(0, 2);
+                            includePathsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
+                        }
+                        else
+                        {
+                            cflagsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
+                        }
+                    }
+                    proFileWriter.WriteLine(cflagsStatement.ToString());
+                    proFileWriter.WriteLine(includePathsStatement.ToString());
+                }
+
+                // link flags
+                {
+                    System.Text.StringBuilder linkFlagsStatement = new System.Text.StringBuilder();
+                    System.Text.StringBuilder libDirStatement = new System.Text.StringBuilder();
+                    linkFlagsStatement.Append("QMAKE_LFLAGS += ");
+                    libDirStatement.Append("QMAKE_LIBDIR += ");
+                    foreach (string linkFlag in commandLineBuilder)
+                    {
+                        if (linkFlag.StartsWith("-o") || linkFlag.StartsWith("/OUT:"))
+                        {
+                            // don't include any output path
+                            continue;
+                        }
+
+                        string linkFlagModified = linkFlag;
+                        if (linkFlag.Contains("\""))
+                        {
+                            int indexOfFirstQuote = linkFlag.IndexOf('"');
+                            linkFlagModified = linkFlag.Substring(0, indexOfFirstQuote);
+                            linkFlagModified += "$$quote(";
+                            int indexOfLastQuote = linkFlag.IndexOf('"', indexOfFirstQuote + 1);
+                            linkFlagModified += linkFlag.Substring(indexOfFirstQuote + 1, indexOfLastQuote - indexOfFirstQuote - 1);
+                            linkFlagModified += ")";
+                            linkFlagModified += linkFlag.Substring(indexOfLastQuote + 1);
+                        }
+
+                        if (linkFlagModified.StartsWith("-L") || linkFlagModified.StartsWith("/LIBPATH:"))
+                        {
+                            // strip the lib path command
+                            if (linkFlagModified.StartsWith("/LIBPATH:"))
+                            {
+                                linkFlagModified = linkFlagModified.Remove(0, 9);
+                            }
+                            else
+                            {
+                                linkFlagModified = linkFlagModified.Remove(0, 2);
+                            }
+                            libDirStatement.AppendFormat("\\\n\t{0}", linkFlagModified.Replace('\\', '/'));
+                        }
+                        else
+                        {
+                            linkFlagsStatement.AppendFormat("\\\n\t{0}", linkFlagModified.Replace('\\', '/'));
+                        }
+                    }
+                    proFileWriter.WriteLine(linkFlagsStatement.ToString());
+                    proFileWriter.WriteLine(libDirStatement.ToString());
+                }
+
+                // libraries
+                {
+                    C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
+                    Opus.Core.StringArray libraryFiles = new Opus.Core.StringArray();
+                    linkerInstance.AppendLibrariesToCommandLine(libraryFiles, linkerOptions, dependentLibraryFiles);
+
+                    System.Text.StringBuilder libStatement = new System.Text.StringBuilder();
+                    libStatement.Append("QMAKE_LIBS += ");
+                    foreach (string lib in libraryFiles)
+                    {
+                        libStatement.AppendFormat("\\\n\t{0}", lib);
+                    }
+                    proFileWriter.WriteLine(libStatement.ToString());
                 }
 
                 // object file directory

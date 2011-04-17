@@ -10,7 +10,7 @@ namespace QtCreatorBuilder
     public class NodeData
     {
         private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-        private System.Collections.Generic.Dictionary<string, string> SingleValueDictionary = new System.Collections.Generic.Dictionary<string, string>();
+        private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> SingleValueDictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
 
         public bool Contains(string VariableName)
         {
@@ -32,7 +32,7 @@ namespace QtCreatorBuilder
                     return this.Dictionary[VariableName];
                 }
 
-                return new Opus.Core.StringArray(this.SingleValueDictionary[VariableName]);
+                return this.SingleValueDictionary[VariableName];
             }
         }
 
@@ -41,7 +41,7 @@ namespace QtCreatorBuilder
             Dictionary.Add(VariableName, new Opus.Core.StringArray(Value));
         }
 
-        public void AddUniqueVariable(string VariableName, string Value)
+        public void AddUniqueVariable(string VariableName, Opus.Core.StringArray Value)
         {
             SingleValueDictionary.Add(VariableName, Value);
         }
@@ -60,7 +60,7 @@ namespace QtCreatorBuilder
                 }
             }
 
-            foreach (System.Collections.Generic.KeyValuePair<string, string> entry in data.SingleValueDictionary)
+            foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray> entry in data.SingleValueDictionary)
             {
                 if (this.SingleValueDictionary.ContainsKey(entry.Key))
                 {

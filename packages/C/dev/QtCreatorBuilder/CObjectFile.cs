@@ -11,7 +11,7 @@ namespace QtCreatorBuilder
         {
             Opus.Core.Target target = node.Target;
             C.CompilerOptionCollection compilerOptions = objectFile.Options as C.CompilerOptionCollection;
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
@@ -24,8 +24,8 @@ namespace QtCreatorBuilder
 
             NodeData nodeData = new NodeData();
             nodeData.AddVariable("SOURCES", objectFile.SourceFile.AbsolutePath);
-            nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder.ToString());
-            nodeData.AddUniqueVariable("OBJECTS_DIR", compilerOptions.ObjectFilePath);
+            nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
+            nodeData.AddUniqueVariable("OBJECTS_DIR", new Opus.Core.StringArray(compilerOptions.OutputDirectoryPath));
             success = true;
             return nodeData;
         }
