@@ -231,6 +231,11 @@ namespace Opus.Core
         
         public void AddExternalDependent(DependencyNode dependent)
         {
+            if (null == dependent)
+            {
+                throw new Exception("External dependent node is invalid");
+            }
+
             if (dependent == this)
             {
                 throw new Exception(System.String.Format("Circular dependency detected in external dependents for node '{0}'", this), false);
@@ -251,6 +256,11 @@ namespace Opus.Core
 
         public void AddRequiredDependent(DependencyNode required)
         {
+            if (null == required)
+            {
+                throw new Exception("Required dependent node is invalid");
+            }
+
             if (required == this)
             {
                 throw new Exception(System.String.Format("Circular dependency detected in required dependents for node '{0}'", this), false);
