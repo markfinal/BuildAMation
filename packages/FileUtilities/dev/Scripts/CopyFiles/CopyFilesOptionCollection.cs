@@ -27,9 +27,10 @@ namespace FileUtilities
         {
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                commandLineStringBuilder.Append("/c COPY ");
+                commandLineBuilder.Add("/c");
+                commandLineBuilder.Add("COPY");
             }
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
