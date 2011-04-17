@@ -37,7 +37,7 @@ namespace MingwCommon
             return dirsToCreate;
         }
 
-        private static void CharacterSetCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CharacterSetCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
             ToolchainOptionCollection options = sender as ToolchainOptionCollection;

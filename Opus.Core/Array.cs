@@ -46,6 +46,11 @@ namespace Opus.Core
             }
         }
 
+        public void Insert(int index, T item)
+        {
+            this.list.Insert(index, item);
+        }
+
         public void Clear()
         {
             this.list.Clear();

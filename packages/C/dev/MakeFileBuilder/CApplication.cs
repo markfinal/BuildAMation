@@ -53,7 +53,7 @@ namespace MakeFileBuilder
                 executable = linkerTool.Executable(target);
             }
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (application.Options is CommandLineProcessor.ICommandLineSupport)
             {
@@ -68,14 +68,16 @@ namespace MakeFileBuilder
             }
 
             System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
-            recipeBuilder.AppendFormat("\"{0}\" {1}$(filter %{2},$^) ", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension);
+            recipeBuilder.AppendFormat("\"{0}\" {1}$(filter %{2},$^) ", executable, commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
             dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibraryExtension));
             if (toolchain.StaticLibraryExtension != toolchain.StaticImportLibraryExtension)
             {
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibraryExtension));
             }
-            linkerInstance.AppendLibrariesToCommandLine(recipeBuilder, node.Module.Options as C.ILinkerOptions, dependentLibraries);
+            Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
+            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, node.Module.Options as C.ILinkerOptions, dependentLibraries);
+            recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;

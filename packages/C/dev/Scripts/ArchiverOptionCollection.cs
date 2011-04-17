@@ -40,9 +40,9 @@ namespace C
             set;
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
         }
 
         public abstract Opus.Core.DirectoryCollection DirectoriesToCreate();

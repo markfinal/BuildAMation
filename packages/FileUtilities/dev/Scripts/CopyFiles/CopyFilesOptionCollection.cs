@@ -23,7 +23,7 @@ namespace FileUtilities
             set;
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {

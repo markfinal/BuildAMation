@@ -33,7 +33,7 @@ namespace VisualCCommon
         {
         }
 
-        private static void ExceptionHandlerCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ExceptionHandlerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
@@ -43,11 +43,11 @@ namespace VisualCCommon
                     break;
 
                 case C.CPlusPlus.EExceptionHandler.Asynchronous:
-                    commandLineBuilder.Append("/EHa ");
+                    commandLineBuilder.Add("/EHa");
                     break;
 
                 case C.CPlusPlus.EExceptionHandler.Synchronous:
-                    commandLineBuilder.Append("/EHsc ");
+                    commandLineBuilder.Add("/EHsc");
                     break;
 
                 default:

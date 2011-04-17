@@ -42,7 +42,7 @@ namespace NativeBuilder
                 executablePath = compilerTool.Executable(target);
             }
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
@@ -59,7 +59,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            commandLineBuilder.Append(System.String.Format("\"{0}\"", sourceFilePath));
+            commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);

@@ -7,7 +7,7 @@ namespace CommandLineProcessor
 {
     public static class ToCommandLine
     {
-        public static void Execute(object sender, System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target)
+        public static void Execute(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
             Opus.Core.BaseOptionCollection optionCollection = sender as Opus.Core.BaseOptionCollection;
 
@@ -32,7 +32,7 @@ namespace CommandLineProcessor
                             // Not a requirement, but just a check
                             throw new Opus.Core.Exception(System.String.Format("Delegate for '{0}' should be static", optionName), false);
                         }
-                        commandLineDelegate(sender, commandLineStringBuilder, option, target);
+                        commandLineDelegate(sender, commandLineBuilder, option, target);
                     }
                 }
                 else

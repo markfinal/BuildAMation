@@ -112,23 +112,23 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             }
         }
 
-        private static void OutputTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
             LinkerOptionCollection options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLineBuilder.Append(System.String.Format("-o \"{0}\" ", options.OutputFilePath));
+                    commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.OutputFilePath));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
-                        commandLineBuilder.Append(System.String.Format("-o \"{0}\" ", options.OutputFilePath));
+                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.OutputFilePath));
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
                         // see http://www.adp-gmbh.ch/cpp/gcc/create_lib.html
-                        commandLineBuilder.Append(System.String.Format("-Wl,-soname,\"{0}\" ", options.OutputFilePath));
+                        commandLineBuilder.Add(System.String.Format("-Wl,-soname,\"{0}\"", options.OutputFilePath));
                     }
                     break;
 
@@ -137,39 +137,39 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             }
         }
 
-        private static void DebugSymbolsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DebugSymbolsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
-                commandLineBuilder.Append("-g ");
+                commandLineBuilder.Add("-g");
             }
         }
 
-        private static void DoNotAutoIncludeStandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotAutoIncludeStandardLibrariesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
-                commandLineBuilder.Append("-nostdlib ");
+                commandLineBuilder.Add("-nostdlib");
             }
         }
 
-        private static void DynamicLibraryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DynamicLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
-                commandLineBuilder.Append("-shared ");
+                commandLineBuilder.Add("-shared");
             }
         }
 
-        private static void LibraryPathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void LibraryPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.AppendFormat("-L\"{0}\" ", includePath);
+                commandLineBuilder.Add(System.String.Format("-L\"{0}\"", includePath));
             }
         }
 
@@ -188,26 +188,26 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             }
         }
 
-        private static void GenerateMapFileCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void GenerateMapFileCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.AppendFormat("-Wl,-Map,\"{0}\" ", options.MapFilePath);
+                commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
             }
         }
 
-        private static void SixtyFourBitCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void SixtyFourBitCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
             if (sixtyFourBitOption.Value)
             {
-                commandLineBuilder.Append("-m64 ");
+                commandLineBuilder.Add("-m64");
             }
             else
             {
-                commandLineBuilder.Append("-m32 ");
+                commandLineBuilder.Add("-m32");
             }
         }
 

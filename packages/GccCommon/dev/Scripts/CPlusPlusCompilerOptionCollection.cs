@@ -33,18 +33,18 @@ namespace GccCommon
         {
         }
 
-        private static void ExceptionHandlerCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ExceptionHandlerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
             {
                 case C.CPlusPlus.EExceptionHandler.Disabled:
-                    commandLineBuilder.Append("-fno-exceptions ");
+                    commandLineBuilder.Add("-fno-exceptions");
                     break;
 
                 case C.CPlusPlus.EExceptionHandler.Asynchronous:
                 case C.CPlusPlus.EExceptionHandler.Synchronous:
-                    commandLineBuilder.Append("-fexceptions ");
+                    commandLineBuilder.Add("-fexceptions");
                     break;
 
                 default:

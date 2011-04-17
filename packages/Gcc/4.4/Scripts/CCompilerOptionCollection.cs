@@ -37,25 +37,25 @@ namespace Gcc
         }
 
         // requires gcc 4.0
-        protected static void VisibilityCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        protected static void VisibilityCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EVisibility> enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
             switch (enumOption.Value)
             {
                 case EVisibility.Default:
-                    commandLineBuilder.Append("-fvisibility=default ");
+                    commandLineBuilder.Add("-fvisibility=default");
                     break;
 
                 case EVisibility.Hidden:
-                    commandLineBuilder.Append("-fvisibility=hidden ");
+                    commandLineBuilder.Add("-fvisibility=hidden");
                     break;
 
                 case EVisibility.Internal:
-                    commandLineBuilder.Append("-fvisibility=internal ");
+                    commandLineBuilder.Add("-fvisibility=internal");
                     break;
 
                 case EVisibility.Protected:
-                    commandLineBuilder.Append("-fvisibility=protected ");
+                    commandLineBuilder.Add("-fvisibility=protected");
                     break;
 
                 default:

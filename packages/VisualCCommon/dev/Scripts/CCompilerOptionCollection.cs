@@ -150,7 +150,7 @@ namespace VisualCCommon
             toolchainOptions.Value.CCompilerOptionsInterface = sender as C.ICCompilerOptions;
         }
 
-        private static void ToolchainOptionCollectionCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
             CommandLineProcessor.ICommandLineSupport commandLineSupport = toolchainOptions.Value as CommandLineProcessor.ICommandLineSupport;
@@ -164,12 +164,12 @@ namespace VisualCCommon
             return visualStudioSupport.ToVisualStudioProjectAttributes(target);
         }
 
-        private static void IncludePathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.AppendFormat("/I\"{0}\" ", includePath);
+                commandLineBuilder.Add(System.String.Format("/I\"{0}\"", includePath));
             }
         }
 
@@ -186,12 +186,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void DefinesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DefinesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             foreach (string define in definesOption.Value)
             {
-                commandLineBuilder.AppendFormat("/D{0} ", define);
+                commandLineBuilder.Add(System.String.Format("/D{0}", define));
             }
         }
 
@@ -233,18 +233,20 @@ namespace VisualCCommon
             }
         }
 
-        private static void OutputTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLineBuilder.AppendFormat("/c /Fo\"{0}\" ", options.ObjectFilePath);
+                    commandLineBuilder.Add("/c");
+                    commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
                     break;
 
                 case C.ECompilerOutput.Preprocess: // with line numbers
-                    commandLineBuilder.AppendFormat("/P /Fo\"{0}\" ", options.ObjectFilePath);
+                    commandLineBuilder.Add("/P");
+                    commandLineBuilder.Add(System.String.Format("/Fo\"{0}\" ", options.ObjectFilePath));
                     break;
 
                 default:
@@ -272,25 +274,25 @@ namespace VisualCCommon
             }
         }
 
-        private static void OptimizationCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OptimizationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.EOptimization> optimizationOption = option as Opus.Core.ValueTypeOption<C.EOptimization>;
             switch (optimizationOption.Value)
             {
                 case C.EOptimization.Off:
-                    commandLineBuilder.Append("/Od ");
+                    commandLineBuilder.Add("/Od");
                     break;
 
                 case C.EOptimization.Size:
-                    commandLineBuilder.Append("/Os ");
+                    commandLineBuilder.Add("/Os");
                     break;
 
                 case C.EOptimization.Speed:
-                    commandLineBuilder.Append("/O1 ");
+                    commandLineBuilder.Add("/O1");
                     break;
 
                 case C.EOptimization.Full:
-                    commandLineBuilder.Append("/Ox ");
+                    commandLineBuilder.Add("/Ox");
                     break;
 
                 case C.EOptimization.Custom:
@@ -323,10 +325,13 @@ namespace VisualCCommon
             }
         }
 
-        private static void CustomOptimizationCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CustomOptimizationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.AppendFormat("{0} ", customOptimizationOption.Value);
+            if (!System.String.IsNullOrEmpty(customOptimizationOption.Value))
+            {
+                commandLineBuilder.Add(customOptimizationOption.Value);
+            }
         }
 
         private static VisualStudioProcessor.ToolAttributeDictionary CustomOptimizationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
@@ -336,12 +341,12 @@ namespace VisualCCommon
             return null;
         }
 
-        private static void WarningsAsErrorsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void WarningsAsErrorsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (warningsAsErrorsOption.Value)
             {
-                commandLineBuilder.Append("/WX ");
+                commandLineBuilder.Add("/WX");
             }
         }
 
@@ -353,12 +358,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void IgnoreStandardIncludePathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IgnoreStandardIncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> includeStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (includeStandardIncludePathsOption.Value)
             {
-                commandLineBuilder.Append("/X ");
+                commandLineBuilder.Add("/X");
             }
         }
 
@@ -370,7 +375,7 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void TargetLanguageCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void TargetLanguageCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ETargetLanguage> targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
             switch (targetLanguageOption.Value)
@@ -380,11 +385,11 @@ namespace VisualCCommon
                     break;
 
                 case C.ETargetLanguage.C:
-                    commandLineBuilder.Append("/TC ");
+                    commandLineBuilder.Add("/TC");
                     break;
 
                 case C.ETargetLanguage.CPlusPlus:
-                    commandLineBuilder.Append("/TP ");
+                    commandLineBuilder.Add("/TP");
                     break;
 
                 default:
@@ -411,12 +416,12 @@ namespace VisualCCommon
             }
         }
 
-        private static void NoLogoCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void NoLogoCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
-                commandLineBuilder.Append("/nologo ");
+                commandLineBuilder.Add("/nologo");
             }
         }
 
@@ -428,7 +433,7 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void MinimalRebuildCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void MinimalRebuildCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
             Opus.Core.ValueTypeOption<bool> minimalRebuildOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -437,7 +442,7 @@ namespace VisualCCommon
                 (EManagedCompilation.NoCLR == optionCollection.CompileAsManaged) &&
                 ((EDebugType.ProgramDatabase == optionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == optionCollection.DebugType)))
             {
-                commandLineBuilder.Append("/Gm ");
+                commandLineBuilder.Add("/Gm");
             }
         }
 
@@ -461,10 +466,10 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void WarningLevelCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void WarningLevelCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EWarningLevel> enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
-            commandLineBuilder.AppendFormat("/W{0} ", (int)enumOption.Value);
+            commandLineBuilder.Add(System.String.Format("/W{0}", (int)enumOption.Value));
         }
 
         private static VisualStudioProcessor.ToolAttributeDictionary WarningLevelVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
@@ -475,7 +480,7 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void BrowseInformationCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void BrowseInformationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.CompilerOptionCollection options = sender as C.CompilerOptionCollection;
             Opus.Core.ValueTypeOption<EBrowseInformation> enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
@@ -486,11 +491,11 @@ namespace VisualCCommon
                     break;
 
                 case EBrowseInformation.Full:
-                    commandLineBuilder.AppendFormat("/FR\"{0}\"\\ ", options.OutputDirectoryPath);
+                    commandLineBuilder.Add(System.String.Format("/FR\"{0}\"\\", options.OutputDirectoryPath));
                     break;
 
                 case EBrowseInformation.NoLocalSymbols:
-                    commandLineBuilder.AppendFormat("/Fr\"{0}\"\\ ", options.OutputDirectoryPath);
+                    commandLineBuilder.Add(System.String.Format("/Fr\"{0}\"\\", options.OutputDirectoryPath));
                     break;
 
                 default:
@@ -509,12 +514,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void StringPoolingCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void StringPoolingCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/GF ");
+                commandLineBuilder.Add("/GF");
             }
         }
 
@@ -526,12 +531,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void DisableLanguageExtensionsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DisableLanguageExtensionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/Za ");
+                commandLineBuilder.Add("/Za");
             }
         }
 
@@ -543,16 +548,16 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void ForceConformanceInForLoopScopeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ForceConformanceInForLoopScopeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/Zc:forScope ");
+                commandLineBuilder.Add("/Zc:forScope");
             }
             else
             {
-                commandLineBuilder.Append("/Zc:forScope- ");
+                commandLineBuilder.Add("/Zc:forScope-");
             }
         }
 
@@ -564,12 +569,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void ShowIncludesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ShowIncludesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/showIncludes ");
+                commandLineBuilder.Add("/showIncludes");
             }
         }
 
@@ -581,12 +586,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void UseFullPathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void UseFullPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/FC ");
+                commandLineBuilder.Add("/FC");
             }
         }
 
@@ -598,7 +603,7 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void CompileAsManagedCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CompileAsManagedCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EManagedCompilation> enumOption = option as Opus.Core.ValueTypeOption<EManagedCompilation>;
             switch (enumOption.Value)
@@ -607,19 +612,19 @@ namespace VisualCCommon
                     break;
 
                 case EManagedCompilation.CLR:
-                    commandLineBuilder.Append("/clr ");
+                    commandLineBuilder.Add("/clr");
                     break;
 
                 case EManagedCompilation.PureCLR:
-                    commandLineBuilder.Append("/clr:pure ");
+                    commandLineBuilder.Add("/clr:pure");
                     break;
 
                 case EManagedCompilation.SafeCLR:
-                    commandLineBuilder.Append("/clr:safe ");
+                    commandLineBuilder.Add("/clr:safe");
                     break;
 
                 case EManagedCompilation.OldSyntaxCLR:
-                    commandLineBuilder.Append("/clr:oldsyntax ");
+                    commandLineBuilder.Add("/clr:oldsyntax");
                     break;
 
                 default:
@@ -665,7 +670,7 @@ namespace VisualCCommon
             }
         }
 
-        private static void DebugTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DebugTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
             if (options.DebugSymbols)
@@ -674,30 +679,30 @@ namespace VisualCCommon
                 switch (options.DebugType)
                 {
                     case EDebugType.Embedded:
-                        commandLineBuilder.Append("/Z7 ");
+                        commandLineBuilder.Add("/Z7");
                         break;
 
                     case EDebugType.ProgramDatabase:
                         {
-                            commandLineBuilder.Append("/Zi ");
+                            commandLineBuilder.Add("/Zi");
 
                             if (null == options.ProgramDatabaseFilePath)
                             {
                                 throw new Opus.Core.Exception("PDB file path has not been set");
                             }
-                            commandLineBuilder.Append(System.String.Format("/Fd\"{0}\" ", options.ProgramDatabaseFilePath));
+                            commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
                         }
                         break;
 
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
-                            commandLineBuilder.Append("/ZI ");
+                            commandLineBuilder.Add("/ZI");
 
                             if (null == options.ProgramDatabaseFilePath)
                             {
                                 throw new Opus.Core.Exception("PDB file path has not been set");
                             }
-                            commandLineBuilder.Append(System.String.Format("/Fd\"{0}\" ", options.ProgramDatabaseFilePath));
+                            commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
                         }
                         break;
 

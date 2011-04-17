@@ -7,7 +7,7 @@ namespace CommandLineProcessor
 {
     public static class Processor
     {
-        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, string executablePath, System.Text.StringBuilder commandLineBuilder)
+        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, string executablePath, Opus.Core.StringArray commandLineBuilder)
         {
             Opus.Core.Target target = node.Target;
 
@@ -43,7 +43,7 @@ namespace CommandLineProcessor
                 processStartInfo.EnvironmentVariables["PATH"] = path;
                 //Core.Log.DebugMessage("Path is '{0}'", path);
             }
-            processStartInfo.Arguments = commandLineBuilder.ToString();
+            processStartInfo.Arguments = commandLineBuilder.ToString(' ');
 
             Opus.Core.Log.Detail("Commandline: '{0} {1}'", executablePath, processStartInfo.Arguments);
 

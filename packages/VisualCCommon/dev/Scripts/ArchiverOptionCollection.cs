@@ -66,14 +66,14 @@ namespace VisualCCommon
             }
         }
 
-        private static void OutputTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
                     ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                    commandLineBuilder.AppendFormat("/OUT:\"{0}\" ", options.LibraryFilePath);
+                    commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.LibraryFilePath));
                     break;
 
                 default:
@@ -99,12 +99,12 @@ namespace VisualCCommon
             }
         }
 
-        private static void NoLogoCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void NoLogoCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
-                commandLineBuilder.Append("/NOLOGO ");
+                commandLineBuilder.Add("/NOLOGO");
             }
         }
 

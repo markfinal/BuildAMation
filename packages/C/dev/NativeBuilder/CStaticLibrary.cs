@@ -38,7 +38,7 @@ namespace NativeBuilder
                 return null;
             }
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (staticLibrary.Options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibrary.Options as CommandLineProcessor.ICommandLineSupport;
@@ -57,7 +57,10 @@ namespace NativeBuilder
 
             string executablePath = archiverTool.Executable(target);
 
-            commandLineBuilder.Append(dependentObjectFiles.ToString(' '));
+            foreach (string dependentObjectFile in dependentObjectFiles)
+            {
+                commandLineBuilder.Add(dependentObjectFile);
+            }
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, archiverTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);

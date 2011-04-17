@@ -65,13 +65,13 @@ namespace Qt
             options.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = stringOption.Value;
         }
 
-        private static void MocOutputPathCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void MocOutputPathCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.AppendFormat("-o\"{0}\" ", stringOption.Value);
         }
 
-        private static void IncludePathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> directoryCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string directory in directoryCollectionOption.Value)
@@ -80,7 +80,7 @@ namespace Qt
             }
         }
 
-        private static void DefinesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DefinesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesCollectionOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             foreach (string directory in definesCollectionOption.Value)
@@ -89,7 +89,7 @@ namespace Qt
             }
         }
 
-        private static void DoNotGenerateIncludeStatementCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotGenerateIncludeStatementCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
@@ -98,7 +98,7 @@ namespace Qt
             }
         }
 
-        private static void DoNotDisplayWarningsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotDisplayWarningsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
@@ -107,7 +107,7 @@ namespace Qt
             }
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
         }

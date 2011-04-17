@@ -44,7 +44,7 @@ namespace MakeFileBuilder
 
             string executable = archiverTool.Executable(target);
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (staticLibrary.Options is CommandLineProcessor.ICommandLineSupport)
             {
@@ -61,7 +61,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string recipe = System.String.Format("\"{0}\" {1}$(filter %{2},$^)", executable, commandLineBuilder.ToString(), toolchain.ObjectFileExtension);
+            string recipe = System.String.Format("\"{0}\" {1}$(filter %{2},$^)", executable, commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
             recipe = recipe.Replace(staticLibrary.Options.OutputPaths[primaryOutput], "$@");

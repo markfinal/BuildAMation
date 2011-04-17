@@ -42,7 +42,7 @@ namespace VisualCCommon
             return dirsToCreate;
         }
 
-        private static void CharacterSetCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CharacterSetCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
             ToolchainOptionCollection options = sender as ToolchainOptionCollection;
@@ -67,25 +67,25 @@ namespace VisualCCommon
             }
         }
 
-        private static void RuntimeLibraryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
-                    commandLineBuilder.Append("/MT ");
+                    commandLineBuilder.Add("/MT");
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
-                    commandLineBuilder.Append("/MTd ");
+                    commandLineBuilder.Add("/MTd");
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
-                    commandLineBuilder.Append("/MD ");
+                    commandLineBuilder.Add("/MD");
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLLDebug:
-                    commandLineBuilder.Append("/MDd ");
+                    commandLineBuilder.Add("/MDd");
                     break;
 
                 default:
