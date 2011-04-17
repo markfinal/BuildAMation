@@ -1,3 +1,7 @@
+17-Apr-2011 Do not allow filtered external dependents and required modules to be processed.
+
+17-Apr-2011 Updated CopyFiles code from previous change for the command line builder.
+
 17-Apr-2011 Changed command line builders from using System.String.StringBuilder to Opus.Core.StringArray, so it is easier to identify individual commands (spaces in paths can no longer be confused with separators for commands).
 
 13-Mar-2011 Set version to 0.20.

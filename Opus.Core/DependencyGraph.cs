@@ -234,6 +234,10 @@ namespace Opus.Core
                         foreach (System.Type dependentModuleType in externalDependentModuleTypes)
                         {
                             DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove);
+                            if (null == newNode)
+                            {
+                                continue;
+                            }
 
                             if (newNode.Module is IInjectModules)
                             {
@@ -250,6 +254,10 @@ namespace Opus.Core
                         foreach (System.Type requiredModuleType in externalRequiredModuleTypes)
                         {
                             DependencyNode newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.FullName, node.Target, currentRank, nodesToMove);
+                            if (null == newNode)
+                            {
+                                continue;
+                            }
 
                             node.AddRequiredDependent(newNode);
                         }
