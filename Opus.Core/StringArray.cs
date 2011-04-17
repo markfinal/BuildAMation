@@ -34,6 +34,16 @@ namespace Opus.Core
             }
         }
 
+        public new void Add(string item)
+        {
+            if (System.String.IsNullOrEmpty(item))
+            {
+                return;
+            }
+
+            this.list.Add(item);
+        }
+
         public override string ToString()
         {
             return this.ToString(' ');
