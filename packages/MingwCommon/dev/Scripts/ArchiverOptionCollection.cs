@@ -69,14 +69,14 @@ namespace MingwCommon
             }
         }
 
-        private static void OutputTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
                     ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                    commandLineBuilder.AppendFormat("\"{0}\" ", options.LibraryFilePath);
+                    commandLineBuilder.Add(System.String.Format("\"{0}\"", options.LibraryFilePath));
                     break;
 
                 default:
@@ -84,13 +84,13 @@ namespace MingwCommon
             }
         }
 
-        private static void CommandCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CommandCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EArchiverCommand> commandOption = option as Opus.Core.ValueTypeOption<EArchiverCommand>;
             switch (commandOption.Value)
             {
                 case EArchiverCommand.Replace:
-                    commandLineBuilder.Append("-r ");
+                    commandLineBuilder.Add("-r");
                     break;
 
                 default:
@@ -98,12 +98,12 @@ namespace MingwCommon
             }
         }
 
-        private static void DoNotWarnIfLibraryCreatedCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotWarnIfLibraryCreatedCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-c ");
+                commandLineBuilder.Add("-c");
             }
         }
 

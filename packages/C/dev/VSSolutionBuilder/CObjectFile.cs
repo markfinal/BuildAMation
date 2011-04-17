@@ -94,8 +94,8 @@ namespace VSSolutionBuilder
                 string outputPathname = System.String.Format("\"$(IntDir)\\$(InputName){0}\"", toolchain.ObjectFileExtension);
                 // TODO: pdb if it exists?
 
-                System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
-                commandLineBuilder.AppendFormat("\"{0}\" ", executable);
+                Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+                commandLineBuilder.Add(System.String.Format("\"{0}\" ", executable));
                 if (objectFile.Options is CommandLineProcessor.ICommandLineSupport)
                 {
                     CommandLineProcessor.ICommandLineSupport commandLineOption = objectFile.Options as CommandLineProcessor.ICommandLineSupport;
@@ -107,10 +107,10 @@ namespace VSSolutionBuilder
                 }
 
                 // add source file
-                commandLineBuilder.AppendFormat(@" $(InputPath)");
+                commandLineBuilder.Add(@" $(InputPath)");
 
                 ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
-                customTool.AddAttribute("CommandLine", commandLineBuilder.ToString());
+                customTool.AddAttribute("CommandLine", commandLineBuilder.ToString(' '));
                 customTool.AddAttribute("Outputs", outputPathname);
                 customTool.AddAttribute("Description", System.String.Format("Compiling $(InputFileName) with '{0}'", executable));
 

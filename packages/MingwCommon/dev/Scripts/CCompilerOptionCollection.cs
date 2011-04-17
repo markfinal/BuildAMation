@@ -100,46 +100,46 @@ namespace MingwCommon
             toolchainOptions.Value.CCompilerOptionsInterface = sender as C.ICCompilerOptions;
         }
 
-        private static void ToolchainOptionCollectionCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
             CommandLineProcessor.ICommandLineSupport commandLineSupport = toolchainOptions.Value as CommandLineProcessor.ICommandLineSupport;
             commandLineSupport.ToCommandLineArguments(commandLineBuilder, target);
         }
 
-        private static void SystemIncludePathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void SystemIncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.AppendFormat("-isystem\"{0}\" ", includePath);
+                commandLineBuilder.Add(System.String.Format("-isystem\"{0}\"", includePath));
             }
         }
 
-        private static void IncludePathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.AppendFormat("-I\"{0}\" ", includePath);
+                commandLineBuilder.Add(System.String.Format("-I\"{0}\"", includePath));
             }
         }
 
-        private static void DefinesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DefinesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             foreach (string define in definesOption.Value)
             {
-                commandLineBuilder.AppendFormat("-D{0} ", define);
+                commandLineBuilder.Add(System.String.Format("-D{0}", define));
             }
         }
 
-        private static void DebugSymbolsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DebugSymbolsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
-                commandLineBuilder.Append("-g ");
+                commandLineBuilder.Add("-g");
             }
         }
 
@@ -168,18 +168,20 @@ namespace MingwCommon
             }
         }
 
-        private static void OutputTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLineBuilder.AppendFormat("-c -o \"{0}\" ", options.ObjectFilePath);
+                    commandLineBuilder.Add("-c");
+                    commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.ObjectFilePath));
                     break;
 
                 case C.ECompilerOutput.Preprocess:
-                    commandLineBuilder.AppendFormat("-E -o \"{0}\" ", options.ObjectFilePath);
+                    commandLineBuilder.Add("-E");
+                    commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.ObjectFilePath));
                     break;
 
                 default:
@@ -187,25 +189,25 @@ namespace MingwCommon
             }
         }
 
-        private static void OptimizationCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OptimizationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.EOptimization> optimizationOption = option as Opus.Core.ValueTypeOption<C.EOptimization>;
             switch (optimizationOption.Value)
             {
                 case C.EOptimization.Off:
-                    commandLineBuilder.Append("-O0 ");
+                    commandLineBuilder.Add("-O0");
                     break;
 
                 case C.EOptimization.Size:
-                    commandLineBuilder.Append("-Os ");
+                    commandLineBuilder.Add("-Os");
                     break;
 
                 case C.EOptimization.Speed:
-                    commandLineBuilder.Append("-O1 ");
+                    commandLineBuilder.Add("-O1");
                     break;
 
                 case C.EOptimization.Full:
-                    commandLineBuilder.Append("-O3 ");
+                    commandLineBuilder.Add("-O3");
                     break;
 
                 case C.EOptimization.Custom:
@@ -217,37 +219,37 @@ namespace MingwCommon
             }
         }
 
-        private static void CustomOptimizationCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CustomOptimizationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.Append(customOptimizationOption.Value);
+            commandLineBuilder.Add(customOptimizationOption.Value);
         }
 
-        private static void WarningsAsErrorsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void WarningsAsErrorsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (warningsAsErrorsOption.Value)
             {
-                commandLineBuilder.Append("-Werror ");
+                commandLineBuilder.Add("-Werror");
             }
         }
 
-        private static void IgnoreStandardIncludePathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IgnoreStandardIncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardIncludePathsOption.Value)
             {
-                commandLineBuilder.Append("-nostdinc ");
+                commandLineBuilder.Add("-nostdinc");
 
                 CCompilerOptionCollection options = sender as CCompilerOptionCollection;
                 if (options.TargetLanguage == C.ETargetLanguage.CPlusPlus)
                 {
-                    commandLineBuilder.Append("-nostdinc++ ");
+                    commandLineBuilder.Add("-nostdinc++");
                 }
             }
         }
 
-        private static void TargetLanguageCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void TargetLanguageCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ETargetLanguage> targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
             switch (targetLanguageOption.Value)
@@ -257,11 +259,11 @@ namespace MingwCommon
                     break;
 
                 case C.ETargetLanguage.C:
-                    commandLineBuilder.Append("-x c ");
+                    commandLineBuilder.Add("-x c");
                     break;
 
                 case C.ETargetLanguage.CPlusPlus:
-                    commandLineBuilder.Append("-x c++ ");
+                    commandLineBuilder.Add("-x c++");
                     break;
 
                 default:
@@ -269,56 +271,56 @@ namespace MingwCommon
             }
         }
 
-        private static void ShowIncludesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ShowIncludesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-H ");
+                commandLineBuilder.Add("-H");
             }
         }
 
-        private static void SixtyFourBitCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void SixtyFourBitCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
             if (sixtyFourBitOption.Value)
             {
-                commandLineBuilder.Append("-m64 ");
+                commandLineBuilder.Add("-m64");
             }
             else
             {
-                commandLineBuilder.Append("-m32 ");
+                commandLineBuilder.Add("-m32");
             }
         }
 
-        private static void StrictAliasingCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void StrictAliasingCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-fstrict-aliasing ");
+                commandLineBuilder.Add("-fstrict-aliasing");
             }
             else
             {
-                commandLineBuilder.Append("-fno-strict-aliasing ");
+                commandLineBuilder.Add("-fno-strict-aliasing");
             }
         }
 
-        private static void AllWarningsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void AllWarningsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-Wall ");
+                commandLineBuilder.Add("-Wall");
             }
         }
 
-        private static void ExtraWarningsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ExtraWarningsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-Wextra ");
+                commandLineBuilder.Add("-Wextra");
             }
         }
 

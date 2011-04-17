@@ -26,7 +26,7 @@ namespace MakeFileBuilder
             Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
             node.FilterOutputPaths(Qt.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
@@ -43,7 +43,7 @@ namespace MakeFileBuilder
             commandLineBuilder.AppendFormat("\"{0}\"", sourceFilePath);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
-            recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString());
+            recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString(' '));
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));

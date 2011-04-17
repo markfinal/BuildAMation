@@ -94,7 +94,7 @@ namespace VisualCCommon
             }
         }
 
-        private static void ToolchainOptionCollectionCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
             RuntimeLibraryCommandLine(sender, commandLineBuilder, toolchainOptions.Value["RuntimeLibrary"], target);
@@ -133,7 +133,7 @@ namespace VisualCCommon
             }
         }
 
-        private static void OutputTypeCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
             LinkerOptionCollection options = sender as LinkerOptionCollection;
@@ -141,7 +141,7 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-                    commandLineBuilder.Append(System.String.Format("/OUT:\"{0}\" ", options.OutputFilePath));
+                    commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.OutputFilePath));
                     break;
 
                 default:
@@ -183,15 +183,15 @@ namespace VisualCCommon
             }
         }
 
-        private static void DebugSymbolsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DebugSymbolsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
-                commandLineBuilder.Append("/DEBUG ");
+                commandLineBuilder.Add("/DEBUG");
 
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.Append(System.String.Format("/PDB:\"{0}\" ", options.ProgramDatabaseFilePath));
+                commandLineBuilder.Add(System.String.Format("/PDB:\"{0}\"", options.ProgramDatabaseFilePath));
             }
         }
 
@@ -208,12 +208,12 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void NoLogoCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void NoLogoCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
-                commandLineBuilder.Append("/NOLOGO ");
+                commandLineBuilder.Add("/NOLOGO");
             }
         }
 
@@ -225,7 +225,7 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void SubSystemCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void SubSystemCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ESubsystem> subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
@@ -235,11 +235,11 @@ namespace VisualCCommon
                     break;
 
                 case C.ESubsystem.Console:
-                    commandLineBuilder.Append("/SUBSYSTEM:CONSOLE ");
+                    commandLineBuilder.Add("/SUBSYSTEM:CONSOLE");
                     break;
 
                 case C.ESubsystem.Windows:
-                    commandLineBuilder.Append("/SUBSYSTEM:WINDOWS ");
+                    commandLineBuilder.Add("/SUBSYSTEM:WINDOWS");
                     break;
 
                 default:
@@ -266,12 +266,12 @@ namespace VisualCCommon
             }
         }
 
-        private static void DoNotAutoIncludeStandardLibrariesCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DoNotAutoIncludeStandardLibrariesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
-                commandLineBuilder.Append("/NODEFAULTLIB ");
+                commandLineBuilder.Add("/NODEFAULTLIB");
             }
         }
 
@@ -283,7 +283,7 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        private static void RuntimeLibraryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
             C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
@@ -374,16 +374,16 @@ namespace VisualCCommon
             return null;
         }
 
-        private static void DynamicLibraryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DynamicLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
-                commandLineBuilder.Append("/DLL ");
+                commandLineBuilder.Add("/DLL");
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (null != options.StaticImportLibraryFilePath)
                 {
-                    commandLineBuilder.AppendFormat("/IMPLIB:\"{0}\" ", options.StaticImportLibraryFilePath); 
+                    commandLineBuilder.Add(System.String.Format("/IMPLIB:\"{0}\"", options.StaticImportLibraryFilePath)); 
                 }
             }
         }
@@ -403,12 +403,12 @@ namespace VisualCCommon
             }
         }
 
-        private static void LibraryPathsCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void LibraryPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.AppendFormat("/LIBPATH:\"{0}\" ", includePath);
+                commandLineBuilder.Add(System.String.Format("/LIBPATH:\"{0}\"", includePath));
             }
         }
 
@@ -479,13 +479,13 @@ namespace VisualCCommon
             }
         }
 
-        private static void GenerateMapFileCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void GenerateMapFileCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.AppendFormat("/MAP:\"{0}\" ", options.MapFilePath);
+                commandLineBuilder.Add(System.String.Format("/MAP:\"{0}\"", options.MapFilePath));
             }
         }
 

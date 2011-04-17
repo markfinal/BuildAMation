@@ -29,7 +29,7 @@ namespace C
             get;
         }
 
-        public void AppendLibrariesToCommandLine(System.Text.StringBuilder commandLineBuilder,
+        public void AppendLibrariesToCommandLine(Opus.Core.StringArray commandLineBuilder,
                                                  ILinkerOptions linkerOptions,
                                                  Opus.Core.StringArray otherLibraryPaths)
         {
@@ -37,23 +37,23 @@ namespace C
                 (linkerOptions.Libraries.Count > 0) ||
                 ((null != otherLibraryPaths) && (otherLibraryPaths.Count > 0)))
             {
-                commandLineBuilder.Append(this.StartLibraryList);
+                commandLineBuilder.Add(this.StartLibraryList);
                 if (linkerOptions.DoNotAutoIncludeStandardLibraries)
                 {
                     foreach (string standardLibraryPath in linkerOptions.StandardLibraries)
                     {
-                        commandLineBuilder.AppendFormat("\"{0}\" ", standardLibraryPath);
+                        commandLineBuilder.Add(System.String.Format("\"{0}\"", standardLibraryPath));
                     }
                 }
                 foreach (string libraryPath in linkerOptions.Libraries)
                 {
-                    commandLineBuilder.AppendFormat("\"{0}\" ", libraryPath);
+                    commandLineBuilder.Add(System.String.Format("\"{0}\"", libraryPath));
                 }
                 if (otherLibraryPaths != null)
                 {
-                    commandLineBuilder.Append(otherLibraryPaths.ToString(' '));
+                    commandLineBuilder.Add(otherLibraryPaths.ToString(' '));
                 }
-                commandLineBuilder.Append(this.EndLibraryList);
+                commandLineBuilder.Add(this.EndLibraryList);
             }
         }
     }

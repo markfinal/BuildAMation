@@ -74,7 +74,7 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception(System.String.Format("There were no source files specified for the module '{0}'", node.ModuleName), false);
             }
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
@@ -97,7 +97,7 @@ namespace MakeFileBuilder
             string executablePath = compilerInstance.Executable(target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
-            recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString()));
+            recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString(' ')));
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 

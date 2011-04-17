@@ -7,7 +7,7 @@ namespace CommandLineProcessor
 {
     public interface ICommandLineSupport
     {
-        void ToCommandLineArguments(System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target);
+        void ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target);
 
         Opus.Core.DirectoryCollection DirectoriesToCreate();
     }
