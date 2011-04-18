@@ -134,10 +134,17 @@ namespace QtCreatorBuilder
                             cflagModified += cflag.Substring(indexOfLastQuote + 1);
                         }
 
-                        if (cflagModified.StartsWith("-I") || cflagModified.StartsWith("/I"))
+                        if (cflagModified.StartsWith("-I") || cflagModified.StartsWith("-isystem") || cflagModified.StartsWith("/I"))
                         {
                             // strip the include path command
-                            cflagModified = cflagModified.Remove(0, 2);
+                            if (cflagModified.StartsWith("-isystem"))
+                            {
+                                cflagModified = cflagModified.Remove(0, 8);
+                            }
+                            else
+                            {
+                                cflagModified = cflagModified.Remove(0, 2);
+                            }
                             includePathsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
                         }
                         else
