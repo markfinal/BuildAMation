@@ -218,6 +218,11 @@ namespace QtCreatorBuilder
                         libStatement.AppendFormat("\\\n\t{0}", lib.Replace('\\', '/'));
                     }
                     proFileWriter.WriteLine(libStatement.ToString());
+
+                    foreach (string dependentLibrary in dependentLibraryFiles)
+                    {
+                        proFileWriter.WriteLine("{0}:PRE_TARGETDEPS += {1}", nodeData.Configuration, dependentLibrary.Replace('\\', '/'));
+                    }
                 }
 
                 // object file directory
