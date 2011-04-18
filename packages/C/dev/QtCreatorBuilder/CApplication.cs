@@ -215,7 +215,7 @@ namespace QtCreatorBuilder
                     libStatement.AppendFormat("{0}:QMAKE_LIBS += ", nodeData.Configuration);
                     foreach (string lib in libraryFiles)
                     {
-                        libStatement.AppendFormat("\\\n\t{0}", lib);
+                        libStatement.AppendFormat("\\\n\t{0}", lib.Replace('\\', '/'));
                     }
                     proFileWriter.WriteLine(libStatement.ToString());
                 }
