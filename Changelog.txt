@@ -1,3 +1,5 @@
+18-Apr-2011 C.Linker.AppendLibrariesToCommandLine adds other libraries into the array rather than turning them into a string.
+
 17-Apr-2011 Do not allow filtered external dependents and required modules to be processed.
 
 17-Apr-2011 Updated CopyFiles code from previous change for the command line builder.
