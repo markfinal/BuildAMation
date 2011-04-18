@@ -53,7 +53,7 @@ namespace QtCreatorBuilder
                 proFileWriter.WriteLine("QMAKE_CXXFLAGS_MT_DLLDBG=");
                 proFileWriter.WriteLine("QMAKE_INCDIR=");
                 proFileWriter.WriteLine("QMAKE_INCDIR_QT=");
-                proFileWriter.WriteLine("QMAKESPEC=");
+                //proFileWriter.WriteLine("QMAKESPEC=");
                 proFileWriter.WriteLine("DEFINES=");
                 proFileWriter.WriteLine("INCLUDEPATH=");
                 proFileWriter.WriteLine("mmx:DEFINES=");
