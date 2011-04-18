@@ -56,7 +56,7 @@ namespace C
 
                 if (includeOtherLibraries)
                 {
-                    commandLineBuilder.Add(otherLibraryPaths.ToString(' '));
+                    commandLineBuilder.AddRange(otherLibraryPaths);
                 }
 
                 commandLineBuilder.Add(this.EndLibraryList);
