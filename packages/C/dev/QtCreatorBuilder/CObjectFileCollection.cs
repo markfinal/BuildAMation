@@ -10,6 +10,7 @@ namespace QtCreatorBuilder
         public object Build(C.ObjectFileCollectionBase objectFileCollection, Opus.Core.DependencyNode node, out bool success)
         {
             NodeData nodeData = new NodeData();
+            nodeData.Configuration = GetQtConfiguration(node.Target);
 
             foreach (Opus.Core.DependencyNode childNode in node.Children)
             {

@@ -1,4 +1,4 @@
-// <copyright file="CApplication.cs" company="Mark Final">
+// <copyright file="CStaticLibrary.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
@@ -7,7 +7,7 @@ namespace QtCreatorBuilder
 {
     public sealed partial class QtCreatorBuilder
     {
-        public object Build(C.Application application, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.StaticLibrary staticLibrary, Opus.Core.DependencyNode node, out bool success)
         {
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(node.Target);
@@ -17,28 +17,19 @@ namespace QtCreatorBuilder
                 nodeData.Merge(childData);
             }
 
-            C.LinkerOptionCollection linkerOptionCollection = node.Module.Options as C.LinkerOptionCollection;
-            C.ILinkerOptions linkerOptions = node.Module.Options as C.ILinkerOptions;
-            C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.ArchiverOptionCollection archiverOptionCollection = node.Module.Options as C.ArchiverOptionCollection;
+            C.IArchiverOptions archiverOptions = node.Module.Options as C.IArchiverOptions;
             Opus.Core.Target target = node.Target;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
+            if (archiverOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = archiverOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else
             {
-                throw new Opus.Core.Exception("Linker options does not support command line translation");
-            }
-
-            // find dependent library files
-            Opus.Core.StringArray dependentLibraryFiles = null;
-            if (null != node.ExternalDependents)
-            {
-                dependentLibraryFiles = new Opus.Core.StringArray();
-                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
+                throw new Opus.Core.Exception("Archiver options does not support command line translation");
             }
 
             string proFilePath = QtCreatorBuilder.GetProFilePath(node);
@@ -90,10 +81,9 @@ namespace QtCreatorBuilder
                 proFileWriter.WriteLine("QMAKE_LFLAGS_CONSOLE=");
                 proFileWriter.WriteLine("QMAKE_LFLAGS_WINDOWS=");
                 proFileWriter.WriteLine("# -------------------------------------------------------------------------------------");
-                proFileWriter.WriteLine("TARGET = {0}", application.OwningNode.ModuleName);
-                proFileWriter.WriteLine("TEMPLATE = app");
+                proFileWriter.WriteLine("TARGET = {0}", staticLibrary.OwningNode.ModuleName);
+                proFileWriter.WriteLine("TEMPLATE = staticlib");
                 proFileWriter.WriteLine("CONFIG += {0}", nodeData.Configuration);
-                proFileWriter.WriteLine("CONFIG += console");
 
                 // sources
                 {
@@ -157,74 +147,13 @@ namespace QtCreatorBuilder
                     proFileWriter.WriteLine(includePathsStatement.ToString());
                 }
 
-                // link flags
-                {
-                    System.Text.StringBuilder linkFlagsStatement = new System.Text.StringBuilder();
-                    System.Text.StringBuilder libDirStatement = new System.Text.StringBuilder();
-                    linkFlagsStatement.AppendFormat("{0}:QMAKE_LFLAGS += ", nodeData.Configuration);
-                    libDirStatement.AppendFormat("{0}:QMAKE_LIBDIR += ", nodeData.Configuration);
-                    foreach (string linkFlag in commandLineBuilder)
-                    {
-                        if (linkFlag.StartsWith("-o") || linkFlag.StartsWith("/OUT:"))
-                        {
-                            // don't include any output path
-                            continue;
-                        }
-
-                        string linkFlagModified = linkFlag;
-                        if (linkFlag.Contains("\""))
-                        {
-                            int indexOfFirstQuote = linkFlag.IndexOf('"');
-                            linkFlagModified = linkFlag.Substring(0, indexOfFirstQuote);
-                            linkFlagModified += "$$quote(";
-                            int indexOfLastQuote = linkFlag.IndexOf('"', indexOfFirstQuote + 1);
-                            linkFlagModified += linkFlag.Substring(indexOfFirstQuote + 1, indexOfLastQuote - indexOfFirstQuote - 1);
-                            linkFlagModified += ")";
-                            linkFlagModified += linkFlag.Substring(indexOfLastQuote + 1);
-                        }
-
-                        if (linkFlagModified.StartsWith("-L") || linkFlagModified.StartsWith("/LIBPATH:"))
-                        {
-                            // strip the lib path command
-                            if (linkFlagModified.StartsWith("/LIBPATH:"))
-                            {
-                                linkFlagModified = linkFlagModified.Remove(0, 9);
-                            }
-                            else
-                            {
-                                linkFlagModified = linkFlagModified.Remove(0, 2);
-                            }
-                            libDirStatement.AppendFormat("\\\n\t{0}", linkFlagModified.Replace('\\', '/'));
-                        }
-                        else
-                        {
-                            linkFlagsStatement.AppendFormat("\\\n\t{0}", linkFlagModified.Replace('\\', '/'));
-                        }
-                    }
-                    proFileWriter.WriteLine(linkFlagsStatement.ToString());
-                    proFileWriter.WriteLine(libDirStatement.ToString());
-                }
-
-                // libraries
-                {
-                    C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
-                    Opus.Core.StringArray libraryFiles = new Opus.Core.StringArray();
-                    linkerInstance.AppendLibrariesToCommandLine(libraryFiles, linkerOptions, dependentLibraryFiles);
-
-                    System.Text.StringBuilder libStatement = new System.Text.StringBuilder();
-                    libStatement.AppendFormat("{0}:QMAKE_LIBS += ", nodeData.Configuration);
-                    foreach (string lib in libraryFiles)
-                    {
-                        libStatement.AppendFormat("\\\n\t{0}", lib);
-                    }
-                    proFileWriter.WriteLine(libStatement.ToString());
-                }
+                // TODO: how do we specify archiver flags?
 
                 // object file directory
                 proFileWriter.WriteLine("{0}:OBJECTS_DIR = {1}", nodeData.Configuration, nodeData["OBJECTS_DIR"].ToString().Replace('\\', '/'));
 
-                // binary file directory
-                proFileWriter.WriteLine("{0}:DESTDIR = {1}", nodeData.Configuration, linkerOptionCollection.OutputDirectoryPath.Replace('\\', '/'));
+                // output file directory
+                proFileWriter.WriteLine("{0}:DESTDIR = {1}", nodeData.Configuration, archiverOptionCollection.OutputDirectoryPath.Replace('\\', '/'));
             }
 
             success = true;

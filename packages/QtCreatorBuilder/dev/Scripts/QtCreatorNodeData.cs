@@ -12,6 +12,12 @@ namespace QtCreatorBuilder
         private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
         private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> SingleValueDictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
 
+        public string Configuration
+        {
+            get;
+            set;
+        }
+
         public bool Contains(string VariableName)
         {
             bool contains = this.Dictionary.ContainsKey(VariableName) || this.SingleValueDictionary.ContainsKey(VariableName);
@@ -48,6 +54,11 @@ namespace QtCreatorBuilder
 
         public void Merge(NodeData data)
         {
+            if (this.Configuration != data.Configuration)
+            {
+                throw new Opus.Core.Exception("Cannot merge data from different configurations");
+            }
+
             foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray> entry in data.Dictionary)
             {
                 if (this.Dictionary.ContainsKey(entry.Key))

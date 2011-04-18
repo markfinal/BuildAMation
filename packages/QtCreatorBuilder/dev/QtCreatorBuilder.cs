@@ -12,10 +12,21 @@ namespace QtCreatorBuilder
     {
         public static string GetProFilePath(Opus.Core.DependencyNode node)
         {
-            string proFileDirectory = System.IO.Path.Combine(node.GetModuleBuildDirectory(), "QMake");
+            //string proFileDirectory = System.IO.Path.Combine(node.GetModuleBuildDirectory(), "QMake");
+            string proFileDirectory = node.GetModuleBuildDirectory();
             string proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}_{1}.pro", node.UniqueModuleName, node.Target));
             Opus.Core.Log.MessageAll("ProFile : '{0}'", proFilePath);
             return proFilePath;
+        }
+
+        public static string GetQtConfiguration(Opus.Core.Target target)
+        {
+            if (target.Configuration != Opus.Core.EConfiguration.Debug && target.Configuration != Opus.Core.EConfiguration.Optimized)
+            {
+                throw new Opus.Core.Exception("QtCreator only supports debug and optimized configurations");
+            }
+            string QtCreatorConfiguration = (target.Configuration == Opus.Core.EConfiguration.Debug) ? "debug" : "release";
+            return QtCreatorConfiguration;
         }
     }
 }
