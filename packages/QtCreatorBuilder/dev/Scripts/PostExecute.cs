@@ -16,6 +16,10 @@ namespace QtCreatorBuilder
             string rootDirectory = mainPackage.BuildDirectory;
             string topProPathName = System.IO.Path.Combine(rootDirectory, fileName);
             rootDirectory += System.IO.Path.DirectorySeparatorChar;
+            if (Opus.Core.State.RunningMono)
+            {
+                rootDirectory += "monoFix";
+            }
 
             using (System.IO.TextWriter proWriter = new System.IO.StreamWriter(topProPathName))
             {
