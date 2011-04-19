@@ -82,8 +82,9 @@ namespace QtCreatorBuilder
                 proFileWriter.WriteLine("QMAKE_LFLAGS_WINDOWS=");
                 proFileWriter.WriteLine("# -------------------------------------------------------------------------------------");
                 proFileWriter.WriteLine("TARGET = {0}", staticLibrary.OwningNode.ModuleName);
-                proFileWriter.WriteLine("TEMPLATE = staticlib");
+                proFileWriter.WriteLine("TEMPLATE = lib");
                 proFileWriter.WriteLine("CONFIG += {0}", nodeData.Configuration);
+                proFileWriter.WrietLine("CONFIG += staticlib");
 
                 // sources
                 {
