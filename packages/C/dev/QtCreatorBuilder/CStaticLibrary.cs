@@ -38,59 +38,13 @@ namespace QtCreatorBuilder
 
             using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePath))
             {
-#if true
-                proFileWriter.WriteLine("--- Written by Opus");
+                proFileWriter.WriteLine("# --- Written by Opus");
 
                 {
                     string relativePriPathName = Opus.Core.RelativePathUtilities.GetPath(this.DisableQtPriPathName, proFilePath);
-                    proFileWriter.WriteLine("include({0})", relativePriPathName);
+                    proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
-#else
-                proFileWriter.WriteLine("# -------------------------------------------------------------------------------------");
-                proFileWriter.WriteLine("# Disable a load of Qt stuff");
-                proFileWriter.WriteLine("QT -= core gui");
-                proFileWriter.WriteLine("QMAKE_LIBS_QT_ENTRY=");
-                proFileWriter.WriteLine("QMAKE_CFLAGS=");
-                proFileWriter.WriteLine("QMAKE_CFLAGS_WARN_ON=");
-                proFileWriter.WriteLine("QMAKE_CFLAGS_DEBUG=");
-                proFileWriter.WriteLine("QMAKE_CFLAGS_MT_DBG=");
-                proFileWriter.WriteLine("QMAKE_CFLAGS_MT_DLLDBG=");
-                proFileWriter.WriteLine("QMAKE_CFLAGS_THREAD=");
-                proFileWriter.WriteLine("QMAKE_CXXFLAGS=");
-                proFileWriter.WriteLine("QMAKE_CXXFLAGS_DEBUG=");
-                proFileWriter.WriteLine("QMAKE_CXXFLAGS_MT_DLLDBG=");
-                proFileWriter.WriteLine("QMAKE_CXXFLAGS_MT_DLLDBG=");
-                proFileWriter.WriteLine("QMAKE_INCDIR=");
-                proFileWriter.WriteLine("QMAKE_INCDIR_QT=");
-                //proFileWriter.WriteLine("QMAKESPEC=");
-                proFileWriter.WriteLine("DEFINES=");
-                proFileWriter.WriteLine("INCLUDEPATH=");
-                proFileWriter.WriteLine("mmx:DEFINES=");
-                proFileWriter.WriteLine("3dnow:DEFINES=");
-                proFileWriter.WriteLine("sse:DEFINES=");
-                proFileWriter.WriteLine("sse2:DEFINES=");
-                proFileWriter.WriteLine("sse3:DEFINES=");
-                proFileWriter.WriteLine("ssse3:DEFINES=");
-                proFileWriter.WriteLine("sse4_1:DEFINES=");
-                proFileWriter.WriteLine("sse4_2:DEFINES=");
-                proFileWriter.WriteLine("avx:DEFINES=");
-                proFileWriter.WriteLine("iwmmxt:DEFINES=");
-                proFileWriter.WriteLine("QMAKE_PRL_DEFINES=");
-                proFileWriter.WriteLine("QMAKE_LFLAGS=");
-                proFileWriter.WriteLine("QMAKE_LFLAGS_DEBUG=");
-                proFileWriter.WriteLine("QMAKE_INCDIR=");
-                proFileWriter.WriteLine("QMAKE_INCDIR_QT=");
-                proFileWriter.WriteLine("QMAKE_LIBDIR_QT=");
-                proFileWriter.WriteLine("#QMAKE_RUN_CC=$(CC) -c -Fo$obj $src");
-                proFileWriter.WriteLine("#QMAKE_RUN_CC_IMP=$(CC) -c -Fo$@ $<");
-                proFileWriter.WriteLine("#QMAKE_RUN_CC_IMP_BATCH=$(CC) -c -Fo$@ @<<");
-                proFileWriter.WriteLine("#QMAKE_RUN_CXX=$(CXX) -c -Fo$obj $src");
-                proFileWriter.WriteLine("#QMAKE_RUN_CXX_IMP=$(CXX) -c -Fo$@ $<");
-                proFileWriter.WriteLine("#QMAKE_RUN_CXX_IMP_BATCH=$(CXX) -c -Fo$@ @<<");
-                proFileWriter.WriteLine("QMAKE_LFLAGS_CONSOLE=");
-                proFileWriter.WriteLine("QMAKE_LFLAGS_WINDOWS=");
-                proFileWriter.WriteLine("# -------------------------------------------------------------------------------------");
-#endif
+
                 proFileWriter.WriteLine("TARGET = {0}", staticLibrary.OwningNode.ModuleName);
                 proFileWriter.WriteLine("TEMPLATE = lib");
                 proFileWriter.WriteLine("CONFIG += {0}", nodeData.Configuration);

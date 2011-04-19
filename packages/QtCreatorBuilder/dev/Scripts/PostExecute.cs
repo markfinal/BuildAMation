@@ -30,6 +30,7 @@ namespace QtCreatorBuilder
                     {
                         string subDirProjectDir = data.ProjectFileDirectory + System.IO.Path.DirectorySeparatorChar;
                         string relativeDir = Opus.Core.RelativePathUtilities.GetPath(subDirProjectDir, rootDirectory);
+                        relativeDir = relativeDir.TrimEnd(System.IO.Path.DirectorySeparatorChar);
                         proWriter.WriteLine("\t{0}\\", relativeDir.Replace('\\', '/'));
                     }
                 }
