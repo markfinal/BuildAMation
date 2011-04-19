@@ -34,9 +34,18 @@ namespace QtCreatorBuilder
 
             string proFilePath = QtCreatorBuilder.GetProFilePath(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(proFilePath));
+            nodeData.ProjectFileDirectory = System.IO.Path.GetDirectoryName(proFilePath);
 
             using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePath))
             {
+#if true
+                proFileWriter.WriteLine("--- Written by Opus");
+
+                {
+                    string relativePriPathName = Opus.Core.RelativePathUtilities.GetPath(this.DisableQtPriPathName, proFilePath);
+                    proFileWriter.WriteLine("include({0})", relativePriPathName);
+                }
+#else
                 proFileWriter.WriteLine("# -------------------------------------------------------------------------------------");
                 proFileWriter.WriteLine("# Disable a load of Qt stuff");
                 proFileWriter.WriteLine("QT -= core gui");
@@ -81,10 +90,11 @@ namespace QtCreatorBuilder
                 proFileWriter.WriteLine("QMAKE_LFLAGS_CONSOLE=");
                 proFileWriter.WriteLine("QMAKE_LFLAGS_WINDOWS=");
                 proFileWriter.WriteLine("# -------------------------------------------------------------------------------------");
+#endif
                 proFileWriter.WriteLine("TARGET = {0}", staticLibrary.OwningNode.ModuleName);
                 proFileWriter.WriteLine("TEMPLATE = lib");
                 proFileWriter.WriteLine("CONFIG += {0}", nodeData.Configuration);
-                proFileWriter.WrietLine("CONFIG += staticlib");
+                proFileWriter.WriteLine("CONFIG += staticlib");
 
                 // sources
                 {
@@ -158,7 +168,7 @@ namespace QtCreatorBuilder
             }
 
             success = true;
-            return null;
+            return nodeData;
         }
     }
 }

@@ -10,13 +10,17 @@ namespace QtCreatorBuilder
 {
     public sealed partial class QtCreatorBuilder : Opus.Core.IBuilder
     {
+        private string DisableQtPriPathName
+        {
+            get;
+            set;
+        }
+
         public static string GetProFilePath(Opus.Core.DependencyNode node)
         {
-            //string proFileDirectory = System.IO.Path.Combine(node.GetModuleBuildDirectory(), "QMake");
             string proFileDirectory = node.GetModuleBuildDirectory();
-            //string proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}_{1}.pro", node.UniqueModuleName, node.Target));
             string proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}.pro", node.ModuleName));
-            Opus.Core.Log.MessageAll("ProFile : '{0}'", proFilePath);
+            Opus.Core.Log.DebugMessage("ProFile for node '{0}': '{1}'", node.UniqueModuleName, proFilePath);
             return proFilePath;
         }
 

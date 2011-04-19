@@ -18,6 +18,12 @@ namespace QtCreatorBuilder
             set;
         }
 
+        public string ProjectFileDirectory
+        {
+            get;
+            set;
+        }
+
         public bool Contains(string VariableName)
         {
             bool contains = this.Dictionary.ContainsKey(VariableName) || this.SingleValueDictionary.ContainsKey(VariableName);
