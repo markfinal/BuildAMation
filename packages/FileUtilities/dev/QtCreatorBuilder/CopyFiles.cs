@@ -72,10 +72,10 @@ namespace QtCreatorBuilder
             foreach (NodeData sourceNode in sourceFileDataArray)
             {
                 string proFilePathName = sourceNode.ProFilePathName;
-
                 using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePathName, true))
                 {
-                    proFileWriter.WriteLine("# Write '{0}' to '{1}'", "$$target", destinationDirectory);
+                    proFileWriter.WriteLine("# Write '{0}' to '{1}'", "$(DESTDIR_TARGET)", destinationDirectory);
+                    proFileWriter.WriteLine("QMAKE_POST_LINK += {0} {1} {2} {3} &&", toolExecutablePath, commandLineBuilder.ToString(' '), "$(DESTDIR_TARGET)", destinationDirectory);
                 }
             }
 
