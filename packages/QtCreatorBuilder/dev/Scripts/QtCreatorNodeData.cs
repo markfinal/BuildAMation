@@ -18,7 +18,7 @@ namespace QtCreatorBuilder
             set;
         }
 
-        public string ProjectFileDirectory
+        public string ProFilePathName
         {
             get;
             set;

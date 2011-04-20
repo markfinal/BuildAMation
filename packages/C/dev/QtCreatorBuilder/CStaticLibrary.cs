@@ -34,7 +34,7 @@ namespace QtCreatorBuilder
 
             string proFilePath = QtCreatorBuilder.GetProFilePath(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(proFilePath));
-            nodeData.ProjectFileDirectory = System.IO.Path.GetDirectoryName(proFilePath);
+            nodeData.ProFilePathName = proFilePath;
 
             using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePath))
             {
@@ -45,7 +45,9 @@ namespace QtCreatorBuilder
                     proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
 
-                proFileWriter.WriteLine("TARGET = {0}", staticLibrary.OwningNode.ModuleName);
+                string targetName = staticLibrary.OwningNode.ModuleName;
+                nodeData.AddUniqueVariable("TARGET", new Opus.Core.StringArray(targetName));
+                proFileWriter.WriteLine("TARGET = {0}", targetName);
                 proFileWriter.WriteLine("TEMPLATE = lib");
                 proFileWriter.WriteLine("CONFIG += {0}", nodeData.Configuration);
                 proFileWriter.WriteLine("CONFIG += staticlib");
