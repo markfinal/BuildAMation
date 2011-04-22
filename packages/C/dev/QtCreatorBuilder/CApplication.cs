@@ -128,7 +128,7 @@ namespace QtCreatorBuilder
                         }
                     }
                     proFileWriter.WriteLine(cflagsStatement.ToString());
-                    proFileWriter.WriteLine("{0}:QMAKE_CXXFLAGS += $(QMAKE_CFLAGS)", nodeData.Configuration);
+                    proFileWriter.WriteLine("{0}:QMAKE_CXXFLAGS = $$QMAKE_CFLAGS", nodeData.Configuration);
                     proFileWriter.WriteLine(includePathsStatement.ToString());
                     proFileWriter.WriteLine(definesStatement.ToString());
                 }
