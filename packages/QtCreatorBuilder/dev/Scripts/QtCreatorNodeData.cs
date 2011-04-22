@@ -12,6 +12,11 @@ namespace QtCreatorBuilder
         private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
         private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> SingleValueDictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
 
+        public NodeData()
+        {
+            this.HasPostLinks = false;
+        }
+
         public string Configuration
         {
             get;
@@ -19,6 +24,12 @@ namespace QtCreatorBuilder
         }
 
         public string ProFilePathName
+        {
+            get;
+            set;
+        }
+
+        public bool HasPostLinks
         {
             get;
             set;
@@ -81,10 +92,21 @@ namespace QtCreatorBuilder
             {
                 if (this.SingleValueDictionary.ContainsKey(entry.Key))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Repeated entry for '{0}'", entry.Key));
-                }
+                    //throw new Opus.Core.Exception(System.String.Format("Repeated entry for '{0}':\nwas '{1}'\nwanted '{2}'", entry.Key, this.SingleValueDictionary[entry.Key], entry.Value));
 
-                this.SingleValueDictionary.Add(entry.Key, entry.Value);
+                    // TODO: this isn't particularly great, as there may be conflicting arguments
+                    foreach (string item in entry.Value)
+                    {
+                        if (!this.SingleValueDictionary[entry.Key].Contains(item))
+                        {
+                            this.SingleValueDictionary[entry.Key].Add(item);
+                        }
+                    }
+                }
+                else
+                {
+                    this.SingleValueDictionary.Add(entry.Key, entry.Value);
+                }
             }
         }
     }

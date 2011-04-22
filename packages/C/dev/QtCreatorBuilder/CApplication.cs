@@ -73,14 +73,16 @@ namespace QtCreatorBuilder
                     proFileWriter.WriteLine(sourcesStatement.ToString());
                 }
 
-                // cflags and include paths
+                // cflags, include paths and defines
                 {
                     Opus.Core.StringArray cflags = nodeData["CFLAGS"];
                     // TODO: need to replace "<X>" with $$quote(<X>)
                     System.Text.StringBuilder cflagsStatement = new System.Text.StringBuilder();
                     System.Text.StringBuilder includePathsStatement = new System.Text.StringBuilder();
+                    System.Text.StringBuilder definesStatement = new System.Text.StringBuilder();
                     cflagsStatement.AppendFormat("{0}:QMAKE_CFLAGS += ", nodeData.Configuration);
                     includePathsStatement.AppendFormat("{0}:INCLUDEPATH += ", nodeData.Configuration);
+                    definesStatement.AppendFormat("{0}:DEFINES += ", nodeData.Configuration);
                     foreach (string cflag in cflags)
                     {
                         if (cflag.StartsWith("-o") || cflag.StartsWith("/Fo"))
@@ -114,13 +116,21 @@ namespace QtCreatorBuilder
                             }
                             includePathsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
                         }
+                        else if (cflagModified.StartsWith("-D") || cflagModified.StartsWith("/D"))
+                        {
+                            // strip the define command
+                            cflagModified = cflagModified.Remove(0, 2);
+                            definesStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
+                        }
                         else
                         {
                             cflagsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
                         }
                     }
                     proFileWriter.WriteLine(cflagsStatement.ToString());
+                    proFileWriter.WriteLine("{0}:QMAKE_CXXFLAGS += $(QMAKE_CFLAGS)", nodeData.Configuration);
                     proFileWriter.WriteLine(includePathsStatement.ToString());
+                    proFileWriter.WriteLine(definesStatement.ToString());
                 }
 
                 // link flags

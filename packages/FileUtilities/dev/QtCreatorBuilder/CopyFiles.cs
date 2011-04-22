@@ -75,7 +75,12 @@ namespace QtCreatorBuilder
                 using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePathName, true))
                 {
                     proFileWriter.WriteLine("# Write '{0}' to '{1}'", "$(DESTDIR_TARGET)", destinationDirectory);
-                    proFileWriter.WriteLine("QMAKE_POST_LINK += {0} {1} {2} {3} &&", toolExecutablePath, commandLineBuilder.ToString(' '), "$(DESTDIR_TARGET)", destinationDirectory);
+                    if (sourceNode.HasPostLinks)
+                    {
+                        proFileWriter.WriteLine("QMAKE_POST_LINK += &&");
+                    }
+                    proFileWriter.WriteLine("QMAKE_POST_LINK += {0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), "$(DESTDIR_TARGET)", destinationDirectory);
+                    sourceNode.HasPostLinks = true;
                 }
             }
 
