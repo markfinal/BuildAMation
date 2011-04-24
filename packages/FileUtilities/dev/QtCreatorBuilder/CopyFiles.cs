@@ -80,7 +80,7 @@ namespace QtCreatorBuilder
                         proFileWriter.WriteLine("QMAKE_POST_LINK += &&");
                     }
                     proFileWriter.WriteLine("win32:QMAKE_POST_LINK += {0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), "$(DESTDIR_TARGET)", destinationDirectory);
-                    proFileWriter.WriteLine("!win32:QMAKE_POST_LINK += {0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), "$$DESTDIR/$(TARGET)", destinationDirectory);
+                    proFileWriter.WriteLine("!win32:QMAKE_POST_LINK += {0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), "$$DESTDIR/$(TARGET0)", destinationDirectory);
                     sourceNode.HasPostLinks = true;
                 }
             }
