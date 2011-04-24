@@ -3,9 +3,9 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
-namespace QtCreatorBuilder
+namespace QMakeBuilder
 {
-    public sealed partial class QtCreatorBuilder
+    public sealed partial class QMakeBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, Opus.Core.DependencyNode node, out bool success)
         {
@@ -41,7 +41,7 @@ namespace QtCreatorBuilder
                 node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
             }
 
-            string proFilePath = QtCreatorBuilder.GetProFilePath(node);
+            string proFilePath = QMakeBuilder.GetProFilePath(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(proFilePath));
             nodeData.ProFilePathName = proFilePath;
 

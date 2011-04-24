@@ -3,9 +3,9 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
-namespace QtCreatorBuilder
+namespace QMakeBuilder
 {
-    public sealed partial class QtCreatorBuilder
+    public sealed partial class QMakeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
         public object Build(C.HeaderLibrary headerLibrary, Opus.Core.DependencyNode node, out bool success)
