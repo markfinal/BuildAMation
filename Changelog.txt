@@ -1,3 +1,5 @@
+24-Apr-2011 Module Build functions no longer require passing an Opus.Core.DependencyNode argument, since this is accessible via the module's OwningNode field.
+
 24-Apr-2011 QMake support. Initial support for C/C++ modules and FileUtilities. Generates .pro files that can be loaded into, and built through, QtCreator.
 
 18-Apr-2011 C.Linker.AppendLibrariesToCommandLine adds other libraries into the array rather than turning them into a string.

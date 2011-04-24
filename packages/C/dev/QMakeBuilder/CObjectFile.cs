@@ -7,9 +7,9 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.ObjectFile objectFile, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.ObjectFile objectFile, out bool success)
         {
-            Opus.Core.Target target = node.Target;
+            Opus.Core.Target target = objectFile.OwningNode.Target;
 
             C.CompilerOptionCollection compilerOptions = objectFile.Options as C.CompilerOptionCollection;
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

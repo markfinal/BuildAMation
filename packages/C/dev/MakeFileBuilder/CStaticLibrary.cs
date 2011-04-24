@@ -7,8 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.StaticLibrary staticLibrary, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
+            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);

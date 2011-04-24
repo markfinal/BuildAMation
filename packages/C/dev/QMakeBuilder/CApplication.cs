@@ -7,20 +7,22 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.Application application, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.Application application, out bool success)
         {
+            Opus.Core.DependencyNode node = application.OwningNode;
+            Opus.Core.Target target = node.Target;
+
             NodeData nodeData = new NodeData();
-            nodeData.Configuration = GetQtConfiguration(node.Target);
+            nodeData.Configuration = GetQtConfiguration(target);
             foreach (Opus.Core.DependencyNode childNode in node.Children)
             {
                 NodeData childData = childNode.Data as NodeData;
                 nodeData.Merge(childData);
             }
 
-            C.LinkerOptionCollection linkerOptionCollection = node.Module.Options as C.LinkerOptionCollection;
-            C.ILinkerOptions linkerOptions = node.Module.Options as C.ILinkerOptions;
+            C.LinkerOptionCollection linkerOptionCollection = application.Options as C.LinkerOptionCollection;
+            C.ILinkerOptions linkerOptions = application.Options as C.ILinkerOptions;
             C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
-            Opus.Core.Target target = node.Target;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)

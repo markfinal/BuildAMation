@@ -2,8 +2,9 @@ namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
     {
-        public object Build(CodeGenTest2.CodeGenModule codeGenModule, Opus.Core.DependencyNode node, out System.Boolean success)
+        public object Build(CodeGenTest2.CodeGenModule codeGenModule, out System.Boolean success)
         {
+            Opus.Core.DependencyNode node = codeGenModule.OwningNode;
             Opus.Core.Target target = node.Target;
             CodeGenTest2.CodeGenTool tool = new CodeGenTest2.CodeGenTool();
             CodeGenTest2.CodeGenOptions toolOptions = codeGenModule.Options as CodeGenTest2.CodeGenOptions;
@@ -13,7 +14,7 @@ namespace MakeFileBuilder
             inputFiles.Add(tool.Executable(target));
             Opus.Core.StringArray outputFiles = codeGenModule.Options.OutputPaths.Paths;
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {

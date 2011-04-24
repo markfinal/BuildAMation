@@ -125,7 +125,7 @@ namespace Opus.Core
                 }
             }
 
-            throw new Exception(System.String.Format("Unable to locate module for type '{0}' for target '{1}'", type, target), false);
+            return null;
         }
     }
 }

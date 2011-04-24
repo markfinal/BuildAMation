@@ -7,8 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.DynamicLibrary dynamicLibrary, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
+            Opus.Core.DependencyNode node = dynamicLibrary.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
@@ -76,7 +77,7 @@ namespace MakeFileBuilder
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibraryExtension));
             }
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
-            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, node.Module.Options as C.ILinkerOptions, dependentLibraries);
+            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, dynamicLibrary.Options as C.ILinkerOptions, dependentLibraries);
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@

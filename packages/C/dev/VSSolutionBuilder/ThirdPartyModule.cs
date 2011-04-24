@@ -8,7 +8,7 @@ namespace VSSolutionBuilder
     public sealed partial class VSSolutionBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(C.ThirdPartyModule thirdPartyModule, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.ThirdPartyModule thirdPartyModule, out bool success)
         {
             success = true;
             return null;

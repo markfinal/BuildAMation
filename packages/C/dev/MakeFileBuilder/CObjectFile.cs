@@ -7,8 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.ObjectFile objectFile, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.ObjectFile objectFile, out bool success)
         {
+            Opus.Core.DependencyNode node = objectFile.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);

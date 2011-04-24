@@ -25,6 +25,10 @@ namespace Opus.Core
                         Log.DebugMessage("\tAdding update option instance delegate '{0}' (type '{3}') from '{1}' to '{2}'", method.Name, type.FullName, module.ToString(), typeof(AttributeType).ToString());
 
                         IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
+                        if (null == moduleContainingMethod)
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}' for target '{2}'", type.FullName, module.GetType().FullName, target.ToString()), false);
+                        }
                         module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), moduleContainingMethod, method, true) as UpdateOptionCollectionDelegate;
                     }
                     else

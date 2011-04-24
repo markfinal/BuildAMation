@@ -58,7 +58,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        public object Build(FileUtilities.CopyFiles copyFiles, Opus.Core.DependencyNode node, out bool success)
+        public object Build(FileUtilities.CopyFiles copyFiles, out bool success)
         {
             string destinationDirectory = null;
             Opus.Core.IModule destinationModule = copyFiles.DestinationModule;

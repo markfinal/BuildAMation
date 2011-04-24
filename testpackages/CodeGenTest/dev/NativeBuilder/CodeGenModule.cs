@@ -2,8 +2,9 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(CodeGenTest.CodeGenModule codeGenModule, Opus.Core.DependencyNode node, out bool success)
+        public object Build(CodeGenTest.CodeGenModule codeGenModule, out bool success)
         {
+            Opus.Core.DependencyNode node = codeGenModule.OwningNode;
             Opus.Core.Target target = node.Target;
             CodeGenTest.CodeGenTool tool = new CodeGenTest.CodeGenTool();
             CodeGenTest.CodeGenOptions toolOptions = codeGenModule.Options as CodeGenTest.CodeGenOptions;
@@ -18,7 +19,7 @@ namespace NativeBuilder
                 return null;
             }
 
-            System.Text.StringBuilder commandLineBuilder = new System.Text.StringBuilder();
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;

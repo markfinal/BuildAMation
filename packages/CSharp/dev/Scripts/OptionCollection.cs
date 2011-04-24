@@ -154,25 +154,25 @@ namespace CSharp
             switch (enumOption.Value)
             {
                 case ETarget.Executable:
-                    commandLineBuilder.Append("/target:exe ");
+                    commandLineBuilder.Add("/target:exe");
                     break;
 
                 case ETarget.Library:
-                    commandLineBuilder.Append("/target:library ");
+                    commandLineBuilder.Add("/target:library");
                     break;
 
                 case ETarget.Module:
-                    commandLineBuilder.Append("/target:module ");
+                    commandLineBuilder.Add("/target:module");
                     break;
 
                 case ETarget.WindowsExecutable:
-                    commandLineBuilder.Append("/target:winexe ");
+                    commandLineBuilder.Add("/target:winexe");
                     break;
 
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
-            commandLineBuilder.AppendFormat("/out:\"{0}\" ", options.OutputFilePath);
+            commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", options.OutputFilePath));
         }
 
         private static void NoLogoCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -180,7 +180,7 @@ namespace CSharp
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/nologo ");
+                commandLineBuilder.Add("/nologo");
             }
         }
 
@@ -190,19 +190,19 @@ namespace CSharp
             switch (enumOption.Value)
             {
                 case EPlatform.X86:
-                    commandLineBuilder.Append("/platform:x86 ");
+                    commandLineBuilder.Add("/platform:x86");
                     break;
 
                 case EPlatform.X64:
-                    commandLineBuilder.Append("/platform:x64 ");
+                    commandLineBuilder.Add("/platform:x64");
                     break;
 
                 case EPlatform.Itanium:
-                    commandLineBuilder.Append("/platform:Itanium ");
+                    commandLineBuilder.Add("/platform:Itanium");
                     break;
 
                 case EPlatform.AnyCpu:
-                    commandLineBuilder.Append("/platform:AnyCpu ");
+                    commandLineBuilder.Add("/platform:AnyCpu");
                     break;
 
                 default:
@@ -215,11 +215,11 @@ namespace CSharp
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/checked+ ");
+                commandLineBuilder.Add("/checked+");
             }
             else
             {
-                commandLineBuilder.Append("/checked- ");
+                commandLineBuilder.Add("/checked-");
             }
         }
 
@@ -228,11 +228,11 @@ namespace CSharp
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/unsafe+ ");
+                commandLineBuilder.Add("/unsafe+");
             }
             else
             {
-                commandLineBuilder.Append("/unsafe- ");
+                commandLineBuilder.Add("/unsafe-");
             }
         }
 
@@ -246,7 +246,7 @@ namespace CSharp
                 case EWarningLevel.Level2:
                 case EWarningLevel.Level3:
                 case EWarningLevel.Level4:
-                    commandLineBuilder.AppendFormat("/warn:{0} ", enumOption.Value.ToString("d"));
+                    commandLineBuilder.Add(System.String.Format("/warn:{0}", enumOption.Value.ToString("d")));
                     break;
 
                 default:
@@ -259,11 +259,11 @@ namespace CSharp
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/warnaserror+ ");
+                commandLineBuilder.Add("/warnaserror+");
             }
             else
             {
-                commandLineBuilder.Append("/warnaserror- ");
+                commandLineBuilder.Add("/warnaserror-");
             }
         }
 
@@ -272,11 +272,11 @@ namespace CSharp
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("/optimize+ ");
+                commandLineBuilder.Add("/optimize+");
             }
             else
             {
-                commandLineBuilder.Append("/optimize- ");
+                commandLineBuilder.Add("/optimize-");
             }
         }
 
@@ -313,18 +313,20 @@ namespace CSharp
             switch (enumOption.Value)
             {
                 case EDebugInformation.Disabled:
-                    commandLineBuilder.Append("/debug- ");
+                    commandLineBuilder.Add("/debug-");
                     break;
 
                 case EDebugInformation.ProgramDatabaseOnly:
                     {
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
                         {
-                            commandLineBuilder.AppendFormat("/debug+ /debug:pdbinfo /pdb:\"{0}\" ", options.ProgramDatabaseFilePath);
+                            commandLineBuilder.Add("/debug+");
+                            commandLineBuilder.Add("/debug:pdbinfo");
+                            commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
                         }
                         else
                         {
-                            commandLineBuilder.Append("/debug+ ");
+                            commandLineBuilder.Add("/debug+");
                         }
                     }
                     break;
@@ -333,11 +335,13 @@ namespace CSharp
                     {
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
                         {
-                            commandLineBuilder.AppendFormat("/debug+ /debug:full /pdb:\"{0}\" ", options.ProgramDatabaseFilePath);
+                            commandLineBuilder.Add("/debug+");
+                            commandLineBuilder.Add("/debug:full");
+                            commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
                         }
                         else
                         {
-                            commandLineBuilder.Append("/debug+ ");
+                            commandLineBuilder.Add("/debug+");
                         }
                     }
                     break;
@@ -357,7 +361,7 @@ namespace CSharp
                 {
                     fileList.AppendFormat("\"{0}\";", file);
                 }
-                commandLineBuilder.AppendFormat("/reference:{0} ", fileList.ToString());
+                commandLineBuilder.Add(System.String.Format("/reference:{0}", fileList.ToString()));
             }
         }
 
@@ -371,13 +375,13 @@ namespace CSharp
                 {
                     fileList.AppendFormat("\"{0}\";", file);
                 }
-                commandLineBuilder.AppendFormat("/addmodule:{0} ", fileList.ToString());
+                commandLineBuilder.Add(System.String.Format("/addmodule:{0}", fileList.ToString()));
             }
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()

@@ -7,19 +7,21 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.StaticLibrary staticLibrary, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
+            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
+            Opus.Core.Target target = node.Target;
+
             NodeData nodeData = new NodeData();
-            nodeData.Configuration = GetQtConfiguration(node.Target);
+            nodeData.Configuration = GetQtConfiguration(target);
             foreach (Opus.Core.DependencyNode childNode in node.Children)
             {
                 NodeData childData = childNode.Data as NodeData;
                 nodeData.Merge(childData);
             }
 
-            C.ArchiverOptionCollection archiverOptionCollection = node.Module.Options as C.ArchiverOptionCollection;
-            C.IArchiverOptions archiverOptions = node.Module.Options as C.IArchiverOptions;
-            Opus.Core.Target target = node.Target;
+            C.ArchiverOptionCollection archiverOptionCollection = staticLibrary.Options as C.ArchiverOptionCollection;
+            C.IArchiverOptions archiverOptions = staticLibrary.Options as C.IArchiverOptions;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (archiverOptions is CommandLineProcessor.ICommandLineSupport)

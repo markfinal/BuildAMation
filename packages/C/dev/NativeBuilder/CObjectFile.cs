@@ -7,7 +7,7 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.ObjectFile objectFile, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.ObjectFile objectFile, out bool success)
         {
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
@@ -22,12 +22,12 @@ namespace NativeBuilder
             Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
             if (!RequiresBuilding(outputFiles, inputFiles))
             {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", objectFile.OwningNode.UniqueModuleName);
                 success = true;
                 return null;
             }
 
-            Opus.Core.Target target = node.Target;
+            Opus.Core.Target target = objectFile.OwningNode.Target;
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 
@@ -61,7 +61,7 @@ namespace NativeBuilder
 
             commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(objectFile.OwningNode, compilerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

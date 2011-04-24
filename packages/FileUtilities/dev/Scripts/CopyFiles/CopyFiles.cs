@@ -108,7 +108,7 @@ namespace FileUtilities
                         Opus.Core.IModule sourceModule = Opus.Core.ModuleUtilities.GetModule(sourceModuleType, incompleteTarget);
                         if (null == sourceModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}", sourceModuleType.FullName, this.GetType().FullName), false);
+                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}' for target '{2}'", sourceModuleType.FullName, this.GetType().FullName, incompleteTarget.ToString()), false);
                         }
 
                         this.SourceOutputFlags = sourceModuleAttribute.OutputFlags;
@@ -151,7 +151,7 @@ namespace FileUtilities
                         destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, incompleteTarget);
                         if (null == destinationModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Can't find destination module of type '{0}' in module '{1}", destinationModuleType.FullName, this.GetType().FullName), false);
+                            throw new Opus.Core.Exception(System.String.Format("Can't find destination module of type '{0}' in module '{1}' for target '{2}'", destinationModuleType.FullName, this.GetType().FullName, incompleteTarget.ToString()), false);
                         }
 
                         this.DirectoryOutputFlags = destinationModuleAttribute.OutputFlags;

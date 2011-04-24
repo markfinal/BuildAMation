@@ -62,8 +62,13 @@ namespace Opus.Core
 
             Log.DebugMessage("Agent '{0}' is running node '{1}'", agent.Name, node.UniqueModuleName);
 
+            if (node.Module.OwningNode != node)
+            {
+                throw new Exception(System.String.Format("Node '{0}' has a module that owns a different node. That should not be possible", node.UniqueModuleName), false);
+            }
+
             System.Reflection.MethodInfo buildFunction = node.BuildFunction;
-            object[] arguments = new object[] { node.Module, node, false };
+            object[] arguments = new object[] { node.Module, false };
             try
             {
                 node.Data = buildFunction.Invoke(builder, arguments);
@@ -71,14 +76,14 @@ namespace Opus.Core
             catch (Core.Exception exception)
             {
                 Log.MessageAll("Build function threw an exception for '{0}' in target '{1}': '{2}'\n{3}", node.UniqueModuleName, node.Target.ToString(), exception.Message, exception.StackTrace);
-                arguments[2] = false;
+                arguments[1] = false;
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
                 Log.MessageAll("Build function threw an exception for '{0}' in target '{1}': '{2}'\n{3}", node.UniqueModuleName, node.Target.ToString(), exception.InnerException.Message, exception.InnerException.StackTrace);
-                arguments[2] = false;
+                arguments[1] = false;
             }
-            bool success = (bool)arguments[2];
+            bool success = (bool)arguments[1];
             agent.Success = success;
             
             if (success)

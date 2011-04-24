@@ -59,10 +59,10 @@ namespace CodeGenTest
             options.SetGeneratedFilePath();
         }
 
-        private static void OutputSourceDirectoryCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputSourceDirectoryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.AppendFormat("{0} ", stringOption.Value);
+            commandLineBuilder.Add(stringOption.Value);
         }
 
         private static void OutputNameSetHandler(object sender, Opus.Core.Option option)
@@ -71,13 +71,13 @@ namespace CodeGenTest
             options.SetGeneratedFilePath();
         }
 
-        private static void OutputNameCommandLine(object sender, System.Text.StringBuilder commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputNameCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.AppendFormat("{0} ", stringOption.Value);
+            commandLineBuilder.Add(stringOption.Value);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(System.Text.StringBuilder commandLineStringBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineStringBuilder, Opus.Core.Target target)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
         }

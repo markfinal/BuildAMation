@@ -84,13 +84,12 @@ namespace Opus.Core
             {
                 throw new Exception("Builder instance not found");
             }
-            System.Reflection.MethodInfo buildFunction = builderInstance.GetType().GetMethod("Build", new System.Type[] { moduleType, typeof(DependencyNode), System.Type.GetType("System.Boolean&") });
+            System.Reflection.MethodInfo buildFunction = builderInstance.GetType().GetMethod("Build", new System.Type[] { moduleType, System.Type.GetType("System.Boolean&") });
             if (null == buildFunction)
             {
-                throw new Exception(System.String.Format("Could not find method 'object {0}.Build({1}, {2}, {3})' for module '{4}'",
+                throw new Exception(System.String.Format("Could not find method 'object {0}.Build({1}, {2})' for module '{3}'",
                                                          builderInstance.GetType().ToString(),
                                                          moduleType.BaseType.ToString(),
-                                                         typeof(DependencyNode).ToString(),
                                                          System.Type.GetType("System.Boolean&").ToString(),
                                                          moduleType.ToString()), false);
             }

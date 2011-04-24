@@ -7,8 +7,9 @@ namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
     {
-        public object Build(CSharp.Assembly assembly, Opus.Core.DependencyNode node, out System.Boolean success)
+        public object Build(CSharp.Assembly assembly, out System.Boolean success)
         {
+            Opus.Core.DependencyNode node = assembly.OwningNode;
             Opus.Core.Target target = node.Target;
             CSharp.OptionCollection options = assembly.Options as CSharp.OptionCollection;
 
@@ -90,7 +91,7 @@ namespace MakeFileBuilder
 
             foreach (string source in sourceFiles)
             {
-                commandLineBuilder.AppendFormat("\"{0}\" ", source);
+                commandLineBuilder.Add(System.String.Format("\"{0}\"", source));
             }
 
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);

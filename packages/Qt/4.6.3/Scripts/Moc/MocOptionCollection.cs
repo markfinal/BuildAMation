@@ -68,7 +68,7 @@ namespace Qt
         private static void MocOutputPathCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.AppendFormat("-o\"{0}\" ", stringOption.Value);
+            commandLineBuilder.Add(System.String.Format("-o\"{0}\"", stringOption.Value));
         }
 
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -76,7 +76,7 @@ namespace Qt
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> directoryCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string directory in directoryCollectionOption.Value)
             {
-                commandLineBuilder.AppendFormat("-I\"{0}\" ", directory);
+                commandLineBuilder.Add(System.String.Format("-I\"{0}\"", directory));
             }
         }
 
@@ -85,7 +85,7 @@ namespace Qt
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesCollectionOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             foreach (string directory in definesCollectionOption.Value)
             {
-                commandLineBuilder.AppendFormat("-D{0} ", directory);
+                commandLineBuilder.Add(System.String.Format("-D{0}", directory));
             }
         }
 
@@ -94,7 +94,7 @@ namespace Qt
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-i ");
+                commandLineBuilder.Add("-i");
             }
         }
 
@@ -103,13 +103,13 @@ namespace Qt
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Append("-nw ");
+                commandLineBuilder.Add("-nw");
             }
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()

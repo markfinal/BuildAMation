@@ -7,26 +7,28 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.Application application, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.Application application, out bool success)
         {
+            Opus.Core.DependencyNode node = application.OwningNode;
             Opus.Core.Target target = node.Target;
+            string moduleName = node.ModuleName;
 
             ProjectData projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
-                if (this.solutionFile.ProjectDictionary.ContainsKey(node.ModuleName))
+                if (this.solutionFile.ProjectDictionary.ContainsKey(moduleName))
                 {
-                    projectData = this.solutionFile.ProjectDictionary[node.ModuleName];
+                    projectData = this.solutionFile.ProjectDictionary[moduleName];
                 }
                 else
                 {
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), node.ModuleName);
+                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
                     projectPathName += ".vcproj";
 
-                    projectData = new ProjectData(node.ModuleName, projectPathName, node.Package.Directory);
+                    projectData = new ProjectData(moduleName, projectPathName, node.Package.Directory);
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
-                    this.solutionFile.ProjectDictionary.Add(node.ModuleName, projectData);
+                    this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
             }
 
@@ -34,7 +36,7 @@ namespace VSSolutionBuilder
             {
                 foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
                 {
-                    if (dependentNode.ModuleName != node.ModuleName)
+                    if (dependentNode.ModuleName != moduleName)
                     {
                         // TODO: want to remove this
                         lock (this.solutionFile.ProjectDictionary)

@@ -7,8 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(Qt.MocFileCollection mocFileCollection, Opus.Core.DependencyNode node, out bool success)
+        public object Build(Qt.MocFileCollection mocFileCollection, out bool success)
         {
+            Opus.Core.DependencyNode node = mocFileCollection.OwningNode;
             Opus.Core.Target target = node.Target;
 
             MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();

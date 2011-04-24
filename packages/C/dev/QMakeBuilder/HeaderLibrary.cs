@@ -7,8 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.HeaderLibrary headerLibrary, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.HeaderLibrary headerLibrary, out bool success)
         {
+            Opus.Core.DependencyNode node = headerLibrary.OwningNode;
+
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(node.Target);
 

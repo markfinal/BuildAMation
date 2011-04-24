@@ -7,7 +7,7 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(FileUtilities.CopyFiles copyFiles, Opus.Core.DependencyNode node, out bool success)
+        public object Build(FileUtilities.CopyFiles copyFiles, out bool success)
         {
             System.Enum sourceOutputPaths = copyFiles.SourceOutputFlags;
             System.Collections.Generic.List<NodeData> sourceFileDataArray = new System.Collections.Generic.List<NodeData>();
@@ -54,14 +54,16 @@ namespace QMakeBuilder
                 destinationDirectory = copyFiles.DestinationDirectory;
             }
 
+            Opus.Core.Target target = copyFiles.OwningNode.Target;
+
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-            string toolExecutablePath = tool.Executable(node.Target);
+            string toolExecutablePath = tool.Executable(target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, node.Target);
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else
             {

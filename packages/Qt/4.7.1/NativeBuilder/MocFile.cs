@@ -7,8 +7,9 @@ namespace NativeBuilder
 {
     public partial class NativeBuilder
     {
-        public object Build(Qt.MocFile mocFile, Opus.Core.DependencyNode node, out System.Boolean success)
+        public object Build(Qt.MocFile mocFile, out System.Boolean success)
         {
+            Opus.Core.DependencyNode node = mocFile.OwningNode;
             Opus.Core.Target target = node.Target;
             Qt.MocTool tool = new Qt.MocTool();
             Qt.MocOptionCollection toolOptions = mocFile.Options as Qt.MocOptionCollection;
@@ -48,7 +49,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Moc options does not support command line translation");
             }
 
-            commandLineBuilder.AppendFormat("\"{0}\"", sourceFilePath);
+            commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, tool, toolExePath, commandLineBuilder);
             success = (0 == exitCode);

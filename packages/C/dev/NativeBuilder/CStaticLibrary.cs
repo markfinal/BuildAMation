@@ -7,8 +7,9 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.StaticLibrary staticLibrary, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
+            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
             Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;

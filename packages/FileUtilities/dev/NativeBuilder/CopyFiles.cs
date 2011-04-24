@@ -7,7 +7,7 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(FileUtilities.CopyFiles copyFiles, Opus.Core.DependencyNode node, out bool success)
+        public object Build(FileUtilities.CopyFiles copyFiles, out bool success)
         {
             System.Enum sourceOutputPaths = copyFiles.SourceOutputFlags;
             Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
@@ -29,11 +29,13 @@ namespace NativeBuilder
                 return null;
             }
 
+            Opus.Core.Target target = copyFiles.OwningNode.Target;
+
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, node.Target);
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
@@ -60,7 +62,7 @@ namespace NativeBuilder
             }
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-            string executablePath = tool.Executable(node.Target);
+            string executablePath = tool.Executable(target);
 
             int returnValue = -1;
             foreach (string sourcePath in sourceFiles)
@@ -70,14 +72,16 @@ namespace NativeBuilder
                 bool requiresBuilding = NativeBuilder.RequiresBuilding(destinationFile, sourcePath);
                 if (!requiresBuilding)
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", copyFiles.OwningNode.UniqueModuleName);
                     returnValue = 0;
                     continue;
                 }
 
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", sourcePath));
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", destinationDirectory));
-                returnValue = CommandLineProcessor.Processor.Execute(node, tool, executablePath, commandLineBuilder);
+                Opus.Core.StringArray thisCommandLineBuilder = new Opus.Core.StringArray(commandLineBuilder);
+
+                thisCommandLineBuilder.Add(System.String.Format("\"{0}\"", sourcePath));
+                thisCommandLineBuilder.Add(System.String.Format("\"{0}\"", destinationDirectory));
+                returnValue = CommandLineProcessor.Processor.Execute(copyFiles.OwningNode, tool, executablePath, thisCommandLineBuilder);
                 if (0 != returnValue)
                 {
                     break;

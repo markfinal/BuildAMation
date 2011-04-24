@@ -7,9 +7,11 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.ObjectFile objectFile, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.ObjectFile objectFile, out bool success)
         {
+            Opus.Core.DependencyNode node = objectFile.OwningNode;
             Opus.Core.Target target = node.Target;
+            string moduleName = node.ModuleName;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
@@ -18,18 +20,18 @@ namespace VSSolutionBuilder
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
-                if (this.solutionFile.ProjectDictionary.ContainsKey(node.ModuleName))
+                if (this.solutionFile.ProjectDictionary.ContainsKey(moduleName))
                 {
-                    projectData = this.solutionFile.ProjectDictionary[node.ModuleName];
+                    projectData = this.solutionFile.ProjectDictionary[moduleName];
                 }
                 else
                 {
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), node.ModuleName);
+                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
                     projectPathName += ".vcproj";
 
-                    projectData = new ProjectData(node.ModuleName, projectPathName, node.Package.Directory);
+                    projectData = new ProjectData(moduleName, projectPathName, node.Package.Directory);
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
-                    this.solutionFile.ProjectDictionary.Add(node.ModuleName, projectData);
+                    this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
             }
 

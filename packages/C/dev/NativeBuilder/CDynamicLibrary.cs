@@ -7,8 +7,9 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.DynamicLibrary dynamicLibrary, Opus.Core.DependencyNode node, out bool success)
+        public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
+            Opus.Core.DependencyNode node = dynamicLibrary.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;

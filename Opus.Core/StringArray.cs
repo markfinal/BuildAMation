@@ -34,6 +34,17 @@ namespace Opus.Core
             }
         }
 
+        public StringArray(StringArray array)
+        {
+            foreach (string item in array)
+            {
+                if (!System.String.IsNullOrEmpty(item))
+                {
+                    this.list.Add(item);
+                }
+            }
+        }
+
         public new void Add(string item)
         {
             if (System.String.IsNullOrEmpty(item))
