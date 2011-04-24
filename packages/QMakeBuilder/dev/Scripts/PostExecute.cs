@@ -1,21 +1,22 @@
 // <copyright file="PostExecute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>QtCreatorBuilder package</summary>
+// <summary>QMakeBuilder package</summary>
 // <author>Mark Final</author>
-namespace QtCreatorBuilder
+namespace QMakeBuilder
 {
-    public sealed partial class QtCreatorBuilder
+    public sealed partial class QMakeBuilder
     {
         public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
         {
-            Opus.Core.Log.DebugMessage("PostExecute for QtCreator");
+            Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
             Opus.Core.PackageInformation mainPackage = Opus.Core.State.PackageInfo[0];
             string fileName = System.String.Format("{0}.pro", mainPackage.FullName);
             string rootDirectory = mainPackage.BuildDirectory;
             string topProPathName = System.IO.Path.Combine(rootDirectory, fileName);
             rootDirectory += System.IO.Path.DirectorySeparatorChar;
+            // generating relative directories does not seem to work if the paths end in a separator... a file seems to be needed
             if (Opus.Core.State.RunningMono)
             {
                 rootDirectory += "monoFix";
