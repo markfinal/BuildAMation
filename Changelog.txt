@@ -1,3 +1,5 @@
+25-Apr-2011 Possible rewrite of the platform detection code. Hopefully this works on all intended platforms.
+
 25-Apr-2011 The Opus command line tool, if provided a response file, now also accepts additional arguments on the command line. This allows extra commands to be tried out without having to modify the response file. There can still only be one response file.
 
 24-Apr-2011 Module Build functions no longer require passing an Opus.Core.DependencyNode argument, since this is accessible via the module's OwningNode field.

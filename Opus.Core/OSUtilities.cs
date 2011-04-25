@@ -3,6 +3,9 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
+
+#define NEW_PLATFORM_DETECTION
+
 namespace Opus.Core
 {
     public static class OSUtilities
@@ -27,8 +30,124 @@ namespace Opus.Core
             }
         }
 
+#if NEW_PLATFORM_DETECTION
+        // based on http://go-mono.com/forums/#nabble-td1549244
+        private static class Platform
+        {
+            [System.Runtime.InteropServices.DllImport("libc")]
+            static extern int uname(System.IntPtr buf);
+
+            static private bool mIsWindows;
+            static private bool mIsMac;
+            public enum OS
+            {
+                Windows,
+                OSX,
+                Unix,
+                unknown
+            };
+            static public OS GetOS()
+            {
+                if (mIsWindows = (System.IO.Path.DirectorySeparatorChar == '\\'))
+                {
+                    return OS.Windows;
+                }
+
+                if (mIsMac = (!mIsWindows && IsRunningOnMac()))
+                {
+                    return OS.OSX;
+                }
+
+                if (!mIsMac && System.Environment.OSVersion.Platform == System.PlatformID.Unix)
+                {
+                    return OS.Unix;
+                }
+
+                return OS.unknown;
+            }
+
+            //From Managed.Windows.Forms/XplatUI
+            static bool IsRunningOnMac()
+            {
+                System.IntPtr buf = System.IntPtr.Zero;
+                try
+                {
+                    buf = System.Runtime.InteropServices.Marshal.AllocHGlobal(8192);
+                    // This is a hacktastic way of getting sysname from uname ()
+                    if (uname(buf) == 0)
+                    {
+                        string os = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(buf);
+                        if ("Darwin" == os)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    if (buf != System.IntPtr.Zero)
+                    {
+                        System.Runtime.InteropServices.Marshal.FreeHGlobal(buf);
+                    }
+                }
+
+                return false;
+            }
+        }
+#endif
+
         public static void SetupPlatform()
         {
+#if NEW_PLATFORM_DETECTION
+            Platform.OS os = Platform.GetOS();
+            switch (os)
+            {
+                case Platform.OS.Windows:
+                    {
+                        if (CheckFor64BitOS)
+                        {
+                            State.Add<EPlatform>("System", "Platform", EPlatform.Win64);
+                        }
+                        else
+                        {
+                            State.Add<EPlatform>("System", "Platform", EPlatform.Win32);
+                        }
+                    }
+                    break;
+
+                case Platform.OS.Unix:
+                    {
+                        if (CheckFor64BitOS)
+                        {
+                            State.Add<EPlatform>("System", "Platform", EPlatform.Unix64);
+                        }
+                        else
+                        {
+                            State.Add<EPlatform>("System", "Platform", EPlatform.Unix32);
+                        }
+                    }
+                    break;
+
+                case Platform.OS.OSX:
+                    {
+                        if (CheckFor64BitOS)
+                        {
+                            State.Add<EPlatform>("System", "Platform", EPlatform.OSX64);
+                        }
+                        else
+                        {
+                            State.Add<EPlatform>("System", "Platform", EPlatform.OSX32);
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new Exception("Unrecognized platform");
+            }
+#else
             switch (System.Environment.OSVersion.Platform)
             {
                 case System.PlatformID.Win32NT:
@@ -76,6 +195,7 @@ namespace Opus.Core
                 default:
                     throw new Exception("Unrecognized platform");
             }
+#endif
         }
 
         public static bool IsWindows(EPlatform platform)
