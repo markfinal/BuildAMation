@@ -27,12 +27,17 @@ namespace Opus
         /// <param name="args">Command line arguments.</param>
         public Application(string[] args)
         {
+            Opus.Core.StringArray argList = new Opus.Core.StringArray(args);
+
             // handle response file
-            if (1 == args.Length)
+            string responseFileArgument = null;
+            foreach (string arg in argList)
             {
-                if (args[0].StartsWith("@"))
+                if (arg.StartsWith("@"))
                 {
-                    string responseFile = args[0].Substring(1);
+                    responseFileArgument = arg;
+
+                    string responseFile = arg.Substring(1);
                     if (!System.IO.File.Exists(responseFile))
                     {
                         throw new Core.Exception(System.String.Format("Response file '{0}' does not exist", responseFile));
@@ -42,34 +47,22 @@ namespace Opus
                     {
                         string responseFileArguments = responseFileReader.ReadToEnd();
                         string[] arguments = responseFileArguments.Split(new string[] { " ", "\r\n", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-                        int commentedArgumentCount = 0;
                         foreach (string argument in arguments)
                         {
-                            if (argument.StartsWith("#"))
+                            if (!argument.StartsWith("#"))
                             {
-                                ++commentedArgumentCount;
+                                argList.Add(argument);
                             }
-                        }
-                        if (commentedArgumentCount > 0)
-                        {
-                            string[] uncommentedArguments = new string[arguments.Length - commentedArgumentCount];
-                            int index = 0;
-                            foreach (string argument in arguments)
-                            {
-                                if (!argument.StartsWith("#"))
-                                {
-                                    uncommentedArguments[index] = argument;
-                                    ++index;
-                                }
-                            }
-                            args = uncommentedArguments;
-                        }
-                        else
-                        {
-                            args = arguments;
                         }
                     }
+
+                    // there can be only one response file
+                    break;
                 }
+            }
+            if (null != responseFileArgument)
+            {
+                argList.Remove(responseFileArgument);
             }
 
             var actionAttributeArray = System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(Opus.Core.RegisterActionAttribute), false);
@@ -84,7 +77,7 @@ namespace Opus
                 }
             }
 
-            foreach (string command in args)
+            foreach (string command in argList)
             {
                 string[] splitCommand = command.Split('=');
                 string commandName = splitCommand[0];
@@ -98,7 +91,7 @@ namespace Opus
                 Core.Log.DebugMessage("Added command '{0}' with value '{1}'", commandName, commandValue);
                 if (commandName.StartsWith("@"))
                 {
-                    throw new Core.Exception("Response files must be the only argument", false);
+                    throw new Core.Exception("There can be only one response file provided", false);
                 }
 
                 bool foundAction = false;
