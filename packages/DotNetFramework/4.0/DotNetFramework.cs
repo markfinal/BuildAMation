@@ -24,7 +24,7 @@ namespace DotNetFramework
         {
             get
             {
-                if (Opus.Core.State.Platform == Opus.Core.EPlatform.Windows)
+                if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {
                     string toolsPath = null;
                     using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\4.0"))
@@ -33,6 +33,10 @@ namespace DotNetFramework
                     }
 
                     return toolsPath;
+                }
+                else if (Opus.Core.OSUtilities.IsUnixHosting)
+                {
+                    return "/usr/bin";
                 }
                 else
                 {
