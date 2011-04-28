@@ -134,6 +134,15 @@ namespace Opus.Core
             }
         }
 
+        public bool IsValid
+        {
+            get
+            {
+                bool isValid = (null != this.absolutePath);
+                return isValid;
+            }
+        }
+
         public string AbsolutePath
         {
             get
