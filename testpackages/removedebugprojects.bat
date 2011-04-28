@@ -5,12 +5,18 @@ PAUSE
 GOTO :EOF
 
 :FIND_PACKAGE_VERSIONS
-FOR /D %%B IN (%1\*) DO CALL :DELETE_OPUS_DIRECTORIES %%B
+FOR /D %%B IN (%1\*) DO CALL :DELETE_OPUS_DIRECTORY %%B
+FOR /D %%B IN (%1\*) DO CALL :DELETE_BUILD_DIRECTORY %%B
 GOTO :EOF
 
-:DELETE_OPUS_DIRECTORIES
+:DELETE_OPUS_DIRECTORY
 IF EXIST %1\Opus (
     ECHO Deleting '%1\Opus' directory and all children
     RMDIR /S /Q %1\Opus
 )
-GOTO :EOF
+
+:DELETE_BUILD_DIRECTORY
+IF EXIST %1\build (
+    ECHO Deleting '%1\build' directory and all children
+    RMDIR /S /Q %1\build
+)
