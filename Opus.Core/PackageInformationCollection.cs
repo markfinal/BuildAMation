@@ -32,30 +32,48 @@ namespace Opus.Core
             {
                 if (0 == System.String.Compare(package.Name, item.Name, ignoreCase))
                 {
-                    int versionComparison = System.String.Compare(package.Version, item.Version, ignoreCase);
-                    if (0 == versionComparison)
+                    // are both versions numbers?
+                    double currentVersion;
+                    double incomingVersion;
+                    if (double.TryParse(package.Version, out currentVersion) && double.TryParse(item.Version, out incomingVersion))
                     {
-                        if (0 == System.String.Compare(package.Root, item.Root, ignoreCase))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Root, item.Root));
-                        }
-                    }
-                    else
-                    {
-                        if (0 == System.String.Compare(item.Version, "dev") || versionComparison < 0)
+                        if (currentVersion < incomingVersion)
                         {
                             Log.DebugMessage("Package '{0}': version '{1}' replaces '{2}'", package.Name, item.Version, package.Version);
                             this.list.Remove(package);
                             this.list.Add(item);
-                            return true;
+                        }
+
+                        return true;
+                    }
+                    else
+                    {
+                        // not numbers, try a string comparison
+                        int versionComparison = System.String.Compare(package.Version, item.Version, ignoreCase);
+                        if (0 == versionComparison)
+                        {
+                            if (0 == System.String.Compare(package.Root, item.Root, ignoreCase))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Root, item.Root));
+                            }
                         }
                         else
                         {
-                            throw new Exception(System.String.Format("Package '{0}' with version '{1}' already specified; version '{2}' is older", package.Name, package.Version, item.Version));
+                            if (0 == System.String.Compare(item.Version, "dev") || versionComparison < 0)
+                            {
+                                Log.DebugMessage("Package '{0}': version '{1}' replaces '{2}'", package.Name, item.Version, package.Version);
+                                this.list.Remove(package);
+                                this.list.Add(item);
+                                return true;
+                            }
+                            else
+                            {
+                                throw new Exception(System.String.Format("Package '{0}' with version '{1}' already specified; version '{2}' is older", package.Name, package.Version, item.Version));
+                            }
                         }
                     }
                 }
