@@ -9,6 +9,30 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder : Opus.Core.IBuilder
     {
+        private static System.Type GetProjectClassType()
+        {
+            Opus.Core.PackageInformation vcPackage = Opus.Core.State.PackageInfo["VisualC"];
+            if (null == vcPackage)
+            {
+                throw new Opus.Core.Exception("No VisualC package");
+            }
+
+            System.Type projectClassType = null;
+            switch (vcPackage.Version)
+            {
+                case "8.0":
+                case "9.0":
+                    projectClassType = typeof(VCProject);
+                    break;
+
+                case "10.0":
+                    projectClassType = typeof(MSBuildProject);
+                    break;
+            }
+
+            return projectClassType;
+        }
+
         private static string CapitalizeFirstLetter(string word)
         {
             if (System.String.IsNullOrEmpty(word))

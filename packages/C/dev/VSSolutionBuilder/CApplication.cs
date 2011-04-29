@@ -13,7 +13,7 @@ namespace VSSolutionBuilder
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
-            ProjectData projectData = null;
+            IProject projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
@@ -24,9 +24,11 @@ namespace VSSolutionBuilder
                 else
                 {
                     string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += ".vcproj";
+                    projectPathName += VisualC.Project.Extension;
 
-                    projectData = new ProjectData(moduleName, projectPathName, node.Package.Directory);
+                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
+
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
@@ -43,7 +45,7 @@ namespace VSSolutionBuilder
                         {
                             if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
                             {
-                                ProjectData dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                                IProject dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
                                 projectData.DependentProjects.Add(dependentProject);
                             }
                         }
@@ -79,12 +81,13 @@ namespace VSSolutionBuilder
                     Opus.Core.FileCollection headerFileCollection = field.GetValue(application) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        lock (projectData.HeaderFiles)
+                        ICProject cProject = projectData as ICProject;
+                        lock (cProject.HeaderFiles)
                         {
-                            if (!projectData.HeaderFiles.Contains(headerPath))
+                            if (!cProject.HeaderFiles.Contains(headerPath))
                             {
                                 ProjectFile headerFile = new ProjectFile(headerPath);
-                                projectData.HeaderFiles.Add(headerFile);
+                                cProject.HeaderFiles.Add(headerFile);
                             }
                         }
                     }

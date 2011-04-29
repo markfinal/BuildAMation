@@ -10,8 +10,8 @@ namespace VSSolutionBuilder
         public SolutionFile(string pathName)
         {
             this.PathName = pathName;
-            this.ProjectDictionary = new System.Collections.Generic.Dictionary<string, ProjectData>();
-            this.ProjectConfigurations = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<ProjectData>>();
+            this.ProjectDictionary = new System.Collections.Generic.Dictionary<string, IProject>();
+            this.ProjectConfigurations = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IProject>>();
         }
 
         public string PathName
@@ -20,14 +20,14 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<string, ProjectData> ProjectDictionary
+        public System.Collections.Generic.Dictionary<string, IProject> ProjectDictionary
         {
             get;
             private set;
         }
 
         //TODO: not sure if this is necessary
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<ProjectData>> ProjectConfigurations
+        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IProject>> ProjectConfigurations
         {
             get;
             private set;
@@ -35,9 +35,9 @@ namespace VSSolutionBuilder
 
         public void ResolveSourceFileConfigurationExclusions()
         {
-            foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+            foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
             {
-                ProjectData projectData = project.Value;
+                IProject projectData = project.Value;
                 foreach (ProjectFile sourceFile in projectData.SourceFiles)
                 {
                     foreach (ProjectConfiguration configuration in projectData.Configurations)
@@ -59,7 +59,7 @@ namespace VSSolutionBuilder
         public void Serialize()
         {
             // serialize each vcproj
-            foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+            foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
             {
                 project.Value.Serialize();
             }
@@ -72,7 +72,7 @@ namespace VSSolutionBuilder
                 System.Uri solutionLocationUri = new System.Uri(this.PathName, System.UriKind.RelativeOrAbsolute);
 
                 // projects
-                foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+                foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
                 {
                     System.Uri projectLocationUri = new System.Uri(project.Value.PathName, System.UriKind.RelativeOrAbsolute);
                     System.Uri relativeProjectLocationUri = solutionLocationUri.MakeRelativeUri(projectLocationUri);
@@ -86,7 +86,7 @@ namespace VSSolutionBuilder
                     if (project.Value.DependentProjects.Count > 0)
                     {
                         textWriter.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-                        foreach (ProjectData dependentProject in project.Value.DependentProjects)
+                        foreach (IProject dependentProject in project.Value.DependentProjects)
                         {
                             textWriter.WriteLine("\t\t{0} = {0}", dependentProject.Guid.ToString("B").ToUpper());
                         }
@@ -101,7 +101,7 @@ namespace VSSolutionBuilder
                 {
                     // solution configuration (presolution)
                     textWriter.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
-                    foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<ProjectData>> configuration in this.ProjectConfigurations)
+                    foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<IProject>> configuration in this.ProjectConfigurations)
                     {
                         textWriter.WriteLine("\t\t{0} = {1}", configuration.Key, configuration.Key); // TODO: fixme
                     }
@@ -109,10 +109,10 @@ namespace VSSolutionBuilder
 
                     // project configuration platforms (post solution)
                     textWriter.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-                    foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+                    foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
                     {
                         // TODO: fixme
-                        ProjectData projectData = project.Value;
+                        IProject projectData = project.Value;
 
                         foreach (ProjectConfiguration configurations in projectData.Configurations)
                         {

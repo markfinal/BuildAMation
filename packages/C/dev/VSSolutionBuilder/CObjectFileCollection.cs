@@ -20,7 +20,7 @@ namespace VSSolutionBuilder
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
-            ProjectData projectData = null;
+            IProject projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
@@ -31,9 +31,11 @@ namespace VSSolutionBuilder
                 else
                 {
                     string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += ".vcproj";
+                    projectPathName += VisualC.Project.Extension;
 
-                    projectData = new ProjectData(moduleName, projectPathName, node.Package.Directory);
+                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
+
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
@@ -46,7 +48,7 @@ namespace VSSolutionBuilder
             {
                 if (!this.solutionFile.ProjectConfigurations.ContainsKey(configurationName))
                 {
-                    this.solutionFile.ProjectConfigurations.Add(configurationName, new System.Collections.Generic.List<ProjectData>());
+                    this.solutionFile.ProjectConfigurations.Add(configurationName, new System.Collections.Generic.List<IProject>());
                 }
             }
             this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);

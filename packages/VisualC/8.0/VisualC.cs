@@ -75,5 +75,13 @@ namespace VisualC
                 return "8.00";
             }
         }
+
+        public static string Extension
+        {
+            get
+            {
+                return ".vcproj";
+            }
+        }
     }
 }
