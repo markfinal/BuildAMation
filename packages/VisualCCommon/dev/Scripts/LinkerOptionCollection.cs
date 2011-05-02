@@ -439,11 +439,21 @@ namespace VisualCCommon
             {
                 Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> standardLibraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
                 System.Text.StringBuilder standardLibraryPaths = new System.Text.StringBuilder();
-                // this stops any other libraries from being inherited
-                standardLibraryPaths.Append("$(NOINHERIT) ");
-                foreach (string standardLibraryPath in standardLibraryPathsOption.Value)
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                 {
-                    standardLibraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                    // this stops any other libraries from being inherited
+                    standardLibraryPaths.Append("$(NOINHERIT) ");
+                    foreach (string standardLibraryPath in standardLibraryPathsOption.Value)
+                    {
+                        standardLibraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                    }
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+                {
+                    foreach (string standardLibraryPath in standardLibraryPathsOption.Value)
+                    {
+                        standardLibraryPaths.Append(System.String.Format("{0};", standardLibraryPath));
+                    }
                 }
                 VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                 dictionary.Add("AdditionalDependencies", standardLibraryPaths.ToString());
@@ -460,11 +470,21 @@ namespace VisualCCommon
             LinkerOptionCollection options = sender as LinkerOptionCollection;
             Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             System.Text.StringBuilder libraryPaths = new System.Text.StringBuilder();
-            // this stops any other libraries from being inherited
-            libraryPaths.Append("$(NOINHERIT) ");
-            foreach (string standardLibraryPath in libraryPathsOption.Value)
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
-                libraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                // this stops any other libraries from being inherited
+                libraryPaths.Append("$(NOINHERIT) ");
+                foreach (string standardLibraryPath in libraryPathsOption.Value)
+                {
+                    libraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                }
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                foreach (string standardLibraryPath in libraryPathsOption.Value)
+                {
+                    libraryPaths.Append(System.String.Format("{0};", standardLibraryPath));
+                }
             }
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             dictionary.Add("AdditionalDependencies", libraryPaths.ToString());
