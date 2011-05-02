@@ -70,5 +70,16 @@ namespace VSSolutionBuilder
 
             return sourceFilesFilterElement;
         }
+
+        public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri, string xmlNamespace)
+        {
+            System.Xml.XmlElement itemGroup = document.CreateElement("", "ItemGroup", xmlNamespace);
+            foreach (ProjectFile file in this.list)
+            {
+                file.SerializeMSBuild(document, itemGroup, projectUri, childElementName, xmlNamespace);
+            }
+
+            return itemGroup;
+        }
     }
 }

@@ -78,5 +78,13 @@ namespace VSSolutionBuilder
                 this.Serialize(document, directoryElement, projectUri, splitFirDirs, ++index);
             }
         }
+
+        public void SerializeMSBuild(System.Xml.XmlDocument document, System.Xml.XmlElement parentElement, System.Uri projectUri, string name, string xmlNamespace)
+        {
+            System.Xml.XmlElement fileElement = document.CreateElement("", name, xmlNamespace);
+            string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+            fileElement.SetAttribute("Include", relativePath);
+            parentElement.AppendChild(fileElement);
+        }
     }
 }

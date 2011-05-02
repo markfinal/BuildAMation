@@ -121,22 +121,46 @@ namespace VSSolutionBuilder
                 projectElement.SetAttribute("DefaultTargets", "Build");
                 projectElement.SetAttribute("ToolsVersion", "4.0");
 
+                // import project props
+                // TODO: check whether order is important for these within the file, or if it is sufficient just to have them present
+                {
+                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
+                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.Default.props");
+                    projectElement.AppendChild(importElement);
+                }
+                {
+                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
+                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.props");
+                    projectElement.AppendChild(importElement);
+                }
+                {
+                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
+                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.targets");
+                    projectElement.AppendChild(importElement);
+                }
+
                 // project globals (guid, etc)
-                System.Xml.XmlElement globalsElement = xmlDocument.CreateElement("", "PropertyGroup", xmlNamespace);
-                globalsElement.SetAttribute("Label", "Globals");
-                System.Xml.XmlElement projectGuidElement = xmlDocument.CreateElement("", "ProjectGuid", xmlNamespace);
-                projectGuidElement.InnerText = this.ProjectGuid.ToString("B").ToUpper();
-                globalsElement.AppendChild(projectGuidElement);
-                projectElement.AppendChild(globalsElement);
+                {
+                    System.Xml.XmlElement globalsElement = xmlDocument.CreateElement("", "PropertyGroup", xmlNamespace);
+                    globalsElement.SetAttribute("Label", "Globals");
+                    System.Xml.XmlElement projectGuidElement = xmlDocument.CreateElement("", "ProjectGuid", xmlNamespace);
+                    projectGuidElement.InnerText = this.ProjectGuid.ToString("B").ToUpper();
+                    globalsElement.AppendChild(projectGuidElement);
+                    projectElement.AppendChild(globalsElement);
+                }
 
                 // configurations
-                System.Xml.XmlElement configurationsElement = xmlDocument.CreateElement("", "ItemGroup", xmlNamespace);
-                configurationsElement.SetAttribute("Label", "ProjectConfigurations");
-                foreach (ProjectConfiguration configuration in this.ProjectConfigurations)
+                this.ProjectConfigurations.SerializeMSBuild(xmlDocument, projectElement, projectLocationUri, xmlNamespace);
+
+                // source files
+                if (this.SourceFileCollection.Count > 0)
                 {
-                    configurationsElement.AppendChild(configuration.SerializeMSBuild(xmlDocument, projectLocationUri, xmlNamespace));
+                    projectElement.AppendChild(this.SourceFileCollection.SerializeMSBuild(xmlDocument, "ClCompile", projectLocationUri, this.PackageUri, xmlNamespace));
                 }
-                projectElement.AppendChild(configurationsElement);
+                if (this.HeaderFileCollection.Count > 0)
+                {
+                    projectElement.AppendChild(this.SourceFileCollection.SerializeMSBuild(xmlDocument, "ClInclude", projectLocationUri, this.PackageUri, xmlNamespace));
+                }
 
                 xmlDocument.AppendChild(projectElement);
             }

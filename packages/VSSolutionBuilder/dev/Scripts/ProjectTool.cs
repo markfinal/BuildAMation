@@ -138,5 +138,47 @@ namespace VSSolutionBuilder
 
             return toolElement;
         }
+
+        public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, ProjectConfiguration configuration, System.Uri projectUri, string xmlNamespace)
+        {
+            string projectName = configuration.Project.Name;
+            string outputDirectory = configuration.OutputDirectory;
+            string intermediateDirectory = configuration.IntermediateDirectory;
+
+            string toolElementName = null;
+            switch (this.Name)
+            {
+                case "VCCLCompilerTool":
+                    toolElementName = "ClCompile";
+                    break;
+
+                case "VCLibrarianTool":
+                    toolElementName = "Lib";
+                    break;
+
+                case "VCLinkerTool":
+                    toolElementName = "Linker";
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unsupported name");
+            }
+
+            System.Xml.XmlElement toolElement = document.CreateElement("", toolElementName, xmlNamespace);
+            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            {
+                if ("Name" != attribute.Key)
+                {
+                    System.Xml.XmlElement item = document.CreateElement("", attribute.Key, xmlNamespace);
+                    string value = attribute.Value;
+                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
+
+                    item.InnerText = value;
+                    toolElement.AppendChild(item);
+                }
+            } 
+
+            return toolElement;
+        }
     }
 }

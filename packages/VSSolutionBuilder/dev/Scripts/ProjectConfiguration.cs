@@ -161,6 +161,12 @@ namespace VSSolutionBuilder
             return configurationElement;
         }
 
+        public string[] ConfigurationPlatform()
+        {
+            string[] split = this.Name.Split('|');
+            return split;
+        }
+
         public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, System.Uri projectUri, string xmlNamespace)
         {
             if (this.Type == EProjectConfigurationType.Undefined)

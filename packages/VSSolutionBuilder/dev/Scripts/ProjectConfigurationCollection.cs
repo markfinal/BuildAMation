@@ -47,5 +47,65 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception(System.String.Format("There is no ProjectConfiguration called '{0}'", configurationName));
             }
         }
+
+        public void SerializeMSBuild(System.Xml.XmlDocument document, System.Xml.XmlElement projectElement, System.Uri projectUri, string xmlNamespace)
+        {
+            // ProjectConfigurations item group
+            {
+                System.Xml.XmlElement configurationsElement = document.CreateElement("", "ItemGroup", xmlNamespace);
+                configurationsElement.SetAttribute("Label", "ProjectConfigurations");
+                foreach (ProjectConfiguration configuration in this.list)
+                {
+                    configurationsElement.AppendChild(configuration.SerializeMSBuild(document, projectUri, xmlNamespace));
+                }
+                projectElement.AppendChild(configurationsElement);
+            }
+
+            // Configuration property group
+            foreach (ProjectConfiguration configuration in this.list)
+            {
+                string[] split = configuration.ConfigurationPlatform();
+
+                {
+                    System.Xml.XmlElement configurationElement = document.CreateElement("", "PropertyGroup", xmlNamespace);
+                    configurationElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
+                    configurationElement.SetAttribute("Label", "Configuration");
+                    {
+                        System.Xml.XmlElement configurationTypeElement = document.CreateElement("", "ConfigurationType", xmlNamespace);
+                        configurationTypeElement.InnerText = configuration.Type.ToString();
+                        configurationElement.AppendChild(configurationTypeElement);
+                    }
+                    {
+                        System.Xml.XmlElement characterSetElement = document.CreateElement("", "CharacterSet", xmlNamespace);
+                        characterSetElement.InnerText = configuration.CharacterSet.ToString();
+                        configurationElement.AppendChild(characterSetElement);
+                    }
+                    projectElement.AppendChild(configurationElement);
+                }
+
+                {
+                    System.Xml.XmlElement dirElement = document.CreateElement("", "PropertyGroup", xmlNamespace);
+                    {
+                        System.Xml.XmlElement outDirElement = document.CreateElement("", "OutDir", xmlNamespace);
+                        outDirElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
+                        outDirElement.InnerText = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
+                        dirElement.AppendChild(outDirElement);
+                    }
+                    {
+                        System.Xml.XmlElement intDirElement = document.CreateElement("", "IntDir", xmlNamespace);
+                        intDirElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
+                        intDirElement.InnerText = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
+                        dirElement.AppendChild(intDirElement);
+                    }
+                    projectElement.AppendChild(dirElement);
+                }
+            }
+
+            // tools
+            foreach (ProjectConfiguration configuration in this.list)
+            {
+                projectElement.AppendChild(configuration.Tools.SerializeMSBuild(document, configuration, projectUri, xmlNamespace));
+            }
+        }
     }
 }
