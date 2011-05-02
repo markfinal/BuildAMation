@@ -88,13 +88,23 @@ namespace VSSolutionBuilder
                     {
                         System.Xml.XmlElement outDirElement = document.CreateElement("", "OutDir", xmlNamespace);
                         outDirElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
-                        outDirElement.InnerText = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
+                        string outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
+                        if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                        {
+                            outputDir += System.IO.Path.DirectorySeparatorChar;
+                        }
+                        outDirElement.InnerText = outputDir;
                         dirElement.AppendChild(outDirElement);
                     }
                     {
                         System.Xml.XmlElement intDirElement = document.CreateElement("", "IntDir", xmlNamespace);
                         intDirElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
-                        intDirElement.InnerText = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
+                        string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
+                        if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                        {
+                            intermediateDir += System.IO.Path.DirectorySeparatorChar;
+                        }
+                        intDirElement.InnerText = intermediateDir;
                         dirElement.AppendChild(intDirElement);
                     }
                     projectElement.AppendChild(dirElement);
