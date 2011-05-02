@@ -116,28 +116,12 @@ namespace VSSolutionBuilder
 
                 string xmlNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
+                // NOTE: .vcxproj files are read IN ORDER, TOP DOWN, so order matters
+
                 // project root element
                 System.Xml.XmlElement projectElement = xmlDocument.CreateElement("", "Project", xmlNamespace);
                 projectElement.SetAttribute("DefaultTargets", "Build");
                 projectElement.SetAttribute("ToolsVersion", "4.0");
-
-                // import project props
-                // TODO: check whether order is important for these within the file, or if it is sufficient just to have them present
-                {
-                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
-                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.Default.props");
-                    projectElement.AppendChild(importElement);
-                }
-                {
-                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
-                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.props");
-                    projectElement.AppendChild(importElement);
-                }
-                {
-                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
-                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.targets");
-                    projectElement.AppendChild(importElement);
-                }
 
                 // project globals (guid, etc)
                 {
@@ -147,6 +131,13 @@ namespace VSSolutionBuilder
                     projectGuidElement.InnerText = this.ProjectGuid.ToString("B").ToUpper();
                     globalsElement.AppendChild(projectGuidElement);
                     projectElement.AppendChild(globalsElement);
+                }
+
+                // import default project props
+                {
+                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
+                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.Default.props");
+                    projectElement.AppendChild(importElement);
                 }
 
                 // configurations
@@ -160,6 +151,13 @@ namespace VSSolutionBuilder
                 if (this.HeaderFileCollection.Count > 0)
                 {
                     projectElement.AppendChild(this.SourceFileCollection.SerializeMSBuild(xmlDocument, "ClInclude", projectLocationUri, this.PackageUri, xmlNamespace));
+                }
+
+                // import targets
+                {
+                    System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);
+                    importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.targets");
+                    projectElement.AppendChild(importElement);
                 }
 
                 xmlDocument.AppendChild(projectElement);
