@@ -153,6 +153,30 @@ namespace VSSolutionBuilder
                     projectElement.AppendChild(this.SourceFileCollection.SerializeMSBuild(xmlDocument, "ClInclude", projectLocationUri, this.PackageUri, xmlNamespace));
                 }
 
+                // project dependencies
+                // these were in the .sln file pre MSBuild
+                if (this.DependentProjectList.Count > 0)
+                {
+                    System.Xml.XmlElement dependentProjectItemGroup = xmlDocument.CreateElement("", "ItemGroup", xmlNamespace);
+                    foreach (IProject dependentProject in this.DependentProjectList)
+                    {
+                        System.Xml.XmlElement projectReference = xmlDocument.CreateElement("", "ProjectReference", xmlNamespace);
+                        string relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentProject.PathName, this.PathName);
+                        projectReference.SetAttribute("Include", relativePath);
+
+                        System.Xml.XmlElement projectGuid = xmlDocument.CreateElement("", "Project", xmlNamespace);
+                        projectGuid.InnerText = dependentProject.Guid.ToString("B");
+                        projectReference.AppendChild(projectGuid);
+
+                        System.Xml.XmlElement referenceOutputAssembly = xmlDocument.CreateElement("", "ReferenceOutputAssembly", xmlNamespace);
+                        referenceOutputAssembly.InnerText = "false";
+                        projectReference.AppendChild(referenceOutputAssembly);
+
+                        dependentProjectItemGroup.AppendChild(projectReference);
+                    }
+                    projectElement.AppendChild(dependentProjectItemGroup);
+                }
+
                 // import targets
                 {
                     System.Xml.XmlElement importElement = xmlDocument.CreateElement("", "Import", xmlNamespace);

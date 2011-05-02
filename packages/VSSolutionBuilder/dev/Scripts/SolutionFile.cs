@@ -83,6 +83,7 @@ namespace VSSolutionBuilder
                                          relativeProjectLocationUri.ToString(),
                                          project.Value.Guid.ToString("B").ToUpper());
 
+                    // TODO: only write this for VCPROJ, not MSBUILD
                     if (project.Value.DependentProjects.Count > 0)
                     {
                         textWriter.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
