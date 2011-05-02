@@ -55,7 +55,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary ExceptionHandlerVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary ExceptionHandlerVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler>;

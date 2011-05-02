@@ -157,7 +157,7 @@ namespace VisualCCommon
             commandLineSupport.ToCommandLineArguments(commandLineBuilder, target);
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary ToolchainOptionCollectionVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary ToolchainOptionCollectionVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
             VisualStudioProcessor.IVisualStudioSupport visualStudioSupport = toolchainOptions.Value as VisualStudioProcessor.IVisualStudioSupport;
@@ -173,7 +173,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary IncludePathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary IncludePathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             System.Text.StringBuilder includePaths = new System.Text.StringBuilder();
@@ -195,7 +195,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary DefinesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary DefinesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             System.Text.StringBuilder defines = new System.Text.StringBuilder();
@@ -254,24 +254,54 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<C.ECompilerOutput> processOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
-            switch (processOption.Value)
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
-                case C.ECompilerOutput.CompileOnly:
-                case C.ECompilerOutput.Preprocess:
-                    {
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-                        dictionary.Add("GeneratePreprocessedFile", processOption.Value.ToString("D"));
-                        CCompilerOptionCollection options = sender as CCompilerOptionCollection;
-                        dictionary.Add("ObjectFile", options.ObjectFilePath);
-                        return dictionary;
-                    }
+                switch (processOption.Value)
+                {
+                    case C.ECompilerOutput.CompileOnly:
+                    case C.ECompilerOutput.Preprocess:
+                        {
+                            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+                            dictionary.Add("GeneratePreprocessedFile", processOption.Value.ToString("D"));
+                            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+                            dictionary.Add("ObjectFile", options.ObjectFilePath);
+                            return dictionary;
+                        }
 
-                default:
-                    throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
+                }
             }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+                switch (processOption.Value)
+                {
+                    case C.ECompilerOutput.CompileOnly:
+                        {
+                            dictionary.Add("PreprocessToFile", "false");
+                            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+                            dictionary.Add("ObjectFileName", options.ObjectFilePath);
+                        }
+                        break;
+
+                    case C.ECompilerOutput.Preprocess:
+                        {
+                            dictionary.Add("PreprocessToFile", "true");
+                            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+                            dictionary.Add("ObjectFileName", options.ObjectFilePath);
+                        }
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
+                }
+                return dictionary;
+            }
+            return null;
         }
 
         private static void OptimizationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -304,25 +334,49 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary OptimizationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary OptimizationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<C.EOptimization> optimizationOption = option as Opus.Core.ValueTypeOption<C.EOptimization>;
-            switch (optimizationOption.Value)
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
-                case C.EOptimization.Off:
-                case C.EOptimization.Size:
-                case C.EOptimization.Speed:
-                case C.EOptimization.Full:
-                case C.EOptimization.Custom:
-                    {
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-                        dictionary.Add("Optimization", optimizationOption.Value.ToString("D"));
-                        return dictionary;
-                    }
+                switch (optimizationOption.Value)
+                {
+                    case C.EOptimization.Off:
+                    case C.EOptimization.Size:
+                    case C.EOptimization.Speed:
+                    case C.EOptimization.Full:
+                    case C.EOptimization.Custom:
+                        {
+                            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+                            dictionary.Add("Optimization", optimizationOption.Value.ToString("D"));
+                            return dictionary;
+                        }
 
-                default:
-                    throw new Opus.Core.Exception("Unrecognized optimization option");
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized optimization option");
+                }
             }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+                switch (optimizationOption.Value)
+                {
+                    case C.EOptimization.Off:
+                        dictionary.Add("Optimization", "Disabled");
+                        break;
+
+                    case C.EOptimization.Size:
+                    case C.EOptimization.Speed:
+                    case C.EOptimization.Full:
+                    case C.EOptimization.Custom:
+                        throw new Opus.Core.Exception("TODO");
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized optimization option");
+                }
+                return dictionary;
+            }
+            return null;
         }
 
         private static void CustomOptimizationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -334,7 +388,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary CustomOptimizationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary CustomOptimizationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             // TODO;
             //Core.ReferenceTypeOption<string> customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
@@ -350,11 +404,18 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary WarningsAsErrorsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary WarningsAsErrorsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("WarnAsError", warningsAsErrorsOption.Value.ToString().ToLower());
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("WarnAsError", warningsAsErrorsOption.Value.ToString().ToLower());
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                dictionary.Add("TreatWarningAsError", warningsAsErrorsOption.Value.ToString().ToLower());
+            }
             return dictionary;
         }
 
@@ -367,7 +428,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary IgnoreStandardIncludePathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary IgnoreStandardIncludePathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> includeStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -397,23 +458,49 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary TargetLanguageVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary TargetLanguageVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<C.ETargetLanguage> targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
-            switch (targetLanguageOption.Value)
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
-                case C.ETargetLanguage.Default:
-                case C.ETargetLanguage.C:
-                case C.ETargetLanguage.CPlusPlus:
-                    {
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-                        dictionary.Add("CompileAs", targetLanguageOption.Value.ToString("D"));
-                        return dictionary;
-                    }
+                switch (targetLanguageOption.Value)
+                {
+                    case C.ETargetLanguage.Default:
+                    case C.ETargetLanguage.C:
+                    case C.ETargetLanguage.CPlusPlus:
+                        {
+                            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+                            dictionary.Add("CompileAs", targetLanguageOption.Value.ToString("D"));
+                            return dictionary;
+                        }
 
-                default:
-                    throw new Opus.Core.Exception("Unrecognized target language option");
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized target language option");
+                }
             }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+                switch (targetLanguageOption.Value)
+                {
+                    case C.ETargetLanguage.Default:
+                        dictionary.Add("CompileAs", "Default");
+                        break;
+
+                    case C.ETargetLanguage.C:
+                        dictionary.Add("CompileAs", "CompileAsC");
+                        break;
+
+                    case C.ETargetLanguage.CPlusPlus:
+                        dictionary.Add("CompileAs", "CompileAsC++");
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized target language option");
+                }
+                return dictionary;
+            }
+            return null;
         }
 
         private static void NoLogoCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -425,7 +512,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -446,7 +533,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary MinimalRebuildVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary MinimalRebuildVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
             Opus.Core.ValueTypeOption<bool> minimalRebuildOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -472,11 +559,18 @@ namespace VisualCCommon
             commandLineBuilder.Add(System.String.Format("/W{0}", (int)enumOption.Value));
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary WarningLevelVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary WarningLevelVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<EWarningLevel> enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("WarningLevel", enumOption.Value.ToString("D"));
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("WarningLevel", enumOption.Value.ToString("D"));
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                dictionary.Add("WarningLevel", System.String.Format("Level{0}", enumOption.Value.ToString("D")));
+            }
             return dictionary;
         }
 
@@ -503,14 +597,39 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary BrowseInformationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary BrowseInformationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<EBrowseInformation> enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("BrowseInformation", enumOption.Value.ToString("D"));
             C.CompilerOptionCollection options = sender as C.CompilerOptionCollection;
             // the trailing directory separator is important, or unexpected rebuilds occur
-            dictionary.Add("BrowseInformationFile", options.OutputDirectoryPath + "\\");
+            string browseDir = options.OutputDirectoryPath + "\\";
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("BrowseInformation", enumOption.Value.ToString("D"));
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                // TODO: needs looking into
+                switch (enumOption.Value)
+                {
+                    case EBrowseInformation.None:
+                        dictionary.Add("BrowseInformation", "false");
+                        break;
+
+                    case EBrowseInformation.Full:
+                        dictionary.Add("BrowseInformation", "true");
+                        break;
+
+                    case EBrowseInformation.NoLocalSymbols:
+                        dictionary.Add("BrowseInformation", "true");
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized EBrowseInformation option");
+                }
+            }
+            dictionary.Add("BrowseInformationFile", browseDir);
             return dictionary;
         }
 
@@ -523,7 +642,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary StringPoolingVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary StringPoolingVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -540,7 +659,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary DisableLanguageExtensionsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary DisableLanguageExtensionsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -561,7 +680,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary ForceConformanceInForLoopScopeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary ForceConformanceInForLoopScopeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -578,7 +697,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary ShowIncludesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary ShowIncludesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -595,7 +714,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary UseFullPathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary UseFullPathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -632,11 +751,32 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary CompileAsManagedVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary CompileAsManagedVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<EManagedCompilation> enumOption = option as Opus.Core.ValueTypeOption<EManagedCompilation>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("CompileAsManaged", enumOption.Value.ToString("D"));
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("CompileAsManaged", enumOption.Value.ToString("D"));
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                switch (enumOption.Value)
+                {
+                    case EManagedCompilation.NoCLR:
+                        dictionary.Add("CompileAsManaged", "false");
+                        break;
+
+                    case EManagedCompilation.CLR:
+                    case EManagedCompilation.PureCLR:
+                    case EManagedCompilation.SafeCLR:
+                    case EManagedCompilation.OldSyntaxCLR:
+                        throw new Opus.Core.Exception("TODO");
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized EManagedCompilation option");
+                }
+            }
             return dictionary;
         }
 
@@ -712,7 +852,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary DebugTypeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary DebugTypeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
             string attributeName = "DebugInformationFormat";
@@ -720,20 +860,39 @@ namespace VisualCCommon
             {
                 VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                 Opus.Core.ValueTypeOption<EDebugType> enumOption = option as Opus.Core.ValueTypeOption<EDebugType>;
-                switch (options.DebugType)
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                 {
-                    case EDebugType.Embedded:
-                        dictionary.Add(attributeName, options.DebugType.ToString("D"));
-                        break;
+                    switch (options.DebugType)
+                    {
+                        case EDebugType.Embedded:
+                            dictionary.Add(attributeName, options.DebugType.ToString("D"));
+                            break;
 
-                    case EDebugType.ProgramDatabase:
-                    case EDebugType.ProgramDatabaseEditAndContinue:
-                        dictionary.Add(attributeName, options.DebugType.ToString("D"));
-                        dictionary.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                        break;
+                        case EDebugType.ProgramDatabase:
+                        case EDebugType.ProgramDatabaseEditAndContinue:
+                            dictionary.Add(attributeName, options.DebugType.ToString("D"));
+                            dictionary.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
+                            break;
 
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
+                        default:
+                            throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
+                    }
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+                {
+                    switch (options.DebugType)
+                    {
+                        case EDebugType.Embedded:
+                            dictionary.Add("DebugInformationFormat", "OldStyle");
+                            break;
+
+                        case EDebugType.ProgramDatabase:
+                        case EDebugType.ProgramDatabaseEditAndContinue:
+                            throw new Opus.Core.Exception("TODO");
+
+                        default:
+                            throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
+                    }
                 }
                 return dictionary;
             }
@@ -761,7 +920,18 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target);
+            VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+            switch (vsTarget)
+            {
+                case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
+                case VisualStudioProcessor.EVisualStudioTarget.MSBUILD:
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio target, '{0}'", vsTarget));
+            }
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;
         }
     }

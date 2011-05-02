@@ -7,6 +7,14 @@ namespace VisualCCommon
 {
     public abstract class Toolchain : C.Toolchain
     {
+        public virtual VisualStudioProcessor.EVisualStudioTarget VisualStudioTarget
+        {
+            get
+            {
+                return VisualStudioProcessor.EVisualStudioTarget.VCPROJ;
+            }
+        }
+
         public abstract string LibPath(Opus.Core.Target target);
 
         public override string ObjectFileExtension

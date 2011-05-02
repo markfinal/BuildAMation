@@ -7,7 +7,7 @@ namespace VisualStudioProcessor
 {
     public static class ToVisualStudioAttributes
     {
-        public static VisualStudioProcessor.ToolAttributeDictionary Execute(object sender, Opus.Core.Target target)
+        public static VisualStudioProcessor.ToolAttributeDictionary Execute(object sender, Opus.Core.Target target, EVisualStudioTarget vsTarget)
         {
             Opus.Core.BaseOptionCollection optionCollection = sender as Opus.Core.BaseOptionCollection;
 
@@ -35,7 +35,7 @@ namespace VisualStudioProcessor
                             throw new Opus.Core.Exception(System.String.Format("Delegate for '{0}' should be static", optionName));
                         }
 
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target);
+                        VisualStudioProcessor.ToolAttributeDictionary dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);
                         if (null != dictionary)
                         {
                             optionsDictionary.Merge(dictionary);

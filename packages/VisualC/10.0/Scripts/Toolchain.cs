@@ -14,6 +14,14 @@ namespace VisualC
         private string lib32Folder;
         private string lib64Folder;
 
+        public override VisualStudioProcessor.EVisualStudioTarget VisualStudioTarget
+        {
+            get
+            {
+                return VisualStudioProcessor.EVisualStudioTarget.MSBUILD;
+            }
+        }
+
         public Toolchain(Opus.Core.Target target)
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
