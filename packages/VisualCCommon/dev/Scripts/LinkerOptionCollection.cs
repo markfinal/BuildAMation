@@ -257,7 +257,14 @@ namespace VisualCCommon
                 case C.ESubsystem.Windows:
                     {
                         VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-                        dictionary.Add("SubSystem", subSystemOption.Value.ToString("D"));
+                        if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+                        {
+                            dictionary.Add("SubSystem", subSystemOption.Value.ToString("D"));
+                        }
+                        else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+                        {
+                            dictionary.Add("SubSystem", subSystemOption.Value.ToString());
+                        }
                         return dictionary;
                     }
 
