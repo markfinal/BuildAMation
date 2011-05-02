@@ -157,7 +157,7 @@ namespace VSSolutionBuilder
                     break;
 
                 case "VCLinkerTool":
-                    toolElementName = "Linker";
+                    toolElementName = "Link";
                     break;
 
                 default:
