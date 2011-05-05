@@ -7,11 +7,11 @@ namespace VSSolutionBuilder
 {
     public class MSBuildProjectSerializable : MSBuildBaseElement
     {
-        public MSBuildProjectSerializable(System.Xml.XmlDocument document)
+        public MSBuildProjectSerializable(System.Xml.XmlDocument document, string toolsVersion)
             : base(document, "Project")
         {
             this.XmlElement.SetAttribute("DefaultTargets", "Build");
-            this.XmlElement.SetAttribute("ToolsVersion", "4.0");
+            this.XmlElement.SetAttribute("ToolsVersion", toolsVersion);
             this.XmlDocument.AppendChild(this.XmlElement);
         }
 

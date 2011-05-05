@@ -34,7 +34,7 @@ namespace VSSolutionBuilder
                 toolchainPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
                 if (null != toolchainPackage)
                 {
-                    return typeof(MSBuildProject);
+                    return typeof(CSBuildProject);
                 }
                 else
                 {
