@@ -64,10 +64,18 @@ namespace VSSolutionBuilder
                 project.Value.Serialize();
             }
 
+            System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+            object SolutionInstance = System.Activator.CreateInstance(solutionType);
+
             // serialize the sln
             using (System.IO.TextWriter textWriter = new System.IO.StreamWriter(this.PathName))
             {
+#if true
+                System.Reflection.PropertyInfo HeaderProperty = solutionType.GetProperty("Header");
+                textWriter.Write(HeaderProperty.GetGetMethod().Invoke(SolutionInstance, null));
+#else
                 textWriter.Write(VisualC.Solution.Header);
+#endif
 
                 System.Uri solutionLocationUri = new System.Uri(this.PathName, System.UriKind.RelativeOrAbsolute);
 
@@ -77,8 +85,14 @@ namespace VSSolutionBuilder
                     System.Uri projectLocationUri = new System.Uri(project.Value.PathName, System.UriKind.RelativeOrAbsolute);
                     System.Uri relativeProjectLocationUri = solutionLocationUri.MakeRelativeUri(projectLocationUri);
 
+#if true
+                    System.Reflection.PropertyInfo GuidProperty = solutionType.GetProperty("ProjectGuid");
+                    System.Guid projectTypeGuid = (System.Guid)GuidProperty.GetGetMethod().Invoke(SolutionInstance, null);
+#else
+                    System.Guid projectTypeGuid = VisualC.Project.Guid;
+#endif
                     textWriter.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-                                         VisualC.Project.Guid.ToString("B").ToUpper(),
+                                         projectTypeGuid.ToString("B").ToUpper(),
                                          project.Value.Name,
                                          relativeProjectLocationUri.ToString(),
                                          project.Value.Guid.ToString("B").ToUpper());
@@ -131,6 +145,8 @@ namespace VSSolutionBuilder
                 }
                 textWriter.WriteLine("EndGlobal");
             }
+
+            SolutionInstance = null;
 
             Opus.Core.Log.Info("Solution file written to '{0}'", this.PathName);
         }

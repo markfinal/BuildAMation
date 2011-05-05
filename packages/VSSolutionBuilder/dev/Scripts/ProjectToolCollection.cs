@@ -57,6 +57,19 @@ namespace VSSolutionBuilder
             }
         }
 
+#if true
+        public void SerializeMSBuild(MSBuildProjectSerializable project, ProjectConfiguration configuration, System.Uri projectUri)
+        {
+            MSBuildItemDefinitionGroup toolItemGroup = project.CreateItemDefinitionGroup();
+            string[] split = configuration.ConfigurationPlatform();
+            toolItemGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+
+            foreach (ProjectTool tool in this.list)
+            {
+                tool.SerializeMSBuild(toolItemGroup, configuration, projectUri);
+            }
+        }
+#else
         public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, ProjectConfiguration configuration, System.Uri projectUri, string xmlNamespace)
         {
             System.Xml.XmlElement itemDefinitionGroup = document.CreateElement("", "ItemDefinitionGroup", xmlNamespace);
@@ -64,9 +77,10 @@ namespace VSSolutionBuilder
             itemDefinitionGroup.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
             foreach (ProjectTool tool in this.list)
             {
-                itemDefinitionGroup.AppendChild(tool.SerializeMSBuild(document, configuration, projectUri, xmlNamespace));
+                tool.SerializeMSBuild(document, itemDefinitionGroup, configuration, projectUri, xmlNamespace);
             }
             return itemDefinitionGroup;
         }
+#endif
     }
 }

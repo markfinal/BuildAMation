@@ -139,7 +139,8 @@ namespace VSSolutionBuilder
             return toolElement;
         }
 
-        public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, ProjectConfiguration configuration, System.Uri projectUri, string xmlNamespace)
+#if true
+        public void SerializeMSBuild(MSBuildItemDefinitionGroup itemDefGroup, ProjectConfiguration configuration, System.Uri projectUri)
         {
             string projectName = configuration.Project.Name;
             string outputDirectory = configuration.OutputDirectory;
@@ -160,11 +161,63 @@ namespace VSSolutionBuilder
                     toolElementName = "Link";
                     break;
 
+                case "VCPostBuildEventTool":
+                    // TODO
+                    break;
+
+                case "VCSCompiler":
+                    // TODO: might have to remove this
+                    break;
+
                 default:
-                    throw new Opus.Core.Exception("Unsupported name");
+                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
             }
 
-            System.Xml.XmlElement toolElement = document.CreateElement("", toolElementName, xmlNamespace);
+            MSBuildItem toolItem = itemDefGroup.CreateItem(toolElementName);
+            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            {
+                if ("Name" != attribute.Key)
+                {
+                    string value = attribute.Value;
+                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                    toolItem.CreateMetaData(attribute.Key, value);
+                }
+            }
+        }
+#else
+        public void SerializeMSBuild(System.Xml.XmlDocument document, System.Xml.XmlElement parentElement, ProjectConfiguration configuration, System.Uri projectUri, string xmlNamespace)
+        {
+            string projectName = configuration.Project.Name;
+            string outputDirectory = configuration.OutputDirectory;
+            string intermediateDirectory = configuration.IntermediateDirectory;
+
+            string toolElementName = null;
+            switch (this.Name)
+            {
+                case "VCCLCompilerTool":
+                    toolElementName = "ClCompile";
+                    break;
+
+                case "VCLibrarianTool":
+                    toolElementName = "Lib";
+                    break;
+
+                case "VCLinkerTool":
+                    toolElementName = "Link";
+                    break;
+
+                case "VCPostBuildEventTool":
+                    // TODO
+                    break;
+
+                case "VCSCompiler":
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
+            }
+
+            System.Xml.XmlElement toolElement = (null != toolElementName) ? document.CreateElement("", toolElementName, xmlNamespace) : parentElement;
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
                 if ("Name" != attribute.Key)
@@ -176,9 +229,13 @@ namespace VSSolutionBuilder
                     item.InnerText = value;
                     toolElement.AppendChild(item);
                 }
-            } 
+            }
 
-            return toolElement;
+            if (null != toolElementName)
+            {
+                parentElement.AppendChild(toolElement);
+            }
         }
+#endif
     }
 }

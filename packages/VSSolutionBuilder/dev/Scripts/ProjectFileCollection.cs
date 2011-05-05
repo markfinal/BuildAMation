@@ -71,6 +71,16 @@ namespace VSSolutionBuilder
             return sourceFilesFilterElement;
         }
 
+#if true
+        public void SerializeMSBuild(MSBuildProjectSerializable project, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri)
+        {
+            MSBuildItemGroup fileItemGroup = project.CreateItemGroup();
+            foreach (ProjectFile file in this.list)
+            {
+                file.SerializeMSBuild(fileItemGroup, projectUri, childElementName);
+            }
+        }
+#else
         public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri, string xmlNamespace)
         {
             System.Xml.XmlElement itemGroup = document.CreateElement("", "ItemGroup", xmlNamespace);
@@ -81,5 +91,6 @@ namespace VSSolutionBuilder
 
             return itemGroup;
         }
+#endif
     }
 }
