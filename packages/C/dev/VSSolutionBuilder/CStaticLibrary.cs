@@ -23,8 +23,13 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
+                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+
                     string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += VisualC.Project.Extension;
+                    projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
@@ -41,7 +46,28 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    configuration = new ProjectConfiguration(configurationName, (staticLibrary.Options as C.IArchiverOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
+                    C.IArchiverOptions archiverOptions = staticLibrary.Options as C.IArchiverOptions;
+                    C.IToolchainOptions toolchainOptions = archiverOptions.ToolchainOptionCollection as C.IToolchainOptions;
+                    EProjectCharacterSet characterSet;
+                    switch (toolchainOptions.CharacterSet)
+                    {
+                        case C.ECharacterSet.NotSet:
+                            characterSet = EProjectCharacterSet.NotSet;
+                            break;
+
+                        case C.ECharacterSet.Unicode:
+                            characterSet = EProjectCharacterSet.UniCode;
+                            break;
+
+                        case C.ECharacterSet.MultiByte:
+                            characterSet = EProjectCharacterSet.MultiByte;
+                            break;
+
+                        default:
+                            characterSet = EProjectCharacterSet.Undefined;
+                            break;
+                    }
+                    configuration = new ProjectConfiguration(configurationName, characterSet, projectData);
                     projectData.Configurations.Add(configuration);
                 }
                 else

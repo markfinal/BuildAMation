@@ -12,6 +12,7 @@ namespace VSSolutionBuilder
         {
             this.XmlElement.SetAttribute("DefaultTargets", "Build");
             this.XmlElement.SetAttribute("ToolsVersion", "4.0");
+            this.XmlDocument.AppendChild(this.XmlElement);
         }
 
         public MSBuildPropertyGroup CreatePropertyGroup()

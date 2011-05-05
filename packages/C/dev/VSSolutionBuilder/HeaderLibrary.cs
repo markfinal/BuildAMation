@@ -23,8 +23,13 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
+                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+
                     string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += VisualC.Project.Extension;
+                    projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
@@ -42,7 +47,7 @@ namespace VSSolutionBuilder
                 if (!projectData.Configurations.Contains(configurationName))
                 {
                     // arbitrary character set, as nothing is built
-                    configuration = new ProjectConfiguration(configurationName, C.ECharacterSet.NotSet, projectData);
+                    configuration = new ProjectConfiguration(configurationName, EProjectCharacterSet.NotSet, projectData);
                     projectData.Configurations.Add(configuration);
                 }
                 else

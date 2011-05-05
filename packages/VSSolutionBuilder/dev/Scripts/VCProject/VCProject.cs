@@ -120,8 +120,8 @@ namespace VSSolutionBuilder
 #if true
                 System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                 object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                System.Reflection.MethodInfo ProjectVersionMethod = solutionType.GetMethod("ProjectVersion");
-                vsProjectElement.SetAttribute("Version", ProjectVersionMethod.Invoke(SolutionInstance, null) as string);
+                System.Reflection.PropertyInfo ProjectVersionProperty = solutionType.GetProperty("ProjectVersion");
+                vsProjectElement.SetAttribute("Version", ProjectVersionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string);
                 SolutionInstance = null;
 #else
                 vsProjectElement.SetAttribute("Version", VisualC.Project.Version);

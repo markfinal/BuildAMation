@@ -14,6 +14,17 @@ namespace VisualC
         private string lib32Folder;
         private string lib64Folder;
 
+        static Toolchain()
+        {
+            if (Opus.Core.State.HasCategory("VSSolutionBuilder"))
+            {
+                throw new Opus.Core.Exception("VS Solution Builder state has already been set");
+            }
+
+            Opus.Core.State.AddCategory("VSSolutionBuilder");
+            Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
+        }
+
         public Toolchain(Opus.Core.Target target)
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
@@ -29,7 +40,7 @@ namespace VisualC
 
             if (null == this.installPath)
             {
-                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VisualStudio\Sxs\VC7"))
+                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VisualStudio\Sxs\VC7"))
                 {
                     if (null == key)
                     {

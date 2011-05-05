@@ -13,23 +13,11 @@
 
 namespace VisualC
 {
-    public static class Solution
+    public class Solution
     {
-        public static string Header
-        {
-            get
-            {
-                System.Text.StringBuilder header = new System.Text.StringBuilder();
-                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 9.00");
-                header.AppendLine("# Visual C++ Express 2005");
-                return header.ToString();
-            }
-        }
-    }
+        private static System.Guid ProjectTypeGuid;
 
-    public static class Project
-    {
-        static Project()
+        static Solution()
         {
             using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VisualStudio\8.0\Projects"))
             {
@@ -48,7 +36,7 @@ namespace VisualC
                         {
                             if (projectExtension == "vcproj")
                             {
-                                Guid = new System.Guid(subKeyName);
+                                ProjectTypeGuid = new System.Guid(subKeyName);
                                 break;
                             }
                         }
@@ -56,19 +44,34 @@ namespace VisualC
                 }
             }
 
-            if (null == Guid)
+            // Note: do this instead of (null == Guid) to satify the Mono compiler
+            // see CS0472, and something about struct comparisos
+            if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
             {
                 throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2005");
             }
         }
 
-        public static System.Guid Guid
+        public string Header
         {
-            get;
-            private set;
+            get
+            {
+                System.Text.StringBuilder header = new System.Text.StringBuilder();
+                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 9.00");
+                header.AppendLine("# Visual C++ Express 2005");
+                return header.ToString();
+            }
         }
 
-        public static string Version
+        public System.Guid ProjectGuid
+        {
+            get
+            {
+                return ProjectTypeGuid;
+            }
+        }
+
+        public string ProjectVersion
         {
             get
             {
@@ -76,7 +79,7 @@ namespace VisualC
             }
         }
 
-        public static string Extension
+        public string ProjectExtension
         {
             get
             {

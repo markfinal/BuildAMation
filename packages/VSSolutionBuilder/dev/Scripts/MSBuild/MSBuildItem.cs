@@ -12,7 +12,11 @@ namespace VSSolutionBuilder
                            string include)
             : base(document, name)
         {
-            this.XmlElement.SetAttribute("Includes", include);
+            // null is only valid when used in an item definition group
+            if (null != include)
+            {
+                this.XmlElement.SetAttribute("Include", include);
+            }
         }
 
         public MSBuildMetaData CreateMetaData(string name, string value)
