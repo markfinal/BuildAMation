@@ -7,9 +7,80 @@
 
 namespace DotNetFramework
 {
+    public class Solution
+    {
+        private static System.Guid ProjectTypeGuid;
+
+        static Solution()
+        {
+            // TODO: this path is for VCExpress
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VCExpress\9.0\Projects"))
+            {
+                if (null == key)
+                {
+                    throw new Opus.Core.Exception("VisualStudio Express was not installed");
+                }
+
+                string[] subKeyNames = key.GetSubKeyNames();
+                foreach (string subKeyName in subKeyNames)
+                {
+                    using (Microsoft.Win32.RegistryKey subKey = key.OpenSubKey(subKeyName))
+                    {
+                        string projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
+                        if (null != projectExtension)
+                        {
+                            if (projectExtension == "csproj")
+                            {
+                                ProjectTypeGuid = new System.Guid(subKeyName);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Note: do this instead of (null == Guid) to satify the Mono compiler
+            // see CS0472, and something about struct comparisos
+            if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
+            {
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2008");
+            }
+        }
+
+        public string Header
+        {
+            get
+            {
+                System.Text.StringBuilder header = new System.Text.StringBuilder();
+                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 9.00");
+                header.AppendLine("# Visual C# Express 2005");
+                return header.ToString();
+            }
+        }
+
+        public System.Guid ProjectGuid
+        {
+            get
+            {
+                return ProjectTypeGuid;
+            }
+        }
+    }
+
     // Define module classes here
     public class DotNet
     {
+        static DotNet()
+        {
+            if (Opus.Core.State.HasCategory("VSSolutionBuilder"))
+            {
+                throw new Opus.Core.Exception("VS Solution Builder state has already been set");
+            }
+
+            Opus.Core.State.AddCategory("VSSolutionBuilder");
+            Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(DotNetFramework.Solution));
+        }
+
         public static string VersionString
         {
             get

@@ -11,26 +11,36 @@ namespace VSSolutionBuilder
     {
         private static System.Type GetProjectClassType()
         {
-            Opus.Core.PackageInformation vcPackage = Opus.Core.State.PackageInfo["VisualC"];
-            if (null == vcPackage)
+            Opus.Core.PackageInformation toolchainPackage = Opus.Core.State.PackageInfo["VisualC"];
+            if (null != toolchainPackage)
             {
-                throw new Opus.Core.Exception("No VisualC package");
-            }
+                System.Type projectClassType = null;
+                switch (toolchainPackage.Version)
+                {
+                    case "8.0":
+                    case "9.0":
+                        projectClassType = typeof(VCProject);
+                        break;
 
-            System.Type projectClassType = null;
-            switch (vcPackage.Version)
+                    case "10.0":
+                        projectClassType = typeof(MSBuildProject);
+                        break;
+                }
+
+                return projectClassType;
+            }
+            else
             {
-                case "8.0":
-                case "9.0":
-                    projectClassType = typeof(VCProject);
-                    break;
-
-                case "10.0":
-                    projectClassType = typeof(MSBuildProject);
-                    break;
+                toolchainPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
+                if (null != toolchainPackage)
+                {
+                    return typeof(MSBuildProject);
+                }
+                else
+                {
+                    throw new Opus.Core.Exception("Unable to locate a suitable toolchain package");
+                }
             }
-
-            return projectClassType;
         }
 
         private static string CapitalizeFirstLetter(string word)
