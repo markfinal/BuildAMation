@@ -10,7 +10,6 @@ namespace VSSolutionBuilder
         private EProjectConfigurationType type;
         private EProjectCharacterSet characterSet = EProjectCharacterSet.Undefined;
 
-#if true
         public ProjectConfiguration(string name, EProjectCharacterSet characterSet, IProject project)
         {
             this.Name = name;
@@ -19,25 +18,6 @@ namespace VSSolutionBuilder
             this.Tools = new ProjectToolCollection();
             this.Project = project;
         }
-#else
-        public ProjectConfiguration(string name, C.IToolchainOptions optionCollection, IProject project)
-        {
-            this.Name = name;
-            this.type = EProjectConfigurationType.Undefined;
-            this.CharacterSet = (EProjectCharacterSet)optionCollection.CharacterSet;
-            this.Tools = new ProjectToolCollection();
-            this.Project = project;
-        }
-
-        public ProjectConfiguration(string name, C.ECharacterSet characterSet, IProject project)
-        {
-            this.Name = name;
-            this.type = EProjectConfigurationType.Undefined;
-            this.CharacterSet = (EProjectCharacterSet)characterSet;
-            this.Tools = new ProjectToolCollection();
-            this.Project = project;
-        }
-#endif
 
         public string Name
         {
@@ -178,7 +158,6 @@ namespace VSSolutionBuilder
             return split;
         }
 
-#if true
         public void SerializeMSBuild(MSBuildItemGroup configurationGroup, System.Uri projectUri)
         {
             if (this.Type == EProjectConfigurationType.Undefined)
@@ -197,33 +176,5 @@ namespace VSSolutionBuilder
             projectConfiguration.CreateMetaData("Configuration", split[0]);
             projectConfiguration.CreateMetaData("Platform", split[1]);
         }
-#else
-        public System.Xml.XmlElement SerializeMSBuild(System.Xml.XmlDocument document, System.Uri projectUri, string xmlNamespace)
-        {
-            if (this.Type == EProjectConfigurationType.Undefined)
-            {
-                throw new Opus.Core.Exception("Project type is undefined");
-            }
-            if (this.CharacterSet == EProjectCharacterSet.Undefined)
-            {
-                throw new Opus.Core.Exception("Project character set is undefined");
-            }
-
-            System.Xml.XmlElement projectConfigurationElement = document.CreateElement("", "ProjectConfiguration", xmlNamespace);
-
-            projectConfigurationElement.SetAttribute("Include", this.Name);
-            string[] split = this.Name.Split('|');
-
-            System.Xml.XmlElement configurationElement = document.CreateElement("", "Configuration", xmlNamespace);
-            configurationElement.InnerText = split[0];
-            projectConfigurationElement.AppendChild(configurationElement);
-
-            System.Xml.XmlElement platformElement = document.CreateElement("", "Platform", xmlNamespace);
-            platformElement.InnerText = split[1];
-            projectConfigurationElement.AppendChild(platformElement);
-
-            return projectConfigurationElement;
-        }
-#endif
     }
 }

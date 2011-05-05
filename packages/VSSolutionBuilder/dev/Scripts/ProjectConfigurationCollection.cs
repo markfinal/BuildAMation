@@ -48,7 +48,6 @@ namespace VSSolutionBuilder
             }
         }
 
-#if true
         public void SerializeMSBuild(MSBuildProjectSerializable project, System.Uri projectUri)
         {
             // ProjectConfigurations item group
@@ -111,93 +110,5 @@ namespace VSSolutionBuilder
                 configuration.Tools.SerializeMSBuild(project, configuration, projectUri);
             }
         }
-#else
-        public void SerializeMSBuild(System.Xml.XmlDocument document, System.Xml.XmlElement projectElement, System.Uri projectUri, string xmlNamespace)
-        {
-            // ProjectConfigurations item group
-            {
-                System.Xml.XmlElement configurationsElement = document.CreateElement("", "ItemGroup", xmlNamespace);
-                configurationsElement.SetAttribute("Label", "ProjectConfigurations");
-                foreach (ProjectConfiguration configuration in this.list)
-                {
-                    configurationsElement.AppendChild(configuration.SerializeMSBuild(document, projectUri, xmlNamespace));
-                }
-                projectElement.AppendChild(configurationsElement);
-            }
-
-            // configuration type and character set
-            foreach (ProjectConfiguration configuration in this.list)
-            {
-                string[] split = configuration.ConfigurationPlatform();
-
-                {
-                    System.Xml.XmlElement configurationElement = document.CreateElement("", "PropertyGroup", xmlNamespace);
-                    configurationElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
-                    configurationElement.SetAttribute("Label", "Configuration");
-                    {
-                        System.Xml.XmlElement configurationTypeElement = document.CreateElement("", "ConfigurationType", xmlNamespace);
-                        configurationTypeElement.InnerText = configuration.Type.ToString();
-                        configurationElement.AppendChild(configurationTypeElement);
-                    }
-                    {
-                        System.Xml.XmlElement characterSetElement = document.CreateElement("", "CharacterSet", xmlNamespace);
-                        characterSetElement.InnerText = configuration.CharacterSet.ToString();
-                        configurationElement.AppendChild(characterSetElement);
-                    }
-                    projectElement.AppendChild(configurationElement);
-                }
-            }
-
-            // import property sheets AFTER the configuration types
-            {
-                System.Xml.XmlElement importElement = document.CreateElement("", "Import", xmlNamespace);
-                importElement.SetAttribute("Project", @"$(VCTargetsPath)\Microsoft.Cpp.props");
-                projectElement.AppendChild(importElement);
-            }
-
-            // output and intermediate directories
-            foreach (ProjectConfiguration configuration in this.list)
-            {
-                string[] split = configuration.ConfigurationPlatform();
-
-                System.Xml.XmlElement dirElement = document.CreateElement("", "PropertyGroup", xmlNamespace);
-                {
-                    System.Xml.XmlElement projectFileVersion = document.CreateElement("", "_ProjectFileVersion", xmlNamespace);
-                    projectFileVersion.InnerText = "10.0.40219.1"; // TODO and this means what?
-                    dirElement.AppendChild(projectFileVersion);
-                }
-                {
-                    System.Xml.XmlElement outDirElement = document.CreateElement("", "OutDir", xmlNamespace);
-                    outDirElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
-                    string outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
-                    if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                    {
-                        outputDir += System.IO.Path.DirectorySeparatorChar;
-                    }
-                    outDirElement.InnerText = outputDir;
-                    dirElement.AppendChild(outDirElement);
-                }
-                if (null != configuration.IntermediateDirectory)
-                {
-                    System.Xml.XmlElement intDirElement = document.CreateElement("", "IntDir", xmlNamespace);
-                    intDirElement.SetAttribute("Condition", System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]));
-                    string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
-                    if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                    {
-                        intermediateDir += System.IO.Path.DirectorySeparatorChar;
-                    }
-                    intDirElement.InnerText = intermediateDir;
-                    dirElement.AppendChild(intDirElement);
-                }
-                projectElement.AppendChild(dirElement);
-            }
-
-            // tools
-            foreach (ProjectConfiguration configuration in this.list)
-            {
-                projectElement.AppendChild(configuration.Tools.SerializeMSBuild(document, configuration, projectUri, xmlNamespace));
-            }
-        }
-#endif
     }
 }

@@ -139,7 +139,6 @@ namespace VSSolutionBuilder
             return toolElement;
         }
 
-#if true
         public void SerializeMSBuild(MSBuildItemDefinitionGroup itemDefGroup, ProjectConfiguration configuration, System.Uri projectUri)
         {
             string projectName = configuration.Project.Name;
@@ -184,58 +183,5 @@ namespace VSSolutionBuilder
                 }
             }
         }
-#else
-        public void SerializeMSBuild(System.Xml.XmlDocument document, System.Xml.XmlElement parentElement, ProjectConfiguration configuration, System.Uri projectUri, string xmlNamespace)
-        {
-            string projectName = configuration.Project.Name;
-            string outputDirectory = configuration.OutputDirectory;
-            string intermediateDirectory = configuration.IntermediateDirectory;
-
-            string toolElementName = null;
-            switch (this.Name)
-            {
-                case "VCCLCompilerTool":
-                    toolElementName = "ClCompile";
-                    break;
-
-                case "VCLibrarianTool":
-                    toolElementName = "Lib";
-                    break;
-
-                case "VCLinkerTool":
-                    toolElementName = "Link";
-                    break;
-
-                case "VCPostBuildEventTool":
-                    // TODO
-                    break;
-
-                case "VCSCompiler":
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
-            }
-
-            System.Xml.XmlElement toolElement = (null != toolElementName) ? document.CreateElement("", toolElementName, xmlNamespace) : parentElement;
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
-            {
-                if ("Name" != attribute.Key)
-                {
-                    System.Xml.XmlElement item = document.CreateElement("", attribute.Key, xmlNamespace);
-                    string value = attribute.Value;
-                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
-
-                    item.InnerText = value;
-                    toolElement.AppendChild(item);
-                }
-            }
-
-            if (null != toolElementName)
-            {
-                parentElement.AppendChild(toolElement);
-            }
-        }
-#endif
     }
 }
