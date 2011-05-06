@@ -148,7 +148,7 @@ namespace VSSolutionBuilder
                     {
                         string relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentProject.PathName, this.PathName);
                         MSBuildItem projectReference = dependencyItemGroup.CreateItem("ProjectReference", relativePath);
-                        projectReference.CreateMetaData("Project", dependentProject.Guid.ToString("B"));
+                        projectReference.CreateMetaData("Project", dependentProject.Guid.ToString("B").ToUpper());
                         projectReference.CreateMetaData("ReferenceOutputAssembly", "false");
                     }
                 }
