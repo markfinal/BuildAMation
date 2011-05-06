@@ -19,11 +19,12 @@ namespace VisualC
 
         static Solution()
         {
+            // TODO: this path is for VCExpress - what about the professional version?
             using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VisualStudio\8.0\Projects"))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("VisualStudio 2005 was not installed");
+                    throw new Opus.Core.Exception("VisualStudio C++ Express 2005 was not installed");
                 }
 
                 string[] subKeyNames = key.GetSubKeyNames();
@@ -44,12 +45,19 @@ namespace VisualC
                 }
             }
 
+            if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
+            {
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010");
+            }
+
+#if false
             // Note: do this instead of (null == Guid) to satify the Mono compiler
-            // see CS0472, and something about struct comparisos
+            // see CS0472, and something about struct comparisons
             if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
             {
                 throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2005");
             }
+#endif
         }
 
         public string Header
