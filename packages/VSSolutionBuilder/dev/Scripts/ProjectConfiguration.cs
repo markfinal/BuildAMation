@@ -191,7 +191,7 @@ namespace VSSolutionBuilder
             MSBuildPropertyGroup configurationGroup = project.CreatePropertyGroup();
 
             string[] split = this.Name.Split('|');
-            configurationGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)' == '{0}|{1}'", split[0], split[1]);
+            configurationGroup.Condition = System.String.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", split[0], split[1]);
 
             configurationGroup.CreateProperty("OutputPath", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
 
