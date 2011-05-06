@@ -254,19 +254,19 @@ namespace CSharp
             switch (enumOption.Value)
             {
                 case EPlatform.X86:
-                    dictionary.Add("Platform", "x86");
+                    dictionary.Add("PlatformTarget", "x86");
                     break;
 
                 case EPlatform.X64:
-                    dictionary.Add("Platform", "x64");
+                    dictionary.Add("PlatformTarget", "x64");
                     break;
 
                 case EPlatform.Itanium:
-                    dictionary.Add("Platform", "Itanium");
+                    dictionary.Add("PlatformTarget", "Itanium");
                     break;
 
                 case EPlatform.AnyCpu:
-                    dictionary.Add("Platform", "AnyCpu");
+                    dictionary.Add("PlatformTarget", "AnyCPU");
                     break;
 
                 default:
