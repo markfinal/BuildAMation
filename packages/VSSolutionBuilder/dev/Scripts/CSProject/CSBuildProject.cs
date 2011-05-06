@@ -119,9 +119,15 @@ namespace VSSolutionBuilder
 #if true
                 MSBuildPropertyGroup generalGroup = project.CreatePropertyGroup();
                 generalGroup.CreateProperty("ProjectGuid", this.ProjectGuid.ToString("B").ToUpper());
-
-                // import C# project props
-                project.CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.Targets");
+                // default configuration and platform
+                {
+                    MSBuildProperty defaultConfiguration = generalGroup.CreateProperty("Configuration", "Debug");
+                    defaultConfiguration.Condition = " '$(Configuration)' == '' ";
+                }
+                {
+                    MSBuildProperty defaultPlatform = generalGroup.CreateProperty("Platform", "AnyCPU");
+                    defaultPlatform.Condition = " '$(Platform)' == '' ";
+                }
 
                 // configurations
                 foreach (ProjectConfiguration configuration in this.ProjectConfigurations)
@@ -148,6 +154,8 @@ namespace VSSolutionBuilder
                     }
                 }
 
+                // import C# project props
+                project.CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.targets");
 #else
                 // project globals (guid, etc)
                 {
