@@ -124,14 +124,14 @@ namespace Opus.Core
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                if (exception.InnerException.InnerException != null)
+                Core.Log.MessageAll("PreExecute function threw an exception: " + exception.Message);
+                System.Exception innerException = exception;
+                while (innerException.InnerException != null)
                 {
-                    Log.MessageAll("PreExecute function threw an exception: '{0}' -> '{1}'\n{2}", exception.InnerException.Message, exception.InnerException.InnerException.Message, exception.InnerException.InnerException.StackTrace);
+                    innerException = innerException.InnerException;
+                    Core.Log.MessageAll("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
                 }
-                else
-                {
-                    Log.MessageAll("PreExecute function threw an exception: '{0}'\n{1}", exception.InnerException.Message, exception.InnerException.StackTrace);
-                }
+                Core.Log.MessageAll(innerException.StackTrace);
                 return false;
             }
 
@@ -205,14 +205,14 @@ namespace Opus.Core
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {
-                    if (exception.InnerException.InnerException != null)
+                    Core.Log.MessageAll("PostExecute function threw an exception: " + exception.Message);
+                    System.Exception innerException = exception;
+                    while (innerException.InnerException != null)
                     {
-                        Log.MessageAll("PostExecute function threw an exception: '{0}' -> '{1}'\n{2}", exception.InnerException.Message, exception.InnerException.InnerException.Message, exception.InnerException.InnerException.StackTrace);
+                        innerException = innerException.InnerException;
+                        Core.Log.MessageAll("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
                     }
-                    else
-                    {
-                        Log.MessageAll("PostExecute function threw an exception: '{0}'\n{1}", exception.InnerException.Message, exception.InnerException.StackTrace);
-                    }
+                    Core.Log.MessageAll(innerException.StackTrace);
                     return false;
                 }
 

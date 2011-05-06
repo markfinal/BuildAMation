@@ -34,15 +34,13 @@ namespace CSharp
                     }
                     catch (System.Exception exception)
                     {
-                        if (null != exception.InnerException)
+                        System.Exception innerException = exception;
+                        while (null != innerException.InnerException)
                         {
-                            if (exception.InnerException is Opus.Core.Exception)
-                            {
-                                throw exception.InnerException;
-                            }
+                            innerException = innerException.InnerException;
                         }
 
-                        throw;
+                        throw innerException;
                     }
                     if (null == instance)
                     {
