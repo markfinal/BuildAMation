@@ -119,6 +119,35 @@ namespace VSSolutionBuilder
 #if true
                 MSBuildPropertyGroup generalGroup = project.CreatePropertyGroup();
                 generalGroup.CreateProperty("ProjectGuid", this.ProjectGuid.ToString("B").ToUpper());
+
+                // import C# project props
+                project.CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.Targets");
+
+                // configurations
+                foreach (ProjectConfiguration configuration in this.ProjectConfigurations)
+                {
+                    configuration.SerializeCSBuild(project, projectLocationUri);
+                }
+
+                // source files
+                if (this.SourceFileCollection.Count > 0)
+                {
+                    this.SourceFileCollection.SerializeMSBuild(project, "Compile", projectLocationUri, this.PackageUri);
+                }
+
+                // project dependencies
+                if (this.DependentProjectList.Count > 0)
+                {
+                    MSBuildItemGroup dependencyItemGroup = project.CreateItemGroup();
+                    foreach (IProject dependentProject in this.DependentProjectList)
+                    {
+                        string relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentProject.PathName, this.PathName);
+                        MSBuildItem projectReference = dependencyItemGroup.CreateItem("ProjectReference", relativePath);
+                        projectReference.CreateMetaData("Project", dependentProject.Guid.ToString("B").ToUpper());
+                        projectReference.CreateMetaData("Name", dependentProject.Name);
+                    }
+                }
+
 #else
                 // project globals (guid, etc)
                 {

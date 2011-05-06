@@ -176,5 +176,29 @@ namespace VSSolutionBuilder
             projectConfiguration.CreateMetaData("Configuration", split[0]);
             projectConfiguration.CreateMetaData("Platform", split[1]);
         }
+
+        public void SerializeCSBuild(MSBuildProjectSerializable project, System.Uri projectUri)
+        {
+            if (this.Type == EProjectConfigurationType.Undefined)
+            {
+                throw new Opus.Core.Exception("Project type is undefined");
+            }
+            if (this.CharacterSet == EProjectCharacterSet.Undefined)
+            {
+                throw new Opus.Core.Exception("Project character set is undefined");
+            }
+
+            MSBuildPropertyGroup configurationGroup = project.CreatePropertyGroup();
+
+            string[] split = this.Name.Split('|');
+            configurationGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)' == '{0}|{1}'", split[0], split[1]);
+
+            configurationGroup.CreateProperty("OutputPath", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
+
+            foreach (ProjectTool tool in this.Tools)
+            {
+                tool.SerializeCSBuild(configurationGroup, this, projectUri);
+            }
+        }
     }
 }

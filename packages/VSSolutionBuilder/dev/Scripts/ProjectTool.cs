@@ -183,5 +183,21 @@ namespace VSSolutionBuilder
                 }
             }
         }
+
+        public void SerializeCSBuild(MSBuildPropertyGroup configurationGroup, ProjectConfiguration configuration, System.Uri projectUri)
+        {
+            string projectName = configuration.Project.Name;
+            string outputDirectory = configuration.OutputDirectory;
+
+            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            {
+                if ("Name" != attribute.Key)
+                {
+                    string value = attribute.Value;
+                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, null, projectName, projectUri);
+                    configurationGroup.CreateProperty(attribute.Key, value);
+                }
+            }
+        }
     }
 }
