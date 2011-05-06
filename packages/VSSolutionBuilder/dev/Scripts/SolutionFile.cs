@@ -89,8 +89,9 @@ namespace VSSolutionBuilder
                                          relativeProjectLocationUri.ToString(),
                                          project.Value.Guid.ToString("B").ToUpper());
 
-                    // TODO: only write this for VCPROJ, not MSBUILD
-                    if (project.Value.DependentProjects.Count > 0)
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    if (projectExtension.Equals(".vcproj") && (project.Value.DependentProjects.Count > 0))
                     {
                         textWriter.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
                         foreach (IProject dependentProject in project.Value.DependentProjects)

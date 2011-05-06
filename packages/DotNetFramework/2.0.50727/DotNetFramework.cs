@@ -72,6 +72,14 @@ namespace DotNetFramework
                 return ProjectTypeGuid;
             }
         }
+
+        public string ProjectExtension
+        {
+            get
+            {
+                return ".csproj";
+            }
+        }
     }
 
     // Define module classes here
