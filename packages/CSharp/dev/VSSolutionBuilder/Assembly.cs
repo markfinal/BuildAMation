@@ -15,6 +15,26 @@ namespace VSSolutionBuilder
 
             string moduleName = node.ModuleName;
 
+            string platformName;
+            switch ((assembly.Options as CSharp.OptionCollection).Platform)
+            {
+                case CSharp.EPlatform.AnyCpu:
+                    platformName = "AnyCPU";
+                    break;
+
+                case CSharp.EPlatform.X86:
+                    platformName = "x86";
+                    break;
+
+                case CSharp.EPlatform.X64:
+                case CSharp.EPlatform.Itanium:
+                    platformName = "x64";
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized platform");
+            }
+
             IProject projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
@@ -31,7 +51,7 @@ namespace VSSolutionBuilder
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
 
-                    projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
+                    projectData.Platforms.Add(platformName);
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
             }
@@ -55,7 +75,7 @@ namespace VSSolutionBuilder
                 }
             }
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target, platformName);
 
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
@@ -64,7 +84,7 @@ namespace VSSolutionBuilder
                 {
                     // TODO: fix me
                     configuration = new ProjectConfiguration(configurationName, EProjectCharacterSet.NotSet, projectData);
-                    projectData.Configurations.Add(configuration);
+                    projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {

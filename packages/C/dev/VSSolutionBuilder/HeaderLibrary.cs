@@ -48,7 +48,7 @@ namespace VSSolutionBuilder
                 {
                     // arbitrary character set, as nothing is built
                     configuration = new ProjectConfiguration(configurationName, EProjectCharacterSet.NotSet, projectData);
-                    projectData.Configurations.Add(configuration);
+                    projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {

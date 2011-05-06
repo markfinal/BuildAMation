@@ -24,7 +24,7 @@ namespace VSSolutionBuilder
             IProject nodeProjectData = sourceModuleNode.Data as IProject;
 
             ProjectConfigurationCollection configCollection = nodeProjectData.Configurations;
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(sourceModuleNode.Target);
+            string configurationName = configCollection.GetConfigurationNameForTarget(sourceModuleNode.Target);
             ProjectConfiguration configuration = configCollection[configurationName];
 
             string toolName = "VCPostBuildEventTool";

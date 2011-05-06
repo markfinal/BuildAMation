@@ -85,7 +85,7 @@ namespace VSSolutionBuilder
                     C.CompilerOptionCollection options = objectFile.Options as C.CompilerOptionCollection;
                     configuration.IntermediateDirectory = options.OutputDirectoryPath;
 
-                    projectData.Configurations.Add(configuration);
+                    projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {

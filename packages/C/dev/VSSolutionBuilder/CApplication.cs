@@ -87,7 +87,7 @@ namespace VSSolutionBuilder
                             break;
                     }
                     configuration = new ProjectConfiguration(configurationName, characterSet, projectData);
-                    projectData.Configurations.Add(configuration);
+                    projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {

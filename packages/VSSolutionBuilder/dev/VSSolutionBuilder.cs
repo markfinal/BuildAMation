@@ -61,6 +61,12 @@ namespace VSSolutionBuilder
             return configurationName;
         }
 
+        private static string GetConfigurationNameFromTarget(Opus.Core.Target target, string platformName)
+        {
+            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platformName);
+            return configurationName;
+        }
+
         public static string GetPlatformNameFromTarget(Opus.Core.Target target)
         {
             string platform;

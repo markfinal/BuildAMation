@@ -8,15 +8,23 @@ namespace VSSolutionBuilder
     public sealed class ProjectConfigurationCollection : System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectConfiguration> list = new System.Collections.Generic.List<ProjectConfiguration>();
+        private System.Collections.Generic.Dictionary<string, string> targetToConfig = new System.Collections.Generic.Dictionary<string, string>();
 
         public System.Collections.IEnumerator GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        public void Add(ProjectConfiguration configuration)
+        public void Add(Opus.Core.Target target, ProjectConfiguration configuration)
         {
             this.list.Add(configuration);
+            this.targetToConfig.Add(target.ToString(), configuration.Name);
+        }
+
+        public string GetConfigurationNameForTarget(Opus.Core.Target target)
+        {
+            string configurationName = this.targetToConfig[target.ToString()];
+            return configurationName;
         }
 
         public bool Contains(string configurationName)
