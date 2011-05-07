@@ -175,6 +175,11 @@ namespace VSSolutionBuilder
             MSBuildItem toolItem = itemDefGroup.CreateItem(toolElementName);
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
+                if (System.String.IsNullOrEmpty(attribute.Value))
+                {
+                    continue;
+                }
+
                 // No ObjectFileName either, as this will be in the common area
                 if (("Name" != attribute.Key) &&
                     ("ObjectFileName" != attribute.Key))

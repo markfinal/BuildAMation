@@ -91,6 +91,11 @@ namespace VSSolutionBuilder
 
         internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string intermediateDirectoryPath, string projectName, System.Uri projectUri)
         {
+            if (System.String.IsNullOrEmpty(path))
+            {
+                throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
+            }
+
             string refactoredPath = path;
 
             if (outputDirectoryPath != null)
