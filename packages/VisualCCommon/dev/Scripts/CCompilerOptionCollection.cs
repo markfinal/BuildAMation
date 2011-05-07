@@ -791,10 +791,20 @@ namespace VisualCCommon
                         break;
 
                     case EManagedCompilation.CLR:
+                        dictionary.Add("CompileAsManaged", "true");
+                        break;
+
                     case EManagedCompilation.PureCLR:
+                        dictionary.Add("CompileAsManaged", "Pure");
+                        break;
+
                     case EManagedCompilation.SafeCLR:
+                        dictionary.Add("CompileAsManaged", "Safe");
+                        break;
+
                     case EManagedCompilation.OldSyntaxCLR:
-                        throw new Opus.Core.Exception("TODO");
+                        dictionary.Add("CompileAsManaged", "OldSyntax");
+                        break;
 
                     default:
                         throw new Opus.Core.Exception("Unrecognized EManagedCompilation option");
