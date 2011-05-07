@@ -177,7 +177,7 @@ namespace VSSolutionBuilder
             projectConfiguration.CreateMetaData("Platform", split[1]);
         }
 
-        public void SerializeCSBuild(MSBuildProjectSerializable project, System.Uri projectUri)
+        public void SerializeCSBuild(MSBuildProject project, System.Uri projectUri)
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {

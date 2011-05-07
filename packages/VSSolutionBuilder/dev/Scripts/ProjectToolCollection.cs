@@ -57,7 +57,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildProjectSerializable project, ProjectConfiguration configuration, System.Uri projectUri)
+        public void SerializeMSBuild(MSBuildProject project, ProjectConfiguration configuration, System.Uri projectUri)
         {
             MSBuildItemDefinitionGroup toolItemGroup = project.CreateItemDefinitionGroup();
             string[] split = configuration.ConfigurationPlatform();

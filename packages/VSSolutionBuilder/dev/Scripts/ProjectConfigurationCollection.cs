@@ -56,7 +56,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildProjectSerializable project, System.Uri projectUri)
+        public void SerializeMSBuild(MSBuildProject project, System.Uri projectUri)
         {
             // ProjectConfigurations item group
             {

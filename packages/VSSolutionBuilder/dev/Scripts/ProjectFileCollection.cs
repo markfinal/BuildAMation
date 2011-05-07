@@ -71,7 +71,7 @@ namespace VSSolutionBuilder
             return sourceFilesFilterElement;
         }
 
-        public void SerializeMSBuild(MSBuildProjectSerializable project, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri)
+        public void SerializeMSBuild(MSBuildProject project, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri)
         {
             MSBuildItemGroup fileItemGroup = project.CreateItemGroup();
             foreach (ProjectFile file in this.list)

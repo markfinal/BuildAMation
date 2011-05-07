@@ -1,13 +1,13 @@
-// <copyright file="MSBuildProjectSerializable.cs" company="Mark Final">
+// <copyright file="MSBuildProject.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VSSolutionBuilder package</summary>
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildProjectSerializable : MSBuildBaseElement
+    public class MSBuildProject : MSBuildBaseElement
     {
-        public MSBuildProjectSerializable(System.Xml.XmlDocument document, string toolsVersion)
+        public MSBuildProject(System.Xml.XmlDocument document, string toolsVersion)
             : base(document, "Project")
         {
             this.XmlElement.SetAttribute("DefaultTargets", "Build");
