@@ -13,10 +13,9 @@ namespace VSSolutionBuilder
             set;
         }
 
-        ProjectFile Page
+        ProjectFileCollection Pages
         {
             get;
-            set;
         }
     }
 }

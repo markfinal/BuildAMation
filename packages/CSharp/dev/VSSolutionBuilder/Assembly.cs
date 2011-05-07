@@ -191,11 +191,14 @@ namespace VSSolutionBuilder
                                 throw new Opus.Core.Exception(System.String.Format("Application definition file '{0}' does not exist", absolutePath), false);
                             }
 
+#if false
+                            // TODO: in theory, this file should be generated in VS, but it doesn't seem to
                             string csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
                                 throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
                             }
+#endif
 
                             projectData.ApplicationDefinition = new ProjectFile(absolutePath);
                         }
@@ -214,11 +217,14 @@ namespace VSSolutionBuilder
                                     throw new Opus.Core.Exception(System.String.Format("Application definition file '{0}' does not exist", absolutePath), false);
                                 }
 
+#if false
+                                // TODO: in theory, this file should be generated in VS, but it doesn't seem to
                                 string csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
                                 }
+#endif
 
                                 projectData.ApplicationDefinition = new ProjectFile(absolutePath);
                             }
@@ -230,7 +236,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                // WPF page .xaml file
+                // WPF page .xaml files
                 {
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PageAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
@@ -251,22 +257,17 @@ namespace VSSolutionBuilder
                                 throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
                             }
 
-                            string csPath = absolutePath + ".cs";
-                            if (!System.IO.File.Exists(csPath))
+                            lock (projectData.Pages)
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                                if (!projectData.Pages.Contains(absolutePath))
+                                {
+                                    projectData.Pages.Add(new ProjectFile(absolutePath));
+                                }
                             }
-
-                            projectData.Page = new ProjectFile(absolutePath);
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
-                            if (sourceCollection.Count != 1)
-                            {
-                                throw new Opus.Core.Exception("There can be only one page file", false);
-                            }
-
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -280,7 +281,13 @@ namespace VSSolutionBuilder
                                     throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
                                 }
 
-                                projectData.Page = new ProjectFile(absolutePath);
+                                lock (projectData.Pages)
+                                {
+                                    if (!projectData.Pages.Contains(absolutePath))
+                                    {
+                                        projectData.Pages.Add(new ProjectFile(absolutePath));
+                                    }
+                                }
                             }
                         }
                         else

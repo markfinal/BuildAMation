@@ -17,7 +17,7 @@ namespace VSSolutionBuilder
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
         private ProjectFile ApplicationDefinitionFile = null;
-        private ProjectFile PageFile = null;
+        private ProjectFileCollection PageFiles = new ProjectFileCollection();
 
         public CSBuildProject(string moduleName, string projectPathName, string packageDirectory)
         {
@@ -118,16 +118,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        ProjectFile ICSProject.Page
+        ProjectFileCollection ICSProject.Pages
         {
             get
             {
-                return this.PageFile;
-            }
-
-            set
-            {
-                this.PageFile = value;
+                return this.PageFiles;
             }
         }
 
@@ -170,11 +165,11 @@ namespace VSSolutionBuilder
                 }
 
                 // application definition and page files
-                if (this.ApplicationDefinitionFile.RelativePath != null)
                 {
                     MSBuildItemGroup applicationDefinitionGroup = project.CreateItemGroup();
 
                     // application definition
+                    if (this.ApplicationDefinitionFile.RelativePath != null)
                     {
                         string xamlRelativePath = Opus.Core.RelativePathUtilities.GetPath(this.ApplicationDefinitionFile.RelativePath, projectLocationUri);
 
@@ -188,9 +183,10 @@ namespace VSSolutionBuilder
                         associatedSource.CreateMetaData("SubType", "Code");
                     }
 
-                    // page file
+                    // page files
+                    foreach (ProjectFile pageFile in this.PageFiles)
                     {
-                        string xamlRelativePath = Opus.Core.RelativePathUtilities.GetPath(this.PageFile.RelativePath, projectLocationUri);
+                        string xamlRelativePath = Opus.Core.RelativePathUtilities.GetPath(pageFile.RelativePath, projectLocationUri);
 
                         MSBuildItem applicationDefinition = applicationDefinitionGroup.CreateItem("Page", xamlRelativePath);
                         applicationDefinition.CreateMetaData("Generator", "MSBuild:Compile");
