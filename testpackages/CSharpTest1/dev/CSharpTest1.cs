@@ -69,4 +69,22 @@ namespace CSharpTest1
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(Executable2));
     }
 
+    class ExecutableReferences : CSharp.Executable
+    {
+        public ExecutableReferences()
+        {
+            this.source.SetRelativePath(this, "source", "executablexml.cs");
+
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(ExecutableReferences_UpdateOptions);
+        }
+
+        void ExecutableReferences_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            CSharp.OptionCollection options = module.Options as CSharp.OptionCollection;
+            options.References.Add("System.Xml.dll");
+        }
+
+        [Opus.Core.SourceFiles]
+        Opus.Core.File source = new Opus.Core.File();
+    }
 }
