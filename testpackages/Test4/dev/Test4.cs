@@ -30,7 +30,7 @@ namespace Test4
                 VisualC.ToolchainOptionCollection vcToolOptions = toolOptions as VisualC.ToolchainOptionCollection;
                 if (vcToolOptions != null)
                 {
-                    vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDLLDebug;
+                    vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
                 }
             }
         }

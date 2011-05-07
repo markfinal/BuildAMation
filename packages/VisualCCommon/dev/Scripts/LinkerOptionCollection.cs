@@ -322,7 +322,7 @@ namespace VisualCCommon
                     }
                     break;
 
-                case ERuntimeLibrary.MultiThreadedDLLDebug:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
                     if (isCPlusPlus)
                     {
@@ -367,7 +367,7 @@ namespace VisualCCommon
                     }
                     break;
 
-                case ERuntimeLibrary.MultiThreadedDLLDebug:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
                     if (isCPlusPlus)
                     {

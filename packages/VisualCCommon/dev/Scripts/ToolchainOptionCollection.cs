@@ -84,7 +84,7 @@ namespace VisualCCommon
                     commandLineBuilder.Add("/MD");
                     break;
 
-                case ERuntimeLibrary.MultiThreadedDLLDebug:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
                     commandLineBuilder.Add("/MDd");
                     break;
 
@@ -101,7 +101,7 @@ namespace VisualCCommon
                 case ERuntimeLibrary.MultiThreaded:
                 case ERuntimeLibrary.MultiThreadedDebug:
                 case ERuntimeLibrary.MultiThreadedDLL:
-                case ERuntimeLibrary.MultiThreadedDLLDebug:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
                     {
                         VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                         if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)

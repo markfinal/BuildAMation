@@ -10,6 +10,6 @@ namespace VisualCCommon
         MultiThreaded = 0,
         MultiThreadedDebug = 1,
         MultiThreadedDLL = 2,
-        MultiThreadedDLLDebug = 3
+        MultiThreadedDebugDLL = 3
     }
 }
