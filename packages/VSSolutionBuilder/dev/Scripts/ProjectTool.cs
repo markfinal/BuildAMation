@@ -219,8 +219,17 @@ namespace VSSolutionBuilder
                     throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
             }
 
-            MSBuildItem toolItem = itemGroup.CreateItem(toolElementName, relativePath);
+            MSBuildItem toolItem = itemGroup.FindItem(toolElementName, relativePath);
+            if (null == toolItem)
+            {
+                toolItem = itemGroup.CreateItem(toolElementName, relativePath);
+            }
             string[] split = configuration.Configuration.ConfigurationPlatform();
+            if (configuration.ExcludedFromBuild)
+            {
+                MSBuildMetaData excluded = toolItem.CreateMetaData("ExcludedFromBuild", "true");
+                excluded.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+            }
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
                 if ("Name" != attribute.Key)

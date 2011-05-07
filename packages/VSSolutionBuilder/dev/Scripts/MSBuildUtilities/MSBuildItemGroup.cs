@@ -18,5 +18,18 @@ namespace VSSolutionBuilder
             this.AppendChild(item);
             return item;
         }
+
+        public MSBuildItem FindItem(string name, string include)
+        {
+            foreach (System.Xml.XmlElement element in this.XmlElement.ChildNodes)
+            {
+                MSBuildItem b = this.childElements[element] as MSBuildItem;
+                if ((b.Name == name) && (b.Include == include))
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 }

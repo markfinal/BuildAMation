@@ -10,6 +10,7 @@ namespace VSSolutionBuilder
         protected static string xmlns = "http://schemas.microsoft.com/developer/msbuild/2003";
         private string condition;
         private string label;
+        protected System.Collections.Generic.Dictionary<System.Xml.XmlElement, MSBuildBaseElement> childElements = new System.Collections.Generic.Dictionary<System.Xml.XmlElement, MSBuildBaseElement>();
 
         public MSBuildBaseElement(System.Xml.XmlDocument document,
                                   string name)
@@ -85,6 +86,7 @@ namespace VSSolutionBuilder
         protected void AppendChild(MSBuildBaseElement child)
         {
             this.XmlElement.AppendChild(child.XmlElement);
+            this.childElements.Add(child.XmlElement, child);
         }
     }
 }
