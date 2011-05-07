@@ -14,6 +14,11 @@ namespace VSSolutionBuilder
         public MSBuildBaseElement(System.Xml.XmlDocument document,
                                   string name)
         {
+            if (System.String.IsNullOrEmpty(name))
+            {
+                throw new Opus.Core.Exception("Name of MSBuild XML element cannot be null");
+            }
+
             this.XmlDocument = document;
             this.Name = name;
             this.condition = null;
