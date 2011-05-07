@@ -136,7 +136,7 @@ namespace VSSolutionBuilder
                 }
                 if (this.HeaderFileCollection.Count > 0)
                 {
-                    this.SourceFileCollection.SerializeMSBuild(project, "ClInclude", projectLocationUri, this.PackageUri);
+                    this.HeaderFileCollection.SerializeMSBuild(project, "ClInclude", projectLocationUri, this.PackageUri);
                 }
 
                 // project dependencies
