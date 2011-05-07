@@ -6,7 +6,8 @@ namespace WPFTest
     {
         public WPFExecutable()
         {
-            this.applicationDefinitions.AddRelativePaths(this, "source", "*.xaml");
+            this.applicationDefinition.SetRelativePath(this, "source", "App.xaml");
+            this.page.SetRelativePath(this, "source", "MainWindow.xaml");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WPFExecutable_UpdateOptions);
         }
@@ -14,16 +15,18 @@ namespace WPFTest
         void WPFExecutable_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             CSharp.IOptions options = module.Options as CSharp.IOptions;
-            string referenceAssemblyDir = DotNetFramework.DotNet.ToolsPath;
-            string wpfDir = System.IO.Path.Combine(referenceAssemblyDir, "WPF");
-
-            options.References.Add(System.IO.Path.Combine(referenceAssemblyDir, "System.Xaml.dll"));
-            options.References.Add(System.IO.Path.Combine(wpfDir, "PresentationCore.dll"));
-            options.References.Add(System.IO.Path.Combine(wpfDir, "PresentationFramework.dll"));
-            options.References.Add(System.IO.Path.Combine(wpfDir, "WindowsBase.dll"));
+            options.References.Add("System.dll");
+            options.References.Add("System.Data.dll");
+            options.References.Add("System.Xaml.dll");
+            options.References.Add("WindowsBase.dll");
+            options.References.Add("PresentationCore.dll");
+            options.References.Add("PresentationFramework.dll");
         }
 
         [CSharp.ApplicationDefinitions]
-        Opus.Core.FileCollection applicationDefinitions = new Opus.Core.FileCollection();
+        Opus.Core.File applicationDefinition = new Opus.Core.File();
+
+        [CSharp.Page]
+        Opus.Core.File page = new Opus.Core.File();
     }
 }

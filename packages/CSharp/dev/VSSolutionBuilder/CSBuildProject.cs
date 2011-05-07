@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class CSBuildProject : ICProject
+    public class CSBuildProject : ICSProject
     {
         private string ProjectName = null;
         private string PathName = null;
@@ -14,9 +14,10 @@ namespace VSSolutionBuilder
         private System.Collections.Generic.List<string> PlatformList = new System.Collections.Generic.List<string>();
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
-        private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
+        private ProjectFile ApplicationDefinitionFile = null;
+        private ProjectFile PageFile = null;
 
         public CSBuildProject(string moduleName, string projectPathName, string packageDirectory)
         {
@@ -88,14 +89,6 @@ namespace VSSolutionBuilder
             }
         }
 
-        ProjectFileCollection ICProject.HeaderFiles
-        {
-            get
-            {
-                return this.HeaderFileCollection;
-            }
-        }
-
         System.Collections.Generic.List<IProject> IProject.DependentProjects
         {
             get
@@ -109,6 +102,32 @@ namespace VSSolutionBuilder
             get
             {
                 return this.ReferencesList;
+            }
+        }
+
+        ProjectFile ICSProject.ApplicationDefinition
+        {
+            get
+            {
+                return this.ApplicationDefinitionFile;
+            }
+
+            set
+            {
+                this.ApplicationDefinitionFile = value;
+            }
+        }
+
+        ProjectFile ICSProject.Page
+        {
+            get
+            {
+                return this.PageFile;
+            }
+
+            set
+            {
+                this.PageFile = value;
             }
         }
 
@@ -148,6 +167,40 @@ namespace VSSolutionBuilder
                 if (this.SourceFileCollection.Count > 0)
                 {
                     this.SourceFileCollection.SerializeCSBuild(project, projectLocationUri, this.PackageUri);
+                }
+
+                // application definition and page files
+                if (this.ApplicationDefinitionFile.RelativePath != null)
+                {
+                    MSBuildItemGroup applicationDefinitionGroup = project.CreateItemGroup();
+
+                    // application definition
+                    {
+                        string xamlRelativePath = Opus.Core.RelativePathUtilities.GetPath(this.ApplicationDefinitionFile.RelativePath, projectLocationUri);
+
+                        MSBuildItem applicationDefinition = applicationDefinitionGroup.CreateItem("ApplicationDefinition", xamlRelativePath);
+                        applicationDefinition.CreateMetaData("Generator", "MSBuild:Compile");
+                        applicationDefinition.CreateMetaData("SubType", "Designer");
+
+                        string sourcePathname = xamlRelativePath + ".cs";
+                        MSBuildItem associatedSource = applicationDefinitionGroup.CreateItem("Compile", sourcePathname);
+                        associatedSource.CreateMetaData("DependentUpon", System.IO.Path.GetFileName(xamlRelativePath));
+                        associatedSource.CreateMetaData("SubType", "Code");
+                    }
+
+                    // page file
+                    {
+                        string xamlRelativePath = Opus.Core.RelativePathUtilities.GetPath(this.PageFile.RelativePath, projectLocationUri);
+
+                        MSBuildItem applicationDefinition = applicationDefinitionGroup.CreateItem("Page", xamlRelativePath);
+                        applicationDefinition.CreateMetaData("Generator", "MSBuild:Compile");
+                        applicationDefinition.CreateMetaData("SubType", "Designer");
+
+                        string sourcePathname = xamlRelativePath + ".cs";
+                        MSBuildItem associatedSource = applicationDefinitionGroup.CreateItem("Compile", sourcePathname);
+                        associatedSource.CreateMetaData("DependentUpon", System.IO.Path.GetFileName(xamlRelativePath));
+                        associatedSource.CreateMetaData("SubType", "Code");
+                    }
                 }
 
                 // project dependencies

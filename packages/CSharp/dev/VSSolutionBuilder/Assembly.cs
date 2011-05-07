@@ -35,13 +35,13 @@ namespace VSSolutionBuilder
                     throw new Opus.Core.Exception("Unrecognized platform");
             }
 
-            IProject projectData = null;
+            ICSProject projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
                 if (this.solutionFile.ProjectDictionary.ContainsKey(moduleName))
                 {
-                    projectData = this.solutionFile.ProjectDictionary[moduleName];
+                    projectData = this.solutionFile.ProjectDictionary[moduleName] as ICSProject;
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace VSSolutionBuilder
                     projectPathName += ".csproj";
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as ICSProject;
 
                     projectData.Platforms.Add(platformName);
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
@@ -170,7 +170,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                // WPF application definition .xaml files
+                // WPF application definition .xaml file
                 {
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.ApplicationDefinitionsAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
@@ -197,24 +197,16 @@ namespace VSSolutionBuilder
                                 throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
                             }
 
-                            ProjectFile sourceFile;
-                            lock (projectData.SourceFiles)
-                            {
-                                if (!projectData.SourceFiles.Contains(csPath))
-                                {
-                                    sourceFile = new ProjectFile(csPath);
-                                    sourceFile.FileConfigurations = new ProjectFileConfigurationCollection();
-                                    projectData.SourceFiles.Add(sourceFile);
-                                }
-                                else
-                                {
-                                    sourceFile = projectData.SourceFiles[csPath];
-                                }
-                            }
+                            projectData.ApplicationDefinition = new ProjectFile(absolutePath);
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            if (sourceCollection.Count != 1)
+                            {
+                                throw new Opus.Core.Exception("There can be only one application definition", false);
+                            }
+
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -228,20 +220,67 @@ namespace VSSolutionBuilder
                                     throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
                                 }
 
-                                ProjectFile sourceFile;
-                                lock (projectData.SourceFiles)
+                                projectData.ApplicationDefinition = new ProjectFile(absolutePath);
+                            }
+                        }
+                        else
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                        }
+                    }
+                }
+
+                // WPF page .xaml file
+                {
+                    var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PageAttribute), false);
+                    if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
+                    {
+                        var sourceField = field.GetValue(assembly);
+                        if (sourceField is Opus.Core.File)
+                        {
+                            Opus.Core.File file = sourceField as Opus.Core.File;
+                            if (!file.IsValid)
+                            {
+                                Opus.Core.Log.DebugMessage("Field '{0}' has an invalid path set", field.Name);
+                                continue;
+                            }
+
+                            string absolutePath = file.AbsolutePath;
+                            if (!System.IO.File.Exists(absolutePath))
+                            {
+                                throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                            }
+
+                            string csPath = absolutePath + ".cs";
+                            if (!System.IO.File.Exists(csPath))
+                            {
+                                throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                            }
+
+                            projectData.Page = new ProjectFile(absolutePath);
+                        }
+                        else if (sourceField is Opus.Core.FileCollection)
+                        {
+                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            if (sourceCollection.Count != 1)
+                            {
+                                throw new Opus.Core.Exception("There can be only one page file", false);
+                            }
+
+                            foreach (string absolutePath in sourceCollection)
+                            {
+                                if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    if (!projectData.SourceFiles.Contains(csPath))
-                                    {
-                                        sourceFile = new ProjectFile(csPath);
-                                        sourceFile.FileConfigurations = new ProjectFileConfigurationCollection();
-                                        projectData.SourceFiles.Add(sourceFile);
-                                    }
-                                    else
-                                    {
-                                        sourceFile = projectData.SourceFiles[csPath];
-                                    }
+                                    throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
                                 }
+
+                                string csPath = absolutePath + ".cs";
+                                if (!System.IO.File.Exists(csPath))
+                                {
+                                    throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                                }
+
+                                projectData.Page = new ProjectFile(absolutePath);
                             }
                         }
                         else

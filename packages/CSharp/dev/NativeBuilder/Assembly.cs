@@ -68,7 +68,7 @@ namespace NativeBuilder
                     }
                 }
 
-                // WPF application definition .xaml files
+                // WPF application definition .xaml file
                 {
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.ApplicationDefinitionsAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
@@ -100,6 +100,11 @@ namespace NativeBuilder
                         else if (sourceField is Opus.Core.FileCollection)
                         {
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            if (sourceCollection.Count != 1)
+                            {
+                                throw new Opus.Core.Exception("There can be only one application definition", false);
+                            }
+
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -111,6 +116,66 @@ namespace NativeBuilder
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
+                                }
+
+                                sourceFiles.Add(csPath);
+                            }
+                        }
+                        else
+                        {
+                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                        }
+                    }
+                }
+
+                // WPF page .xaml file
+                {
+                    var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PageAttribute), false);
+                    if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
+                    {
+                        var sourceField = field.GetValue(assembly);
+                        if (sourceField is Opus.Core.File)
+                        {
+                            Opus.Core.File file = sourceField as Opus.Core.File;
+                            if (!file.IsValid)
+                            {
+                                Opus.Core.Log.DebugMessage("Field '{0}' has an invalid path set", field.Name);
+                                continue;
+                            }
+
+                            string absolutePath = file.AbsolutePath;
+                            if (!System.IO.File.Exists(absolutePath))
+                            {
+                                throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                            }
+
+                            string csPath = absolutePath + ".cs";
+                            if (!System.IO.File.Exists(csPath))
+                            {
+                                throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                            }
+
+                            sourceFiles.Add(csPath);
+                        }
+                        else if (sourceField is Opus.Core.FileCollection)
+                        {
+                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            if (sourceCollection.Count != 1)
+                            {
+                                throw new Opus.Core.Exception("There can be only one page file", false);
+                            }
+
+                            foreach (string absolutePath in sourceCollection)
+                            {
+                                if (!System.IO.File.Exists(absolutePath))
+                                {
+                                    throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                                }
+
+                                string csPath = absolutePath + ".cs";
+                                if (!System.IO.File.Exists(csPath))
+                                {
+                                    throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
                                 }
 
                                 sourceFiles.Add(csPath);

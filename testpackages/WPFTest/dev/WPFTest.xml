@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\dev\GoogleCode\Opus\branches\wpf\bin\Debug\Schema\OpusPackageDependency.xsd">
+<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\GoogleCode\Opus\branches\wpf\bin\Debug\Schema\OpusPackageDependency.xsd">
   <Package Name="CSharp" Version="dev" />
   <Package Name="DotNetFramework" Version="4.0" />
   <Package Name="MakeFileBuilder" Version="dev" />
   <Package Name="NativeBuilder" Version="dev" />
+  <Package Name="VSSolutionBuilder" Version="dev" />
 </RequiredPackages>
