@@ -75,6 +75,12 @@ namespace VSSolutionBuilder
                 }
             }
 
+            // references
+            foreach (string reference in options.References)
+            {
+                projectData.References.Add(reference);
+            }
+
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target, platformName);
 
             ProjectConfiguration configuration;

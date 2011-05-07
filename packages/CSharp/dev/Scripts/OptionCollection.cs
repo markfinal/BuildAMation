@@ -533,9 +533,8 @@ namespace CSharp
 
         private static VisualStudioProcessor.ToolAttributeDictionary ReferencesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            // TODO
-            return dictionary;
+            // this is handled elsewhere
+            return null;
         }
 
         private static void ModulesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

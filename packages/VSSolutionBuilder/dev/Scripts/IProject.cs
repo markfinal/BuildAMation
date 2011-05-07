@@ -47,6 +47,11 @@ namespace VSSolutionBuilder
             get;
         }
 
+        System.Collections.Generic.List<string> References
+        {
+            get;
+        }
+
         void Serialize();
     }
 }

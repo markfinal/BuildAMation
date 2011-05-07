@@ -16,6 +16,7 @@ namespace VSSolutionBuilder
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
+        private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
 
         public CSBuildProject(string moduleName, string projectPathName, string packageDirectory)
         {
@@ -103,6 +104,14 @@ namespace VSSolutionBuilder
             }
         }
 
+        System.Collections.Generic.List<string> IProject.References
+        {
+            get
+            {
+                return this.ReferencesList;
+            }
+        }
+
         void IProject.Serialize()
         {
             System.Xml.XmlDocument xmlDocument = null;
@@ -151,6 +160,16 @@ namespace VSSolutionBuilder
                         MSBuildItem projectReference = dependencyItemGroup.CreateItem("ProjectReference", relativePath);
                         projectReference.CreateMetaData("Project", dependentProject.Guid.ToString("B").ToUpper());
                         projectReference.CreateMetaData("Name", dependentProject.Name);
+                    }
+                }
+
+                // project references
+                if (this.ReferencesList.Count > 0)
+                {
+                    MSBuildItemGroup referenceItemGroup = project.CreateItemGroup();
+                    foreach (string reference in this.ReferencesList)
+                    {
+                        referenceItemGroup.CreateItem("Reference", reference);
                     }
                 }
 
