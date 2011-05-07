@@ -138,7 +138,7 @@ namespace VSSolutionBuilder
                 // source files
                 if (this.SourceFileCollection.Count > 0)
                 {
-                    this.SourceFileCollection.SerializeMSBuild(project, "Compile", projectLocationUri, this.PackageUri);
+                    this.SourceFileCollection.SerializeCSBuild(project, projectLocationUri, this.PackageUri);
                 }
 
                 // project dependencies

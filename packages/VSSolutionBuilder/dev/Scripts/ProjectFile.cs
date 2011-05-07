@@ -105,5 +105,11 @@ namespace VSSolutionBuilder
                 }
             }
         }
+
+        public void SerializeCSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri)
+        {
+            string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+            fileCollectionGroup.CreateItem("Compile", relativePath);
+        }
     }
 }
