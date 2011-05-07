@@ -514,7 +514,7 @@ namespace VisualCCommon
                         break;
 
                     case C.ETargetLanguage.CPlusPlus:
-                        dictionary.Add("CompileAs", "CompileAsC++");
+                        dictionary.Add("CompileAs", "CompileAsCpp");
                         break;
 
                     default:

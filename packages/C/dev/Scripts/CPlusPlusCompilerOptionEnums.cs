@@ -10,6 +10,7 @@ namespace C.CPlusPlus
     {
         Disabled = 0,
         Synchronous = 1,
-        Asynchronous = 2
+        Asynchronous = 2,
+        SyncWithCExternFunctions = 3
     }
 }

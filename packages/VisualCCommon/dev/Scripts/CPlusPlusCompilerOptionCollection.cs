@@ -50,6 +50,10 @@ namespace VisualCCommon
                     commandLineBuilder.Add("/EHsc");
                     break;
 
+                case C.CPlusPlus.EExceptionHandler.SyncWithCExternFunctions:
+                    commandLineBuilder.Add("/EHs");
+                    break;
+
                 default:
                     throw new Opus.Core.Exception("Unrecognized exception handler option");
             }
@@ -59,16 +63,44 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler>;
-            switch (exceptionHandlerOption.Value)
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
-                case C.CPlusPlus.EExceptionHandler.Disabled:
-                case C.CPlusPlus.EExceptionHandler.Asynchronous:
-                case C.CPlusPlus.EExceptionHandler.Synchronous:
-                    dictionary.Add("ExceptionHandling", System.String.Format("{0}", (int)exceptionHandlerOption.Value));
-                    break;
+                switch (exceptionHandlerOption.Value)
+                {
+                    case C.CPlusPlus.EExceptionHandler.Disabled:
+                    case C.CPlusPlus.EExceptionHandler.Asynchronous:
+                    case C.CPlusPlus.EExceptionHandler.Synchronous:
+                    case C.CPlusPlus.EExceptionHandler.SyncWithCExternFunctions:
+                        dictionary.Add("ExceptionHandling", System.String.Format("{0}", (int)exceptionHandlerOption.Value));
+                        break;
 
-                default:
-                    throw new Opus.Core.Exception("Unrecognized exception handler option");
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                switch (exceptionHandlerOption.Value)
+                {
+                    case C.CPlusPlus.EExceptionHandler.Disabled:
+                        dictionary.Add("ExceptionHandling", "false");
+                        break;
+
+                    case C.CPlusPlus.EExceptionHandler.Asynchronous:
+                        dictionary.Add("ExceptionHandling", "Async");
+                        break;
+
+                    case C.CPlusPlus.EExceptionHandler.Synchronous:
+                        dictionary.Add("ExceptionHandling", "Sync");
+                        break;
+
+                    case C.CPlusPlus.EExceptionHandler.SyncWithCExternFunctions:
+                        dictionary.Add("ExceptionHandling", "SyncCThrow");
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized exception handler option");
+                }
             }
             return dictionary;
         }
