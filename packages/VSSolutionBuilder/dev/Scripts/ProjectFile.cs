@@ -90,8 +90,18 @@ namespace VSSolutionBuilder
             {
                 foreach (ProjectFileConfiguration configuration in this.FileConfigurations)
                 {
+                    ProjectTool parentTool = null;
+                    foreach (ProjectTool tool in configuration.Configuration.Tools)
+                    {
+                        if (tool.Name == configuration.Tool.Name)
+                        {
+                            parentTool = tool;
+                            break;
+                        }
+                    }
+
                     string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
-                    configuration.Tool.SerializeMSBuild(fileCollectionGroup, configuration, projectUri, relativePath);
+                    configuration.Tool.SerializeMSBuild(fileCollectionGroup, configuration, projectUri, relativePath, parentTool);
                 }
             }
         }

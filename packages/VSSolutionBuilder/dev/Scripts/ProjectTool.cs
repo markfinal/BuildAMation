@@ -186,7 +186,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildItemGroup itemGroup, ProjectFileConfiguration configuration, System.Uri projectUri, string relativePath)
+        public void SerializeMSBuild(MSBuildItemGroup itemGroup, ProjectFileConfiguration configuration, System.Uri projectUri, string relativePath, ProjectTool parentTool)
         {
             string projectName = configuration.Configuration.Project.Name;
             string outputDirectory = configuration.Configuration.OutputDirectory;
@@ -220,16 +220,32 @@ namespace VSSolutionBuilder
             }
 
             MSBuildItem toolItem = itemGroup.CreateItem(toolElementName, relativePath);
+            string[] split = configuration.Configuration.ConfigurationPlatform();
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
                 if ("Name" != attribute.Key)
                 {
                     string value = attribute.Value;
                     value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
-                    MSBuildMetaData metaData = toolItem.CreateMetaData(attribute.Key, value);
 
-                    string[] split = configuration.Configuration.ConfigurationPlatform();
-                    metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+                    // this is necessary in case the parent (from the ProjectConfiguration) is
+                    // a C interface, while the ProjectFileConfiguration tool is C++
+                    if ((parentTool != null) && (parentTool.HasAttribute(attribute.Key)))
+                    {
+                        string thisValue = attribute.Value;
+                        string parentValue = parentTool[attribute.Key];
+
+                        if ("Name" == attribute.Key || "ObjectFileName" == attribute.Key || thisValue != parentValue)
+                        {
+                            MSBuildMetaData metaData = toolItem.CreateMetaData(attribute.Key, value);
+                            metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+                        }
+                    }
+                    else
+                    {
+                        MSBuildMetaData metaData = toolItem.CreateMetaData(attribute.Key, value);
+                        metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+                    }
                 }
             }
         }
