@@ -14,19 +14,20 @@ namespace VSSolutionBuilder
             Opus.Core.PackageInformation toolchainPackage = Opus.Core.State.PackageInfo["VisualC"];
             if (null != toolchainPackage)
             {
-                System.Type projectClassType = null;
+                string projectClassTypeName = null;
                 switch (toolchainPackage.Version)
                 {
                     case "8.0":
                     case "9.0":
-                        projectClassType = typeof(VCProject);
+                        projectClassTypeName = "VSSolutionBuilder.VCProject";
                         break;
 
                     case "10.0":
-                        projectClassType = typeof(VCXBuildProject);
+                        projectClassTypeName = "VSSolutionBuilder.VCXBuildProject";
                         break;
                 }
 
+                System.Type projectClassType = System.Type.GetType(projectClassTypeName);
                 return projectClassType;
             }
             else
@@ -34,7 +35,9 @@ namespace VSSolutionBuilder
                 toolchainPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
                 if (null != toolchainPackage)
                 {
-                    return typeof(CSBuildProject);
+                    string projectClassTypeName = "VSSolutionBuilder.CSBuildProject";
+                    System.Type projectClassType = System.Type.GetType(projectClassTypeName);
+                    return projectClassType;
                 }
                 else
                 {
