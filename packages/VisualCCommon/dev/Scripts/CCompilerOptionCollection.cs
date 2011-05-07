@@ -920,8 +920,14 @@ namespace VisualCCommon
                             break;
 
                         case EDebugType.ProgramDatabase:
+                            dictionary.Add("DebugInformationFormat", "ProgramDatabase");
+                            dictionary.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
+                            break;
+
                         case EDebugType.ProgramDatabaseEditAndContinue:
-                            throw new Opus.Core.Exception("TODO");
+                            dictionary.Add("DebugInformationFormat", "EditAndContinue");
+                            dictionary.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
+                            break;
 
                         default:
                             throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
