@@ -23,7 +23,7 @@ namespace VSSolutionBuilder
                         break;
 
                     case "10.0":
-                        projectClassType = typeof(MSBuildProject);
+                        projectClassType = typeof(VCXBuildProject);
                         break;
                 }
 

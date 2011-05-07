@@ -1,11 +1,11 @@
-// <copyright file="MSBuildProject.cs" company="Mark Final">
+// <copyright file="VCXBuildProject.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VSSolutionBuilder package</summary>
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildProject : ICProject
+    public class VCXBuildProject : ICProject
     {
         private string ProjectName = null;
         private string PathName = null;
@@ -17,7 +17,7 @@ namespace VSSolutionBuilder
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
 
-        public MSBuildProject(string moduleName, string projectPathName, string packageDirectory)
+        public VCXBuildProject(string moduleName, string projectPathName, string packageDirectory)
         {
             this.ProjectName = moduleName;
             this.PathName = projectPathName;
