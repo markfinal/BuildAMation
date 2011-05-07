@@ -211,6 +211,12 @@ namespace VisualCCommon
         protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+            if (null == options.OutputName)
+            {
+                options.ObjectFilePath = null;
+                return;
+            }
+
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -236,6 +242,10 @@ namespace VisualCCommon
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+            if (null == options.ObjectFilePath)
+            {
+                return;
+            }
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -257,6 +267,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<C.ECompilerOutput> processOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
+            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+            if (null == options.ObjectFilePath)
+            {
+                return null;
+            }
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 switch (processOption.Value)
@@ -266,7 +281,6 @@ namespace VisualCCommon
                         {
                             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                             dictionary.Add("GeneratePreprocessedFile", processOption.Value.ToString("D"));
-                            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
                             dictionary.Add("ObjectFile", options.ObjectFilePath);
                             return dictionary;
                         }
@@ -283,7 +297,6 @@ namespace VisualCCommon
                     case C.ECompilerOutput.CompileOnly:
                         {
                             dictionary.Add("PreprocessToFile", "false");
-                            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
                             dictionary.Add("ObjectFileName", options.ObjectFilePath);
                         }
                         break;
@@ -291,7 +304,6 @@ namespace VisualCCommon
                     case C.ECompilerOutput.Preprocess:
                         {
                             dictionary.Add("PreprocessToFile", "true");
-                            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
                             dictionary.Add("ObjectFileName", options.ObjectFilePath);
                         }
                         break;

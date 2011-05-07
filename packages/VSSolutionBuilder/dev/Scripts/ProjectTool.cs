@@ -175,7 +175,9 @@ namespace VSSolutionBuilder
             MSBuildItem toolItem = itemDefGroup.CreateItem(toolElementName);
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
-                if ("Name" != attribute.Key)
+                // No ObjectFileName either, as this will be in the common area
+                if (("Name" != attribute.Key) &&
+                    ("ObjectFileName" != attribute.Key))
                 {
                     string value = attribute.Value;
                     value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
