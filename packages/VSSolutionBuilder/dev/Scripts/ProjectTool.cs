@@ -160,12 +160,12 @@ namespace VSSolutionBuilder
                     toolElementName = "Link";
                     break;
 
-                case "VCPostBuildEventTool":
-                    // TODO
+                case "VCCustomBuildTool":
+                    toolElementName = "CustomBuild";
                     break;
 
-                case "VCSCompiler":
-                    // TODO: might have to remove this
+                case "VCPostBuildEventTool":
+                    // TODO
                     break;
 
                 default:
@@ -180,6 +180,54 @@ namespace VSSolutionBuilder
                     string value = attribute.Value;
                     value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
                     toolItem.CreateMetaData(attribute.Key, value);
+                }
+            }
+        }
+
+        public void SerializeMSBuild(MSBuildItemGroup itemGroup, ProjectFileConfiguration configuration, System.Uri projectUri, string relativePath)
+        {
+            string projectName = configuration.Configuration.Project.Name;
+            string outputDirectory = configuration.Configuration.OutputDirectory;
+            string intermediateDirectory = configuration.Configuration.IntermediateDirectory;
+
+            string toolElementName = null;
+            switch (this.Name)
+            {
+                case "VCCLCompilerTool":
+                    toolElementName = "ClCompile";
+                    break;
+
+                case "VCLibrarianTool":
+                    toolElementName = "Lib";
+                    break;
+
+                case "VCLinkerTool":
+                    toolElementName = "Link";
+                    break;
+
+                case "VCCustomBuildTool":
+                    toolElementName = "CustomBuild";
+                    break;
+
+                case "VCPostBuildEventTool":
+                    // TODO
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
+            }
+
+            MSBuildItem toolItem = itemGroup.CreateItem(toolElementName, relativePath);
+            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            {
+                if ("Name" != attribute.Key)
+                {
+                    string value = attribute.Value;
+                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                    MSBuildMetaData metaData = toolItem.CreateMetaData(attribute.Key, value);
+
+                    string[] split = configuration.Configuration.ConfigurationPlatform();
+                    metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
             }
         }

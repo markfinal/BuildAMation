@@ -121,7 +121,6 @@ namespace VSSolutionBuilder
                 configuration.Type = EProjectConfigurationType.Utility;
 
                 string executable = compilerTool.Executable(target);
-                string outputPathname = System.String.Format("\"$(IntDir)\\$(InputName){0}\"", toolchain.ObjectFileExtension);
                 // TODO: pdb if it exists?
 
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
@@ -136,13 +135,41 @@ namespace VSSolutionBuilder
                     throw new Opus.Core.Exception("Compiler options does not support command line translation");
                 }
 
-                // add source file
-                commandLineBuilder.Add(@" $(InputPath)");
-
                 ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
-                customTool.AddAttribute("CommandLine", commandLineBuilder.ToString(' '));
-                customTool.AddAttribute("Outputs", outputPathname);
-                customTool.AddAttribute("Description", System.String.Format("Compiling $(InputFileName) with '{0}'", executable));
+
+                string commandToken;
+                string outputsToken;
+                string messageToken;
+                string message;
+                string outputPathname;
+                VisualC.Toolchain vcToolchain = toolchain as VisualC.Toolchain;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vcToolchain.VisualStudioTarget)
+                {
+                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileExtension);
+
+                    // add source file
+                    commandLineBuilder.Add(@" $(InputPath)");
+
+                    commandToken = "CommandLine";
+                    outputsToken = "Outputs";
+                    messageToken = "Description";
+                    message = System.String.Format("Compiling $(InputFileName) with '{0}'", executable);
+                }
+                else
+                {
+                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", toolchain.ObjectFileExtension);
+
+                    // add source file
+                    commandLineBuilder.Add(@" %(FullPath)");
+
+                    commandToken = "Command";
+                    outputsToken = "Outputs";
+                    messageToken = "Message";
+                    message = System.String.Format("Compiling %(Filename)%(Extension) with {0}", executable);
+                }
+                customTool.AddAttribute(commandToken, commandLineBuilder.ToString(' '));
+                customTool.AddAttribute(outputsToken, outputPathname);
+                customTool.AddAttribute(messageToken, message);
 
                 ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);

@@ -81,8 +81,19 @@ namespace VSSolutionBuilder
 
         public void SerializeMSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri, string name)
         {
-            string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
-            fileCollectionGroup.CreateItem(name, relativePath);
+            if (null == this.FileConfigurations)
+            {
+                string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                fileCollectionGroup.CreateItem(name, relativePath);
+            }
+            else
+            {
+                foreach (ProjectFileConfiguration configuration in this.FileConfigurations)
+                {
+                    string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                    configuration.Tool.SerializeMSBuild(fileCollectionGroup, configuration, projectUri, relativePath);
+                }
+            }
         }
     }
 }

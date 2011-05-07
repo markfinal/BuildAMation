@@ -366,10 +366,20 @@ namespace VisualCCommon
                         break;
 
                     case C.EOptimization.Size:
+                        dictionary.Add("Optimization", "MinSpace");
+                        break;
+
                     case C.EOptimization.Speed:
+                        dictionary.Add("Optimization", "MaxSpeed");
+                        break;
+
                     case C.EOptimization.Full:
+                        dictionary.Add("Optimization", "Full");
+                        break;
+
                     case C.EOptimization.Custom:
-                        throw new Opus.Core.Exception("TODO");
+                        // TODO: does this need something?
+                        break;
 
                     default:
                         throw new Opus.Core.Exception("Unrecognized optimization option");
@@ -578,6 +588,7 @@ namespace VisualCCommon
         {
             C.CompilerOptionCollection options = sender as C.CompilerOptionCollection;
             Opus.Core.ValueTypeOption<EBrowseInformation> enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
+            string browseDir = options.OutputDirectoryPath;
             switch (enumOption.Value)
             {
                 case EBrowseInformation.None:
@@ -585,11 +596,11 @@ namespace VisualCCommon
                     break;
 
                 case EBrowseInformation.Full:
-                    commandLineBuilder.Add(System.String.Format("/FR\"{0}\"\\", options.OutputDirectoryPath));
+                    commandLineBuilder.Add(System.String.Format("/FR\"{0}\"", browseDir));
                     break;
 
                 case EBrowseInformation.NoLocalSymbols:
-                    commandLineBuilder.Add(System.String.Format("/Fr\"{0}\"\\", options.OutputDirectoryPath));
+                    commandLineBuilder.Add(System.String.Format("/Fr\"{0}\"", browseDir));
                     break;
 
                 default:
@@ -603,7 +614,7 @@ namespace VisualCCommon
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             C.CompilerOptionCollection options = sender as C.CompilerOptionCollection;
             // the trailing directory separator is important, or unexpected rebuilds occur
-            string browseDir = options.OutputDirectoryPath + "\\";
+            string browseDir = options.OutputDirectoryPath +"\\";
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 dictionary.Add("BrowseInformation", enumOption.Value.ToString("D"));

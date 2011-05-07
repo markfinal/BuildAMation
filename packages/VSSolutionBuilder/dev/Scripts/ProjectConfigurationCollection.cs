@@ -90,6 +90,8 @@ namespace VSSolutionBuilder
 
                 MSBuildPropertyGroup dirGroup = project.CreatePropertyGroup();
                 dirGroup.CreateProperty("_ProjectFileVersion", "10.0.40219.1"); // TODO, and this means what?
+
+                if (null != configuration.OutputDirectory)
                 {
                     string outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
                     if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))

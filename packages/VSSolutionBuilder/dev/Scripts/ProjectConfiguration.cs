@@ -136,8 +136,24 @@ namespace VSSolutionBuilder
             System.Xml.XmlElement configurationElement = document.CreateElement("Configuration");
 
             configurationElement.SetAttribute("Name", this.Name);
-            configurationElement.SetAttribute("OutputDirectory", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
-            configurationElement.SetAttribute("IntermediateDirectory", Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri));
+            if (null != this.OutputDirectory)
+            {
+                string outputDir = Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
+                if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    outputDir += System.IO.Path.DirectorySeparatorChar;
+                }
+                configurationElement.SetAttribute("OutputDirectory", outputDir);
+            }
+            if (null != this.IntermediateDirectory)
+            {
+                string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
+                if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    intermediateDir += System.IO.Path.DirectorySeparatorChar;
+                }
+                configurationElement.SetAttribute("IntermediateDirectory", intermediateDir);
+            }
             configurationElement.SetAttribute("ConfigurationType", this.Type.ToString("D"));
             configurationElement.SetAttribute("CharacterSet", this.CharacterSet.ToString("D"));
 
