@@ -633,17 +633,14 @@ namespace VisualCCommon
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
             {
-                // TODO: needs looking into
                 switch (enumOption.Value)
                 {
                     case EBrowseInformation.None:
                         dictionary.Add("BrowseInformation", "false");
                         break;
 
+                    // TODO: there does not appear to be a different set of values in MSBUILD
                     case EBrowseInformation.Full:
-                        dictionary.Add("BrowseInformation", "true");
-                        break;
-
                     case EBrowseInformation.NoLocalSymbols:
                         dictionary.Add("BrowseInformation", "true");
                         break;
