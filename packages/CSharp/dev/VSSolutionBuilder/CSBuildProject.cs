@@ -185,5 +185,13 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception(message, exception);
             }
         }
+
+        VisualStudioProcessor.EVisualStudioTarget IProject.VSTarget
+        {
+            get
+            {
+                return VisualStudioProcessor.EVisualStudioTarget.MSBUILD;
+            }
+        }
     }
 }

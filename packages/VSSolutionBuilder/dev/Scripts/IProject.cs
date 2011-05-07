@@ -42,6 +42,11 @@ namespace VSSolutionBuilder
             get;
         }
 
+        VisualStudioProcessor.EVisualStudioTarget VSTarget
+        {
+            get;
+        }
+
         void Serialize();
     }
 }

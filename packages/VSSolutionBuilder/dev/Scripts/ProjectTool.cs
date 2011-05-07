@@ -165,7 +165,7 @@ namespace VSSolutionBuilder
                     break;
 
                 case "VCPostBuildEventTool":
-                    // TODO
+                    toolElementName = "PostBuildEvent";
                     break;
 
                 default:
@@ -212,7 +212,7 @@ namespace VSSolutionBuilder
                     break;
 
                 case "VCPostBuildEventTool":
-                    // TODO
+                    toolElementName = "PostBuildEvent";
                     break;
 
                 default:

@@ -44,7 +44,15 @@ namespace VSSolutionBuilder
 
             lock (vcPostBuildEventTool)
             {
-                const string attributeName = "CommandLine";
+                string attributeName = null;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == nodeProjectData.VSTarget)
+                {
+                    attributeName = "CommandLine";
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == nodeProjectData.VSTarget)
+                {
+                    attributeName = "Command";
+                }
                 if (vcPostBuildEventTool.HasAttribute(attributeName))
                 {
                     string currentValue = vcPostBuildEventTool[attributeName];
