@@ -16,6 +16,7 @@ namespace VSSolutionBuilder
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
+        private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
 
         public VCProject(string moduleName, string projectPathName, string packageDirectory)
         {
@@ -100,6 +101,14 @@ namespace VSSolutionBuilder
             get
             {
                 return this.DependentProjectList;
+            }
+        }
+
+        System.Collections.Generic.List<string> IProject.References
+        {
+            get
+            {
+                return this.ReferencesList;
             }
         }
 
