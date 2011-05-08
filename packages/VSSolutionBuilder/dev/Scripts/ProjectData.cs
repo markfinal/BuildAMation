@@ -103,7 +103,11 @@ namespace VSSolutionBuilder
 
                 // preamble
                 vsProjectElement.SetAttribute("ProjectType", "Visual C++");
-                vsProjectElement.SetAttribute("Version", VisualC.Project.Version);
+                System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                System.Reflection.MethodInfo ProjectVersionMethod = solutionType.GetMethod("ProjectVersion");
+                vsProjectElement.SetAttribute("Version", ProjectVersionMethod.Invoke(SolutionInstance, null) as string);
+                SolutionInstance = null;
                 vsProjectElement.SetAttribute("Name", this.Name);
                 vsProjectElement.SetAttribute("ProjectGUID", this.Guid.ToString("B").ToUpper());
 

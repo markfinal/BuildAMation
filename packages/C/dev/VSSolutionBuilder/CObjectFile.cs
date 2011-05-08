@@ -16,7 +16,7 @@ namespace VSSolutionBuilder
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 
-            ProjectData projectData = null;
+            IProject projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
@@ -26,10 +26,17 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += ".vcproj";
+                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    projectData = new ProjectData(moduleName, projectPathName, node.Package.Directory);
+                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
+                    projectPathName += projectExtension;
+
+                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory } ) as IProject;
+
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
@@ -42,7 +49,7 @@ namespace VSSolutionBuilder
             {
                 if (!this.solutionFile.ProjectConfigurations.ContainsKey(configurationName))
                 {
-                    this.solutionFile.ProjectConfigurations.Add(configurationName, new System.Collections.Generic.List<ProjectData>());
+                    this.solutionFile.ProjectConfigurations.Add(configurationName, new System.Collections.Generic.List<IProject>());
                 }
             }
             this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);
@@ -52,12 +59,33 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    configuration = new ProjectConfiguration(configurationName, (objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
+                    C.ICCompilerOptions compilerOptions = objectFile.Options as C.ICCompilerOptions;
+                    C.IToolchainOptions toolchainOptions = compilerOptions.ToolchainOptionCollection as C.IToolchainOptions;
+                    EProjectCharacterSet characterSet;
+                    switch (toolchainOptions.CharacterSet)
+                    {
+                        case C.ECharacterSet.NotSet:
+                            characterSet = EProjectCharacterSet.NotSet;
+                            break;
+
+                        case C.ECharacterSet.Unicode:
+                            characterSet = EProjectCharacterSet.UniCode;
+                            break;
+
+                        case C.ECharacterSet.MultiByte:
+                            characterSet = EProjectCharacterSet.MultiByte;
+                            break;
+
+                        default:
+                            characterSet = EProjectCharacterSet.Undefined;
+                            break;
+                    }
+                    configuration = new ProjectConfiguration(configurationName, characterSet, projectData);
 
                     C.CompilerOptionCollection options = objectFile.Options as C.CompilerOptionCollection;
                     configuration.IntermediateDirectory = options.OutputDirectoryPath;
 
-                    projectData.Configurations.Add(configuration);
+                    projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
@@ -93,7 +121,6 @@ namespace VSSolutionBuilder
                 configuration.Type = EProjectConfigurationType.Utility;
 
                 string executable = compilerTool.Executable(target);
-                string outputPathname = System.String.Format("\"$(IntDir)\\$(InputName){0}\"", toolchain.ObjectFileExtension);
                 // TODO: pdb if it exists?
 
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
@@ -108,13 +135,41 @@ namespace VSSolutionBuilder
                     throw new Opus.Core.Exception("Compiler options does not support command line translation");
                 }
 
-                // add source file
-                commandLineBuilder.Add(@" $(InputPath)");
-
                 ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
-                customTool.AddAttribute("CommandLine", commandLineBuilder.ToString(' '));
-                customTool.AddAttribute("Outputs", outputPathname);
-                customTool.AddAttribute("Description", System.String.Format("Compiling $(InputFileName) with '{0}'", executable));
+
+                string commandToken;
+                string outputsToken;
+                string messageToken;
+                string message;
+                string outputPathname;
+                VisualC.Toolchain vcToolchain = toolchain as VisualC.Toolchain;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vcToolchain.VisualStudioTarget)
+                {
+                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileExtension);
+
+                    // add source file
+                    commandLineBuilder.Add(@" $(InputPath)");
+
+                    commandToken = "CommandLine";
+                    outputsToken = "Outputs";
+                    messageToken = "Description";
+                    message = System.String.Format("Compiling $(InputFileName) with '{0}'", executable);
+                }
+                else
+                {
+                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", toolchain.ObjectFileExtension);
+
+                    // add source file
+                    commandLineBuilder.Add(@" %(FullPath)");
+
+                    commandToken = "Command";
+                    outputsToken = "Outputs";
+                    messageToken = "Message";
+                    message = System.String.Format("Compiling %(Filename)%(Extension) with {0}", executable);
+                }
+                customTool.AddAttribute(commandToken, commandLineBuilder.ToString(' '));
+                customTool.AddAttribute(outputsToken, outputPathname);
+                customTool.AddAttribute(messageToken, message);
 
                 ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);

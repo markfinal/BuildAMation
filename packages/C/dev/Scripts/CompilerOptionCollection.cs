@@ -76,7 +76,7 @@ namespace C
             }
             else
             {
-                this.OutputName = node.ModuleName;
+                this.OutputName = null;
             }
 
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);

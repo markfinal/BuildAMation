@@ -10,20 +10,11 @@ namespace VSSolutionBuilder
         private EProjectConfigurationType type;
         private EProjectCharacterSet characterSet = EProjectCharacterSet.Undefined;
 
-        public ProjectConfiguration(string name, C.IToolchainOptions optionCollection, ProjectData project)
+        public ProjectConfiguration(string name, EProjectCharacterSet characterSet, IProject project)
         {
             this.Name = name;
             this.type = EProjectConfigurationType.Undefined;
-            this.CharacterSet = (EProjectCharacterSet)optionCollection.CharacterSet;
-            this.Tools = new ProjectToolCollection();
-            this.Project = project;
-        }
-
-        public ProjectConfiguration(string name, C.ECharacterSet characterSet, ProjectData project)
-        {
-            this.Name = name;
-            this.type = EProjectConfigurationType.Undefined;
-            this.CharacterSet = (EProjectCharacterSet)characterSet;
+            this.CharacterSet = characterSet;
             this.Tools = new ProjectToolCollection();
             this.Project = project;
         }
@@ -34,7 +25,7 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public ProjectData Project
+        public IProject Project
         {
             get;
             private set;
@@ -145,8 +136,24 @@ namespace VSSolutionBuilder
             System.Xml.XmlElement configurationElement = document.CreateElement("Configuration");
 
             configurationElement.SetAttribute("Name", this.Name);
-            configurationElement.SetAttribute("OutputDirectory", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
-            configurationElement.SetAttribute("IntermediateDirectory", Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri));
+            if (null != this.OutputDirectory)
+            {
+                string outputDir = Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
+                if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    outputDir += System.IO.Path.DirectorySeparatorChar;
+                }
+                configurationElement.SetAttribute("OutputDirectory", outputDir);
+            }
+            if (null != this.IntermediateDirectory)
+            {
+                string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
+                if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    intermediateDir += System.IO.Path.DirectorySeparatorChar;
+                }
+                configurationElement.SetAttribute("IntermediateDirectory", intermediateDir);
+            }
             configurationElement.SetAttribute("ConfigurationType", this.Type.ToString("D"));
             configurationElement.SetAttribute("CharacterSet", this.CharacterSet.ToString("D"));
 
@@ -159,6 +166,55 @@ namespace VSSolutionBuilder
             }
 
             return configurationElement;
+        }
+
+        public string[] ConfigurationPlatform()
+        {
+            string[] split = this.Name.Split('|');
+            return split;
+        }
+
+        public void SerializeMSBuild(MSBuildItemGroup configurationGroup, System.Uri projectUri)
+        {
+            if (this.Type == EProjectConfigurationType.Undefined)
+            {
+                throw new Opus.Core.Exception("Project type is undefined");
+            }
+            if (this.CharacterSet == EProjectCharacterSet.Undefined)
+            {
+                throw new Opus.Core.Exception("Project character set is undefined");
+            }
+
+            MSBuildItem projectConfiguration = configurationGroup.CreateItem("ProjectConfiguration", this.Name);
+
+            string[] split = this.Name.Split('|');
+
+            projectConfiguration.CreateMetaData("Configuration", split[0]);
+            projectConfiguration.CreateMetaData("Platform", split[1]);
+        }
+
+        public void SerializeCSBuild(MSBuildProject project, System.Uri projectUri)
+        {
+            if (this.Type == EProjectConfigurationType.Undefined)
+            {
+                throw new Opus.Core.Exception("Project type is undefined");
+            }
+            if (this.CharacterSet == EProjectCharacterSet.Undefined)
+            {
+                throw new Opus.Core.Exception("Project character set is undefined");
+            }
+
+            MSBuildPropertyGroup configurationGroup = project.CreatePropertyGroup();
+
+            string[] split = this.Name.Split('|');
+            configurationGroup.Condition = System.String.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", split[0], split[1]);
+
+            configurationGroup.CreateProperty("OutputPath", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
+
+            foreach (ProjectTool tool in this.Tools)
+            {
+                tool.SerializeCSBuild(configurationGroup, this, projectUri);
+            }
         }
     }
 }

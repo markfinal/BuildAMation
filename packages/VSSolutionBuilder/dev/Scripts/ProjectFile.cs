@@ -78,5 +78,38 @@ namespace VSSolutionBuilder
                 this.Serialize(document, directoryElement, projectUri, splitFirDirs, ++index);
             }
         }
+
+        public void SerializeMSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri, string name)
+        {
+            if (null == this.FileConfigurations)
+            {
+                string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                fileCollectionGroup.CreateItem(name, relativePath);
+            }
+            else
+            {
+                foreach (ProjectFileConfiguration configuration in this.FileConfigurations)
+                {
+                    ProjectTool parentTool = null;
+                    foreach (ProjectTool tool in configuration.Configuration.Tools)
+                    {
+                        if (tool.Name == configuration.Tool.Name)
+                        {
+                            parentTool = tool;
+                            break;
+                        }
+                    }
+
+                    string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                    configuration.Tool.SerializeMSBuild(fileCollectionGroup, configuration, projectUri, relativePath, parentTool);
+                }
+            }
+        }
+
+        public void SerializeCSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri)
+        {
+            string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+            fileCollectionGroup.CreateItem("Compile", relativePath);
+        }
     }
 }

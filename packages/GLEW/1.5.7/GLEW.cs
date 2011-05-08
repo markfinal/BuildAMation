@@ -8,6 +8,11 @@ namespace GLEW
     // Define module classes here
     class GLEWStatic : C.StaticLibrary
     {
+        public GLEWStatic()
+        {
+            this.headerFiles.AddRelativePaths(this, "glew-1.5.7", "include", "GL", "*.h");
+        }
+
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -50,6 +55,9 @@ namespace GLEW
 
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
+
+        [C.HeaderFiles]
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(

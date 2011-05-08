@@ -10,8 +10,8 @@ namespace VSSolutionBuilder
         public SolutionFile(string pathName)
         {
             this.PathName = pathName;
-            this.ProjectDictionary = new System.Collections.Generic.Dictionary<string, ProjectData>();
-            this.ProjectConfigurations = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<ProjectData>>();
+            this.ProjectDictionary = new System.Collections.Generic.Dictionary<string, IProject>();
+            this.ProjectConfigurations = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IProject>>();
         }
 
         public string PathName
@@ -20,14 +20,14 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<string, ProjectData> ProjectDictionary
+        public System.Collections.Generic.Dictionary<string, IProject> ProjectDictionary
         {
             get;
             private set;
         }
 
         //TODO: not sure if this is necessary
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<ProjectData>> ProjectConfigurations
+        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IProject>> ProjectConfigurations
         {
             get;
             private set;
@@ -35,9 +35,9 @@ namespace VSSolutionBuilder
 
         public void ResolveSourceFileConfigurationExclusions()
         {
-            foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+            foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
             {
-                ProjectData projectData = project.Value;
+                IProject projectData = project.Value;
                 foreach (ProjectFile sourceFile in projectData.SourceFiles)
                 {
                     foreach (ProjectConfiguration configuration in projectData.Configurations)
@@ -59,34 +59,42 @@ namespace VSSolutionBuilder
         public void Serialize()
         {
             // serialize each vcproj
-            foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+            foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
             {
                 project.Value.Serialize();
             }
 
+            System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+            object SolutionInstance = System.Activator.CreateInstance(solutionType);
+
             // serialize the sln
             using (System.IO.TextWriter textWriter = new System.IO.StreamWriter(this.PathName))
             {
-                textWriter.Write(VisualC.Solution.Header);
+                System.Reflection.PropertyInfo HeaderProperty = solutionType.GetProperty("Header");
+                textWriter.Write(HeaderProperty.GetGetMethod().Invoke(SolutionInstance, null));
 
                 System.Uri solutionLocationUri = new System.Uri(this.PathName, System.UriKind.RelativeOrAbsolute);
 
                 // projects
-                foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+                foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
                 {
                     System.Uri projectLocationUri = new System.Uri(project.Value.PathName, System.UriKind.RelativeOrAbsolute);
                     System.Uri relativeProjectLocationUri = solutionLocationUri.MakeRelativeUri(projectLocationUri);
 
+                    System.Reflection.PropertyInfo GuidProperty = solutionType.GetProperty("ProjectGuid");
+                    System.Guid projectTypeGuid = (System.Guid)GuidProperty.GetGetMethod().Invoke(SolutionInstance, null);
                     textWriter.WriteLine("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-                                         VisualC.Project.Guid.ToString("B").ToUpper(),
+                                         projectTypeGuid.ToString("B").ToUpper(),
                                          project.Value.Name,
                                          relativeProjectLocationUri.ToString(),
                                          project.Value.Guid.ToString("B").ToUpper());
 
-                    if (project.Value.DependentProjects.Count > 0)
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    if (projectExtension.Equals(".vcproj") && (project.Value.DependentProjects.Count > 0))
                     {
                         textWriter.WriteLine("\tProjectSection(ProjectDependencies) = postProject");
-                        foreach (ProjectData dependentProject in project.Value.DependentProjects)
+                        foreach (IProject dependentProject in project.Value.DependentProjects)
                         {
                             textWriter.WriteLine("\t\t{0} = {0}", dependentProject.Guid.ToString("B").ToUpper());
                         }
@@ -101,7 +109,7 @@ namespace VSSolutionBuilder
                 {
                     // solution configuration (presolution)
                     textWriter.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
-                    foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<ProjectData>> configuration in this.ProjectConfigurations)
+                    foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<IProject>> configuration in this.ProjectConfigurations)
                     {
                         textWriter.WriteLine("\t\t{0} = {1}", configuration.Key, configuration.Key); // TODO: fixme
                     }
@@ -109,10 +117,10 @@ namespace VSSolutionBuilder
 
                     // project configuration platforms (post solution)
                     textWriter.WriteLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
-                    foreach (System.Collections.Generic.KeyValuePair<string, ProjectData> project in this.ProjectDictionary)
+                    foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
                     {
                         // TODO: fixme
-                        ProjectData projectData = project.Value;
+                        IProject projectData = project.Value;
 
                         foreach (ProjectConfiguration configurations in projectData.Configurations)
                         {
@@ -130,6 +138,8 @@ namespace VSSolutionBuilder
                 }
                 textWriter.WriteLine("EndGlobal");
             }
+
+            SolutionInstance = null;
 
             Opus.Core.Log.Info("Solution file written to '{0}'", this.PathName);
         }

@@ -13,7 +13,7 @@ namespace VSSolutionBuilder
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
-            ProjectData projectData = null;
+            IProject projectData = null;
             // TODO: want to remove this
             lock (this.solutionFile.ProjectDictionary)
             {
@@ -23,10 +23,17 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += ".vcproj";
+                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    projectData = new ProjectData(moduleName, projectPathName, node.Package.Directory);
+                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
+                    projectPathName += projectExtension;
+
+                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
+
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
@@ -39,8 +46,29 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    configuration = new ProjectConfiguration(configurationName, (staticLibrary.Options as C.IArchiverOptions).ToolchainOptionCollection as C.IToolchainOptions, projectData);
-                    projectData.Configurations.Add(configuration);
+                    C.IArchiverOptions archiverOptions = staticLibrary.Options as C.IArchiverOptions;
+                    C.IToolchainOptions toolchainOptions = archiverOptions.ToolchainOptionCollection as C.IToolchainOptions;
+                    EProjectCharacterSet characterSet;
+                    switch (toolchainOptions.CharacterSet)
+                    {
+                        case C.ECharacterSet.NotSet:
+                            characterSet = EProjectCharacterSet.NotSet;
+                            break;
+
+                        case C.ECharacterSet.Unicode:
+                            characterSet = EProjectCharacterSet.UniCode;
+                            break;
+
+                        case C.ECharacterSet.MultiByte:
+                            characterSet = EProjectCharacterSet.MultiByte;
+                            break;
+
+                        default:
+                            characterSet = EProjectCharacterSet.Undefined;
+                            break;
+                    }
+                    configuration = new ProjectConfiguration(configurationName, characterSet, projectData);
+                    projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
@@ -60,12 +88,13 @@ namespace VSSolutionBuilder
                     Opus.Core.FileCollection headerFileCollection = field.GetValue(staticLibrary) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        lock (projectData.HeaderFiles)
+                        ICProject cProject = projectData as ICProject;
+                        lock (cProject.HeaderFiles)
                         {
-                            if (!projectData.HeaderFiles.Contains(headerPath))
+                            if (!cProject.HeaderFiles.Contains(headerPath))
                             {
                                 ProjectFile headerFile = new ProjectFile(headerPath);
-                                projectData.HeaderFiles.Add(headerFile);
+                                cProject.HeaderFiles.Add(headerFile);
                             }
                         }
                     }

@@ -9,6 +9,43 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder : Opus.Core.IBuilder
     {
+        private static System.Type GetProjectClassType()
+        {
+            Opus.Core.PackageInformation toolchainPackage = Opus.Core.State.PackageInfo["VisualC"];
+            if (null != toolchainPackage)
+            {
+                string projectClassTypeName = null;
+                switch (toolchainPackage.Version)
+                {
+                    case "8.0":
+                    case "9.0":
+                        projectClassTypeName = "VSSolutionBuilder.VCProject";
+                        break;
+
+                    case "10.0":
+                        projectClassTypeName = "VSSolutionBuilder.VCXBuildProject";
+                        break;
+                }
+
+                System.Type projectClassType = System.Type.GetType(projectClassTypeName);
+                return projectClassType;
+            }
+            else
+            {
+                toolchainPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
+                if (null != toolchainPackage)
+                {
+                    string projectClassTypeName = "VSSolutionBuilder.CSBuildProject";
+                    System.Type projectClassType = System.Type.GetType(projectClassTypeName);
+                    return projectClassType;
+                }
+                else
+                {
+                    throw new Opus.Core.Exception("Unable to locate a suitable toolchain package");
+                }
+            }
+        }
+
         private static string CapitalizeFirstLetter(string word)
         {
             if (System.String.IsNullOrEmpty(word))
@@ -24,6 +61,12 @@ namespace VSSolutionBuilder
         {
             string platform = GetPlatformNameFromTarget(target);
             string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platform);
+            return configurationName;
+        }
+
+        private static string GetConfigurationNameFromTarget(Opus.Core.Target target, string platformName)
+        {
+            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platformName);
             return configurationName;
         }
 
@@ -48,16 +91,31 @@ namespace VSSolutionBuilder
 
         internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string intermediateDirectoryPath, string projectName, System.Uri projectUri)
         {
+            if (System.String.IsNullOrEmpty(path))
+            {
+                throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
+            }
+
             string refactoredPath = path;
 
             if (outputDirectoryPath != null)
             {
-                refactoredPath = refactoredPath.Replace(outputDirectoryPath, "$(OutDir)");
+                string outputDir = outputDirectoryPath;
+                if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    outputDir += System.IO.Path.DirectorySeparatorChar;
+                }
+                refactoredPath = refactoredPath.Replace(outputDir, "$(OutDir)");
             }
 
             if (intermediateDirectoryPath != null)
             {
-                refactoredPath = refactoredPath.Replace(intermediateDirectoryPath, "$(IntDir)");
+                string intDir = intermediateDirectoryPath;
+                if (!intDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    intDir += System.IO.Path.DirectorySeparatorChar;
+                }
+                refactoredPath = refactoredPath.Replace(intDir, "$(IntDir)");
             }
 
             refactoredPath = refactoredPath.Replace(projectName, "$(ProjectName)");

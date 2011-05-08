@@ -8,8 +8,8 @@ namespace VSSolutionBuilder
     public enum EProjectCharacterSet
     {
         Undefined = -1,
-        NotSet = C.ECharacterSet.NotSet,
-        Unicode = C.ECharacterSet.Unicode,
-        MultiByte = C.ECharacterSet.MultiByte
+        NotSet,
+        UniCode,
+        MultiByte
     }
 }

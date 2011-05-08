@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\prototypes\Opus\dev\bin32\Debug\Schema\OpusPackageDependency.xsd">
+<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\GoogleCode\Opus\branches\wpf\bin\Debug\Schema\OpusPackageDependency.xsd">
   <Package Name="DotNetFramework" Version="2.0.50727" />
   <Package Name="NativeBuilder" Version="dev" />
+  <Package Name="VisualStudioProcessor" Version="dev" />
 </RequiredPackages>

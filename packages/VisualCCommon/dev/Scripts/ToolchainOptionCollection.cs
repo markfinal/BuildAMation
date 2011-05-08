@@ -84,7 +84,7 @@ namespace VisualCCommon
                     commandLineBuilder.Add("/MD");
                     break;
 
-                case ERuntimeLibrary.MultiThreadedDLLDebug:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
                     commandLineBuilder.Add("/MDd");
                     break;
 
@@ -93,7 +93,7 @@ namespace VisualCCommon
             }
         }
 
-        private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target)
+        private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
@@ -101,10 +101,17 @@ namespace VisualCCommon
                 case ERuntimeLibrary.MultiThreaded:
                 case ERuntimeLibrary.MultiThreadedDebug:
                 case ERuntimeLibrary.MultiThreadedDLL:
-                case ERuntimeLibrary.MultiThreadedDLLDebug:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
                     {
                         VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-                        dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString("D"));
+                        if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+                        {
+                            dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString("D"));
+                        }
+                        else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+                        {
+                            dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString());
+                        }
                         return dictionary;
                     }
 
@@ -115,7 +122,18 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target);
+            VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+            switch (vsTarget)
+            {
+                case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
+                case VisualStudioProcessor.EVisualStudioTarget.MSBUILD:
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio target, '{0}'", vsTarget));
+            }
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;
         }
     }

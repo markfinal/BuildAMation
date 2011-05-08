@@ -56,5 +56,17 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception(System.String.Format("There is no ProjectTool called '{0}'", toolName));
             }
         }
+
+        public void SerializeMSBuild(MSBuildProject project, ProjectConfiguration configuration, System.Uri projectUri)
+        {
+            MSBuildItemDefinitionGroup toolItemGroup = project.CreateItemDefinitionGroup();
+            string[] split = configuration.ConfigurationPlatform();
+            toolItemGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+
+            foreach (ProjectTool tool in this.list)
+            {
+                tool.SerializeMSBuild(toolItemGroup, configuration, projectUri);
+            }
+        }
     }
 }

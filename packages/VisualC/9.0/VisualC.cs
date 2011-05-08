@@ -13,30 +13,18 @@
 
 namespace VisualC
 {
-    public static class Solution
+    public class Solution
     {
-        public static string Header
-        {
-            get
-            {
-                System.Text.StringBuilder header = new System.Text.StringBuilder();
-                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 10.00");
-                header.AppendLine("# Visual C++ Express 2008");
-                return header.ToString();
-            }
-        }
-    }
+        private static System.Guid ProjectTypeGuid;
 
-    public static class Project
-    {
-        static Project()
+        static Solution()
         {
-            // TODO: this path is for VCExpress
+            // TODO: this path is for VCExpress - what about the professional version?
             using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VCExpress\9.0\Projects"))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("VisualStudio Express was not installed");
+                    throw new Opus.Core.Exception("VisualStudio C++ Express 2008 was not installed");
                 }
 
                 string[] subKeyNames = key.GetSubKeyNames();
@@ -49,7 +37,7 @@ namespace VisualC
                         {
                             if (projectExtension == "vcproj")
                             {
-                                Guid = new System.Guid(subKeyName);
+                                ProjectTypeGuid = new System.Guid(subKeyName);
                                 break;
                             }
                         }
@@ -57,25 +45,53 @@ namespace VisualC
                 }
             }
 
-            // Note: do this instead of (null == Guid) to satify the Mono compiler
-            // see CS0472, and something about struct comparisos
-            if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)Guid)
+            if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
             {
                 throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2008");
             }
+
+#if false
+            // Note: do this instead of (null == Guid) to satify the Mono compiler
+            // see CS0472, and something about struct comparisons
+            if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
+            {
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2008");
+            }
+#endif
         }
 
-        public static System.Guid Guid
+        public string Header
         {
-            get;
-            private set;
+            get
+            {
+                System.Text.StringBuilder header = new System.Text.StringBuilder();
+                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 10.00");
+                header.AppendLine("# Visual C++ Express 2008");
+                return header.ToString();
+            }
         }
 
-        public static string Version
+        public System.Guid ProjectGuid
+        {
+            get
+            {
+                return ProjectTypeGuid;
+            }
+        }
+
+        public string ProjectVersion
         {
             get
             {
                 return "9.00";
+            }
+        }
+
+        public string ProjectExtension
+        {
+            get
+            {
+                return ".vcproj";
             }
         }
     }
