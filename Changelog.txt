@@ -1,3 +1,5 @@
+08-May-2011 Removed VSSolutionBuild ProjectData class, as it has been superceded by the IProject interface.
+
 08-May-2011 MSBuild support in VSSolutionBuilder. This allows native output of VisualStudi 2010 .vcxprojs and C# .csprojs for other versions of VisualStudio. The version of the VisualC package determines the target of C++ projects. The version of the DotNetFramework package determines the target of C# projects.
             Windows Presentation Foundation (WPF) support in C# projects, requiring an AssemblyDefinition and Pages .xaml files (and associated .cs files).
             Improved exception reporting from build scripts, when there is deep nesting of exceptions.
