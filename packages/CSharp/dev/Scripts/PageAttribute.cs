@@ -1,4 +1,4 @@
-// <copyright file="PageAttribute.cs" company="Mark Final">
+// <copyright file="PagesAttribute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>CSharp package</summary>
@@ -6,9 +6,9 @@
 namespace CSharp
 {
     [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = true)]
-    public sealed class PageAttribute : System.Attribute
+    public sealed class PagesAttribute : System.Attribute
     {
-        public PageAttribute()
+        public PagesAttribute()
         {
         }
     }

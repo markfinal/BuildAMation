@@ -81,7 +81,7 @@ namespace MakeFileBuilder
 
                 // WPF application definition .xaml file
                 {
-                    var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.ApplicationDefinitionsAttribute), false);
+                    var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.ApplicationDefinitionAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(assembly);
@@ -139,9 +139,9 @@ namespace MakeFileBuilder
                     }
                 }
 
-                // WPF page .xaml file
+                // WPF page .xaml files
                 {
-                    var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PageAttribute), false);
+                    var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PagesAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(assembly);

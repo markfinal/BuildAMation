@@ -1,4 +1,4 @@
-// <copyright file="ApplicationDefinitionsAttribute.cs" company="Mark Final">
+// <copyright file="ApplicationDefinitionAttribute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>CSharp package</summary>
@@ -6,9 +6,9 @@
 namespace CSharp
 {
     [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple=true)]
-    public sealed class ApplicationDefinitionsAttribute : System.Attribute
+    public sealed class ApplicationDefinitionAttribute : System.Attribute
     {
-        public ApplicationDefinitionsAttribute()
+        public ApplicationDefinitionAttribute()
         {
         }
     }

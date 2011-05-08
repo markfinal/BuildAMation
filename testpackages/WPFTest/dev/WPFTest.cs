@@ -23,10 +23,10 @@ namespace WPFTest
             options.References.Add("PresentationFramework.dll");
         }
 
-        [CSharp.ApplicationDefinitions]
+        [CSharp.ApplicationDefinition]
         Opus.Core.File applicationDefinition = new Opus.Core.File();
 
-        [CSharp.Page]
+        [CSharp.Pages]
         Opus.Core.File page = new Opus.Core.File();
     }
 }

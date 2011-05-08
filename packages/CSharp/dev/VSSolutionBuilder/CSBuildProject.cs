@@ -165,11 +165,13 @@ namespace VSSolutionBuilder
                 }
 
                 // application definition and page files
+                if ((this.ApplicationDefinitionFile != null) ||
+                    (this.PageFiles.Count > 0))
                 {
                     MSBuildItemGroup applicationDefinitionGroup = project.CreateItemGroup();
 
                     // application definition
-                    if (this.ApplicationDefinitionFile.RelativePath != null)
+                    if (this.ApplicationDefinitionFile != null)
                     {
                         string xamlRelativePath = Opus.Core.RelativePathUtilities.GetPath(this.ApplicationDefinitionFile.RelativePath, projectLocationUri);
 
