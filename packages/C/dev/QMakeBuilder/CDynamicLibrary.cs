@@ -222,9 +222,12 @@ namespace QMakeBuilder
                     }
                     proFileWriter.WriteLine(libStatement.ToString());
 
-                    foreach (string dependentLibrary in dependentLibraryFiles)
+                    if (null != dependentLibraryFiles)
                     {
-                        proFileWriter.WriteLine("{0}:PRE_TARGETDEPS += {1}", nodeData.Configuration, dependentLibrary.Replace('\\', '/'));
+                        foreach (string dependentLibrary in dependentLibraryFiles)
+                        {
+                            proFileWriter.WriteLine("{0}:PRE_TARGETDEPS += {1}", nodeData.Configuration, dependentLibrary.Replace('\\', '/'));
+                        }
                     }
                 }
 
