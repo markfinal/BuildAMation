@@ -150,6 +150,12 @@ namespace GccCommon
         protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+            if (null == options.OutputName)
+            {
+                options.ObjectFilePath = null;
+                return;
+            }
+
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -175,6 +181,12 @@ namespace GccCommon
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+            if (null == options.OutputName)
+            {
+                options.ObjectFilePath = null;
+                return;
+            }
+
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
