@@ -1,3 +1,5 @@
+08-May-2011 Remove hardcoded .csproj extension in the VSSolutionBuilder
+
 08-May-2011 Fixes for QMakeBuilder support for C applications and dynamic libraries when there are no dependent libraries.
 
 08-May-2011 Fixes to Gcc and Mingw C compiler OutputType delegates, following a change that the CObjectFileCollection will now have a null pointer for it's output file.

@@ -45,8 +45,13 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
+                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+
                     string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
-                    projectPathName += ".csproj";
+                    projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as ICSProject;
