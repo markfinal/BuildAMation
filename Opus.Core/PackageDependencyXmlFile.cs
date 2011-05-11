@@ -62,6 +62,25 @@ namespace Opus.Core
 
             this.packages.Sort();
 
+            System.Xml.XmlDocument document = new System.Xml.XmlDocument();
+            document.Schemas.Add("noNamespaceSchemaLocation", schemaFilename);
+            System.Xml.XmlElement requiredPackages = document.CreateElement("RequiredPackages");
+            {
+                string xmlns = "http://www.w3.org/2001/XMLSchema-instance";
+                System.Xml.XmlAttribute schemaAttribute = document.CreateAttribute("xsi", "noNamespaceSchemaLocation", xmlns);
+                schemaAttribute.Value = schemaFilename;
+                requiredPackages.Attributes.Append(schemaAttribute);
+            }
+            document.AppendChild(requiredPackages);
+
+            foreach (PackageInformation package in this.packages)
+            {
+                System.Xml.XmlElement packageElement = document.CreateElement("Package");
+                packageElement.SetAttribute("Name", package.Name);
+                packageElement.SetAttribute("Version", package.Version);
+                requiredPackages.AppendChild(packageElement);
+            }
+
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.CloseOutput = true;
@@ -69,21 +88,10 @@ namespace Opus.Core
             xmlWriterSettings.NewLineOnAttributes = false;
             xmlWriterSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
 
-            System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(this.xmlFilename, xmlWriterSettings);
-            xmlWriter.WriteStartElement("RequiredPackages");
-            xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-            xmlWriter.WriteAttributeString("xsi", "noNamespaceSchemaLocation", "http://www.w3.org/2001/XMLSchema-instance", schemaFilename);
-
-            foreach (PackageInformation package in this.packages)
+            using (System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(this.xmlFilename, xmlWriterSettings))
             {
-                xmlWriter.WriteStartElement("Package");
-                xmlWriter.WriteAttributeString("Name", package.Name);
-                xmlWriter.WriteAttributeString("Version", package.Version);
-                xmlWriter.WriteEndElement();
+                document.WriteTo(xmlWriter);
             }
-
-            xmlWriter.WriteEndElement();
-            xmlWriter.Close();
 
             if (this.validate)
             {
