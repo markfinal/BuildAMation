@@ -1,3 +1,5 @@
+11-May-2011 Improved code to serialize the package dependency file and package list resource file, used during package compilation.
+
 08-May-2011 Remove hardcoded .csproj extension in the VSSolutionBuilder
 
 08-May-2011 Fixes for QMakeBuilder support for C applications and dynamic libraries when there are no dependent libraries.
