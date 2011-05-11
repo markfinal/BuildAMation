@@ -51,76 +51,57 @@ namespace Opus.Core
 
             string resourceFilePathName = System.IO.Path.Combine(OpusDirectory, "PackageInfoResources.resx");
 
+            System.Xml.XmlDocument resourceFile = new System.Xml.XmlDocument();
+            System.Xml.XmlElement root = resourceFile.CreateElement("root");
+            resourceFile.AppendChild(root);
+
+            {
+                System.Xml.XmlElement mimeType = resourceFile.CreateElement("resheader");
+                mimeType.SetAttribute("name", "resmimetype");
+                mimeType.InnerText = "text/microsoft-resx";
+                root.AppendChild(mimeType);
+            }
+
+            {
+                System.Xml.XmlElement version = resourceFile.CreateElement("resheader");
+                version.SetAttribute("name", "version");
+                version.InnerText = "2.0";
+                root.AppendChild(version);
+            }
+
+            {
+                System.Xml.XmlElement reader = resourceFile.CreateElement("resheader");
+                reader.SetAttribute("name", "reader");
+                // TODO: this looks like the System.Windows.Forms.dll assembly
+                reader.InnerText = "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+                root.AppendChild(reader);
+            }
+
+            {
+                System.Xml.XmlElement writer = resourceFile.CreateElement("resheader");
+                writer.SetAttribute("name", "writer");
+                // TODO: this looks like the System.Windows.Forms.dll assembly
+                writer.InnerText = "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+                root.AppendChild(writer);
+            }
+
+            foreach (Core.PackageInformation package in Core.State.PackageInfo)
+            {
+                System.Xml.XmlElement data = resourceFile.CreateElement("data");
+                data.SetAttribute("name", System.String.Format("{0}_{1}", package.Name, package.Version));
+                System.Xml.XmlElement value = resourceFile.CreateElement("value");
+                value.InnerText = package.Root;
+                data.AppendChild(value);
+                root.AppendChild(data);
+            }
+
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.CloseOutput = true;
             xmlWriterSettings.OmitXmlDeclaration = true;
             using (System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(resourceFilePathName, xmlWriterSettings))
             {
-                xmlWriter.WriteStartElement("root");
-                {
-                    xmlWriter.WriteStartElement("resheader");
-                    {
-                        xmlWriter.WriteAttributeString("name", "resmimetype");
-                        xmlWriter.WriteStartElement("value");
-                        {
-                            xmlWriter.WriteString("text/microsoft-resx");
-                            xmlWriter.WriteEndElement();
-                        }
-                        xmlWriter.WriteEndElement();
-                    }
-
-                    xmlWriter.WriteStartElement("resheader");
-                    {
-                        xmlWriter.WriteAttributeString("name", "version");
-                        xmlWriter.WriteStartElement("value");
-                        {
-                            xmlWriter.WriteString("2.0");
-                            xmlWriter.WriteEndElement();
-                        }
-                        xmlWriter.WriteEndElement();
-                    }
-
-                    xmlWriter.WriteStartElement("resheader");
-                    {
-                        xmlWriter.WriteAttributeString("name", "reader");
-                        xmlWriter.WriteStartElement("value");
-                        {
-                            // TODO: this looks like the System.Windows.Forms.dll assembly
-                            xmlWriter.WriteString("System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-                            xmlWriter.WriteEndElement();
-                        }
-                        xmlWriter.WriteEndElement();
-                    }
-
-                    xmlWriter.WriteStartElement("resheader");
-                    {
-                        xmlWriter.WriteAttributeString("name", "writer");
-                        xmlWriter.WriteStartElement("value");
-                        {
-                            // TODO: this looks like the System.Windows.Forms.dll assembly
-                            xmlWriter.WriteString("System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-                            xmlWriter.WriteEndElement();
-                        }
-                        xmlWriter.WriteEndElement();
-                    }
-
-                    foreach (Core.PackageInformation package in Core.State.PackageInfo)
-                    {
-                        xmlWriter.WriteStartElement("data");
-                        {
-                            xmlWriter.WriteAttributeString("name", System.String.Format("{0}_{1}", package.Name, package.Version));
-                            xmlWriter.WriteStartElement("value");
-                            {
-                                xmlWriter.WriteString(package.Root);
-                                xmlWriter.WriteEndElement();
-                            }
-                            xmlWriter.WriteEndElement();
-                        }
-                    }
-
-                    xmlWriter.WriteEndElement();
-                }
+                resourceFile.WriteTo(xmlWriter);
             }
 
             return resourceFilePathName;
