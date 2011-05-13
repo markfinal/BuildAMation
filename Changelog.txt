@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+
+v0.20
+=====
+
 11-May-2011 Improved code to serialize the package dependency file and package list resource file, used during package compilation.
 
 08-May-2011 Remove hardcoded .csproj extension in the VSSolutionBuilder
@@ -8,7 +13,7 @@
 
 08-May-2011 Removed VSSolutionBuild ProjectData class, as it has been superceded by the IProject interface.
 
-08-May-2011 MSBuild support in VSSolutionBuilder. This allows native output of VisualStudi 2010 .vcxprojs and C# .csprojs for other versions of VisualStudio. The version of the VisualC package determines the target of C++ projects. The version of the DotNetFramework package determines the target of C# projects.
+08-May-2011 MSBuild support in VSSolutionBuilder. This allows native output of VisualStudio 2010 .vcxprojs and C# .csprojs for other versions of VisualStudio. The version of the VisualC package determines the target of C++ projects. The version of the DotNetFramework package determines the target of C# projects.
             Windows Presentation Foundation (WPF) support in C# projects, requiring an AssemblyDefinition and Pages .xaml files (and associated .cs files).
             Improved exception reporting from build scripts, when there is deep nesting of exceptions.
             Package version comparisons improved.
@@ -19,7 +24,7 @@
 
 25-Apr-2011 Possible rewrite of the platform detection code. Hopefully this works on all intended platforms.
 
-25-Apr-2011 The Opus command line tool, if provided a response file, now also accepts additional arguments on the command line. This allows extra commands to be tried out without having to modify the response file. There can still only be one response file.
+25-Apr-2011 The Opus command line tool, if provided a response file, now also accepts additional arguments on the command line. This allows extra commands to be tried out without having to modify the response file. There still can be only one response file.
 
 24-Apr-2011 Module Build functions no longer require passing an Opus.Core.DependencyNode argument, since this is accessible via the module's OwningNode field.
 
