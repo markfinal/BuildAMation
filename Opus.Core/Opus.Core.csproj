@@ -121,6 +121,9 @@
     <None Include="Schema\OpusPackageDependency.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Schema\OpusPackageDependencyV2.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

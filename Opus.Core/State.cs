@@ -28,12 +28,22 @@ namespace Opus.Core
             Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
             string opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
-            string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
-            if (!System.IO.File.Exists(opusSchemaPathname))
             {
-                throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory));
+                string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
+                if (!System.IO.File.Exists(opusSchemaPathname))
+                {
+                    throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory), false);
+                }
+                Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
             }
-            Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
+            {
+                string v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
+                if (!System.IO.File.Exists(v2SchemaPathName))
+                {
+                    throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory), false);
+                }
+                Add<string>("Opus", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
+            }
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
@@ -201,6 +211,14 @@ namespace Opus.Core
             get
             {
                 return Get("Opus", "PackageDependencySchemaPathName") as string;
+            }
+        }
+
+        public static string OpusPackageDependencySchemaPathNameV2
+        {
+            get
+            {
+                return Get("Opus", "PackageDependencySchemaPathNameV2") as string;
             }
         }
 

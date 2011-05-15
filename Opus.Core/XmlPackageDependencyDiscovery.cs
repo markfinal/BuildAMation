@@ -15,11 +15,27 @@ namespace Opus.Core
         
         public static void Execute(PackageInformation package)
         {
-            string dependencyFile = package.DependencyFile;
-            if (!System.IO.File.Exists(dependencyFile))
+            string dependencyFilePathName = package.DependencyFile;
+            if (!System.IO.File.Exists(dependencyFilePathName))
             {
-                throw new Exception(System.String.Format("Dependency file '{0}' does not exist", dependencyFile));
+                throw new Exception(System.String.Format("Dependency file '{0}' does not exist", dependencyFilePathName));
             }
+
+#if true
+            PackageInformationCollection collection = State.PackageInfo;
+
+            PackageDependencyXmlFile dependencyFile = new PackageDependencyXmlFile(dependencyFilePathName, State.OpusPackageDependencySchemaPathName, true);
+            dependencyFile.Read();
+            foreach (PackageInformation dependentPackage in dependencyFile.Packages)
+            {
+                if (!collection.Contains(dependentPackage))
+                {
+                    collection.Add(dependentPackage);
+                }
+
+                Execute(dependentPackage);
+            }
+#else
             System.Xml.XmlReaderSettings xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.Schemas.Add(null, State.OpusPackageDependencySchemaPathName);
             xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
@@ -50,6 +66,7 @@ namespace Opus.Core
                     }
                 }
             }
+#endif
         }
     }
 }

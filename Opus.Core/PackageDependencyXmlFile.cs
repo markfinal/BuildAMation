@@ -14,6 +14,20 @@ namespace Opus.Core
         
         private static void ValidationCallBack(object sender, System.Xml.Schema.ValidationEventArgs args)
         {
+#if true
+            string message = null;
+            if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
+            {
+                message += System.String.Format("\tWarning: Matching schema not found (" + args.Exception.GetType().ToString() + ").  No validation occurred." + args.Message);
+            }
+            else
+            {
+                message += System.String.Format("\tValidation error: " + args.Message);
+            }
+            message += System.String.Format("\tAt '" + args.Exception.SourceSchemaObject + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
+
+            throw new System.Xml.XmlException(message);
+#else
             if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
             {
                 Log.Info("\tWarning: Matching schema not found (" + args.Exception.GetType().ToString() + ").  No validation occurred." + args.Message);
@@ -23,6 +37,7 @@ namespace Opus.Core
                 Log.Info("\tValidation error: " + args.Message);
             }
             Log.Info("\tAt '" + args.Exception.SourceSchemaObject + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
+#endif
         }
         
         private void Validate()
@@ -51,6 +66,9 @@ namespace Opus.Core
 
         public void Write()
         {
+#if true
+            throw new System.NotImplementedException();
+#else
             if (System.IO.File.Exists(this.xmlFilename))
             {
                 System.IO.FileAttributes attributes = System.IO.File.GetAttributes(this.xmlFilename);
@@ -97,9 +115,48 @@ namespace Opus.Core
             {
                 this.Validate();
             }
+#endif
         }
 
         public void Read()
+        {
+            System.Xml.XmlReaderSettings xmlReaderSettings = new System.Xml.XmlReaderSettings();
+            xmlReaderSettings.CheckCharacters = true;
+            xmlReaderSettings.CloseInput = true;
+            xmlReaderSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
+            xmlReaderSettings.IgnoreComments = true;
+            if (this.validate)
+            {
+                xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
+            }
+            xmlReaderSettings.Schemas = new System.Xml.Schema.XmlSchemaSet();
+            xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
+
+            try
+            {
+                this.ReadCurrent(xmlReaderSettings);
+            }
+            catch (System.Exception)
+            {
+                throw new System.NotImplementedException();
+            }
+
+            throw new System.NotImplementedException();
+        }
+
+        protected void ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
+        {
+            System.Xml.XmlReaderSettings settings = readerSettings.Clone();
+            //schemas.Add(null, this.schemaFilename);
+            settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
+
+            using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
+            {
+                while (xmlReader.Read());
+            }
+        }
+
+        public void ReadV1()
         {
             System.Xml.XmlReaderSettings xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = true;
