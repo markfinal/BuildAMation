@@ -33,7 +33,7 @@ namespace Opus.Core
             }
             else
             {
-                if ("http://code.google.com/p/opus/" == absoluteUri.ToString())
+                if ("http://code.google.com/p/opus" == absoluteUri.ToString())
                 {
                     if (ofObjectToReturn == typeof(System.IO.Stream))
                     {
@@ -126,10 +126,9 @@ namespace Opus.Core
             this.packages.Sort();
 
             System.Xml.XmlDocument document = new System.Xml.XmlDocument();
-            //document.XmlResolver = new MyXmlResolver();
 #if true
             string targetNamespace = "Opus";
-            string namespaceURI = "http://code.google.com/p/opus/";
+            string namespaceURI = "http://code.google.com/p/opus";
             System.Xml.XmlElement packageDefinition = document.CreateElement(targetNamespace, "PackageDefinition", namespaceURI);
             {
                 string xmlns = "http://www.w3.org/2001/XMLSchema-instance";
@@ -139,16 +138,19 @@ namespace Opus.Core
             }
             document.AppendChild(packageDefinition);
 
-            System.Xml.XmlElement requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
-            foreach (PackageInformation package in this.packages)
+            if (this.packages.Count > 0)
             {
-                System.Xml.XmlElement packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
-                packageElement.SetAttribute("Name", package.Name);
-                packageElement.SetAttribute("Version", package.Version);
-                // TODO: Platform!
-                requiredPackages.AppendChild(packageElement);
+                System.Xml.XmlElement requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
+                foreach (PackageInformation package in this.packages)
+                {
+                    System.Xml.XmlElement packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
+                    packageElement.SetAttribute("Name", package.Name);
+                    packageElement.SetAttribute("Version", package.Version);
+                    // TODO: Platform!
+                    requiredPackages.AppendChild(packageElement);
+                }
+                packageDefinition.AppendChild(requiredPackages);
             }
-            packageDefinition.AppendChild(requiredPackages);
 #else
             document.Schemas.Add("noNamespaceSchemaLocation", schemaFilename);
             System.Xml.XmlElement requiredPackages = document.CreateElement("RequiredPackages");
@@ -194,6 +196,7 @@ namespace Opus.Core
             xmlReaderSettings.CloseInput = true;
             xmlReaderSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
             xmlReaderSettings.IgnoreComments = true;
+            xmlReaderSettings.IgnoreWhitespace = true;
             if (this.validate)
             {
                 xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
@@ -201,148 +204,193 @@ namespace Opus.Core
             xmlReaderSettings.Schemas = new System.Xml.Schema.XmlSchemaSet();
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
 
-            System.Xml.XmlException readerException = null;
-
-            // read the current version first
-            try
+            // try reading the current schema version first
+            if (this.ReadCurrent(xmlReaderSettings))
             {
-                this.ReadCurrent(xmlReaderSettings);
                 return;
             }
-            catch (System.Xml.XmlException exception)
-            {
-                readerException = exception;
-            }
 
-            // fall back on earlier versions
-            // these will re-write out the definition file with the latest schema
-            try
+            // fall back on earlier versions of the schema
+            if (this.ReadV1(xmlReaderSettings))
             {
-                this.ReadV1(xmlReaderSettings);
+                // now write the file out using the curent schema
+                this.Write();
+
                 return;
             }
-            catch (System.Xml.XmlException exception)
-            {
-                readerException = exception;
-            }
 
-            throw new Exception(System.String.Format("Package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename), readerException);
+            throw new Exception(System.String.Format("Package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename));
         }
 
-        protected void ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
+        protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
         {
-            System.Xml.XmlReaderSettings settings = readerSettings.Clone();
-            settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
-
-            using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
+            try
             {
-                if (!xmlReader.ReadToFollowing("Opus:PackageDefinition"))
-                {
-                    throw new System.Xml.XmlException("'Opus:PackageDefinition' root element not found");
-                }
+                System.Xml.XmlReaderSettings settings = readerSettings.Clone();
+                settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
 
-                while (xmlReader.Read())
+                using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
                 {
-                    if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
+                    string rootElementName = "Opus:PackageDefinition";
+                    if (!xmlReader.ReadToFollowing(rootElementName))
                     {
-                        continue;
+                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old schema and will be upgraded.", rootElementName, this.xmlFilename);
+                        return false;
                     }
 
-                    if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
+                    string requiredPackagesElementName = "Opus:RequiredPackages";
+                    while (xmlReader.Read())
                     {
-                    }
-
-                    Log.MessageAll("NodeType '{0}', ns '{1}', '{2}'", xmlReader.NodeType.ToString(), xmlReader.NamespaceURI, xmlReader.Name);
-                }
-
-                if (!xmlReader.EOF)
-                {
-                    throw new System.Xml.XmlException("Failed to read all of file");
-                }
-            }
-        }
-
-        public void ReadV1(System.Xml.XmlReaderSettings readerSettings)
-        {
-            System.Xml.XmlReaderSettings settings = readerSettings.Clone();
-            settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathName);
-
-            using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
-            {
-                while (xmlReader.Read())
-                {
-                    if (System.Xml.XmlNodeType.XmlDeclaration == xmlReader.NodeType)
-                    {
-                        // do nothing
-                    }
-                    else if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
-                    {
-                        // do nothing
-                    }
-                    else if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
-                    {
-                        if ("RequiredPackages" == xmlReader.Name)
+                        if (xmlReader.Name == requiredPackagesElementName)
                         {
+                            string packageElementName = "Opus:Package";
                             while (xmlReader.Read())
                             {
-                                if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
+                                if ((xmlReader.Name == requiredPackagesElementName) &&
+                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                                 {
-                                    // do nothing
+                                    break;
                                 }
-                                else if (System.Xml.XmlNodeType.EndElement == xmlReader.NodeType)
+
+                                if (xmlReader.Name == packageElementName)
                                 {
-                                    if ("RequiredPackages" == xmlReader.Name)
+                                    string packageNameAttribute = "Name";
+                                    string packageVersionAttribute = "Version";
+                                    xmlReader.MoveToAttribute(packageNameAttribute);
+                                    string packageName = xmlReader.Value;
+                                    xmlReader.MoveToAttribute(packageVersionAttribute);
+                                    string packageVersion = xmlReader.Value;
+
+                                    // TODO: platforms, conditions etc
+
+                                    PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+                                    if (null == package)
                                     {
-                                        break;
+                                        PackageInformation p = new PackageInformation(packageName, packageVersion);
+                                        this.packages.Add(p);
                                     }
                                     else
                                     {
-                                        throw new Exception("Unexpected EndElement");
+                                        this.packages.Add(package);
                                     }
                                 }
-                                else if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
+                            }
+                        }
+                        else if (xmlReader.Name == rootElementName)
+                        {
+                            // should be the end element
+                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                            {
+                                throw new System.Xml.XmlException("Expected end of root element");
+                            }
+                        }
+                        else
+                        {
+                            throw new System.Xml.XmlException(System.String.Format("Unknown element name '{0}'", xmlReader.Name));
+                        }
+                    }
+
+                    if (!xmlReader.EOF)
+                    {
+                        throw new System.Xml.XmlException("Failed to read all of file");
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool ReadV1(System.Xml.XmlReaderSettings readerSettings)
+        {
+            try
+            {
+                System.Xml.XmlReaderSettings settings = readerSettings.Clone();
+                settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathName);
+
+                using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
+                {
+                    while (xmlReader.Read())
+                    {
+                        if (System.Xml.XmlNodeType.XmlDeclaration == xmlReader.NodeType)
+                        {
+                            // do nothing
+                        }
+                        else if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
+                        {
+                            // do nothing
+                        }
+                        else if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
+                        {
+                            if ("RequiredPackages" == xmlReader.Name)
+                            {
+                                while (xmlReader.Read())
                                 {
-                                    if ("Package" == xmlReader.Name)
+                                    if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
                                     {
-                                        if (xmlReader.HasAttributes)
+                                        // do nothing
+                                    }
+                                    else if (System.Xml.XmlNodeType.EndElement == xmlReader.NodeType)
+                                    {
+                                        if ("RequiredPackages" == xmlReader.Name)
                                         {
-                                            xmlReader.MoveToAttribute("Name");
-                                            string packageName = xmlReader.Value;
-                                            xmlReader.MoveToAttribute("Version");
-                                            string packageVersion = xmlReader.Value;
-
-                                            PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
-                                            if (null == package)
-                                            {
-                                                PackageInformation p = new PackageInformation(packageName, packageVersion);
-                                                this.packages.Add(p);
-                                            }
-                                            else
-                                            {
-                                                this.packages.Add(package);
-                                            }
-
-                                            xmlReader.MoveToElement();
+                                            break;
                                         }
                                         else
                                         {
-                                            throw new Exception("Package element has no attributes");
+                                            throw new Exception("Unexpected EndElement");
+                                        }
+                                    }
+                                    else if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
+                                    {
+                                        if ("Package" == xmlReader.Name)
+                                        {
+                                            if (xmlReader.HasAttributes)
+                                            {
+                                                xmlReader.MoveToAttribute("Name");
+                                                string packageName = xmlReader.Value;
+                                                xmlReader.MoveToAttribute("Version");
+                                                string packageVersion = xmlReader.Value;
+
+                                                PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+                                                if (null == package)
+                                                {
+                                                    PackageInformation p = new PackageInformation(packageName, packageVersion);
+                                                    this.packages.Add(p);
+                                                }
+                                                else
+                                                {
+                                                    this.packages.Add(package);
+                                                }
+
+                                                xmlReader.MoveToElement();
+                                            }
+                                            else
+                                            {
+                                                throw new Exception("Package element has no attributes");
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                if (!xmlReader.EOF)
-                {
-                    throw new System.Xml.XmlException("Failed to read all of file");
+                    if (!xmlReader.EOF)
+                    {
+                        throw new System.Xml.XmlException("Failed to read all of file");
+                    }
                 }
             }
+            catch (System.Exception)
+            {
+                return false;
+            }
 
-            // now write the file out using the most recent schema
-            this.Write();
+            return true;
         }
 
         private PackageInformation GetPackageDetails(string packageName, string packageVersion)
