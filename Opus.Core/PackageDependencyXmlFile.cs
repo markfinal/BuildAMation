@@ -145,8 +145,12 @@ namespace Opus.Core
                 {
                     System.Xml.XmlElement packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
                     packageElement.SetAttribute("Name", package.Name);
-                    packageElement.SetAttribute("Version", package.Version);
-                    // TODO: Platform!
+                    {
+                        System.Xml.XmlElement packageVersionElement = document.CreateElement(targetNamespace, "Version", namespaceURI);
+                        packageVersionElement.SetAttribute("Id", package.Version);
+                        //packageVersionElement.SetAttribute("Condition", "'$(Platform)' == 'win*' || '$(Platform)' == 'unix*'");
+                        packageElement.AppendChild(packageVersionElement);
+                    }
                     requiredPackages.AppendChild(packageElement);
                 }
                 packageDefinition.AppendChild(requiredPackages);
@@ -222,6 +226,61 @@ namespace Opus.Core
             throw new Exception(System.String.Format("Package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename));
         }
 
+        protected void InterpretConditionValue(string condition)
+        {
+            // unless you apply the pattern, remove the match, apply another pattern, etc.?
+
+            //string filter = "'$(Platform)'";
+            //string pattern = @"('\$\(([A-Za-z0-9]+)\)')";
+            //string pattern = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s)";
+            //string pattern = @"^('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')";
+            //string pattern = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')\s([\|]{2})";
+            //string pattern2 = @"^\s([\|]{2})\s";
+            string[] pattern = new string[2];
+            pattern[0] = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')";
+            pattern[1] = @"([\|]{2})";
+            System.Text.RegularExpressions.RegexOptions expOptions =
+                System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace |
+                System.Text.RegularExpressions.RegexOptions.Singleline;
+
+            int position = 0;
+            int patternIndex = 0;
+            for (; ; )
+            {
+                Core.Log.MessageAll("Searching from pos {0} with pattern index {1}", position, patternIndex);
+                if (position > condition.Length)
+                {
+                    Core.Log.MessageAll("End of string");
+                    break;
+                }
+
+                System.Text.RegularExpressions.Regex exp = new System.Text.RegularExpressions.Regex(pattern[patternIndex], expOptions);
+                System.Text.RegularExpressions.MatchCollection matches = exp.Matches(condition, position);
+                if (0 == matches.Count)
+                {
+                    break;
+                }
+
+                foreach (System.Text.RegularExpressions.Match match in matches)
+                {
+                    if (match.Length > 0)
+                    {
+                        Core.Log.MessageAll("Match '{0}'", match.Value);
+                        foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                        {
+                            Core.Log.MessageAll("\tg '{0}' @ {1}", group.Value, group.Index);
+                        }
+                        position += match.Length + 1;
+                        ++patternIndex;
+                        patternIndex = patternIndex % 2;
+
+                        break;
+                    }
+                }
+            }
+            Core.Log.MessageAll("End of matches");
+        }
+
         protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
         {
             try
@@ -255,23 +314,55 @@ namespace Opus.Core
                                 if (xmlReader.Name == packageElementName)
                                 {
                                     string packageNameAttribute = "Name";
-                                    string packageVersionAttribute = "Version";
-                                    xmlReader.MoveToAttribute(packageNameAttribute);
-                                    string packageName = xmlReader.Value;
-                                    xmlReader.MoveToAttribute(packageVersionAttribute);
-                                    string packageVersion = xmlReader.Value;
-
-                                    // TODO: platforms, conditions etc
-
-                                    PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
-                                    if (null == package)
+                                    if (!xmlReader.MoveToAttribute(packageNameAttribute))
                                     {
-                                        PackageInformation p = new PackageInformation(packageName, packageVersion);
-                                        this.packages.Add(p);
+                                        throw new System.Xml.XmlException("Required attribute 'Name' of 'Package' node missing");
                                     }
-                                    else
+                                    string packageName = xmlReader.Value;
+
+                                    string packageVersionElementName = "Opus:Version";
+                                    while (xmlReader.Read())
                                     {
-                                        this.packages.Add(package);
+                                        if ((xmlReader.Name == packageElementName) &&
+                                            (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                                        {
+                                            break;
+                                        }
+
+                                        if (xmlReader.Name == packageVersionElementName)
+                                        {
+                                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                                            {
+                                                string packageVersionIdAttribute = "Id";
+                                                if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
+                                                {
+                                                    throw new System.Xml.XmlException("Required 'Id' attribute of 'Version' node missing");
+                                                }
+                                                string packageVersion = xmlReader.Value;
+
+                                                string packageConditionAttribute = "Condition";
+                                                if (xmlReader.MoveToAttribute(packageConditionAttribute))
+                                                {
+                                                    string conditionValue = xmlReader.Value;
+                                                    this.InterpretConditionValue(conditionValue);
+                                                }
+
+                                                PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+                                                if (null == package)
+                                                {
+                                                    PackageInformation p = new PackageInformation(packageName, packageVersion);
+                                                    this.packages.Add(p);
+                                                }
+                                                else
+                                                {
+                                                    this.packages.Add(package);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            throw new System.Xml.XmlException("Unexpected element");
+                                        }
                                     }
                                 }
                             }
@@ -281,7 +372,7 @@ namespace Opus.Core
                             // should be the end element
                             if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                             {
-                                throw new System.Xml.XmlException("Expected end of root element");
+                                throw new System.Xml.XmlException(System.String.Format("Expected end of root element but found '{0}'", xmlReader.Name));
                             }
                         }
                         else

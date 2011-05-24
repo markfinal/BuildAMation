@@ -5,13 +5,25 @@
     xmlns:Opus="http://code.google.com/p/opus"
     elementFormDefault="qualified">
 
-<xs:complexType name="required-packages-type">
+<xs:attributeGroup name="required-package-attributes">
+    <xs:attribute name="Name" type="xs:string" use="required" />
+</xs:attributeGroup>
+    
+<xs:complexType name="required-package-version-type">
     <xs:sequence>
-        <xs:element name="Package" minOccurs="1" maxOccurs="unbounded">
+        <xs:element name="Version" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="Name" type="xs:string"/>
-                <xs:attribute name="Version" type="xs:string"/>
+                <xs:attribute name="Id" type="xs:string" use="required" />
+                <xs:attribute name="Condition" type="xs:string" use="optional" />
             </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+    <xs:attributeGroup ref="Opus:required-package-attributes" />
+</xs:complexType>
+    
+<xs:complexType name="required-package-type">
+    <xs:sequence>
+        <xs:element name="Package" minOccurs="1" maxOccurs="unbounded" type="Opus:required-package-version-type">
         </xs:element>
     </xs:sequence>
 </xs:complexType>
@@ -28,12 +40,12 @@
 <!-- root node -->
 <xs:element name="PackageDefinition">
     <xs:complexType>
-        <xs:sequence>
-            <xs:element name="RequiredPackages" type="Opus:required-packages-type" minOccurs="0" maxOccurs="1" />
+        <xs:all>
+            <xs:element name="RequiredPackages" type="Opus:required-package-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredOpusAssemblies" type="Opus:required-opus-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredAssemblies" type="Opus:required-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="Opus:definitions-type" minOccurs="0" maxOccurs="1" />
-        </xs:sequence>
+        </xs:all>
     </xs:complexType>
 </xs:element>
 </xs:schema>
