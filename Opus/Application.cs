@@ -13,11 +13,12 @@ namespace Opus
         private Core.Array<Core.IAction> preambleActions = new Opus.Core.Array<Opus.Core.IAction>();
         private Core.IAction triggerAction = null;
 
-        private static void displayInfo(Core.EVerboseLevel level)
+        private static void displayInfo(Core.EVerboseLevel level, Core.StringArray argumentList)
         {
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
             Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
             Core.Log.Message(level, "Working dir  : '{0}'", Core.State.WorkingDirectory);
+            Core.Log.Message(level, "Arguments    : {0}", argumentList.ToString(' '));
             Core.Log.Message(level, "");
         }
         
@@ -137,7 +138,7 @@ namespace Opus
                 this.triggerAction = new BuildAction();
             }
 
-            displayInfo(Core.EVerboseLevel.Info);
+            displayInfo(Core.EVerboseLevel.Info, argList);
         }
         
         /// <summary>
