@@ -47,11 +47,14 @@ namespace Opus
             }
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo[0];
+#if true
+            Core.PackageDependencyXmlFile xmlFile = mainPackage.PackageDefinition;
+#else
             string dependencyXMLPathName = mainPackage.DependencyFile;
 
-            string opusSchemaPathname = Core.State.OpusPackageDependencySchemaPathName;
-            Core.PackageDependencyXmlFile xmlFile = new Core.PackageDependencyXmlFile(dependencyXMLPathName, opusSchemaPathname, true);
+            Core.PackageDependencyXmlFile xmlFile = new Core.PackageDependencyXmlFile(dependencyXMLPathName, true);
             xmlFile.Read();
+#endif
 
             int packageChangeCount = 0;
             foreach (string packageAndVersion in this.PackagesAndVersions)

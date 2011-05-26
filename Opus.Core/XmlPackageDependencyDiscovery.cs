@@ -15,17 +15,10 @@ namespace Opus.Core
         
         public static void Execute(PackageInformation package)
         {
-            string dependencyFilePathName = package.DependencyFile;
-            if (!System.IO.File.Exists(dependencyFilePathName))
-            {
-                throw new Exception(System.String.Format("Dependency file '{0}' does not exist", dependencyFilePathName));
-            }
-
 #if true
             PackageInformationCollection collection = State.PackageInfo;
 
-            PackageDependencyXmlFile dependencyFile = new PackageDependencyXmlFile(dependencyFilePathName, State.OpusPackageDependencySchemaPathName, true);
-            dependencyFile.Read();
+            PackageDependencyXmlFile dependencyFile = package.PackageDefinition;
             foreach (PackageInformation dependentPackage in dependencyFile.Packages)
             {
                 if (!collection.Contains(dependentPackage))
@@ -36,6 +29,12 @@ namespace Opus.Core
                 Execute(dependentPackage);
             }
 #else
+            string dependencyFilePathName = package.DependencyFile;
+            if (!System.IO.File.Exists(dependencyFilePathName))
+            {
+                throw new Exception(System.String.Format("Dependency file '{0}' does not exist", dependencyFilePathName));
+            }
+
             System.Xml.XmlReaderSettings xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.Schemas.Add(null, State.OpusPackageDependencySchemaPathName);
             xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;

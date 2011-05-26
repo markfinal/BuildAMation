@@ -76,9 +76,12 @@ namespace Opus
             }
 
             // Xml file for dependencies
+#if true
+            Core.PackageDependencyXmlFile packageDependencyXmlFile = createPackage.PackageDefinition;
+#else
             string packageDependencyXmlPathname = createPackage.DependencyFile;
-            string opusSchemaPathname = Core.State.OpusPackageDependencySchemaPathName;
-            Core.PackageDependencyXmlFile packageDependencyXmlFile = new Core.PackageDependencyXmlFile(packageDependencyXmlPathname, opusSchemaPathname, true);
+            Core.PackageDependencyXmlFile packageDependencyXmlFile = new Core.PackageDependencyXmlFile(packageDependencyXmlPathname, true);
+#endif
             if (Core.State.PackageCreationDependents != null)
             {
                 Core.Log.DebugMessage("Adding dependent packages:");

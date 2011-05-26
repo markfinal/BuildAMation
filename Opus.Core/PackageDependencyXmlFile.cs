@@ -55,7 +55,6 @@ namespace Opus.Core
     {
         private PackageInformationCollection packages;
         private string xmlFilename;
-        private string schemaFilename;
         private bool validate;
         
         private static void ValidationCallBack(object sender, System.Xml.Schema.ValidationEventArgs args)
@@ -104,11 +103,10 @@ namespace Opus.Core
             while (reader.Read());
         }
         
-        public PackageDependencyXmlFile(string xmlFilename, string schemaFilename, bool validate)
+        public PackageDependencyXmlFile(string xmlFilename, bool validate)
         {
             this.validate = validate;
             this.xmlFilename = xmlFilename;
-            this.schemaFilename = schemaFilename;
             this.packages = new PackageInformationCollection();
         }
 
@@ -126,7 +124,6 @@ namespace Opus.Core
             this.packages.Sort();
 
             System.Xml.XmlDocument document = new System.Xml.XmlDocument();
-#if true
             string targetNamespace = "Opus";
             string namespaceURI = "http://code.google.com/p/opus";
             System.Xml.XmlElement packageDefinition = document.CreateElement(targetNamespace, "PackageDefinition", namespaceURI);
@@ -155,25 +152,6 @@ namespace Opus.Core
                 }
                 packageDefinition.AppendChild(requiredPackages);
             }
-#else
-            document.Schemas.Add("noNamespaceSchemaLocation", schemaFilename);
-            System.Xml.XmlElement requiredPackages = document.CreateElement("RequiredPackages");
-            {
-                string xmlns = "http://www.w3.org/2001/XMLSchema-instance";
-                System.Xml.XmlAttribute schemaAttribute = document.CreateAttribute("xsi", "noNamespaceSchemaLocation", xmlns);
-                schemaAttribute.Value = schemaFilename;
-                requiredPackages.Attributes.Append(schemaAttribute);
-            }
-            document.AppendChild(requiredPackages);
-
-            foreach (PackageInformation package in this.packages)
-            {
-                System.Xml.XmlElement packageElement = document.CreateElement("Package");
-                packageElement.SetAttribute("Name", package.Name);
-                packageElement.SetAttribute("Version", package.Version);
-                requiredPackages.AppendChild(packageElement);
-            }
-#endif
 
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
@@ -219,6 +197,8 @@ namespace Opus.Core
             {
                 // now write the file out using the curent schema
                 this.Write();
+
+                Log.Info("Converted package definition file '{0}' to the current schema", this.xmlFilename);
 
                 return;
             }
@@ -348,6 +328,14 @@ namespace Opus.Core
                                                 }
 
                                                 PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+#if true
+                                                if (null == package)
+                                                {
+                                                    throw new Exception(System.String.Format("Unable to locate package '{0}-{1}'", packageName, packageVersion), false);
+                                                }
+
+                                                this.packages.Add(package);
+#else
                                                 if (null == package)
                                                 {
                                                     PackageInformation p = new PackageInformation(packageName, packageVersion);
@@ -357,6 +345,7 @@ namespace Opus.Core
                                                 {
                                                     this.packages.Add(package);
                                                 }
+#endif
                                             }
                                         }
                                         else
@@ -447,15 +436,27 @@ namespace Opus.Core
                                                 string packageVersion = xmlReader.Value;
 
                                                 PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+#if true
                                                 if (null == package)
                                                 {
+                                                    throw new Exception(System.String.Format("Unable to locate package '{0}-{1}'", packageName, packageVersion), false);
+                                                }
+
+                                                this.Packages.Add(package);
+#else
+                                                if (null == package)
+                                                {
+                                                    // TODO: when does this happen?
                                                     PackageInformation p = new PackageInformation(packageName, packageVersion);
                                                     this.packages.Add(p);
+                                                    State.PackageInfo.Add(p);
                                                 }
                                                 else
                                                 {
                                                     this.packages.Add(package);
+                                                    State.PackageInfo.Add(package);
                                                 }
+#endif
 
                                                 xmlReader.MoveToElement();
                                             }

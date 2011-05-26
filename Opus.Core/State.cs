@@ -47,6 +47,7 @@ namespace Opus.Core
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
+            Add<System.TimeSpan[]>("System", "Profiling", new System.TimeSpan[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
 
@@ -56,18 +57,27 @@ namespace Opus.Core
             Add<StringArray>("System", "PackageRoots", packageRoots);
 
             PackageInformationCollection packageInfoCollection = new PackageInformationCollection();
+            Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
+
+            // is there a package in the working directory?
             {
                 PackageInformation workingDirectoryPackage = PackageInformation.FromPath(WorkingDirectory, true);
+#if true
+                if (null == workingDirectoryPackage)
+                {
+                    Log.DebugMessage("No valid package found in the working directory");
+                }
+#else
                 if (null != workingDirectoryPackage)
                 {
-                    packageInfoCollection.Add(workingDirectoryPackage);
+                    //packageInfoCollection.Add(workingDirectoryPackage);
                     if (!packageRoots.Contains(workingDirectoryPackage.Root))
                     {
                         packageRoots.Add(workingDirectoryPackage.Root);
                     }
                 }
+#endif
             }
-            Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
@@ -397,6 +407,14 @@ namespace Opus.Core
             get
             {
                 return (bool)Get("Build", "IncludeDebugSymbols");
+            }
+        }
+
+        public static System.TimeSpan[] TimingProfiles
+        {
+            get
+            {
+                return Get("System", "Profiling") as System.TimeSpan[];
             }
         }
 

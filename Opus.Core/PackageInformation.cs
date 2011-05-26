@@ -47,7 +47,16 @@ namespace Opus.Core
                     packageInformation = new PackageInformation(packageName, packageVersion, root);
                 }
 
-                if (null == packageInformation)
+                if (null != packageInformation)
+                {
+                    State.PackageInfo.Add(packageInformation);
+                    if (!State.PackageRoots.Contains(packageInformation.Root))
+                    {
+                        State.PackageRoots.Add(packageInformation.Root);
+                    }
+                    packageInformation.PackageDefinition.Read();
+                }
+                else
                 {
                     Core.Log.DebugMessage("Path '{0}' is not a package directory. Perhaps some files are missing or misnamed?", path);
                 }
@@ -70,6 +79,20 @@ namespace Opus.Core
             {
                 throw new Exception("Invalid version");
             }
+
+            // first check if it already been loaded
+            {
+                PackageInformationCollection packages = State.PackageInfo;
+                foreach (PackageInformation package in packages)
+                {
+                    if ((package.Name == name) && (package.Version == version))
+                    {
+                        Log.MessageAll("Package '{0}' already in the system", package.FullName);
+                        return package;
+                    }
+                }
+            }
+
             StringArray packageRoots = State.PackageRoots;
             if (null == packageRoots)
             {
@@ -79,27 +102,30 @@ namespace Opus.Core
             {
                 string packageDirectory = System.IO.Path.Combine(packageRoot, name);
                 packageDirectory = System.IO.Path.Combine(packageDirectory, version);
-                
+
                 PackageInformation package = FromPath(packageDirectory, true);
                 if (null != package)
                 {
                     return package;
                 }
             }
-            
+
             return null;
         }
 
-        public PackageInformation(string name, string version)
+        private PackageInformation(string name, string version)
         {
             this.Name = name;
             this.Version = version;
             this.Root = null;
             this.IsBuilder = false;
             this.Directory = null;
+
+            throw new Exception("Who calls this constructor?");
         }
-        
-        public PackageInformation(string name, string version, string root)
+
+        // restrict access to this, to emphasize that it's a heavyweight operation
+        private PackageInformation(string name, string version, string root)
         {
             this.Name = name;
             this.Version = version;
@@ -109,6 +135,8 @@ namespace Opus.Core
             string directory = System.IO.Path.Combine(this.Root, this.Name);
             directory = System.IO.Path.Combine(directory, this.Version);
             this.Directory = directory;
+
+            this.PackageDefinition = new PackageDependencyXmlFile(this.DependencyFile, true);
         }
         
         public string Name
@@ -154,6 +182,12 @@ namespace Opus.Core
                 string dependencyFile = System.IO.Path.Combine(this.Directory, this.Name + ".xml");
                 return dependencyFile;
             }
+        }
+
+        public PackageDependencyXmlFile PackageDefinition
+        {
+            get;
+            private set;
         }
         
         public string ScriptFile

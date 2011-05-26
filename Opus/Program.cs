@@ -22,12 +22,9 @@ namespace Opus
                 Application application = new Application(args);
                 application.Run();
                 System.DateTime stop = System.DateTime.Now;
+                Core.State.TimingProfiles[(int)Core.ETimingProfiles.Total] = stop - start;
 
-                System.TimeSpan elapsedTime = stop - start;
-                Core.Log.Info("\nElapsed time: {0} minutes {1} seconds {2} milliseconds",
-                              elapsedTime.Minutes,
-                              elapsedTime.Seconds,
-                              elapsedTime.Milliseconds);
+                Core.TimingProfiles.DumpProfiles();
             }
             catch (Core.Exception exception)
             {

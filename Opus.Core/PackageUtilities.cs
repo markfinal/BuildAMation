@@ -19,6 +19,8 @@ namespace Opus.Core
 
         public static bool CompilePackageIntoAssembly()
         {
+            System.DateTime gatherSourceStart = System.DateTime.Now;
+
             if (0 == State.PackageInfo.Count)
             {
                 throw new Exception("Package has not been specified. Run Opus from the package directory.", false);
@@ -65,6 +67,9 @@ namespace Opus.Core
 
                 ++packageIndex;
             }
+
+            System.DateTime gatherSourceStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.GatherSource] = gatherSourceStop - gatherSourceStart;
 
             System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
@@ -150,6 +155,9 @@ namespace Opus.Core
                 State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
 
+            System.DateTime assemblyCompileStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.AssemblyCompilation] = assemblyCompileStop - gatherSourceStop;
+
             return true;
         }
 
@@ -201,6 +209,8 @@ namespace Opus.Core
                 }
             }
 
+            System.DateTime dependencyGraphGenerationStart = System.DateTime.Now;
+
             DependencyGraph dependencyGraph = new DependencyGraph();
             State.Set("System", "Graph", dependencyGraph);
             foreach (Target target in targetCollection)
@@ -216,11 +226,17 @@ namespace Opus.Core
             Log.DebugMessage("\nAfter adding dependencies...");
             dependencyGraph.Dump();
 
+            System.DateTime dependencyGraphGenerationStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.GraphGeneration] = dependencyGraphGenerationStop - dependencyGraphGenerationStart;
+
             BuildManager buildManager = new BuildManager(dependencyGraph);
             if (false == buildManager.Execute())
             {
                 return false;
             }
+
+            System.DateTime dependencyGraphExecutionStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.GraphExecution] = dependencyGraphExecutionStop - dependencyGraphGenerationStop;
 
             return true;
         }
@@ -306,12 +322,29 @@ namespace Opus.Core
             {
                 string[] packageInfo = resourceDictionaryEntry.Key.ToString().Split(new char[] { '_' });
                 Log.DebugMessage("Found package {0}-{1} @ {2}", packageInfo[0], packageInfo[1], resourceDictionaryEntry.Value);
+#if true
+                bool found = false;
+                foreach (PackageInformation package in State.PackageInfo)
+                {
+                    if ((package.Name == packageInfo[0]) &&
+                        (package.Version == packageInfo[1]))
+                    {
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    throw new Exception(System.String.Format("Required package '{0}-{1}' not found in the preloaded package collection", packageInfo[0], packageInfo[1]), false);
+                }
+#else
                 PackageInformation package = new PackageInformation(packageInfo[0], packageInfo[1], resourceDictionaryEntry.Value.ToString());
 
                 if (!State.PackageInfo.Contains(package))
                 {
                     State.PackageInfo.Add(package);
                 }
+#endif
             }
         }
 

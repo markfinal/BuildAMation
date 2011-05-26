@@ -71,6 +71,7 @@
     <Compile Include="DependencyGraph.cs" />
     <Compile Include="DependencyNodeEnumerator.cs" />
     <Compile Include="EPlatform.cs" />
+    <Compile Include="ETimingProfiles.cs" />
     <Compile Include="EVerboseLevel.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="Factory\BuilderFactory.cs" />
