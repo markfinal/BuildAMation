@@ -59,8 +59,10 @@ namespace Opus.Core
             PackageInformationCollection packageInfoCollection = new PackageInformationCollection();
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
 
+#if false
             // is there a package in the working directory?
             {
+                // TODO: we don't want the dependency script evaluation happening here
                 PackageInformation workingDirectoryPackage = PackageInformation.FromPath(WorkingDirectory, true);
 #if true
                 if (null == workingDirectoryPackage)
@@ -78,6 +80,7 @@ namespace Opus.Core
                 }
 #endif
             }
+#endif
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);

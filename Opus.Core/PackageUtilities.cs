@@ -17,21 +17,32 @@ namespace Opus.Core
             }
         }
 
+        public static void IdentifyWorkingDirectoryPackage()
+        {
+            PackageInformation workingDirectoryPackage = PackageInformation.FromPath(State.WorkingDirectory, true);
+            if (null == workingDirectoryPackage)
+            {
+                Log.DebugMessage("No valid package found in the working directory");
+            }
+
+            Log.MessageAll("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
+        }
+
         public static bool CompilePackageIntoAssembly()
         {
             System.DateTime gatherSourceStart = System.DateTime.Now;
 
-            if (0 == State.PackageInfo.Count)
-            {
-                throw new Exception("Package has not been specified. Run Opus from the package directory.", false);
-            }
+            IdentifyWorkingDirectoryPackage();
 
-            PackageInformation mainPackage = State.PackageInfo[0];
+            PackageInformation mainPackage = State.PackageInfo.MainPackage;
 
             Log.DebugMessage("Package is '{0}-{1}' in '{2}", mainPackage.Name, mainPackage.Version, mainPackage.Root);
 
+            // TODO: check whether this is needed anymore
+#if false
             // recursively discover dependent packages
             XmlPackageDependencyDiscovery.Execute(mainPackage);
+#endif
 
             BuilderUtilities.EnsureBuilderPackageExists();
 
@@ -91,7 +102,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    // mono complaints a lot more fussy about warnings
+                    // mono appears to be a lot fussier about warnings
                     compilerParameters.WarningLevel = 2;
                 }
                 compilerParameters.GenerateExecutable = false;
@@ -125,6 +136,7 @@ namespace Opus.Core
 
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
+                    // TODO: this is to come from package definition
                     System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetCallingAssembly().GetReferencedAssemblies();
                     foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
                     {
@@ -230,7 +242,7 @@ namespace Opus.Core
             State.TimingProfiles[(int)ETimingProfiles.GraphGeneration] = dependencyGraphGenerationStop - dependencyGraphGenerationStart;
 
             BuildManager buildManager = new BuildManager(dependencyGraph);
-            if (false == buildManager.Execute())
+            if (!buildManager.Execute())
             {
                 return false;
             }
@@ -315,7 +327,7 @@ namespace Opus.Core
         private static void LocateRequiredPackages()
         {
             // get the resource
-            string resourceName = System.String.Format("{0}.PackageInfoResources", State.PackageInfo[0].Name);
+            string resourceName = System.String.Format("{0}.PackageInfoResources", State.PackageInfo.MainPackage.Name);
             System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager(resourceName, State.ScriptAssembly);
             System.Resources.ResourceSet resourceSet = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentUICulture, true, true);
             foreach (System.Collections.DictionaryEntry resourceDictionaryEntry in resourceSet)

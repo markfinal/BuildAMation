@@ -14,7 +14,7 @@ namespace Opus.Core
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo[0];
+            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
             string tempDirectory = System.IO.Path.GetTempPath();
             string resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
 
@@ -41,7 +41,7 @@ namespace Opus.Core
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo[0];
+            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
 
             string OpusDirectory = mainPackage.OpusDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))

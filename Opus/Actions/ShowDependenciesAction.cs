@@ -34,7 +34,7 @@ namespace Opus
                 throw new Core.Exception("Working directory is not a package", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo[0];
+            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
 #if true
             Core.PackageDependencyXmlFile xmlFile = mainPackage.PackageDefinition;
 #else

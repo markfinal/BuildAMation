@@ -9,6 +9,20 @@ namespace Opus.Core
     {
         private System.Collections.Generic.List<PackageInformation> list = new System.Collections.Generic.List<PackageInformation>();
 
+        public PackageInformation MainPackage
+        {
+            get
+            {
+                if (0 == this.list.Count)
+                {
+                    throw new Exception("No packages have been specified or identified. Please run Opus from a package directory");
+                }
+
+                PackageInformation mainPackage = this.list[0];
+                return mainPackage;
+            }
+        }
+
         public void Add(PackageInformation item)
         {
             if (this.Contains(item))
@@ -151,14 +165,19 @@ namespace Opus.Core
             this.list.Sort();
         }
 
-        public override string ToString()
+        public string ToString(string prefix, string suffix)
         {
             string message = null;
             foreach (PackageInformation package in this.list)
             {
-                message += package.ToString() + " ";
+                message += prefix + package.ToString() + suffix;
             }
             return message;
+        }
+
+        public override string ToString()
+        {
+            return this.ToString(null, " ");
         }
     }
 }

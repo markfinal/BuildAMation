@@ -11,59 +11,56 @@ namespace Opus.Core
         
         public static PackageInformation FromPath(string path, bool checkForPackageFiles)
         {
-            PackageInformation packageInformation = null;
-            
             string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-            if (directories.Length >= 2)
+            if (directories.Length < 2)
             {
-                string packageName = directories[directories.Length - 2];
-                string packageVersion = directories[directories.Length - 1];
-                System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
-                if (null == parentDir)
-                {
-                    Log.DebugMessage("No parent directory");
-                    return null;
-                }
-                System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
-                if (null == parentParentDir)
-                {
-                    Log.DebugMessage("No parent of parent directory");
-                    return null;
-                }
-                string root = parentParentDir.FullName;
+                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
+            }
 
-                string basePackageFilename = System.IO.Path.Combine(path, packageName);
-                string scriptFilename = basePackageFilename + ".cs";
-                string xmlFilename = basePackageFilename + ".xml";
-                if (System.IO.File.Exists(scriptFilename) &&
-                    System.IO.File.Exists(xmlFilename))
-                {
-                    packageInformation = new PackageInformation(packageName, packageVersion, root);
-                    Core.Log.DebugMessage("Path '{0}' refers to a valid package; fullname = '{1}', root = '{2}'", path, packageInformation.FullName, root);
-                }
-                else if (!checkForPackageFiles)
-                {
-                    Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
-                    packageInformation = new PackageInformation(packageName, packageVersion, root);
-                }
+            string packageName = directories[directories.Length - 2];
+            string packageVersion = directories[directories.Length - 1];
+            System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
+            if (null == parentDir)
+            {
+                Log.DebugMessage("No parent directory");
+                return null;
+            }
+            System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
+            if (null == parentParentDir)
+            {
+                Log.DebugMessage("No parent of parent directory");
+                return null;
+            }
+            string root = parentParentDir.FullName;
 
-                if (null != packageInformation)
+            string basePackageFilename = System.IO.Path.Combine(path, packageName);
+            string scriptFilename = basePackageFilename + ".cs";
+            string xmlFilename = basePackageFilename + ".xml";
+            PackageInformation packageInformation = null;
+            if (System.IO.File.Exists(scriptFilename) &&
+                System.IO.File.Exists(xmlFilename))
+            {
+                packageInformation = new PackageInformation(packageName, packageVersion, root);
+                Core.Log.DebugMessage("Path '{0}' refers to a valid package; fullname = '{1}', root = '{2}'", path, packageInformation.FullName, root);
+            }
+            else if (!checkForPackageFiles)
+            {
+                Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
+                packageInformation = new PackageInformation(packageName, packageVersion, root);
+            }
+
+            if (null != packageInformation)
+            {
+                State.PackageInfo.Add(packageInformation);
+                if (!State.PackageRoots.Contains(packageInformation.Root))
                 {
-                    State.PackageInfo.Add(packageInformation);
-                    if (!State.PackageRoots.Contains(packageInformation.Root))
-                    {
-                        State.PackageRoots.Add(packageInformation.Root);
-                    }
-                    packageInformation.PackageDefinition.Read();
+                    State.PackageRoots.Add(packageInformation.Root);
                 }
-                else
-                {
-                    Core.Log.DebugMessage("Path '{0}' is not a package directory. Perhaps some files are missing or misnamed?", path);
-                }
+                packageInformation.PackageDefinition.Read();
             }
             else
             {
-                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
+                Core.Log.DebugMessage("Path '{0}' is not a package directory. Perhaps some files are missing or misnamed?", path);
             }
                         
             return packageInformation;

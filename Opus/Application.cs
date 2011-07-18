@@ -67,17 +67,6 @@ namespace Opus
             }
 
             var actionAttributeArray = System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(Opus.Core.RegisterActionAttribute), false);
-            foreach (Core.RegisterActionAttribute actionAttribute in actionAttributeArray)
-            {
-                Core.IAction action = actionAttribute.Action;
-
-                var actionType = action.GetType().GetCustomAttributes(false);
-                if (0 == actionType.Length)
-                {
-                    throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", action.GetType().ToString()));
-                }
-            }
-
             foreach (string command in argList)
             {
                 string[] splitCommand = command.Split('=');
@@ -107,6 +96,10 @@ namespace Opus
                         }
 
                         var actionType = action.GetType().GetCustomAttributes(false);
+                        if (0 == actionType.Length)
+                        {
+                            throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", action.GetType().ToString()));
+                        }
 
                         if (actionType[0].GetType() == typeof(Core.PreambleActionAttribute))
                         {
@@ -148,13 +141,13 @@ namespace Opus
         {
             foreach (Core.IAction action in this.preambleActions)
             {
-                if (false == action.Execute())
+                if (!action.Execute())
                 {
                     return;
                 }
             }
 
-            if (false == this.triggerAction.Execute())
+            if (!this.triggerAction.Execute())
             {
                 System.Environment.ExitCode = -3;
             }
