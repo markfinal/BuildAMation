@@ -1,0 +1,83 @@
+// <copyright file="PackageIdentifier.cs" company="Mark Final">
+//  Opus
+// </copyright>
+// <summary>Opus Core</summary>
+// <author>Mark Final</author>
+namespace Opus.Core
+{
+    public class PackageIdentifier
+    {
+        public PackageIdentifier(string name, string version)
+        {
+            if (null == name)
+            {
+                throw new Exception("Invalid name");
+            }
+            if (null == version)
+            {
+                throw new Exception("Invalid version");
+            }
+
+            this.Name = name;
+            this.Version = version;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+        public string Version
+        {
+            get;
+            private set;
+        }
+
+        public bool MatchName(PackageIdentifier identifier, bool ignoreCase)
+        {
+            return this.MatchName(identifier.Name, ignoreCase);
+        }
+
+        public bool MatchName(string name, bool ignoreCase)
+        {
+            bool match = (0 == System.String.Compare(this.Name, name, ignoreCase));
+            return match;
+        }
+
+        public int MatchVersion(PackageIdentifier identifier, bool ignoreCase)
+        {
+            return this.MatchVersion(identifier.Version, ignoreCase);
+        }
+
+        public int MatchVersion(string version, bool ignoreCase)
+        {
+            int compare = System.String.Compare(this.Version, version, ignoreCase);
+            return compare;
+        }
+
+        public bool Match(PackageIdentifier identifier, bool ignoreCase)
+        {
+            bool match = this.MatchName(identifier, ignoreCase) && (0 == this.MatchVersion(identifier, ignoreCase));
+            return match;
+        }
+
+        public bool ConvertVersionToDouble(out double version)
+        {
+            return double.TryParse(this.Version, out version);
+        }
+
+        public string ToString(string separator)
+        {
+            string identifierString = System.String.Format("{0}{1}{2}", this.Name, separator, this.Version);
+            return identifierString;
+        }
+
+        public string ToRootedPath(string rootDirectory)
+        {
+            string rootedPath = System.IO.Path.Combine(rootDirectory, this.Name);
+            rootedPath = System.IO.Path.Combine(rootedPath, this.Version);
+            return rootedPath;
+        }
+    }
+}

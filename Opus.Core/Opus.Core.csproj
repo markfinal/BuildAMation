@@ -104,6 +104,7 @@
     <Compile Include="OSUtilities.cs" />
     <Compile Include="PackageAndDirectoryPath.cs" />
     <Compile Include="PackageDependencyXmlFile.cs" />
+    <Compile Include="PackageIdentifier.cs" />
     <Compile Include="PackageInformation.cs" />
     <Compile Include="PackageInformationCollection.cs" />
     <Compile Include="PackageListResourceFile.cs" />

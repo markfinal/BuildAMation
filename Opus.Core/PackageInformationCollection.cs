@@ -31,6 +31,11 @@ namespace Opus.Core
             }
 
             this.list.Add(item);
+
+            if (!State.PackageRoots.Contains(item.Root))
+            {
+                State.PackageRoots.Add(item.Root);
+            }
         }
 
         public void Clear()
@@ -44,12 +49,12 @@ namespace Opus.Core
 
             foreach (PackageInformation package in this.list)
             {
-                if (0 == System.String.Compare(package.Name, item.Name, ignoreCase))
+                if (package.Identifier.MatchName(item.Identifier, ignoreCase))
                 {
                     // are both versions numbers?
                     double currentVersion;
                     double incomingVersion;
-                    if (double.TryParse(package.Version, out currentVersion) && double.TryParse(item.Version, out incomingVersion))
+                    if (package.Identifier.ConvertVersionToDouble(out currentVersion) && item.Identifier.ConvertVersionToDouble(out incomingVersion))
                     {
                         if (currentVersion < incomingVersion)
                         {
@@ -63,7 +68,7 @@ namespace Opus.Core
                     else
                     {
                         // not numbers, try a string comparison
-                        int versionComparison = System.String.Compare(package.Version, item.Version, ignoreCase);
+                        int versionComparison = package.Identifier.MatchVersion(item.Identifier, ignoreCase);
                         if (0 == versionComparison)
                         {
                             if (0 == System.String.Compare(package.Root, item.Root, ignoreCase))
@@ -150,7 +155,8 @@ namespace Opus.Core
             {
                 foreach (PackageInformation package in this.list)
                 {
-                    if (package.Name == name)
+                    bool ignoreCase = false;
+                    if (package.Identifier.MatchName(name, ignoreCase))
                     {
                         return package;
                     }

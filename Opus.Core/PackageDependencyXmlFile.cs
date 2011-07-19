@@ -203,7 +203,7 @@ namespace Opus.Core
                 return;
             }
 
-            throw new Exception(System.String.Format("Package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename));
+            throw new Exception(System.String.Format("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename));
         }
 
         protected void InterpretConditionValue(string condition)
@@ -327,7 +327,7 @@ namespace Opus.Core
                                                     this.InterpretConditionValue(conditionValue);
                                                 }
 
-                                                PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+                                                PackageInformation package = PackageInformation.FindPackage(new PackageIdentifier(packageName, packageVersion));
 #if true
                                                 if (null == package)
                                                 {
@@ -435,7 +435,7 @@ namespace Opus.Core
                                                 xmlReader.MoveToAttribute("Version");
                                                 string packageVersion = xmlReader.Value;
 
-                                                PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+                                                PackageInformation package = PackageInformation.FindPackage(new PackageIdentifier(packageName, packageVersion));
 #if true
                                                 if (null == package)
                                                 {
@@ -477,8 +477,9 @@ namespace Opus.Core
                     }
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                Log.MessageAll("Blah: '{0}'", ex.Message);
                 return false;
             }
 
@@ -487,7 +488,7 @@ namespace Opus.Core
 
         private PackageInformation GetPackageDetails(string packageName, string packageVersion)
         {
-            PackageInformation package = PackageInformation.FindPackage(packageName, packageVersion);
+            PackageInformation package = PackageInformation.FindPackage(new PackageIdentifier(packageName, packageVersion));
             if (null == package)
             {
                 string message = System.String.Format("Unable to locate package '{0}-{1}' in package roots\n", packageName, packageVersion);
@@ -549,7 +550,7 @@ namespace Opus.Core
             {
                 throw new Exception(System.String.Format("Package '{0}' was not found in the collection", packageName), false);
             }
-            if (package.Version != packageVersion)
+            if (0 != package.Identifier.MatchVersion(packageVersion, false))
             {
                 throw new Exception(System.String.Format("Package '{0}' has version '{1}' in the collection, but version '{2}' is requested for removal", packageName, package.Version, packageVersion), false);
             }

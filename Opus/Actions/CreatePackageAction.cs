@@ -55,7 +55,7 @@ namespace Opus
 
             packageInfoCollection.Add(createPackage);
 
-            Core.Log.DebugMessage("Package is '{0}-{1}' @ '{2}", createPackage.Name, createPackage.Version, createPackage.Root);
+            Core.Log.DebugMessage("Package is '{0}' @ '{1}'", createPackage.Identifier.ToString("-"), createPackage.Root);
             Core.Log.DebugMessage("Package roots are:");
             foreach (string packageRoot in Core.State.PackageRoots)
             {
@@ -65,8 +65,8 @@ namespace Opus
             string PackageDirectory = createPackage.Directory;
             if (System.IO.Directory.Exists(PackageDirectory))
             {
-                Core.Log.Info("Package '{0}-{1}' already exists at '{2}'",
-                              createPackage.Name, createPackage.Version,
+                Core.Log.Info("Package '{0}' already exists at '{1}'",
+                              createPackage.Identifier.ToString("-"),
                               createPackage.Root);
                 return false;
             }
@@ -111,7 +111,7 @@ namespace Opus
                 scriptWriter.Close();
             }
 
-            Core.Log.Info("Successfully created package '{0}-{1}' at '{2}", createPackage.Name, createPackage.Version, PackageDirectory);
+            Core.Log.Info("Successfully created package '{0}' at '{1}'", createPackage.Identifier.ToString("-"), PackageDirectory);
 
             return true;
         }

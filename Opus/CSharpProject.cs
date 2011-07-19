@@ -252,7 +252,7 @@ namespace Opus
                     {
                         Core.PackageInformation dependentPackage = Core.State.PackageInfo[packageIndex];
 
-                        Core.Log.DebugMessage("{0}: '{1}-{2}' @ '{3}'", packageIndex, dependentPackage.Name, dependentPackage.Version, dependentPackage.Root);
+                        Core.Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, dependentPackage.Identifier.ToString("-"), dependentPackage.Root);
 
                         xmlWriter.WriteStartElement("ItemGroup");
                         {
@@ -262,7 +262,7 @@ namespace Opus
                             {
                                 xmlWriter.WriteStartElement("Link");
                                 {
-                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
+                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
                                     linkPackageFilename = System.IO.Path.Combine(linkPackageFilename, System.IO.Path.GetFileName(dependentPackage.ScriptFile));
                                     xmlWriter.WriteValue(linkPackageFilename);
                                     xmlWriter.WriteEndElement();
@@ -277,7 +277,7 @@ namespace Opus
                             {
                                 xmlWriter.WriteStartElement("Link");
                                 {
-                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
+                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
                                     linkPackageFilename = System.IO.Path.Combine(linkPackageFilename, System.IO.Path.GetFileName(dependentPackage.DependencyFile));
                                     xmlWriter.WriteValue(linkPackageFilename);
                                     xmlWriter.WriteEndElement();
@@ -298,7 +298,7 @@ namespace Opus
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
-                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
+                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
                                                 string linkFilename = scriptFile.Replace(dependentPackage.Directory, prefix);
                                                 xmlWriter.WriteValue(linkFilename);
                                                 xmlWriter.WriteEndElement();
@@ -322,7 +322,7 @@ namespace Opus
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
-                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
+                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
                                                 string linkFilename = scriptFile.Replace(dependentPackage.Directory, prefix);
                                                 xmlWriter.WriteValue(linkFilename);
                                                 xmlWriter.WriteEndElement();

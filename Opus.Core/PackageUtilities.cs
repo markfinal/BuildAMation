@@ -36,7 +36,7 @@ namespace Opus.Core
 
             PackageInformation mainPackage = State.PackageInfo.MainPackage;
 
-            Log.DebugMessage("Package is '{0}-{1}' in '{2}", mainPackage.Name, mainPackage.Version, mainPackage.Root);
+            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Root);
 
             // TODO: check whether this is needed anymore
 #if false
@@ -55,7 +55,7 @@ namespace Opus.Core
             int packageIndex = 0;
             foreach (PackageInformation package in State.PackageInfo)
             {
-                Log.DebugMessage("{0}: '{1}-{2}' @ '{3}'", packageIndex, package.Name, package.Version, package.Root);
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Identifier.ToString("-"), package.Root);
 
                 sourceFileList.Add(package.ScriptFile);
                 Log.DebugMessage("\t'{0}'", package.ScriptFile);
@@ -338,8 +338,7 @@ namespace Opus.Core
                 bool found = false;
                 foreach (PackageInformation package in State.PackageInfo)
                 {
-                    if ((package.Name == packageInfo[0]) &&
-                        (package.Version == packageInfo[1]))
+                    if (package.Identifier.Match(new PackageIdentifier(packageInfo[0], packageInfo[1]), false))
                     {
                         found = true;
                     }

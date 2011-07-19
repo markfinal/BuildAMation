@@ -42,7 +42,7 @@ namespace Opus
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
 
-            Core.Log.DebugMessage("Package is '{0}-{1}' in '{2}", mainPackage.Name, mainPackage.Version, mainPackage.Root);
+            Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Root);
 
             // recursively discover dependent packages
             Core.XmlPackageDependencyDiscovery.Execute(mainPackage);
@@ -55,9 +55,8 @@ namespace Opus
             // Project to debug the script
             CSharpProject.Create(mainPackage, VisualStudioVersion.VS2008, new string[] { resourceFilePathName });
 
-            Core.Log.Info("Successfully created debug project for package '{0}-{1}' at '{2}'",
-                          mainPackage.Name,
-                          mainPackage.Version,
+            Core.Log.Info("Successfully created debug project for package '{0}' at '{1}'",
+                          mainPackage.Identifier.ToString("-"),
                           mainPackage.DebugProjectFilename);
 
             return true;

@@ -52,10 +52,7 @@ namespace Opus.Core
             if (null != packageInformation)
             {
                 State.PackageInfo.Add(packageInformation);
-                if (!State.PackageRoots.Contains(packageInformation.Root))
-                {
-                    State.PackageRoots.Add(packageInformation.Root);
-                }
+                // TODO: change this so it adds each dependent package to a queue
                 packageInformation.PackageDefinition.Read();
             }
             else
@@ -66,23 +63,15 @@ namespace Opus.Core
             return packageInformation;
         }
         
-        public static PackageInformation FindPackage(string name, string version)
+        public static PackageInformation FindPackage(PackageIdentifier identifier)
         {
-            if (null == name)
-            {
-                throw new Exception("Invalid name");
-            }
-            if (null == version)
-            {
-                throw new Exception("Invalid version");
-            }
-
             // first check if it already been loaded
             {
                 PackageInformationCollection packages = State.PackageInfo;
                 foreach (PackageInformation package in packages)
                 {
-                    if ((package.Name == name) && (package.Version == version))
+                    bool ignoreCase = true;
+                    if (package.Identifier.Match(identifier, ignoreCase))
                     {
                         Log.MessageAll("Package '{0}' already in the system", package.FullName);
                         return package;
@@ -97,8 +86,8 @@ namespace Opus.Core
             }
             foreach (string packageRoot in packageRoots)
             {
-                string packageDirectory = System.IO.Path.Combine(packageRoot, name);
-                packageDirectory = System.IO.Path.Combine(packageDirectory, version);
+                string packageDirectory = System.IO.Path.Combine(packageRoot, identifier.Name);
+                packageDirectory = System.IO.Path.Combine(packageDirectory, identifier.Version);
 
                 PackageInformation package = FromPath(packageDirectory, true);
                 if (null != package)
@@ -112,8 +101,7 @@ namespace Opus.Core
 
         private PackageInformation(string name, string version)
         {
-            this.Name = name;
-            this.Version = version;
+            this.Identifier = new PackageIdentifier(name, version);
             this.Root = null;
             this.IsBuilder = false;
             this.Directory = null;
@@ -124,28 +112,34 @@ namespace Opus.Core
         // restrict access to this, to emphasize that it's a heavyweight operation
         private PackageInformation(string name, string version, string root)
         {
-            this.Name = name;
-            this.Version = version;
+            this.Identifier = new PackageIdentifier(name, version);
             this.Root = root;
             this.IsBuilder = false;
-            
-            string directory = System.IO.Path.Combine(this.Root, this.Name);
-            directory = System.IO.Path.Combine(directory, this.Version);
-            this.Directory = directory;
+            this.Directory = this.Identifier.ToRootedPath(this.Root);
 
             this.PackageDefinition = new PackageDependencyXmlFile(this.DependencyFile, true);
         }
-        
-        public string Name
+
+        public PackageIdentifier Identifier
         {
             get;
             private set;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return this.Identifier.Name;
+            }
         }
         
         public string Version
         {
-            get;
-            private set;
+            get
+            {
+                return this.Identifier.Version;
+            }
         }
         
         public string Root
@@ -288,7 +282,7 @@ namespace Opus.Core
         {
             get
             {
-                string fullName = System.String.Format("{0}-{1}", this.Name, this.Version);
+                string fullName = this.Identifier.ToString("-");
                 return fullName;
             }
         }
