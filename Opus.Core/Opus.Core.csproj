@@ -118,7 +118,6 @@
     <Compile Include="TargetCollection.cs" />
     <Compile Include="TypeArray.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
-    <Compile Include="XmlPackageDependencyDiscovery.cs" />
     <None Include="app.config" />
     <None Include="Schema\OpusPackageDependency.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

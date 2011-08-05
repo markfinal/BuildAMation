@@ -17,12 +17,143 @@ namespace Opus.Core
             }
         }
 
-        public static void IdentifyWorkingDirectoryPackage()
+        public static PackageIdentifier IsPackageDirectory(string path,
+                                                           out bool isComplete)
         {
-            PackageInformation workingDirectoryPackage = PackageInformation.FromPath(State.WorkingDirectory, true);
-            if (null == workingDirectoryPackage)
+            isComplete = false;
+            if (!System.IO.Directory.Exists(path))
             {
-                Log.DebugMessage("No valid package found in the working directory");
+                Log.DebugMessage("Package path '{0}' does not exist", path);
+                return null;
+            }
+
+            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
+            if (directories.Length < 2)
+            {
+                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
+            }
+
+            string packageName = directories[directories.Length - 2];
+            string packageVersion = directories[directories.Length - 1];
+            string packageRoot = null;
+            System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
+            if (null == parentDir)
+            {
+                Log.DebugMessage("No parent directory");
+                return null;
+            }
+            System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
+            if (null == parentParentDir)
+            {
+                Log.DebugMessage("No parent of parent directory");
+                return null;
+            }
+            packageRoot = parentParentDir.FullName;
+
+            string basePackageFilename = System.IO.Path.Combine(path, packageName);
+            string scriptFilename = basePackageFilename + ".cs";
+            string xmlFilename = basePackageFilename + ".xml";
+            if (System.IO.File.Exists(scriptFilename) &&
+                System.IO.File.Exists(xmlFilename))
+            {
+                Core.Log.DebugMessage("Path '{0}' refers to a valid package; root = '{1}'", path, packageRoot);
+                isComplete = true;
+            }
+            else
+            {
+                Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
+            }
+
+            if (!State.PackageRoots.Contains(packageRoot))
+            {
+                State.PackageRoots.Add(packageRoot);
+            }
+
+            PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+            return id;
+        }
+
+        public static string PackageDependencyPathName(PackageIdentifier id)
+        {
+            string packageDirectory = id.Path;
+            string dependencyFileName = id.Name + ".xml";
+            string dependencyPathName = System.IO.Path.Combine(packageDirectory, dependencyFileName);
+            return dependencyPathName;
+        }
+
+        public static void IdentifyMainAndDependentPackages()
+        {
+            // find the working directory package
+            {
+                bool isWorkingPackageComplete;
+                PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
+                if (null == id)
+                {
+                    throw new Exception("No valid package found in the working directory");
+                }
+
+                if (!isWorkingPackageComplete)
+                {
+                    throw new Exception("Working directory package is not complete");
+                }
+
+                State.DependentPackageList.Add(id);
+            }
+
+            // TODO: check for inconsistent circular dependencies
+            // i.e. package A depends on B, and B depends on A, but a different version of A
+
+            // process all the dependent packages
+            int i = 0;
+            while (i < State.DependentPackageList.Count)
+            {
+                PackageIdentifier id = State.DependentPackageList[i++] as PackageIdentifier;
+                string dependencyPathName = PackageDependencyPathName(id);
+                PackageDependencyXmlFile dependencyFile = new PackageDependencyXmlFile(dependencyPathName, true);
+                dependencyFile.Read();
+
+                foreach (PackageIdentifier id2 in dependencyFile.Packages)
+                {
+                    bool toAdd = true;
+                    foreach (PackageIdentifier id3 in State.DependentPackageList)
+                    {
+                        if (id2.MatchName(id3.Name, true))
+                        {
+                            int versionMatch = id2.MatchVersion(id3, true);
+                            if (0 == versionMatch)
+                            {
+                                Log.MessageAll("Ignoring matching package version '{0}'", id2.ToString());
+                                toAdd = false;
+                            }
+                            else if (versionMatch > 0)
+                            {
+                                Log.MessageAll("Package '{0}' is newer than '{1}'. Replacing.", id2.ToString(), id3.ToString());
+                                State.DependentPackageList.Remove(id3); // safe to remove since we don't iterate the list anymore here
+                                toAdd = true;
+                            }
+                            else
+                            {
+                                Log.MessageAll("Package '{0}' is older than '{1}'. Ignoring.", id2.ToString(), id3.ToString());
+                                toAdd = false;
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (toAdd)
+                    {
+                        State.DependentPackageList.Add(id2);
+                    }
+                }
+            }
+
+            // now that we have resolved all the dependent packages, instantiate Packages
+            // that are used for the build process
+            foreach (PackageIdentifier id in State.DependentPackageList)
+            {
+                PackageInformation info = new PackageInformation(id);
+                State.PackageInfo.Add(info);
             }
 
             Log.MessageAll("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
@@ -32,17 +163,11 @@ namespace Opus.Core
         {
             System.DateTime gatherSourceStart = System.DateTime.Now;
 
-            IdentifyWorkingDirectoryPackage();
+            IdentifyMainAndDependentPackages();
 
             PackageInformation mainPackage = State.PackageInfo.MainPackage;
 
-            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Root);
-
-            // TODO: check whether this is needed anymore
-#if false
-            // recursively discover dependent packages
-            XmlPackageDependencyDiscovery.Execute(mainPackage);
-#endif
+            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
             BuilderUtilities.EnsureBuilderPackageExists();
 
@@ -55,10 +180,11 @@ namespace Opus.Core
             int packageIndex = 0;
             foreach (PackageInformation package in State.PackageInfo)
             {
-                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Identifier.ToString("-"), package.Root);
+                PackageIdentifier id = package.Identifier;
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
 
-                sourceFileList.Add(package.ScriptFile);
-                Log.DebugMessage("\t'{0}'", package.ScriptFile);
+                sourceFileList.Add(id.ScriptPathName);
+                Log.DebugMessage("\t'{0}'", id.ScriptPathName);
                 if (null != package.Scripts)
                 {
                     foreach (string scriptFile in package.Scripts)

@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class PackageIdentifier
+    public class PackageIdentifier : System.IComparable
     {
         public PackageIdentifier(string name, string version)
         {
@@ -20,6 +20,7 @@ namespace Opus.Core
 
             this.Name = name;
             this.Version = version;
+            this.Root = this.LocateRoot();
         }
 
         public string Name
@@ -32,6 +33,36 @@ namespace Opus.Core
         {
             get;
             private set;
+        }
+
+        public string Root
+        {
+            get;
+            private set;
+        }
+
+        public string DefinitionPathName
+        {
+            get
+            {
+                string scriptFile = System.IO.Path.Combine(this.Path, this.Name + ".xml");
+                return scriptFile;
+            }
+        }
+
+        public PackageDependencyXmlFile Definition
+        {
+            get;
+            set;
+        }
+
+        public string ScriptPathName
+        {
+            get
+            {
+                string scriptFile = System.IO.Path.Combine(this.Path, this.Name + ".cs");
+                return scriptFile;
+            }
         }
 
         public bool MatchName(PackageIdentifier identifier, bool ignoreCase)
@@ -73,11 +104,41 @@ namespace Opus.Core
             return identifierString;
         }
 
-        public string ToRootedPath(string rootDirectory)
+        public override string ToString()
         {
-            string rootedPath = System.IO.Path.Combine(rootDirectory, this.Name);
-            rootedPath = System.IO.Path.Combine(rootedPath, this.Version);
-            return rootedPath;
+            return this.ToString("-");
+        }
+
+        public string Path
+        {
+            get
+            {
+                string rootedPath = System.IO.Path.Combine(this.Root, this.Name);
+                rootedPath = System.IO.Path.Combine(rootedPath, this.Version);
+                return rootedPath;
+            }
+        }
+
+        int System.IComparable.CompareTo(object obj)
+        {
+            PackageIdentifier objAs = obj as PackageIdentifier;
+            int compared = this.ToString("-").CompareTo(objAs.ToString(" "));
+            return compared;
+        }
+
+        private string LocateRoot()
+        {
+            foreach (string root in State.PackageRoots)
+            {
+                string packageDirectory = System.IO.Path.Combine(root, this.Name);
+                string versionDirectory = System.IO.Path.Combine(packageDirectory, this.Version);
+                if (System.IO.Directory.Exists(versionDirectory))
+                {
+                    return root;
+                }
+            }
+
+            throw new Exception(System.String.Format("Unable to locate package '{0}' on any registered roots", this.ToString("-")), false);
         }
     }
 }

@@ -32,9 +32,10 @@ namespace Opus.Core
 
             this.list.Add(item);
 
-            if (!State.PackageRoots.Contains(item.Root))
+            string root = item.Identifier.Root;
+            if (!State.PackageRoots.Contains(root))
             {
-                State.PackageRoots.Add(item.Root);
+                State.PackageRoots.Add(root);
             }
         }
 
@@ -71,13 +72,13 @@ namespace Opus.Core
                         int versionComparison = package.Identifier.MatchVersion(item.Identifier, ignoreCase);
                         if (0 == versionComparison)
                         {
-                            if (0 == System.String.Compare(package.Root, item.Root, ignoreCase))
+                            if (0 == System.String.Compare(package.Identifier.Root, item.Identifier.Root, ignoreCase))
                             {
                                 return true;
                             }
                             else
                             {
-                                throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Root, item.Root));
+                                throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Identifier.Root, item.Identifier.Root));
                             }
                         }
                         else

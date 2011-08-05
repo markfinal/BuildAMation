@@ -24,6 +24,7 @@ namespace Opus
                 System.DateTime stop = System.DateTime.Now;
                 Core.State.TimingProfiles[(int)Core.ETimingProfiles.Total] = stop - start;
 
+                // TODO: only show this on a build action
                 Core.TimingProfiles.DumpProfiles();
             }
             catch (Core.Exception exception)

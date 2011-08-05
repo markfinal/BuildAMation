@@ -47,14 +47,7 @@ namespace Opus
             }
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
-#if true
-            Core.PackageDependencyXmlFile xmlFile = mainPackage.PackageDefinition;
-#else
-            string dependencyXMLPathName = mainPackage.DependencyFile;
-
-            Core.PackageDependencyXmlFile xmlFile = new Core.PackageDependencyXmlFile(dependencyXMLPathName, true);
-            xmlFile.Read();
-#endif
+            Core.PackageDependencyXmlFile xmlFile = mainPackage.Identifier.Definition;
 
             foreach (string packageAndVersion in this.PackagesAndVersions)
             {
@@ -63,6 +56,8 @@ namespace Opus
                 {
                     throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
                 }
+
+                Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
 
                 xmlFile.AddRequiredPackage(packageNameAndVersion[0], packageNameAndVersion[1]);
             }

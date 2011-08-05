@@ -58,7 +58,7 @@ namespace Qt
                 throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(package.Directory, pathSegments);
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(package.Identifier.Path, pathSegments);
             foreach (string path in filePaths)
             {
                 MocFile mocFile = new MocFile();

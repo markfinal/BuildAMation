@@ -53,13 +53,12 @@ namespace Opus.Core
 
     public class PackageDependencyXmlFile
     {
-        private PackageInformationCollection packages;
+        private Array<PackageIdentifier> packageIds;
         private string xmlFilename;
         private bool validate;
         
         private static void ValidationCallBack(object sender, System.Xml.Schema.ValidationEventArgs args)
         {
-#if true
             string message = null;
             if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
             {
@@ -72,17 +71,6 @@ namespace Opus.Core
             message += System.String.Format("\nAt '" + args.Exception.SourceUri + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
 
             throw new System.Xml.XmlException(message);
-#else
-            if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
-            {
-                Log.Info("\tWarning: Matching schema not found (" + args.Exception.GetType().ToString() + ").  No validation occurred." + args.Message);
-            }
-            else
-            {
-                Log.Info("\tValidation error: " + args.Message);
-            }
-            Log.Info("\tAt '" + args.Exception.SourceSchemaObject + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
-#endif
         }
         
         private void Validate()
@@ -107,7 +95,7 @@ namespace Opus.Core
         {
             this.validate = validate;
             this.xmlFilename = xmlFilename;
-            this.packages = new PackageInformationCollection();
+            this.packageIds = new Array<PackageIdentifier>();
         }
 
         public void Write()
@@ -121,7 +109,7 @@ namespace Opus.Core
                 }
             }
 
-            this.packages.Sort();
+            this.packageIds.Sort();
 
             System.Xml.XmlDocument document = new System.Xml.XmlDocument();
             string targetNamespace = "Opus";
@@ -135,10 +123,10 @@ namespace Opus.Core
             }
             document.AppendChild(packageDefinition);
 
-            if (this.packages.Count > 0)
+            if (this.packageIds.Count > 0)
             {
                 System.Xml.XmlElement requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
-                foreach (PackageInformation package in this.packages)
+                foreach (PackageIdentifier package in this.packageIds)
                 {
                     System.Xml.XmlElement packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
                     packageElement.SetAttribute("Name", package.Name);
@@ -327,25 +315,8 @@ namespace Opus.Core
                                                     this.InterpretConditionValue(conditionValue);
                                                 }
 
-                                                PackageInformation package = PackageInformation.FindPackage(new PackageIdentifier(packageName, packageVersion));
-#if true
-                                                if (null == package)
-                                                {
-                                                    throw new Exception(System.String.Format("Unable to locate package '{0}-{1}'", packageName, packageVersion), false);
-                                                }
-
-                                                this.packages.Add(package);
-#else
-                                                if (null == package)
-                                                {
-                                                    PackageInformation p = new PackageInformation(packageName, packageVersion);
-                                                    this.packages.Add(p);
-                                                }
-                                                else
-                                                {
-                                                    this.packages.Add(package);
-                                                }
-#endif
+                                                PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                                this.packageIds.Add(id);
                                             }
                                         }
                                         else
@@ -435,28 +406,8 @@ namespace Opus.Core
                                                 xmlReader.MoveToAttribute("Version");
                                                 string packageVersion = xmlReader.Value;
 
-                                                PackageInformation package = PackageInformation.FindPackage(new PackageIdentifier(packageName, packageVersion));
-#if true
-                                                if (null == package)
-                                                {
-                                                    throw new Exception(System.String.Format("Unable to locate package '{0}-{1}'", packageName, packageVersion), false);
-                                                }
-
-                                                this.Packages.Add(package);
-#else
-                                                if (null == package)
-                                                {
-                                                    // TODO: when does this happen?
-                                                    PackageInformation p = new PackageInformation(packageName, packageVersion);
-                                                    this.packages.Add(p);
-                                                    State.PackageInfo.Add(p);
-                                                }
-                                                else
-                                                {
-                                                    this.packages.Add(package);
-                                                    State.PackageInfo.Add(package);
-                                                }
-#endif
+                                                PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                                this.packageIds.Add(id);
 
                                                 xmlReader.MoveToElement();
                                             }
@@ -486,25 +437,12 @@ namespace Opus.Core
             return true;
         }
 
-        private PackageInformation GetPackageDetails(string packageName, string packageVersion)
-        {
-            PackageInformation package = PackageInformation.FindPackage(new PackageIdentifier(packageName, packageVersion));
-            if (null == package)
-            {
-                string message = System.String.Format("Unable to locate package '{0}-{1}' in package roots\n", packageName, packageVersion);
-                StringArray packageRoots = State.PackageRoots;
-                foreach (string packageRoot in packageRoots)
-                {
-                    message = System.String.Concat(message, System.String.Format("\t{0}\n", packageRoot));
-                }
-                throw new Exception(System.String.Format(message), false);
-            }
-
-            return package;
-        }
-
         public bool UpdatePackage(string packageName, string packageVersion)
         {
+            // TODO: need to update this
+#if true
+            return false;
+#else
             PackageInformation package = this.Packages[packageName];
             if (null == package)
             {
@@ -526,10 +464,14 @@ namespace Opus.Core
             Log.Info("Changed package '{0}' from version '{1}' to '{2}'", packageName, oldVersion, packageVersion);
 
             return true;
+#endif
         }
 
         public void AddRequiredPackage(string packageName, string packageVersion)
         {
+#if true
+            // TODO: need to do this
+#else
             PackageInformation package = GetPackageDetails(packageName, packageVersion);
             if (this.packages.Contains(package))
             {
@@ -541,10 +483,14 @@ namespace Opus.Core
             }
 
             Log.Info("Added dependency '{0}' from root '{1}'", package.FullName, package.Root);
+#endif
         }
 
         public void RemovePackage(string packageName, string packageVersion)
         {
+#if true
+            // TODO: need to do this
+#else
             PackageInformation package = this.packages[packageName];
             if (null == package)
             {
@@ -558,13 +504,14 @@ namespace Opus.Core
             this.packages.Remove(package);
 
             Log.Info("Removed dependency '{0}' from root '{1}'", package.FullName, package.Root);
+#endif
         }
 
-        public PackageInformationCollection Packages
+        public Array<PackageIdentifier> Packages
         {
             get
             {
-                return this.packages;
+                return this.packageIds;
             }
         }
     }

@@ -83,7 +83,7 @@ namespace Opus.Core
 
         public void SetPackageRelativePath(Opus.Core.PackageInformation package, params string[] pathSegments)
         {
-            this.Initialize(package.Directory, true, pathSegments);
+            this.Initialize(package.Identifier.Path, true, pathSegments);
         }
 
         public void SetAbsolutePath(string absolutePath)

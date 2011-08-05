@@ -35,6 +35,8 @@ namespace Opus
 
         public bool Execute()
         {
+            Core.PackageUtilities.IdentifyMainAndDependentPackages();
+
             if (0 == Core.State.PackageInfo.Count)
             {
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
@@ -42,10 +44,7 @@ namespace Opus
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
 
-            Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Root);
-
-            // recursively discover dependent packages
-            Core.XmlPackageDependencyDiscovery.Execute(mainPackage);
+            Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
             Core.BuilderUtilities.EnsureBuilderPackageExists();
 

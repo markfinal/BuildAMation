@@ -22,8 +22,9 @@ namespace Opus.Core
             {
                 foreach (Core.PackageInformation package in Core.State.PackageInfo)
                 {
-                    string name = package.Identifier.ToString("_");
-                    string value = package.Root;
+                    Core.PackageIdentifier id = package.Identifier;
+                    string name = id.ToString("_");
+                    string value = id.Root;
 
                     writer.AddResource(name, value);
                 }
@@ -90,7 +91,7 @@ namespace Opus.Core
                 System.Xml.XmlElement data = resourceFile.CreateElement("data");
                 data.SetAttribute("name", package.Identifier.ToString("_"));
                 System.Xml.XmlElement value = resourceFile.CreateElement("value");
-                value.InnerText = package.Root;
+                value.InnerText = package.Identifier.Root;
                 data.AppendChild(value);
                 root.AppendChild(data);
             }

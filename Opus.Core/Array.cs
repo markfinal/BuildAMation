@@ -120,5 +120,10 @@ namespace Opus.Core
             }
             return message;
         }
+
+        public void Sort()
+        {
+            this.list.Sort();
+        }
     }
 }

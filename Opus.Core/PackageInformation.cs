@@ -7,117 +7,18 @@ namespace Opus.Core
 {
     public class PackageInformation : System.IComparable
     {
-        private string directory;
-        
-        public static PackageInformation FromPath(string path, bool checkForPackageFiles)
-        {
-            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-            if (directories.Length < 2)
-            {
-                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
-            }
-
-            string packageName = directories[directories.Length - 2];
-            string packageVersion = directories[directories.Length - 1];
-            System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
-            if (null == parentDir)
-            {
-                Log.DebugMessage("No parent directory");
-                return null;
-            }
-            System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
-            if (null == parentParentDir)
-            {
-                Log.DebugMessage("No parent of parent directory");
-                return null;
-            }
-            string root = parentParentDir.FullName;
-
-            string basePackageFilename = System.IO.Path.Combine(path, packageName);
-            string scriptFilename = basePackageFilename + ".cs";
-            string xmlFilename = basePackageFilename + ".xml";
-            PackageInformation packageInformation = null;
-            if (System.IO.File.Exists(scriptFilename) &&
-                System.IO.File.Exists(xmlFilename))
-            {
-                packageInformation = new PackageInformation(packageName, packageVersion, root);
-                Core.Log.DebugMessage("Path '{0}' refers to a valid package; fullname = '{1}', root = '{2}'", path, packageInformation.FullName, root);
-            }
-            else if (!checkForPackageFiles)
-            {
-                Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
-                packageInformation = new PackageInformation(packageName, packageVersion, root);
-            }
-
-            if (null != packageInformation)
-            {
-                State.PackageInfo.Add(packageInformation);
-                // TODO: change this so it adds each dependent package to a queue
-                packageInformation.PackageDefinition.Read();
-            }
-            else
-            {
-                Core.Log.DebugMessage("Path '{0}' is not a package directory. Perhaps some files are missing or misnamed?", path);
-            }
-                        
-            return packageInformation;
-        }
-        
-        public static PackageInformation FindPackage(PackageIdentifier identifier)
-        {
-            // first check if it already been loaded
-            {
-                PackageInformationCollection packages = State.PackageInfo;
-                foreach (PackageInformation package in packages)
-                {
-                    bool ignoreCase = true;
-                    if (package.Identifier.Match(identifier, ignoreCase))
-                    {
-                        Log.MessageAll("Package '{0}' already in the system", package.FullName);
-                        return package;
-                    }
-                }
-            }
-
-            StringArray packageRoots = State.PackageRoots;
-            if (null == packageRoots)
-            {
-                throw new Exception("There are no package roots specified");
-            }
-            foreach (string packageRoot in packageRoots)
-            {
-                string packageDirectory = System.IO.Path.Combine(packageRoot, identifier.Name);
-                packageDirectory = System.IO.Path.Combine(packageDirectory, identifier.Version);
-
-                PackageInformation package = FromPath(packageDirectory, true);
-                if (null != package)
-                {
-                    return package;
-                }
-            }
-
-            return null;
-        }
-
         private PackageInformation(string name, string version)
         {
             this.Identifier = new PackageIdentifier(name, version);
-            this.Root = null;
             this.IsBuilder = false;
-            this.Directory = null;
 
             throw new Exception("Who calls this constructor?");
         }
 
-        // restrict access to this, to emphasize that it's a heavyweight operation
-        private PackageInformation(string name, string version, string root)
+        public PackageInformation(PackageIdentifier id)
         {
-            this.Identifier = new PackageIdentifier(name, version);
-            this.Root = root;
+            this.Identifier = id;
             this.IsBuilder = false;
-            this.Directory = this.Identifier.ToRootedPath(this.Root);
-
-            this.PackageDefinition = new PackageDependencyXmlFile(this.DependencyFile, true);
         }
 
         public PackageIdentifier Identifier
@@ -141,61 +42,19 @@ namespace Opus.Core
                 return this.Identifier.Version;
             }
         }
-        
-        public string Root
-        {
-            get;
-            private set;
-        }
-        
+                
         public bool IsBuilder
         {
             get;
             set;
         }
         
-        public string Directory
+        private string ScriptsDirectory
         {
             get
             {
-                return this.directory;
-            }
-            private set
-            {
-                this.directory = value;
-            }
-        }
-        
-        public string DependencyFile
-        {
-            get
-            {
-                string dependencyFile = System.IO.Path.Combine(this.Directory, this.Name + ".xml");
-                return dependencyFile;
-            }
-        }
-
-        public PackageDependencyXmlFile PackageDefinition
-        {
-            get;
-            private set;
-        }
-        
-        public string ScriptFile
-        {
-            get
-            {
-                string scriptFile = System.IO.Path.Combine(this.Directory, this.Name + ".cs");
-                return scriptFile;
-            }
-        }
-        
-        private string ScriptDirectory
-        {
-            get
-            {
-                string scriptDirectory = System.IO.Path.Combine(this.Directory, "Scripts");
-                return scriptDirectory;
+                string scriptsDirectory = System.IO.Path.Combine(this.Identifier.Path, "Scripts");
+                return scriptsDirectory;
             }
         }
         
@@ -203,7 +62,7 @@ namespace Opus.Core
         {
             get
             {
-                string opusDirectory = System.IO.Path.Combine(this.Directory, "Opus");
+                string opusDirectory = System.IO.Path.Combine(this.Identifier.Path, "Opus");
                 return opusDirectory;
             }
         }
@@ -222,9 +81,9 @@ namespace Opus.Core
             get
             {
                 StringArray scripts = new StringArray();
-                if (System.IO.Directory.Exists(this.ScriptDirectory))
+                if (System.IO.Directory.Exists(this.ScriptsDirectory))
                 {
-                    string[] files = System.IO.Directory.GetFiles(this.ScriptDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
+                    string[] files = System.IO.Directory.GetFiles(this.ScriptsDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
                     if (files.Length > 0)
                     {
                         scripts.AddRange(files);
@@ -249,7 +108,7 @@ namespace Opus.Core
                 }
 
                 StringArray builderScripts = new StringArray();
-                string builderDirectory = System.IO.Path.Combine(this.Directory, builderPackage.Name);
+                string builderDirectory = System.IO.Path.Combine(this.Identifier.Path, builderPackage.Name);
                 if (System.IO.Directory.Exists(builderDirectory))
                 {
                     string[] files = System.IO.Directory.GetFiles(builderDirectory, "*.cs");

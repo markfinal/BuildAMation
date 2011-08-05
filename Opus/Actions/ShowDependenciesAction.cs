@@ -35,26 +35,12 @@ namespace Opus
             }
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
-#if true
-            Core.PackageDependencyXmlFile xmlFile = mainPackage.PackageDefinition;
-#else
-            string dependencyXMLPathName = mainPackage.DependencyFile;
-
-            Core.PackageDependencyXmlFile xmlFile = new Core.PackageDependencyXmlFile(dependencyXMLPathName, true);
-            xmlFile.Read();
-#endif
 
             Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackage.FullName);
-            foreach (Core.PackageInformation package in xmlFile.Packages)
+            Core.PackageDependencyXmlFile xmlFile = mainPackage.Identifier.Definition;
+            foreach (Core.PackageIdentifier id in xmlFile.Packages)
             {
-                if (package.Root != null)
-                {
-                    Core.Log.MessageAll("\t{0} @ '{1}'", package.FullName, package.Root);
-                }
-                else
-                {
-                    Core.Log.MessageAll("\t{0} (not found in any root)", package.FullName);
-                }
+                Core.Log.MessageAll("\t{0} @ '{1}'", id.ToString("-"), id.Root);
             }
 
             return true;

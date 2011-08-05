@@ -59,6 +59,9 @@ namespace Opus.Core
             PackageInformationCollection packageInfoCollection = new PackageInformationCollection();
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
 
+            Array<PackageIdentifier> dependentPackageList = new Array<PackageIdentifier>();
+            Add<Array<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
+
 #if false
             // is there a package in the working directory?
             {
@@ -273,6 +276,18 @@ namespace Opus.Core
            {
                return Get("System", "Packages") as PackageInformationCollection;
            }
+        }
+
+        public static Array<PackageIdentifier> DependentPackageList
+        {
+            set
+            {
+                Set("System", "DependentPackageList", value);
+            }
+            get
+            {
+                return Get("System", "DependentPackageList") as Array<PackageIdentifier>;
+            }
         }
         
         public static string ScriptAssemblyPathname
