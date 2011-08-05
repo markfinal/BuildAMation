@@ -1,7 +1,7 @@
 ﻿// <copyright file="PackageDefinitionFile.cs" company="Mark Final">
 //  Opus.Core
 // </copyright>
-// <summary>Opus package dependency XML file</summary>
+// <summary>Opus package definition XML file</summary>
 // <author>Mark Final</author>
 namespace Opus.Core
 {
