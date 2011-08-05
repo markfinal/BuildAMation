@@ -32,7 +32,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Directory }) as IProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier.Path }) as IProject;
 
                     projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
