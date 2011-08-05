@@ -50,7 +50,7 @@ namespace Opus.Core
             }
         }
 
-        public PackageDependencyXmlFile Definition
+        public PackageDefinitionFile Definition
         {
             get;
             set;

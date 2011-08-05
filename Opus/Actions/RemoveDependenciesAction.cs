@@ -41,14 +41,20 @@ namespace Opus
 
         public bool Execute()
         {
-            if (0 == Core.State.PackageInfo.Count)
+            bool isComplete;
+            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isComplete);
+            if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory is not a package", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
-            Core.PackageDependencyXmlFile xmlFile = mainPackage.Identifier.Definition;
+            Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
+            if (isComplete)
+            {
+                definitionFile.Read();
+            }
 
+            int numberOfPackagesRemoved = 0;
             foreach (string packageAndVersion in this.PackagesAndVersions)
             {
                 string[] packageNameAndVersion = packageAndVersion.Split('-');
@@ -57,10 +63,17 @@ namespace Opus
                     throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
                 }
 
-                xmlFile.RemovePackage(packageNameAndVersion[0], packageNameAndVersion[1]);
+                Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                if (definitionFile.RemovePackage(id))
+                {
+                    ++numberOfPackagesRemoved;
+                }
             }
 
-            xmlFile.Write();
+            if (numberOfPackagesRemoved > 0)
+            {
+                definitionFile.Write();
+            }
 
             return true;
         }

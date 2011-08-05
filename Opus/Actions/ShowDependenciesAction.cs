@@ -29,18 +29,24 @@ namespace Opus
 
         public bool Execute()
         {
-            if (0 == Core.State.PackageInfo.Count)
+            bool isComplete;
+            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isComplete);
+            if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory is not a package", false);
             }
-
-            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
-
-            Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackage.FullName);
-            Core.PackageDependencyXmlFile xmlFile = mainPackage.Identifier.Definition;
-            foreach (Core.PackageIdentifier id in xmlFile.Packages)
+            if (!isComplete)
             {
-                Core.Log.MessageAll("\t{0} @ '{1}'", id.ToString("-"), id.Root);
+                throw new Core.Exception(System.String.Format("Unable to locate all of the package files in '{0}'", Core.State.WorkingDirectory), false);
+            }
+
+            Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
+            definitionFile.Read();
+
+            Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackageId.ToString());
+            foreach (Core.PackageIdentifier id in definitionFile.PackageIdentifiers)
+            {
+                Core.Log.MessageAll("\t{0} in '{1}'", id.ToString("-"), id.Root);
             }
 
             return true;

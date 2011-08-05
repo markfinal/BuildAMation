@@ -87,7 +87,7 @@ namespace Opus
             id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath, out isComplete);
 
             // Xml file for dependencies
-            Core.PackageDependencyXmlFile packageDefinition = new Opus.Core.PackageDependencyXmlFile(id.DefinitionPathName, true);
+            Core.PackageDefinitionFile packageDefinition = new Opus.Core.PackageDefinitionFile(id.DefinitionPathName, true);
             if (null == packageDefinition)
             {
                 throw new Core.Exception(System.String.Format("Package definition file '%s' could not be created", packageDefinition), false);

@@ -48,7 +48,7 @@ namespace Opus
                 throw new Core.Exception("Working directory is not a package", false);
             }
 
-            Core.PackageDependencyXmlFile xmlFile = new Core.PackageDependencyXmlFile(mainPackageId.DefinitionPathName, true);
+            Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
                 xmlFile.Read();
@@ -63,7 +63,6 @@ namespace Opus
                 }
 
                 Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
-
                 xmlFile.AddRequiredPackage(id);
             }
 

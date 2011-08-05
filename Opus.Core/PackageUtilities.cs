@@ -56,7 +56,7 @@ namespace Opus.Core
             if (System.IO.File.Exists(scriptFilename) &&
                 System.IO.File.Exists(xmlFilename))
             {
-                Core.Log.DebugMessage("Path '{0}' refers to a valid package; root = '{1}'", path, packageRoot);
+                Core.Log.DebugMessage("Path '{0}' refers to a valid package; root is '{1}'", path, packageRoot);
                 isComplete = true;
             }
             else
@@ -109,10 +109,10 @@ namespace Opus.Core
             {
                 PackageIdentifier id = State.DependentPackageList[i++] as PackageIdentifier;
                 string dependencyPathName = PackageDependencyPathName(id);
-                PackageDependencyXmlFile dependencyFile = new PackageDependencyXmlFile(dependencyPathName, true);
+                PackageDefinitionFile dependencyFile = new PackageDefinitionFile(dependencyPathName, true);
                 dependencyFile.Read();
 
-                foreach (PackageIdentifier id2 in dependencyFile.Packages)
+                foreach (PackageIdentifier id2 in dependencyFile.PackageIdentifiers)
                 {
                     bool toAdd = true;
                     foreach (PackageIdentifier id3 in State.DependentPackageList)

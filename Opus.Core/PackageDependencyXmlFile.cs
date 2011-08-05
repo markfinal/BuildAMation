@@ -1,4 +1,4 @@
-﻿// <copyright file="PackageDependencyXmlFile.cs" company="Mark Final">
+﻿// <copyright file="PackageDefinitionFile.cs" company="Mark Final">
 //  Opus.Core
 // </copyright>
 // <summary>Opus package dependency XML file</summary>
@@ -51,7 +51,7 @@ namespace Opus.Core
         }
     }
 
-    public class PackageDependencyXmlFile
+    public class PackageDefinitionFile
     {
         private Array<PackageIdentifier> packageIds;
         private string xmlFilename;
@@ -91,7 +91,7 @@ namespace Opus.Core
             while (reader.Read());
         }
         
-        public PackageDependencyXmlFile(string xmlFilename, bool validate)
+        public PackageDefinitionFile(string xmlFilename, bool validate)
         {
             this.validate = validate;
             this.xmlFilename = xmlFilename;
@@ -437,34 +437,38 @@ namespace Opus.Core
             return true;
         }
 
-        public bool UpdatePackage(string packageName, string packageVersion)
+        public bool UpdatePackage(PackageIdentifier idToChangeTo)
         {
-            // TODO: need to update this
-#if true
-            return false;
-#else
-            PackageInformation package = this.Packages[packageName];
-            if (null == package)
+            PackageIdentifier idToRemove = null;
+            foreach (PackageIdentifier id in this.packageIds)
             {
-                this.AddRequiredPackage(packageName, packageVersion);
-                return false;
+                if (id.MatchName(idToChangeTo, false))
+                {
+                    if (0 == id.MatchVersion(idToChangeTo, false))
+                    {
+                        Log.Info("Package '{0}' is already set to version '{1}'", id.Name, id.Version);
+                        return false;
+                    }
+                    else
+                    {
+                        idToRemove = id;
+                    }
+                }
             }
 
-            string oldVersion = package.Version;
-            if (oldVersion == packageVersion)
+            if (null != idToRemove)
             {
-                Log.Info("Package '{0}' is already set to version '{1}'", packageName, oldVersion);
-                return false;
+                this.packageIds.Remove(idToRemove);
+                Log.Info("Changed package '{0}' from version '{1}' to '{2}'", idToChangeTo.Name, idToRemove.Version, idToChangeTo.Version);
+            }
+            else
+            {
+                Log.Info("Added dependency '{0}' from root '{1}'", idToChangeTo.ToString(), idToChangeTo.Root);
             }
 
-            PackageInformation packageToChangeTo = GetPackageDetails(packageName, packageVersion);
-            this.packages.Remove(package);
-            this.packages.Add(packageToChangeTo);
-
-            Log.Info("Changed package '{0}' from version '{1}' to '{2}'", packageName, oldVersion, packageVersion);
+            this.packageIds.Add(idToChangeTo);
 
             return true;
-#endif
         }
 
         public void AddRequiredPackage(PackageIdentifier idToAdd)
@@ -481,28 +485,32 @@ namespace Opus.Core
             Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root);
         }
 
-        public void RemovePackage(string packageName, string packageVersion)
+        public bool RemovePackage(PackageIdentifier idToRemove)
         {
-#if true
-            // TODO: need to do this
-#else
-            PackageInformation package = this.packages[packageName];
-            if (null == package)
+            PackageIdentifier idToRemoveReally = null;
+            foreach (PackageIdentifier id in this.packageIds)
             {
-                throw new Exception(System.String.Format("Package '{0}' was not found in the collection", packageName), false);
-            }
-            if (0 != package.Identifier.MatchVersion(packageVersion, false))
-            {
-                throw new Exception(System.String.Format("Package '{0}' has version '{1}' in the collection, but version '{2}' is requested for removal", packageName, package.Version, packageVersion), false);
+                if (id.Match(idToRemove, false))
+                {
+                    idToRemoveReally = id;
+                    break;
+                }
             }
 
-            this.packages.Remove(package);
-
-            Log.Info("Removed dependency '{0}' from root '{1}'", package.FullName, package.Root);
-#endif
+            if (null != idToRemoveReally)
+            {
+                this.packageIds.Remove(idToRemoveReally);
+                Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), idToRemove.Root);
+                return true;
+            }
+            else
+            {
+                Log.Info("Could not find reference to '{0}' to remove", idToRemove.ToString());
+                return false;
+            }
         }
 
-        public Array<PackageIdentifier> Packages
+        public Array<PackageIdentifier> PackageIdentifiers
         {
             get
             {
