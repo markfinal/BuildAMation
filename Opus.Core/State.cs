@@ -62,29 +62,6 @@ namespace Opus.Core
             Array<PackageIdentifier> dependentPackageList = new Array<PackageIdentifier>();
             Add<Array<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
 
-#if false
-            // is there a package in the working directory?
-            {
-                // TODO: we don't want the dependency script evaluation happening here
-                PackageInformation workingDirectoryPackage = PackageInformation.FromPath(WorkingDirectory, true);
-#if true
-                if (null == workingDirectoryPackage)
-                {
-                    Log.DebugMessage("No valid package found in the working directory");
-                }
-#else
-                if (null != workingDirectoryPackage)
-                {
-                    //packageInfoCollection.Add(workingDirectoryPackage);
-                    if (!packageRoots.Contains(workingDirectoryPackage.Root))
-                    {
-                        packageRoots.Add(workingDirectoryPackage.Root);
-                    }
-                }
-#endif
-            }
-#endif
-
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<string>("System", "BuilderName", null);
