@@ -105,7 +105,8 @@ namespace Opus
                         throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageNameAndVersion), false);
                     }
 
-                    packageDefinition.AddRequiredPackage(packageNameAndVersion[0], packageNameAndVersion[1]);
+                    Core.PackageIdentifier idToAdd = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                    packageDefinition.AddRequiredPackage(idToAdd);
                 }
             }
             packageDefinition.Write();
@@ -123,7 +124,7 @@ namespace Opus
                 scriptWriter.Close();
             }
 
-            Core.Log.Info("Successfully created package '{0}' at '{1}'", id.ToString("-"), PackageDirectory);
+            Core.Log.Info("Successfully created package '{0}' in '{1}'", id.ToString("-"), id.Root);
 
             return true;
         }

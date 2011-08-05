@@ -467,23 +467,18 @@ namespace Opus.Core
 #endif
         }
 
-        public void AddRequiredPackage(string packageName, string packageVersion)
+        public void AddRequiredPackage(PackageIdentifier idToAdd)
         {
-#if true
-            // TODO: need to do this
-#else
-            PackageInformation package = GetPackageDetails(packageName, packageVersion);
-            if (this.packages.Contains(package))
+            foreach (PackageIdentifier id in this.packageIds)
             {
-                throw new Exception(System.String.Format("Package '{0}' is already included in the dependency file", package.FullName), false);
-            }
-            else
-            {
-                this.packages.Add(package);
+                if (id.Match(idToAdd, false))
+                {
+                    throw new Exception(System.String.Format("Package '{0}' is already included in the dependency file", id.ToString()), false);
+                }
             }
 
-            Log.Info("Added dependency '{0}' from root '{1}'", package.FullName, package.Root);
-#endif
+            this.packageIds.Add(idToAdd);
+            Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root);
         }
 
         public void RemovePackage(string packageName, string packageVersion)

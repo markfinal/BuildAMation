@@ -41,13 +41,18 @@ namespace Opus
 
         public bool Execute()
         {
-            if (0 == Core.State.PackageInfo.Count)
+            bool isComplete;
+            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isComplete);
+            if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory is not a package", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
-            Core.PackageDependencyXmlFile xmlFile = mainPackage.Identifier.Definition;
+            Core.PackageDependencyXmlFile xmlFile = new Core.PackageDependencyXmlFile(mainPackageId.DefinitionPathName, true);
+            if (isComplete)
+            {
+                xmlFile.Read();
+            }
 
             foreach (string packageAndVersion in this.PackagesAndVersions)
             {
@@ -59,7 +64,7 @@ namespace Opus
 
                 Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
 
-                xmlFile.AddRequiredPackage(packageNameAndVersion[0], packageNameAndVersion[1]);
+                xmlFile.AddRequiredPackage(id);
             }
 
             xmlFile.Write();
