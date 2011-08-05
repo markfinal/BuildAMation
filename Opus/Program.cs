@@ -36,7 +36,10 @@ namespace Opus
                     innerException = innerException.InnerException;
                     Core.Log.ErrorMessage("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
                 }
-                Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
+                if (exception.RequiresStackTrace)
+                {
+                    Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
+                }
                 System.Environment.ExitCode = -1;
             }
             catch (System.Reflection.TargetInvocationException exception)
