@@ -21,33 +21,19 @@ namespace Opus.Core
         {
             if (absoluteUri.IsFile)
             {
-                if (ofObjectToReturn == typeof(System.IO.Stream))
-                {
-                    System.IO.StreamReader reader = new System.IO.StreamReader(absoluteUri.LocalPath);
-                    return reader.BaseStream;
-                }
-                else
-                {
-                    throw new System.NotImplementedException();
-                }
+                System.IO.StreamReader reader = new System.IO.StreamReader(absoluteUri.LocalPath);
+                return reader.BaseStream;
             }
             else
             {
                 if ("http://code.google.com/p/opus" == absoluteUri.ToString())
                 {
-                    if (ofObjectToReturn == typeof(System.IO.Stream))
-                    {
-                        System.IO.StreamReader reader = new System.IO.StreamReader(State.OpusPackageDependencySchemaPathNameV2);
-                        return reader.BaseStream;
-                    }
-                    else
-                    {
-                        throw new System.NotImplementedException();
-                    }
+                    System.IO.StreamReader reader = new System.IO.StreamReader(State.OpusPackageDependencySchemaPathNameV2);
+                    return reader.BaseStream;
                 }
-            }
 
-            throw new System.NotImplementedException();
+                throw new System.Xml.XmlException(System.String.Format("Did not understand non-file URI '{0}'", absoluteUri.ToString()));
+            }
         }
     }
 
@@ -77,7 +63,7 @@ namespace Opus.Core
         {
             System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
             settings.ValidationType = System.Xml.ValidationType.Schema;
-            settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessInlineSchema;
+            settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
             settings.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(ValidationCallBack);
@@ -118,7 +104,8 @@ namespace Opus.Core
             {
                 string xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 System.Xml.XmlAttribute schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                schemaAttribute.Value = State.OpusPackageDependencySchemaPathNameV2;
+                var schemaPathUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
+                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, schemaPathUri.AbsoluteUri);
                 packageDefinition.Attributes.Append(schemaAttribute);
             }
             document.AppendChild(packageDefinition);
@@ -170,6 +157,8 @@ namespace Opus.Core
             if (this.validate)
             {
                 xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
+                xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
+                xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
             }
             xmlReaderSettings.Schemas = new System.Xml.Schema.XmlSchemaSet();
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
@@ -255,6 +244,10 @@ namespace Opus.Core
             {
                 System.Xml.XmlReaderSettings settings = readerSettings.Clone();
                 settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
+                if (this.validate)
+                {
+                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
+                }
 
                 using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
                 {
