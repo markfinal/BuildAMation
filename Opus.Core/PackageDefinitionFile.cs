@@ -157,8 +157,6 @@ namespace Opus.Core
             if (this.validate)
             {
                 xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
-                xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
-                xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
             }
             xmlReaderSettings.Schemas = new System.Xml.Schema.XmlSchemaSet();
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
@@ -247,6 +245,8 @@ namespace Opus.Core
                 if (this.validate)
                 {
                     settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
+                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
+                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
                 }
 
                 using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
