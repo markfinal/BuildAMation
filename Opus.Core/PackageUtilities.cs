@@ -73,12 +73,12 @@ namespace Opus.Core
             return id;
         }
 
-        public static string PackageDependencyPathName(PackageIdentifier id)
+        public static string PackageDefinitionPathName(PackageIdentifier id)
         {
             string packageDirectory = id.Path;
-            string dependencyFileName = id.Name + ".xml";
-            string dependencyPathName = System.IO.Path.Combine(packageDirectory, dependencyFileName);
-            return dependencyPathName;
+            string definitionFileName = id.Name + ".xml";
+            string definitionPathName = System.IO.Path.Combine(packageDirectory, definitionFileName);
+            return definitionPathName;
         }
 
         public static void IdentifyMainAndDependentPackages()
@@ -108,11 +108,12 @@ namespace Opus.Core
             while (i < State.DependentPackageList.Count)
             {
                 PackageIdentifier id = State.DependentPackageList[i++] as PackageIdentifier;
-                string dependencyPathName = PackageDependencyPathName(id);
-                PackageDefinitionFile dependencyFile = new PackageDefinitionFile(dependencyPathName, true);
-                dependencyFile.Read();
+                string definitionPathName = PackageDefinitionPathName(id);
+                PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
+                definitionFile.Read();
+                id.Definition = definitionFile;
 
-                foreach (PackageIdentifier id2 in dependencyFile.PackageIdentifiers)
+                foreach (PackageIdentifier id2 in definitionFile.PackageIdentifiers)
                 {
                     bool toAdd = true;
                     foreach (PackageIdentifier id3 in State.DependentPackageList)
@@ -266,14 +267,24 @@ namespace Opus.Core
                     System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetCallingAssembly().GetReferencedAssemblies();
                     foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
                     {
-                        if (("Opus.Core" == refAssembly.Name) ||
-                            ("System" == refAssembly.Name) ||
+                        if (("System" == refAssembly.Name) ||
                             ("System.Xml" == refAssembly.Name))
                         {
                             System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(refAssembly);
                             compilerParameters.ReferencedAssemblies.Add(assembly.Location);
                         }
                     }
+
+                    foreach (string opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
+                    {
+                        string assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
+                        string assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
+                    }
+                }
+                else
+                {
+                    throw new Exception("C# compiler does not support Resources");
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));

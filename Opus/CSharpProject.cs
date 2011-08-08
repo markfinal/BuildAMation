@@ -344,8 +344,7 @@ namespace Opus
                         System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies();
                         foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
                         {
-                            if (("Opus.Core" == refAssembly.Name) ||
-                                ("System" == refAssembly.Name) ||
+                            if (("System" == refAssembly.Name) ||
                                 ("System.Xml" == refAssembly.Name))
                             {
                                 System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(refAssembly);
@@ -373,6 +372,35 @@ namespace Opus
                                 }
                             }
                         }
+
+                        // required Opus assemblies
+                        foreach (string opusAssembly in package.Identifier.Definition.OpusAssemblies)
+                        {
+                            xmlWriter.WriteStartElement("Reference");
+                            xmlWriter.WriteAttributeString("Include", opusAssembly);
+                            {
+                                xmlWriter.WriteStartElement("SpecificVersion");
+                                {
+                                    xmlWriter.WriteValue(false);
+                                    xmlWriter.WriteEndElement();
+                                }
+
+                                xmlWriter.WriteStartElement("HintPath");
+                                {
+                                    string assemblyFileName = opusAssembly + ".dll";
+                                    string assemblyPathName = System.IO.Path.Combine(Core.State.OpusDirectory, assemblyFileName);
+                                    System.Uri assemblyLocationUri = new System.Uri(assemblyPathName);
+                                    System.Uri relativeAssemblyLocationUri = projectFilenameUri.MakeRelativeUri(assemblyLocationUri);
+
+                                    Core.Log.DebugMessage("Relative path is '{0}'", relativeAssemblyLocationUri.ToString());
+                                    xmlWriter.WriteString(relativeAssemblyLocationUri.ToString());
+                                    xmlWriter.WriteEndElement();
+                                }
+
+                                xmlWriter.WriteEndElement();
+                            }
+                        }
+
                         xmlWriter.WriteEndElement();
                     }
 

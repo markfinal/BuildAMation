@@ -29,6 +29,13 @@
 </xs:complexType>
 
 <xs:complexType name="required-opus-assemblies-type">
+    <xs:sequence>
+        <xs:element name="OpusAssembly" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="required-assemblies-type">

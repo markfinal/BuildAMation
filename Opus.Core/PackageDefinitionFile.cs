@@ -82,6 +82,7 @@ namespace Opus.Core
             this.validate = validate;
             this.xmlFilename = xmlFilename;
             this.packageIds = new Array<PackageIdentifier>();
+            this.OpusAssemblies = new StringArray();
         }
 
         public void Write()
@@ -126,6 +127,18 @@ namespace Opus.Core
                     requiredPackages.AppendChild(packageElement);
                 }
                 packageDefinition.AppendChild(requiredPackages);
+            }
+
+            if (this.OpusAssemblies.Count > 0)
+            {
+                System.Xml.XmlElement requiredOpusAssemblies = document.CreateElement(targetNamespace, "RequiredOpusAssemblies", namespaceURI);
+                foreach (string assemblyName in this.OpusAssemblies)
+                {
+                    System.Xml.XmlElement assemblyElement = document.CreateElement(targetNamespace, "OpusAssembly", namespaceURI);
+                    assemblyElement.SetAttribute("Name", assemblyName);
+                    requiredOpusAssemblies.AppendChild(assemblyElement);
+                }
+                packageDefinition.AppendChild(requiredOpusAssemblies);
             }
 
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
@@ -259,9 +272,10 @@ namespace Opus.Core
                     }
 
                     string requiredPackagesElementName = "Opus:RequiredPackages";
+                    string requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
                     while (xmlReader.Read())
                     {
-                        if (xmlReader.Name == requiredPackagesElementName)
+                        if (requiredPackagesElementName == xmlReader.Name)
                         {
                             string packageElementName = "Opus:Package";
                             while (xmlReader.Read())
@@ -318,6 +332,41 @@ namespace Opus.Core
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    throw new System.Xml.XmlException(System.String.Format("Unexpected child element of '{0}'", requiredPackagesElementName));
+                                }
+                            }
+                        }
+                        else if (requiredOpusAssembliesElementName == xmlReader.Name)
+                        {
+                            string opusAssemblyElementName = "Opus:OpusAssembly";
+                            while (xmlReader.Read())
+                            {
+                                if ((xmlReader.Name == requiredOpusAssembliesElementName) &&
+                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                                {
+                                    break;
+                                }
+
+                                if (opusAssemblyElementName == xmlReader.Name)
+                                {
+                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                                    {
+                                        string assemblyNameAttribute = "Name";
+                                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
+                                        {
+                                            throw new System.Xml.XmlException("Required 'Name' attribute of 'Opus:OpusAssembly' node missing");
+                                        }
+                                        string assemblyName = xmlReader.Value;
+
+                                        this.OpusAssemblies.Add(assemblyName);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new System.Xml.XmlException(System.String.Format("Unexpected child element of '{0}'", requiredOpusAssembliesElementName));
+                                }
                             }
                         }
                         else if (xmlReader.Name == rootElementName)
@@ -330,7 +379,7 @@ namespace Opus.Core
                         }
                         else
                         {
-                            throw new System.Xml.XmlException(System.String.Format("Unknown element name '{0}'", xmlReader.Name));
+                            throw new System.Xml.XmlException(System.String.Format("Package definition reading code failed to recognize element with name '{0}'", xmlReader.Name));
                         }
                     }
 
@@ -423,9 +472,14 @@ namespace Opus.Core
             }
             catch (System.Exception ex)
             {
-                Log.MessageAll("Blah: '{0}'", ex.Message);
+                Log.MessageAll("Package Definition Read of Schema v1 failed: '{0}'", ex.Message);
                 return false;
             }
+
+            // add required Opus assemblies
+            this.OpusAssemblies.Add("Opus.Core");
+
+            // TODO: add required .NET assemblies
 
             return true;
         }
@@ -509,6 +563,12 @@ namespace Opus.Core
             {
                 return this.packageIds;
             }
+        }
+
+        public StringArray OpusAssemblies
+        {
+            get;
+            private set;
         }
     }
 }
