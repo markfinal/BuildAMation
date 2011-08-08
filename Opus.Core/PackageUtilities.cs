@@ -263,23 +263,19 @@ namespace Opus.Core
 
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
-                    // TODO: this is to come from package definition
-                    System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetCallingAssembly().GetReferencedAssemblies();
-                    foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
-                    {
-                        if (("System" == refAssembly.Name) ||
-                            ("System.Xml" == refAssembly.Name))
-                        {
-                            System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(refAssembly);
-                            compilerParameters.ReferencedAssemblies.Add(assembly.Location);
-                        }
-                    }
-
+                    // Opus assembly
                     foreach (string opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
                     {
                         string assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
                         string assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
+                    }
+
+                    // DotNet assembly
+                    foreach (DotNetAssemblyDescription desc in mainPackage.Identifier.Definition.DotNetAssemblies)
+                    {
+                        string assemblyFileName = System.String.Format("{0}.dll", desc.Name);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
                 }
                 else

@@ -38,7 +38,15 @@
     </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="required-assemblies-type">
+<xs:complexType name="required-dotnet-assemblies-type">
+    <xs:sequence>
+        <xs:element name="DotNetAssembly" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="RequiredTargetFramework" type="xs:string" use="optional" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
 </xs:complexType>
 
 <xs:complexType name="definitions-type">
@@ -50,7 +58,7 @@
         <xs:all>
             <xs:element name="RequiredPackages" type="Opus:required-package-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredOpusAssemblies" type="Opus:required-opus-assemblies-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="RequiredAssemblies" type="Opus:required-assemblies-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="RequiredDotNetAssemblies" type="Opus:required-dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="Opus:definitions-type" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:complexType>

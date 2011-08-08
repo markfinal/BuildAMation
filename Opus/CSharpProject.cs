@@ -341,38 +341,6 @@ namespace Opus
                     // referenced assembles
                     xmlWriter.WriteStartElement("ItemGroup");
                     {
-                        System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-                        foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
-                        {
-                            if (("System" == refAssembly.Name) ||
-                                ("System.Xml" == refAssembly.Name))
-                            {
-                                System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(refAssembly);
-
-                                xmlWriter.WriteStartElement("Reference");
-                                xmlWriter.WriteAttributeString("Include", assembly.FullName);
-                                {
-                                    xmlWriter.WriteStartElement("SpecificVersion");
-                                    {
-                                        xmlWriter.WriteValue(false);
-                                        xmlWriter.WriteEndElement();
-                                    }
-
-                                    xmlWriter.WriteStartElement("HintPath");
-                                    {
-                                        System.Uri assemblyLocationUri = new System.Uri(assembly.Location);
-                                        System.Uri relativeAssemblyLocationUri = projectFilenameUri.MakeRelativeUri(assemblyLocationUri);
-
-                                        Core.Log.DebugMessage("Relative path is '{0}'", relativeAssemblyLocationUri.ToString());
-                                        xmlWriter.WriteString(relativeAssemblyLocationUri.ToString());
-                                        xmlWriter.WriteEndElement();
-                                    }
-
-                                    xmlWriter.WriteEndElement();
-                                }
-                            }
-                        }
-
                         // required Opus assemblies
                         foreach (string opusAssembly in package.Identifier.Definition.OpusAssemblies)
                         {
@@ -394,6 +362,23 @@ namespace Opus
 
                                     Core.Log.DebugMessage("Relative path is '{0}'", relativeAssemblyLocationUri.ToString());
                                     xmlWriter.WriteString(relativeAssemblyLocationUri.ToString());
+                                    xmlWriter.WriteEndElement();
+                                }
+
+                                xmlWriter.WriteEndElement();
+                            }
+                        }
+
+                        // required DotNet assemblies
+                        foreach (Core.DotNetAssemblyDescription desc in package.Identifier.Definition.DotNetAssemblies)
+                        {
+                            xmlWriter.WriteStartElement("Reference");
+                            xmlWriter.WriteAttributeString("Include", desc.Name);
+                            if (null != desc.RequiredTargetFramework)
+                            {
+                                xmlWriter.WriteStartElement("RequiredTargetFramework");
+                                {
+                                    xmlWriter.WriteString(desc.RequiredTargetFramework);
                                     xmlWriter.WriteEndElement();
                                 }
 

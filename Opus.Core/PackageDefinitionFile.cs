@@ -37,6 +37,26 @@ namespace Opus.Core
         }
     }
 
+    public class DotNetAssemblyDescription
+    {
+        public DotNetAssemblyDescription(string name)
+        {
+            this.Name = name;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+        public string RequiredTargetFramework
+        {
+            get;
+            set;
+        }
+    }
+
     public class PackageDefinitionFile
     {
         private Array<PackageIdentifier> packageIds;
@@ -83,6 +103,7 @@ namespace Opus.Core
             this.xmlFilename = xmlFilename;
             this.packageIds = new Array<PackageIdentifier>();
             this.OpusAssemblies = new StringArray();
+            this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
         }
 
         public void Write()
@@ -139,6 +160,22 @@ namespace Opus.Core
                     requiredOpusAssemblies.AppendChild(assemblyElement);
                 }
                 packageDefinition.AppendChild(requiredOpusAssemblies);
+            }
+
+            if (this.DotNetAssemblies.Count > 0)
+            {
+                System.Xml.XmlElement requiredDotNetAssemblies = document.CreateElement(targetNamespace, "RequiredDotNetAssemblies", namespaceURI);
+                foreach (DotNetAssemblyDescription desc in this.DotNetAssemblies)
+                {
+                    System.Xml.XmlElement assemblyElement = document.CreateElement(targetNamespace, "DotNetAssembly", namespaceURI);
+                    assemblyElement.SetAttribute("Name", desc.Name);
+                    if (null != desc.RequiredTargetFramework)
+                    {
+                        assemblyElement.SetAttribute("RequiredTargetFramework", desc.RequiredTargetFramework);
+                    }
+                    requiredDotNetAssemblies.AppendChild(assemblyElement);
+                }
+                packageDefinition.AppendChild(requiredDotNetAssemblies);
             }
 
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
@@ -273,6 +310,7 @@ namespace Opus.Core
 
                     string requiredPackagesElementName = "Opus:RequiredPackages";
                     string requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
+                    string requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
                     while (xmlReader.Read())
                     {
                         if (requiredPackagesElementName == xmlReader.Name)
@@ -366,6 +404,45 @@ namespace Opus.Core
                                 else
                                 {
                                     throw new System.Xml.XmlException(System.String.Format("Unexpected child element of '{0}'", requiredOpusAssembliesElementName));
+                                }
+                            }
+                        }
+                        else if (requiredDotNetAssembliesElementName == xmlReader.Name)
+                        {
+                            string dotNetAssemblyElementName = "Opus:DotNetAssembly";
+                            while (xmlReader.Read())
+                            {
+                                if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
+                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                                {
+                                    break;
+                                }
+
+                                if (dotNetAssemblyElementName == xmlReader.Name)
+                                {
+                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                                    {
+                                        string assemblyNameAttribute = "Name";
+                                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
+                                        {
+                                            throw new System.Xml.XmlException("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing");
+                                        }
+                                        string assemblyName = xmlReader.Value;
+
+                                        DotNetAssemblyDescription desc = new DotNetAssemblyDescription(assemblyName);
+
+                                        string assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
+                                        if (xmlReader.MoveToAttribute(assemblyRequiredTargetFrameworkNameAttribute))
+                                        {
+                                            desc.RequiredTargetFramework = xmlReader.Value;
+                                        }
+
+                                        this.DotNetAssemblies.Add(desc);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new System.Xml.XmlException(System.String.Format("Unexpected child element of '{0}'", requiredDotNetAssembliesElementName));
                                 }
                             }
                         }
@@ -479,7 +556,19 @@ namespace Opus.Core
             // add required Opus assemblies
             this.OpusAssemblies.Add("Opus.Core");
 
-            // TODO: add required .NET assemblies
+            // add required DotNet assemblies
+            {
+                DotNetAssemblyDescription systemDesc = new DotNetAssemblyDescription("System");
+                DotNetAssemblyDescription systemXmlDesc = new DotNetAssemblyDescription("System.Xml");
+
+                systemDesc.RequiredTargetFramework = "2.0.50727";
+                systemXmlDesc.RequiredTargetFramework = "2.0.50727";
+
+                this.DotNetAssemblies.AddRange(new DotNetAssemblyDescription[]
+                    { systemDesc,
+                      systemXmlDesc
+                    });
+            }
 
             return true;
         }
@@ -566,6 +655,12 @@ namespace Opus.Core
         }
 
         public StringArray OpusAssemblies
+        {
+            get;
+            private set;
+        }
+
+        public Array<DotNetAssemblyDescription> DotNetAssemblies
         {
             get;
             private set;
