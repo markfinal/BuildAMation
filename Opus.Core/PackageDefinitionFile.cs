@@ -415,6 +415,261 @@ namespace Opus.Core
             return supportedPlatforms;
         }
 
+        private bool ReadRequiredPackages(System.Xml.XmlReader xmlReader)
+        {
+            string requiredPackagesElementName = "Opus:RequiredPackages";
+            if (requiredPackagesElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            string packageElementName = "Opus:Package";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == requiredPackagesElementName) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (xmlReader.Name == packageElementName)
+                {
+                    string packageNameAttribute = "Name";
+                    if (!xmlReader.MoveToAttribute(packageNameAttribute))
+                    {
+                        throw new Exception("Required attribute 'Name' of 'Package' node missing", false);
+                    }
+                    string packageName = xmlReader.Value;
+
+                    string packageVersionElementName = "Opus:Version";
+                    while (xmlReader.Read())
+                    {
+                        if ((xmlReader.Name == packageElementName) &&
+                            (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                        {
+                            break;
+                        }
+
+                        if (xmlReader.Name == packageVersionElementName)
+                        {
+                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                            {
+                                string packageVersionIdAttribute = "Id";
+                                if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
+                                {
+                                    throw new Exception("Required 'Id' attribute of 'Version' node missing", false);
+                                }
+                                string packageVersion = xmlReader.Value;
+
+                                EPlatform platformFilter = EPlatform.All;
+                                string packageConditionAttribute = "Condition";
+                                if (xmlReader.MoveToAttribute(packageConditionAttribute))
+                                {
+                                    string conditionValue = xmlReader.Value;
+                                    platformFilter = this.InterpretConditionValue(conditionValue);
+                                }
+
+                                PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                id.PlatformFilter = platformFilter;
+                                this.packageIds.Add(id);
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Unexpected element", false);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredPackagesElementName), false);
+                }
+            }
+
+            return true;
+        }
+
+        private bool ReadRequiredOpusAssemblies(System.Xml.XmlReader xmlReader)
+        {
+            string requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
+            if (requiredOpusAssembliesElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            string opusAssemblyElementName = "Opus:OpusAssembly";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == requiredOpusAssembliesElementName) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (opusAssemblyElementName == xmlReader.Name)
+                {
+                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                    {
+                        string assemblyNameAttribute = "Name";
+                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
+                        {
+                            throw new Exception("Required 'Name' attribute of 'Opus:OpusAssembly' node missing", false);
+                        }
+                        string assemblyName = xmlReader.Value;
+
+                        this.OpusAssemblies.Add(assemblyName);
+                    }
+                }
+                else
+                {
+                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredOpusAssembliesElementName), false);
+                }
+            }
+
+            return true;
+        }
+
+        private bool ReadRequiredDotNetAssemblies(System.Xml.XmlReader xmlReader)
+        {
+            string requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
+            if (requiredDotNetAssembliesElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            string dotNetAssemblyElementName = "Opus:DotNetAssembly";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (dotNetAssemblyElementName == xmlReader.Name)
+                {
+                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                    {
+                        string assemblyNameAttribute = "Name";
+                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
+                        {
+                            throw new Exception("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing", false);
+                        }
+                        string assemblyName = xmlReader.Value;
+
+                        DotNetAssemblyDescription desc = new DotNetAssemblyDescription(assemblyName);
+
+                        string assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
+                        if (xmlReader.MoveToAttribute(assemblyRequiredTargetFrameworkNameAttribute))
+                        {
+                            desc.RequiredTargetFramework = xmlReader.Value;
+                        }
+
+                        this.DotNetAssemblies.Add(desc);
+                    }
+                }
+                else
+                {
+                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredDotNetAssembliesElementName), false);
+                }
+            }
+
+            return true;
+        }
+
+        private bool ReadSupportedPlatforms(System.Xml.XmlReader xmlReader)
+        {
+            string supportedPlatformsElementName = "Opus:SupportedPlatforms";
+            if (supportedPlatformsElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            this.SupportedPlatforms = EPlatform.Invalid;
+            string platformElementName = "Opus:Platform";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == supportedPlatformsElementName) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (platformElementName == xmlReader.Name)
+                {
+                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                    {
+                        string platformNameAttribute = "Name";
+                        if (!xmlReader.MoveToAttribute(platformNameAttribute))
+                        {
+                            throw new Exception("Required 'Name' attribute of 'Opus:Platform' node missing", false);
+                        }
+
+                        string platformName = xmlReader.Value;
+                        if ("Windows" == platformName)
+                        {
+                            this.SupportedPlatforms |= EPlatform.Windows;
+                        }
+                        if ("Unix" == platformName)
+                        {
+                            this.SupportedPlatforms |= EPlatform.Unix;
+                        }
+                        if ("OSX" == platformName)
+                        {
+                            this.SupportedPlatforms |= EPlatform.OSX;
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", supportedPlatformsElementName), false);
+                }
+            }
+
+            return true;
+        }
+
+        private bool ReadDefinitions(System.Xml.XmlReader xmlReader)
+        {
+            string definitionsElementName = "Opus:Definitions";
+            if (definitionsElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            string defineElementName = "Opus:Definition";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == definitionsElementName) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (defineElementName == xmlReader.Name)
+                {
+                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                    {
+                        string defineNameAttribute = "Name";
+                        if (!xmlReader.MoveToAttribute(defineNameAttribute))
+                        {
+                            throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing", false);
+                        }
+
+                        string definition = xmlReader.Value;
+
+                        this.Definitions.Add(definition);
+                    }
+                }
+                else
+                {
+                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", definitionsElementName), false);
+                }
+            }
+
+            return true;
+        }
+
         protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
         {
             try
@@ -437,222 +692,27 @@ namespace Opus.Core
                         return false;
                     }
 
-                    string requiredPackagesElementName = "Opus:RequiredPackages";
-                    string requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
-                    string requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
-                    string supportedPlatformsElementName = "Opus:SupportedPlatforms";
-                    string definitionsElementName = "Opus:Definitions";
                     while (xmlReader.Read())
                     {
-                        if (requiredPackagesElementName == xmlReader.Name)
+                        if (ReadRequiredPackages(xmlReader))
                         {
-                            string packageElementName = "Opus:Package";
-                            while (xmlReader.Read())
-                            {
-                                if ((xmlReader.Name == requiredPackagesElementName) &&
-                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                                {
-                                    break;
-                                }
-
-                                if (xmlReader.Name == packageElementName)
-                                {
-                                    string packageNameAttribute = "Name";
-                                    if (!xmlReader.MoveToAttribute(packageNameAttribute))
-                                    {
-                                        throw new Exception("Required attribute 'Name' of 'Package' node missing", false);
-                                    }
-                                    string packageName = xmlReader.Value;
-
-                                    string packageVersionElementName = "Opus:Version";
-                                    while (xmlReader.Read())
-                                    {
-                                        if ((xmlReader.Name == packageElementName) &&
-                                            (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                                        {
-                                            break;
-                                        }
-
-                                        if (xmlReader.Name == packageVersionElementName)
-                                        {
-                                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                                            {
-                                                string packageVersionIdAttribute = "Id";
-                                                if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
-                                                {
-                                                    throw new Exception("Required 'Id' attribute of 'Version' node missing", false);
-                                                }
-                                                string packageVersion = xmlReader.Value;
-
-                                                EPlatform platformFilter = EPlatform.All;
-                                                string packageConditionAttribute = "Condition";
-                                                if (xmlReader.MoveToAttribute(packageConditionAttribute))
-                                                {
-                                                    string conditionValue = xmlReader.Value;
-                                                    platformFilter = this.InterpretConditionValue(conditionValue);
-                                                }
-
-                                                PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
-                                                id.PlatformFilter = platformFilter;
-                                                this.packageIds.Add(id);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            throw new Exception("Unexpected element", false);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredPackagesElementName), false);
-                                }
-                            }
+                            // all done
                         }
-                        else if (requiredOpusAssembliesElementName == xmlReader.Name)
+                        else if (ReadRequiredOpusAssemblies(xmlReader))
                         {
-                            string opusAssemblyElementName = "Opus:OpusAssembly";
-                            while (xmlReader.Read())
-                            {
-                                if ((xmlReader.Name == requiredOpusAssembliesElementName) &&
-                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                                {
-                                    break;
-                                }
-
-                                if (opusAssemblyElementName == xmlReader.Name)
-                                {
-                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                                    {
-                                        string assemblyNameAttribute = "Name";
-                                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
-                                        {
-                                            throw new Exception("Required 'Name' attribute of 'Opus:OpusAssembly' node missing", false);
-                                        }
-                                        string assemblyName = xmlReader.Value;
-
-                                        this.OpusAssemblies.Add(assemblyName);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredOpusAssembliesElementName), false);
-                                }
-                            }
+                            // all done
                         }
-                        else if (requiredDotNetAssembliesElementName == xmlReader.Name)
+                        else if (ReadRequiredDotNetAssemblies(xmlReader))
                         {
-                            string dotNetAssemblyElementName = "Opus:DotNetAssembly";
-                            while (xmlReader.Read())
-                            {
-                                if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
-                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                                {
-                                    break;
-                                }
-
-                                if (dotNetAssemblyElementName == xmlReader.Name)
-                                {
-                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                                    {
-                                        string assemblyNameAttribute = "Name";
-                                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
-                                        {
-                                            throw new Exception("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing", false);
-                                        }
-                                        string assemblyName = xmlReader.Value;
-
-                                        DotNetAssemblyDescription desc = new DotNetAssemblyDescription(assemblyName);
-
-                                        string assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
-                                        if (xmlReader.MoveToAttribute(assemblyRequiredTargetFrameworkNameAttribute))
-                                        {
-                                            desc.RequiredTargetFramework = xmlReader.Value;
-                                        }
-
-                                        this.DotNetAssemblies.Add(desc);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredDotNetAssembliesElementName), false);
-                                }
-                            }
+                            // all done
                         }
-                        else if (supportedPlatformsElementName == xmlReader.Name)
+                        else if (ReadSupportedPlatforms(xmlReader))
                         {
-                            this.SupportedPlatforms = EPlatform.Invalid;
-                            string platformElementName = "Opus:Platform";
-                            while (xmlReader.Read())
-                            {
-                                if ((xmlReader.Name == supportedPlatformsElementName) &&
-                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                                {
-                                    break;
-                                }
-
-                                if (platformElementName == xmlReader.Name)
-                                {
-                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                                    {
-                                        string platformNameAttribute = "Name";
-                                        if (!xmlReader.MoveToAttribute(platformNameAttribute))
-                                        {
-                                            throw new Exception("Required 'Name' attribute of 'Opus:Platform' node missing", false);
-                                        }
-
-                                        string platformName = xmlReader.Value;
-                                        if ("Windows" == platformName)
-                                        {
-                                            this.SupportedPlatforms |= EPlatform.Windows;
-                                        }
-                                        if ("Unix" == platformName)
-                                        {
-                                            this.SupportedPlatforms |= EPlatform.Unix;
-                                        }
-                                        if ("OSX" == platformName)
-                                        {
-                                            this.SupportedPlatforms |= EPlatform.OSX;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", supportedPlatformsElementName), false);
-                                }
-                            }
+                            // all done
                         }
-                        else if (definitionsElementName == xmlReader.Name)
+                        else if (ReadDefinitions(xmlReader))
                         {
-                            string defineElementName = "Opus:Definition";
-                            while (xmlReader.Read())
-                            {
-                                if ((xmlReader.Name == definitionsElementName) &&
-                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                                {
-                                    break;
-                                }
-
-                                if (defineElementName == xmlReader.Name)
-                                {
-                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                                    {
-                                        string defineNameAttribute = "Name";
-                                        if (!xmlReader.MoveToAttribute(defineNameAttribute))
-                                        {
-                                            throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing", false);
-                                        }
-
-                                        string definition = xmlReader.Value;
-
-                                        this.Definitions.Add(definition);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", definitionsElementName), false);
-                                }
-                            }
+                            // all done
                         }
                         else if (xmlReader.Name == rootElementName)
                         {
