@@ -202,6 +202,8 @@ namespace Opus.Core
             // Create resource file containing package information
             string resourceFilePathName = PackageListResourceFile.WriteResourceFile();
 
+            StringArray definitions = new StringArray();
+
             // gather source files
             System.Collections.ArrayList sourceFileList = new System.Collections.ArrayList();
 
@@ -230,8 +232,18 @@ namespace Opus.Core
                     }
                 }
 
+                foreach (string define in package.Identifier.Definition.Definitions)
+                {
+                    if (!definitions.Contains(define))
+                    {
+                        definitions.Add(define);
+                    }
+                }
+
                 ++packageIndex;
             }
+
+            definitions.Sort();
 
             System.DateTime gatherSourceStop = System.DateTime.Now;
             State.TimingProfiles[(int)ETimingProfiles.GatherSource] = gatherSourceStop - gatherSourceStart;
@@ -282,8 +294,18 @@ namespace Opus.Core
                     compilerOptions += " /platform:anycpu";
                 }
 
-                // version number
-                compilerOptions += " /define:" + OpusVersionDefineForCompiler;
+                // define strings
+                {
+                    // version number
+                    string concatenatedDefines = OpusVersionDefineForCompiler;
+                    // custom definitions
+                    foreach (string define in definitions)
+                    {
+                        concatenatedDefines += ";" + define;
+                    }
+
+                    compilerOptions += " /define:" + concatenatedDefines;
+                }
 
                 compilerParameters.CompilerOptions = compilerOptions;
                 compilerParameters.EmbeddedResources.Add(resourceFilePathName);

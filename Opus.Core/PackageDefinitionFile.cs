@@ -105,6 +105,7 @@ namespace Opus.Core
             this.OpusAssemblies = new StringArray();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
+            this.Definitions = new StringArray();
         }
 
         public void Write()
@@ -240,6 +241,21 @@ namespace Opus.Core
                 }
 
                 packageDefinition.AppendChild(supportedPlatformsElement);
+            }
+
+            // definitions
+            if (this.Definitions.Count > 0)
+            {
+                System.Xml.XmlElement definitionsElement = document.CreateElement(targetNamespace, "Definitions", namespaceURI);
+
+                foreach (string define in this.Definitions)
+                {
+                    System.Xml.XmlElement defineElement = document.CreateElement(targetNamespace, "Definition", namespaceURI);
+                    defineElement.SetAttribute("Name", define);
+                    definitionsElement.AppendChild(defineElement);
+                }
+
+                packageDefinition.AppendChild(definitionsElement);
             }
 
             System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
@@ -425,6 +441,7 @@ namespace Opus.Core
                     string requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
                     string requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
                     string supportedPlatformsElementName = "Opus:SupportedPlatforms";
+                    string definitionsElementName = "Opus:Definitions";
                     while (xmlReader.Read())
                     {
                         if (requiredPackagesElementName == xmlReader.Name)
@@ -602,6 +619,39 @@ namespace Opus.Core
                                 else
                                 {
                                     throw new Exception(System.String.Format("Unexpected child element of '{0}'", supportedPlatformsElementName), false);
+                                }
+                            }
+                        }
+                        else if (definitionsElementName == xmlReader.Name)
+                        {
+                            StringArray definitions = new StringArray();
+                            string defineElementName = "Opus:Definition";
+                            while (xmlReader.Read())
+                            {
+                                if ((xmlReader.Name == definitionsElementName) &&
+                                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                                {
+                                    break;
+                                }
+
+                                if (defineElementName == xmlReader.Name)
+                                {
+                                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                                    {
+                                        string defineNameAttribute = "Name";
+                                        if (!xmlReader.MoveToAttribute(defineNameAttribute))
+                                        {
+                                            throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing", false);
+                                        }
+
+                                        string definition = xmlReader.Value;
+
+                                        this.Definitions.Add(definition);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", definitionsElementName), false);
                                 }
                             }
                         }
@@ -834,6 +884,12 @@ namespace Opus.Core
         }
 
         public EPlatform SupportedPlatforms
+        {
+            get;
+            set;
+        }
+
+        public StringArray Definitions
         {
             get;
             set;

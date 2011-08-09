@@ -156,7 +156,22 @@ namespace Opus
 
                         xmlWriter.WriteStartElement("DefineConstants");
                         {
-                            xmlWriter.WriteValue(Core.PackageUtilities.OpusVersionDefineForCompiler);
+                            string concatenatedDefineString = Core.PackageUtilities.OpusVersionDefineForCompiler;
+
+                            Core.StringArray definitions = new Opus.Core.StringArray();
+                            foreach (Core.PackageInformation info in Core.State.PackageInfo)
+                            {
+                                foreach (string define in info.Identifier.Definition.Definitions)
+                                {
+                                    if (!definitions.Contains(define))
+                                    {
+                                        definitions.Add(define);
+                                        concatenatedDefineString += ";" + define;
+                                    }
+                                }
+                            }
+
+                            xmlWriter.WriteValue(concatenatedDefineString);
                             xmlWriter.WriteEndElement();
                         }
 
@@ -247,7 +262,7 @@ namespace Opus
 
                     // add dependent package source
                     int dependentPackageCount = Core.State.PackageInfo.Count;
-                    // start from one as the first one is the main package
+                    // start from one as the first entry is the main package
                     for (int packageIndex = 1; packageIndex < dependentPackageCount; ++packageIndex)
                     {
                         Core.PackageInformation dependentPackage = Core.State.PackageInfo[packageIndex];
