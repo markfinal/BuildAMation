@@ -35,7 +35,6 @@ namespace Opus.Core
 
             string packageName = directories[directories.Length - 2];
             string packageVersion = directories[directories.Length - 1];
-            string packageRoot = null;
             System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
             if (null == parentDir)
             {
@@ -48,7 +47,7 @@ namespace Opus.Core
                 Log.DebugMessage("No parent of parent directory");
                 return null;
             }
-            packageRoot = parentParentDir.FullName;
+            string packageRoot = parentParentDir.FullName;
 
             string basePackageFilename = System.IO.Path.Combine(path, packageName);
             string scriptFilename = basePackageFilename + ".cs";
