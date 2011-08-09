@@ -52,6 +52,16 @@
 <xs:complexType name="definitions-type">
 </xs:complexType>
 
+<xs:complexType name="supported-platforms-type">
+    <xs:sequence>
+        <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
 <!-- root node -->
 <xs:element name="PackageDefinition">
     <xs:complexType>
@@ -60,6 +70,7 @@
             <xs:element name="RequiredOpusAssemblies" type="Opus:required-opus-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredDotNetAssemblies" type="Opus:required-dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="Opus:definitions-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="SupportedPlatforms" type="Opus:supported-platforms-type" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:complexType>
 </xs:element>

@@ -21,7 +21,6 @@ namespace Opus.Core
             this.Name = name;
             this.Version = version;
             this.Root = this.LocateRoot();
-            this.SupportedPlatforms = EPlatform.All;
             this.PlatformFilter = EPlatform.All;
         }
 
@@ -41,12 +40,6 @@ namespace Opus.Core
         {
             get;
             private set;
-        }
-
-        public EPlatform SupportedPlatforms
-        {
-            get;
-            set;
         }
 
         public EPlatform PlatformFilter

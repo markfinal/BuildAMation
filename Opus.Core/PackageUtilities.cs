@@ -112,9 +112,9 @@ namespace Opus.Core
                 definitionFile.Read();
                 id.Definition = definitionFile;
 
-                if (!OSUtilities.IsCurrentPlatformSupported(id.SupportedPlatforms))
+                if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
                 {
-                    Log.MessageAll("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                    Log.MessageAll("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
                     continue;
                 }
 
@@ -166,7 +166,7 @@ namespace Opus.Core
             {
                 PackageInformation info = new PackageInformation(id);
 
-                if (!OSUtilities.IsCurrentPlatformSupported(id.SupportedPlatforms))
+                if (!OSUtilities.IsCurrentPlatformSupported(id.Definition.SupportedPlatforms))
                 {
                     continue;
                 }
