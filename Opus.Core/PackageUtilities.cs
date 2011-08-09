@@ -145,8 +145,16 @@ namespace Opus.Core
                             }
                             else
                             {
-                                Log.MessageAll("Package '{0}' is older than '{1}'. Ignoring.", id2.ToString(), id3.ToString());
-                                toAdd = false;
+                                if (id2.PlatformFilter != id3.PlatformFilter)
+                                {
+                                    Log.MessageAll("Package '{0}' is older than '{1}' but has different platform filters. Adding.", id2.ToString(), id3.ToString());
+                                    toAdd = true;
+                                }
+                                else
+                                {
+                                    Log.MessageAll("Package '{0}' is older than '{1}' and has identical platform filters. Ignoring.", id2.ToString(), id3.ToString());
+                                    toAdd = false;
+                                }
                             }
 
                             break;
