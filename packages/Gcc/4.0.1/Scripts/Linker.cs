@@ -13,9 +13,9 @@ namespace Gcc
 
         public Linker(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
+            if (!Opus.Core.OSUtilities.IsOSX(target.Platform))
             {
-                throw new Opus.Core.Exception("Gcc linker is only supported under unix32 and unix64 platforms");
+                throw new Opus.Core.Exception("Gcc linker is only supported under osx32 and osx64 platforms");
             }
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
