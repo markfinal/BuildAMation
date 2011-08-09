@@ -624,7 +624,6 @@ namespace Opus.Core
                         }
                         else if (definitionsElementName == xmlReader.Name)
                         {
-                            StringArray definitions = new StringArray();
                             string defineElementName = "Opus:Definition";
                             while (xmlReader.Read())
                             {
