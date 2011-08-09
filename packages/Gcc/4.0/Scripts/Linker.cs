@@ -26,12 +26,12 @@ namespace Gcc
 
         public override string Executable(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "gcc-4.1");
+            return System.IO.Path.Combine(this.binPath, "gcc-4.0");
         }
 
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "g++-4.1");
+            return System.IO.Path.Combine(this.binPath, "g++-4.0");
         }
 
         public override Opus.Core.StringArray RequiredEnvironmentVariables

@@ -46,9 +46,9 @@ namespace Gcc
         {
             get
             {
-                if (!Opus.Core.OSUtilities.IsUnixHosting)
+                if (!Opus.Core.OSUtilities.IsOSXHosting)
                 {
-                    return "non-Unix-proxy";
+                    return "non-OSX-proxy";
                 }
 
                 string packageName = "Gcc";

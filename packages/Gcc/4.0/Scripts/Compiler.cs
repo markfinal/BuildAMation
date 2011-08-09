@@ -14,17 +14,17 @@ namespace Gcc
 
         public CCompiler(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
+            if (!Opus.Core.OSUtilities.IsOSX(target.Platform))
             {
-                throw new Opus.Core.Exception("Gcc compiler is only supported under unix32 and unix64 platforms", false);
+                throw new Opus.Core.Exception("Gcc compiler is only supported under osx32 and osx64 platforms", false);
             }
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
 
             this.includeFolders.Add("/usr/include");
-            string gccIncludeFolder = System.String.Format("/usr/lib/gcc/{0}/4.1/include", this.PlatformSubPath);
-            string gccIncludeFixedFolder = System.String.Format("/usr/lib/gcc/{0}/4.1/include-fixed", this.PlatformSubPath);
+            string gccIncludeFolder = System.String.Format("/usr/lib/gcc/{0}/4.0.1/include", this.PlatformSubPath);
+            string gccIncludeFixedFolder = System.String.Format("/usr/lib/gcc/{0}/4.0.1/include-fixed", this.PlatformSubPath);
 
             if (!System.IO.Directory.Exists(gccIncludeFolder))
             {
@@ -41,12 +41,12 @@ namespace Gcc
 
         public override string Executable(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "gcc-4.1");
+            return System.IO.Path.Combine(this.binPath, "gcc-4.0");
         }
 
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "g++-4.1");
+            return System.IO.Path.Combine(this.binPath, "g++-4.0");
         }
 
         public override Opus.Core.StringArray RequiredEnvironmentVariables
