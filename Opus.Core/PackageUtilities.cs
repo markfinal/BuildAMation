@@ -113,6 +113,18 @@ namespace Opus.Core
                 definitionFile.Read();
                 id.Definition = definitionFile;
 
+                if (!OSUtilities.IsCurrentPlatformSupported(id.SupportedPlatforms))
+                {
+                    Log.MessageAll("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                    continue;
+                }
+
+                if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
+                {
+                    Log.MessageAll("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                    continue;
+                }
+
                 foreach (PackageIdentifier id2 in definitionFile.PackageIdentifiers)
                 {
                     bool toAdd = true;
@@ -154,7 +166,23 @@ namespace Opus.Core
             foreach (PackageIdentifier id in State.DependentPackageList)
             {
                 PackageInformation info = new PackageInformation(id);
+
+                if (!OSUtilities.IsCurrentPlatformSupported(id.SupportedPlatforms))
+                {
+                    continue;
+                }
+
+                if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
+                {
+                    continue;
+                }
+
                 State.PackageInfo.Add(info);
+            }
+
+            if (0 == State.PackageInfo.Count)
+            {
+                throw new Exception("No packages were identified to build", false);
             }
 
             Log.MessageAll("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));

@@ -142,7 +142,44 @@ namespace Opus.Core
                     {
                         System.Xml.XmlElement packageVersionElement = document.CreateElement(targetNamespace, "Version", namespaceURI);
                         packageVersionElement.SetAttribute("Id", package.Version);
-                        //packageVersionElement.SetAttribute("Condition", "'$(Platform)' == 'win*' || '$(Platform)' == 'unix*'");
+
+                        EPlatform platformFilter = package.PlatformFilter;
+
+                        if (platformFilter != EPlatform.All)
+                        {
+                            if (platformFilter == EPlatform.Invalid)
+                            {
+                                throw new Exception("At least one platform must be supported");
+                            }
+
+                            string conditionText = null;
+                            if (EPlatform.Windows == (platformFilter & EPlatform.Windows))
+                            {
+                                if (null != conditionText)
+                                {
+                                    conditionText += " || ";
+                                }
+                                conditionText += "'$(Platform)' == 'win*'";
+                            }
+                            if (EPlatform.Unix == (platformFilter & EPlatform.Unix))
+                            {
+                                if (null != conditionText)
+                                {
+                                    conditionText += " || ";
+                                }
+                                conditionText += "'$(Platform)' == 'unix*'";
+                            }
+                            if (EPlatform.OSX == (platformFilter & EPlatform.OSX))
+                            {
+                                if (null != conditionText)
+                                {
+                                    conditionText += " || ";
+                                }
+                                conditionText += "'$(Platform)' == 'osx*'";
+                            }
+                            
+                            packageVersionElement.SetAttribute("Condition", conditionText);
+                        }
                         packageElement.AppendChild(packageVersionElement);
                     }
                     requiredPackages.AppendChild(packageElement);
@@ -231,7 +268,7 @@ namespace Opus.Core
             throw new Exception(System.String.Format("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename));
         }
 
-        protected void InterpretConditionValue(string condition)
+        protected EPlatform InterpretConditionValue(string condition)
         {
             // unless you apply the pattern, remove the match, apply another pattern, etc.?
 
@@ -248,14 +285,16 @@ namespace Opus.Core
                 System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace |
                 System.Text.RegularExpressions.RegexOptions.Singleline;
 
+            EPlatform supportedPlatforms = EPlatform.Invalid;
+
             int position = 0;
             int patternIndex = 0;
             for (; ; )
             {
-                Core.Log.MessageAll("Searching from pos {0} with pattern index {1}", position, patternIndex);
+                Core.Log.DebugMessage("Searching from pos {0} with pattern index {1}", position, patternIndex);
                 if (position > condition.Length)
                 {
-                    Core.Log.MessageAll("End of string");
+                    Core.Log.DebugMessage("End of string");
                     break;
                 }
 
@@ -270,11 +309,56 @@ namespace Opus.Core
                 {
                     if (match.Length > 0)
                     {
-                        Core.Log.MessageAll("Match '{0}'", match.Value);
+                        Core.Log.DebugMessage("Match '{0}'", match.Value);
                         foreach (System.Text.RegularExpressions.Group group in match.Groups)
                         {
-                            Core.Log.MessageAll("\tg '{0}' @ {1}", group.Value, group.Index);
+                            Core.Log.DebugMessage("\tg '{0}' @ {1}", group.Value, group.Index);
                         }
+
+                        if (0 == patternIndex)
+                        {
+                            if (match.Groups.Count != 5)
+                            {
+                                throw new Exception(System.String.Format("Expected format to be '$(Platform) == '...''. Instead found '{0}'", match.Value), false);
+                            }
+
+                            if (match.Groups[2].Value != "Platform")
+                            {
+                                throw new Exception(System.String.Format("Expected 'Platform/ in '{0}'", match.Value), false);
+                            }
+
+                            if (match.Groups[3].Value != "==")
+                            {
+                                throw new Exception(System.String.Format("Only supporting equivalence == in '{0}'", match.Value), false);
+                            }
+
+                            string platform = match.Groups[4].Value;
+                            if (platform == "win*")
+                            {
+                                supportedPlatforms |= EPlatform.Windows;
+                            }
+                            if (platform == "unix*")
+                            {
+                                supportedPlatforms |= EPlatform.Unix;
+                            }
+                            if (platform == "osx*")
+                            {
+                                supportedPlatforms |= EPlatform.OSX;
+                            }
+                        }
+                        else if (1 == patternIndex)
+                        {
+                            if (match.Groups.Count != 2)
+                            {
+                                throw new Exception(System.String.Format("Expected format to be '... || ...'. Instead found '{0}'", match.Value), false);
+                            }
+
+                            if (match.Groups[1].Value != "||")
+                            {
+                                throw new Exception(System.String.Format("Only supporting Boolean OR || in '{0}'", match.Value), false);
+                            }
+                        }
+
                         position += match.Length + 1;
                         ++patternIndex;
                         patternIndex = patternIndex % 2;
@@ -283,7 +367,9 @@ namespace Opus.Core
                     }
                 }
             }
-            Core.Log.MessageAll("End of matches");
+            Core.Log.DebugMessage("End of matches");
+
+            return supportedPlatforms;
         }
 
         protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
@@ -353,14 +439,16 @@ namespace Opus.Core
                                                 }
                                                 string packageVersion = xmlReader.Value;
 
+                                                EPlatform platformFilter = EPlatform.All;
                                                 string packageConditionAttribute = "Condition";
                                                 if (xmlReader.MoveToAttribute(packageConditionAttribute))
                                                 {
                                                     string conditionValue = xmlReader.Value;
-                                                    this.InterpretConditionValue(conditionValue);
+                                                    platformFilter = this.InterpretConditionValue(conditionValue);
                                                 }
 
                                                 PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                                id.PlatformFilter = platformFilter;
                                                 this.packageIds.Add(id);
                                             }
                                         }
@@ -526,6 +614,7 @@ namespace Opus.Core
                                                 string packageVersion = xmlReader.Value;
 
                                                 PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                                id.PlatformFilter = EPlatform.All;
                                                 this.packageIds.Add(id);
 
                                                 xmlReader.MoveToElement();

@@ -21,6 +21,8 @@ namespace Opus.Core
             this.Name = name;
             this.Version = version;
             this.Root = this.LocateRoot();
+            this.SupportedPlatforms = EPlatform.All;
+            this.PlatformFilter = EPlatform.All;
         }
 
         public string Name
@@ -39,6 +41,18 @@ namespace Opus.Core
         {
             get;
             private set;
+        }
+
+        public EPlatform SupportedPlatforms
+        {
+            get;
+            set;
+        }
+
+        public EPlatform PlatformFilter
+        {
+            get;
+            set;
         }
 
         public string DefinitionPathName
