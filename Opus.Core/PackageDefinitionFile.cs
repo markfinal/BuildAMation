@@ -688,7 +688,7 @@ namespace Opus.Core
                     string rootElementName = "Opus:PackageDefinition";
                     if (!xmlReader.ReadToFollowing(rootElementName))
                     {
-                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old schema and will be upgraded.", rootElementName, this.xmlFilename);
+                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old Opus schema. This file will now be upgraded to the latest schema.", rootElementName, this.xmlFilename);
                         return false;
                     }
 
