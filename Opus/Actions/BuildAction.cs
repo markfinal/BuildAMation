@@ -43,6 +43,8 @@ namespace Opus
                 {
                     System.Environment.ExitCode = -3;
                 }
+
+                Core.State.ShowTimingStatistics = true;
             }
 
             return true;

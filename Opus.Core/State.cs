@@ -67,6 +67,7 @@ namespace Opus.Core
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
             Add<DependencyGraph>("System", "Graph", null);
+            Add<bool>("System", "ShowTimingStatistics", false);
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
@@ -475,6 +476,19 @@ namespace Opus.Core
             get
             {
                 return Get("Build", "Modules") as StringArray;
+            }
+        }
+
+        public static bool ShowTimingStatistics
+        {
+            set
+            {
+                Set("System", "ShowTimingStatistics", value);
+            }
+
+            get
+            {
+                return (bool)Get("System", "ShowTimingStatistics");
             }
         }
     }
