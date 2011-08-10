@@ -1,21 +1,21 @@
-﻿// <copyright file="RemoveDependenciesAction.cs" company="Mark Final">
+﻿// <copyright file="RemoveDependencyAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.RemoveDependenciesAction))]
+[assembly: Opus.Core.RegisterAction(typeof(Opus.RemoveDependencyAction))]
 
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class RemoveDependenciesAction : Core.IActionWithArguments
+    internal class RemoveDependencyAction : Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
             get
             {
-                return "-removedependencies";
+                return "-removedependency";
             }
         }
 
@@ -23,17 +23,16 @@ namespace Opus
         {
             get
             {
-                return "Remove dependent packages";
+                return "Remove dependent package";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.PackagesAndVersions = new Opus.Core.StringArray();
-            this.PackagesAndVersions.AddRange(arguments.Split(';'));
+            this.PackageAndVersion = arguments;
         }
 
-        private Core.StringArray PackagesAndVersions
+        private string PackageAndVersion
         {
             get;
             set;
@@ -58,23 +57,14 @@ namespace Opus
                 definitionFile.Read();
             }
 
-            int numberOfPackagesRemoved = 0;
-            foreach (string packageAndVersion in this.PackagesAndVersions)
+            string[] packageNameAndVersion = this.PackageAndVersion.Split('-');
+            if (packageNameAndVersion.Length != 2)
             {
-                string[] packageNameAndVersion = packageAndVersion.Split('-');
-                if (packageNameAndVersion.Length != 2)
-                {
-                    throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
-                }
-
-                Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
-                if (definitionFile.RemovePackage(id))
-                {
-                    ++numberOfPackagesRemoved;
-                }
+                throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", this.PackageAndVersion), false);
             }
 
-            if (numberOfPackagesRemoved > 0)
+            Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+            if (definitionFile.RemovePackage(id))
             {
                 definitionFile.Write();
             }

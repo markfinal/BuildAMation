@@ -938,7 +938,7 @@ namespace Opus.Core
             }
             else
             {
-                Log.Info("Could not find reference to '{0}' to remove", idToRemove.ToString());
+                Log.Info("Could not find reference to package '{0}' to remove", idToRemove.ToString());
                 return false;
             }
         }
