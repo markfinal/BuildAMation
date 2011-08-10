@@ -139,8 +139,30 @@ namespace Opus.Core
                 System.Xml.XmlElement requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
                 foreach (PackageIdentifier package in this.packageIds)
                 {
-                    System.Xml.XmlElement packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
-                    packageElement.SetAttribute("Name", package.Name);
+                    System.Xml.XmlElement packageElement = null;
+
+                    {
+                        System.Xml.XmlNode node = requiredPackages.FirstChild;
+                        while (node != null)
+                        {
+                            System.Xml.XmlAttributeCollection attributes = node.Attributes;
+                            System.Xml.XmlAttribute nameAttribute = attributes["Name"];
+                            if ((null != nameAttribute) && (nameAttribute.Value == package.Name))
+                            {
+                                packageElement = node as System.Xml.XmlElement;
+                                break;
+                            }
+
+                            node = node.NextSibling;
+                        }
+                    }
+
+                    if (null == packageElement)
+                    {
+                        packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
+                        packageElement.SetAttribute("Name", package.Name);
+                        requiredPackages.AppendChild(packageElement);
+                    }
                     {
                         System.Xml.XmlElement packageVersionElement = document.CreateElement(targetNamespace, "Version", namespaceURI);
                         packageVersionElement.SetAttribute("Id", package.Version);
@@ -184,7 +206,6 @@ namespace Opus.Core
                         }
                         packageElement.AppendChild(packageVersionElement);
                     }
-                    requiredPackages.AppendChild(packageElement);
                 }
                 packageDefinition.AppendChild(requiredPackages);
             }
