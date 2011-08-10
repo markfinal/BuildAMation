@@ -58,5 +58,78 @@ namespace Opus.Core
             }
             return platform;
         }
+
+        private static void AddPlatformName(ref string platformString, string name, char separator)
+        {
+            if (null != platformString)
+            {
+                platformString += separator;
+            }
+            platformString += name;
+        }
+
+        public static bool Contains(EPlatform flags, EPlatform specificPlatform)
+        {
+            bool contains = (specificPlatform == (flags & specificPlatform));
+            return contains;
+        }
+
+        public static string ToString(EPlatform platformFlags, char separator)
+        {
+            string platformString = null;
+
+            // check windows and sub-derivatives
+            if (Contains(platformFlags, EPlatform.Windows))
+            {
+                AddPlatformName(ref platformString, "Windows", separator);
+            }
+            else
+            {
+                if (Contains(platformFlags, EPlatform.Win32))
+                {
+                    AddPlatformName(ref platformString, "Win32", separator);
+                }
+                else if (Contains(platformFlags, EPlatform.Win64))
+                {
+                    AddPlatformName(ref platformString, "Win64", separator);
+                }
+            }
+
+            // check unix and sub-derivatives
+            if (Contains(platformFlags, EPlatform.Unix))
+            {
+                AddPlatformName(ref platformString, "Unix", separator);
+            }
+            else
+            {
+                if (Contains(platformFlags, EPlatform.Unix32))
+                {
+                    AddPlatformName(ref platformString, "Unix32", separator);
+                }
+                else if (Contains(platformFlags, EPlatform.Unix64))
+                {
+                    AddPlatformName(ref platformString, "Unix64", separator);
+                }
+            }
+
+            // check OSX and sub-derivatives
+            if (Contains(platformFlags, EPlatform.OSX))
+            {
+                AddPlatformName(ref platformString, "OSX", separator);
+            }
+            else
+            {
+                if (Contains(platformFlags, EPlatform.OSX32))
+                {
+                    AddPlatformName(ref platformString, "OSX32", separator);
+                }
+                else if (Contains(platformFlags, EPlatform.OSX64))
+                {
+                    AddPlatformName(ref platformString, "OSX64", separator);
+                }
+            }
+
+            return platformString;
+        }
     }
 }

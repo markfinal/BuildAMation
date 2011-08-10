@@ -48,7 +48,9 @@ namespace Opus
                 Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackageId.ToString());
                 foreach (Core.PackageIdentifier id in definitionFile.PackageIdentifiers)
                 {
-                    Core.Log.MessageAll("\t{0} in '{1}'", id.ToString("-"), id.Root);
+                    string platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
+
+                    Core.Log.MessageAll("\t{0} on {1} in '{2}'", id.ToString("-"), platformFilter, id.Root);
                 }
             }
             else
