@@ -73,6 +73,7 @@
     <Compile Include="Actions\SetBuilderNameAction.cs" />
     <Compile Include="Actions\SetBuildRootAction.cs" />
     <Compile Include="Actions\SetConfigurationsAction.cs" />
+    <Compile Include="Actions\SetDependentAction.cs" />
     <Compile Include="Actions\SetJobCountAction.cs" />
     <Compile Include="Actions\SetModulesAction.cs" />
     <Compile Include="Actions\SetPlatformsAction.cs" />
