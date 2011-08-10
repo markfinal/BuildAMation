@@ -33,20 +33,27 @@ namespace Opus
             Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isComplete);
             if (null == mainPackageId)
             {
-                throw new Core.Exception("Working directory is not a package", false);
+                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a package", Core.State.WorkingDirectory), false);
             }
             if (!isComplete)
             {
-                throw new Core.Exception(System.String.Format("Unable to locate all of the package files in '{0}'", Core.State.WorkingDirectory), false);
+                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory), false);
             }
 
             Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             definitionFile.Read();
 
-            Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackageId.ToString());
-            foreach (Core.PackageIdentifier id in definitionFile.PackageIdentifiers)
+            if (definitionFile.PackageIdentifiers.Count > 0)
             {
-                Core.Log.MessageAll("\t{0} in '{1}'", id.ToString("-"), id.Root);
+                Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackageId.ToString());
+                foreach (Core.PackageIdentifier id in definitionFile.PackageIdentifiers)
+                {
+                    Core.Log.MessageAll("\t{0} in '{1}'", id.ToString("-"), id.Root);
+                }
+            }
+            else
+            {
+                Core.Log.MessageAll("Package '{0}' has no explicit dependencies", mainPackageId.ToString());
             }
 
             return true;
