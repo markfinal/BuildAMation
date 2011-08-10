@@ -23,39 +23,39 @@ namespace Opus
         {
             get
             {
-                return "Show dependent packages";
+                return "Show dependent packages (recursively)";
+            }
+        }
+
+        private void DisplayDependencies(Core.PackageDefinitionFile definition, int depth)
+        {
+            foreach (Core.PackageIdentifier id in definition.PackageIdentifiers)
+            {
+                string platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
+
+                Core.Log.MessageAll("{0}{1} on {2} in '{3}'", new string('\t', depth), id.ToString("-"), platformFilter, id.Root);
+
+                if ((null != id.Definition) && (id.Definition.PackageIdentifiers.Count > 0))
+                {
+                    DisplayDependencies(id.Definition, depth + 1);
+                }
             }
         }
 
         public bool Execute()
         {
-            bool isComplete;
-            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isComplete);
-            if (null == mainPackageId)
-            {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a package", Core.State.WorkingDirectory), false);
-            }
-            if (!isComplete)
-            {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory), false);
-            }
-
-            Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
-            definitionFile.Read();
+            Core.PackageUtilities.IdentifyMainAndDependentPackages();
+            Core.PackageIdentifier mainPackageId = Core.State.PackageInfo[0].Identifier;
+            Core.PackageDefinitionFile definitionFile = mainPackageId.Definition;
 
             if (definitionFile.PackageIdentifiers.Count > 0)
             {
-                Core.Log.MessageAll("Explicit dependencies of package '{0}' are", mainPackageId.ToString());
-                foreach (Core.PackageIdentifier id in definitionFile.PackageIdentifiers)
-                {
-                    string platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
-
-                    Core.Log.MessageAll("\t{0} on {1} in '{2}'", id.ToString("-"), platformFilter, id.Root);
-                }
+                Core.Log.MessageAll("Dependencies of package '{0}' are", mainPackageId.ToString());
+                this.DisplayDependencies(definitionFile, 1);
             }
             else
             {
-                Core.Log.MessageAll("Package '{0}' has no explicit dependencies", mainPackageId.ToString());
+                Core.Log.MessageAll("Package '{0}' has no dependencies", mainPackageId.ToString());
             }
 
             return true;
