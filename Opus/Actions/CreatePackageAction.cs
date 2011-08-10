@@ -1,15 +1,15 @@
-﻿// <copyright file="CreatePackageAction.cs" company="Mark Final">
+﻿// <copyright file="CreatePackageAtAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.CreatePackageAction))]
+[assembly: Opus.Core.RegisterAction(typeof(Opus.CreatePackageAtAction))]
 
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class CreatePackageAction : Core.IActionWithArguments
+    internal class CreatePackageAtAction : Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
