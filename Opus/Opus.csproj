@@ -61,7 +61,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
-    <Compile Include="Actions\AddDependenciesAction.cs" />
+    <Compile Include="Actions\AddDependencyAction.cs" />
     <Compile Include="Actions\AddPackageRootsAction.cs" />
     <Compile Include="Actions\BuildAction.cs" />
     <Compile Include="Actions\ChangeDependenciesAction.cs" />
