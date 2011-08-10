@@ -88,12 +88,12 @@ namespace Opus.Core
                 PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
                 if (null == id)
                 {
-                    throw new Exception("No valid package found in the working directory");
+                    throw new Exception("No valid package found in the working directory", false);
                 }
 
                 if (!isWorkingPackageComplete)
                 {
-                    throw new Exception("Working directory package is not complete");
+                    throw new Exception("Working directory package is not complete", false);
                 }
 
                 State.DependentPackageList.Add(id);
@@ -337,7 +337,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("C# compiler does not support Resources");
+                    throw new Exception("C# compiler does not support Resources", false);
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
