@@ -15,7 +15,7 @@ namespace Opus
         {
             get
             {
-                return "-adddependencies";
+                return "-adddependency";
             }
         }
 
@@ -23,17 +23,16 @@ namespace Opus
         {
             get
             {
-                return "Add dependent packages";
+                return "Add a dependent package";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.PackagesAndVersions = new Opus.Core.StringArray();
-            this.PackagesAndVersions.AddRange(arguments.Split(';'));
+            this.PackageAndVersion = arguments;
         }
 
-        private Core.StringArray PackagesAndVersions
+        private string PackageAndVersion
         {
             get;
             set;
@@ -58,17 +57,14 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            foreach (string packageAndVersion in this.PackagesAndVersions)
+            string[] packageNameAndVersion = this.PackageAndVersion.Split('-');
+            if (packageNameAndVersion.Length != 2)
             {
-                string[] packageNameAndVersion = packageAndVersion.Split('-');
-                if (packageNameAndVersion.Length != 2)
-                {
-                    throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
-                }
-
-                Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
-                xmlFile.AddRequiredPackage(id);
+                throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", this.PackageAndVersion), false);
             }
+
+            Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+            xmlFile.AddRequiredPackage(id);
 
             xmlFile.Write();
 
