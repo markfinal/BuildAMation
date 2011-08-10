@@ -15,7 +15,7 @@ namespace Opus
         {
             get
             {
-                return "-createpackage";
+                return "-createpackageat";
             }
         }
 
@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Create a new package";
+                return "Create a new package at the specified path.";
             }
         }
 
@@ -40,7 +40,6 @@ namespace Opus
 
         public bool Execute()
         {
-#if true
             bool isComplete;
             Core.PackageIdentifier id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath,
                                                                                  out isComplete);
@@ -48,31 +47,7 @@ namespace Opus
             {
                 throw new Core.Exception(System.String.Format("Package already present at '{0}'", this.PackagePath), false);
             }
-#else
-            Core.PackageInformation createPackage = Core.PackageInformation.FromPath(this.PackagePath, false);
-            if (null == createPackage)
-            {
-                throw new Core.Exception(System.String.Format("Path '{0}' is not a valid package path", this.PackagePath), false);
-            }
 
-            Core.PackageInformationCollection packageInfoCollection = Core.State.PackageInfo;
-            if (null == packageInfoCollection)
-            {
-                packageInfoCollection = new Opus.Core.PackageInformationCollection();
-                Core.State.PackageInfo = packageInfoCollection;
-            }
-
-            packageInfoCollection.Add(createPackage);
-
-            Core.Log.DebugMessage("Package is '{0}' @ '{1}'", createPackage.Identifier.ToString("-"), createPackage.Root);
-            Core.Log.DebugMessage("Package roots are:");
-            foreach (string packageRoot in Core.State.PackageRoots)
-            {
-                Core.Log.DebugMessage("\t'{0}'", packageRoot);
-            }
-
-            string PackageDirectory = createPackage.Directory;
-#endif
             string PackageDirectory = this.PackagePath;
             if (System.IO.Directory.Exists(PackageDirectory))
             {
