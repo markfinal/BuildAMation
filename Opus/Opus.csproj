@@ -69,7 +69,7 @@
     <Compile Include="Actions\CreatePackageAtAction.cs" />
     <Compile Include="Actions\EnableDebugSymbolsInBuildsAction.cs" />
     <Compile Include="Actions\HelpAction.cs" />
-    <Compile Include="Actions\RemoveDependenciesAction.cs" />
+    <Compile Include="Actions\RemoveDependencyAction.cs" />
     <Compile Include="Actions\SetBuilderNameAction.cs" />
     <Compile Include="Actions\SetBuildRootAction.cs" />
     <Compile Include="Actions\SetConfigurationsAction.cs" />
