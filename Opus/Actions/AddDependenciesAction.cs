@@ -1,15 +1,15 @@
-﻿// <copyright file="AddDependenciesAction.cs" company="Mark Final">
+﻿// <copyright file="AddDependencyAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.AddDependenciesAction))]
+[assembly: Opus.Core.RegisterAction(typeof(Opus.AddDependencyAction))]
 
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class AddDependenciesAction : Core.IActionWithArguments
+    internal class AddDependencyAction : Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
