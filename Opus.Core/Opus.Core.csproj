@@ -43,6 +43,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="ActionManager.cs" />
     <Compile Include="Array.cs" />
     <Compile Include="Attributes\ArgumentProcessorAttribute.cs" />
     <Compile Include="Attributes\AssignToolForModuleAttribute.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="PackageAndDirectoryPath.cs" />
     <Compile Include="PackageDefinitionFile.cs" />
     <Compile Include="PackageIdentifier.cs" />
+    <Compile Include="PackageIdentifierCollection.cs" />
     <Compile Include="PackageInformation.cs" />
     <Compile Include="PackageInformationCollection.cs" />
     <Compile Include="PackageListResourceFile.cs" />

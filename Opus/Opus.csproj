@@ -65,6 +65,7 @@
     <Compile Include="Actions\AddPackageRootsAction.cs" />
     <Compile Include="Actions\BuildAction.cs" />
     <Compile Include="Actions\ChangeDependenciesAction.cs" />
+    <Compile Include="Actions\ChangeVersionAction.cs" />
     <Compile Include="Actions\CreateDebugProjectAction.cs" />
     <Compile Include="Actions\CreatePackageAtAction.cs" />
     <Compile Include="Actions\EnableDebugSymbolsInBuildsAction.cs" />

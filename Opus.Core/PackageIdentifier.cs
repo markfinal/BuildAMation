@@ -100,6 +100,12 @@ namespace Opus.Core
             return match;
         }
 
+        public bool Match(string name, string version, bool ignoreCase)
+        {
+            bool match = this.MatchName(name, ignoreCase) && (0 == this.MatchVersion(version, ignoreCase));
+            return match;
+        }
+
         public bool ConvertVersionToDouble(out double version)
         {
             return double.TryParse(this.Version, out version);

@@ -59,7 +59,6 @@ namespace Opus.Core
 
     public class PackageDefinitionFile
     {
-        private Array<PackageIdentifier> packageIds;
         private string xmlFilename;
         private bool validate;
         
@@ -101,7 +100,7 @@ namespace Opus.Core
         {
             this.validate = validate;
             this.xmlFilename = xmlFilename;
-            this.packageIds = new Array<PackageIdentifier>();
+            this.PackageIdentifiers = new PackageIdentifierCollection();
             this.OpusAssemblies = new StringArray();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
@@ -119,7 +118,7 @@ namespace Opus.Core
                 }
             }
 
-            this.packageIds.Sort();
+            this.PackageIdentifiers.Sort();
 
             System.Xml.XmlDocument document = new System.Xml.XmlDocument();
             string targetNamespace = "Opus";
@@ -134,10 +133,10 @@ namespace Opus.Core
             }
             document.AppendChild(packageDefinition);
 
-            if (this.packageIds.Count > 0)
+            if (this.PackageIdentifiers.Count > 0)
             {
                 System.Xml.XmlElement requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
-                foreach (PackageIdentifier package in this.packageIds)
+                foreach (PackageIdentifier package in this.PackageIdentifiers)
                 {
                     System.Xml.XmlElement packageElement = null;
 
@@ -492,7 +491,7 @@ namespace Opus.Core
 
                                 PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
                                 id.PlatformFilter = platformFilter;
-                                this.packageIds.Add(id);
+                                this.PackageIdentifiers.Add(id);
                             }
                         }
                         else
@@ -820,7 +819,7 @@ namespace Opus.Core
 
                                                 PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
                                                 id.PlatformFilter = EPlatform.All;
-                                                this.packageIds.Add(id);
+                                                this.PackageIdentifiers.Add(id);
 
                                                 xmlReader.MoveToElement();
                                             }
@@ -873,7 +872,7 @@ namespace Opus.Core
         public bool UpdatePackage(PackageIdentifier idToChangeTo)
         {
             PackageIdentifier idToRemove = null;
-            foreach (PackageIdentifier id in this.packageIds)
+            foreach (PackageIdentifier id in this.PackageIdentifiers)
             {
                 if (id.MatchName(idToChangeTo, false))
                 {
@@ -891,7 +890,7 @@ namespace Opus.Core
 
             if (null != idToRemove)
             {
-                this.packageIds.Remove(idToRemove);
+                this.PackageIdentifiers.Remove(idToRemove);
                 Log.Info("Changed package '{0}' from version '{1}' to '{2}'", idToChangeTo.Name, idToRemove.Version, idToChangeTo.Version);
             }
             else
@@ -899,14 +898,14 @@ namespace Opus.Core
                 Log.Info("Added dependency '{0}' from root '{1}'", idToChangeTo.ToString(), idToChangeTo.Root);
             }
 
-            this.packageIds.Add(idToChangeTo);
+            this.PackageIdentifiers.Add(idToChangeTo);
 
             return true;
         }
 
         public void AddRequiredPackage(PackageIdentifier idToAdd)
         {
-            foreach (PackageIdentifier id in this.packageIds)
+            foreach (PackageIdentifier id in this.PackageIdentifiers)
             {
                 if (id.Match(idToAdd, false))
                 {
@@ -914,14 +913,14 @@ namespace Opus.Core
                 }
             }
 
-            this.packageIds.Add(idToAdd);
+            this.PackageIdentifiers.Add(idToAdd);
             Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root);
         }
 
         public bool RemovePackage(PackageIdentifier idToRemove)
         {
             PackageIdentifier idToRemoveReally = null;
-            foreach (PackageIdentifier id in this.packageIds)
+            foreach (PackageIdentifier id in this.PackageIdentifiers)
             {
                 if (id.Match(idToRemove, false))
                 {
@@ -932,7 +931,7 @@ namespace Opus.Core
 
             if (null != idToRemoveReally)
             {
-                this.packageIds.Remove(idToRemoveReally);
+                this.PackageIdentifiers.Remove(idToRemoveReally);
                 Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), idToRemove.Root);
                 return true;
             }
@@ -943,12 +942,10 @@ namespace Opus.Core
             }
         }
 
-        public Array<PackageIdentifier> PackageIdentifiers
+        public PackageIdentifierCollection PackageIdentifiers
         {
-            get
-            {
-                return this.packageIds;
-            }
+            get;
+            private set;
         }
 
         public StringArray OpusAssemblies

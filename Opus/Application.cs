@@ -66,7 +66,6 @@ namespace Opus
                 argList.Remove(responseFileArgument);
             }
 
-            var actionAttributeArray = System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(Opus.Core.RegisterActionAttribute), false);
             foreach (string command in argList)
             {
                 string[] splitCommand = command.Split('=');
@@ -85,7 +84,7 @@ namespace Opus
                 }
 
                 bool foundAction = false;
-                foreach (Core.RegisterActionAttribute actionAttribute in actionAttributeArray)
+                foreach (Core.RegisterActionAttribute actionAttribute in Core.ActionManager.Actions)
                 {
                     Core.IAction action = actionAttribute.Action;
                     if (action.CommandLineSwitch == commandName)

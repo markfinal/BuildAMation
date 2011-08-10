@@ -23,7 +23,7 @@ namespace Opus.Core
             this.list.AddRange(collection as System.Collections.Generic.IEnumerable<T>);
         }
 
-        public void Add(T item)
+        public virtual void Add(T item)
         {
             this.list.Add(item);
         }
@@ -56,7 +56,7 @@ namespace Opus.Core
             this.list.Clear();
         }
 
-        public bool Contains(T item)
+        public virtual bool Contains(T item)
         {
             return this.list.Contains(item);
         }
@@ -97,7 +97,7 @@ namespace Opus.Core
             return this.list.GetEnumerator();
         }
 
-        public object this[int index]
+        public T this[int index]
         {
             get
             {
