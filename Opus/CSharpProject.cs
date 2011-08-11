@@ -1,4 +1,4 @@
-﻿// <copyright file="CSharpProject.cs" company="Mark Final">
+// <copyright file="CSharpProject.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus CSharp Project.</summary>
@@ -193,13 +193,13 @@ namespace Opus
                     xmlWriter.WriteStartElement("ItemGroup");
                     {
                         xmlWriter.WriteStartElement("Compile");
-                        xmlWriter.WriteAttributeString("Include", scriptFilename);
+                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFilename, projectFilenameUri));
                         {
                             xmlWriter.WriteEndElement();
                         }
 
                         xmlWriter.WriteStartElement("None");
-                        xmlWriter.WriteAttributeString("Include", packageDependencyFilename);
+                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(packageDependencyFilename, projectFilenameUri));
                         {
                             xmlWriter.WriteEndElement();
                         }
@@ -217,7 +217,7 @@ namespace Opus
                                 {
                                     xmlWriter.WriteStartElement("Compile");
                                     {
-                                        xmlWriter.WriteAttributeString("Include", scriptFile);
+                                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
@@ -241,7 +241,7 @@ namespace Opus
                                 foreach (string scriptFile in builderScripts)
                                 {
                                     xmlWriter.WriteStartElement("Compile");
-                                    xmlWriter.WriteAttributeString("Include", scriptFile);
+                                    xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                     {
                                         xmlWriter.WriteStartElement("Link");
                                         {
@@ -273,7 +273,7 @@ namespace Opus
                         {
                             // .cs file
                             xmlWriter.WriteStartElement("Compile");
-                            xmlWriter.WriteAttributeString("Include", dependentPackage.Identifier.ScriptPathName);
+                            xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(dependentPackage.Identifier.ScriptPathName, projectFilenameUri));
                             {
                                 xmlWriter.WriteStartElement("Link");
                                 {
@@ -288,7 +288,7 @@ namespace Opus
 
                             // .xml file
                             xmlWriter.WriteStartElement("None");
-                            xmlWriter.WriteAttributeString("Include", dependentPackage.Identifier.DefinitionPathName);
+                            xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(dependentPackage.Identifier.DefinitionPathName, projectFilenameUri));
                             {
                                 xmlWriter.WriteStartElement("Link");
                                 {
@@ -309,7 +309,7 @@ namespace Opus
                                     foreach (string scriptFile in scripts)
                                     {
                                         xmlWriter.WriteStartElement("Compile");
-                                        xmlWriter.WriteAttributeString("Include", scriptFile);
+                                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
@@ -333,7 +333,7 @@ namespace Opus
                                     foreach (string scriptFile in builderScripts)
                                     {
                                         xmlWriter.WriteStartElement("Compile");
-                                        xmlWriter.WriteAttributeString("Include", scriptFile);
+                                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
