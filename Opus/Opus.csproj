@@ -83,7 +83,7 @@
     <Compile Include="Actions\SetModulesAction.cs" />
     <Compile Include="Actions\SetPlatformsAction.cs" />
     <Compile Include="Actions\SetVerbosityLevelAction.cs" />
-    <Compile Include="Actions\ShowDependenciesAction.cs" />
+    <Compile Include="Actions\ShowDefinitionAction.cs" />
     <Compile Include="Actions\ShowDirectoryAction.cs" />
     <Compile Include="Actions\ShowVersionAction.cs" />
     <Compile Include="Application.cs" />
