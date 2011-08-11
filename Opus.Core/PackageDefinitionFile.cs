@@ -64,18 +64,18 @@ namespace Opus.Core
         
         private static void ValidationCallBack(object sender, System.Xml.Schema.ValidationEventArgs args)
         {
-            string message = null;
             if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
             {
-                message += System.String.Format("\tWarning: Matching schema not found (" + args.Exception.GetType().ToString() + ").  No validation occurred." + args.Message);
+                string message = System.String.Format("Warning: Matching schema not found (" + args.Exception.GetType().ToString() + "). " + args.Message);
+                Log.DebugMessage(message);
             }
             else
             {
-                message += System.String.Format("\tValidation error: " + args.Message);
-            }
-            message += System.String.Format("\nAt '" + args.Exception.SourceUri + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
+                string message = System.String.Format("Validation error: " + args.Message);
+                message += System.String.Format("\nAt '" + args.Exception.SourceUri + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
 
-            throw new System.Xml.XmlException(message);
+                throw new System.Xml.XmlException(message);
+            }
         }
         
         private void Validate()
