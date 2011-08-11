@@ -29,33 +29,49 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.Log.MessageAll("Syntax: Opus [@<response file > | <command 0> <command 1> .. <command N>]");
+            Core.Log.MessageAll("Syntax: Opus [@<response file >] <command 0> [<command 1> .. <command N>]");
 
-            Core.Log.MessageAll("Commands:");
-            var actionAttributeArray = System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(Core.RegisterActionAttribute), false);
-            foreach (Core.RegisterActionAttribute actionAttribute in actionAttributeArray)
+            Core.Array<Core.RegisterActionAttribute> actions = Core.ActionManager.Actions;
+            
+            // first loop over these to determine the command length
+            int maximumLength = 0;
+            foreach (Core.RegisterActionAttribute actionAttribute in actions)
+            {
+                int length = actionAttribute.Action.CommandLineSwitch.Length;
+                if (length > maximumLength)
+                {
+                    maximumLength = length;
+                }
+            }
+            maximumLength++;
+
+            Core.Log.MessageAll("\nCommands that take effect immediately");
+            DisplayCommands(Core.ActionManager.ImmediateActions, maximumLength);
+
+            Core.Log.MessageAll("\nCommands that set up state for future commands");
+            DisplayCommands(Core.ActionManager.PreambleActions, maximumLength);
+
+            Core.Log.MessageAll("\nCommands that trigger events");
+            DisplayCommands(Core.ActionManager.TriggerActions, maximumLength);
+
+            return true;
+        }
+
+        private void DisplayCommands(Core.Array<Core.RegisterActionAttribute> actions,
+                                     int maximumLength)
+        {
+            foreach (Core.RegisterActionAttribute actionAttribute in actions)
             {
                 Core.IAction action = actionAttribute.Action;
 
                 string commandSwitch = action.CommandLineSwitch;
                 string description = action.Description;
 
-                // TODO: this is a bit hacky
-                if (commandSwitch.Length < 6)
-                {
-                    Core.Log.MessageAll("\t{0}\t\t\t{1}", commandSwitch, description);
-                }
-                else if (commandSwitch.Length < 15)
-                {
-                    Core.Log.MessageAll("\t{0}\t\t{1}", commandSwitch, description);
-                }
-                else
-                {
-                    Core.Log.MessageAll("\t{0}\t{1}", commandSwitch, description);
-                }
-            }
+                int length = commandSwitch.Length;
+                int spaces = maximumLength - length;
 
-            return true;
+                Core.Log.MessageAll("\t{0}{1}{2}", commandSwitch, new string(' ', spaces), description);
+            }
         }
     }
 }
