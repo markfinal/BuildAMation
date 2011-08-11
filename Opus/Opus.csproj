@@ -62,6 +62,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
     <Compile Include="Actions\AddDependencyAction.cs" />
+    <Compile Include="Actions\AddDotNetAssemblyAction.cs" />
     <Compile Include="Actions\AddOpusAssemblyAction.cs" />
     <Compile Include="Actions\AddPackageRootsAction.cs" />
     <Compile Include="Actions\AddPlatformFilterAction.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Actions\EnableDebugSymbolsInBuildsAction.cs" />
     <Compile Include="Actions\HelpAction.cs" />
     <Compile Include="Actions\RemoveDependencyAction.cs" />
+    <Compile Include="Actions\RemoveDotNetAssemblyAction.cs" />
     <Compile Include="Actions\RemoveOpusAssemblyAction.cs" />
     <Compile Include="Actions\RemovePlatformFilterAction.cs" />
     <Compile Include="Actions\SetBuilderNameAction.cs" />
