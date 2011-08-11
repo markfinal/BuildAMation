@@ -39,12 +39,11 @@ namespace Opus
                 Core.PackageUtilities.LoadPackageAssembly();
                 Core.PackageUtilities.ProcessLazyArguments();
                 Core.PackageUtilities.HandleUnprocessedArguments();
+                Core.State.ShowTimingStatistics = true;
                 if (!Core.PackageUtilities.ExecutePackageAssembly())
                 {
                     System.Environment.ExitCode = -3;
                 }
-
-                Core.State.ShowTimingStatistics = true;
             }
 
             return true;
