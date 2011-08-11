@@ -167,14 +167,13 @@ namespace Opus.Core
                         packageVersionElement.SetAttribute("Id", package.Version);
 
                         EPlatform platformFilter = package.PlatformFilter;
+                        if (platformFilter == EPlatform.Invalid)
+                        {
+                            throw new Exception(System.String.Format("Dependent '{0}' requires at least one platform filter", package.ToString()), false);
+                        }
 
                         if (platformFilter != EPlatform.All)
                         {
-                            if (platformFilter == EPlatform.Invalid)
-                            {
-                                throw new Exception("At least one platform must be supported");
-                            }
-
                             string conditionText = null;
                             if (EPlatform.Windows == (platformFilter & EPlatform.Windows))
                             {

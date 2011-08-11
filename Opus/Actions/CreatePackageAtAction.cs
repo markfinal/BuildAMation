@@ -84,6 +84,16 @@ namespace Opus
                     packageDefinition.AddRequiredPackage(idToAdd);
                 }
             }
+            packageDefinition.OpusAssemblies.Add("Opus.Core");
+            {
+                Core.DotNetAssemblyDescription system = new Opus.Core.DotNetAssemblyDescription("System");
+                system.RequiredTargetFramework = "2.0.50727";
+                packageDefinition.DotNetAssemblies.Add(system);
+
+                Core.DotNetAssemblyDescription systemXml = new Opus.Core.DotNetAssemblyDescription("System.Xml");
+                systemXml.RequiredTargetFramework = "2.0.50727";
+                packageDefinition.DotNetAssemblies.Add(systemXml);
+            }
             packageDefinition.Write();
             id.Definition = packageDefinition;
 

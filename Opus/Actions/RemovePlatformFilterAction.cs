@@ -1,21 +1,21 @@
-﻿// <copyright file="ChangeVersionAction.cs" company="Mark Final">
+﻿// <copyright file="RemovePlatformFilterAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.ChangeVersionAction))]
+[assembly: Opus.Core.RegisterAction(typeof(Opus.RemovePlatformFilterAction))]
 
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class ChangeVersionAction : Core.IActionWithArguments
+    internal class RemovePlatformFilterAction : Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
             get
             {
-                return "-changeversion";
+                return "-removeplatformfilter";
             }
         }
 
@@ -23,16 +23,16 @@ namespace Opus
         {
             get
             {
-                return "Change the version of a dependent package";
+                return "Removes a platform filter from the specified dependent";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.NewVersion = arguments;
+            this.Platform = arguments;
         }
 
-        private string NewVersion
+        private string Platform
         {
             get;
             set;
@@ -40,6 +40,25 @@ namespace Opus
 
         public bool Execute()
         {
+            Core.EPlatform requestedFilter = Opus.Core.EPlatform.Invalid;
+            switch (this.Platform)
+            {
+                case "win*":
+                    requestedFilter = Opus.Core.EPlatform.Windows;
+                    break;
+
+                case "unix*":
+                    requestedFilter = Opus.Core.EPlatform.Unix;
+                    break;
+
+                case "osx*":
+                    requestedFilter = Opus.Core.EPlatform.OSX;
+                    break;
+
+                default:
+                    throw new Core.Exception(System.String.Format("Platform filter specified, '{0}', is not recognized", this.Platform), false);
+            }
+
             SetDependentAction setDependentAction = Core.ActionManager.FindByType(typeof(SetDependentAction)) as SetDependentAction;
             if (null == setDependentAction)
             {
@@ -73,19 +92,18 @@ namespace Opus
 
             if (null != foundId)
             {
-                Core.PackageIdentifier newId = new Opus.Core.PackageIdentifier(nameAndVersion[0], this.NewVersion);
-
-                if (mainPackageId.Definition.PackageIdentifiers.Contains(newId))
+                Core.EPlatform oldFilter = foundId.PlatformFilter;
+                if (!Core.Platform.Contains(oldFilter, requestedFilter))
                 {
-                    throw new Core.Exception(System.String.Format("Package '{0}' already exists as a dependency. Cannot change the version of package '{1}' to '{2}'", newId.ToString(), foundId.ToString(), this.NewVersion), false);
+                    throw new Core.Exception(System.String.Format("Package '{0}' with dependent '{1}' does not have a platform filter for '{2}'", nameAndVersion[0], setDependentAction.DependentPackageAndVersion, this.Platform), false);
                 }
 
-                mainPackageId.Definition.PackageIdentifiers.Remove(foundId);
-                mainPackageId.Definition.PackageIdentifiers.Add(newId);
+                Core.EPlatform newFilter = oldFilter & ~requestedFilter;
+                foundId.PlatformFilter = newFilter;
 
                 mainPackageId.Definition.Write();
 
-                Core.Log.MessageAll("Updated dependent package '{0}' from version '{1}' to '{2}'", nameAndVersion[0], foundId.Version, this.NewVersion);
+                Core.Log.MessageAll("Package '{0}' has platform filter '{1}' removed", setDependentAction.DependentPackageAndVersion, this.Platform);
 
                 return true;
             }

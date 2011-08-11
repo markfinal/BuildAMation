@@ -80,6 +80,42 @@ namespace Opus.Core
             return definitionPathName;
         }
 
+        public static void IdentifyMainPackageOnly()
+        {
+            // find the working directory package
+            bool isWorkingPackageComplete;
+            PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
+            if (null == id)
+            {
+                throw new Exception("No valid package found in the working directory", false);
+            }
+
+            if (!isWorkingPackageComplete)
+            {
+                throw new Exception("Working directory package is not complete", false);
+            }
+
+            string definitionPathName = PackageDefinitionPathName(id);
+            PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
+            definitionFile.Read();
+            id.Definition = definitionFile;
+
+            if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
+            {
+                Log.MessageAll("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
+                return;
+            }
+
+            if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
+            {
+                Log.MessageAll("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                return;
+            }
+
+            PackageInformation info = new PackageInformation(id);
+            State.PackageInfo.Add(info);
+        }
+
         public static void IdentifyMainAndDependentPackages()
         {
             // find the working directory package
