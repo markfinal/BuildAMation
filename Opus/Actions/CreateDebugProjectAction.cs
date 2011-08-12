@@ -46,7 +46,7 @@ namespace Opus
 
             Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
-            Core.BuilderUtilities.EnsureBuilderPackageExists();
+            Core.BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
             string resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();

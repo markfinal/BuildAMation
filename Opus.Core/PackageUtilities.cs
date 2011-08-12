@@ -241,7 +241,7 @@ namespace Opus.Core
 
             Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
-            BuilderUtilities.EnsureBuilderPackageExists();
+            BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
             string resourceFilePathName = PackageListResourceFile.WriteResourceFile();

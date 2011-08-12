@@ -104,7 +104,7 @@ namespace Opus.Core
                 PackageInformation builderPackage = State.BuilderPackage;
                 if (null == builderPackage)
                 {
-                    throw new Exception("No builder package found");
+                    return null;
                 }
 
                 StringArray builderScripts = new StringArray();
@@ -120,7 +120,7 @@ namespace Opus.Core
 
                 if (0 == builderScripts.Count)
                 {
-                    builderScripts = null;
+                    return null;
                 }
 
                 return builderScripts;

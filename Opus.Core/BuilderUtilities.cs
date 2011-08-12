@@ -7,11 +7,11 @@ namespace Opus.Core
 {
     public static class BuilderUtilities
     {
-        public static void EnsureBuilderPackageExists()
+        public static void SetBuilderPackage()
         {
             if (null == State.BuilderName)
             {
-                throw new Exception("Name of the Builder has not been specified", false);
+                return;
             }
 
             string builderPackageName = System.String.Format("{0}Builder", State.BuilderName);
