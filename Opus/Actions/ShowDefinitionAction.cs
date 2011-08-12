@@ -73,7 +73,7 @@ namespace Opus
             }
             if (definitionFile.Definitions.Count > 0)
             {
-                Core.Log.MessageAll("\nDefinitions");
+                Core.Log.MessageAll("\n#defines:");
                 foreach (string definition in definitionFile.Definitions)
                 {
                     Core.Log.MessageAll("\t{0}", definition);
