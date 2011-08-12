@@ -11,6 +11,7 @@ namespace Opus.Core
 
         static ActionManager()
         {
+            // TODO: might want to search across all loaded assemblies
             System.Reflection.Assembly executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
             RegisterActionAttribute[] customAttributes = executingAssembly.GetCustomAttributes(typeof(Opus.Core.RegisterActionAttribute), false) as RegisterActionAttribute[];
             actions = new Array<RegisterActionAttribute>(customAttributes);
