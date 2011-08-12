@@ -13,7 +13,7 @@ namespace Opus
         private Core.Array<Core.IAction> preambleActions = new Opus.Core.Array<Opus.Core.IAction>();
         private Core.IAction triggerAction = null;
 
-        private static void displayInfo(Core.EVerboseLevel level, System.Collections.Specialized.StringDictionary argDict)
+        private static void displayInfo(Core.EVerboseLevel level, System.Collections.Generic.Dictionary<string,string> argDict)
         {
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
             Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
@@ -36,7 +36,7 @@ namespace Opus
             Core.Log.Message(level, "");
         }
 
-        private void AddCommandValue(System.Collections.Specialized.StringDictionary argDict, string argument)
+        private void AddCommandValue(System.Collections.Generic.Dictionary<string,string> argDict, string argument)
         {
             string[] splitArg = argument.Split('=');
             string command = splitArg[0];
@@ -52,7 +52,7 @@ namespace Opus
             {
                 Core.Log.MessageAll("Command '{0}' value '{1}' has been overwritten with '{2}'", command, argDict[command], value);
             }
-
+            
             argDict[command] = value;
         }
         
@@ -62,7 +62,7 @@ namespace Opus
         /// <param name="args">Command line arguments.</param>
         public Application(string[] args)
         {
-            System.Collections.Specialized.StringDictionary argList = new System.Collections.Specialized.StringDictionary();
+            System.Collections.Generic.Dictionary<string,string> argList = new System.Collections.Generic.Dictionary<string,string>();
             string responseFileArgument = null;
             foreach (string arg in args)
             {
@@ -148,7 +148,12 @@ namespace Opus
 
                 if (!foundAction)
                 {
-                    Core.State.LazyArguments.Add(commandName);
+                    string lazyArgument = commandName;
+                    if (null != commandValue)
+                    {
+                        lazyArgument += "=" + commandValue;
+                    }
+                    Core.State.LazyArguments.Add(lazyArgument);
                 }
             }
 
