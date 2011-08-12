@@ -13,13 +13,47 @@ namespace Opus
         private Core.Array<Core.IAction> preambleActions = new Opus.Core.Array<Opus.Core.IAction>();
         private Core.IAction triggerAction = null;
 
-        private static void displayInfo(Core.EVerboseLevel level, Core.StringArray argumentList)
+        private static void displayInfo(Core.EVerboseLevel level, System.Collections.Specialized.StringDictionary argDict)
         {
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
             Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
             Core.Log.Message(level, "Working dir  : '{0}'", Core.State.WorkingDirectory);
-            Core.Log.Message(level, "Arguments    : {0}", argumentList.ToString(' '));
+            string arguments = null;
+            foreach (string command in argDict.Keys)
+            {
+                if (null != arguments)
+                {
+                    arguments += " ";
+                }
+                arguments += command;
+                string value = argDict[command];
+                if (null != value)
+                {
+                    arguments += "=" + value;
+                }
+            }
+            Core.Log.Message(level, "Arguments    : {0}", arguments);
             Core.Log.Message(level, "");
+        }
+
+        private void AddCommandValue(System.Collections.Specialized.StringDictionary argDict, string argument)
+        {
+            string[] splitArg = argument.Split('=');
+            string command = splitArg[0];
+            command = command.Trim(new char[] { '\n', '\r' });
+            string value = null;
+            if (splitArg.Length > 1)
+            {
+                value = splitArg[1];
+                value = value.Trim(new char[] { '"', '\'', '\n', '\r' });
+            }
+
+            if (argDict.ContainsKey(command))
+            {
+                Core.Log.MessageAll("Command '{0}' value '{1}' has been overwritten with '{2}'", command, argDict[command], value);
+            }
+
+            argDict[command] = value;
         }
         
         /// <summary>
@@ -28,17 +62,21 @@ namespace Opus
         /// <param name="args">Command line arguments.</param>
         public Application(string[] args)
         {
-            Opus.Core.StringArray argList = new Opus.Core.StringArray(args);
-
-            // handle response file
+            System.Collections.Specialized.StringDictionary argList = new System.Collections.Specialized.StringDictionary();
             string responseFileArgument = null;
-            foreach (string arg in argList)
+            foreach (string arg in args)
             {
+                // found a response file
                 if (arg.StartsWith("@"))
                 {
+                    if (null != responseFileArgument)
+                    {
+                        throw new Core.Exception("Only one response file can be specified", false);
+                    }
+
                     responseFileArgument = arg;
 
-                    string responseFile = arg.Substring(1);
+                    string responseFile = responseFileArgument.Substring(1);
                     if (!System.IO.File.Exists(responseFile))
                     {
                         throw new Core.Exception(System.String.Format("Response file '{0}' does not exist", responseFile));
@@ -50,38 +88,27 @@ namespace Opus
                         string[] arguments = responseFileArguments.Split(new string[] { " ", "\r\n", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
                         foreach (string argument in arguments)
                         {
-                            if (!argument.StartsWith("#"))
+                            // handle comments
+                            if (argument.StartsWith("#"))
                             {
-                                argList.Add(argument);
+                                continue;
                             }
+
+                            AddCommandValue(argList, argument);
                         }
                     }
-
-                    // there can be only one response file
-                    break;
+                }
+                else
+                {
+                    // deal with other commands
+                    AddCommandValue(argList, arg);
                 }
             }
-            if (null != responseFileArgument)
-            {
-                argList.Remove(responseFileArgument);
-            }
 
-            foreach (string command in argList)
+            foreach (string commandName in argList.Keys)
             {
-                string[] splitCommand = command.Split('=');
-                string commandName = splitCommand[0];
-                commandName = commandName.Trim(new char[] { '\n', '\r' });
-                string commandValue = null;
-                if (splitCommand.Length > 1)
-                {
-                    commandValue = splitCommand[1];
-                    commandValue = commandValue.Trim(new char[] { '"', '\'', '\n', '\r' });
-                }
-                Core.Log.DebugMessage("Added command '{0}' with value '{1}'", commandName, commandValue);
-                if (commandName.StartsWith("@"))
-                {
-                    throw new Core.Exception("There can be only one response file provided", false);
-                }
+                string commandValue = argList[commandName];
+                Core.Log.DebugMessage("Converting command '{0}' with value '{1}' to its action", commandName, commandValue);
 
                 bool foundAction = false;
                 foreach (Core.RegisterActionAttribute actionAttribute in Core.ActionManager.Actions)
@@ -121,7 +148,7 @@ namespace Opus
 
                 if (!foundAction)
                 {
-                    Core.State.LazyArguments.Add(command);
+                    Core.State.LazyArguments.Add(commandName);
                 }
             }
 
