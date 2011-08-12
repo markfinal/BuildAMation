@@ -28,13 +28,21 @@ namespace Opus.Core
         public static EPlatform FromString(string platformName)
         {
             EPlatform platform = EPlatform.Invalid;
-            if (0 == System.String.Compare(platformName, "Win32", true))
+            if (0 == System.String.Compare(platformName, "Windows", true))
+            {
+                platform = EPlatform.Windows;
+            }
+            else if (0 == System.String.Compare(platformName, "Win32", true))
             {
                 platform = EPlatform.Win32;
             }
             else if (0 == System.String.Compare(platformName, "Win64", true))
             {
                 platform = EPlatform.Win64;
+            }
+            else if (0 == System.String.Compare(platformName, "Unix", true))
+            {
+                platform = EPlatform.Unix;
             }
             else if (0 == System.String.Compare(platformName, "Unix32", true))
             {
@@ -43,6 +51,10 @@ namespace Opus.Core
             else if (0 == System.String.Compare(platformName, "Unix64", true))
             {
                 platform = EPlatform.Unix64;
+            }
+            else if (0 == System.String.Compare(platformName, "OSX", true))
+            {
+                platform = EPlatform.OSX;
             }
             else if (0 == System.String.Compare(platformName, "OSX32", true))
             {
@@ -54,7 +66,7 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Platform name '{0}' not recognized", platformName));
+                throw new Exception(System.String.Format("Platform name '{0}' not recognized", platformName), false);
             }
             return platform;
         }
