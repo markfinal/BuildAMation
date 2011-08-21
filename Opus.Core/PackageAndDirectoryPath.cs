@@ -7,13 +7,13 @@ namespace Opus.Core
 {
     public sealed class PackageAndDirectoryPath : System.Collections.IComparer
     {
-        public PackageAndDirectoryPath(Opus.Core.PackageInformation package, string relativePath)
+        public PackageAndDirectoryPath(PackageInformation package, string relativePath)
         {
             this.Package = package;
             this.RelativePath = relativePath;
         }
 
-        public Opus.Core.PackageInformation Package
+        public PackageInformation Package
         {
             get;
             private set;

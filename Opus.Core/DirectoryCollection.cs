@@ -37,13 +37,13 @@ namespace Opus.Core
         {
             if (checkForExistence && !System.IO.Directory.Exists(absoluteDirectoryPath))
             {
-                throw new Opus.Core.Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath), false);
+                throw new Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath), false);
             }
 
             PackageAndDirectoryPath pap = new PackageAndDirectoryPath(null, absoluteDirectoryPath);
             if (this.Contains(pap))
             {
-                Opus.Core.Log.DebugMessage("Absolute path '{0}' is already present in the list of directories", absoluteDirectoryPath);
+                Log.DebugMessage("Absolute path '{0}' is already present in the list of directories", absoluteDirectoryPath);
             }
             else
             {
@@ -51,12 +51,12 @@ namespace Opus.Core
             }
         }
 
-        public void Add(Opus.Core.PackageInformation package, string relativePath)
+        public void Add(PackageInformation package, string relativePath)
         {
             PackageAndDirectoryPath pap = new PackageAndDirectoryPath(package, relativePath);
             if (this.Contains(pap))
             {
-                Opus.Core.Log.DebugMessage("Relative path '{0}' is already present for package '{1}'", relativePath, package.FullName);
+                Log.DebugMessage("Relative path '{0}' is already present for package '{1}'", relativePath, package.FullName);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace Opus.Core
             this.Add(package, relativePath);
         }
 
-        public void AddRange(Opus.Core.PackageInformation package, string[] relativePaths)
+        public void AddRange(PackageInformation package, string[] relativePaths)
         {
             foreach (string path in relativePaths)
             {
@@ -83,7 +83,7 @@ namespace Opus.Core
             }
         }
 
-        public void AddRange(Opus.Core.PackageInformation package, Opus.Core.StringArray relativePaths)
+        public void AddRange(PackageInformation package, Opus.Core.StringArray relativePaths)
         {
             foreach (string path in relativePaths)
             {
@@ -102,7 +102,7 @@ namespace Opus.Core
             this.AddRange(package, relativePaths);
         }
 
-        public void AddRange(object owner, Opus.Core.StringArray relativePaths)
+        public void AddRange(object owner, StringArray relativePaths)
         {
             PackageInformation package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)

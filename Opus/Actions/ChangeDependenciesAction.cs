@@ -29,7 +29,7 @@ namespace Opus
 
         public void AssignArguments(string arguments)
         {
-            this.PackagesAndVersions = new Opus.Core.StringArray();
+            this.PackagesAndVersions = new Core.StringArray();
             this.PackagesAndVersions.AddRange(arguments.Split(';'));
         }
 
@@ -67,7 +67,7 @@ namespace Opus
                     throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
                 }
 
-                Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                Core.PackageIdentifier id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
                 if (definitionFile.UpdatePackage(id))
                 {
                     ++numberOfPackagesChanged;

@@ -10,7 +10,7 @@ namespace Opus
     /// </summary>
     public sealed class Application
     {
-        private Core.Array<Core.IAction> preambleActions = new Opus.Core.Array<Opus.Core.IAction>();
+        private Core.Array<Core.IAction> preambleActions = new Core.Array<Core.IAction>();
         private Core.IAction triggerAction = null;
 
         private static void displayInfo(Core.EVerboseLevel level, System.Collections.Generic.Dictionary<string,string> argDict)

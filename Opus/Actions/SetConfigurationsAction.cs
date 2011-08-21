@@ -40,7 +40,7 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.Array<Core.EConfiguration> buildConfigurations = new Opus.Core.Array<Opus.Core.EConfiguration>();
+            Core.Array<Core.EConfiguration> buildConfigurations = new Core.Array<Opus.Core.EConfiguration>();
 
             foreach (string configuration in this.Configurations)
             {

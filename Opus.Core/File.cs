@@ -81,7 +81,7 @@ namespace Opus.Core
             this.SetPackageRelativePath(package, pathSegments);
         }
 
-        public void SetPackageRelativePath(Opus.Core.PackageInformation package, params string[] pathSegments)
+        public void SetPackageRelativePath(PackageInformation package, params string[] pathSegments)
         {
             this.Initialize(package.Identifier.Path, true, pathSegments);
         }
@@ -120,7 +120,7 @@ namespace Opus.Core
 
                 if (i != pathSegments.Length - 1)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", baseDir, pathSegments[i]));
+                    throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", baseDir, pathSegments[i]));
                 }
 
                 string[] files = System.IO.Directory.GetFiles(baseDir, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);

@@ -29,7 +29,7 @@ namespace Opus
 
         public void AssignArguments(string arguments)
         {
-            this.Platforms = new Opus.Core.StringArray(arguments.Split(';'));
+            this.Platforms = new Core.StringArray(arguments.Split(';'));
         }
 
         private Core.StringArray Platforms
@@ -40,7 +40,7 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.Array<Core.EPlatform> buildPlatforms = new Opus.Core.Array<Opus.Core.EPlatform>();
+            Core.Array<Core.EPlatform> buildPlatforms = new Core.Array<Core.EPlatform>();
 
             foreach (string platform in this.Platforms)
             {

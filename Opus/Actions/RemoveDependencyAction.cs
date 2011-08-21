@@ -63,7 +63,7 @@ namespace Opus
                 throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", this.PackageAndVersion), false);
             }
 
-            Core.PackageIdentifier id = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+            Core.PackageIdentifier id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
             if (definitionFile.RemovePackage(id))
             {
                 definitionFile.Write();

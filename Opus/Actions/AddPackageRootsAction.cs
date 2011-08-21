@@ -11,7 +11,7 @@ namespace Opus
     [Core.PreambleAction]
     internal class AddPackageRootsAction : Core.IActionWithArguments
     {
-        private Core.StringArray packageRoots = new Opus.Core.StringArray();
+        private Core.StringArray packageRoots = new Core.StringArray();
 
         public string CommandLineSwitch
         {

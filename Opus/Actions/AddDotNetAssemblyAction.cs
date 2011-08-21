@@ -83,7 +83,7 @@ namespace Opus
                 }
             }
 
-            Core.DotNetAssemblyDescription descToAdd = new Opus.Core.DotNetAssemblyDescription(assemblyName);
+            Core.DotNetAssemblyDescription descToAdd = new Core.DotNetAssemblyDescription(assemblyName);
             if (null != targetVersion)
             {
                 descToAdd.RequiredTargetFramework = targetVersion;

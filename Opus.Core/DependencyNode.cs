@@ -380,7 +380,7 @@ namespace Opus.Core
 
         public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
-            Opus.Core.BaseOptionCollection options = this.Module.Options;
+            BaseOptionCollection options = this.Module.Options;
             if (null == options)
             {
                 return;

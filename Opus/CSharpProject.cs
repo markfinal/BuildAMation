@@ -158,7 +158,7 @@ namespace Opus
                         {
                             string concatenatedDefineString = Core.PackageUtilities.OpusVersionDefineForCompiler;
 
-                            Core.StringArray definitions = new Opus.Core.StringArray();
+                            Core.StringArray definitions = new Core.StringArray();
                             foreach (Core.PackageInformation info in Core.State.PackageInfo)
                             {
                                 foreach (string define in info.Identifier.Definition.Definitions)

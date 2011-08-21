@@ -13,7 +13,7 @@ namespace Opus.Core
         {
             // TODO: might want to search across all loaded assemblies
             System.Reflection.Assembly executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            RegisterActionAttribute[] customAttributes = executingAssembly.GetCustomAttributes(typeof(Opus.Core.RegisterActionAttribute), false) as RegisterActionAttribute[];
+            RegisterActionAttribute[] customAttributes = executingAssembly.GetCustomAttributes(typeof(RegisterActionAttribute), false) as RegisterActionAttribute[];
             actions = new Array<RegisterActionAttribute>(customAttributes);
         }
 

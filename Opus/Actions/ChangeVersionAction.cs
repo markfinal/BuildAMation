@@ -73,7 +73,7 @@ namespace Opus
 
             if (null != foundId)
             {
-                Core.PackageIdentifier newId = new Opus.Core.PackageIdentifier(nameAndVersion[0], this.NewVersion);
+                Core.PackageIdentifier newId = new Core.PackageIdentifier(nameAndVersion[0], this.NewVersion);
 
                 if (mainPackageId.Definition.PackageIdentifiers.Contains(newId))
                 {

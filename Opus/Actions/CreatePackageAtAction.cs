@@ -62,7 +62,7 @@ namespace Opus
             id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath, out isComplete);
 
             // Xml file for dependencies
-            Core.PackageDefinitionFile packageDefinition = new Opus.Core.PackageDefinitionFile(id.DefinitionPathName, true);
+            Core.PackageDefinitionFile packageDefinition = new Core.PackageDefinitionFile(id.DefinitionPathName, true);
             if (null == packageDefinition)
             {
                 throw new Core.Exception(System.String.Format("Package definition file '%s' could not be created", packageDefinition), false);
@@ -80,17 +80,17 @@ namespace Opus
                         throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageNameAndVersion), false);
                     }
 
-                    Core.PackageIdentifier idToAdd = new Opus.Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                    Core.PackageIdentifier idToAdd = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
                     packageDefinition.AddRequiredPackage(idToAdd);
                 }
             }
             packageDefinition.OpusAssemblies.Add("Opus.Core");
             {
-                Core.DotNetAssemblyDescription system = new Opus.Core.DotNetAssemblyDescription("System");
+                Core.DotNetAssemblyDescription system = new Core.DotNetAssemblyDescription("System");
                 system.RequiredTargetFramework = "2.0.50727";
                 packageDefinition.DotNetAssemblies.Add(system);
 
-                Core.DotNetAssemblyDescription systemXml = new Opus.Core.DotNetAssemblyDescription("System.Xml");
+                Core.DotNetAssemblyDescription systemXml = new Core.DotNetAssemblyDescription("System.Xml");
                 systemXml.RequiredTargetFramework = "2.0.50727";
                 packageDefinition.DotNetAssemblies.Add(systemXml);
             }

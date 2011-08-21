@@ -1,3 +1,5 @@
+21-August-2011 Removing unnecessary namespace resolution in the Opus code.
+
 21-August-2011 Package definition file (.xml in the package folder) schema change and package backend update to support packages of the same name, but different versions, for different platforms.
                New schema specifies dependent packages as before but with conditions, based on platforms; the Opus assemblies required, the system assemblies required, #defines to pass to the package compilation, and supported platforms for the package. The definition file is now a complete description of how to compile the package. Opus has been extended with command line options to act on these additional features.
                Legacy package definition files will be automatically upgraded to the new schema. There may be inaccurate data in there, with the new features.
