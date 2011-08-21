@@ -40,23 +40,10 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.EPlatform requestedFilter = Opus.Core.EPlatform.Invalid;
-            switch (this.Platform)
+            Core.EPlatform requestedFilter = Core.Platform.FromString(this.Platform);
+            if (Core.EPlatform.Invalid == requestedFilter)
             {
-                case "win*":
-                    requestedFilter = Opus.Core.EPlatform.Windows;
-                    break;
-
-                case "unix*":
-                    requestedFilter = Opus.Core.EPlatform.Unix;
-                    break;
-
-                case "osx*":
-                    requestedFilter = Opus.Core.EPlatform.OSX;
-                    break;
-
-                default:
-                    throw new Core.Exception(System.String.Format("Platform filter specified, '{0}', is not recognized", this.Platform), false);
+                throw new Core.Exception(System.String.Format("Platform filter specified, '{0}', is not recognized", this.Platform), false);
             }
 
             SetDependentAction setDependentAction = Core.ActionManager.FindByType(typeof(SetDependentAction)) as SetDependentAction;

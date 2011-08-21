@@ -174,30 +174,16 @@ namespace Opus.Core
 
                         if (platformFilter != EPlatform.All)
                         {
+                            string platformFilterString = Platform.ToString(platformFilter, ' ');
+                            string[] split = platformFilterString.Split(' ');
                             string conditionText = null;
-                            if (EPlatform.Windows == (platformFilter & EPlatform.Windows))
+                            foreach (string platform in split)
                             {
                                 if (null != conditionText)
                                 {
                                     conditionText += " || ";
                                 }
-                                conditionText += "'$(Platform)' == 'win*'";
-                            }
-                            if (EPlatform.Unix == (platformFilter & EPlatform.Unix))
-                            {
-                                if (null != conditionText)
-                                {
-                                    conditionText += " || ";
-                                }
-                                conditionText += "'$(Platform)' == 'unix*'";
-                            }
-                            if (EPlatform.OSX == (platformFilter & EPlatform.OSX))
-                            {
-                                if (null != conditionText)
-                                {
-                                    conditionText += " || ";
-                                }
-                                conditionText += "'$(Platform)' == 'osx*'";
+                                conditionText += System.String.Format("'$(Platform)' == '{0}'", platform);
                             }
                             
                             packageVersionElement.SetAttribute("Condition", conditionText);
@@ -395,18 +381,13 @@ namespace Opus.Core
                             }
 
                             string platform = match.Groups[4].Value;
-                            if (platform == "win*")
+                            EPlatform ePlatform = Platform.FromString(platform);
+                            if (ePlatform == EPlatform.Invalid)
                             {
-                                supportedPlatforms |= EPlatform.Windows;
+                                throw new Exception(System.String.Format("Unrecognize platform '{0}'", platform), false);
                             }
-                            if (platform == "unix*")
-                            {
-                                supportedPlatforms |= EPlatform.Unix;
-                            }
-                            if (platform == "osx*")
-                            {
-                                supportedPlatforms |= EPlatform.OSX;
-                            }
+
+                            supportedPlatforms |= ePlatform;
                         }
                         else if (1 == patternIndex)
                         {
