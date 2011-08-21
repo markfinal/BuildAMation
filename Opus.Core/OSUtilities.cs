@@ -4,8 +4,6 @@
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
 
-#define NEW_PLATFORM_DETECTION
-
 namespace Opus.Core
 {
     public static class OSUtilities
@@ -30,7 +28,6 @@ namespace Opus.Core
             }
         }
 
-#if NEW_PLATFORM_DETECTION
         // based on http://go-mono.com/forums/#nabble-td1549244
         private static class Platform
         {
@@ -97,11 +94,9 @@ namespace Opus.Core
                 return false;
             }
         }
-#endif
 
         public static void SetupPlatform()
         {
-#if NEW_PLATFORM_DETECTION
             Platform.OS os = Platform.GetOS();
             switch (os)
             {
@@ -147,55 +142,6 @@ namespace Opus.Core
                 default:
                     throw new Exception("Unrecognized platform");
             }
-#else
-            switch (System.Environment.OSVersion.Platform)
-            {
-                case System.PlatformID.Win32NT:
-                case System.PlatformID.Win32S:
-                case System.PlatformID.Win32Windows:
-                case System.PlatformID.WinCE:
-                    {
-                        if (CheckFor64BitOS)
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Win64);
-                        }
-                        else
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Win32);
-                        }
-                    }
-                    break;
-
-                case System.PlatformID.Unix:
-                    {
-                        if (CheckFor64BitOS)
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Unix64);
-                        }
-                        else
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Unix32);
-                        }
-                    }
-                    break;
-
-                case System.PlatformID.MacOSX:
-                    {
-                        if (CheckFor64BitOS)
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.OSX64);
-                        }
-                        else
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.OSX32);
-                        }
-                    }
-                    break;
-
-                default:
-                    throw new Exception("Unrecognized platform");
-            }
-#endif
         }
 
         public static bool IsWindows(EPlatform platform)
