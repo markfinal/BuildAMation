@@ -142,6 +142,9 @@ namespace Opus.Core
                 default:
                     throw new Exception("Unrecognized platform");
             }
+
+            bool isLittleEndian = System.BitConverter.IsLittleEndian;
+            State.Add<bool>("System", "IsLittleEndian", isLittleEndian);
         }
 
         public static bool IsWindows(EPlatform platform)

@@ -223,6 +223,14 @@ namespace Opus.Core
                 return (EPlatform)Get("System", "Platform");
             }
         }
+
+        public static bool IsLittleEndian
+        {
+            get
+            {
+                return (bool)Get("System", "IsLittleEndian");
+            }
+        }
         
         public static string WorkingDirectory
         {
