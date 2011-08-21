@@ -9,6 +9,20 @@ namespace Opus.Core
     {
         private System.Collections.Generic.List<PackageInformation> list = new System.Collections.Generic.List<PackageInformation>();
 
+        public PackageInformation MainPackage
+        {
+            get
+            {
+                if (0 == this.list.Count)
+                {
+                    throw new Exception("No packages have been specified or identified. Please run Opus from a package directory");
+                }
+
+                PackageInformation mainPackage = this.list[0];
+                return mainPackage;
+            }
+        }
+
         public void Add(PackageInformation item)
         {
             if (this.Contains(item))
@@ -17,6 +31,12 @@ namespace Opus.Core
             }
 
             this.list.Add(item);
+
+            string root = item.Identifier.Root;
+            if (!State.PackageRoots.Contains(root))
+            {
+                State.PackageRoots.Add(root);
+            }
         }
 
         public void Clear()
@@ -30,12 +50,12 @@ namespace Opus.Core
 
             foreach (PackageInformation package in this.list)
             {
-                if (0 == System.String.Compare(package.Name, item.Name, ignoreCase))
+                if (package.Identifier.MatchName(item.Identifier, ignoreCase))
                 {
                     // are both versions numbers?
                     double currentVersion;
                     double incomingVersion;
-                    if (double.TryParse(package.Version, out currentVersion) && double.TryParse(item.Version, out incomingVersion))
+                    if (package.Identifier.ConvertVersionToDouble(out currentVersion) && item.Identifier.ConvertVersionToDouble(out incomingVersion))
                     {
                         if (currentVersion < incomingVersion)
                         {
@@ -49,16 +69,16 @@ namespace Opus.Core
                     else
                     {
                         // not numbers, try a string comparison
-                        int versionComparison = System.String.Compare(package.Version, item.Version, ignoreCase);
+                        int versionComparison = package.Identifier.MatchVersion(item.Identifier, ignoreCase);
                         if (0 == versionComparison)
                         {
-                            if (0 == System.String.Compare(package.Root, item.Root, ignoreCase))
+                            if (0 == System.String.Compare(package.Identifier.Root, item.Identifier.Root, ignoreCase))
                             {
                                 return true;
                             }
                             else
                             {
-                                throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Root, item.Root));
+                                throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Identifier.Root, item.Identifier.Root));
                             }
                         }
                         else
@@ -136,7 +156,8 @@ namespace Opus.Core
             {
                 foreach (PackageInformation package in this.list)
                 {
-                    if (package.Name == name)
+                    bool ignoreCase = false;
+                    if (package.Identifier.MatchName(name, ignoreCase))
                     {
                         return package;
                     }
@@ -151,14 +172,19 @@ namespace Opus.Core
             this.list.Sort();
         }
 
-        public override string ToString()
+        public string ToString(string prefix, string suffix)
         {
             string message = null;
             foreach (PackageInformation package in this.list)
             {
-                message += package.ToString() + " ";
+                message += prefix + package.ToString() + suffix;
             }
             return message;
+        }
+
+        public override string ToString()
+        {
+            return this.ToString(null, " ");
         }
     }
 }

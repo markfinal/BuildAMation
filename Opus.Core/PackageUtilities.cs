@@ -17,24 +17,236 @@ namespace Opus.Core
             }
         }
 
-        public static bool CompilePackageIntoAssembly()
+        public static PackageIdentifier IsPackageDirectory(string path,
+                                                           out bool isComplete)
         {
-            if (0 == State.PackageInfo.Count)
+            isComplete = false;
+            if (!System.IO.Directory.Exists(path))
             {
-                throw new Exception("Package has not been specified. Run Opus from the package directory.", false);
+                Log.DebugMessage("Package path '{0}' does not exist", path);
+                return null;
             }
 
-            PackageInformation mainPackage = State.PackageInfo[0];
+            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
+            if (directories.Length < 2)
+            {
+                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
+            }
 
-            Log.DebugMessage("Package is '{0}-{1}' in '{2}", mainPackage.Name, mainPackage.Version, mainPackage.Root);
+            string packageName = directories[directories.Length - 2];
+            string packageVersion = directories[directories.Length - 1];
+            System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
+            if (null == parentDir)
+            {
+                Log.DebugMessage("No parent directory");
+                return null;
+            }
+            System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
+            if (null == parentParentDir)
+            {
+                Log.DebugMessage("No parent of parent directory");
+                return null;
+            }
+            string packageRoot = parentParentDir.FullName;
 
-            // recursively discover dependent packages
-            XmlPackageDependencyDiscovery.Execute(mainPackage);
+            string basePackageFilename = System.IO.Path.Combine(path, packageName);
+            string scriptFilename = basePackageFilename + ".cs";
+            string xmlFilename = basePackageFilename + ".xml";
+            if (System.IO.File.Exists(scriptFilename) &&
+                System.IO.File.Exists(xmlFilename))
+            {
+                Core.Log.DebugMessage("Path '{0}' refers to a valid package; root is '{1}'", path, packageRoot);
+                isComplete = true;
+            }
+            else
+            {
+                Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
+            }
 
-            BuilderUtilities.EnsureBuilderPackageExists();
+            if (!State.PackageRoots.Contains(packageRoot))
+            {
+                State.PackageRoots.Add(packageRoot);
+            }
+
+            PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+            return id;
+        }
+
+        public static string PackageDefinitionPathName(PackageIdentifier id)
+        {
+            string packageDirectory = id.Path;
+            string definitionFileName = id.Name + ".xml";
+            string definitionPathName = System.IO.Path.Combine(packageDirectory, definitionFileName);
+            return definitionPathName;
+        }
+
+        public static void IdentifyMainPackageOnly()
+        {
+            // find the working directory package
+            bool isWorkingPackageComplete;
+            PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
+            if (null == id)
+            {
+                throw new Exception("No valid package found in the working directory", false);
+            }
+
+            if (!isWorkingPackageComplete)
+            {
+                throw new Exception("Working directory package is not complete", false);
+            }
+
+            string definitionPathName = PackageDefinitionPathName(id);
+            PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
+            definitionFile.Read();
+            id.Definition = definitionFile;
+
+            if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
+            {
+                Log.DebugMessage("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
+                return;
+            }
+
+            if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
+            {
+                Log.DebugMessage("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                return;
+            }
+
+            PackageInformation info = new PackageInformation(id);
+            State.PackageInfo.Add(info);
+        }
+
+        public static void IdentifyMainAndDependentPackages()
+        {
+            // find the working directory package
+            {
+                bool isWorkingPackageComplete;
+                PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
+                if (null == id)
+                {
+                    throw new Exception("No valid package found in the working directory", false);
+                }
+
+                if (!isWorkingPackageComplete)
+                {
+                    throw new Exception("Working directory package is not complete", false);
+                }
+
+                State.DependentPackageList.Add(id);
+            }
+
+            // TODO: check for inconsistent circular dependencies
+            // i.e. package A depends on B, and B depends on A, but a different version of A
+
+            // process all the dependent packages
+            int i = 0;
+            while (i < State.DependentPackageList.Count)
+            {
+                PackageIdentifier id = State.DependentPackageList[i++] as PackageIdentifier;
+                string definitionPathName = PackageDefinitionPathName(id);
+                PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
+                definitionFile.Read();
+                id.Definition = definitionFile;
+
+                if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
+                {
+                    Log.DebugMessage("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
+                    continue;
+                }
+
+                if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
+                {
+                    Log.DebugMessage("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                    continue;
+                }
+
+                foreach (PackageIdentifier id2 in definitionFile.PackageIdentifiers)
+                {
+                    bool toAdd = true;
+                    foreach (PackageIdentifier id3 in State.DependentPackageList)
+                    {
+                        if (id2.MatchName(id3.Name, true))
+                        {
+                            int versionMatch = id2.MatchVersion(id3, true);
+                            if (0 == versionMatch)
+                            {
+                                Log.DebugMessage("Ignoring matching package version '{0}'", id2.ToString());
+                                toAdd = false;
+                            }
+                            else if (versionMatch > 0)
+                            {
+                                Log.DebugMessage("Package '{0}' is newer than '{1}'. Replacing.", id2.ToString(), id3.ToString());
+                                State.DependentPackageList.Remove(id3); // safe to remove since we don't iterate the list anymore here
+                                toAdd = true;
+                            }
+                            else
+                            {
+                                if (id2.PlatformFilter != id3.PlatformFilter)
+                                {
+                                    Log.DebugMessage("Package '{0}' is older than '{1}' but has different platform filters. Adding.", id2.ToString(), id3.ToString());
+                                    toAdd = true;
+                                }
+                                else
+                                {
+                                    Log.DebugMessage("Package '{0}' is older than '{1}' and has identical platform filters. Ignoring.", id2.ToString(), id3.ToString());
+                                    toAdd = false;
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (toAdd)
+                    {
+                        State.DependentPackageList.Add(id2);
+                    }
+                }
+            }
+
+            // now that we have resolved all the dependent packages, instantiate Packages
+            // that are used for the build process
+            foreach (PackageIdentifier id in State.DependentPackageList)
+            {
+                PackageInformation info = new PackageInformation(id);
+
+                if (!OSUtilities.IsCurrentPlatformSupported(id.Definition.SupportedPlatforms))
+                {
+                    continue;
+                }
+
+                if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
+                {
+                    continue;
+                }
+
+                State.PackageInfo.Add(info);
+            }
+
+            if (0 == State.PackageInfo.Count)
+            {
+                throw new Exception("No packages were identified to build", false);
+            }
+
+            Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
+        }
+
+        public static bool CompilePackageIntoAssembly()
+        {
+            System.DateTime gatherSourceStart = System.DateTime.Now;
+
+            IdentifyMainAndDependentPackages();
+
+            PackageInformation mainPackage = State.PackageInfo.MainPackage;
+
+            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
+
+            BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
             string resourceFilePathName = PackageListResourceFile.WriteResourceFile();
+
+            StringArray definitions = new StringArray();
 
             // gather source files
             System.Collections.ArrayList sourceFileList = new System.Collections.ArrayList();
@@ -42,10 +254,11 @@ namespace Opus.Core
             int packageIndex = 0;
             foreach (PackageInformation package in State.PackageInfo)
             {
-                Log.DebugMessage("{0}: '{1}-{2}' @ '{3}'", packageIndex, package.Name, package.Version, package.Root);
+                PackageIdentifier id = package.Identifier;
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
 
-                sourceFileList.Add(package.ScriptFile);
-                Log.DebugMessage("\t'{0}'", package.ScriptFile);
+                sourceFileList.Add(id.ScriptPathName);
+                Log.DebugMessage("\t'{0}'", id.ScriptPathName);
                 if (null != package.Scripts)
                 {
                     foreach (string scriptFile in package.Scripts)
@@ -63,8 +276,21 @@ namespace Opus.Core
                     }
                 }
 
+                foreach (string define in package.Identifier.Definition.Definitions)
+                {
+                    if (!definitions.Contains(define))
+                    {
+                        definitions.Add(define);
+                    }
+                }
+
                 ++packageIndex;
             }
+
+            definitions.Sort();
+
+            System.DateTime gatherSourceStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.GatherSource] = gatherSourceStop - gatherSourceStart;
 
             System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
@@ -86,7 +312,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    // mono complaints a lot more fussy about warnings
+                    // mono appears to be a lot fussier about warnings
                     compilerParameters.WarningLevel = 2;
                 }
                 compilerParameters.GenerateExecutable = false;
@@ -112,25 +338,42 @@ namespace Opus.Core
                     compilerOptions += " /platform:anycpu";
                 }
 
-                // version number
-                compilerOptions += " /define:" + OpusVersionDefineForCompiler;
+                // define strings
+                {
+                    // version number
+                    string concatenatedDefines = OpusVersionDefineForCompiler;
+                    // custom definitions
+                    foreach (string define in definitions)
+                    {
+                        concatenatedDefines += ";" + define;
+                    }
+
+                    compilerOptions += " /define:" + concatenatedDefines;
+                }
 
                 compilerParameters.CompilerOptions = compilerOptions;
                 compilerParameters.EmbeddedResources.Add(resourceFilePathName);
 
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
-                    System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetCallingAssembly().GetReferencedAssemblies();
-                    foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
+                    // Opus assembly
+                    foreach (string opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
                     {
-                        if (("Opus.Core" == refAssembly.Name) ||
-                            ("System" == refAssembly.Name) ||
-                            ("System.Xml" == refAssembly.Name))
-                        {
-                            System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(refAssembly);
-                            compilerParameters.ReferencedAssemblies.Add(assembly.Location);
-                        }
+                        string assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
+                        string assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
+
+                    // DotNet assembly
+                    foreach (DotNetAssemblyDescription desc in mainPackage.Identifier.Definition.DotNetAssemblies)
+                    {
+                        string assemblyFileName = System.String.Format("{0}.dll", desc.Name);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
+                    }
+                }
+                else
+                {
+                    throw new Exception("C# compiler does not support Resources", false);
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
@@ -149,6 +392,9 @@ namespace Opus.Core
                 Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
                 State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
+
+            System.DateTime assemblyCompileStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.AssemblyCompilation] = assemblyCompileStop - gatherSourceStop;
 
             return true;
         }
@@ -201,6 +447,8 @@ namespace Opus.Core
                 }
             }
 
+            System.DateTime dependencyGraphGenerationStart = System.DateTime.Now;
+
             DependencyGraph dependencyGraph = new DependencyGraph();
             State.Set("System", "Graph", dependencyGraph);
             foreach (Target target in targetCollection)
@@ -216,11 +464,17 @@ namespace Opus.Core
             Log.DebugMessage("\nAfter adding dependencies...");
             dependencyGraph.Dump();
 
+            System.DateTime dependencyGraphGenerationStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.GraphGeneration] = dependencyGraphGenerationStop - dependencyGraphGenerationStart;
+
             BuildManager buildManager = new BuildManager(dependencyGraph);
-            if (false == buildManager.Execute())
+            if (!buildManager.Execute())
             {
                 return false;
             }
+
+            System.DateTime dependencyGraphExecutionStop = System.DateTime.Now;
+            State.TimingProfiles[(int)ETimingProfiles.GraphExecution] = dependencyGraphExecutionStop - dependencyGraphGenerationStop;
 
             return true;
         }
@@ -299,19 +553,35 @@ namespace Opus.Core
         private static void LocateRequiredPackages()
         {
             // get the resource
-            string resourceName = System.String.Format("{0}.PackageInfoResources", State.PackageInfo[0].Name);
+            string resourceName = System.String.Format("{0}.PackageInfoResources", State.PackageInfo.MainPackage.Name);
             System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager(resourceName, State.ScriptAssembly);
             System.Resources.ResourceSet resourceSet = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentUICulture, true, true);
             foreach (System.Collections.DictionaryEntry resourceDictionaryEntry in resourceSet)
             {
                 string[] packageInfo = resourceDictionaryEntry.Key.ToString().Split(new char[] { '_' });
                 Log.DebugMessage("Found package {0}-{1} @ {2}", packageInfo[0], packageInfo[1], resourceDictionaryEntry.Value);
+#if true
+                bool found = false;
+                foreach (PackageInformation package in State.PackageInfo)
+                {
+                    if (package.Identifier.Match(new PackageIdentifier(packageInfo[0], packageInfo[1]), false))
+                    {
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                {
+                    throw new Exception(System.String.Format("Required package '{0}-{1}' not found in the preloaded package collection", packageInfo[0], packageInfo[1]), false);
+                }
+#else
                 PackageInformation package = new PackageInformation(packageInfo[0], packageInfo[1], resourceDictionaryEntry.Value.ToString());
 
                 if (!State.PackageInfo.Contains(package))
                 {
                     State.PackageInfo.Add(package);
                 }
+#endif
             }
         }
 

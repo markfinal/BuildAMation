@@ -1,4 +1,4 @@
-﻿// <copyright file="CSharpProject.cs" company="Mark Final">
+// <copyright file="CSharpProject.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus CSharp Project.</summary>
@@ -18,8 +18,8 @@ namespace Opus
             string projectFilename = package.DebugProjectFilename;
             System.Uri projectFilenameUri = new System.Uri(projectFilename);
             string packageName = package.Name;
-            string scriptFilename = package.ScriptFile;
-            string packageDependencyFilename = package.DependencyFile;
+            string scriptFilename = package.Identifier.ScriptPathName;
+            string packageDependencyFilename = package.Identifier.DefinitionPathName;
 
             string OpusDirectory = package.OpusDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))
@@ -156,7 +156,22 @@ namespace Opus
 
                         xmlWriter.WriteStartElement("DefineConstants");
                         {
-                            xmlWriter.WriteValue(Core.PackageUtilities.OpusVersionDefineForCompiler);
+                            string concatenatedDefineString = Core.PackageUtilities.OpusVersionDefineForCompiler;
+
+                            Core.StringArray definitions = new Opus.Core.StringArray();
+                            foreach (Core.PackageInformation info in Core.State.PackageInfo)
+                            {
+                                foreach (string define in info.Identifier.Definition.Definitions)
+                                {
+                                    if (!definitions.Contains(define))
+                                    {
+                                        definitions.Add(define);
+                                        concatenatedDefineString += ";" + define;
+                                    }
+                                }
+                            }
+
+                            xmlWriter.WriteValue(concatenatedDefineString);
                             xmlWriter.WriteEndElement();
                         }
 
@@ -178,13 +193,13 @@ namespace Opus
                     xmlWriter.WriteStartElement("ItemGroup");
                     {
                         xmlWriter.WriteStartElement("Compile");
-                        xmlWriter.WriteAttributeString("Include", scriptFilename);
+                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFilename, projectFilenameUri));
                         {
                             xmlWriter.WriteEndElement();
                         }
 
                         xmlWriter.WriteStartElement("None");
-                        xmlWriter.WriteAttributeString("Include", packageDependencyFilename);
+                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(packageDependencyFilename, projectFilenameUri));
                         {
                             xmlWriter.WriteEndElement();
                         }
@@ -202,7 +217,7 @@ namespace Opus
                                 {
                                     xmlWriter.WriteStartElement("Compile");
                                     {
-                                        xmlWriter.WriteAttributeString("Include", scriptFile);
+                                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
@@ -226,11 +241,11 @@ namespace Opus
                                 foreach (string scriptFile in builderScripts)
                                 {
                                     xmlWriter.WriteStartElement("Compile");
-                                    xmlWriter.WriteAttributeString("Include", scriptFile);
+                                    xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                     {
                                         xmlWriter.WriteStartElement("Link");
                                         {
-                                            string linkFilename = scriptFile.Replace(package.Directory, "");
+                                            string linkFilename = scriptFile.Replace(package.Identifier.Path, "");
                                             linkFilename = linkFilename.TrimStart(new char[] { System.IO.Path.DirectorySeparatorChar });
                                             xmlWriter.WriteValue(linkFilename);
                                             xmlWriter.WriteEndElement();
@@ -247,23 +262,23 @@ namespace Opus
 
                     // add dependent package source
                     int dependentPackageCount = Core.State.PackageInfo.Count;
-                    // start from one as the first one is the main package
+                    // start from one as the first entry is the main package
                     for (int packageIndex = 1; packageIndex < dependentPackageCount; ++packageIndex)
                     {
                         Core.PackageInformation dependentPackage = Core.State.PackageInfo[packageIndex];
 
-                        Core.Log.DebugMessage("{0}: '{1}-{2}' @ '{3}'", packageIndex, dependentPackage.Name, dependentPackage.Version, dependentPackage.Root);
+                        Core.Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, dependentPackage.Identifier.ToString("-"), dependentPackage.Identifier.Root);
 
                         xmlWriter.WriteStartElement("ItemGroup");
                         {
                             // .cs file
                             xmlWriter.WriteStartElement("Compile");
-                            xmlWriter.WriteAttributeString("Include", dependentPackage.ScriptFile);
+                            xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(dependentPackage.Identifier.ScriptPathName, projectFilenameUri));
                             {
                                 xmlWriter.WriteStartElement("Link");
                                 {
-                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
-                                    linkPackageFilename = System.IO.Path.Combine(linkPackageFilename, System.IO.Path.GetFileName(dependentPackage.ScriptFile));
+                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
+                                    linkPackageFilename = System.IO.Path.Combine(linkPackageFilename, System.IO.Path.GetFileName(dependentPackage.Identifier.ScriptPathName));
                                     xmlWriter.WriteValue(linkPackageFilename);
                                     xmlWriter.WriteEndElement();
                                 }
@@ -273,12 +288,12 @@ namespace Opus
 
                             // .xml file
                             xmlWriter.WriteStartElement("None");
-                            xmlWriter.WriteAttributeString("Include", dependentPackage.DependencyFile);
+                            xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(dependentPackage.Identifier.DefinitionPathName, projectFilenameUri));
                             {
                                 xmlWriter.WriteStartElement("Link");
                                 {
-                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
-                                    linkPackageFilename = System.IO.Path.Combine(linkPackageFilename, System.IO.Path.GetFileName(dependentPackage.DependencyFile));
+                                    string linkPackageFilename = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
+                                    linkPackageFilename = System.IO.Path.Combine(linkPackageFilename, System.IO.Path.GetFileName(dependentPackage.Identifier.DefinitionPathName));
                                     xmlWriter.WriteValue(linkPackageFilename);
                                     xmlWriter.WriteEndElement();
                                 }
@@ -294,12 +309,12 @@ namespace Opus
                                     foreach (string scriptFile in scripts)
                                     {
                                         xmlWriter.WriteStartElement("Compile");
-                                        xmlWriter.WriteAttributeString("Include", scriptFile);
+                                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
-                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
-                                                string linkFilename = scriptFile.Replace(dependentPackage.Directory, prefix);
+                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
+                                                string linkFilename = scriptFile.Replace(dependentPackage.Identifier.Path, prefix);
                                                 xmlWriter.WriteValue(linkFilename);
                                                 xmlWriter.WriteEndElement();
                                             }
@@ -318,12 +333,12 @@ namespace Opus
                                     foreach (string scriptFile in builderScripts)
                                     {
                                         xmlWriter.WriteStartElement("Compile");
-                                        xmlWriter.WriteAttributeString("Include", scriptFile);
+                                        xmlWriter.WriteAttributeString("Include", Core.RelativePathUtilities.GetPath(scriptFile, projectFilenameUri));
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
-                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Name + "-" + dependentPackage.Version);
-                                                string linkFilename = scriptFile.Replace(dependentPackage.Directory, prefix);
+                                                string prefix = System.IO.Path.Combine("DependentPackages", dependentPackage.Identifier.ToString("-"));
+                                                string linkFilename = scriptFile.Replace(dependentPackage.Identifier.Path, prefix);
                                                 xmlWriter.WriteValue(linkFilename);
                                                 xmlWriter.WriteEndElement();
                                             }
@@ -341,38 +356,51 @@ namespace Opus
                     // referenced assembles
                     xmlWriter.WriteStartElement("ItemGroup");
                     {
-                        System.Reflection.AssemblyName[] referencedAssemblies = System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies();
-                        foreach (System.Reflection.AssemblyName refAssembly in referencedAssemblies)
+                        // required Opus assemblies
+                        foreach (string opusAssembly in package.Identifier.Definition.OpusAssemblies)
                         {
-                            if (("Opus.Core" == refAssembly.Name) ||
-                                ("System" == refAssembly.Name) ||
-                                ("System.Xml" == refAssembly.Name))
+                            xmlWriter.WriteStartElement("Reference");
+                            xmlWriter.WriteAttributeString("Include", opusAssembly);
                             {
-                                System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(refAssembly);
-
-                                xmlWriter.WriteStartElement("Reference");
-                                xmlWriter.WriteAttributeString("Include", assembly.FullName);
+                                xmlWriter.WriteStartElement("SpecificVersion");
                                 {
-                                    xmlWriter.WriteStartElement("SpecificVersion");
-                                    {
-                                        xmlWriter.WriteValue(false);
-                                        xmlWriter.WriteEndElement();
-                                    }
-
-                                    xmlWriter.WriteStartElement("HintPath");
-                                    {
-                                        System.Uri assemblyLocationUri = new System.Uri(assembly.Location);
-                                        System.Uri relativeAssemblyLocationUri = projectFilenameUri.MakeRelativeUri(assemblyLocationUri);
-
-                                        Core.Log.DebugMessage("Relative path is '{0}'", relativeAssemblyLocationUri.ToString());
-                                        xmlWriter.WriteString(relativeAssemblyLocationUri.ToString());
-                                        xmlWriter.WriteEndElement();
-                                    }
-
+                                    xmlWriter.WriteValue(false);
                                     xmlWriter.WriteEndElement();
                                 }
+
+                                xmlWriter.WriteStartElement("HintPath");
+                                {
+                                    string assemblyFileName = opusAssembly + ".dll";
+                                    string assemblyPathName = System.IO.Path.Combine(Core.State.OpusDirectory, assemblyFileName);
+                                    System.Uri assemblyLocationUri = new System.Uri(assemblyPathName);
+                                    System.Uri relativeAssemblyLocationUri = projectFilenameUri.MakeRelativeUri(assemblyLocationUri);
+
+                                    Core.Log.DebugMessage("Relative path is '{0}'", relativeAssemblyLocationUri.ToString());
+                                    xmlWriter.WriteString(relativeAssemblyLocationUri.ToString());
+                                    xmlWriter.WriteEndElement();
+                                }
+
+                                xmlWriter.WriteEndElement();
                             }
                         }
+
+                        // required DotNet assemblies
+                        foreach (Core.DotNetAssemblyDescription desc in package.Identifier.Definition.DotNetAssemblies)
+                        {
+                            xmlWriter.WriteStartElement("Reference");
+                            xmlWriter.WriteAttributeString("Include", desc.Name);
+                            if (null != desc.RequiredTargetFramework)
+                            {
+                                xmlWriter.WriteStartElement("RequiredTargetFramework");
+                                {
+                                    xmlWriter.WriteString(desc.RequiredTargetFramework);
+                                    xmlWriter.WriteEndElement();
+                                }
+
+                                xmlWriter.WriteEndElement();
+                            }
+                        }
+
                         xmlWriter.WriteEndElement();
                     }
 

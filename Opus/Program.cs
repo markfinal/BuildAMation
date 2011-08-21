@@ -22,12 +22,12 @@ namespace Opus
                 Application application = new Application(args);
                 application.Run();
                 System.DateTime stop = System.DateTime.Now;
+                Core.State.TimingProfiles[(int)Core.ETimingProfiles.Total] = stop - start;
 
-                System.TimeSpan elapsedTime = stop - start;
-                Core.Log.Info("\nElapsed time: {0} minutes {1} seconds {2} milliseconds",
-                              elapsedTime.Minutes,
-                              elapsedTime.Seconds,
-                              elapsedTime.Milliseconds);
+                if (Core.State.ShowTimingStatistics)
+                {
+                    Core.TimingProfiles.DumpProfiles();
+                }
             }
             catch (Core.Exception exception)
             {
@@ -38,7 +38,10 @@ namespace Opus
                     innerException = innerException.InnerException;
                     Core.Log.ErrorMessage("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
                 }
-                Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
+                if (exception.RequiresStackTrace)
+                {
+                    Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
+                }
                 System.Environment.ExitCode = -1;
             }
             catch (System.Reflection.TargetInvocationException exception)

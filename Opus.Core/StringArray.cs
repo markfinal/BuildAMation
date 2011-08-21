@@ -45,7 +45,7 @@ namespace Opus.Core
             }
         }
 
-        public new void Add(string item)
+        public override void Add(string item)
         {
             if (System.String.IsNullOrEmpty(item))
             {
@@ -68,14 +68,6 @@ namespace Opus.Core
                 output += item.ToString() + separator;
             }
             return output;
-        }
-
-        public new string this[int index]
-        {
-            get
-            {
-                return base[index] as string;
-            }
         }
     }
 }

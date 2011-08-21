@@ -21,14 +21,21 @@ namespace GccCommon
         {
             get
             {
-                string subPath;
-                if (Opus.Core.OSUtilities.Is64BitHosting)
+                string subPath = null;
+                if (Opus.Core.OSUtilities.IsUnixHosting)
                 {
-                    subPath = "x86_64-linux-gnu";
+                    if (Opus.Core.OSUtilities.Is64BitHosting)
+                    {
+                        subPath = "x86_64-linux-gnu";
+                    }
+                    else
+                    {
+                        subPath = "i486-linux-gnu";
+                    }
                 }
-                else
+                else if (Opus.Core.OSUtilities.IsOSXHosting)
                 {
-                    subPath = "i486-linux-gnu";
+                    subPath = "powerpc-apple-darwin9";
                 }
 
                 return subPath;

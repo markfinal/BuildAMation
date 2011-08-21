@@ -28,15 +28,26 @@ namespace Opus.Core
             Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
             string opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
-            string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
-            if (!System.IO.File.Exists(opusSchemaPathname))
             {
-                throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory));
+                string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
+                if (!System.IO.File.Exists(opusSchemaPathname))
+                {
+                    throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory), false);
+                }
+                Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
             }
-            Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
+            {
+                string v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
+                if (!System.IO.File.Exists(v2SchemaPathName))
+                {
+                    throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory), false);
+                }
+                Add<string>("Opus", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
+            }
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
+            Add<System.TimeSpan[]>("System", "Profiling", new System.TimeSpan[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
 
@@ -46,24 +57,17 @@ namespace Opus.Core
             Add<StringArray>("System", "PackageRoots", packageRoots);
 
             PackageInformationCollection packageInfoCollection = new PackageInformationCollection();
-            {
-                PackageInformation workingDirectoryPackage = PackageInformation.FromPath(WorkingDirectory, true);
-                if (null != workingDirectoryPackage)
-                {
-                    packageInfoCollection.Add(workingDirectoryPackage);
-                    if (!packageRoots.Contains(workingDirectoryPackage.Root))
-                    {
-                        packageRoots.Add(workingDirectoryPackage.Root);
-                    }
-                }
-            }
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
+
+            Array<PackageIdentifier> dependentPackageList = new Array<PackageIdentifier>();
+            Add<Array<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
             Add<DependencyGraph>("System", "Graph", null);
+            Add<bool>("System", "ShowTimingStatistics", false);
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
@@ -204,6 +208,14 @@ namespace Opus.Core
             }
         }
 
+        public static string OpusPackageDependencySchemaPathNameV2
+        {
+            get
+            {
+                return Get("Opus", "PackageDependencySchemaPathNameV2") as string;
+            }
+        }
+
         public static EPlatform Platform
         {
             get
@@ -242,6 +254,18 @@ namespace Opus.Core
            {
                return Get("System", "Packages") as PackageInformationCollection;
            }
+        }
+
+        public static Array<PackageIdentifier> DependentPackageList
+        {
+            set
+            {
+                Set("System", "DependentPackageList", value);
+            }
+            get
+            {
+                return Get("System", "DependentPackageList") as Array<PackageIdentifier>;
+            }
         }
         
         public static string ScriptAssemblyPathname
@@ -382,6 +406,14 @@ namespace Opus.Core
             }
         }
 
+        public static System.TimeSpan[] TimingProfiles
+        {
+            get
+            {
+                return Get("System", "Profiling") as System.TimeSpan[];
+            }
+        }
+
         public static EVerboseLevel VerbosityLevel
         {
             set
@@ -444,6 +476,19 @@ namespace Opus.Core
             get
             {
                 return Get("Build", "Modules") as StringArray;
+            }
+        }
+
+        public static bool ShowTimingStatistics
+        {
+            set
+            {
+                Set("System", "ShowTimingStatistics", value);
+            }
+
+            get
+            {
+                return (bool)Get("System", "ShowTimingStatistics");
             }
         }
     }

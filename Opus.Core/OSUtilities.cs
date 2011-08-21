@@ -257,5 +257,12 @@ namespace Opus.Core
                 return Is64Bit(platform);
             }
         }
+
+        public static bool IsCurrentPlatformSupported(EPlatform supportedPlatforms)
+        {
+            EPlatform currentPlatform = State.Platform;
+            bool isSupported = (currentPlatform == (supportedPlatforms & currentPlatform));
+            return isSupported;
+        }
     }
 }

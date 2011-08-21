@@ -76,7 +76,7 @@ namespace Opus.Core
                 throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            StringArray paths = File.GetFiles(package.Directory, pathSegments);
+            StringArray paths = File.GetFiles(package.Identifier.Path, pathSegments);
             foreach (string path in paths)
             {
                 this.filePaths.Add(path);

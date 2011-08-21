@@ -194,7 +194,14 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             if (boolOption.Value)
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
+                if (Opus.Core.OSUtilities.IsUnixHosting)
+                {
+                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
+                }
+                else if (Opus.Core.OSUtilities.IsOSXHosting)
+                {
+                    commandLineBuilder.Add(System.String.Format("-Wl,-map,\"{0}\"", options.MapFilePath));
+                }
             }
         }
 

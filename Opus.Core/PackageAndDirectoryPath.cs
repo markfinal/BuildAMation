@@ -50,7 +50,7 @@ namespace Opus.Core
                 bool isAbsolutePath = System.IO.Path.IsPathRooted(includePath);
                 if (!isAbsolutePath)
                 {
-                    includePath = System.IO.Path.Combine(this.Package.Directory, includePath);
+                    includePath = System.IO.Path.Combine(this.Package.Identifier.Path, includePath);
                 }
                 return includePath;
             }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}</ProjectGuid>
@@ -7,10 +7,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Opus.Core</RootNamespace>
     <AssemblyName>Opus.Core</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <SourceAnalysisOverrideSettingsFile>C:\Users\Mark\AppData\Roaming\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <SignAssembly>True</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Opus.Core.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
@@ -21,6 +20,8 @@
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
     <TargetFrameworkProfile />
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,8 +30,9 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <FileAlignment>4096</FileAlignment>
-    <DebugType>Full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>full</DebugType>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -38,11 +40,13 @@
     <Optimize>true</Optimize>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <FileAlignment>4096</FileAlignment>
-    <DebugType>None</DebugType>
+    <DebugType>none</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="ActionManager.cs" />
     <Compile Include="Array.cs" />
     <Compile Include="Attributes\ArgumentProcessorAttribute.cs" />
     <Compile Include="Attributes\AssignToolForModuleAttribute.cs" />
@@ -71,6 +75,7 @@
     <Compile Include="DependencyGraph.cs" />
     <Compile Include="DependencyNodeEnumerator.cs" />
     <Compile Include="EPlatform.cs" />
+    <Compile Include="ETimingProfiles.cs" />
     <Compile Include="EVerboseLevel.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="Factory\BuilderFactory.cs" />
@@ -102,7 +107,9 @@
     <Compile Include="Options\ValueTypeOption.cs" />
     <Compile Include="OSUtilities.cs" />
     <Compile Include="PackageAndDirectoryPath.cs" />
-    <Compile Include="PackageDependencyXmlFile.cs" />
+    <Compile Include="PackageDefinitionFile.cs" />
+    <Compile Include="PackageIdentifier.cs" />
+    <Compile Include="PackageIdentifierCollection.cs" />
     <Compile Include="PackageInformation.cs" />
     <Compile Include="PackageInformationCollection.cs" />
     <Compile Include="PackageListResourceFile.cs" />
@@ -116,9 +123,11 @@
     <Compile Include="TargetCollection.cs" />
     <Compile Include="TypeArray.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
-    <Compile Include="XmlPackageDependencyDiscovery.cs" />
     <None Include="app.config" />
     <None Include="Schema\OpusPackageDependency.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Schema\OpusPackageDependencyV2.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

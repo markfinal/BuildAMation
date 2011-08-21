@@ -30,7 +30,7 @@ namespace Opus
         public bool Execute()
         {
             Core.Log.DebugMessage("Builder is {0}", Core.State.BuilderName);
-            if (false == Core.PackageUtilities.CompilePackageIntoAssembly())
+            if (!Core.PackageUtilities.CompilePackageIntoAssembly())
             {
                 System.Environment.ExitCode = -3;
             }
@@ -39,7 +39,8 @@ namespace Opus
                 Core.PackageUtilities.LoadPackageAssembly();
                 Core.PackageUtilities.ProcessLazyArguments();
                 Core.PackageUtilities.HandleUnprocessedArguments();
-                if (false == Core.PackageUtilities.ExecutePackageAssembly())
+                Core.State.ShowTimingStatistics = true;
+                if (!Core.PackageUtilities.ExecutePackageAssembly())
                 {
                     System.Environment.ExitCode = -3;
                 }

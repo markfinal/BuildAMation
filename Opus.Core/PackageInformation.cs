@@ -7,170 +7,54 @@ namespace Opus.Core
 {
     public class PackageInformation : System.IComparable
     {
-        private string directory;
-        
-        public static PackageInformation FromPath(string path, bool checkForPackageFiles)
+        private PackageInformation(string name, string version)
         {
-            PackageInformation packageInformation = null;
-            
-            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-            if (directories.Length >= 2)
-            {
-                string packageName = directories[directories.Length - 2];
-                string packageVersion = directories[directories.Length - 1];
-                System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
-                if (null == parentDir)
-                {
-                    Log.DebugMessage("No parent directory");
-                    return null;
-                }
-                System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
-                if (null == parentParentDir)
-                {
-                    Log.DebugMessage("No parent of parent directory");
-                    return null;
-                }
-                string root = parentParentDir.FullName;
-
-                string basePackageFilename = System.IO.Path.Combine(path, packageName);
-                string scriptFilename = basePackageFilename + ".cs";
-                string xmlFilename = basePackageFilename + ".xml";
-                if (System.IO.File.Exists(scriptFilename) &&
-                    System.IO.File.Exists(xmlFilename))
-                {
-                    packageInformation = new PackageInformation(packageName, packageVersion, root);
-                    Core.Log.DebugMessage("Path '{0}' refers to a valid package; fullname = '{1}', root = '{2}'", path, packageInformation.FullName, root);
-                }
-                else if (!checkForPackageFiles)
-                {
-                    Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
-                    packageInformation = new PackageInformation(packageName, packageVersion, root);
-                }
-
-                if (null == packageInformation)
-                {
-                    Core.Log.DebugMessage("Path '{0}' is not a package directory. Perhaps some files are missing or misnamed?", path);
-                }
-            }
-            else
-            {
-                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
-            }
-                        
-            return packageInformation;
-        }
-        
-        public static PackageInformation FindPackage(string name, string version)
-        {
-            if (null == name)
-            {
-                throw new Exception("Invalid name");
-            }
-            if (null == version)
-            {
-                throw new Exception("Invalid version");
-            }
-            StringArray packageRoots = State.PackageRoots;
-            if (null == packageRoots)
-            {
-                throw new Exception("There are no package roots specified");
-            }
-            foreach (string packageRoot in packageRoots)
-            {
-                string packageDirectory = System.IO.Path.Combine(packageRoot, name);
-                packageDirectory = System.IO.Path.Combine(packageDirectory, version);
-                
-                PackageInformation package = FromPath(packageDirectory, true);
-                if (null != package)
-                {
-                    return package;
-                }
-            }
-            
-            return null;
-        }
-
-        public PackageInformation(string name, string version)
-        {
-            this.Name = name;
-            this.Version = version;
-            this.Root = null;
+            this.Identifier = new PackageIdentifier(name, version);
             this.IsBuilder = false;
-            this.Directory = null;
+
+            throw new Exception("Who calls this constructor?");
         }
-        
-        public PackageInformation(string name, string version, string root)
+
+        public PackageInformation(PackageIdentifier id)
         {
-            this.Name = name;
-            this.Version = version;
-            this.Root = root;
+            this.Identifier = id;
             this.IsBuilder = false;
-            
-            string directory = System.IO.Path.Combine(this.Root, this.Name);
-            directory = System.IO.Path.Combine(directory, this.Version);
-            this.Directory = directory;
         }
-        
-        public string Name
+
+        public PackageIdentifier Identifier
         {
             get;
             private set;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return this.Identifier.Name;
+            }
         }
         
         public string Version
         {
-            get;
-            private set;
+            get
+            {
+                return this.Identifier.Version;
+            }
         }
-        
-        public string Root
-        {
-            get;
-            private set;
-        }
-        
+                
         public bool IsBuilder
         {
             get;
             set;
         }
         
-        public string Directory
+        private string ScriptsDirectory
         {
             get
             {
-                return this.directory;
-            }
-            private set
-            {
-                this.directory = value;
-            }
-        }
-        
-        public string DependencyFile
-        {
-            get
-            {
-                string dependencyFile = System.IO.Path.Combine(this.Directory, this.Name + ".xml");
-                return dependencyFile;
-            }
-        }
-        
-        public string ScriptFile
-        {
-            get
-            {
-                string scriptFile = System.IO.Path.Combine(this.Directory, this.Name + ".cs");
-                return scriptFile;
-            }
-        }
-        
-        private string ScriptDirectory
-        {
-            get
-            {
-                string scriptDirectory = System.IO.Path.Combine(this.Directory, "Scripts");
-                return scriptDirectory;
+                string scriptsDirectory = System.IO.Path.Combine(this.Identifier.Path, "Scripts");
+                return scriptsDirectory;
             }
         }
         
@@ -178,7 +62,7 @@ namespace Opus.Core
         {
             get
             {
-                string opusDirectory = System.IO.Path.Combine(this.Directory, "Opus");
+                string opusDirectory = System.IO.Path.Combine(this.Identifier.Path, "Opus");
                 return opusDirectory;
             }
         }
@@ -197,9 +81,9 @@ namespace Opus.Core
             get
             {
                 StringArray scripts = new StringArray();
-                if (System.IO.Directory.Exists(this.ScriptDirectory))
+                if (System.IO.Directory.Exists(this.ScriptsDirectory))
                 {
-                    string[] files = System.IO.Directory.GetFiles(this.ScriptDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
+                    string[] files = System.IO.Directory.GetFiles(this.ScriptsDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
                     if (files.Length > 0)
                     {
                         scripts.AddRange(files);
@@ -220,11 +104,11 @@ namespace Opus.Core
                 PackageInformation builderPackage = State.BuilderPackage;
                 if (null == builderPackage)
                 {
-                    throw new Exception("No builder package found");
+                    return null;
                 }
 
                 StringArray builderScripts = new StringArray();
-                string builderDirectory = System.IO.Path.Combine(this.Directory, builderPackage.Name);
+                string builderDirectory = System.IO.Path.Combine(this.Identifier.Path, builderPackage.Name);
                 if (System.IO.Directory.Exists(builderDirectory))
                 {
                     string[] files = System.IO.Directory.GetFiles(builderDirectory, "*.cs");
@@ -236,7 +120,7 @@ namespace Opus.Core
 
                 if (0 == builderScripts.Count)
                 {
-                    builderScripts = null;
+                    return null;
                 }
 
                 return builderScripts;
@@ -257,7 +141,7 @@ namespace Opus.Core
         {
             get
             {
-                string fullName = System.String.Format("{0}-{1}", this.Name, this.Version);
+                string fullName = this.Identifier.ToString("-");
                 return fullName;
             }
         }

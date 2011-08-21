@@ -14,7 +14,7 @@ namespace Opus.Core
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo[0];
+            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
             string tempDirectory = System.IO.Path.GetTempPath();
             string resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
 
@@ -22,8 +22,9 @@ namespace Opus.Core
             {
                 foreach (Core.PackageInformation package in Core.State.PackageInfo)
                 {
-                    string name = System.String.Format("{0}_{1}", package.Name, package.Version);
-                    string value = package.Root;
+                    Core.PackageIdentifier id = package.Identifier;
+                    string name = id.ToString("_");
+                    string value = id.Root;
 
                     writer.AddResource(name, value);
                 }
@@ -41,7 +42,7 @@ namespace Opus.Core
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo[0];
+            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
 
             string OpusDirectory = mainPackage.OpusDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))
@@ -88,9 +89,9 @@ namespace Opus.Core
             foreach (Core.PackageInformation package in Core.State.PackageInfo)
             {
                 System.Xml.XmlElement data = resourceFile.CreateElement("data");
-                data.SetAttribute("name", System.String.Format("{0}_{1}", package.Name, package.Version));
+                data.SetAttribute("name", package.Identifier.ToString("_"));
                 System.Xml.XmlElement value = resourceFile.CreateElement("value");
-                value.InnerText = package.Root;
+                value.InnerText = package.Identifier.Root;
                 data.AppendChild(value);
                 root.AppendChild(data);
             }

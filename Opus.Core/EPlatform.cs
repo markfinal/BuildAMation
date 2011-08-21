@@ -28,13 +28,21 @@ namespace Opus.Core
         public static EPlatform FromString(string platformName)
         {
             EPlatform platform = EPlatform.Invalid;
-            if (0 == System.String.Compare(platformName, "Win32", true))
+            if (0 == System.String.Compare(platformName, "Windows", true))
+            {
+                platform = EPlatform.Windows;
+            }
+            else if (0 == System.String.Compare(platformName, "Win32", true))
             {
                 platform = EPlatform.Win32;
             }
             else if (0 == System.String.Compare(platformName, "Win64", true))
             {
                 platform = EPlatform.Win64;
+            }
+            else if (0 == System.String.Compare(platformName, "Unix", true))
+            {
+                platform = EPlatform.Unix;
             }
             else if (0 == System.String.Compare(platformName, "Unix32", true))
             {
@@ -43,6 +51,10 @@ namespace Opus.Core
             else if (0 == System.String.Compare(platformName, "Unix64", true))
             {
                 platform = EPlatform.Unix64;
+            }
+            else if (0 == System.String.Compare(platformName, "OSX", true))
+            {
+                platform = EPlatform.OSX;
             }
             else if (0 == System.String.Compare(platformName, "OSX32", true))
             {
@@ -54,9 +66,82 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Platform name '{0}' not recognized", platformName));
+                throw new Exception(System.String.Format("Platform name '{0}' not recognized", platformName), false);
             }
             return platform;
+        }
+
+        private static void AddPlatformName(ref string platformString, string name, char separator)
+        {
+            if (null != platformString)
+            {
+                platformString += separator;
+            }
+            platformString += name;
+        }
+
+        public static bool Contains(EPlatform flags, EPlatform specificPlatform)
+        {
+            bool contains = (specificPlatform == (flags & specificPlatform));
+            return contains;
+        }
+
+        public static string ToString(EPlatform platformFlags, char separator)
+        {
+            string platformString = null;
+
+            // check windows and sub-derivatives
+            if (Contains(platformFlags, EPlatform.Windows))
+            {
+                AddPlatformName(ref platformString, "Windows", separator);
+            }
+            else
+            {
+                if (Contains(platformFlags, EPlatform.Win32))
+                {
+                    AddPlatformName(ref platformString, "Win32", separator);
+                }
+                else if (Contains(platformFlags, EPlatform.Win64))
+                {
+                    AddPlatformName(ref platformString, "Win64", separator);
+                }
+            }
+
+            // check unix and sub-derivatives
+            if (Contains(platformFlags, EPlatform.Unix))
+            {
+                AddPlatformName(ref platformString, "Unix", separator);
+            }
+            else
+            {
+                if (Contains(platformFlags, EPlatform.Unix32))
+                {
+                    AddPlatformName(ref platformString, "Unix32", separator);
+                }
+                else if (Contains(platformFlags, EPlatform.Unix64))
+                {
+                    AddPlatformName(ref platformString, "Unix64", separator);
+                }
+            }
+
+            // check OSX and sub-derivatives
+            if (Contains(platformFlags, EPlatform.OSX))
+            {
+                AddPlatformName(ref platformString, "OSX", separator);
+            }
+            else
+            {
+                if (Contains(platformFlags, EPlatform.OSX32))
+                {
+                    AddPlatformName(ref platformString, "OSX32", separator);
+                }
+                else if (Contains(platformFlags, EPlatform.OSX64))
+                {
+                    AddPlatformName(ref platformString, "OSX64", separator);
+                }
+            }
+
+            return platformString;
         }
     }
 }

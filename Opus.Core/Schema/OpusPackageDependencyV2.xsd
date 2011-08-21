@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://code.google.com/p/opus"
+    xmlns:Opus="http://code.google.com/p/opus"
+    elementFormDefault="qualified">
+
+<xs:attributeGroup name="required-package-attributes">
+    <xs:attribute name="Name" type="xs:string" use="required" />
+</xs:attributeGroup>
+    
+<xs:complexType name="required-package-version-type">
+    <xs:sequence>
+        <xs:element name="Version" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Id" type="xs:string" use="required" />
+                <xs:attribute name="Condition" type="xs:string" use="optional" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+    <xs:attributeGroup ref="Opus:required-package-attributes" />
+</xs:complexType>
+    
+<xs:complexType name="required-package-type">
+    <xs:sequence>
+        <xs:element name="Package" minOccurs="1" maxOccurs="unbounded" type="Opus:required-package-version-type">
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="required-opus-assemblies-type">
+    <xs:sequence>
+        <xs:element name="OpusAssembly" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="required-dotnet-assemblies-type">
+    <xs:sequence>
+        <xs:element name="DotNetAssembly" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="RequiredTargetFramework" type="xs:string" use="optional" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="definitions-type">
+    <xs:sequence>
+        <xs:element name="Definition" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="supported-platforms-type">
+    <xs:sequence>
+        <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
+<!-- root node -->
+<xs:element name="PackageDefinition">
+    <xs:complexType>
+        <xs:all>
+            <xs:element name="RequiredPackages" type="Opus:required-package-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="RequiredOpusAssemblies" type="Opus:required-opus-assemblies-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="RequiredDotNetAssemblies" type="Opus:required-dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Definitions" type="Opus:definitions-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="SupportedPlatforms" type="Opus:supported-platforms-type" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+    </xs:complexType>
+</xs:element>
+</xs:schema>
