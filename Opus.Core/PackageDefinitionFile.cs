@@ -308,7 +308,7 @@ namespace Opus.Core
                 // now write the file out using the curent schema
                 this.Write();
 
-                Log.Info("Converted package definition file '{0}' to the current schema", this.xmlFilename);
+                Log.DebugMessage("Converted package definition file '{0}' to the current schema", this.xmlFilename);
 
                 return;
             }

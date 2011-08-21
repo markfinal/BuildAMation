@@ -50,7 +50,7 @@ namespace Opus
 
             if (argDict.ContainsKey(command))
             {
-                Core.Log.MessageAll("Command '{0}' value '{1}' has been overwritten with '{2}'", command, argDict[command], value);
+                Core.Log.DebugMessage("Command '{0}' value '{1}' has been overwritten with '{2}'", command, argDict[command], value);
             }
             
             argDict[command] = value;

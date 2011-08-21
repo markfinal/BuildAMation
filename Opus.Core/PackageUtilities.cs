@@ -102,13 +102,13 @@ namespace Opus.Core
 
             if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
             {
-                Log.MessageAll("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
+                Log.DebugMessage("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
                 return;
             }
 
             if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
             {
-                Log.MessageAll("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                Log.DebugMessage("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
                 return;
             }
 
@@ -150,13 +150,13 @@ namespace Opus.Core
 
                 if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
                 {
-                    Log.MessageAll("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
+                    Log.DebugMessage("Package '{0}' is supported on platforms '{1}' which does not include the current platform '{2}'.", id.Name, definitionFile.SupportedPlatforms, State.Platform);
                     continue;
                 }
 
                 if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
                 {
-                    Log.MessageAll("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
+                    Log.DebugMessage("Package '{0}' is filtered on platforms '{1}' which does not include the current platform '{2}'.", id.Name, id.PlatformFilter, State.Platform);
                     continue;
                 }
 
@@ -170,12 +170,12 @@ namespace Opus.Core
                             int versionMatch = id2.MatchVersion(id3, true);
                             if (0 == versionMatch)
                             {
-                                Log.MessageAll("Ignoring matching package version '{0}'", id2.ToString());
+                                Log.DebugMessage("Ignoring matching package version '{0}'", id2.ToString());
                                 toAdd = false;
                             }
                             else if (versionMatch > 0)
                             {
-                                Log.MessageAll("Package '{0}' is newer than '{1}'. Replacing.", id2.ToString(), id3.ToString());
+                                Log.DebugMessage("Package '{0}' is newer than '{1}'. Replacing.", id2.ToString(), id3.ToString());
                                 State.DependentPackageList.Remove(id3); // safe to remove since we don't iterate the list anymore here
                                 toAdd = true;
                             }
@@ -183,12 +183,12 @@ namespace Opus.Core
                             {
                                 if (id2.PlatformFilter != id3.PlatformFilter)
                                 {
-                                    Log.MessageAll("Package '{0}' is older than '{1}' but has different platform filters. Adding.", id2.ToString(), id3.ToString());
+                                    Log.DebugMessage("Package '{0}' is older than '{1}' but has different platform filters. Adding.", id2.ToString(), id3.ToString());
                                     toAdd = true;
                                 }
                                 else
                                 {
-                                    Log.MessageAll("Package '{0}' is older than '{1}' and has identical platform filters. Ignoring.", id2.ToString(), id3.ToString());
+                                    Log.DebugMessage("Package '{0}' is older than '{1}' and has identical platform filters. Ignoring.", id2.ToString(), id3.ToString());
                                     toAdd = false;
                                 }
                             }
@@ -228,7 +228,7 @@ namespace Opus.Core
                 throw new Exception("No packages were identified to build", false);
             }
 
-            Log.MessageAll("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
+            Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
         }
 
         public static bool CompilePackageIntoAssembly()
