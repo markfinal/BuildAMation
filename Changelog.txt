@@ -1,3 +1,5 @@
+22-August-2011 Converted main packages to the new schema, and set up supported platforms.
+
 21-August-2011 Added Opus.Core.State.IsLittleEndian to query the endianness of the host platform. Might be useful on OSX.
 
 21-August-2011 Removed old platform detection code. The new code is known to run on all supported platforms.
