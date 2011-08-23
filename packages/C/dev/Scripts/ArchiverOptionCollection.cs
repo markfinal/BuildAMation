@@ -15,6 +15,7 @@ namespace C
             IArchiverOptions archiverOptions = this as IArchiverOptions;
 
             archiverOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
+            archiverOptions.AdditionalOptions = "";
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)

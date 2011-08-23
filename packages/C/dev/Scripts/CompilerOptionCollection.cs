@@ -68,6 +68,8 @@ namespace C
             compilerOptions.IncludePaths.AddAbsoluteDirectory(".", true); // explicitly add the one that is assumed
 
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
+
+            compilerOptions.AdditionalOptions = "";
         }
 
         public CompilerOptionCollection()

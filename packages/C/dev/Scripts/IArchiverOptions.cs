@@ -19,7 +19,7 @@ namespace C
             set;
         }
 
-        string AdditionalArguments
+        string AdditionalOptions
         {
             get;
             set;

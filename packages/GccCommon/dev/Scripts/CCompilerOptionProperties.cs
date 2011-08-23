@@ -149,16 +149,16 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("ShowIncludesSetHandler", this["ShowIncludes"]);
             }
         }
-        public string AdditionalArguments
+        public string AdditionalOptions
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("AdditionalArguments");
+                return this.GetReferenceTypeOption<string>("AdditionalOptions");
             }
             set
             {
-                this.SetReferenceTypeOption<string>("AdditionalArguments", value);
-                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalArguments"]);
+                this.SetReferenceTypeOption<string>("AdditionalOptions", value);
+                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalOptions"]);
             }
         }
         public bool AllWarnings
