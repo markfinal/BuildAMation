@@ -38,6 +38,8 @@ namespace Test
                 {
                     compilerOptions.Optimization = C.EOptimization.Custom;
                 }
+
+                compilerOptions.AdditionalOptions = "-Wall";
             }
             else if ("visualc" == toolchain)
             {
@@ -49,10 +51,14 @@ namespace Test
                 compilerOptions.DebugSymbols = true;
                 VisualC.CCompilerOptionCollection vcCompilerOptions = compilerOptions as VisualC.CCompilerOptionCollection;
                 vcCompilerOptions.DebugType = VisualCCommon.EDebugType.Embedded;
+                vcCompilerOptions.BasicRuntimeChecks = VisualCCommon.EBasicRuntimeChecks.None;
+                vcCompilerOptions.SmallerTypeConversionRuntimeCheck = false;
+                vcCompilerOptions.AdditionalOptions = "/openmp";
             }
             else if ("gcc" == toolchain)
             {
                 Opus.Core.Log.MessageAll("gcc is the toolchain");
+                compilerOptions.AdditionalOptions = "-Wall";
             }
             else
             {
