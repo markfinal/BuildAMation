@@ -157,6 +157,7 @@ namespace Opus
                         xmlWriter.WriteStartElement("DefineConstants");
                         {
                             string concatenatedDefineString = Core.PackageUtilities.OpusVersionDefineForCompiler;
+                            concatenatedDefineString += ";" + Core.PackageUtilities.OpusHostPlatformForCompiler;
 
                             Core.StringArray definitions = new Core.StringArray();
                             foreach (Core.PackageInformation info in Core.State.PackageInfo)

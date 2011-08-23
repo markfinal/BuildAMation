@@ -17,6 +17,16 @@ namespace Opus.Core
             }
         }
 
+        public static string OpusHostPlatformForCompiler
+        {
+            get
+            {
+                EPlatform platform = State.Platform;
+                string platformString = Platform.ToString(platform, '\0', "OPUS_HOST_", true);
+                return platformString;
+            }
+        }
+
         public static PackageIdentifier IsPackageDirectory(string path,
                                                            out bool isComplete)
         {
@@ -340,8 +350,8 @@ namespace Opus.Core
 
                 // define strings
                 {
-                    // version number
                     string concatenatedDefines = OpusVersionDefineForCompiler;
+                    concatenatedDefines += ";" + OpusHostPlatformForCompiler;
                     // custom definitions
                     foreach (string define in definitions)
                     {

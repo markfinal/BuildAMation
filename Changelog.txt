@@ -1,3 +1,5 @@
+23-August-2011 Added OPUS_HOST_<platform> to the script compiler #defines.
+
 23-August-2011 Added more options for converting Opus.Core.EPlatform to a string.
 
 21-August-2011 Added Opus.Core.State.IsLittleEndian to query the endianness of the host platform. Might be useful on OSX.
