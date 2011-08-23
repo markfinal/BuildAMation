@@ -1,3 +1,8 @@
+23-August-2011 C compilation #defines added:
+               * D_OPUS_PLATFORM_BITS=<n> where n is 32 or 64.
+               * D_OPUS_PLATFORM_LITTLEENDIAN for little endian platforms.
+               * D_OPUS_PLATFORM_BIGENDIAN for big endian platforms.
+
 23-August-2011 Added OPUS_HOST_<platform> to the script compiler #defines.
 
 23-August-2011 Added more options for converting Opus.Core.EPlatform to a string.

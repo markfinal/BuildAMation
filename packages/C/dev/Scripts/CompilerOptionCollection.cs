@@ -45,6 +45,22 @@ namespace C
 
             compilerOptions.Defines = new DefineCollection();
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", target.Platform.ToString().ToUpper()));
+            {
+                bool is64bit = Opus.Core.OSUtilities.Is64Bit(target.Platform);
+                int bits = (is64bit) ? 64 : 32;
+                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_BITS={0}", bits.ToString()));
+            }
+            {
+                bool isLittleEndian = Opus.Core.State.IsLittleEndian;
+                if (isLittleEndian)
+                {
+                    compilerOptions.Defines.Add("D_OPUS_PLATFORM_LITTLEENDIAN");
+                }
+                else
+                {
+                    compilerOptions.Defines.Add("D_OPUS_PLATFORM_BIGENDIAN");
+                }
+            }
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", target.Configuration.ToString().ToUpper()));
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.Toolchain.ToUpper()));
 
