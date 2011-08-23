@@ -93,7 +93,7 @@ namespace VSSolutionBuilder
         {
             if (System.String.IsNullOrEmpty(path))
             {
-                throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
+                return path;
             }
 
             string refactoredPath = path;

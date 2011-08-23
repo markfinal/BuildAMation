@@ -1,3 +1,5 @@
+23-August-2011 VSSolutionBuilder no longer throws an exception for empty option strings, and instead just returns the empty string.
+
 23-August-2011 Extending testpackage Test-dev to compile in debug with VisualC, and to try out AdditionalOptions.
 
 23-August-2011 C archiver, compiler and linker "AdditionalOptions" added, that blindly adds space separated options to the appropriate tool. Use this to add options that the Opus plugin doesn't yet expose.
