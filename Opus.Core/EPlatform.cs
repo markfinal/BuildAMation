@@ -71,11 +71,27 @@ namespace Opus.Core
             return platform;
         }
 
-        private static void AddPlatformName(ref string platformString, string name, char separator)
+        private static void AddPlatformName(ref string platformString, string name, char separator, string prefix, bool toUpper)
         {
             if (null != platformString)
             {
+                if ('\0' == separator)
+                {
+                    throw new Exception("No separator was defined for a multi platform value");
+                }
                 platformString += separator;
+            }
+            if (null != prefix)
+            {
+                if (toUpper)
+                {
+                    prefix = prefix.ToUpper();
+                }
+                platformString += prefix;
+            }
+            if (toUpper)
+            {
+                name = name.ToUpper();
             }
             platformString += name;
         }
@@ -86,58 +102,70 @@ namespace Opus.Core
             return contains;
         }
 
+        public static string ToString(EPlatform platformFlags)
+        {
+            string value = ToString(platformFlags, '\0', null, false);
+            return value;
+        }
+
         public static string ToString(EPlatform platformFlags, char separator)
+        {
+            string value = ToString(platformFlags, separator, null, false);
+            return value;
+        }
+
+        public static string ToString(EPlatform platformFlags, char separator, string prefix, bool toUpper)
         {
             string platformString = null;
 
             // check windows and sub-derivatives
             if (Contains(platformFlags, EPlatform.Windows))
             {
-                AddPlatformName(ref platformString, "Windows", separator);
+                AddPlatformName(ref platformString, "Windows", separator, prefix, toUpper);
             }
             else
             {
                 if (Contains(platformFlags, EPlatform.Win32))
                 {
-                    AddPlatformName(ref platformString, "Win32", separator);
+                    AddPlatformName(ref platformString, "Win32", separator, prefix, toUpper);
                 }
                 else if (Contains(platformFlags, EPlatform.Win64))
                 {
-                    AddPlatformName(ref platformString, "Win64", separator);
+                    AddPlatformName(ref platformString, "Win64", separator, prefix, toUpper);
                 }
             }
 
             // check unix and sub-derivatives
             if (Contains(platformFlags, EPlatform.Unix))
             {
-                AddPlatformName(ref platformString, "Unix", separator);
+                AddPlatformName(ref platformString, "Unix", separator, prefix, toUpper);
             }
             else
             {
                 if (Contains(platformFlags, EPlatform.Unix32))
                 {
-                    AddPlatformName(ref platformString, "Unix32", separator);
+                    AddPlatformName(ref platformString, "Unix32", separator, prefix, toUpper);
                 }
                 else if (Contains(platformFlags, EPlatform.Unix64))
                 {
-                    AddPlatformName(ref platformString, "Unix64", separator);
+                    AddPlatformName(ref platformString, "Unix64", separator, prefix, toUpper);
                 }
             }
 
             // check OSX and sub-derivatives
             if (Contains(platformFlags, EPlatform.OSX))
             {
-                AddPlatformName(ref platformString, "OSX", separator);
+                AddPlatformName(ref platformString, "OSX", separator, prefix, toUpper);
             }
             else
             {
                 if (Contains(platformFlags, EPlatform.OSX32))
                 {
-                    AddPlatformName(ref platformString, "OSX32", separator);
+                    AddPlatformName(ref platformString, "OSX32", separator, prefix, toUpper);
                 }
                 else if (Contains(platformFlags, EPlatform.OSX64))
                 {
-                    AddPlatformName(ref platformString, "OSX64", separator);
+                    AddPlatformName(ref platformString, "OSX64", separator, prefix, toUpper);
                 }
             }
 
