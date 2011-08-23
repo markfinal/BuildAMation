@@ -36,4 +36,12 @@ namespace VisualCCommon
         SafeCLR = 3,
         OldSyntaxCLR = 4
     }
+
+    public enum EBasicRuntimeChecks
+    {
+        None = 0,
+        StackFrame = 1,
+        UninitializedVariables = 2,
+        StackFrameAndUninitializedVariables = 3
+    }
 }

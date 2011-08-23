@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=VisualCCommon -c=CCompilerOptionCollection 
+// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=VisualCCommon -c=CCompilerOptionCollection 
 namespace VisualCCommon
 {
     public partial class CCompilerOptionCollection
@@ -149,6 +149,18 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ShowIncludesSetHandler", this["ShowIncludes"]);
             }
         }
+        public string AdditionalArguments
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("AdditionalArguments");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("AdditionalArguments", value);
+                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalArguments"]);
+            }
+        }
         public bool NoLogo
         {
             get
@@ -267,6 +279,30 @@ namespace VisualCCommon
             {
                 this.SetValueTypeOption<EManagedCompilation>("CompileAsManaged", value);
                 this.ProcessNamedSetHandler("CompileAsManagedSetHandler", this["CompileAsManaged"]);
+            }
+        }
+        public EBasicRuntimeChecks BasicRuntimeChecks
+        {
+            get
+            {
+                return this.GetValueTypeOption<EBasicRuntimeChecks>("BasicRuntimeChecks");
+            }
+            set
+            {
+                this.SetValueTypeOption<EBasicRuntimeChecks>("BasicRuntimeChecks", value);
+                this.ProcessNamedSetHandler("BasicRuntimeChecksSetHandler", this["BasicRuntimeChecks"]);
+            }
+        }
+        public bool SmallerTypeConversionRuntimeCheck
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("SmallerTypeConversionRuntimeCheck");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("SmallerTypeConversionRuntimeCheck", value);
+                this.ProcessNamedSetHandler("SmallerTypeConversionRuntimeCheckSetHandler", this["SmallerTypeConversionRuntimeCheck"]);
             }
         }
     }

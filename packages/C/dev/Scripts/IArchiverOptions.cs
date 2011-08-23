@@ -18,5 +18,11 @@ namespace C
             get;
             set;
         }
+
+        string AdditionalArguments
+        {
+            get;
+            set;
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace VisualCCommon
             this["TargetLanguage"].PrivateData = new PrivateData(TargetLanguageCommandLine, TargetLanguageVisualStudio);
             this["DebugType"].PrivateData = new PrivateData(DebugTypeCommandLine, DebugTypeVisualStudio);
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine, ShowIncludesVisualStudio);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine, AdditionalOptionsVisualStudio);
 
             // compiler specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
@@ -35,6 +36,8 @@ namespace VisualCCommon
             this["ForceConformanceInForLoopScope"].PrivateData = new PrivateData(ForceConformanceInForLoopScopeCommandLine, ForceConformanceInForLoopScopeVisualStudio);
             this["UseFullPaths"].PrivateData = new PrivateData(UseFullPathsCommandLine, UseFullPathsVisualStudio);
             this["CompileAsManaged"].PrivateData = new PrivateData(CompileAsManagedCommandLine, CompileAsManagedVisualStudio);
+            this["BasicRuntimeChecks"].PrivateData = new PrivateData(BasicRuntimeChecksCommandLine, BasicRuntimeChecksVisualStudio);
+            this["SmallerTypeConversionRuntimeCheck"].PrivateData = new PrivateData(SmallerTypeConversionRuntimeCheckCommandLine, SmallerTypeConversionRuntimeCheckVisualStudio);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -48,10 +51,14 @@ namespace VisualCCommon
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {
                 this.MinimalRebuild = true;
+                this.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
+                this.SmallerTypeConversionRuntimeCheck = true;
             }
             else
             {
                 this.MinimalRebuild = false;
+                this.BasicRuntimeChecks = EBasicRuntimeChecks.None;
+                this.SmallerTypeConversionRuntimeCheck = false;
             }
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
@@ -936,6 +943,119 @@ namespace VisualCCommon
             {
                 return null;
             }
+        }
+
+        private static void BasicRuntimeChecksCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
+            switch (enumOption.Value)
+            {
+                case EBasicRuntimeChecks.None:
+                    break;
+
+                case EBasicRuntimeChecks.StackFrame:
+                    commandLineBuilder.Add("/RTCs");
+                    break;
+
+                case EBasicRuntimeChecks.UninitializedVariables:
+                    commandLineBuilder.Add("/RTCu");
+                    break;
+
+                case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
+                    commandLineBuilder.Add("/RTC1");
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary BasicRuntimeChecksVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                switch (enumOption.Value)
+                {
+                    case EBasicRuntimeChecks.None:
+                    case EBasicRuntimeChecks.StackFrame:
+                    case EBasicRuntimeChecks.UninitializedVariables:
+                    case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
+                        dictionary.Add("BasicRuntimeChecks", enumOption.Value.ToString("D"));
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
+                }
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                switch (enumOption.Value)
+                {
+                    case EBasicRuntimeChecks.None:
+                        dictionary.Add("BasicRuntimeChecks", "Default");
+                        break;
+
+                    case EBasicRuntimeChecks.StackFrame:
+                        dictionary.Add("BasicRuntimeChecks", "StackFrameRuntimeCheck");
+                        break;
+
+                    case EBasicRuntimeChecks.UninitializedVariables:
+                        dictionary.Add("BasicRuntimeChecks", "UninitializedLocalUsageCheck");
+                        break;
+
+                    case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
+                        dictionary.Add("BasicRuntimeChecks", "EnableFastChecks");
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
+                }
+            }
+            return dictionary;
+        }
+
+        private static void SmallerTypeConversionRuntimeCheckCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("/RTCc");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary SmallerTypeConversionRuntimeCheckVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("SmallerTypeCheck", boolOption.Value.ToString());
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                dictionary.Add("SmallerTypeCheck", boolOption.Value.ToString());
+            }
+            return dictionary;
+        }
+
+        private static void AdditionalOptionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary AdditionalOptionsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            dictionary.Add("AdditionalOptions", stringOption.Value);
+            return dictionary;
         }
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()

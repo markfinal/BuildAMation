@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection 
+// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection 
 namespace GccCommon
 {
     public partial class LinkerOptionCollection
@@ -123,6 +123,18 @@ namespace GccCommon
             {
                 this.SetValueTypeOption<bool>("GenerateMapFile", value);
                 this.ProcessNamedSetHandler("GenerateMapFileSetHandler", this["GenerateMapFile"]);
+            }
+        }
+        public string AdditionalArguments
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("AdditionalArguments");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("AdditionalArguments", value);
+                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalArguments"]);
             }
         }
     }

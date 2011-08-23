@@ -20,6 +20,7 @@ namespace GccCommon
             this["StandardLibraries"].PrivateData = new PrivateData(null);
             this["Libraries"].PrivateData = new PrivateData(null);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLine);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
 
             // linker specific options
             this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
@@ -215,6 +216,16 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             else
             {
                 commandLineBuilder.Add("-m32");
+            }
+        }
+
+        private static void AdditionalOptionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
             }
         }
 

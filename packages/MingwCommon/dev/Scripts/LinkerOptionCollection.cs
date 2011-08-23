@@ -20,6 +20,7 @@ namespace MingwCommon
             this["Libraries"].PrivateData = new PrivateData(null);
             this["StandardLibraries"].PrivateData = new PrivateData(null);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLine);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
 
             // linker specific options
         }
@@ -211,6 +212,16 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
+            }
+        }
+
+        private static void AdditionalOptionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
             }
         }
 

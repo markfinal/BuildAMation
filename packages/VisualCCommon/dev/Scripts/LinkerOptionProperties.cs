@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=VisualCCommon -c=LinkerOptionCollection 
+// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=VisualCCommon -c=LinkerOptionCollection 
 namespace VisualCCommon
 {
     public partial class LinkerOptionCollection
@@ -123,6 +123,18 @@ namespace VisualCCommon
             {
                 this.SetValueTypeOption<bool>("GenerateMapFile", value);
                 this.ProcessNamedSetHandler("GenerateMapFileSetHandler", this["GenerateMapFile"]);
+            }
+        }
+        public string AdditionalArguments
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("AdditionalArguments");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("AdditionalArguments", value);
+                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalArguments"]);
             }
         }
         public bool NoLogo

@@ -66,5 +66,17 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        EBasicRuntimeChecks BasicRuntimeChecks
+        {
+            get;
+            set;
+        }
+
+        bool SmallerTypeConversionRuntimeCheck
+        {
+            get;
+            set;
+        }
     }
 }

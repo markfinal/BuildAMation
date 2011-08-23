@@ -12,6 +12,7 @@ namespace VisualCCommon
             // common archiver options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null, null);
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine, OutputTypeVisualStudio);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine, AdditionalOptionsVisualStudio);
 
             // archiver specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
@@ -113,6 +114,24 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             dictionary.Add("SuppressStartupBanner", noLogoOption.Value.ToString().ToLower());
+            return dictionary;
+        }
+
+        private static void AdditionalOptionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary AdditionalOptionsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            dictionary.Add("AdditionalOptions", stringOption.Value);
             return dictionary;
         }
 

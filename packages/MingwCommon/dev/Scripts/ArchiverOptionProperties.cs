@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=MingwCommon -c=ArchiverOptionCollection 
+// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=MingwCommon -c=ArchiverOptionCollection 
 namespace MingwCommon
 {
     public partial class ArchiverOptionCollection
@@ -27,6 +27,18 @@ namespace MingwCommon
             {
                 this.SetValueTypeOption<C.EArchiverOutput>("OutputType", value);
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
+            }
+        }
+        public string AdditionalArguments
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("AdditionalArguments");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("AdditionalArguments", value);
+                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalArguments"]);
             }
         }
         public MingwCommon.EArchiverCommand Command

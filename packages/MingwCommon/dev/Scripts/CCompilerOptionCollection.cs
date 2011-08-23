@@ -23,6 +23,7 @@ namespace MingwCommon
             this["IgnoreStandardIncludePaths"].PrivateData = new PrivateData(IgnoreStandardIncludePathsCommandLine);
             this["TargetLanguage"].PrivateData = new PrivateData(TargetLanguageCommandLine);
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
 
             // compiler specific options
             this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
@@ -289,6 +290,16 @@ namespace MingwCommon
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-H");
+            }
+        }
+
+        private static void AdditionalOptionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
             }
         }
 

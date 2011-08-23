@@ -12,6 +12,7 @@ namespace MingwCommon
             // common archiver options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null);
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
 
             // archiver specific options
             this["Command"].PrivateData = new PrivateData(CommandCommandLine);
@@ -104,6 +105,16 @@ namespace MingwCommon
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-c");
+            }
+        }
+
+        private static void AdditionalOptionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
             }
         }
 

@@ -1,3 +1,6 @@
+23-August-2011 C archiver, compiler and linker "AdditionalOptions" added, that blindly adds space separated options to the appropriate tool. Use this to add options that the Opus plugin doesn't yet expose.
+               VisualC compiler added "BasicRuntimeChecks" and "SmallerTypeConversionRuntimeCheck" options.
+
 23-August-2011 C compilation #defines added:
                * D_OPUS_PLATFORM_BITS=<n> where n is 32 or 64.
                * D_OPUS_PLATFORM_LITTLEENDIAN for little endian platforms.

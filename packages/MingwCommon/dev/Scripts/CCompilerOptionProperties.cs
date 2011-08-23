@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=MingwCommon -c=CCompilerOptionCollection 
+// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=MingwCommon -c=CCompilerOptionCollection 
 namespace MingwCommon
 {
     public partial class CCompilerOptionCollection
@@ -147,6 +147,18 @@ namespace MingwCommon
             {
                 this.SetValueTypeOption<bool>("ShowIncludes", value);
                 this.ProcessNamedSetHandler("ShowIncludesSetHandler", this["ShowIncludes"]);
+            }
+        }
+        public string AdditionalArguments
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("AdditionalArguments");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("AdditionalArguments", value);
+                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalArguments"]);
             }
         }
         public bool AllWarnings
