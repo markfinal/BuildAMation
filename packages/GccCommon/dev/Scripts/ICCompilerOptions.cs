@@ -30,5 +30,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        bool InlineFunctions
+        {
+            get;
+            set;
+        }
     }
 }

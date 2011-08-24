@@ -24,12 +24,14 @@ namespace MingwCommon
             this["TargetLanguage"].PrivateData = new PrivateData(TargetLanguageCommandLine);
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
+            this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLine);
 
             // compiler specific options
             this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
             this["StrictAliasing"].PrivateData = new PrivateData(StrictAliasingCommandLine);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLine);
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLine);
+            this["InlineFunctions"].PrivateData = new PrivateData(InlineFunctionsCommandLine);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -42,10 +44,14 @@ namespace MingwCommon
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {
                 this.StrictAliasing = false;
+                this.InlineFunctions = false;
+                this.OmitFramePointer = false;
             }
             else
             {
                 this.StrictAliasing = true;
+                this.InlineFunctions = true;
+                this.OmitFramePointer = true;
             }
 
             this.AllWarnings = true;
@@ -344,6 +350,32 @@ namespace MingwCommon
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wextra");
+            }
+        }
+
+        private static void InlineFunctionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-finline-functions");
+            }
+            else
+            {
+                commandLineBuilder.Add("-fno-inline-functions");
+            }
+        }
+
+        private static void OmitFramePointerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-fomit-frame-pointer");
+            }
+            else
+            {
+                commandLineBuilder.Add("-fno-omit-frame-pointer");
             }
         }
 

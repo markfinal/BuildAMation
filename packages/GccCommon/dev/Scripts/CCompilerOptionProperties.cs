@@ -158,7 +158,19 @@ namespace GccCommon
             set
             {
                 this.SetReferenceTypeOption<string>("AdditionalOptions", value);
-                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalOptions"]);
+                this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
+            }
+        }
+        public bool OmitFramePointer
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("OmitFramePointer");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("OmitFramePointer", value);
+                this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
             }
         }
         public bool AllWarnings
@@ -207,6 +219,18 @@ namespace GccCommon
             {
                 this.SetValueTypeOption<bool>("PositionIndependentCode", value);
                 this.ProcessNamedSetHandler("PositionIndependentCodeSetHandler", this["PositionIndependentCode"]);
+            }
+        }
+        public bool InlineFunctions
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("InlineFunctions");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("InlineFunctions", value);
+                this.ProcessNamedSetHandler("InlineFunctionsSetHandler", this["InlineFunctions"]);
             }
         }
     }

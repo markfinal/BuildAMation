@@ -25,6 +25,7 @@ namespace VisualCCommon
             this["DebugType"].PrivateData = new PrivateData(DebugTypeCommandLine, DebugTypeVisualStudio);
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine, ShowIncludesVisualStudio);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine, AdditionalOptionsVisualStudio);
+            this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLine, OmitFramePointerVisualStudio);
 
             // compiler specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
@@ -38,6 +39,8 @@ namespace VisualCCommon
             this["CompileAsManaged"].PrivateData = new PrivateData(CompileAsManagedCommandLine, CompileAsManagedVisualStudio);
             this["BasicRuntimeChecks"].PrivateData = new PrivateData(BasicRuntimeChecksCommandLine, BasicRuntimeChecksVisualStudio);
             this["SmallerTypeConversionRuntimeCheck"].PrivateData = new PrivateData(SmallerTypeConversionRuntimeCheckCommandLine, SmallerTypeConversionRuntimeCheckVisualStudio);
+            this["InlineFunctionExpansion"].PrivateData = new PrivateData(InlineFunctionExpansionCommandLine, InlineFunctionExpansionVisualStudio);
+            this["EnableIntrinsicFunctions"].PrivateData = new PrivateData(EnableIntrinsicFunctionsCommandLine, EnableIntrinsicFunctionsVisualStudio);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -53,12 +56,18 @@ namespace VisualCCommon
                 this.MinimalRebuild = true;
                 this.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
                 this.SmallerTypeConversionRuntimeCheck = true;
+                this.InlineFunctionExpansion = EInlineFunctionExpansion.None;
+                this.OmitFramePointer = false;
+                this.EnableIntrinsicFunctions = false;
             }
             else
             {
                 this.MinimalRebuild = false;
                 this.BasicRuntimeChecks = EBasicRuntimeChecks.None;
                 this.SmallerTypeConversionRuntimeCheck = false;
+                this.InlineFunctionExpansion = EInlineFunctionExpansion.AnySuitable;
+                this.OmitFramePointer = true;
+                this.EnableIntrinsicFunctions = true;
             }
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
@@ -1054,7 +1063,128 @@ namespace VisualCCommon
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("AdditionalOptions", stringOption.Value);
+            if (!System.String.IsNullOrEmpty(stringOption.Value))
+            {
+                dictionary.Add("AdditionalOptions", stringOption.Value);
+            }
+            return dictionary;
+        }
+
+        private static void InlineFunctionExpansionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<EInlineFunctionExpansion> enumOption = option as Opus.Core.ValueTypeOption<EInlineFunctionExpansion>;
+            switch (enumOption.Value)
+            {
+                case EInlineFunctionExpansion.None:
+                    break;
+
+                case EInlineFunctionExpansion.OnlyInline:
+                    commandLineBuilder.Add("/Ob1");
+                    break;
+
+                case EInlineFunctionExpansion.AnySuitable:
+                    commandLineBuilder.Add("/Ob2");
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary InlineFunctionExpansionVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ValueTypeOption<EInlineFunctionExpansion> enumOption = option as Opus.Core.ValueTypeOption<EInlineFunctionExpansion>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                switch (enumOption.Value)
+                {
+                    case EInlineFunctionExpansion.None:
+                    case EInlineFunctionExpansion.OnlyInline:
+                    case EInlineFunctionExpansion.AnySuitable:
+                        dictionary.Add("InlineFunctionExpansion", enumOption.Value.ToString("D"));
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
+                }
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                switch (enumOption.Value)
+                {
+                    case EInlineFunctionExpansion.None:
+                        dictionary.Add("InlineFunctionExpansion", "Default");
+                        break;
+
+                    case EInlineFunctionExpansion.OnlyInline:
+                        dictionary.Add("InlineFunctionExpansion", "OnlyInline");
+                        break;
+
+                    case EInlineFunctionExpansion.AnySuitable:
+                        dictionary.Add("InlineFunctionExpansion", "AnySuitable");
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
+                }
+            }
+            return dictionary;
+        }
+
+        private static void OmitFramePointerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("/Oy");
+            }
+            else
+            {
+                commandLineBuilder.Add("/Oy-");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary OmitFramePointerVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("OmitFramePointers", boolOption.Value.ToString());
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                dictionary.Add("OmitFramePointers", boolOption.Value.ToString());
+            }
+            return dictionary;
+        }
+
+        private static void EnableIntrinsicFunctionsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("/Oi");
+            }
+            else
+            {
+                commandLineBuilder.Add("/Oi-");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary EnableIntrinsicFunctionsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("EnableIntrinsicFunctions", boolOption.Value.ToString());
+            }
+            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+            {
+                dictionary.Add("EnableIntrinsicFunctions", boolOption.Value.ToString());
+            }
             return dictionary;
         }
 

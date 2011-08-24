@@ -1,3 +1,7 @@
+24-August-2011 Added C compiler option OmitFramePointer.
+               Added Gcc and Mingw compiler option InlineFunctions.
+               Added VisualC compiler options InlineFunctionExpansion and EnableIntrinsicFunctions.
+
 23-August-2011 VSSolutionBuilder no longer throws an exception for empty option strings, and instead just returns the empty string.
 
 23-August-2011 Extending testpackage Test-dev to compile in debug with VisualC, and to try out AdditionalOptions.

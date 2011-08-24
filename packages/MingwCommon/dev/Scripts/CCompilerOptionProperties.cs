@@ -158,7 +158,19 @@ namespace MingwCommon
             set
             {
                 this.SetReferenceTypeOption<string>("AdditionalOptions", value);
-                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalOptions"]);
+                this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
+            }
+        }
+        public bool OmitFramePointer
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("OmitFramePointer");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("OmitFramePointer", value);
+                this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
             }
         }
         public bool AllWarnings
@@ -195,6 +207,18 @@ namespace MingwCommon
             {
                 this.SetValueTypeOption<bool>("StrictAliasing", value);
                 this.ProcessNamedSetHandler("StrictAliasingSetHandler", this["StrictAliasing"]);
+            }
+        }
+        public bool InlineFunctions
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("InlineFunctions");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("InlineFunctions", value);
+                this.ProcessNamedSetHandler("InlineFunctionsSetHandler", this["InlineFunctions"]);
             }
         }
     }

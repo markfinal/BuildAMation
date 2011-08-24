@@ -44,4 +44,11 @@ namespace VisualCCommon
         UninitializedVariables = 2,
         StackFrameAndUninitializedVariables = 3
     }
+
+    public enum EInlineFunctionExpansion
+    {
+        None = 0,
+        OnlyInline = 1,
+        AnySuitable = 2
+    }
 }

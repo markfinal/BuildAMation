@@ -78,5 +78,17 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        EInlineFunctionExpansion InlineFunctionExpansion
+        {
+            get;
+            set;
+        }
+
+        bool EnableIntrinsicFunctions
+        {
+            get;
+            set;
+        }
     }
 }

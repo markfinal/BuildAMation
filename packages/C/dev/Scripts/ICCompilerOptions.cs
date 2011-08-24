@@ -84,5 +84,11 @@ namespace C
             get;
             set;
         }
+
+        bool OmitFramePointer
+        {
+            get;
+            set;
+        }
     }
 }

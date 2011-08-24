@@ -158,7 +158,19 @@ namespace VisualCCommon
             set
             {
                 this.SetReferenceTypeOption<string>("AdditionalOptions", value);
-                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalOptions"]);
+                this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
+            }
+        }
+        public bool OmitFramePointer
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("OmitFramePointer");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("OmitFramePointer", value);
+                this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
             }
         }
         public bool NoLogo
@@ -303,6 +315,30 @@ namespace VisualCCommon
             {
                 this.SetValueTypeOption<bool>("SmallerTypeConversionRuntimeCheck", value);
                 this.ProcessNamedSetHandler("SmallerTypeConversionRuntimeCheckSetHandler", this["SmallerTypeConversionRuntimeCheck"]);
+            }
+        }
+        public EInlineFunctionExpansion InlineFunctionExpansion
+        {
+            get
+            {
+                return this.GetValueTypeOption<EInlineFunctionExpansion>("InlineFunctionExpansion");
+            }
+            set
+            {
+                this.SetValueTypeOption<EInlineFunctionExpansion>("InlineFunctionExpansion", value);
+                this.ProcessNamedSetHandler("InlineFunctionExpansionSetHandler", this["InlineFunctionExpansion"]);
+            }
+        }
+        public bool EnableIntrinsicFunctions
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("EnableIntrinsicFunctions");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("EnableIntrinsicFunctions", value);
+                this.ProcessNamedSetHandler("EnableIntrinsicFunctionsSetHandler", this["EnableIntrinsicFunctions"]);
             }
         }
     }

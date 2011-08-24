@@ -134,7 +134,7 @@ namespace MingwCommon
             set
             {
                 this.SetReferenceTypeOption<string>("AdditionalOptions", value);
-                this.ProcessNamedSetHandler("AdditionalArgumentsSetHandler", this["AdditionalOptions"]);
+                this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
     }

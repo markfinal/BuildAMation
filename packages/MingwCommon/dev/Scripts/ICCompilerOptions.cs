@@ -24,5 +24,11 @@ namespace MingwCommon
             get;
             set;
         }
+
+        bool InlineFunctions
+        {
+            get;
+            set;
+        }
     }
 }
