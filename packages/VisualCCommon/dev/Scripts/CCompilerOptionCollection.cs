@@ -1076,6 +1076,7 @@ namespace VisualCCommon
             switch (enumOption.Value)
             {
                 case EInlineFunctionExpansion.None:
+                    commandLineBuilder.Add("/Ob0");
                     break;
 
                 case EInlineFunctionExpansion.OnlyInline:
@@ -1114,11 +1115,11 @@ namespace VisualCCommon
                 switch (enumOption.Value)
                 {
                     case EInlineFunctionExpansion.None:
-                        dictionary.Add("InlineFunctionExpansion", "Default");
+                        dictionary.Add("InlineFunctionExpansion", "Disabled");
                         break;
 
                     case EInlineFunctionExpansion.OnlyInline:
-                        dictionary.Add("InlineFunctionExpansion", "OnlyInline");
+                        dictionary.Add("InlineFunctionExpansion", "OnlyExplicitInline");
                         break;
 
                     case EInlineFunctionExpansion.AnySuitable:
@@ -1183,7 +1184,7 @@ namespace VisualCCommon
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
             {
-                dictionary.Add("EnableIntrinsicFunctions", boolOption.Value.ToString());
+                dictionary.Add("IntrinsicFunctions", boolOption.Value.ToString());
             }
             return dictionary;
         }
