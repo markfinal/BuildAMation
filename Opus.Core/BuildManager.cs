@@ -224,7 +224,7 @@ namespace Opus.Core
             // wait on the thread that is outputting text from the nodes
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.allOutputComplete }, -1);
 
-            Log.Info("Build completed");
+            Log.Info("Build finished");
 
             return returnValue;
         }

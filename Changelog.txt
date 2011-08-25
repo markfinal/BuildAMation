@@ -1,8 +1,10 @@
+25-August-2011 Changed end of the build from "Build complete" to "Build finished" as complete sounds like success.
+
 24-August-2011 Added C compiler option OmitFramePointer.
                Added Gcc and Mingw compiler option InlineFunctions.
                Added VisualC compiler options InlineFunctionExpansion and EnableIntrinsicFunctions.
 
-23-August-2011 Extending testpackage Test-dev to compile in debug with VisualC, and to try out AdditionalOptions.
+23-August-2011 Fixed testpackage Test-dev to compile in debug with VisualC, and extended to try out AdditionalOptions on all supported compilers.
 
 23-August-2011 C archiver, compiler and linker "AdditionalOptions" added, that blindly adds space separated options to the appropriate tool. Use this to add options that the Opus plugin doesn't yet expose.
                VisualC compiler added "BasicRuntimeChecks" and "SmallerTypeConversionRuntimeCheck" options.
@@ -30,6 +32,7 @@
                Timings are displayed at the end of build actions.
                Command line arguments to Opus are lazily evaluated from left to right (response files are inlined in place), and repeated specification of the same argument will override any existing value.
                Existing package definition files have not been updated to the latest schema in this commit, to illustrate the schema upgrade process in a future commit.
+               Some command line arguments have changed. Please check the latest help with 'Opus -help'.
 
 13-May-2011 Set version to 0.30.
 
