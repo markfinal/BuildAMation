@@ -117,11 +117,28 @@ namespace Opus.Core
 
             foreach (DependencyNode node in graph)
             {
-                bool typeMatch = node.Module.GetType() == type;
-                bool targetMatch = node.Target == target;
-                if (typeMatch && targetMatch)
+                System.Type moduleType = node.Module.GetType();
+                bool typeMatch = (moduleType == type);
+                bool targetMatch = (node.Target == target);
+                if (typeMatch)
                 {
-                    return node.Module;
+                    if (targetMatch)
+                    {
+                        return node.Module;
+                    }
+                }
+                else
+                {
+                    System.Type baseType = moduleType.BaseType;
+                    while ((null != baseType) && !baseType.IsInterface)
+                    {
+                        if ((baseType == type) && targetMatch)
+                        {
+                            return node.Module;
+                        }
+
+                        baseType = baseType.BaseType;
+                    }
                 }
             }
 
