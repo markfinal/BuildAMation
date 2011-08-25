@@ -1,3 +1,5 @@
+25-August-2011 Improved exception message if Opus cannot locate a class in it's module database to add option updates from.
+
 25-August-2011 ModuleUtilities.GetModule will now return an IModule if it is a valid base class. This allows for base classes to also add option update delegates.
 
 25-August-2011 Changed end of the build from "Build complete" to "Build finished" as complete sounds like success.
