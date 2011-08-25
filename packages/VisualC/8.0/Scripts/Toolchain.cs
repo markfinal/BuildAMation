@@ -16,13 +16,11 @@ namespace VisualC
 
         static Toolchain()
         {
-            if (Opus.Core.State.HasCategory("VSSolutionBuilder"))
+            if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
             {
-                throw new Opus.Core.Exception("VS Solution Builder state has already been set");
+                Opus.Core.State.AddCategory("VSSolutionBuilder");
+                Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
             }
-
-            Opus.Core.State.AddCategory("VSSolutionBuilder");
-            Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
         }
 
         public Toolchain(Opus.Core.Target target)
