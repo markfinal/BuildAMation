@@ -1,9 +1,9 @@
 // <copyright file="OutputFileFlags.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
-namespace Qt
+namespace QtCommon
 {
     [System.Flags]
     public enum OutputFileFlags

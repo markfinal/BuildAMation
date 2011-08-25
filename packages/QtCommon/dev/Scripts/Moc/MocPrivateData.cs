@@ -1,9 +1,9 @@
 // <copyright file="MocPrivateData.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
-namespace Qt
+namespace QtCommon
 {
     public sealed class MocPrivateData : CommandLineProcessor.ICommandLineDelegate
     {

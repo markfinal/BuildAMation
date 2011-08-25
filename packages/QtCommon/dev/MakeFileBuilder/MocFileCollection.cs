@@ -1,13 +1,13 @@
 // <copyright file="MocFileCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(Qt.MocFileCollection mocFileCollection, out bool success)
+        public object Build(QtCommon.MocFileCollection mocFileCollection, out bool success)
         {
             Opus.Core.DependencyNode node = mocFileCollection.OwningNode;
             Opus.Core.Target target = node.Target;
@@ -27,7 +27,7 @@ namespace MakeFileBuilder
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             // no output paths because this rule has no recipe
-            MakeFileRule rule = new MakeFileRule(null, Qt.OutputFileFlags.MocGeneratedSourceFileCollection, node.UniqueModuleName, null, dependents, null, null);
+            MakeFileRule rule = new MakeFileRule(null, QtCommon.OutputFileFlags.MocGeneratedSourceFileCollection, node.UniqueModuleName, null, dependents, null, null);
             if (null == node.Parent)
             {
                 // phony target

@@ -5,18 +5,8 @@
 // <author>Mark Final</author>
 namespace Qt
 {
-    public sealed class Qt : C.ThirdPartyModule
+    public sealed class Qt : QtCommon.QtCommon
     {
-        private static string installPath;
-        private static string libPath;
-        private static string includePath;
-
-        public static string BinPath
-        {
-            get;
-            private set;
-        }
-
         public static string VersionString
         {
             get
@@ -62,45 +52,9 @@ namespace Qt
                 }
             }
 
-            BinPath = System.IO.Path.Combine(installPath, "bin");
+            QtCommon.QtCommon.BinPath = System.IO.Path.Combine(installPath, "bin");
             libPath = System.IO.Path.Combine(installPath, "lib");
             includePath = System.IO.Path.Combine(installPath, "include");
-        }
-
-        public Qt()
-        {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Qt_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Qt_LibraryPaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Qt_VisualCWarningLevel);
-        }
-
-        [C.ExportLinkerOptionsDelegate]
-        void Qt_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
-        {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
-            linkerOptions.LibraryPaths.AddAbsoluteDirectory(libPath, true);
-        }
-
-        [C.ExportCompilerOptionsDelegate]
-        void Qt_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
-        {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
-        }
-
-        [C.ExportCompilerOptionsDelegate]
-        void Qt_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
-        {
-            VisualCCommon.ICCompilerOptions compilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
-            if (null != compilerOptions)
-            {
-                compilerOptions.WarningLevel = VisualCCommon.EWarningLevel.Level3;
-            }
-        }
-
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

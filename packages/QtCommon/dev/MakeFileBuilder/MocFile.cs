@@ -1,18 +1,18 @@
 // <copyright file="MocFile.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
     {
-        public object Build(Qt.MocFile mocFile, out System.Boolean success)
+        public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
             Opus.Core.DependencyNode node = mocFile.OwningNode;
             Opus.Core.Target target = node.Target;
-            Qt.MocTool tool = new Qt.MocTool();
-            Qt.MocOptionCollection toolOptions = mocFile.Options as Qt.MocOptionCollection;
+            QtCommon.MocTool tool = new QtCommon.MocTool();
+            QtCommon.MocOptionCollection toolOptions = mocFile.Options as QtCommon.MocOptionCollection;
             string toolExePath = tool.Executable(target);
 
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
@@ -25,7 +25,7 @@ namespace MakeFileBuilder
             inputFiles.Add(sourceFilePath);
 
             Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
-            node.FilterOutputPaths(Qt.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
+            node.FilterOutputPaths(QtCommon.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
@@ -52,7 +52,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(mocFile.Options.OutputPaths, Qt.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(mocFile.Options.OutputPaths, QtCommon.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

@@ -15,7 +15,7 @@ ECHO Opus directory is %OPUS_DIR%
 ECHO Opus package directory is %OPUS_PACKAGE_DIR%
 
 REM Moc option properties
-%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=IMocOptions.cs -o=MocOptionProperties.cs -n=Qt -c=MocOptionCollection
+%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=IMocOptions.cs -o=MocOptionProperties.cs -n=QtCommon -c=MocOptionCollection
 IF NOT ERRORLEVEL 0 GOTO error
 
 PAUSE

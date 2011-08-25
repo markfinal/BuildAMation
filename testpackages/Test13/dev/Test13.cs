@@ -12,7 +12,7 @@ namespace Test13
             }
 
             /*
-            class MyMocFile : Qt.MocFile
+            class MyMocFile : QtCommon.MocFile
             {
                 public MyMocFile()
                 {
@@ -20,7 +20,7 @@ namespace Test13
                 }
             }
              */
-            class MyMocFiles : Qt.MocFileCollection
+            class MyMocFiles : QtCommon.MocFileCollection
             {
                 public MyMocFiles()
                 {

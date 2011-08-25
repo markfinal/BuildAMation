@@ -1,9 +1,9 @@
 // <copyright file="MocFile.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
-namespace Qt
+namespace QtCommon
 {
     public class ExportMocOptionsDelegateAttribute : System.Attribute
     {

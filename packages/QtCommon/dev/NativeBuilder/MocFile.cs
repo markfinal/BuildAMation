@@ -1,18 +1,18 @@
 // <copyright file="MocFile.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 namespace NativeBuilder
 {
     public partial class NativeBuilder
     {
-        public object Build(Qt.MocFile mocFile, out System.Boolean success)
+        public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
             Opus.Core.DependencyNode node = mocFile.OwningNode;
             Opus.Core.Target target = node.Target;
-            Qt.MocTool tool = new Qt.MocTool();
-            Qt.MocOptionCollection toolOptions = mocFile.Options as Qt.MocOptionCollection;
+            QtCommon.MocTool tool = new QtCommon.MocTool();
+            QtCommon.MocOptionCollection toolOptions = mocFile.Options as QtCommon.MocOptionCollection;
             string toolExePath = tool.Executable(target);
 
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;

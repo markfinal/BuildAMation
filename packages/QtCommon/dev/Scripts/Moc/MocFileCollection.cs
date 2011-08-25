@@ -1,9 +1,9 @@
 // <copyright file="MocFileCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCommon package</summary>
 // <author>Mark Final</author>
-namespace Qt
+namespace QtCommon
 {
     /// <summary>
     /// Create meta data from a collection of C++ header or source files

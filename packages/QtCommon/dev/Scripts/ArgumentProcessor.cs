@@ -1,11 +1,11 @@
 // <copyright file="ArgumentProcessor.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Qt package</summary>
+// <summary>QtCmommon package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.ArgumentProcessor(typeof(Qt.ArgumentProcessor))]
+[assembly: Opus.Core.ArgumentProcessor(typeof(QtCommon.ArgumentProcessor))]
 
-namespace Qt
+namespace QtCommon
 {
     public sealed class ArgumentProcessor : Opus.Core.IArgumentProcessor
     {

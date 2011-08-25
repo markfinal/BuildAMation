@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\dev\GoogleCode\Opus\branches\qtmoc\bin\Debug\Schema\OpusPackageDependency.xsd">
-  <Package Name="QtCommon" Version="dev" />
+  <Package Name="C" Version="dev" />
 </RequiredPackages>
