@@ -956,6 +956,12 @@ namespace VisualCCommon
 
         private static void BasicRuntimeChecksCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
+            {
+                return;
+            }
+
             Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
             switch (enumOption.Value)
             {
@@ -981,8 +987,15 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary BasicRuntimeChecksVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
+            {
+                return dictionary;
+            }
+
+            Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 switch (enumOption.Value)
@@ -1027,6 +1040,12 @@ namespace VisualCCommon
 
         private static void SmallerTypeConversionRuntimeCheckCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
+            {
+                return;
+            }
+
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
@@ -1036,8 +1055,15 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary SmallerTypeConversionRuntimeCheckVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
+            {
+                return dictionary;
+            }
+
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 dictionary.Add("SmallerTypeCheck", boolOption.Value.ToString());
