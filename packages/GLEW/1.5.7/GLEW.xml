@@ -1,4 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RequiredPackages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\dev\prototypes\Opus\dev\bin32\Debug\Schema\OpusPackageDependency.xsd">
-  <Package Name="OpenGLSDK" Version="dev" />
-</RequiredPackages>
+<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus file:///E:/dev/GoogleCode/Opus/trunk/bin/Debug/Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
+  <Opus:RequiredPackages>
+    <Opus:Package Name="OpenGLSDK">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+  </Opus:RequiredPackages>
+  <Opus:RequiredOpusAssemblies>
+    <Opus:OpusAssembly Name="Opus.Core" />
+  </Opus:RequiredOpusAssemblies>
+  <Opus:RequiredDotNetAssemblies>
+    <Opus:DotNetAssembly Name="System" RequiredTargetFramework="2.0.50727" />
+    <Opus:DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
+  </Opus:RequiredDotNetAssemblies>
+  <Opus:SupportedPlatforms>
+    <Opus:Platform Name="Windows" />
+    <Opus:Platform Name="Unix" />
+    <Opus:Platform Name="OSX" />
+  </Opus:SupportedPlatforms>
+</Opus:PackageDefinition>
