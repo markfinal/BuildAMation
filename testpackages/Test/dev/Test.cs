@@ -40,6 +40,9 @@ namespace Test
                 }
 
                 compilerOptions.AdditionalOptions = "-Wall";
+
+                MingwCommon.ICCompilerOptions mingwCompilerOptions = compilerOptions as MingwCommon.ICCompilerOptions;
+                mingwCompilerOptions.InlineFunctions = true;
             }
             else if ("visualc" == toolchain)
             {
@@ -47,18 +50,23 @@ namespace Test
 
                 compilerOptions.Optimization = C.EOptimization.Custom;
                 compilerOptions.CustomOptimization = "/Ox";
+                compilerOptions.AdditionalOptions = "/openmp";
 
                 compilerOptions.DebugSymbols = true;
-                VisualC.CCompilerOptionCollection vcCompilerOptions = compilerOptions as VisualC.CCompilerOptionCollection;
+                VisualCCommon.ICCompilerOptions vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
                 vcCompilerOptions.DebugType = VisualCCommon.EDebugType.Embedded;
                 vcCompilerOptions.BasicRuntimeChecks = VisualCCommon.EBasicRuntimeChecks.None;
                 vcCompilerOptions.SmallerTypeConversionRuntimeCheck = false;
-                vcCompilerOptions.AdditionalOptions = "/openmp";
             }
             else if ("gcc" == toolchain)
             {
                 Opus.Core.Log.MessageAll("gcc is the toolchain");
                 compilerOptions.AdditionalOptions = "-Wall";
+
+#if OPUS_HOST_UNIX32 || OPUS_HOST_UNIX64 || OPUS_HOST_OSX32 || OPUS_HOST_OSX64
+                GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
+                gccCompilerOptions.PositionIndependentCode = true;
+#endif
             }
             else
             {

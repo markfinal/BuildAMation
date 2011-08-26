@@ -1,3 +1,5 @@
+26-August-2011 Removed Windows as a supported platform for Gcc-4.4 and GccCommon-dev packages. Predicated test package scripts that reference Gcc on the supported platforms.
+
 26-August-2011 Upgraded the definition files for those packages in the 'testpackages' root.
 
 26-August-2011 Upgraded the definition files for those packages in the 'packages' root.
