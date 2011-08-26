@@ -37,9 +37,15 @@ namespace Opus
             else
             {
                 Core.PackageUtilities.LoadPackageAssembly();
+
+                Core.TimeProfile additionalArgumentProfile = new Core.TimeProfile(Core.ETimingProfiles.AdditionalArgumentProcessing);
+                additionalArgumentProfile.StartProfile();
                 Core.PackageUtilities.ProcessLazyArguments();
                 Core.PackageUtilities.HandleUnprocessedArguments();
                 Core.State.ShowTimingStatistics = true;
+                additionalArgumentProfile.StopProfile();
+
+
                 if (!Core.PackageUtilities.ExecutePackageAssembly())
                 {
                     System.Environment.ExitCode = -3;

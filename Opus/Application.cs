@@ -62,6 +62,9 @@ namespace Opus
         /// <param name="args">Command line arguments.</param>
         public Application(string[] args)
         {
+            Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
+            profile.StartProfile();
+
             System.Collections.Generic.Dictionary<string,string> argList = new System.Collections.Generic.Dictionary<string,string>();
             string responseFileArgument = null;
             foreach (string arg in args)
@@ -163,6 +166,8 @@ namespace Opus
             }
 
             displayInfo(Core.EVerboseLevel.Info, argList);
+
+            profile.StopProfile();
         }
         
         /// <summary>
@@ -170,6 +175,9 @@ namespace Opus
         /// </summary>
         public void Run()
         {
+            Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.PreambleCommandExecution);
+            profile.StartProfile();
+
             foreach (Core.IAction action in this.preambleActions)
             {
                 if (!action.Execute())
@@ -177,6 +185,8 @@ namespace Opus
                     return;
                 }
             }
+
+            profile.StopProfile();
 
             if (!this.triggerAction.Execute())
             {

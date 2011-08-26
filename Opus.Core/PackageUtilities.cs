@@ -243,7 +243,8 @@ namespace Opus.Core
 
         public static bool CompilePackageIntoAssembly()
         {
-            System.DateTime gatherSourceStart = System.DateTime.Now;
+            TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
+            gatherSourceProfile.StartProfile();
 
             IdentifyMainAndDependentPackages();
 
@@ -299,8 +300,10 @@ namespace Opus.Core
 
             definitions.Sort();
 
-            System.DateTime gatherSourceStop = System.DateTime.Now;
-            State.TimingProfiles[(int)ETimingProfiles.GatherSource] = gatherSourceStop - gatherSourceStart;
+            gatherSourceProfile.StopProfile();
+
+            TimeProfile assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
+            assemblyCompileProfile.StartProfile();
 
             System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
@@ -403,8 +406,7 @@ namespace Opus.Core
                 State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
 
-            System.DateTime assemblyCompileStop = System.DateTime.Now;
-            State.TimingProfiles[(int)ETimingProfiles.AssemblyCompilation] = assemblyCompileStop - gatherSourceStop;
+            assemblyCompileProfile.StopProfile();
 
             return true;
         }
@@ -417,8 +419,6 @@ namespace Opus.Core
             //            System.Reflection.AssemblyName assemblyName = System.Reflection.AssemblyName.GetAssemblyName(State.DebugAssembly);
             //            System.Reflection.Assembly assembly = domain.Load(assemblyName);
             //            System.AppDomain.Unload(domain);
-
-            LocateRequiredPackages();
 
             TypeArray topLevelTypes = GetTopLevelModuleTypes();
 
@@ -457,7 +457,8 @@ namespace Opus.Core
                 }
             }
 
-            System.DateTime dependencyGraphGenerationStart = System.DateTime.Now;
+            TimeProfile dependencyGraphGenerationProfile = new TimeProfile(ETimingProfiles.GraphGeneration);
+            dependencyGraphGenerationProfile.StartProfile();
 
             DependencyGraph dependencyGraph = new DependencyGraph();
             State.Set("System", "Graph", dependencyGraph);
@@ -474,19 +475,18 @@ namespace Opus.Core
             Log.DebugMessage("\nAfter adding dependencies...");
             dependencyGraph.Dump();
 
-            System.DateTime dependencyGraphGenerationStop = System.DateTime.Now;
-            State.TimingProfiles[(int)ETimingProfiles.GraphGeneration] = dependencyGraphGenerationStop - dependencyGraphGenerationStart;
+            dependencyGraphGenerationProfile.StopProfile();
+            State.TimingProfiles[(int)ETimingProfiles.GraphGeneration] = dependencyGraphGenerationProfile;
+
+            TimeProfile dependencyGraphExecutionProfile = new TimeProfile(ETimingProfiles.GraphExecution);
+            dependencyGraphExecutionProfile.StartProfile();
 
             BuildManager buildManager = new BuildManager(dependencyGraph);
-            if (!buildManager.Execute())
-            {
-                return false;
-            }
+            bool success = buildManager.Execute();
 
-            System.DateTime dependencyGraphExecutionStop = System.DateTime.Now;
-            State.TimingProfiles[(int)ETimingProfiles.GraphExecution] = dependencyGraphExecutionStop - dependencyGraphGenerationStop;
+            dependencyGraphExecutionProfile.StopProfile();
 
-            return true;
+            return success;
         }
 
         public static PackageInformation GetOwningPackage(object obj)
@@ -504,6 +504,9 @@ namespace Opus.Core
 
         public static void LoadPackageAssembly()
         {
+            TimeProfile assemblyLoadProfile = new TimeProfile(ETimingProfiles.LoadAssembly);
+            assemblyLoadProfile.StartProfile();
+
             System.Reflection.Assembly scriptAssembly = null;
 
             try
@@ -521,6 +524,8 @@ namespace Opus.Core
             }
 
             State.ScriptAssembly = scriptAssembly;
+
+            assemblyLoadProfile.StopProfile();
         }
 
         public static void ProcessLazyArguments()
@@ -560,43 +565,11 @@ namespace Opus.Core
             }
         }
 
-        private static void LocateRequiredPackages()
-        {
-            // get the resource
-            string resourceName = System.String.Format("{0}.PackageInfoResources", State.PackageInfo.MainPackage.Name);
-            System.Resources.ResourceManager resourceManager = new System.Resources.ResourceManager(resourceName, State.ScriptAssembly);
-            System.Resources.ResourceSet resourceSet = resourceManager.GetResourceSet(System.Globalization.CultureInfo.CurrentUICulture, true, true);
-            foreach (System.Collections.DictionaryEntry resourceDictionaryEntry in resourceSet)
-            {
-                string[] packageInfo = resourceDictionaryEntry.Key.ToString().Split(new char[] { '_' });
-                Log.DebugMessage("Found package {0}-{1} @ {2}", packageInfo[0], packageInfo[1], resourceDictionaryEntry.Value);
-#if true
-                bool found = false;
-                foreach (PackageInformation package in State.PackageInfo)
-                {
-                    if (package.Identifier.Match(new PackageIdentifier(packageInfo[0], packageInfo[1]), false))
-                    {
-                        found = true;
-                    }
-                }
-
-                if (!found)
-                {
-                    throw new Exception(System.String.Format("Required package '{0}-{1}' not found in the preloaded package collection", packageInfo[0], packageInfo[1]), false);
-                }
-#else
-                PackageInformation package = new PackageInformation(packageInfo[0], packageInfo[1], resourceDictionaryEntry.Value.ToString());
-
-                if (!State.PackageInfo.Contains(package))
-                {
-                    State.PackageInfo.Add(package);
-                }
-#endif
-            }
-        }
-
         private static TypeArray GetTopLevelModuleTypes()
         {
+            TimeProfile findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
+            findBuildableModulesProfile.StartProfile();
+
             // TODO: not sure I like this; find the top level namespace another way
             // TODO: maybe add a Resource into the assembly to indicate the top level types?
             string topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
@@ -677,6 +650,8 @@ namespace Opus.Core
 
                 topLevelTypes = filteredTopLevelTypes;
             }
+
+            findBuildableModulesProfile.StopProfile();
 
             return topLevelTypes;
         }

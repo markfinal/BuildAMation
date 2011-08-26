@@ -47,7 +47,7 @@ namespace Opus.Core
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
-            Add<System.TimeSpan[]>("System", "Profiling", new System.TimeSpan[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
+            Add<TimeProfile[]>("System", "Profiling", new TimeProfile[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
 
@@ -414,11 +414,11 @@ namespace Opus.Core
             }
         }
 
-        public static System.TimeSpan[] TimingProfiles
+        public static TimeProfile[] TimingProfiles
         {
             get
             {
-                return Get("System", "Profiling") as System.TimeSpan[];
+                return Get("System", "Profiling") as TimeProfile[];
             }
         }
 

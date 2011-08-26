@@ -18,15 +18,17 @@ namespace Opus
         {
             try
             {
-                System.DateTime start = System.DateTime.Now;
+                Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.Total);
+                profile.StartProfile();
+
                 Application application = new Application(args);
                 application.Run();
-                System.DateTime stop = System.DateTime.Now;
-                Core.State.TimingProfiles[(int)Core.ETimingProfiles.Total] = stop - start;
+
+                profile.StopProfile();
 
                 if (Core.State.ShowTimingStatistics)
                 {
-                    Core.TimingProfiles.DumpProfiles();
+                    Core.TimingProfileUtilities.DumpProfiles();
                 }
             }
             catch (Core.Exception exception)
