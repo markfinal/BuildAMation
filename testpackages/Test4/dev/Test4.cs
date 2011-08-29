@@ -27,11 +27,13 @@ namespace Test4
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 C.ToolchainOptionCollection toolOptions = compilerOptions.ToolchainOptionCollection;
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
                 VisualC.ToolchainOptionCollection vcToolOptions = toolOptions as VisualC.ToolchainOptionCollection;
                 if (vcToolOptions != null)
                 {
                     vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
                 }
+#endif
             }
         }
 
@@ -41,8 +43,10 @@ namespace Test4
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyStaticLib));
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[]{"visualc"})]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");

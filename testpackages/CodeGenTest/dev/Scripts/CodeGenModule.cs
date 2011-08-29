@@ -120,8 +120,10 @@ namespace CodeGenTest
         [Opus.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+#endif
     }
 
     /// <summary>

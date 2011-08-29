@@ -8,7 +8,7 @@ namespace ExecutableReferences
         {
             XmlDocument doc = new XmlDocument();
 
-            return 0;
+            return doc.ChildNodes.Count;
         }
     }
 }

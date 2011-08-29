@@ -35,8 +35,10 @@ namespace Test12
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         UnixSourceFiles unixSourceFiles = new UnixSourceFiles();
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.TypeArray windowsVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray windowsVCLibraries = new Opus.Core.StringArray(

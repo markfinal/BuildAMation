@@ -1,3 +1,5 @@
+29-August-2011 Updated test packages to build under Unix, now that some packages are Windows specific.
+
 26-August-2011 Removed OSX and Unix from supported platforms of Windows specific packages.
 
 26-August-2011 Removed Windows as a supported platform for Gcc-4.4 and GccCommon-dev packages. Predicated test package scripts that reference Gcc on the supported platforms.

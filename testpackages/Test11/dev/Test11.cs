@@ -20,8 +20,10 @@ namespace Test11
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         C.ObjectFile unixSourceFile = new C.ObjectFile();
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
         Opus.Core.TypeArray WinVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray WinVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");

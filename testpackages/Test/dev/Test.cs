@@ -41,8 +41,10 @@ namespace Test
 
                 compilerOptions.AdditionalOptions = "-Wall";
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
                 MingwCommon.ICCompilerOptions mingwCompilerOptions = compilerOptions as MingwCommon.ICCompilerOptions;
                 mingwCompilerOptions.InlineFunctions = true;
+#endif
             }
             else if ("visualc" == toolchain)
             {
@@ -53,10 +55,12 @@ namespace Test
                 compilerOptions.AdditionalOptions = "/openmp";
 
                 compilerOptions.DebugSymbols = true;
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
                 VisualCCommon.ICCompilerOptions vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
                 vcCompilerOptions.DebugType = VisualCCommon.EDebugType.Embedded;
                 vcCompilerOptions.BasicRuntimeChecks = VisualCCommon.EBasicRuntimeChecks.None;
                 vcCompilerOptions.SmallerTypeConversionRuntimeCheck = false;
+#endif
             }
             else if ("gcc" == toolchain)
             {
@@ -116,6 +120,7 @@ namespace Test
                 compilerOptions.WarningsAsErrors = false;
                 //options.CharacterSet = C.Compiler.ECharacterSet.NotSet;
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
                 VisualC.CCompilerOptionCollection vcOptions = compilerOptions as VisualC.CCompilerOptionCollection;
                 if (null != vcOptions)
                 {
@@ -125,14 +130,17 @@ namespace Test
                 if (null != mingwOptions)
                 {
                 }
+#endif
             }
         }
 
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
+#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
@@ -152,8 +160,10 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
