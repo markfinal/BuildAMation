@@ -99,6 +99,11 @@ namespace VSSolutionBuilder
 
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
+                if (System.String.IsNullOrEmpty(attribute.Value))
+                {
+                    continue;
+                }
+
                 string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
                 toolElement.SetAttribute(attribute.Key, value);
             }
