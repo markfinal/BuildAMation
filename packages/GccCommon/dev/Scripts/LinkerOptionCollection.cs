@@ -101,7 +101,16 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
-                        string dynamicLibraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, "lib" + options.OutputName + ".so");
+                        string extension = null;
+                        if (Opus.Core.OSUtilities.IsUnixHosting)
+                        {
+                            extension = ".so";
+                        }
+                        else if (Opus.Core.OSUtilities.IsOSXHosting)
+                        {
+                            extension = ".dylib";
+                        }
+                        string dynamicLibraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, "lib" + options.OutputName + extension);
                         string importLibraryPathname = dynamicLibraryPathname;
                         options.OutputFilePath = dynamicLibraryPathname;
                         options.StaticImportLibraryFilePath = importLibraryPathname;
@@ -129,7 +138,15 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
                         // see http://www.adp-gmbh.ch/cpp/gcc/create_lib.html
-                        commandLineBuilder.Add(System.String.Format("-Wl,-soname,\"{0}\"", options.OutputFilePath));
+                        // see http://lists.apple.com/archives/unix-porting/2003/Oct/msg00032.html
+                        if (Opus.Core.OSUtilities.IsUnixHosting)
+                        {
+                            commandLineBuilder.Add(System.String.Format("-Wl,-soname,\"{0}\"", options.OutputFilePath));
+                        }
+                        else if (Opus.Core.OSUtilities.IsOSXHosting)
+                        {
+                            commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"{0}\"", options.OutputFilePath));
+                        }
                     }
                     break;
 
