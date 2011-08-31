@@ -29,9 +29,13 @@ namespace FileUtilities
             {
                 executable = @"c:\Windows\System32\cmd.exe";
             }
-            else if (Opus.Core.OSUtilities.IsUnixHosting)
+            else if (Opus.Core.OSUtilities.IsUnixHosting || Opus.Core.OSUtilities.IsOSXHosting)
             {
                 executable = "cp";
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Unsupported platform for CopyFiles", false);
             }
             return executable;
         }
