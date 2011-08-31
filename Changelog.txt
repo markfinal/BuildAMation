@@ -1,3 +1,5 @@
+31-August-2011 OSX Gcc compiler, archiver, and linker fixes. Dynamic libraries are not the same as for other platforms as they can be linked against but not loaded. The latter would require a bundle.
+
 29-August-2011 Updated test packages to build under Unix, now that some packages are Windows specific.
 
 26-August-2011 Removed OSX and Unix from supported platforms of Windows specific packages.

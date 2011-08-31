@@ -178,7 +178,14 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             Opus.Core.ValueTypeOption<bool> dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
-                commandLineBuilder.Add("-shared");
+                if (Opus.Core.OSUtilities.IsUnixHosting)
+                {
+                    commandLineBuilder.Add("-shared");
+                }
+                else if (Opus.Core.OSUtilities.IsOSXHosting)
+                {
+                    commandLineBuilder.Add("-dynamiclib");
+                }
             }
         }
 
