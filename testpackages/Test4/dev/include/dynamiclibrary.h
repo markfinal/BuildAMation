@@ -9,7 +9,7 @@
 #define API __declspec(dllimport)
 #endif
 
-#elif defined(__unix__)
+#elif defined(__unix__) || defined(__APPLE__)
 
 #if defined(OPUS_DYNAMICLIBRARY)
 #if __GNUC__ >= 4
@@ -20,6 +20,10 @@
 #else // OPUS_DYNAMICLIBRARY
 #define API /* empty */
 #endif // OPUS_DYNAMICLIBRARY
+
+#else
+
+#error "Unsupported platform" 
 
 #endif
 
