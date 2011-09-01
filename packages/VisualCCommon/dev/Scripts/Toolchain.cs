@@ -54,7 +54,7 @@ namespace VisualCCommon
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("Unable to locate registry key for the VisualStudio service pack");
+                    throw new Opus.Core.Exception(System.String.Format("Unable to locate registry key, '{0}', for the VisualStudio service pack", registryKeyPath), false);
                 }
 
                 edition = key.GetValue("SPName") as string;
