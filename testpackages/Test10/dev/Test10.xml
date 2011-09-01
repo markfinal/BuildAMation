@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus file:///E:/dev/GoogleCode/Opus/trunk/bin/Debug/Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
+<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus file:///Users/mark/dev/Opus/trunk/bin/Debug/Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
   <Opus:RequiredPackages>
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
@@ -8,21 +8,22 @@
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="Gcc">
-      <Opus:Version Id="4.4" />
-    </Opus:Package>
-    <Opus:Package Name="MakeFileBuilder">
-      <Opus:Version Id="dev" />
+      <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Unix'" />
+      <Opus:Version Id="4.0.1" Condition="'$(Platform)' == 'OSX'" />
     </Opus:Package>
     <Opus:Package Name="Mingw">
       <Opus:Version Id="3.4.5" />
     </Opus:Package>
-    <Opus:Package Name="NativeBuilder">
+    <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="VisualC">
       <Opus:Version Id="9.0" />
     </Opus:Package>
     <Opus:Package Name="VSSolutionBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="WindowsSDK">
