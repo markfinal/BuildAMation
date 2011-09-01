@@ -35,7 +35,14 @@ namespace GccCommon
                 }
                 else if (Opus.Core.OSUtilities.IsOSXHosting)
                 {
-                    subPath = "powerpc-apple-darwin9";
+                    if (Opus.Core.State.IsLittleEndian)
+                    {
+                        throw new Opus.Core.Exception("OSX little endian not yet supported", true);
+                    }
+                    else
+                    {
+                        subPath = "powerpc-apple-darwin9";
+                    }
                 }
 
                 return subPath;
