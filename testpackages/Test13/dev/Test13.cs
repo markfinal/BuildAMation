@@ -82,7 +82,7 @@ namespace Test13
     {
         public PublishDynamicLibraries(Opus.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 if (Opus.Core.EConfiguration.Debug == target.Configuration)
                 {
@@ -95,7 +95,7 @@ namespace Test13
                     this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGui4.dll");
                 }
             }
-            else if (Opus.Core.OSUtilities.IsUnixHosting)
+            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "libQtCore.so");
                 this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "libQtGui.so");
