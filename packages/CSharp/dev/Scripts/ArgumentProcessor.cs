@@ -1,48 +1,59 @@
-// <copyright file="ArgumentProcessor.cs" company="Mark Final">
+// <copyright file="ToolchainAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>CSharp package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.ArgumentProcessor(typeof(CSharp.ArgumentProcessor))]
+
+[assembly: Opus.Core.RegisterAction(typeof(CSharp.ToolchainAction))]
 
 namespace CSharp
 {
-    public sealed class ArgumentProcessor : Opus.Core.IArgumentProcessor
+    public sealed class ToolchainAction : Opus.Core.IActionWithArguments
     {
-        private readonly string ToolchainSwitch = "-CSharp.toolchain";
-
-        public ArgumentProcessor()
+        private string Toolchain
         {
+            get;
+            set;
         }
 
-        public bool Process(string argument)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] split = argument.Split(new char[] { '=' });
-            if (split.Length != 2)
+            this.Toolchain = arguments;
+        }
+
+        string Opus.Core.IAction.CommandLineSwitch
+        {
+            get
             {
-                return false;
+                return "-CSharp.toolchain";
+            }
+        }
+
+        string Opus.Core.IAction.Description
+        {
+            get
+            {
+                return "Assign the toolchain used for building C# code";
+            }
+        }
+
+        bool Opus.Core.IAction.Execute()
+        {
+            Opus.Core.Log.DebugMessage("C# toolchain is '{0}'", this.Toolchain);
+
+            if (!Opus.Core.State.HasCategory("Toolchains"))
+            {
+                Opus.Core.State.AddCategory("Toolchains");
             }
 
-            if (ToolchainSwitch == split[0])
+            if (Opus.Core.State.Has("Toolchains", "CSharp"))
             {
-                Opus.Core.Log.DebugMessage("CSharp toolchain is '{0}'", split[1]);
-
-                if (!Opus.Core.State.HasCategory("Toolchains"))
-                {
-                    Opus.Core.State.AddCategory("Toolchains");
-                }
-
-                if (Opus.Core.State.Has("Toolchains", "CSharp"))
-                {
-                    throw new Opus.Core.Exception(System.String.Format("Toolchain for 'CSharp' has already been defined as '{0}'", Opus.Core.State.Get("Toolchains", "CSharp") as string));
-                }
-
-                Opus.Core.State.Add<string>("Toolchains", "CSharp", split[1]);
-
-                return true;
+                throw new Opus.Core.Exception(System.String.Format("Toolchain for 'CSharp' (C#) has already been defined as '{0}'", Opus.Core.State.Get("Toolchains", "CSharp") as string));
             }
 
-            return false;
+            Opus.Core.State.Add<string>("Toolchains", "CSharp", this.Toolchain);
+
+            return true;
         }
     }
 }

@@ -1,31 +1,55 @@
-// <copyright file="ArgumentProcessor.cs" company="Mark Final">
+// <copyright file="InstallPathAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VisualCCommon package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.ArgumentProcessor(typeof(VisualCCommon.ArgumentProcessor))]
+
+[assembly: Opus.Core.RegisterAction(typeof(VisualCCommon.InstallPathAction))]
 
 namespace VisualCCommon
 {
-    public sealed class ArgumentProcessor : Opus.Core.IArgumentProcessor
+    public sealed class InstallPathAction : Opus.Core.IActionWithArguments
     {
-        private readonly string InstallPathSwitch = "-visualc.installpath";
-
-        public bool Process(string argument)
+        private string InstallPath
         {
-            string[] split = argument.Split(new char[] { '=' });
-            if (split.Length == 2)
-            {
-                if (split[0] == InstallPathSwitch)
-                {
-                    Opus.Core.State.AddCategory("VisualC");
-                    Opus.Core.State.Set("VisualC", "InstallPath", split[1]);
+            get;
+            set;
+        }
 
-                    return true;
-                }
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        {
+            this.InstallPath = arguments;
+        }
+
+        string Opus.Core.IAction.CommandLineSwitch
+        {
+            get
+            {
+                return "-visualc.installpath";
+            }
+        }
+
+        string Opus.Core.IAction.Description
+        {
+            get
+            {
+                return "Override the VisualC installation path";
+            }
+        }
+
+        bool Opus.Core.IAction.Execute()
+        {
+            if (!System.IO.Directory.Exists(this.InstallPath))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Path '{0}' does not exist", this.InstallPath), false);
             }
 
-            return false;
+            Opus.Core.State.AddCategory("VisualC");
+            Opus.Core.State.Set("VisualC", "InstallPath", this.InstallPath);
+
+            Opus.Core.Log.DebugMessage("VisualC installation path is now '{0}'", this.InstallPath);
+
+            return true;
         }
     }
 }

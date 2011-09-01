@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="ActionManager.cs" />
     <Compile Include="Array.cs" />
-    <Compile Include="Attributes\ArgumentProcessorAttribute.cs" />
     <Compile Include="Attributes\AssignToolForModuleAttribute.cs" />
     <Compile Include="Attributes\BaseTargetFilteredAttribute.cs" />
     <Compile Include="Attributes\DependentModulesAttribute.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="FileCollection.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\IActionWithArguments.cs" />
-    <Compile Include="Interfaces\IArgumentProcessor.cs" />
     <Compile Include="Interfaces\IBuilder.cs" />
     <Compile Include="Interfaces\IFieldAttributeProcessor.cs" />
     <Compile Include="Interfaces\IGlobalOptionCollectionOverride.cs" />

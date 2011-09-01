@@ -1,62 +1,64 @@
-31-August-2011 OSX Gcc compiler, archiver, and linker fixes. Dynamic libraries are not the same as for other platforms as they can be linked against but not loaded. The latter would require a bundle.
+01-Sep-2011 Removed legacy ArgumentProcessor interface and attribute. Replaced all existing uses of this (command switches in plugin packages) with Opus.Core.IAction classes.
 
-29-August-2011 Updated test packages to build under Unix, now that some packages are Windows specific.
+31-Aug-2011 OSX Gcc compiler, archiver, and linker fixes. Dynamic libraries are not the same as for other platforms as they can be linked against but not loaded. The latter would require a bundle.
 
-26-August-2011 Removed OSX and Unix from supported platforms of Windows specific packages.
+29-Aug-2011 Updated test packages to build under Unix, now that some packages are Windows specific.
 
-26-August-2011 Removed Windows as a supported platform for Gcc-4.4 and GccCommon-dev packages. Predicated test package scripts that reference Gcc on the supported platforms.
+26-Aug-2011 Removed OSX and Unix from supported platforms of Windows specific packages.
 
-26-August-2011 Upgraded the definition files for those packages in the 'testpackages' root.
+26-Aug-2011 Removed Windows as a supported platform for Gcc-4.4 and GccCommon-dev packages. Predicated test package scripts that reference Gcc on the supported platforms.
 
-26-August-2011 Upgraded the definition files for those packages in the 'packages' root.
+26-Aug-2011 Upgraded the definition files for those packages in the 'testpackages' root.
 
-26-August-2011 Improved the build timing breakdown and display.
+26-Aug-2011 Upgraded the definition files for those packages in the 'packages' root.
 
-25-August-2011 Added QtCommon-dev package to share the common parts of the Qt packages.
+26-Aug-2011 Improved the build timing breakdown and display.
 
-25-August-2011 VisualC runtime checks are not compatible with managed C++ code.
+25-Aug-2011 Added QtCommon-dev package to share the common parts of the Qt packages.
 
-25-August-2011 Fixing VSSolutionBuilder compilation errors when both C and CSharp toolchains are required in a build.
+25-Aug-2011 VisualC runtime checks are not compatible with managed C++ code.
 
-25-August-2011 Improved exception message if Opus cannot locate a class in it's module database to add option updates from.
+25-Aug-2011 Fixing VSSolutionBuilder compilation errors when both C and CSharp toolchains are required in a build.
 
-25-August-2011 ModuleUtilities.GetModule will now return an IModule if it is a valid base class. This allows for base classes to also add option update delegates.
+25-Aug-2011 Improved exception message if Opus cannot locate a class in it's module database to add option updates from.
 
-25-August-2011 Changed end of the build from "Build complete" to "Build finished" as complete sounds like success.
+25-Aug-2011 ModuleUtilities.GetModule will now return an IModule if it is a valid base class. This allows for base classes to also add option update delegates.
 
-24-August-2011 Added C compiler option OmitFramePointer.
-               Added Gcc and Mingw compiler option InlineFunctions.
-               Added VisualC compiler options InlineFunctionExpansion and EnableIntrinsicFunctions.
+25-Aug-2011 Changed end of the build from "Build complete" to "Build finished" as complete sounds like success.
 
-23-August-2011 Fixed testpackage Test-dev to compile in debug with VisualC, and extended to try out AdditionalOptions on all supported compilers.
+24-Aug-2011 Added C compiler option OmitFramePointer.
+            Added Gcc and Mingw compiler option InlineFunctions.
+            Added VisualC compiler options InlineFunctionExpansion and EnableIntrinsicFunctions.
 
-23-August-2011 C archiver, compiler and linker "AdditionalOptions" added, that blindly adds space separated options to the appropriate tool. Use this to add options that the Opus plugin doesn't yet expose.
-               VisualC compiler added "BasicRuntimeChecks" and "SmallerTypeConversionRuntimeCheck" options.
+23-Aug-2011 Fixed testpackage Test-dev to compile in debug with VisualC, and extended to try out AdditionalOptions on all supported compilers.
 
-23-August-2011 C compilation #defines added:
-               * D_OPUS_PLATFORM_BITS=<n> where n is 32 or 64.
-               * D_OPUS_PLATFORM_LITTLEENDIAN for little endian platforms.
-               * D_OPUS_PLATFORM_BIGENDIAN for big endian platforms.
+23-Aug-2011 C archiver, compiler and linker "AdditionalOptions" added, that blindly adds space separated options to the appropriate tool. Use this to add options that the Opus plugin doesn't yet expose.
+            VisualC compiler added "BasicRuntimeChecks" and "SmallerTypeConversionRuntimeCheck" options.
 
-23-August-2011 Added OPUS_HOST_<platform> to the script compiler #defines.
+23-Aug-2011 C compilation #defines added:
+            * D_OPUS_PLATFORM_BITS=<n> where n is 32 or 64.
+            * D_OPUS_PLATFORM_LITTLEENDIAN for little endian platforms.
+            * D_OPUS_PLATFORM_BIGENDIAN for big endian platforms.
 
-23-August-2011 Added more options for converting Opus.Core.EPlatform to a string.
+23-Aug-2011 Added OPUS_HOST_<platform> to the script compiler #defines.
 
-21-August-2011 Added Opus.Core.State.IsLittleEndian to query the endianness of the host platform. Might be useful on OSX.
+23-Aug-2011 Added more options for converting Opus.Core.EPlatform to a string.
 
-21-August-2011 Removed old platform detection code. The new code is known to run on all supported platforms.
+21-Aug-2011 Added Opus.Core.State.IsLittleEndian to query the endianness of the host platform. Might be useful on OSX.
 
-21-August-2011 Removing unnecessary namespace resolution in the Opus code.
+21-Aug-2011 Removed old platform detection code. The new code is known to run on all supported platforms.
 
-21-August-2011 Package definition file (.xml in the package folder) schema change and package backend update to support packages of the same name, but different versions, for different platforms.
-               New schema specifies dependent packages as before but with conditions, based on platforms; the Opus assemblies required, the system assemblies required, #defines to pass to the package compilation, and supported platforms for the package. The definition file is now a complete description of how to compile the package. Opus has been extended with command line options to act on these additional features.
-               Legacy package definition files will be automatically upgraded to the new schema. There may be inaccurate data in there, with the new features.
-               New Core class, PackageIdentifier, that is the minimum information needed to resolve package dependencies.
-               Package dependencies are resolved early, and will only load the package definition files once.
-               Timings are displayed at the end of build actions.
-               Command line arguments to Opus are lazily evaluated from left to right (response files are inlined in place), and repeated specification of the same argument will override any existing value.
-               Existing package definition files have not been updated to the latest schema in this commit, to illustrate the schema upgrade process in a future commit.
-               Some command line arguments have changed. Please check the latest help with 'Opus -help'.
+21-Aug-2011 Removing unnecessary namespace resolution in the Opus code.
+
+21-Aug-2011 Package definition file (.xml in the package folder) schema change and package backend update to support packages of the same name, but different versions, for different platforms.
+            New schema specifies dependent packages as before but with conditions, based on platforms; the Opus assemblies required, the system assemblies required, #defines to pass to the package compilation, and supported platforms for the package. The definition file is now a complete description of how to compile the package. Opus has been extended with command line options to act on these additional features.
+            Legacy package definition files will be automatically upgraded to the new schema. There may be inaccurate data in there, with the new features.
+            New Core class, PackageIdentifier, that is the minimum information needed to resolve package dependencies.
+            Package dependencies are resolved early, and will only load the package definition files once.
+            Timings are displayed at the end of build actions.
+            Command line arguments to Opus are lazily evaluated from left to right (response files are inlined in place), and repeated specification of the same argument will override any existing value.
+            Existing package definition files have not been updated to the latest schema in this commit, to illustrate the schema upgrade process in a future commit.
+            Some command line arguments have changed. Please check the latest help with 'Opus -help'.
 
 13-May-2011 Set version to 0.30.
 

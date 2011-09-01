@@ -532,21 +532,37 @@ namespace Opus.Core
         {
             if (State.LazyArguments.Count > 0)
             {
-                string[] copyOfLazyArguments = State.LazyArguments.ToArray();
-                ArgumentProcessorAttribute[] argumentProcessors = State.ScriptAssembly.GetCustomAttributes(typeof(ArgumentProcessorAttribute), false) as ArgumentProcessorAttribute[];
-                foreach (ArgumentProcessorAttribute argumentProcessor in argumentProcessors)
+                var actions = ActionManager.ScriptActions;
+                StringArray lazyCommandsProcessed = new StringArray();
+                foreach (string command in State.LazyArguments.Keys)
                 {
-                    foreach (string command in copyOfLazyArguments)
+                    foreach (var action in actions)
                     {
-                        bool processed = argumentProcessor.Process(command);
-                        if (processed)
+                        Core.IAction iaction = action.Action;
+                        if (iaction.CommandLineSwitch == command)
                         {
-                            State.LazyArguments.Remove(command);
+                            if (iaction is IActionWithArguments)
+                            {
+                                (iaction as IActionWithArguments).AssignArguments(State.LazyArguments[command]);
+                            }
+
+                            if (!iaction.Execute())
+                            {
+                                throw new Exception(System.String.Format("Action '{0}' failed", command), false);
+                            }
+
+                            lazyCommandsProcessed.Add(command);
                         }
                     }
                 }
 
-                copyOfLazyArguments = null;
+                // remove those that have been processed
+                foreach (string command in lazyCommandsProcessed)
+                {
+                    State.LazyArguments.Remove(command);
+                }
+
+                lazyCommandsProcessed = null;
 
                 HandleUnprocessedArguments();
             }
@@ -557,7 +573,7 @@ namespace Opus.Core
             if (State.LazyArguments.Count > 0)
             {
                 string message = "Unrecognized command line arguments:\n";
-                foreach (string command in State.LazyArguments)
+                foreach (string command in State.LazyArguments.Keys)
                 {
                     message += "\t'" + command + "'\n";
                 }

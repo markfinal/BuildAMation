@@ -79,7 +79,7 @@ namespace Opus.Core
             Add<TargetCollection>("Build", "Targets", new TargetCollection());
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
-            Add<StringArray>("Build", "LazyArguments", new StringArray());
+            Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
             Add<StringArray>("Build", "Platforms", null);
             Add<Array<EConfiguration>>("Build", "Configurations", null);
             Add<StringArray>("Build", "Modules", null);
@@ -435,7 +435,7 @@ namespace Opus.Core
             }
         }
 
-        public static StringArray LazyArguments
+        public static System.Collections.Generic.Dictionary<string,string> LazyArguments
         {
             set
             {
@@ -444,7 +444,7 @@ namespace Opus.Core
 
             get
             {
-                return Get("Build", "LazyArguments") as StringArray;
+                return Get("Build", "LazyArguments") as System.Collections.Generic.Dictionary<string, string>;
             }
         }
 

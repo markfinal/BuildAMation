@@ -1,35 +1,44 @@
-// <copyright file="ArgumentProcessor.cs" company="Mark Final">
+// <copyright file="ForceBuildAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>NativeBuilder package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.ArgumentProcessor(typeof(NativeBuilder.ArgumentProcessor))]
+
+[assembly: Opus.Core.RegisterAction(typeof(NativeBuilder.ForceBuildAction))]
 
 namespace NativeBuilder
 {
-    public sealed class ArgumentProcessor : Opus.Core.IArgumentProcessor
+    public sealed class ForceBuildAction : Opus.Core.IAction
     {
-        private readonly string ForceBuildSwitch = "-forcebuild";
-
-        public ArgumentProcessor()
+        public ForceBuildAction()
         {
             Opus.Core.State.AddCategory("NativeBuilder");
             Opus.Core.State.Add<bool>("NativeBuilder", "ForceBuild", false);
         }
 
-        public bool Process(string argument)
+        string Opus.Core.IAction.CommandLineSwitch
         {
-            if (Opus.Core.State.BuilderName == "Native")
+            get
             {
-                if (ForceBuildSwitch == argument)
-                {
-                    Opus.Core.State.Set("NativeBuilder", "ForceBuild", true);
-
-                    return true;
-                }
+                return "-forcebuild";
             }
+        }
 
-            return false;
+        string Opus.Core.IAction.Description
+        {
+            get
+            {
+                return "Force a build by not performing any dependency checks";
+            }
+        }
+
+        bool Opus.Core.IAction.Execute()
+        {
+            Opus.Core.State.Set("NativeBuilder", "ForceBuild", true);
+
+            Opus.Core.Log.DebugMessage("Native builds are now forced");
+
+            return true;
         }
     }
 }

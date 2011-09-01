@@ -151,12 +151,7 @@ namespace Opus
 
                 if (!foundAction)
                 {
-                    string lazyArgument = commandName;
-                    if (null != commandValue)
-                    {
-                        lazyArgument += "=" + commandValue;
-                    }
-                    Core.State.LazyArguments.Add(lazyArgument);
+                    Core.State.LazyArguments[commandName] = commandValue;
                 }
             }
 

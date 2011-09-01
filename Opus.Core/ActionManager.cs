@@ -9,12 +9,15 @@ namespace Opus.Core
     {
         private static Array<RegisterActionAttribute> actions = null;
 
+        private static Array<RegisterActionAttribute> GetActionsFromAssembly(System.Reflection.Assembly assembly)
+        {
+            RegisterActionAttribute[] customAttributes = assembly.GetCustomAttributes(typeof(RegisterActionAttribute), false) as RegisterActionAttribute[];
+            return new Array<RegisterActionAttribute>(customAttributes);
+        }
+
         static ActionManager()
         {
-            // TODO: might want to search across all loaded assemblies
-            System.Reflection.Assembly executingAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            RegisterActionAttribute[] customAttributes = executingAssembly.GetCustomAttributes(typeof(RegisterActionAttribute), false) as RegisterActionAttribute[];
-            actions = new Array<RegisterActionAttribute>(customAttributes);
+            actions = GetActionsFromAssembly(System.Reflection.Assembly.GetEntryAssembly());
         }
 
         public static Array<RegisterActionAttribute> Actions
@@ -22,6 +25,14 @@ namespace Opus.Core
             get
             {
                 return actions;
+            }
+        }
+
+        public static Array<RegisterActionAttribute> ScriptActions
+        {
+            get
+            {
+                return GetActionsFromAssembly(State.ScriptAssembly);
             }
         }
 
