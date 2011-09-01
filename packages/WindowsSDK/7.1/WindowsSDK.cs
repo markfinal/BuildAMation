@@ -16,7 +16,7 @@ namespace WindowsSDK
 
         static WindowsSDK()
         {
-            if (Opus.Core.State.Platform != EPlatform.Windows)
+            if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
             }
@@ -51,13 +51,13 @@ namespace WindowsSDK
         void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
-            if (target.Platform == "win32")
+            if (target.Platform == Opus.Core.EPlatform.Win32)
             {
-                linkerOptions.LibraryPaths.Add(lib32Path, true);
+                linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib32Path, true);
             }
-            else if (target.Platform == "win64")
+            else if (target.Platform == Opus.Core.EPlatform.Win64)
             {
-                linkerOptions.LibraryPaths.Add(lib64Path, true);
+                linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib64Path, true);
             }
             else
             {
@@ -69,7 +69,7 @@ namespace WindowsSDK
         void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(includePath);
+            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
         }
 
         public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
