@@ -6,9 +6,11 @@ for package in $(find $root -maxdepth 1 -type d \( ! -iname ".*" \) ); do
     for version in $(find ${package} -maxdepth 1 -type d \( ! -iname ".*" \) ); do
       if [[ "$version" != "${package}" ]]; then
         if [ -d "$version/build" ]; then
+            echo "Deleting '$version/build' directory and all children"
             rm -fr $version/build
         fi
         if [ -d "$version/Opus" ]; then
+            echo "Deleting '$version/Opus' directory and all children"
             rm -fr $version/Opus
         fi
       fi
