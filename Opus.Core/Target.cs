@@ -100,30 +100,36 @@ namespace Opus.Core
 
             private set
             {
+                bool isValid = true;
                 if (OSUtilities.IsWindows(value))
                 {
                     if (!OSUtilities.IsWindowsHosting)
                     {
-                        throw new Exception(System.String.Format("Platform '{0}' is not supported on this OS '{1}'", value, System.Environment.OSVersion.Platform.ToString()));
+                        isValid = false;
                     }
                 }
                 else if (OSUtilities.IsUnix(value))
                 {
                     if (!OSUtilities.IsUnixHosting)
                     {
-                        throw new Exception(System.String.Format("Platform '{0}' is not supported on this OS '{1}'", value, System.Environment.OSVersion.Platform.ToString()));
+                        isValid = false;
                     }
                 }
                 else if (OSUtilities.IsOSX(value))
                 {
                     if (!OSUtilities.IsOSXHosting)
                     {
-                        throw new Exception(System.String.Format("Platform '{0}' is not supported on this OS '{1}'", value, System.Environment.OSVersion.Platform.ToString()));
+                        isValid = false;
                     }
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Platform '{0}' is not supported", value));
+                    throw new Exception(System.String.Format("Platform '{0}' is not supported", value), false);
+                }
+
+                if (!isValid)
+                {
+                    throw new Exception(System.String.Format("Platform '{0}' is not supported on this OS '{1}'", value, System.Environment.OSVersion.Platform.ToString()), false);
                 }
 
                 this.platform = value;
@@ -151,7 +157,7 @@ namespace Opus.Core
         {
             if (!this.IsFullyFormed)
             {
-                throw new Exception("Cannot clone an incomplete Target");
+                throw new Exception("Cannot clone an incomplete Target", false);
             }
 
             Target clonedTarget = new Target(this.Platform, this.Configuration, this.Toolchain);
