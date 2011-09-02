@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Set platforms to build";
+                return "Set platforms to build (semi-colon separated)";
             }
         }
 

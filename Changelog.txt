@@ -1,3 +1,5 @@
+02-Sep-2011 Updated many actions to take a semi-colon separated list of arguments. In real use cases, it was becoming time consuming to repeat calls to do the same thing with different arguments, e.g. remove platform filters.
+
 01-Sep-2011 Removed legacy ArgumentProcessor interface and attribute. Replaced all existing uses of this (command switches in plugin packages) with Opus.Core.IAction classes.
 
 31-Aug-2011 OSX Gcc compiler, archiver, and linker fixes. Dynamic libraries are not the same as for other platforms as they can be linked against but not loaded. The latter would require a bundle.

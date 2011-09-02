@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Adds a #define to the Opus package compilation step";
+                return "Adds a #define to the Opus package compilation step (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.Definition = arguments;
+            string[] definitions = arguments.Split(';');
+            this.DefinitionArray = new Opus.Core.StringArray(definitions);
         }
 
-        private string Definition
+        private Core.StringArray DefinitionArray
         {
             get;
             set;
@@ -57,19 +58,30 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            if (!xmlFile.Definitions.Contains(this.Definition))
+            bool success = false;
+            foreach (string definition in this.DefinitionArray)
             {
-                xmlFile.Definitions.Add(this.Definition);
+                if (!xmlFile.Definitions.Contains(definition))
+                {
+                    xmlFile.Definitions.Add(definition);
+
+                    Core.Log.MessageAll("Added #define '{0}' to package '{1}'", definition, mainPackageId.ToString());
+
+                    success = true;
+                }
+                else
+                {
+                    Core.Log.MessageAll("#define '{0}' already used by package '{1}'", definition, mainPackageId.ToString());
+                }
+            }
+
+            if (success)
+            {
                 xmlFile.Write();
-
-                Core.Log.MessageAll("Added #define '{0}' to package '{1}'", this.Definition, mainPackageId.ToString());
-
                 return true;
             }
             else
             {
-                Core.Log.MessageAll("#define '{0}' already used by package '{1}'", this.Definition, mainPackageId.ToString());
-
                 return false;
             }
         }

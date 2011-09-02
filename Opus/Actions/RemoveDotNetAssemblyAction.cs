@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Removes a DotNet assembly from the package definition";
+                return "Removes a DotNet assembly from the package definition (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.DotNetAssemblyName = arguments;
+            string[] assemblyNames = arguments.Split(';');
+            this.DotNetAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
-        private string DotNetAssemblyName
+        private Core.StringArray DotNetAssemblyNameArray
         {
             get;
             set;
@@ -57,28 +58,39 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            Core.DotNetAssemblyDescription foundDesc = null;
-            foreach (Core.DotNetAssemblyDescription desc in xmlFile.DotNetAssemblies)
+            bool success = false;
+            foreach (string dotNetAssemblyName in this.DotNetAssemblyNameArray)
             {
-                if (desc.Name == this.DotNetAssemblyName)
+                Core.DotNetAssemblyDescription foundDesc = null;
+                foreach (Core.DotNetAssemblyDescription desc in xmlFile.DotNetAssemblies)
                 {
-                    foundDesc = desc;
+                    if (desc.Name == dotNetAssemblyName)
+                    {
+                        foundDesc = desc;
+                    }
+                }
+
+                if (null != foundDesc)
+                {
+                    xmlFile.DotNetAssemblies.Remove(foundDesc);
+
+                    Core.Log.MessageAll("Removed DotNet assembly '{0}' from package '{1}'", dotNetAssemblyName, mainPackageId.ToString());
+
+                    success = true;
+                }
+                else
+                {
+                    Core.Log.MessageAll("Could not find DotNet assembly '{0}' in package '{1}'", dotNetAssemblyName, mainPackageId.ToString());
                 }
             }
 
-            if (null != foundDesc)
+            if (success)
             {
-                xmlFile.DotNetAssemblies.Remove(foundDesc);
                 xmlFile.Write();
-
-                Core.Log.MessageAll("Removed DotNet assembly '{0}' from package '{1}'", this.DotNetAssemblyName, mainPackageId.ToString());
-
                 return true;
             }
             else
             {
-                Core.Log.MessageAll("Could not find DotNet assembly '{0}' in package '{1}'", this.DotNetAssemblyName, mainPackageId.ToString());
-
                 return false;
             }
         }

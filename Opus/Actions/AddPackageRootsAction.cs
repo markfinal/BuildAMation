@@ -11,8 +11,6 @@ namespace Opus
     [Core.PreambleAction]
     internal class AddPackageRootsAction : Core.IActionWithArguments
     {
-        private Core.StringArray packageRoots = new Core.StringArray();
-
         public string CommandLineSwitch
         {
             get
@@ -25,18 +23,25 @@ namespace Opus
         {
             get
             {
-                return "Add package roots";
+                return "Add package roots (semi-colon separated)";
             }
+        }
+
+        private Core.StringArray PackageRoots
+        {
+            get;
+            set;
         }
 
         public void AssignArguments(string arguments)
         {
-            packageRoots.AddRange(arguments.Split(';'));
+            string[] roots = arguments.Split(';');
+            this.PackageRoots = new Opus.Core.StringArray(roots);
         }
 
         public bool Execute()
         {
-            Core.State.PackageRoots.AddRange(packageRoots.ToArray());
+            Core.State.PackageRoots.AddRange(this.PackageRoots.ToArray());
 
             return true;
         }

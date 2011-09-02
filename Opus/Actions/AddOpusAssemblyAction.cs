@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Adds an Opus assembly to the package definition";
+                return "Adds an Opus assembly to the package definition (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.OpusAssemblyName = arguments;
+            string[] assemblyNames = arguments.Split(';');
+            this.OpusAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
-        private string OpusAssemblyName
+        private Core.StringArray OpusAssemblyNameArray
         {
             get;
             set;
@@ -57,19 +58,30 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            if (!xmlFile.OpusAssemblies.Contains(this.OpusAssemblyName))
+            bool success = false;
+            foreach (string OpusAssemblyName in this.OpusAssemblyNameArray)
             {
-                xmlFile.OpusAssemblies.Add(this.OpusAssemblyName);
+                if (!xmlFile.OpusAssemblies.Contains(OpusAssemblyName))
+                {
+                    xmlFile.OpusAssemblies.Add(OpusAssemblyName);
+
+                    Core.Log.MessageAll("Added Opus assembly '{0}' to package '{1}'", OpusAssemblyName, mainPackageId.ToString());
+
+                    success = true;
+                }
+                else
+                {
+                    Core.Log.MessageAll("Opus assembly '{0}' already used by package '{1}'", OpusAssemblyName, mainPackageId.ToString());
+                }
+            }
+
+            if (success)
+            {
                 xmlFile.Write();
-
-                Core.Log.MessageAll("Added Opus assembly '{0}' to package '{1}'", this.OpusAssemblyName, mainPackageId.ToString());
-
                 return true;
             }
             else
             {
-                Core.Log.MessageAll("Opus assembly '{0}' already used by package '{1}'", this.OpusAssemblyName, mainPackageId.ToString());
-
                 return false;
             }
         }

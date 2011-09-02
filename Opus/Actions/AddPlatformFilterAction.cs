@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Adds a platform filter to the specified dependent";
+                return "Adds a platform filter to the specified dependent (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.Platform = arguments;
+            string[] platforms = arguments.Split(';');
+            this.PlatformArray = new Opus.Core.StringArray(platforms);
         }
 
-        private string Platform
+        private Core.StringArray PlatformArray
         {
             get;
             set;
@@ -40,12 +41,6 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.EPlatform requestedFilter = Core.Platform.FromString(this.Platform);
-            if (Core.EPlatform.Invalid == requestedFilter)
-            {
-                throw new Core.Exception(System.String.Format("Platform filter specified, '{0}', is not recognized", this.Platform), false);
-            }
-
             SetDependentAction setDependentAction = Core.ActionManager.FindByType(typeof(SetDependentAction)) as SetDependentAction;
             if (null == setDependentAction)
             {
@@ -77,28 +72,35 @@ namespace Opus
                 }
             }
 
-            if (null != foundId)
+            if (null == foundId)
             {
+                Core.Log.MessageAll("Could not locate package '{0}' as a dependency", setDependentAction.DependentPackageAndVersion);
+                return false;
+            }
+
+            foreach (string platformFilter in this.PlatformArray)
+            {
+                Core.EPlatform requestedFilter = Core.Platform.FromString(platformFilter);
+                if (Core.EPlatform.Invalid == requestedFilter)
+                {
+                    throw new Core.Exception(System.String.Format("Platform filter specified, '{0}', is not recognized", platformFilter), false);
+                }
+
                 Core.EPlatform oldFilter = foundId.PlatformFilter;
                 if (Core.Platform.Contains(oldFilter, requestedFilter))
                 {
-                    throw new Core.Exception(System.String.Format("Package '{0}' with dependent '{1}' already has a platform filter for '{2}'", nameAndVersion[0], setDependentAction.DependentPackageAndVersion, this.Platform), false);
+                    throw new Core.Exception(System.String.Format("Package '{0}' with dependent '{1}' already has a platform filter for '{2}'", nameAndVersion[0], setDependentAction.DependentPackageAndVersion, platformFilter), false);
                 }
 
                 Core.EPlatform newFilter = oldFilter | requestedFilter;
                 foundId.PlatformFilter = newFilter;
 
-                mainPackageId.Definition.Write();
-
-                Core.Log.MessageAll("Package '{0}' has platform filter '{1}' added", setDependentAction.DependentPackageAndVersion, this.Platform);
-
-                return true;
+                Core.Log.MessageAll("Package '{0}' has platform filter '{1}' added", setDependentAction.DependentPackageAndVersion, platformFilter);
             }
-            else
-            {
-                Core.Log.MessageAll("Could not locate package '{0}' as a dependency", setDependentAction.DependentPackageAndVersion);
-                return false;
-            }
+
+            mainPackageId.Definition.Write();
+
+            return true;
         }
     }
 }

@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Removes an Opus assembly from the package definition";
+                return "Removes an Opus assembly from the package definition (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.OpusAssemblyName = arguments;
+            string[] assemblyNames = arguments.Split(';');
+            this.OpusAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
-        private string OpusAssemblyName
+        private Core.StringArray OpusAssemblyNameArray
         {
             get;
             set;
@@ -57,19 +58,30 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            if (xmlFile.OpusAssemblies.Contains(this.OpusAssemblyName))
+            bool success = false;
+            foreach (string opusAssemblyName in this.OpusAssemblyNameArray)
             {
-                xmlFile.OpusAssemblies.Remove(this.OpusAssemblyName);
+                if (xmlFile.OpusAssemblies.Contains(opusAssemblyName))
+                {
+                    xmlFile.OpusAssemblies.Remove(opusAssemblyName);
+
+                    Core.Log.MessageAll("Removed Opus assembly '{0}' from package '{1}'", opusAssemblyName, mainPackageId.ToString());
+
+                    success = true;
+                }
+                else
+                {
+                    Core.Log.MessageAll("Opus assembly '{0}' was not used by package '{1}'", opusAssemblyName, mainPackageId.ToString());
+                }
+            }
+
+            if (success)
+            {
                 xmlFile.Write();
-
-                Core.Log.MessageAll("Removed Opus assembly '{0}' from package '{1}'", this.OpusAssemblyName, mainPackageId.ToString());
-
                 return true;
             }
             else
             {
-                Core.Log.MessageAll("Opus assembly '{0}' was not used by package '{1}'", this.OpusAssemblyName, mainPackageId.ToString());
-
                 return false;
             }
         }

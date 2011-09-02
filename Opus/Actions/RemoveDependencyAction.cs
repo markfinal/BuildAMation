@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Remove dependent package";
+                return "Remove dependent package (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.PackageAndVersion = arguments;
+            string[] packageAndVersions = arguments.Split(';');
+            this.PackageAndVersionArray = new Opus.Core.StringArray(packageAndVersions);
         }
 
-        private string PackageAndVersion
+        private Core.StringArray PackageAndVersionArray
         {
             get;
             set;
@@ -57,19 +58,31 @@ namespace Opus
                 definitionFile.Read();
             }
 
-            string[] packageNameAndVersion = this.PackageAndVersion.Split('-');
-            if (packageNameAndVersion.Length != 2)
+            bool success = true;
+            foreach (string packageAndVersion in this.PackageAndVersionArray)
             {
-                throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", this.PackageAndVersion), false);
+                string[] packageNameAndVersion = packageAndVersion.Split('-');
+                if (packageNameAndVersion.Length != 2)
+                {
+                    throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
+                }
+
+                Core.PackageIdentifier id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                if (definitionFile.RemovePackage(id))
+                {
+                    success = true;
+                }
             }
 
-            Core.PackageIdentifier id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
-            if (definitionFile.RemovePackage(id))
+            if (success)
             {
                 definitionFile.Write();
+                return true;
             }
-
-            return true;
+            else
+            {
+                return false;
+            }
         }
     }
 }

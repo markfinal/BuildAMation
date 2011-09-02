@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Adds a supported platform to the package";
+                return "Adds a supported platform to the package (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.Platform = arguments;
+            string[] platforms = arguments.Split(';');
+            this.PlatformArray = new Opus.Core.StringArray(platforms);
         }
 
-        private string Platform
+        private Core.StringArray PlatformArray
         {
             get;
             set;
@@ -57,21 +58,33 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            Core.EPlatform platform = Core.Platform.FromString(this.Platform);
-
-            if (!Core.Platform.Contains(xmlFile.SupportedPlatforms, platform))
+            bool success = false;
+            foreach (string supportedPlatform in this.PlatformArray)
             {
-                xmlFile.SupportedPlatforms |= platform;
+                Core.EPlatform platform = Core.Platform.FromString(supportedPlatform);
+
+                if (!Core.Platform.Contains(xmlFile.SupportedPlatforms, platform))
+                {
+                    xmlFile.SupportedPlatforms |= platform;
+                    xmlFile.Write();
+
+                    Core.Log.MessageAll("Added supported platform '{0}' to package '{1}'", supportedPlatform, mainPackageId.ToString());
+
+                    success = true;
+                }
+                else
+                {
+                    Core.Log.MessageAll("Platform '{0}' already supported by package '{1}'", supportedPlatform, mainPackageId.ToString());
+                }
+            }
+
+            if (success)
+            {
                 xmlFile.Write();
-
-                Core.Log.MessageAll("Added platform '{0}' to package '{1}'", this.Platform, mainPackageId.ToString());
-
                 return true;
             }
             else
             {
-                Core.Log.MessageAll("Platform '{0}' already used by package '{1}'", this.Platform, mainPackageId.ToString());
-
                 return false;
             }
         }

@@ -23,16 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Adds a DotNet assembly to the package definition";
+                return "Adds a DotNet assembly to the package definition (semi-colon separated)";
             }
         }
 
         public void AssignArguments(string arguments)
         {
-            this.DotNetAssemblyName = arguments;
+            string[] assemblyNames = arguments.Split(';');
+            this.DotNetAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
-        private string DotNetAssemblyName
+        private Core.StringArray DotNetAssemblyNameArray
         {
             get;
             set;
@@ -57,48 +58,52 @@ namespace Opus
                 xmlFile.Read();
             }
 
-            string assemblyName = null;
-            string targetVersion = null;
-            if (this.DotNetAssemblyName.Contains("-"))
+            foreach (string dotNetAssemblyName in this.DotNetAssemblyNameArray)
             {
-                string[] split = this.DotNetAssemblyName.Split('-');
-                if (split.Length != 2)
+                string assemblyName = null;
+                string targetVersion = null;
+                if (dotNetAssemblyName.Contains("-"))
                 {
-                    throw new Core.Exception(System.String.Format("DotNet assembly name and version is ill-formed: '{0}'", this.DotNetAssemblyName), false);
+                    string[] split = dotNetAssemblyName.Split('-');
+                    if (split.Length != 2)
+                    {
+                        throw new Core.Exception(System.String.Format("DotNet assembly name and version is ill-formed: '{0}'", dotNetAssemblyName), false);
+                    }
+
+                    assemblyName = split[0];
+                    targetVersion = split[1];
+                }
+                else
+                {
+                    assemblyName = dotNetAssemblyName;
                 }
 
-                assemblyName = split[0];
-                targetVersion = split[1];
-            }
-            else
-            {
-                assemblyName = this.DotNetAssemblyName;
-            }
-
-            foreach (Core.DotNetAssemblyDescription desc in xmlFile.DotNetAssemblies)
-            {
-                if (desc.Name == assemblyName)
+                foreach (Core.DotNetAssemblyDescription desc in xmlFile.DotNetAssemblies)
                 {
-                    throw new Core.Exception(System.String.Format("DotNet assembly '{0}' already referenced by the package", assemblyName), false);
+                    if (desc.Name == assemblyName)
+                    {
+                        throw new Core.Exception(System.String.Format("DotNet assembly '{0}' already referenced by the package", assemblyName), false);
+                    }
+                }
+
+                Core.DotNetAssemblyDescription descToAdd = new Core.DotNetAssemblyDescription(assemblyName);
+                if (null != targetVersion)
+                {
+                    descToAdd.RequiredTargetFramework = targetVersion;
+                }
+                xmlFile.DotNetAssemblies.Add(descToAdd);
+
+                if (null != targetVersion)
+                {
+                    Core.Log.MessageAll("Added DotNet assembly '{0}', framework version '{1}', to package '{2}'", assemblyName, targetVersion, mainPackageId.ToString());
+                }
+                else
+                {
+                    Core.Log.MessageAll("Added DotNet assembly '{0}' to package '{1}'", assemblyName, mainPackageId.ToString());
                 }
             }
 
-            Core.DotNetAssemblyDescription descToAdd = new Core.DotNetAssemblyDescription(assemblyName);
-            if (null != targetVersion)
-            {
-                descToAdd.RequiredTargetFramework = targetVersion;
-            }
-            xmlFile.DotNetAssemblies.Add(descToAdd);
             xmlFile.Write();
-
-            if (null != targetVersion)
-            {
-                Core.Log.MessageAll("Added DotNet assembly '{0}', framework version '{1}', to package '{2}'", assemblyName, targetVersion, mainPackageId.ToString());
-            }
-            else
-            {
-                Core.Log.MessageAll("Added DotNet assembly '{0}' to package '{1}'", assemblyName, mainPackageId.ToString());
-            }
 
             return true;
         }

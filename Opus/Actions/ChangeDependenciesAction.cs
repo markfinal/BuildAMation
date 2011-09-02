@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Change dependent packages";
+                return "Change dependent packages that match by name but not version (semi-colon separated)";
             }
         }
 
