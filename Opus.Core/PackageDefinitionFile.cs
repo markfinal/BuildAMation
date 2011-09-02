@@ -849,40 +849,6 @@ namespace Opus.Core
             return true;
         }
 
-        public bool UpdatePackage(PackageIdentifier idToChangeTo)
-        {
-            PackageIdentifier idToRemove = null;
-            foreach (PackageIdentifier id in this.PackageIdentifiers)
-            {
-                if (id.MatchName(idToChangeTo, false))
-                {
-                    if (0 == id.MatchVersion(idToChangeTo, false))
-                    {
-                        Log.Info("Package '{0}' is already set to version '{1}'", id.Name, id.Version);
-                        return false;
-                    }
-                    else
-                    {
-                        idToRemove = id;
-                    }
-                }
-            }
-
-            if (null != idToRemove)
-            {
-                this.PackageIdentifiers.Remove(idToRemove);
-                Log.Info("Changed package '{0}' from version '{1}' to '{2}'", idToChangeTo.Name, idToRemove.Version, idToChangeTo.Version);
-            }
-            else
-            {
-                Log.Info("Added dependency '{0}' from root '{1}'", idToChangeTo.ToString(), idToChangeTo.Root);
-            }
-
-            this.PackageIdentifiers.Add(idToChangeTo);
-
-            return true;
-        }
-
         public void AddRequiredPackage(PackageIdentifier idToAdd)
         {
             foreach (PackageIdentifier id in this.PackageIdentifiers)
