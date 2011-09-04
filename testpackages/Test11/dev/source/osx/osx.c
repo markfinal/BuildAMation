@@ -1,0 +1,4 @@
+char *PlatformName()
+{
+	return "OSX";
+}

@@ -9,6 +9,7 @@ namespace Test11
             this.commonSourceFile.SetRelativePath(this, "source", "main.c");
             this.winSourceFile.SetRelativePath(this, "source", "win", "win.c");
             this.unixSourceFile.SetRelativePath(this, "source", "unix", "unix.c");
+            this.osxSourceFile.SetRelativePath(this, "source", "osx", "osx.c");
         }
 
         [Opus.Core.SourceFiles]
@@ -19,6 +20,9 @@ namespace Test11
 
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         C.ObjectFile unixSourceFile = new C.ObjectFile();
+		
+		[Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.OSX)]
+		C.ObjectFile osxSourceFile = new C.ObjectFile();
 
 #if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
