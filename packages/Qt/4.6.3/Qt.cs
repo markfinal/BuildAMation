@@ -46,13 +46,25 @@ namespace Qt
                 {
                     installPath = @"/usr/local/Trolltech/Qt-4.6.3"; // default installation directory
                 }
+                else if (Opus.Core.OSUtilities.IsOSXHosting)
+                {
+                    // Qt headers and libs are installed in /Library/Frameworks/ ...
+                    installPath = @"/Developer/Tools/Qt";
+                }
                 else
                 {
-                    throw new Opus.Core.Exception("Qt identification has not been implemented on non-Windows and Linux platforms yet");
+                    throw new Opus.Core.Exception("Qt identification has not been implemented on the current platform");
                 }
             }
 
-            QtCommon.QtCommon.BinPath = System.IO.Path.Combine(installPath, "bin");
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                QtCommon.QtCommon.BinPath = installPath;
+            }
+            else
+            {
+                QtCommon.QtCommon.BinPath = System.IO.Path.Combine(installPath, "bin");
+            }
             libPath = System.IO.Path.Combine(installPath, "lib");
             includePath = System.IO.Path.Combine(installPath, "include");
         }

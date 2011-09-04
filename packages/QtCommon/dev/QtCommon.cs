@@ -19,6 +19,11 @@ namespace QtCommon
 
         public QtCommon()
         {
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+            
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCommon_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCommon_LibraryPaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCommon_VisualCWarningLevel);
@@ -27,6 +32,11 @@ namespace QtCommon
         [C.ExportLinkerOptionsDelegate]
         void QtCommon_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+            
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.LibraryPaths.AddAbsoluteDirectory(libPath, true);
         }
@@ -34,6 +44,11 @@ namespace QtCommon
         [C.ExportCompilerOptionsDelegate]
         void QtCommon_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+            
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
         }
