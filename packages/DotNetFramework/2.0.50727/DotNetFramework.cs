@@ -118,13 +118,13 @@ namespace DotNetFramework
 
                     return toolsPath;
                 }
-                else if (Opus.Core.OSUtilities.IsUnixHosting)
+                else if (Opus.Core.OSUtilities.IsUnixHosting || Opus.Core.OSUtilities.IsOSXHosting)
                 {
                     return "/usr/bin";
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("DotNetFramework not supported on platforms other than Windows");
+                    throw new Opus.Core.Exception("DotNetFramework not supported on the current platform");
                 }
             }
         }
