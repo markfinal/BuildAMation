@@ -25,9 +25,13 @@ namespace CSharp
             {
                 CscPath = System.IO.Path.Combine(toolsPath, "Csc.exe");
             }
-            else
+            else if (Opus.Core.OSUtilities.IsUnixHosting)
             {
                 CscPath = System.IO.Path.Combine(toolsPath, "mono-csc");
+            }
+            else if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                CscPath = System.IO.Path.Combine(toolsPath, "mcs");
             }
         }
 
