@@ -28,12 +28,22 @@ namespace Test12
             }
         }
 
+	    class OSXSourceFiles : C.CPlusPlus.ObjectFileCollection
+        {
+            public OSXSourceFiles()
+            {
+                this.AddRelativePaths(this, "source", "osx", "osx.cpp");
+            }
+        }
+	
         [Opus.Core.SourceFiles]
         CommonSourceFiles commonSourceFiles = new CommonSourceFiles();
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]
         WindowsSourceFiles windowsSourceFiles = new WindowsSourceFiles();
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         UnixSourceFiles unixSourceFiles = new UnixSourceFiles();
+        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.OSX)]
+        OSXSourceFiles osxSourceFiles = new OSXSourceFiles();
 
 #if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
