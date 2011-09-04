@@ -31,7 +31,7 @@ namespace GccCommon
                 {
                     return ".so";
                 }
-                else if (Opus.Core.OSUtilities.IsUnixHosting)
+                else if (Opus.Core.OSUtilities.IsOSXHosting)
                 {
                     return ".dylib";
                 }
