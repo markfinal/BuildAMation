@@ -1,0 +1,6 @@
+-builder=Native
+-buildroot=build
+-platforms=unix32
+-configurations=debug
+-C.toolchain=gcc
+-verbosity=2
