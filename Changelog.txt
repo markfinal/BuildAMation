@@ -1,3 +1,5 @@
+04-Sep-2011 Fixing directory structure to the CodeGenTest2-dev test package.
+
 02-Sep-2011 Removed the '-changedependency' option as it is also available through '-dependent=<package> -changeversion=<version>'
 
 02-Sep-2011 Updated many actions to take a semi-colon separated list of arguments. In real use cases, it was becoming time consuming to repeat calls to do the same thing with different arguments, e.g. remove platform filters.
