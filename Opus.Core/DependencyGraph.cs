@@ -87,7 +87,7 @@ namespace Opus.Core
             bool consistentToolChain = targetUsed.Toolchain == toolchainImplementation; // TODO: not sure if this one is necessary at this point as it should've been checked before this call
             if (!isComplete || !consistentToolChain)
             {
-                targetUsed = new Target(target, toolchainImplementation);
+                targetUsed = Target.CreateFullyFormedTarget(target, toolchainImplementation);
             }
 
             ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
@@ -184,7 +184,7 @@ namespace Opus.Core
             Target targetUsed = target;
             if (targetUsed.Toolchain != toolchainImplementation)
             {
-                targetUsed = new Target(target, toolchainImplementation);
+                targetUsed = Target.CreateFullyFormedTarget(target, toolchainImplementation);
             }
 
             DependencyNode node = this.FindNodeForTargettedModule(moduleName, targetUsed);

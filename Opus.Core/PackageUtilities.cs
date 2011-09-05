@@ -451,7 +451,7 @@ namespace Opus.Core
             {
                 foreach (EConfiguration configuration in State.BuildConfigurations)
                 {
-                    Target target = new Target(platform, configuration);
+                    Target target = Target.CreateIncompleteTarget(platform, configuration);
                     Log.DebugMessage("Added target '{0}'", target);
                     targetCollection.Add(target);
                 }

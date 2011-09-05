@@ -85,7 +85,7 @@ namespace FileUtilities
         {
             Opus.Core.TypeArray externalDependents = new Opus.Core.TypeArray();
 
-            Opus.Core.Target incompleteTarget = new Opus.Core.Target(target.Platform, target.Configuration);
+            Opus.Core.Target incompleteTarget = Opus.Core.Target.CreateIncompleteTarget(target.Platform, target.Configuration);
 
             Opus.Core.ModuleCollection sourceModules = new Opus.Core.ModuleCollection();
             Opus.Core.IModule destinationModule = null;

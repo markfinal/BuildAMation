@@ -7,7 +7,77 @@ namespace Opus.Core
 {
     public sealed class Target : System.ICloneable, System.IComparable
     {
-        public Target(EPlatform platform, EConfiguration configuration)
+        private static System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, Target>> incompleteTargetMap = new System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, Target>>();
+
+        private static System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>> completeTargetMap = new System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>>();
+
+        public static Target CreateIncompleteTarget(EPlatform platform, EConfiguration configuration)
+        {
+            if (incompleteTargetMap.ContainsKey(platform))
+            {
+                if (incompleteTargetMap[platform].ContainsKey(configuration))
+                {
+                    return incompleteTargetMap[platform][configuration];
+                }
+                else
+                {
+                    incompleteTargetMap[platform].Add(configuration, null);
+                }
+            }
+            else
+            {
+                incompleteTargetMap.Add(platform, new System.Collections.Generic.Dictionary<EConfiguration, Target>());
+            }
+
+            Target incompleteTarget = new Target(platform, configuration);
+            incompleteTargetMap[platform][configuration] = incompleteTarget;
+            return incompleteTarget;
+        }
+
+        public static Target CreateFullyFormedTarget(Target incompleteTarget, string toolchain)
+        {
+            EPlatform platform = incompleteTarget.Platform;
+            EConfiguration configuration = incompleteTarget.Configuration;
+            if (completeTargetMap.ContainsKey(platform))
+            {
+                if (completeTargetMap[platform].ContainsKey(configuration))
+                {
+                    if (completeTargetMap[platform][configuration].ContainsKey(toolchain))
+                    {
+                        return completeTargetMap[platform][configuration][toolchain];
+                    }
+                }
+            }
+
+            if (incompleteTargetMap.ContainsKey(platform))
+            {
+                if (incompleteTargetMap[platform].ContainsKey(configuration))
+                {
+                    Target target = incompleteTargetMap[platform][configuration];
+                    Target completed = new Target(target, toolchain);
+
+                    if (!completeTargetMap.ContainsKey(platform))
+                    {
+                        completeTargetMap.Add(platform, new System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>());
+                    }
+                    if (!completeTargetMap[platform].ContainsKey(configuration))
+                    {
+                        completeTargetMap[platform].Add(configuration, new System.Collections.Generic.Dictionary<string, Target>());
+                    }
+                    if (!completeTargetMap[platform][configuration].ContainsKey(toolchain))
+                    {
+                        completeTargetMap[platform][configuration].Add(toolchain, null);
+                    }
+
+                    completeTargetMap[platform][configuration][toolchain] = completed;
+                    return completed;
+                }
+            }
+
+            throw new Exception("Unable to locate incomplete target");
+        }
+
+        private Target(EPlatform platform, EConfiguration configuration)
         {
             this.IsFullyFormed = false;
 
@@ -16,7 +86,7 @@ namespace Opus.Core
             this.Toolchain = null;
         }
 
-        public Target(Target incompleteTarget, string toolchainImplementation)
+        private Target(Target incompleteTarget, string toolchainImplementation)
         {
             this.IsFullyFormed = true;
             this.Platform = incompleteTarget.Platform;
@@ -26,7 +96,7 @@ namespace Opus.Core
             this.AddToGlobalCollection();
         }
 
-        public Target(EPlatform platform, EConfiguration configuration, string toolchain)
+        private Target(EPlatform platform, EConfiguration configuration, string toolchain)
         {
             this.IsFullyFormed = true;
             this.Platform = platform;

@@ -12,7 +12,7 @@ namespace CodeGenTest
         public string Executable(Opus.Core.Target target)
         {
             string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainImplementation(typeof(CodeGenTest.CodeGeneratorTool));
-            Opus.Core.Target targetToUse = new Opus.Core.Target(target, toolchainImplementation);
+            Opus.Core.Target targetToUse = Opus.Core.Target.CreateFullyFormedTarget(target, toolchainImplementation);
 
             Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest.CodeGeneratorTool), targetToUse);
             if (null == module)
