@@ -1,3 +1,5 @@
+05-Sep-2011 Adding AMDAPPSDK-2.5 to the packages root, and OpenCLTest1-dev to the testpackages root. These are Windows only currently.
+
 05-Sep-2011 Opus.Core.Target constructors are now private. Instances can now be requested through Target static factory methods. This allows unique Targets to be created, and used as keys to collection indexing.
 
 04-Sep-2011 Changing -createdebugproject to generate a .csproj targetted to Framework 3.5 so that MonoDevelop can compile it.
