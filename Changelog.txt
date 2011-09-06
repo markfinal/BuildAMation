@@ -1,3 +1,5 @@
+06-Sep-2011 Opus.Core.RelativePathUtilities.GetPath now unescapes all relative paths. This seems to be necessary for VisualStudio projects with the build root on the same drive as VisualStudio.
+
 06-Sep-2011 Adding -D=<defines> and -U=<undefines> to the command line actions to add per-run definitions and undefinitions to the package compilation step. Undefines are applied after all defines have been accumulated.
 
 05-Sep-2011 Adding AMDAPPSDK-2.5 to the packages root, and OpenCLTest1-dev to the testpackages root. These are Windows only currently.

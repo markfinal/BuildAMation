@@ -37,9 +37,9 @@ namespace Opus.Core
             else
             {
                 string relativePath = relativePathUri.ToString();
+                relativePath = System.Uri.UnescapeDataString(relativePath);
                 if (null != relativePrefix)
                 {
-                    relativePath = System.Uri.UnescapeDataString(relativePath);
                     relativePath = System.IO.Path.Combine(relativePrefix, relativePath);
                 }
                 if (OSUtilities.IsWindowsHosting)
