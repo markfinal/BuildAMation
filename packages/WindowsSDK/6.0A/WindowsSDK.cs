@@ -16,6 +16,10 @@ namespace WindowsSDK
 
         static WindowsSDK()
         {
+        }
+
+        public WindowsSDK(Opus.Core.Target target)
+        {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
@@ -25,10 +29,22 @@ namespace WindowsSDK
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("WindowsSDK 6.0A was not installed");
-                }
+                    C.Toolchain tc = C.ToolchainFactory.GetTargetInstance(target);
+                    string platformSDKPath = System.IO.Path.Combine(tc.InstallPath(target), "PlatformSDK");
 
-                installPath = key.GetValue("InstallationFolder") as string;
+                    if (System.IO.Directory.Exists(platformSDKPath))
+                    {
+                        installPath = platformSDKPath;
+                    }
+                    else
+                    {
+                        throw new Opus.Core.Exception("WindowsSDK 6.0A was not installed");
+                    }
+                }
+                else
+                {
+                    installPath = key.GetValue("InstallationFolder") as string;
+                }
                 Opus.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
 
                 bin32Path = System.IO.Path.Combine(installPath, "bin");
@@ -39,10 +55,7 @@ namespace WindowsSDK
 
                 includePath = System.IO.Path.Combine(installPath, "include");
             }
-        }
 
-        public WindowsSDK()
-        {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
         }
