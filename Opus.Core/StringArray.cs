@@ -67,6 +67,7 @@ namespace Opus.Core
             {
                 output += item.ToString() + separator;
             }
+            output = output.TrimEnd(separator);
             return output;
         }
     }
