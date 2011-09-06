@@ -87,6 +87,17 @@ namespace Opus.Core
             return this.list.Remove(item);
         }
 
+        public bool RemoveAll(Array<T> items)
+        {
+            bool success = true;
+            foreach (T item in items)
+            {
+                success &= this.list.Remove(item);
+            }
+
+            return success;
+        }
+
         public System.Collections.Generic.IEnumerator<T> GetEnumerator()
         {
             return this.list.GetEnumerator();

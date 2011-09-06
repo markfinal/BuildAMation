@@ -11,6 +11,11 @@ namespace Opus.Core
 
         private static Array<RegisterActionAttribute> GetActionsFromAssembly(System.Reflection.Assembly assembly)
         {
+            if (null == assembly)
+            {
+                return null;
+            }
+
             RegisterActionAttribute[] customAttributes = assembly.GetCustomAttributes(typeof(RegisterActionAttribute), false) as RegisterActionAttribute[];
             return new Array<RegisterActionAttribute>(customAttributes);
         }

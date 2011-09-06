@@ -353,15 +353,17 @@ namespace Opus.Core
 
                 // define strings
                 {
-                    string concatenatedDefines = OpusVersionDefineForCompiler;
-                    concatenatedDefines += ";" + OpusHostPlatformForCompiler;
-                    // custom definitions
-                    foreach (string define in definitions)
-                    {
-                        concatenatedDefines += ";" + define;
-                    }
+                    StringArray allDefines = new StringArray();
+                    allDefines.Add(OpusVersionDefineForCompiler);
+                    allDefines.Add(OpusHostPlatformForCompiler);
+                    // custom definitions from all the packages in the compilation
+                    allDefines.AddRange(definitions);
+                    // command line definitions
+                    allDefines.AddRange(State.PackageCompilationDefines);
+                    allDefines.Sort();
+                    allDefines.RemoveAll(State.PackageCompilationUndefines);
 
-                    compilerOptions += " /define:" + concatenatedDefines;
+                    compilerOptions += " /define:" + allDefines.ToString(';');
                 }
 
                 compilerParameters.CompilerOptions = compilerOptions;
@@ -533,36 +535,39 @@ namespace Opus.Core
             if (State.LazyArguments.Count > 0)
             {
                 var actions = ActionManager.ScriptActions;
-                StringArray lazyCommandsProcessed = new StringArray();
-                foreach (string command in State.LazyArguments.Keys)
+                if (null != actions)
                 {
-                    foreach (var action in actions)
+                    StringArray lazyCommandsProcessed = new StringArray();
+                    foreach (string command in State.LazyArguments.Keys)
                     {
-                        Core.IAction iaction = action.Action;
-                        if (iaction.CommandLineSwitch == command)
+                        foreach (var action in actions)
                         {
-                            if (iaction is IActionWithArguments)
+                            Core.IAction iaction = action.Action;
+                            if (iaction.CommandLineSwitch == command)
                             {
-                                (iaction as IActionWithArguments).AssignArguments(State.LazyArguments[command]);
-                            }
+                                if (iaction is IActionWithArguments)
+                                {
+                                    (iaction as IActionWithArguments).AssignArguments(State.LazyArguments[command]);
+                                }
 
-                            if (!iaction.Execute())
-                            {
-                                throw new Exception(System.String.Format("Action '{0}' failed", command), false);
-                            }
+                                if (!iaction.Execute())
+                                {
+                                    throw new Exception(System.String.Format("Action '{0}' failed", command), false);
+                                }
 
-                            lazyCommandsProcessed.Add(command);
+                                lazyCommandsProcessed.Add(command);
+                            }
                         }
                     }
-                }
 
-                // remove those that have been processed
-                foreach (string command in lazyCommandsProcessed)
-                {
-                    State.LazyArguments.Remove(command);
-                }
+                    // remove those that have been processed
+                    foreach (string command in lazyCommandsProcessed)
+                    {
+                        State.LazyArguments.Remove(command);
+                    }
 
-                lazyCommandsProcessed = null;
+                    lazyCommandsProcessed = null;
+                }
 
                 HandleUnprocessedArguments();
             }

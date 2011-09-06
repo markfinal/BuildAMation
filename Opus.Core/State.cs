@@ -68,6 +68,8 @@ namespace Opus.Core
             Add<string>("System", "BuildRoot", null);
             Add<DependencyGraph>("System", "Graph", null);
             Add<bool>("System", "ShowTimingStatistics", false);
+            Add<StringArray>("System", "CompilerDefines", new StringArray());
+            Add<StringArray>("System", "CompilerUndefines", new StringArray());
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
@@ -497,6 +499,32 @@ namespace Opus.Core
             get
             {
                 return (bool)Get("System", "ShowTimingStatistics");
+            }
+        }
+
+        public static StringArray PackageCompilationDefines
+        {
+            set
+            {
+                Set("System", "CompilerDefines", value);
+            }
+
+            get
+            {
+                return Get("System", "CompilerDefines") as StringArray;
+            }
+        }
+
+        public static StringArray PackageCompilationUndefines
+        {
+            set
+            {
+                Set("System", "CompilerUndefines", value);
+            }
+
+            get
+            {
+                return Get("System", "CompilerUndefines") as StringArray;
             }
         }
     }

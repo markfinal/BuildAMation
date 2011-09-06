@@ -156,23 +156,20 @@ namespace Opus
 
                         xmlWriter.WriteStartElement("DefineConstants");
                         {
-                            string concatenatedDefineString = Core.PackageUtilities.OpusVersionDefineForCompiler;
-                            concatenatedDefineString += ";" + Core.PackageUtilities.OpusHostPlatformForCompiler;
-
-                            Core.StringArray definitions = new Core.StringArray();
+                            Core.StringArray allDefines = new Core.StringArray();
+                            allDefines.Add(Core.PackageUtilities.OpusVersionDefineForCompiler);
+                            allDefines.Add(Core.PackageUtilities.OpusHostPlatformForCompiler);
+                            // custom definitions from all the packages in the compilation
                             foreach (Core.PackageInformation info in Core.State.PackageInfo)
                             {
-                                foreach (string define in info.Identifier.Definition.Definitions)
-                                {
-                                    if (!definitions.Contains(define))
-                                    {
-                                        definitions.Add(define);
-                                        concatenatedDefineString += ";" + define;
-                                    }
-                                }
+                                allDefines.AddRange(info.Identifier.Definition.Definitions);
                             }
+                            // command line definitions
+                            allDefines.AddRange(Core.State.PackageCompilationDefines);
+                            allDefines.Sort();
+                            allDefines.RemoveAll(Core.State.PackageCompilationUndefines);
 
-                            xmlWriter.WriteValue(concatenatedDefineString);
+                            xmlWriter.WriteValue(allDefines.ToString(';'));
                             xmlWriter.WriteEndElement();
                         }
 
