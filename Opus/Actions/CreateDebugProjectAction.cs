@@ -42,6 +42,9 @@ namespace Opus
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
             }
 
+            Core.PackageUtilities.ProcessLazyArguments();
+            Core.PackageUtilities.HandleUnprocessedArguments();
+
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
 
             Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
