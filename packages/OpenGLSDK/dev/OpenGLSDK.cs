@@ -45,7 +45,7 @@ namespace OpenGLSDK
             return libraries;
         }
 
-#if OPUS_HOST_WINDOWS
+#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 #endif
