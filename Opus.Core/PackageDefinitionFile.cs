@@ -71,6 +71,15 @@ namespace Opus.Core
             }
             else
             {
+                if (args.Exception.SourceUri.Contains(".xsd"))
+                {
+                    System.Uri schemaUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
+                    if (schemaUri.AbsolutePath != args.Exception.SourceUri)
+                    {
+                        throw new Exception(System.String.Format("Duplicate schemas exist! From package definition file '{0}', and from the Opus build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath), false);
+                    }
+                }
+
                 string message = System.String.Format("Validation error: " + args.Message);
                 message += System.String.Format("\nAt '" + args.Exception.SourceUri + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
 
