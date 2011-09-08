@@ -23,8 +23,8 @@ namespace Gcc
             this.binPath = toolChainInstance.BinPath(target);
 
             this.includeFolders.Add("/usr/include");
-            string gccIncludeFolder = System.String.Format("/usr/lib/gcc/{0}/4.4/include", this.PlatformSubPath);
-            string gccIncludeFixedFolder = System.String.Format("/usr/lib/gcc/{0}/4.4/include-fixed", this.PlatformSubPath);
+            string gccIncludeFolder = System.String.Format("/usr/lib/gcc/{0}/4.4/include", this.MachineType(target));
+            string gccIncludeFixedFolder = System.String.Format("/usr/lib/gcc/{0}/4.4/include-fixed", this.MachineType(target));
 
             if (!System.IO.Directory.Exists(gccIncludeFolder))
             {

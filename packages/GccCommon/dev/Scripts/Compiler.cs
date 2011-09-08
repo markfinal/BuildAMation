@@ -17,36 +17,47 @@ namespace GccCommon
 
         public abstract Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target);
 
-        public string PlatformSubPath
+        private static System.Collections.Generic.Dictionary<Opus.Core.Target, string> machineTypesForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, string>();
+
+        public string MachineType(Opus.Core.Target target)
         {
-            get
+            if (!machineTypesForTarget.ContainsKey(target))
             {
-                string subPath = null;
-                if (Opus.Core.OSUtilities.IsUnixHosting)
+                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                processStartInfo.FileName = this.Executable(target);
+                processStartInfo.ErrorDialog = true;
+                processStartInfo.UseShellExecute = false;
+                processStartInfo.RedirectStandardOutput = true;
+                processStartInfo.Arguments = "-dumpmachine";
+
+                System.Diagnostics.Process process = null;
+                try
                 {
-                    if (Opus.Core.OSUtilities.Is64BitHosting)
-                    {
-                        subPath = "x86_64-linux-gnu";
-                    }
-                    else
-                    {
-                        subPath = "i486-linux-gnu";
-                    }
+                    process = System.Diagnostics.Process.Start(processStartInfo);
                 }
-                else if (Opus.Core.OSUtilities.IsOSXHosting)
+                catch (System.ComponentModel.Win32Exception ex)
                 {
-                    if (Opus.Core.State.IsLittleEndian)
-                    {
-                        throw new Opus.Core.Exception("OSX little endian not yet supported", true);
-                    }
-                    else
-                    {
-                        subPath = "powerpc-apple-darwin9";
-                    }
+                    throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName), false);
                 }
 
-                return subPath;
+                if (null == process)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
+                }
+
+                string machineType = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                machineType = machineType.Trim();
+                if (System.String.IsNullOrEmpty(machineType))
+                {
+                    throw new Opus.Core.Exception("Unable to obtain the machine type from gcc -dumpmachine", false);
+                }
+                machineTypesForTarget[target] = machineType;
+
+                Opus.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", target.ToString(), machineType);
             }
+
+            return machineTypesForTarget[target];
         }
     }
 }

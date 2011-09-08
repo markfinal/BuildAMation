@@ -1,3 +1,5 @@
+08-Sep-2011 Gcc's machine type is now determined via a call to 'gcc -dumpmachine' rather than being hard coded.
+
 08-Sep-2011 Adding a Bash shell script to the root source directory to set up the environment for running Opus. Also added an executable script, called 'Opus', copied to the bin directory that can be used to run Opus through Mono.
 
 06-Sep-2011 Adding a test to determine if duplicate package definition schemas are present. This can happen when both Debug and Release builds are present.
