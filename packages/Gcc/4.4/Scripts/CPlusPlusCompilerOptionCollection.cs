@@ -15,7 +15,7 @@ namespace Gcc
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
 
-            string cppIncludePath = System.String.Format("{0}/c++/4.4", compilerInstance.IncludeDirectoryPaths(target)[0]);
+            string cppIncludePath = compilerInstance.GxxIncludePath(target);
             if (!System.IO.Directory.Exists(cppIncludePath))
             {
                 throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath), false);
