@@ -9,7 +9,7 @@
     </Opus:Package>
     <Opus:Package Name="Gcc">
       <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Unix'" />
-      <Opus:Version Id="4.0.1" Condition="'$(Platform)' == 'OSX'" />
+      <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
     </Opus:Package>
     <Opus:Package Name="Mingw">
       <Opus:Version Id="3.4.5" />
