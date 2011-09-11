@@ -77,13 +77,13 @@ namespace Opus.Core
                 int intProfile = (int)profile;
                 TimeProfile profileTime = State.TimingProfiles[intProfile];
                 System.TimeSpan elapsedTime = profileTime.Elapsed;
-                if (ETimingProfiles.Total != profile)
+                if (ETimingProfiles.TimedTotal != profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
                 }
 
                 string diffString = null;
-                if (additionalDetails && (intProfile > 0) && (ETimingProfiles.Total != profile))
+                if (additionalDetails && (intProfile > 0) && (ETimingProfiles.TimedTotal != profile))
                 {
                     System.TimeSpan diff = profileTime.Start - State.TimingProfiles[intProfile - 1].Stop;
                     diffString = diff.Milliseconds.ToString();
@@ -95,8 +95,23 @@ namespace Opus.Core
                 string startTimeString = profileTime.Start.ToString(TimeProfile.DateTimeFormat);
                 string stopTimeString = profileTime.Stop.ToString(TimeProfile.DateTimeFormat);
 
-                if (ETimingProfiles.Total == profile)
+                if (ETimingProfiles.TimedTotal == profile)
                 {
+                    Log.Info(horizontalRule);
+                    string cumulativeString = "CumulativeTotal";
+                    string cumulativeMinutesString = cumulativeTime.Minutes.ToString();
+                    string cumulativeSecondsString = cumulativeTime.Seconds.ToString();
+                    string cumulativeMillisecondsString = cumulativeTime.Milliseconds.ToString();
+
+                    Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
+                             cumulativeString,
+                             new string(' ', maxNameLength - cumulativeString.Length),
+                             new string(' ', maxMinuteLength - cumulativeMinutesString.Length),
+                             cumulativeMinutesString,
+                             new string(' ', maxSecondLength - cumulativeSecondsString.Length),
+                             cumulativeSecondsString,
+                             new string(' ', maxMillisecondLength - cumulativeMillisecondsString.Length),
+                         cumulativeMillisecondsString);
                     Log.Info(horizontalRule);
                 }
 
@@ -116,24 +131,6 @@ namespace Opus.Core
                          diffString);
             }
             Log.Info(horizontalRule);
-            if (additionalDetails)
-            {
-                string cumulativeString = "Cumulative";
-                string cumulativeMinutesString = cumulativeTime.Minutes.ToString();
-                string cumulativeSecondsString = cumulativeTime.Seconds.ToString();
-                string cumulativeMillisecondsString = cumulativeTime.Milliseconds.ToString();
-
-                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
-                         cumulativeString,
-                         new string(' ', maxNameLength - cumulativeString.Length),
-                         new string(' ', maxMinuteLength - cumulativeMinutesString.Length),
-                         cumulativeMinutesString,
-                         new string(' ', maxSecondLength - cumulativeSecondsString.Length),
-                         cumulativeSecondsString,
-                         new string(' ', maxMillisecondLength - cumulativeMillisecondsString.Length),
-                         cumulativeMillisecondsString);
-                Core.Log.Info(horizontalRule);
-            }
         }
     }
 }

@@ -1,3 +1,5 @@
+11-Sep-2011 Output the 'CumulativeTotal' row of the timing table, as an indication if the breakdown of the process differs from the timed total.
+
 11-Sep-2011 Adding the 'host platform' as output to the initial display information (depending on verbosity level) from Opus.
 
 11-Sep-2011 Generalized Gcc detection further using 'gcc -v' and 'gcc -dumpversion' to determine configuration settings.

@@ -16,6 +16,6 @@ namespace Opus.Core
         IdentifyBuildableModules,
         GraphGeneration,
         GraphExecution,
-        Total
+        TimedTotal
     }
 }

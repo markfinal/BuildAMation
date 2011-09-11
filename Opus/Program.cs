@@ -18,7 +18,7 @@ namespace Opus
         {
             try
             {
-                Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.Total);
+                Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
                 profile.StartProfile();
 
                 Application application = new Application(args);
