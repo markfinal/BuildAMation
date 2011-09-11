@@ -32,6 +32,7 @@ namespace Opus
                     arguments += "=" + value;
                 }
             }
+            Core.Log.Message(level, "Host Platform: {0} {1}", Core.State.Platform, Core.State.IsLittleEndian ? "(little endian)" : "(big endian)");
             Core.Log.Message(level, "Arguments    : {0}", arguments);
             Core.Log.Message(level, "");
         }

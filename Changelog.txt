@@ -1,3 +1,5 @@
+11-Sep-2011 Adding the 'host platform' as output to the initial display information (depending on verbosity level) from Opus.
+
 11-Sep-2011 Generalized Gcc detection further using 'gcc -v' and 'gcc -dumpversion' to determine configuration settings.
 
 08-Sep-2011 Adding a Batch file to the root source directory to set up the environment for running Opus.
