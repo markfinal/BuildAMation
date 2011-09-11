@@ -1,4 +1,4 @@
-﻿// <copyright file="DependencyNodeCollection.cs" company="Mark Final">
+// <copyright file="DependencyNodeCollection.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -127,7 +127,11 @@ namespace Opus.Core
             {
                 if (node.Module is IModuleCollection)
                 {
-                    node.Children.FilterOutputPaths(filter, paths);
+                    DependencyNodeCollection childNodes = node.Children;
+                    if (null != childNodes)
+                    {
+                        childNodes.FilterOutputPaths(filter, paths);
+                    }
                 }
                 else
                 {

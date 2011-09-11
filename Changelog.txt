@@ -1,3 +1,5 @@
+11-Sep-2011 Issue 35. Fixed unexpected exception when using AddRelativeFiles with a leaf name that does not exist.
+
 11-Sep-2011 Output the 'CumulativeTotal' row of the timing table, as an indication if the breakdown of the process differs from the timed total.
 
 11-Sep-2011 Adding the 'host platform' as output to the initial display information (depending on verbosity level) from Opus.
