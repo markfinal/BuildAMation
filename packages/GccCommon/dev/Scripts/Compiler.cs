@@ -168,6 +168,8 @@ namespace GccCommon
 
                 if (!gxxIncludeDir.StartsWith(pathPrefix))
                 {
+                    // remove any prefix directory separator so that Combine works
+                    gxxIncludeDir = gxxIncludeDir.TrimStart(System.IO.Path.DirectorySeparatorChar);
                     gxxIncludeDir = System.IO.Path.Combine(pathPrefix, gxxIncludeDir);
                 }
             }
