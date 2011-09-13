@@ -15,7 +15,8 @@ IF NOT EXIST %OpusPath% (
   ECHO Opus directory '%OpusPath%' does not exist
 ) ELSE (
   ECHO Adding '%OpusPath%' to the start of PATH
-  SET PATH=%OPUSPATH%;%PATH%
+  REM Using delayed expansion in case PATH has some spaces in
+  SET PATH=%OPUSPATH%;!PATH!
 )
 
 REM Unset local variables
