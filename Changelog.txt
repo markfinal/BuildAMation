@@ -1,3 +1,5 @@
+15-Sep-2011 Issue 44. Fixing missing spaces in generated Makefiles causing errors.
+
 15-Sep-2011 Issue 43. OSX 64-bit targets with GCC now pass -m64.
 
 13-Sep-2011 Fixing PATH expansion in the Windows environment batch file when there are spaces.

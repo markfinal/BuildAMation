@@ -69,7 +69,7 @@ namespace MakeFileBuilder
             }
 
             System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
-            recipeBuilder.AppendFormat("\"{0}\" {1}$(filter %{2},$^) ", executable, commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
+            recipeBuilder.AppendFormat("\"{0}\" {1} $(filter %{2},$^) ", executable, commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
             dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibraryExtension));
             if (toolchain.StaticLibraryExtension != toolchain.StaticImportLibraryExtension)

@@ -47,7 +47,7 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            string recipe = System.String.Format("\"{0}\" {1}$<", executable, commandLineBuilder.ToString(' '));
+            string recipe = System.String.Format("\"{0}\" {1} $<", executable, commandLineBuilder.ToString(' '));
             // replace target with $@
             recipe = recipe.Replace(objectFile.Options.OutputPaths[C.OutputFileFlags.ObjectFile], "$@");
 
