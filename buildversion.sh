@@ -2,7 +2,7 @@
 
 if [ -n "$1" ]
 then
-  echo "Creating Opus binary distribution for version $1"
+  echo "Creating Opus distribution for version $1"
 else
   echo "Please supply a version number"
   exit 1
@@ -11,6 +11,7 @@ fi
 directory=opus-$1
 
 svn export http://opus.googlecode.com/svn/trunk $directory
+tar -czf opus-$1-source.tgz $directory
 
 pushd $directory
 mdtool build --target:Build --configuration:Release Opus.sln
