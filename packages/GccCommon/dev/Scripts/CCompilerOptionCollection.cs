@@ -40,8 +40,7 @@ namespace GccCommon
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
-            //this["Visibility"] = new Opus.Core.EnumOption<EVisibility>(EVisibility.Hidden); // requires gcc 4.0
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(target.Platform == Opus.Core.EPlatform.Unix64);
+            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
 
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {
