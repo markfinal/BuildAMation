@@ -32,7 +32,7 @@ namespace GccCommon
 
             Opus.Core.Target target = node.Target;
 
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(target.Platform == Opus.Core.EPlatform.Unix64);
+            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
 
             this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
