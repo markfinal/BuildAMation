@@ -1,3 +1,10 @@
+17-Sep-2011 Set version to 0.40.
+
+--------------------------------------------------------------------------------
+
+v0.30
+=====
+
 15-Sep-2011 Issue 44. Fixing missing spaces in generated Makefiles causing errors.
 
 15-Sep-2011 Issue 43. OSX 64-bit targets with GCC now pass -m64.
