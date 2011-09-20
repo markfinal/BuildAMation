@@ -1,3 +1,5 @@
+20-Sep-2011 Disabled VisualC browse information generation for all build types. This improves performance of builds. Assuming Intellisense provides most features required if no other VisualStudio addins are used.
+
 17-Sep-2011 Set version to 0.40.
 
 --------------------------------------------------------------------------------

@@ -79,15 +79,8 @@ namespace VisualCCommon
 
             this.DebugType = EDebugType.Embedded;
 
-            // TODO: can this be done via an option delegate from the VSSolutionBuilder?
-            if (Opus.Core.State.BuilderName == "VSSolution")
-            {
-                this.BrowseInformation = EBrowseInformation.Full;
-            }
-            else
-            {
-                this.BrowseInformation = EBrowseInformation.None;
-            }
+            // disable browse information to improve build speed
+            this.BrowseInformation = EBrowseInformation.None;
 
             this.StringPooling = true;
             this.DisableLanguageExtensions = false;
