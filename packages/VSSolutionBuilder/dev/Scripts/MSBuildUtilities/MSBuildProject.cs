@@ -7,12 +7,20 @@ namespace VSSolutionBuilder
 {
     public class MSBuildProject : MSBuildBaseElement
     {
-        public MSBuildProject(System.Xml.XmlDocument document, string toolsVersion)
+        public MSBuildProject(System.Xml.XmlDocument document, string toolsVersion, string defaultTargets)
             : base(document, "Project")
         {
-            this.XmlElement.SetAttribute("DefaultTargets", "Build");
+            if (null != defaultTargets)
+            {
+                this.XmlElement.SetAttribute("DefaultTargets", defaultTargets);
+            }
             this.XmlElement.SetAttribute("ToolsVersion", toolsVersion);
             this.XmlDocument.AppendChild(this.XmlElement);
+        }
+
+        public MSBuildProject(System.Xml.XmlDocument document, string toolsVersion)
+            : this(document, toolsVersion, null)
+        {
         }
 
         public MSBuildPropertyGroup CreatePropertyGroup()
