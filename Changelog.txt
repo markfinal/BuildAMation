@@ -1,3 +1,5 @@
+25-Sep-2011 Issue 47. If the Windows SDK (6.0A) is not found, then the VisualStudio install path is searched for a PlatformSDK. This is really only suitable for VisualStudio 8.
+
 20-Sep-2011 Issue 46. Fixing env.bat for Windows to expand the original PATH correctly.
 
 20-Sep-2011 Disabled VisualC browse information generation for all build types. This improves performance of builds. Assuming Intellisense provides most features required if no other VisualStudio addins are used.
