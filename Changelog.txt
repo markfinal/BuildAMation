@@ -1,3 +1,5 @@
+02-Oct-2011 Removing obsolete spaces at the end of command line arguments.
+
 25-Sep-2011 Issue 40. VisualStudio 2010 source files in the IDE Solution Explorer appeared as a flat list. Opus now generates .vcxproj.filters files alongside the project files to remedy this.
 
 25-Sep-2011 Issue 47. If the Windows SDK (6.0A) is not found, then the VisualStudio install path is searched for a PlatformSDK. This is really only suitable for VisualStudio 8.

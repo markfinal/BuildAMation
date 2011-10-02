@@ -265,7 +265,7 @@ namespace VisualCCommon
 
                 case C.ECompilerOutput.Preprocess: // with line numbers
                     commandLineBuilder.Add("/P");
-                    commandLineBuilder.Add(System.String.Format("/Fo\"{0}\" ", options.ObjectFilePath));
+                    commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
                     break;
 
                 default:

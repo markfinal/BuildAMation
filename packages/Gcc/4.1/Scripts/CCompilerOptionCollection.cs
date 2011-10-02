@@ -43,19 +43,19 @@ namespace Gcc
             switch (enumOption.Value)
             {
                 case EVisibility.Default:
-                    commandLineBuilder.Add("-fvisibility=default ");
+                    commandLineBuilder.Add("-fvisibility=default");
                     break;
 
                 case EVisibility.Hidden:
-                    commandLineBuilder.Add("-fvisibility=hidden ");
+                    commandLineBuilder.Add("-fvisibility=hidden");
                     break;
 
                 case EVisibility.Internal:
-                    commandLineBuilder.Add("-fvisibility=internal ");
+                    commandLineBuilder.Add("-fvisibility=internal");
                     break;
 
                 case EVisibility.Protected:
-                    commandLineBuilder.Add("-fvisibility=protected ");
+                    commandLineBuilder.Add("-fvisibility=protected");
                     break;
 
                 default:
