@@ -1,3 +1,5 @@
+02-Oct-2011 Fixed Mingw-4.5.0 compilation.
+
 02-Oct-2011 Removing obsolete spaces at the end of command line arguments.
 
 25-Sep-2011 Issue 40. VisualStudio 2010 source files in the IDE Solution Explorer appeared as a flat list. Opus now generates .vcxproj.filters files alongside the project files to remedy this.

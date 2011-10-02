@@ -42,19 +42,19 @@ namespace Mingw
             switch (enumOption.Value)
             {
                 case EVisibility.Default:
-                    commandLineBuilder.Append("-fvisibility=default ");
+                    commandLineBuilder.Add("-fvisibility=default");
                     break;
 
                 case EVisibility.Hidden:
-                    commandLineBuilder.Append("-fvisibility=hidden ");
+                    commandLineBuilder.Add("-fvisibility=hidden");
                     break;
 
                 case EVisibility.Internal:
-                    commandLineBuilder.Append("-fvisibility=internal ");
+                    commandLineBuilder.Add("-fvisibility=internal");
                     break;
 
                 case EVisibility.Protected:
-                    commandLineBuilder.Append("-fvisibility=protected ");
+                    commandLineBuilder.Add("-fvisibility=protected");
                     break;
 
                 default:
