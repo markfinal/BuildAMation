@@ -152,8 +152,6 @@ namespace Opus.Core
                         nodeWork.CompletedEvent += new DependencyNode.CompleteEventHandler(CompletedNode);
                         this.AddAgentToWorkingList(agent);
                         agent.Execute(nodeWork);
-
-                        Log.Info("\t{0}% Scheduled", this.scheduler.PercentageScheduled);
                     }
                     else
                     {

@@ -8,6 +8,11 @@ namespace Opus.Core
     public class BuildScheduler
     {
         private DependencyGraph graph;
+        private int scheduledNodeCount = 0;
+        private int percentComplete = 0;
+
+        public delegate void ProgressUpdatedDelegate(int percentageComplete);
+        public static event ProgressUpdatedDelegate ProgressUpdated;
         
         public BuildScheduler(DependencyGraph graph)
         {
@@ -24,16 +29,20 @@ namespace Opus.Core
 
         private int ScheduledNodeCount
         {
-            get;
-            set;
-        }
-
-        public int PercentageScheduled
-        {
             get
             {
-                int percentage = this.ScheduledNodeCount * 100 / this.TotalNodeCount;
-                return percentage;
+                return this.scheduledNodeCount;
+            }
+
+            set
+            {
+                this.scheduledNodeCount = value;
+                int percentComplete = 100 * this.scheduledNodeCount / this.TotalNodeCount;
+                if (percentComplete != this.percentComplete)
+                {
+                    this.percentComplete = percentComplete;
+                    ProgressUpdated(percentComplete);
+                }
             }
         }
         

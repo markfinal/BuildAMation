@@ -1,3 +1,5 @@
+02-Oct-2011 Issue 48. Scheduler updates are now reported via a C# event and only when percentage completion has changed.
+
 02-Oct-2011 Fixed Mingw-4.5.0 compilation.
 
 02-Oct-2011 Removing obsolete spaces at the end of command line arguments.

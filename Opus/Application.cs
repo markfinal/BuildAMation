@@ -171,6 +171,9 @@ namespace Opus
         /// </summary>
         public void Run()
         {
+            // get notified of the progress of any scheduling updates
+            Core.BuildScheduler.ProgressUpdated += new Core.BuildScheduler.ProgressUpdatedDelegate(scheduler_ProgressUpdated);
+
             Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.PreambleCommandExecution);
             profile.StartProfile();
 
@@ -188,6 +191,11 @@ namespace Opus
             {
                 System.Environment.ExitCode = -3;
             }
+        }
+
+        private void scheduler_ProgressUpdated(int percentageComplete)
+        {
+            Core.Log.Info("\t{0}% Scheduled", percentageComplete);
         }
     }
 }
