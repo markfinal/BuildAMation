@@ -23,6 +23,7 @@ namespace MingwCommon
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
 
             // linker specific options
+            this["EnableAutoImport"].PrivateData = new PrivateData(EnableAutoImportCL);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -30,6 +31,7 @@ namespace MingwCommon
             base.InitializeDefaults(node);
 
             this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            this.EnableAutoImport = false;
 
             Opus.Core.Target target = node.Target;
 
@@ -222,6 +224,16 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             foreach (string argument in arguments)
             {
                 commandLineBuilder.Add(argument);
+            }
+        }
+
+        public static void EnableAutoImportCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                LinkerOptionCollection options = sender as LinkerOptionCollection;
+                commandLineBuilder.Add("-Wl,--enable-auto-import");
             }
         }
 

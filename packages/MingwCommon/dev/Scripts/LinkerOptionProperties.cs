@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=MingwCommon -c=LinkerOptionCollection 
+// -i=E:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;E:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=MingwCommon -c=LinkerOptionCollection 
 namespace MingwCommon
 {
     public partial class LinkerOptionCollection
@@ -135,6 +135,18 @@ namespace MingwCommon
             {
                 this.SetReferenceTypeOption<string>("AdditionalOptions", value);
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
+            }
+        }
+        public bool EnableAutoImport
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("EnableAutoImport");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("EnableAutoImport", value);
+                this.ProcessNamedSetHandler("EnableAutoImportSetHandler", this["EnableAutoImport"]);
             }
         }
     }
