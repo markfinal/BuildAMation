@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions
+    public partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions
     {
         private void SetDelegates(Opus.Core.Target target)
         {
