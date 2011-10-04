@@ -1,3 +1,4 @@
+#define __NO_STD_VECTOR // Use cl::vector instead of STL version
 #ifdef _MSC_VER
 #pragma warning(push, 3)
 #endif
@@ -30,10 +31,10 @@ int main()
     // this is based upon http://www.codeproject.com/KB/GPU-Programming/IntroToOpenCL.aspx
 
     cl_int err;
-    std::vector< cl::Platform > platformList;
+    cl::vector< cl::Platform > platformList;
     cl::Platform::get(&platformList);
     checkErr(platformList.size()!=0 ? CL_SUCCESS : -1, "cl::Platform::get");
-    std::cerr << "Platform number is: " << platformList.size() << std::endl;
+    std::cerr << "Platform count is: " << platformList.size() << std::endl;
     
     std::string platformVendor;
     platformList[0].getInfo((cl_platform_info)CL_PLATFORM_VENDOR, &platformVendor);
@@ -47,6 +48,14 @@ int main()
        NULL,
        NULL,
        &err);
+    if (err != CL_SUCCESS)
+    {
+        context = cl::Context(CL_DEVICE_TYPE_GPU,
+                              cprops,
+                              NULL,
+                              NULL,
+                              &err);
+    }
     checkErr(err, "Context::Context()"); 
 
     char * outH = new char[hw.length()+1];
@@ -58,7 +67,7 @@ int main()
         &err);
         checkErr(err, "Buffer::Buffer()");
 
-    std::vector<cl::Device> devices;
+    cl::vector<cl::Device> devices;
     devices = context.getInfo<CL_CONTEXT_DEVICES>();
     checkErr(
         devices.size() > 0 ? CL_SUCCESS : -1, "devices.size() > 0");
