@@ -1,3 +1,5 @@
+18-Oct-2011 Issue 52. Fixed Gcc include-fixed paths.
+
 04-Oct-2011 Used some OpenCL preprocessor magic (__NO_STD_VECTOR) to avoid the use of std::vector in the test program. Also added support to the test if there was a GPU OpenCL device but not a CPU device.
 
 02-Oct-2011 Issue 49. Added EnableAutoImport linker option to Mingw. See http://sourceware.org/binutils/docs-2.16/ld/WIN32.html
