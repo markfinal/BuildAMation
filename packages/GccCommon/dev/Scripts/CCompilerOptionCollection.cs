@@ -128,7 +128,7 @@ namespace GccCommon
                 }
                 else
                 {
-                    commandLineBuilder.Add(includePath);
+                    commandLineBuilder.Add(System.String.Format("-isystem{0}", includePath));
                 }
             }
         }
@@ -144,7 +144,7 @@ namespace GccCommon
                 }
                 else
                 {
-                    commandLineBuilder.Add(includePath);
+                    commandLineBuilder.Add(System.String.Format("-I{0}", includePath));
                 }
             }
         }
