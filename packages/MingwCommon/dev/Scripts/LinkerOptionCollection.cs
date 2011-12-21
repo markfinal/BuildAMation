@@ -120,7 +120,14 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-                    commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.OutputFilePath));
+                    if (options.OutputFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.OutputFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("-o {0}", options.OutputFilePath));
+                    }
                     break;
 
                 default:
@@ -178,17 +185,31 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (null != options.StaticImportLibraryFilePath)
                 {
-                    commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,\"{0}\"", options.StaticImportLibraryFilePath));
+                    if (options.StaticImportLibraryFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,\"{0}\"", options.StaticImportLibraryFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", options.StaticImportLibraryFilePath));
+                    }
                 }
             }
         }
 
         private static void LibraryPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
-            foreach (string includePath in includePathsOption.Value)
+            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            foreach (string libraryPath in libraryPathsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("-L\"{0}\"", includePath));
+                if (libraryPath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("-L\"{0}\"", libraryPath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("-L{0}", libraryPath));
+                }
             }
         }
 
@@ -213,7 +234,14 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             if (boolOption.Value)
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
+                if (options.MapFilePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", options.MapFilePath));
+                }
             }
         }
 

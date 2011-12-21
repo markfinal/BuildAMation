@@ -59,7 +59,14 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
+            if (sourceFilePath.Contains(" "))
+            {
+                commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
+            }
+            else
+            {
+                commandLineBuilder.Add(sourceFilePath);
+            }
 
             int exitCode = CommandLineProcessor.Processor.Execute(objectFile.OwningNode, compilerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);

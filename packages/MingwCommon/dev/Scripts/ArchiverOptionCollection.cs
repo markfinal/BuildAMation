@@ -77,7 +77,14 @@ namespace MingwCommon
             {
                 case C.EArchiverOutput.StaticLibrary:
                     ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                    commandLineBuilder.Add(System.String.Format("\"{0}\"", options.LibraryFilePath));
+                    if (options.LibraryFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("\"{0}\"", options.LibraryFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(options.LibraryFilePath);
+                    }
                     break;
 
                 default:

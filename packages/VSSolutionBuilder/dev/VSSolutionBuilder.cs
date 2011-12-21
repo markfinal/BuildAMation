@@ -137,7 +137,14 @@ namespace VSSolutionBuilder
                     if (System.IO.Directory.Exists(split) || System.IO.File.Exists(split))
                     {
                         split = Opus.Core.RelativePathUtilities.GetPath(split, projectUri);
-                        splitPath[i] = System.String.Format("\"{0}\"", split);
+                        if (split.Contains(" "))
+                        {
+                            splitPath[i] = System.String.Format("\"{0}\"", split);
+                        }
+                        else
+                        {
+                            splitPath[i] = split;
+                        }
                     }
                 }
                 refactoredPath = System.String.Join(splitter.ToString(), splitPath);

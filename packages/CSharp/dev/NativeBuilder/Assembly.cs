@@ -221,7 +221,14 @@ namespace NativeBuilder
 
             foreach (string source in sourceFiles)
             {
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", source));
+                if (source.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("\"{0}\"", source));
+                }
+                else
+                {
+                    commandLineBuilder.Add(source);
+                }
             }
 
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);

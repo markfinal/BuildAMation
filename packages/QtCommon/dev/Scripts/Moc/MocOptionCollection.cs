@@ -68,7 +68,14 @@ namespace QtCommon
         private static void MocOutputPathCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.Add(System.String.Format("-o\"{0}\"", stringOption.Value));
+            if (stringOption.Value.Contains(" "))
+            {
+                commandLineBuilder.Add(System.String.Format("-o\"{0}\"", stringOption.Value));
+            }
+            else
+            {
+                commandLineBuilder.Add(System.String.Format("-o{0}", stringOption.Value));
+            }
         }
 
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -76,7 +83,14 @@ namespace QtCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> directoryCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string directory in directoryCollectionOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("-I\"{0}\"", directory));
+                if (directory.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("-I\"{0}\"", directory));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("-I{0}", directory));
+                }
             }
         }
 

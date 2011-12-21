@@ -62,7 +62,16 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string recipe = System.String.Format("\"{0}\" {1} $(filter %{2},$^)", executable, commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
+            string recipe = null;
+            if (executable.Contains(" "))
+            {
+                recipe += System.String.Format("\"{0}\"", executable);
+            }
+            else
+            {
+                recipe += executable;
+            }
+            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
             recipe = recipe.Replace(staticLibrary.Options.OutputPaths[primaryOutput], "$@");

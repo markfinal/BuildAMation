@@ -79,8 +79,22 @@ namespace NativeBuilder
 
                 Opus.Core.StringArray thisCommandLineBuilder = new Opus.Core.StringArray(commandLineBuilder);
 
-                thisCommandLineBuilder.Add(System.String.Format("\"{0}\"", sourcePath));
-                thisCommandLineBuilder.Add(System.String.Format("\"{0}\"", destinationDirectory));
+                if (sourcePath.Contains(" "))
+                {
+                    thisCommandLineBuilder.Add(System.String.Format("\"{0}\"", sourcePath));
+                }
+                else
+                {
+                    thisCommandLineBuilder.Add(sourcePath);
+                }
+                if (destinationDirectory.Contains(" "))
+                {
+                    thisCommandLineBuilder.Add(System.String.Format("\"{0}\"", destinationDirectory));
+                }
+                else
+                {
+                    thisCommandLineBuilder.Add(destinationDirectory);
+                }
                 returnValue = CommandLineProcessor.Processor.Execute(copyFiles.OwningNode, tool, executablePath, thisCommandLineBuilder);
                 if (0 != returnValue)
                 {

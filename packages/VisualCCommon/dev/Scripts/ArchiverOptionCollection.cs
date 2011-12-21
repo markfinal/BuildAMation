@@ -74,7 +74,14 @@ namespace VisualCCommon
             {
                 case C.EArchiverOutput.StaticLibrary:
                     ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                    commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.LibraryFilePath));
+                    if (options.LibraryFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.LibraryFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/OUT:{0}", options.LibraryFilePath));
+                    }
                     break;
 
                 default:

@@ -122,7 +122,14 @@ namespace GccCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("-isystem\"{0}\"", includePath));
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("-isystem\"{0}\"", includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(includePath);
+                }
             }
         }
 
@@ -131,7 +138,14 @@ namespace GccCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("-I\"{0}\"", includePath));
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("-I\"{0}\"", includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(includePath);
+                }
             }
         }
 
@@ -198,12 +212,26 @@ namespace GccCommon
             {
                 case C.ECompilerOutput.CompileOnly:
                     commandLineBuilder.Add("-c");
-                    commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.ObjectFilePath));
+                    if (options.ObjectFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.ObjectFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("-o {0}", options.ObjectFilePath));
+                    }
                     break;
 
                 case C.ECompilerOutput.Preprocess:
                     commandLineBuilder.Add("-E");
-                    commandLineBuilder.Add(System.String.Format("-o \"{0}\" ", options.ObjectFilePath));
+                    if (options.ObjectFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("-o \"{0}\" ", options.ObjectFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("-o {0} ", options.ObjectFilePath));
+                    }
                     break;
 
                 default:

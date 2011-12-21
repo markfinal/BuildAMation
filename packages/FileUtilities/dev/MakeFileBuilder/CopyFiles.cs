@@ -70,7 +70,16 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
-            string recipe = System.String.Format("\"{0}\" {1} $< $@", toolExecutablePath, commandLineBuilder.ToString(' '));
+            string recipe = null;
+            if (toolExecutablePath.Contains(" "))
+            {
+                recipe += System.String.Format("\"{0}\"", toolExecutablePath);
+            }
+            else
+            {
+                recipe += toolExecutablePath;
+            }
+            recipe += System.String.Format(" {0} $< $@", commandLineBuilder.ToString(' '));
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 

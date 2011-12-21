@@ -178,7 +178,14 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("/I\"{0}\"", includePath));
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("/I\"{0}\"", includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("/I{0}", includePath));
+                }
             }
         }
 
@@ -188,7 +195,14 @@ namespace VisualCCommon
             System.Text.StringBuilder includePaths = new System.Text.StringBuilder();
             foreach (string includePath in includePathsOption.Value)
             {
-                includePaths.AppendFormat("\"{0}\";", includePath);
+                if (includePath.Contains(" "))
+                {
+                    includePaths.AppendFormat("\"{0}\";", includePath);
+                }
+                else
+                {
+                    includePaths.AppendFormat("{0};", includePath);
+                }
             }
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             dictionary.Add("AdditionalIncludeDirectories", includePaths.ToString());
@@ -260,12 +274,26 @@ namespace VisualCCommon
             {
                 case C.ECompilerOutput.CompileOnly:
                     commandLineBuilder.Add("/c");
-                    commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
+                    if (options.ObjectFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/Fo{0}", options.ObjectFilePath));
+                    }
                     break;
 
                 case C.ECompilerOutput.Preprocess: // with line numbers
                     commandLineBuilder.Add("/P");
-                    commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
+                    if (options.ObjectFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/Fo{0}", options.ObjectFilePath));
+                    }
                     break;
 
                 default:
@@ -617,11 +645,25 @@ namespace VisualCCommon
                     break;
 
                 case EBrowseInformation.Full:
-                    commandLineBuilder.Add(System.String.Format("/FR\"{0}\"", browseDir));
+                    if (browseDir.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/FR\"{0}\"", browseDir));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/FR{0}", browseDir));
+                    }
                     break;
 
                 case EBrowseInformation.NoLocalSymbols:
-                    commandLineBuilder.Add(System.String.Format("/Fr\"{0}\"", browseDir));
+                    if (browseDir.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/Fr\"{0}\"", browseDir));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/Fr{0}", browseDir));
+                    }
                     break;
 
                 default:
@@ -869,7 +911,14 @@ namespace VisualCCommon
                             {
                                 throw new Opus.Core.Exception("PDB file path has not been set");
                             }
-                            commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
+                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            {
+                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
+                            }
+                            else
+                            {
+                                commandLineBuilder.Add(System.String.Format("/Fd{0}", options.ProgramDatabaseFilePath));
+                            }
                         }
                         break;
 
@@ -881,7 +930,14 @@ namespace VisualCCommon
                             {
                                 throw new Opus.Core.Exception("PDB file path has not been set");
                             }
-                            commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
+                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            {
+                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
+                            }
+                            else
+                            {
+                                commandLineBuilder.Add(System.String.Format("/Fd{0}", options.ProgramDatabaseFilePath));
+                            }
                         }
                         break;
 

@@ -29,7 +29,14 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
-            recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString());
+            if (toolExePath.Contains(" "))
+            {
+                recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString());
+            }
+            else
+            {
+                recipes.Add(toolExePath + " " + commandLineBuilder.ToString());
+            }
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));

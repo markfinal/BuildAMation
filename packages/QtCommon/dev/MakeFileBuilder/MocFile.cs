@@ -41,10 +41,24 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Moc options does not support command line translation");
             }
 
-            commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
+            if (sourceFilePath.Contains(" "))
+            {
+                commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
+            }
+            else
+            {
+                commandLineBuilder.Add(sourceFilePath);
+            }
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
-            recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString(' '));
+            if (toolExePath.Contains(" "))
+            {
+                recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString(' '));
+            }
+            else
+            {
+                recipes.Add(toolExePath + " " + commandLineBuilder.ToString(' '));
+            }
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));

@@ -45,13 +45,27 @@ namespace C
                 {
                     foreach (string standardLibraryPath in linkerOptions.StandardLibraries)
                     {
-                        commandLineBuilder.Add(System.String.Format("\"{0}\"", standardLibraryPath));
+                        if (standardLibraryPath.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("\"{0}\"", standardLibraryPath));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(standardLibraryPath);
+                        }
                     }
                 }
 
                 foreach (string libraryPath in linkerOptions.Libraries)
                 {
-                    commandLineBuilder.Add(System.String.Format("\"{0}\"", libraryPath));
+                    if (libraryPath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("\"{0}\"", libraryPath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(libraryPath);
+                    }
                 }
 
                 if (includeOtherLibraries)

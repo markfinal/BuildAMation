@@ -172,7 +172,15 @@ namespace CSharp
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
-            commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", options.OutputFilePath));
+
+            if (options.OutputFilePath.Contains(" "))
+            {
+                commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", options.OutputFilePath));
+            }
+            else
+            {
+                commandLineBuilder.Add(System.String.Format("/out:{0}", options.OutputFilePath));
+            }
         }
 
         private static VisualStudioProcessor.ToolAttributeDictionary TargetVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -439,7 +447,14 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:pdbinfo");
-                            commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
+                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            {
+                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
+                            }
+                            else
+                            {
+                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", options.ProgramDatabaseFilePath));
+                            }
                         }
                         else
                         {
@@ -454,7 +469,14 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:full");
-                            commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
+                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            {
+                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
+                            }
+                            else
+                            {
+                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", options.ProgramDatabaseFilePath));
+                            }
                         }
                         else
                         {
@@ -525,7 +547,14 @@ namespace CSharp
                 System.Text.StringBuilder fileList = new System.Text.StringBuilder();
                 foreach (string file in fileCollectionOption.Value)
                 {
-                    fileList.AppendFormat("\"{0}\";", file);
+                    if (file.Contains(" "))
+                    {
+                        fileList.AppendFormat("\"{0}\";", file);
+                    }
+                    else
+                    {
+                        fileList.AppendFormat("{0};", file);
+                    }
                 }
                 commandLineBuilder.Add(System.String.Format("/reference:{0}", fileList.ToString()));
             }
@@ -545,7 +574,14 @@ namespace CSharp
                 System.Text.StringBuilder fileList = new System.Text.StringBuilder();
                 foreach (string file in fileCollectionOption.Value)
                 {
-                    fileList.AppendFormat("\"{0}\";", file);
+                    if (file.Contains(" "))
+                    {
+                        fileList.AppendFormat("\"{0}\";", file);
+                    }
+                    else
+                    {
+                        fileList.AppendFormat("{0};", file);
+                    }
                 }
                 commandLineBuilder.Add(System.String.Format("/addmodule:{0}", fileList.ToString()));
             }

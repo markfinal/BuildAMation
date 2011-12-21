@@ -142,7 +142,14 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-                    commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.OutputFilePath));
+                    if (options.OutputFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.OutputFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/OUT:{0}", options.OutputFilePath));
+                    }
                     break;
 
                 default:
@@ -192,7 +199,14 @@ namespace VisualCCommon
                 commandLineBuilder.Add("/DEBUG");
 
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.Add(System.String.Format("/PDB:\"{0}\"", options.ProgramDatabaseFilePath));
+                if (options.ProgramDatabaseFilePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("/PDB:\"{0}\"", options.ProgramDatabaseFilePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("/PDB:{0}", options.ProgramDatabaseFilePath));
+                }
             }
         }
 
@@ -391,7 +405,14 @@ namespace VisualCCommon
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (null != options.StaticImportLibraryFilePath)
                 {
-                    commandLineBuilder.Add(System.String.Format("/IMPLIB:\"{0}\"", options.StaticImportLibraryFilePath)); 
+                    if (options.StaticImportLibraryFilePath.Contains(" "))
+                    {
+                        commandLineBuilder.Add(System.String.Format("/IMPLIB:\"{0}\"", options.StaticImportLibraryFilePath));
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add(System.String.Format("/IMPLIB:{0}", options.StaticImportLibraryFilePath));
+                    }
                 }
             }
         }
@@ -416,17 +437,31 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("/LIBPATH:\"{0}\"", includePath));
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("/LIBPATH:\"{0}\"", includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("/LIBPATH:{0}", includePath));
+                }
             }
         }
 
         private static VisualStudioProcessor.ToolAttributeDictionary LibraryPathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             System.Text.StringBuilder libraryPaths = new System.Text.StringBuilder();
-            foreach (string includePath in includePathsOption.Value)
+            foreach (string libraryPath in libraryPathsOption.Value)
             {
-                libraryPaths.Append(System.String.Format("\"{0}\";", includePath));
+                if (libraryPath.Contains(" "))
+                {
+                    libraryPaths.Append(System.String.Format("\"{0}\";", libraryPath));
+                }
+                else
+                {
+                    libraryPaths.Append(System.String.Format("{0};", libraryPath));
+                }
             }
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             dictionary.Add("AdditionalLibraryDirectories", libraryPaths.ToString());
@@ -446,7 +481,14 @@ namespace VisualCCommon
                     standardLibraryPaths.Append("$(NOINHERIT) ");
                     foreach (string standardLibraryPath in standardLibraryPathsOption.Value)
                     {
-                        standardLibraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                        if (standardLibraryPath.Contains(" "))
+                        {
+                            standardLibraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                        }
+                        else
+                        {
+                            standardLibraryPaths.Append(System.String.Format("{0} ", standardLibraryPath));
+                        }
                     }
                 }
                 else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
@@ -477,7 +519,14 @@ namespace VisualCCommon
                 libraryPaths.Append("$(NOINHERIT) ");
                 foreach (string standardLibraryPath in libraryPathsOption.Value)
                 {
-                    libraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                    if (standardLibraryPath.Contains(" "))
+                    {
+                        libraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
+                    }
+                    else
+                    {
+                        libraryPaths.Append(System.String.Format("{0} ", standardLibraryPath));
+                    }
                 }
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
@@ -513,7 +562,14 @@ namespace VisualCCommon
             if (boolOption.Value)
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                commandLineBuilder.Add(System.String.Format("/MAP:\"{0}\"", options.MapFilePath));
+                if (options.MapFilePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("/MAP:\"{0}\"", options.MapFilePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("/MAP:{0}", options.MapFilePath));
+                }
             }
         }
 

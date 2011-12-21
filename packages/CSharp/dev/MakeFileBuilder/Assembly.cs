@@ -221,14 +221,28 @@ namespace MakeFileBuilder
 
             foreach (string source in sourceFiles)
             {
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", source));
+                if (source.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("\"{0}\"", source));
+                }
+                else
+                {
+                    commandLineBuilder.Add(source);
+                }
             }
 
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
             string executablePath = compilerInstance.Executable(target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
-            recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString(' ')));
+            if (executablePath.Contains(" "))
+            {
+                recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString(' ')));
+            }
+            else
+            {
+                recipes.Add(System.String.Format("{0} {1}", executablePath, commandLineBuilder.ToString(' ')));
+            }
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 

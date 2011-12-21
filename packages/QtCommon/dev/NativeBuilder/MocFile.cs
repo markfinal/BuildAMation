@@ -49,7 +49,14 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Moc options does not support command line translation");
             }
 
-            commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
+            if (sourceFilePath.Contains(" "))
+            {
+                commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
+            }
+            else
+            {
+                commandLineBuilder.Add(sourceFilePath);
+            }
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, tool, toolExePath, commandLineBuilder);
             success = (0 == exitCode);

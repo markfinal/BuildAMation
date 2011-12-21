@@ -124,7 +124,14 @@ namespace VSSolutionBuilder
                 // TODO: pdb if it exists?
 
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", executable));
+                if (executable.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("\"{0}\"", executable));
+                }
+                else
+                {
+                    commandLineBuilder.Add(executable);
+                }
                 if (objectFile.Options is CommandLineProcessor.ICommandLineSupport)
                 {
                     CommandLineProcessor.ICommandLineSupport commandLineOption = objectFile.Options as CommandLineProcessor.ICommandLineSupport;
