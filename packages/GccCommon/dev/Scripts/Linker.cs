@@ -20,7 +20,7 @@ namespace GccCommon
         {
             get
             {
-                return "-Wl,--start-group ";
+                return "-Wl,--start-group";
             }
         }
 
@@ -28,7 +28,7 @@ namespace GccCommon
         {
             get
             {
-                return "-Wl,--end-group ";
+                return "-Wl,--end-group";
             }
         }
     }
