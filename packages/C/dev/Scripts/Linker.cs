@@ -41,19 +41,9 @@ namespace C
             {
                 commandLineBuilder.Add(this.StartLibraryList);
 
-                if (includeStandardLibraries)
+                if (includeOtherLibraries)
                 {
-                    foreach (string standardLibraryPath in linkerOptions.StandardLibraries)
-                    {
-                        if (standardLibraryPath.Contains(" "))
-                        {
-                            commandLineBuilder.Add(System.String.Format("\"{0}\"", standardLibraryPath));
-                        }
-                        else
-                        {
-                            commandLineBuilder.Add(standardLibraryPath);
-                        }
-                    }
+                    commandLineBuilder.AddRange(otherLibraryPaths);
                 }
 
                 foreach (string libraryPath in linkerOptions.Libraries)
@@ -68,9 +58,19 @@ namespace C
                     }
                 }
 
-                if (includeOtherLibraries)
+                if (includeStandardLibraries)
                 {
-                    commandLineBuilder.AddRange(otherLibraryPaths);
+                    foreach (string standardLibraryPath in linkerOptions.StandardLibraries)
+                    {
+                        if (standardLibraryPath.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("\"{0}\"", standardLibraryPath));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(standardLibraryPath);
+                        }
+                    }
                 }
 
                 commandLineBuilder.Add(this.EndLibraryList);

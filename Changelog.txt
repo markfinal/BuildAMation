@@ -1,3 +1,5 @@
+22-Dec-2011 Reordering library link order so that project libraries come first, then specified external libraries, then system libraries. This appears to resolve inter-dynamic-library dependencies in Gcc-4.5 upwards when --as-needed is specified to ld.
+
 21-Dec-2011 Fixing system include paths for Gcc-4.4, 4.5 and 4.6 for Ubuntu 11.10.
 
 21-Dec-2011 Adding Gcc-4.5 support for Linux. A new include path under /usr/include needed to be added.
