@@ -34,10 +34,18 @@ namespace VSSolutionBuilder
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier.Path }) as IProject;
 
-                    projectData.Platforms.Add(VSSolutionBuilder.GetPlatformNameFromTarget(target));
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }
             }
+
+            {
+                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                if (!projectData.Platforms.Contains(platformName))
+                {
+                    projectData.Platforms.Add(platformName);
+                }
+            }
+
             if (null != node.ExternalDependents)
             {
                 foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
