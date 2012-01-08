@@ -1,3 +1,5 @@
+08-Jan-2012 Fixing generation of package debug projects, which used an incorrect token for the 'Any CPU' platform.
+
 24-Dec-2011 Multiplatform Windows VisualStudio project generation will now enable builds for more than just the first platform specified, e.g. if -platforms=win32;win64 then only win32 would build in the IDE previously.
 
 22-Dec-2011 Reordering library link order so that project libraries come first, then specified external libraries, then system libraries. This appears to resolve inter-dynamic-library dependencies in Gcc-4.5 upwards when --as-needed is specified to ld.

@@ -61,7 +61,7 @@ namespace Opus
                         xmlWriter.WriteStartElement("Platform");
                         xmlWriter.WriteAttributeString("Condition", " '$(Platform)' == '' ");
                         {
-                            xmlWriter.WriteString("Any CPU");
+                            xmlWriter.WriteString("AnyCPU");
                             xmlWriter.WriteEndElement();
                         }
 
@@ -111,11 +111,11 @@ namespace Opus
                     }
 
                     xmlWriter.WriteStartElement("PropertyGroup");
-                    xmlWriter.WriteAttributeString("Condition", " '$(Platform)' == 'Any CPU' ");
+                    xmlWriter.WriteAttributeString("Condition", " '$(Platform)' == 'AnyCPU' ");
                     {
                         xmlWriter.WriteStartElement("PlatformTarget");
                         {
-                            xmlWriter.WriteString("Any CPU");
+                            xmlWriter.WriteString("AnyCPU");
                             xmlWriter.WriteEndElement();
                         }
                         xmlWriter.WriteEndElement();
