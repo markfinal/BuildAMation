@@ -29,7 +29,7 @@ namespace Opus.Core
             }
 
             System.Uri pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
-            System.Uri relativePathUri = relativeToUri.MakeRelativeUri(pathUri);
+            System.Uri relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
             if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
             {
                 return path;

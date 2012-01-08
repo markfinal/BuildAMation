@@ -1,3 +1,5 @@
+08-Jan-2012 Guarding against calling System.Uri.MakeRelativeUri for relative URIs
+
 08-Jan-2012 VS2010 project file generation with 'UniqueIdentifiers' now write out GUIDs in upper case for consistency.
 
 08-Jan-2012 Issue 53. Fixing formatting of package debug project GUID so that Monodevelop generated solutions will open successfully after an initial save.
