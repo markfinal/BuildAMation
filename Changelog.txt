@@ -1,3 +1,5 @@
+08-Jan-2012 Issue 53. Fixing formatting of package debug project GUID so that Monodevelop generated solutions will open successfully after an initial save.
+
 08-Jan-2012 Fixing generation of package debug projects, which used an incorrect token for the 'Any CPU' platform.
 
 24-Dec-2011 Multiplatform Windows VisualStudio project generation will now enable builds for more than just the first platform specified, e.g. if -platforms=win32;win64 then only win32 would build in the IDE previously.

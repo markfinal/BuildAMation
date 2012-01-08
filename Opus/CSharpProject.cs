@@ -47,7 +47,7 @@ namespace Opus
                         xmlWriter.WriteStartElement("ProjectGuid");
                         {
                             System.Guid projectGUID = System.Guid.NewGuid();
-                            xmlWriter.WriteString(projectGUID.ToString());
+                            xmlWriter.WriteString(projectGUID.ToString("B").ToUpper());
                             xmlWriter.WriteEndElement();
                         }
 
