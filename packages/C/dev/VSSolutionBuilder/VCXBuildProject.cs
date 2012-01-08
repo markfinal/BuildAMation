@@ -217,7 +217,7 @@ namespace VSSolutionBuilder
                 {
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", "Source Files");
-                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B"));
+                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
                     foreach (ProjectFile file in this.SourceFileCollection)
@@ -247,14 +247,14 @@ namespace VSSolutionBuilder
                     foreach (string sourceSubDir in sourceSubDirectories)
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Source Files", sourceSubDir));
-                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B"));
+                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
                 }
                 if (this.HeaderFileCollection.Count > 0)
                 {
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", "Header Files");
-                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B"));
+                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
                     foreach (ProjectFile file in this.HeaderFileCollection)
@@ -284,7 +284,7 @@ namespace VSSolutionBuilder
                     foreach (string sourceSubDir in headerSubDirectories)
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Header Files", sourceSubDir));
-                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B"));
+                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
                 }
 
