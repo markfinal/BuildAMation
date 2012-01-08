@@ -24,13 +24,16 @@ namespace VSSolutionBuilder
             this.PathName = projectPathName;
             this.PackageDirectory = packageDirectory;
 
+            bool isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(packageDirectory);
+            System.UriKind kind = isPackageDirAbsolute ? System.UriKind.Absolute : System.UriKind.Relative;
+
             if (packageDirectory[packageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
             {
-                this.PackageUri = new System.Uri(packageDirectory, System.UriKind.Absolute);
+                this.PackageUri = new System.Uri(packageDirectory, kind);
             }
             else
             {
-                this.PackageUri = new System.Uri(packageDirectory + System.IO.Path.DirectorySeparatorChar, System.UriKind.Absolute);
+                this.PackageUri = new System.Uri(packageDirectory + System.IO.Path.DirectorySeparatorChar, kind);
             }
         }
 
