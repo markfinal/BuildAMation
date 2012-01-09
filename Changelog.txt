@@ -1,3 +1,5 @@
+09-Jan-2012 VisualStudio projects for C application/dynamic library/static library with no input files are no longer generated.
+
 09-Jan-2012 Native build C link or archive steps no longer throw an exception when there are no input files. A detail message is output, however.
 
 09-Jan-2012 Improved exception message when a package is failed to be located in any package root.
