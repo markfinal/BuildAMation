@@ -29,7 +29,7 @@ namespace NativeBuilder
             {
                 Opus.Core.Log.Detail("There were no object files to link for module '{0}'", node.UniqueModuleName);
                 success = true;
-                return true;
+                return null;
             }
 
             // find dependent library files

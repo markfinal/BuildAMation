@@ -28,7 +28,7 @@ namespace NativeBuilder
             {
                 Opus.Core.Log.Detail("There were no object files to archive for module '{0}'", node.UniqueModuleName);
                 success = true;
-                return true;
+                return null;
             }
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
