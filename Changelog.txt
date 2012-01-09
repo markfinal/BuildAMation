@@ -1,3 +1,5 @@
+09-Jan-2012 Issue 54. Relative package roots now work correctly. Internally they are converted to absolute paths.
+
 08-Jan-2012 VS2010 project URIs could fail to be generated when they were relative paths.
 
 08-Jan-2012 Guarding against calling System.Uri.MakeRelativeUri for relative URIs

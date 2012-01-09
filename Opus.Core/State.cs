@@ -318,20 +318,9 @@ namespace Opus.Core
         {
             set
             {
-                System.Uri buildRootUri = new System.Uri(value, System.UriKind.RelativeOrAbsolute);
-                if (!buildRootUri.IsAbsoluteUri)
-                {
-                    buildRootUri = new System.Uri(System.IO.Path.Combine(WorkingDirectory, value));
-                }
+                string absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
 
-                string buildRootPath = buildRootUri.AbsolutePath;
-                buildRootPath = System.Uri.UnescapeDataString(buildRootPath);
-                if (OSUtilities.IsWindowsHosting)
-                {
-                    buildRootPath = buildRootPath.Replace('/', '\\');
-                }
-
-                Set("System", "BuildRoot", buildRootPath);
+                Set("System", "BuildRoot", absoluteBuildRootPath);
             }
             get
             {

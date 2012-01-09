@@ -68,5 +68,23 @@ namespace Opus.Core
             string relativePath = GetPath(path, relativeToUri);
             return relativePath;
         }
+
+        public static string MakeRelativePathAbsoluteToWorkingDir(string relativePath)
+        {
+            System.Uri relativePathUri = new System.Uri(relativePath, System.UriKind.RelativeOrAbsolute);
+            if (!relativePathUri.IsAbsoluteUri)
+            {
+                relativePathUri = new System.Uri(System.IO.Path.Combine(Core.State.WorkingDirectory, relativePath));
+            }
+
+            string absolutePath = relativePathUri.AbsolutePath;
+            absolutePath = System.Uri.UnescapeDataString(absolutePath);
+            if (Core.OSUtilities.IsWindowsHosting)
+            {
+                absolutePath = absolutePath.Replace('/', '\\');
+            }
+
+            return absolutePath;
+        }
     }
 }

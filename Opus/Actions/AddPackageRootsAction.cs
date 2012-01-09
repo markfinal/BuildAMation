@@ -41,7 +41,12 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.State.PackageRoots.AddRange(this.PackageRoots.ToArray());
+            foreach (string packageRoot in this.PackageRoots)
+            {
+                string absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(packageRoot);
+
+                Core.State.PackageRoots.Add(absolutePackageRoot);
+            }
 
             return true;
         }
