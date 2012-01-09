@@ -26,7 +26,9 @@ namespace NativeBuilder
             }
             if (0 == dependentObjectFiles.Count)
             {
-                throw new Opus.Core.Exception("There are no object files to archive");
+                Opus.Core.Log.Detail("There were no object files to archive for module '{0}'", node.UniqueModuleName);
+                success = true;
+                return true;
             }
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();

@@ -1,3 +1,5 @@
+09-Jan-2012 Native build C link or archive steps no longer throw an exception when there are no input files. A detail message is output, however.
+
 09-Jan-2012 Improved exception message when a package is failed to be located in any package root.
 
 09-Jan-2012 Issue 54. Relative package roots now work correctly. Internally they are converted to absolute paths.

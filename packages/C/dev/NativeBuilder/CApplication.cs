@@ -27,7 +27,9 @@ namespace NativeBuilder
             }
             if (0 == dependentObjectFiles.Count)
             {
-                throw new Opus.Core.Exception("There are no object files to link");
+                Opus.Core.Log.Detail("There were no object files to link for module '{0}'", node.UniqueModuleName);
+                success = true;
+                return true;
             }
 
             // find dependent library files
