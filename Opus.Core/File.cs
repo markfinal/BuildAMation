@@ -129,8 +129,16 @@ namespace Opus.Core
             else
             {
                 string relativePath = CombinePaths(null, pathSegments);
-                string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
-                return new StringArray(files);
+                try
+                {
+                    string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
+                    return new StringArray(files);
+                }
+                catch (System.IO.DirectoryNotFoundException)
+                {
+                    Log.Detail("Warning: No files match the pattern {0}{1}{2}", baseDirectory, System.IO.Path.DirectorySeparatorChar, relativePath);
+                    return new StringArray();
+                }
             }
         }
 

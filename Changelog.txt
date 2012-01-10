@@ -1,3 +1,5 @@
+10-Jan-2012 Opus.Core.File.GetFiles will no longer throw an exception when no files match the pattern used. A detail log message is output instead.
+
 10-Jan-2012 DirectXSDK package will now throw a sensible exception if the SDK is not installed.
 
 09-Jan-2012 VisualStudio projects for C application/dynamic library/static library with no input files are no longer generated.
