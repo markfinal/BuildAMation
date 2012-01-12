@@ -1,3 +1,5 @@
+12-Jan-2012 Allow packages to have versions containing dashes.
+
 12-Jan-2012 Qt packages can provide more than one include path.
 
 12-Jan-2012 Gcc, Mingw, Qt, and VisualC packages, when passed an installation directory, now also check these relative to the working directory.

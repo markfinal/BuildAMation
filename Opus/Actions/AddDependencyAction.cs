@@ -61,12 +61,28 @@ namespace Opus
             foreach (string packageAndVersion in this.PackageAndVersionArray)
             {
                 string[] packageNameAndVersion = packageAndVersion.Split('-');
-                if (packageNameAndVersion.Length != 2)
+                string packageName = null;
+                string packageVersion = null;
+                if (packageNameAndVersion.Length < 2)
                 {
                     throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
                 }
+                else if (packageNameAndVersion.Length > 2)
+                {
+                    packageName = packageNameAndVersion[0];
+                    packageVersion = packageNameAndVersion[1];
+                    for (int i = 2; i < packageNameAndVersion.Length; ++i)
+                    {
+                        packageVersion += "-" + packageNameAndVersion[i];
+                    }
+                }
+                else
+                {
+                    packageName = packageNameAndVersion[0];
+                    packageVersion = packageNameAndVersion[1];
+                }
 
-                Core.PackageIdentifier id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                Core.PackageIdentifier id = new Core.PackageIdentifier(packageName, packageVersion);
                 xmlFile.AddRequiredPackage(id);
             }
 
