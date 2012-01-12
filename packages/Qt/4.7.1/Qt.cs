@@ -66,7 +66,7 @@ namespace Qt
                 QtCommon.QtCommon.BinPath = System.IO.Path.Combine(installPath, "bin");
             }
             libPath = System.IO.Path.Combine(installPath, "lib");
-            includePath = System.IO.Path.Combine(installPath, "include");
+            includePaths.Add(System.IO.Path.Combine(installPath, "include"));
         }
     }
 }

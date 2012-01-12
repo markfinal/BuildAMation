@@ -1,3 +1,5 @@
+12-Jan-2012 Qt packages can provide more than one include path.
+
 12-Jan-2012 Gcc, Mingw, Qt, and VisualC packages, when passed an installation directory, now also check these relative to the working directory.
 
 12-Jan-2012 Opus.Core.File.GetFiles threw an exception if the path segments contain '..'. This can still happen (see System.String.Directory.GetFiles on MSDN), but if they occur at the start of the path segments, they can be moved to the base directory.

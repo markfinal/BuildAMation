@@ -9,7 +9,7 @@ namespace QtCommon
     {
         protected static string installPath;
         protected static string libPath;
-        protected static string includePath;
+        protected static Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
 
         public static string BinPath
         {
@@ -50,7 +50,10 @@ namespace QtCommon
             }
             
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            foreach (string includePath in includePaths)
+            {
+                compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            }
         }
 
         [C.ExportCompilerOptionsDelegate]
