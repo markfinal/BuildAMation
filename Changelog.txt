@@ -1,3 +1,5 @@
+12-Jan-2012 Opus.Core.File.GetFiles threw an exception if the path segments contain '..'. This can still happen (see System.String.Directory.GetFiles on MSDN), but if they occur at the start of the path segments, they can be moved to the base directory.
+
 10-Jan-2012 Opus.Core.File.GetFiles will no longer throw an exception when no files match the pattern used. A detail log message is output instead.
 
 10-Jan-2012 DirectXSDK package will now throw a sensible exception if the SDK is not installed.

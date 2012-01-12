@@ -26,19 +26,33 @@ namespace Opus.Core
             }
         }
 
-        private static string CombinePaths(string baseDirectory, params string[] pathSegments)
+        private static string CombinePaths(ref string baseDirectory, params string[] pathSegments)
         {
             string combinedPath = baseDirectory;
+            bool canExtendBaseDirectoryWithUps = true;
             for (int i = 0; i < pathSegments.Length; ++i)
             {
                 ValidateFilePart(pathSegments[i]);
-                if (null == combinedPath)
+                if (null != combinedPath)
                 {
-                    combinedPath = pathSegments[i];
+                    if (pathSegments[i] == "..")
+                    {
+                        if (canExtendBaseDirectoryWithUps)
+                        {
+                            baseDirectory = System.IO.Path.Combine(baseDirectory, pathSegments[i]);
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        canExtendBaseDirectoryWithUps = false;
+                    }
+
+                    combinedPath = System.IO.Path.Combine(combinedPath, pathSegments[i]);
                 }
                 else
                 {
-                    combinedPath = System.IO.Path.Combine(combinedPath, pathSegments[i]);
+                    combinedPath = pathSegments[i];
                 }
             }
 
@@ -64,7 +78,7 @@ namespace Opus.Core
                     throw new Exception(System.String.Format("Base directory '{0}' does not exist", basePath));
                 }
 
-                absolutePath = CombinePaths(basePath, pathSegments);
+                absolutePath = CombinePaths(ref basePath, pathSegments);
             }
 
             this.AbsolutePath = absolutePath;
@@ -128,7 +142,12 @@ namespace Opus.Core
             }
             else
             {
-                string relativePath = CombinePaths(null, pathSegments);
+                string baseDirChanges = System.String.Empty;
+                string relativePath = CombinePaths(ref baseDirChanges, pathSegments);
+                if (baseDirChanges != System.String.Empty)
+                {
+                    baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
+                }
                 try
                 {
                     string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
