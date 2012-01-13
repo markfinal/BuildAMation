@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
+    public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, IMocOptions
     {
         public MocOptionCollection()
             : base()
