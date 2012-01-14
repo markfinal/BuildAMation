@@ -7,7 +7,17 @@ namespace Opus.Core
 {
     public sealed class OutputPaths : System.Collections.IEnumerable
     {
-        private System.Collections.Generic.Dictionary<System.Enum, string> fileDictionary = new System.Collections.Generic.Dictionary<System.Enum, string>();
+        private System.Collections.Generic.Dictionary<System.Enum, string> fileDictionary;
+
+        public OutputPaths()
+        {
+            this.fileDictionary = new System.Collections.Generic.Dictionary<System.Enum, string>();
+        }
+
+        public OutputPaths(OutputPaths source)
+        {
+            this.fileDictionary = new System.Collections.Generic.Dictionary<System.Enum, string>(source.fileDictionary);
+        }
 
         public string this[System.Enum key]
         {

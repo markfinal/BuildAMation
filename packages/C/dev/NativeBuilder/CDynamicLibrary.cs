@@ -51,7 +51,8 @@ namespace NativeBuilder
 
                 // don't dependency check against the static import library, since it is generally not rewritten
                 // when code changes
-                Opus.Core.OutputPaths filteredOutputPaths = dynamicLibrary.Options.OutputPaths;
+                // note that a copy is taken here as we do not want to remove the static import library from the original outputs
+                Opus.Core.OutputPaths filteredOutputPaths = new Opus.Core.OutputPaths(dynamicLibrary.Options.OutputPaths);
                 filteredOutputPaths.Remove(C.OutputFileFlags.StaticImportLibrary);
 
                 Opus.Core.StringArray outputFiles = filteredOutputPaths.Paths;
