@@ -316,7 +316,17 @@ namespace VSSolutionBuilder
                         string subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
                         string relativeSubDir = Opus.Core.RelativePathUtilities.GetPath(subdir, this.PackageUri);
 
-                        MSBuildItem item = sourceFilesGroup.CreateItem("ClInclude", Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
+                        string elementName;
+                        if (0 == file.FileConfigurations.Count)
+                        {
+                            elementName = "ClInclude";
+                        }
+                        else
+                        {
+                            elementName = "CustomBuild";
+                        }
+
+                        MSBuildItem item = sourceFilesGroup.CreateItem(elementName, Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
                         item.CreateMetaData("Filter", System.IO.Path.Combine("Header Files", relativeSubDir));
                     }
                 }

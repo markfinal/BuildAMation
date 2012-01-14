@@ -19,6 +19,14 @@ namespace VSSolutionBuilder
             this.list.Add(fileConfiguration);
         }
 
+        public int Count
+        {
+            get
+            {
+                return this.list.Count;
+            }
+        }
+
         public bool Contains(string name)
         {
             bool containsName = false;
