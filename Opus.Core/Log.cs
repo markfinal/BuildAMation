@@ -65,6 +65,15 @@ namespace Opus.Core
             }
         }
 
+        public static void Full(string format, params object[] args)
+        {
+            if (EVerboseLevel.Full == State.VerbosityLevel)
+            {
+                string formattedMessage = System.String.Format(format, args);
+                Message(formattedMessage);
+            }
+        }
+
         public static void ErrorMessage(string format, params object[] args)
         {
             string formattedMessage = System.String.Format(format, args);

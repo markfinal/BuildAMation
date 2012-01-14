@@ -60,12 +60,12 @@ namespace NativeBuilder
 
             if (0 == outputFiles.Count)
             {
-                Opus.Core.Log.Detail("No output files - always build");
+                Opus.Core.Log.Full("No output files - always build");
                 return true;
             }
             if (0 == inputFiles.Count)
             {
-                Opus.Core.Log.Detail("No input files - always build");
+                Opus.Core.Log.Full("No input files - always build");
                 return true;
             }
 
@@ -88,13 +88,13 @@ namespace NativeBuilder
                     System.DateTime outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
-                        Opus.Core.Log.Detail("Input file '{0}' is newer than output file '{1}'. Requires build.", newestInputFile, outputFile);
+                        Opus.Core.Log.Full("Input file '{0}' is newer than output file '{1}'. Requires build.", newestInputFile, outputFile);
                         return true;
                     }
                 }
                 else
                 {
-                    Opus.Core.Log.Detail("Output file '{0}' does not exist. Requires build.", outputFile);
+                    Opus.Core.Log.Full("Output file '{0}' does not exist. Requires build.", outputFile);
                     return true;
                 }
             }
