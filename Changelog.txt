@@ -1,3 +1,5 @@
+14-Jan-2012 QMake .pro files now have QMAKE_CC, QMAKE_CXX, QMAKE_LINK and QMAKE_MOC variables set.
+
 14-Jan-2012 The IgnoreStandardIncludePaths C compiler option really doesn't inject the compiler include paths. VisualC is different, as it assumes an environment is set up.
 
 14-Jan-2012 Added Qt moc support for QMakeBuilder.

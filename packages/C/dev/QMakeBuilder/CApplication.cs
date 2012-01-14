@@ -24,6 +24,19 @@ namespace QMakeBuilder
             C.ILinkerOptions linkerOptions = application.Options as C.ILinkerOptions;
             C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
 
+            {
+                C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
+                if (toolchainOptions.IsCPlusPlus)
+                {
+                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerInstance.ExecutableCPlusPlus(target)));
+                }
+                else
+                {
+                    Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target)));
+                }
+            }
+
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
             {
@@ -173,6 +186,22 @@ namespace QMakeBuilder
                     }
                     proFileWriter.WriteLine(cflagsStatement.ToString());
                     proFileWriter.WriteLine("{0}:QMAKE_CXXFLAGS = $$QMAKE_CFLAGS", nodeData.Configuration);
+                    if (nodeData.Contains("QMAKE_CC"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_CC = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_CC"]);
+                    }
+                    if (nodeData.Contains("QMAKE_CXX"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_CXX = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_CXX"]);
+                    }
+                    if (nodeData.Contains("QMAKE_LINK"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_LINK = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_LINK"]);
+                    }
+                    if (nodeData.Contains("QMAKE_MOC"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_MOC = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_MOC"]);
+                    }
                     proFileWriter.WriteLine(includePathsStatement.ToString());
                     proFileWriter.WriteLine(definesStatement.ToString());
                 }

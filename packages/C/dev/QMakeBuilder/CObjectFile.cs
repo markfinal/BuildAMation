@@ -36,6 +36,20 @@ namespace QMakeBuilder
             nodeData.AddVariable("SOURCES", sourceFilePath);
             nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
             nodeData.AddUniqueVariable("OBJECTS_DIR", new Opus.Core.StringArray(compilerOptions.OutputDirectoryPath));
+
+            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
+
+            C.IToolchainOptions toolchainOptions = (objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            if (toolchainOptions.IsCPlusPlus)
+            {
+                nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerInstance.ExecutableCPlusPlus(target)));
+            }
+            else
+            {
+                Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+                nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target)));
+            }
+
             success = true;
             return nodeData;
         }
