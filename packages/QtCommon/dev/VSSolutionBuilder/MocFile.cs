@@ -126,18 +126,37 @@ namespace VSSolutionBuilder
 
             ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
 
-            // add source file
-            commandLineBuilder.Add(@" $(InputPath)");
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
+            {
+                // add source file
+                commandLineBuilder.Add(@" $(InputPath)");
 
-            string mocPathName = mocFile.Options.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
-            string outputPathname = mocPathName;
-            string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}\n\r{1}", System.IO.Path.GetDirectoryName(mocPathName), commandLineBuilder.ToString(' '));
-            customTool.AddAttribute("CommandLine", commandLine);
+                string mocPathName = mocFile.Options.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
+                string outputPathname = mocPathName;
+                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}\n\r{1}", System.IO.Path.GetDirectoryName(mocPathName), commandLineBuilder.ToString(' '));
+                customTool.AddAttribute("CommandLine", commandLine);
 
-            customTool.AddAttribute("Outputs", outputPathname);
+                customTool.AddAttribute("Outputs", outputPathname);
 
-            customTool.AddAttribute("Description", "Moc'ing $(InputPath)...");
-            customTool.AddAttribute("AdditionalDependencies", toolExePath);
+                customTool.AddAttribute("Description", "Moc'ing $(InputPath)...");
+                customTool.AddAttribute("AdditionalDependencies", toolExePath);
+
+            }
+            else
+            {
+                // add source file
+                commandLineBuilder.Add(@" %(FullPath)");
+
+                string mocPathName = mocFile.Options.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
+                string outputPathname = mocPathName;
+                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}\n\r{1}", System.IO.Path.GetDirectoryName(mocPathName), commandLineBuilder.ToString(' '));
+                customTool.AddAttribute("Command", commandLine);
+
+                customTool.AddAttribute("Outputs", outputPathname);
+
+                customTool.AddAttribute("Message", "Moc'ing %(FullPath)...");
+                customTool.AddAttribute("AdditionalInputs", toolExePath);
+            }
 
             ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
             sourceFile.FileConfigurations.Add(fileConfiguration);

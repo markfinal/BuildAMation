@@ -155,8 +155,7 @@ namespace VSSolutionBuilder
                 string messageToken;
                 string message;
                 string outputPathname;
-                VisualC.Toolchain vcToolchain = toolchain as VisualC.Toolchain;
-                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vcToolchain.VisualStudioTarget)
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
                 {
                     outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileExtension);
 

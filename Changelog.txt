@@ -1,4 +1,4 @@
-14-Jan-2012 Added Qt moc support for the VSSolutionBuilder.
+14-Jan-2012 Added Qt moc support for the VSSolutionBuilder, for both .vcproj and .vcxproj.
 
 14-Jan-2012 Issue 55. DynamicLibrary dependency checking no longer compares against the static import library, which is not always written after incremental code updates, so gives false positives about the need to relink.
 
