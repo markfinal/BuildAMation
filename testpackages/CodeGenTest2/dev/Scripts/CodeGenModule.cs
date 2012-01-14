@@ -143,6 +143,12 @@ namespace CodeGenTest2
             set;
         }
 
+        public Opus.Core.ProxyModulePath ProxyPath
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         [Opus.Core.RequiredModules]

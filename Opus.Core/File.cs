@@ -59,6 +59,12 @@ namespace Opus.Core
             return combinedPath;
         }
 
+        public static string CanonicalPath(string path)
+        {
+            string canonicalPath = System.IO.Path.GetFullPath(new System.Uri(path).LocalPath);
+            return canonicalPath;
+        }
+
         private void Initialize(string basePath, bool checkExists, params string[] pathSegments)
         {
             string absolutePath;

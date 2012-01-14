@@ -19,19 +19,26 @@ namespace VSSolutionBuilder
         private ProjectFile ApplicationDefinitionFile = null;
         private ProjectFileCollection PageFiles = new ProjectFileCollection();
 
-        public CSBuildProject(string moduleName, string projectPathName, string packageDirectory)
+        public CSBuildProject(string moduleName, string projectPathName, Opus.Core.PackageIdentifier packageId, Opus.Core.ProxyModulePath proxyPath)
         {
             this.ProjectName = moduleName;
             this.PathName = projectPathName;
-            this.PackageDirectory = packageDirectory;
-
-            if (packageDirectory[packageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
+            this.PackageDirectory = packageId.Path;
+            if (null != proxyPath)
             {
-                this.PackageUri = new System.Uri(packageDirectory, System.UriKind.Absolute);
+                this.PackageDirectory = proxyPath.Combine(packageId);
+            }
+
+            bool isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(this.PackageDirectory);
+            System.UriKind kind = isPackageDirAbsolute ? System.UriKind.Absolute : System.UriKind.Relative;
+
+            if (this.PackageDirectory[this.PackageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
+            {
+                this.PackageUri = new System.Uri(this.PackageDirectory, kind);
             }
             else
             {
-                this.PackageUri = new System.Uri(packageDirectory + System.IO.Path.DirectorySeparatorChar, System.UriKind.Absolute);
+                this.PackageUri = new System.Uri(this.PackageDirectory + System.IO.Path.DirectorySeparatorChar, kind);
             }
         }
 

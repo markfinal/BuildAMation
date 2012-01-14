@@ -24,5 +24,11 @@ namespace Opus.Core
             get;
             set;
         }
+
+        Opus.Core.ProxyModulePath ProxyPath
+        {
+            get;
+            set;
+        }
     }
 }

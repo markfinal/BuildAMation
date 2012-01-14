@@ -54,7 +54,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier.Path }) as ICSProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, assembly.ProxyPath }) as ICSProject;
 
                     projectData.Platforms.Add(platformName);
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);

@@ -14,7 +14,7 @@ namespace Opus.Core
             DirectoryCollection clone = new DirectoryCollection();
             foreach (PackageAndDirectoryPath pap in this.directoryList)
             {
-                clone.Add(pap.Package, pap.RelativePath.Clone() as string);
+                clone.Add(pap.Package, pap.RelativePath.Clone() as string, pap.ProxyPath);
             }
             return clone;
         }
@@ -40,7 +40,7 @@ namespace Opus.Core
                 throw new Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath), false);
             }
 
-            PackageAndDirectoryPath pap = new PackageAndDirectoryPath(null, absoluteDirectoryPath);
+            PackageAndDirectoryPath pap = new PackageAndDirectoryPath(null, absoluteDirectoryPath, null);
             if (this.Contains(pap))
             {
                 Log.DebugMessage("Absolute path '{0}' is already present in the list of directories", absoluteDirectoryPath);
@@ -51,9 +51,9 @@ namespace Opus.Core
             }
         }
 
-        public void Add(PackageInformation package, string relativePath)
+        public void Add(PackageInformation package, string relativePath, ProxyModulePath proxyPath)
         {
-            PackageAndDirectoryPath pap = new PackageAndDirectoryPath(package, relativePath);
+            PackageAndDirectoryPath pap = new PackageAndDirectoryPath(package, relativePath, proxyPath);
             if (this.Contains(pap))
             {
                 Log.DebugMessage("Relative path '{0}' is already present for package '{1}'", relativePath, package.FullName);
@@ -66,13 +66,26 @@ namespace Opus.Core
 
         public void Add(object owner, string relativePath)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
+            if (null == owner)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                this.Add(null, relativePath, null);
+                return;
             }
 
-            this.Add(package, relativePath);
+            if (owner is PackageInformation)
+            {
+                this.Add(owner as PackageInformation, relativePath, null);
+            }
+            else
+            {
+                PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+                if (null == package)
+                {
+                    throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                }
+
+                this.Add(package, relativePath, (owner as IModule).ProxyPath);
+            }
         }
 
         public void AddRange(PackageInformation package, string[] relativePaths)

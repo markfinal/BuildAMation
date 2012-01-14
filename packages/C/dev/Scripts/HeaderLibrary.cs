@@ -25,6 +25,12 @@ namespace C
             set;
         }
 
+        public Opus.Core.ProxyModulePath ProxyPath
+        {
+            get;
+            set;
+        }
+
         public void ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (this.UpdateOptions != null)

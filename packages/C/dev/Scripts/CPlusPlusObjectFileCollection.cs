@@ -27,10 +27,18 @@ namespace C.CPlusPlus
                 throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(package.Identifier.Path, pathSegments);
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             foreach (string path in filePaths)
             {
                 ObjectFile objectFile = new ObjectFile();
+                objectFile.ProxyPath = this.ProxyPath;
                 objectFile.SourceFile.SetAbsolutePath(path);
                 this.list.Add(objectFile);
             }

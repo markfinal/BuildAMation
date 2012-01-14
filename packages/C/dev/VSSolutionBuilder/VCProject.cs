@@ -18,19 +18,26 @@ namespace VSSolutionBuilder
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
 
-        public VCProject(string moduleName, string projectPathName, string packageDirectory)
+        public VCProject(string moduleName, string projectPathName, Opus.Core.PackageIdentifier packageId, Opus.Core.ProxyModulePath proxyPath)
         {
             this.ProjectName = moduleName;
             this.PathName = projectPathName;
-            this.PackageDirectory = packageDirectory;
-
-            if (packageDirectory[packageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
+            this.PackageDirectory = packageId.Path;
+            if (null != proxyPath)
             {
-                this.PackageUri = new System.Uri(packageDirectory, System.UriKind.Absolute);
+                this.PackageDirectory = proxyPath.Combine(packageId);
+            }
+
+            bool isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(this.PackageDirectory);
+            System.UriKind kind = isPackageDirAbsolute ? System.UriKind.Absolute : System.UriKind.Relative;
+
+            if (this.PackageDirectory[this.PackageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
+            {
+                this.PackageUri = new System.Uri(this.PackageDirectory, System.UriKind.Absolute);
             }
             else
             {
-                this.PackageUri = new System.Uri(packageDirectory + System.IO.Path.DirectorySeparatorChar, System.UriKind.Absolute);
+                this.PackageUri = new System.Uri(this.PackageDirectory + System.IO.Path.DirectorySeparatorChar, System.UriKind.Absolute);
             }
         }
 

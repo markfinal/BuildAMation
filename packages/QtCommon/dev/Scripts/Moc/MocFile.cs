@@ -66,6 +66,12 @@ namespace QtCommon
             set;
         }
 
+        public Opus.Core.ProxyModulePath ProxyPath
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         public Opus.Core.ModuleCollection GetInjectedModules(Opus.Core.Target target)

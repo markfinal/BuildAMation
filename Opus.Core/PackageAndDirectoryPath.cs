@@ -7,10 +7,11 @@ namespace Opus.Core
 {
     public sealed class PackageAndDirectoryPath : System.Collections.IComparer
     {
-        public PackageAndDirectoryPath(PackageInformation package, string relativePath)
+        public PackageAndDirectoryPath(PackageInformation package, string relativePath, ProxyModulePath proxyPath)
         {
             this.Package = package;
             this.RelativePath = relativePath;
+            this.ProxyPath = proxyPath;
         }
 
         public PackageInformation Package
@@ -25,12 +26,20 @@ namespace Opus.Core
             private set;
         }
 
+        public ProxyModulePath ProxyPath
+        {
+            get;
+            private set;
+        }
+
         public int Compare(object x, object y)
         {
             PackageAndDirectoryPath papX = x as PackageAndDirectoryPath;
             PackageAndDirectoryPath papY = y as PackageAndDirectoryPath;
 
-            if (papX.Package.Equals(papY.Package) && papX.RelativePath.Equals(papY.RelativePath))
+            if (papX.Package.Equals(papY.Package) &&
+                papX.RelativePath.Equals(papY.RelativePath) &&
+                papX.ProxyPath.Equals(papY.ProxyPath))
             {
                 return 0;
             }
@@ -46,11 +55,17 @@ namespace Opus.Core
             }
             else
             {
+                string packagePath = this.Package.Identifier.Path;
+                if (null != this.ProxyPath)
+                {
+                    packagePath = this.ProxyPath.Combine(this.Package.Identifier);
+                }
+
                 string includePath = this.RelativePath;
                 bool isAbsolutePath = System.IO.Path.IsPathRooted(includePath);
                 if (!isAbsolutePath)
                 {
-                    includePath = System.IO.Path.Combine(this.Package.Identifier.Path, includePath);
+                    includePath = System.IO.Path.Combine(packagePath, includePath);
                 }
                 return includePath;
             }

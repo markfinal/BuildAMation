@@ -48,6 +48,12 @@ namespace QtCommon
             set;
         }
 
+        public Opus.Core.ProxyModulePath ProxyPath
+        {
+            get;
+            set;
+        }
+
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         public void AddRelativePaths(object owner, params string[] pathSegments)
@@ -58,10 +64,18 @@ namespace QtCommon
                 throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(package.Identifier.Path, pathSegments);
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             foreach (string path in filePaths)
             {
                 MocFile mocFile = new MocFile();
+                mocFile.ProxyPath = this.ProxyPath;
                 mocFile.SetAbsolutePath(path);
                 this.list.Add(mocFile);
             }
