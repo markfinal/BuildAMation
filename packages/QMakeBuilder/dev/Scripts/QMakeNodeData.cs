@@ -71,6 +71,11 @@ namespace QMakeBuilder
 
         public void Merge(NodeData data)
         {
+            if (null == data)
+            {
+                return;
+            }
+
             if (this.Configuration != data.Configuration)
             {
                 throw new Opus.Core.Exception("Cannot merge data from different configurations");

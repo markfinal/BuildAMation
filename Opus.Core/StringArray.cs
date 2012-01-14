@@ -70,5 +70,19 @@ namespace Opus.Core
             output = output.TrimEnd(separator);
             return output;
         }
+
+        public void RemoveDuplicates()
+        {
+            System.Collections.Generic.List<string> newList = new System.Collections.Generic.List<string>();
+            foreach (string item in this.list)
+            {
+                if (!newList.Contains(item))
+                {
+                    newList.Add(item);
+                }
+            }
+
+            this.list = newList;
+        }
     }
 }

@@ -8,8 +8,8 @@
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="Gcc">
-      <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
       <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Unix'" />
+      <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
@@ -18,6 +18,9 @@
       <Opus:Version Id="3.4.5" />
     </Opus:Package>
     <Opus:Package Name="NativeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="Qt">

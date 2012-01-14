@@ -1,3 +1,5 @@
+14-Jan-2012 Added Qt moc support for QMakeBuilder.
+
 14-Jan-2012 Fixing VSSolutionBuilder for .vcxprojs for header files with custom build steps not appearing under the Header Files filter in the solution explorer.
 
 14-Jan-2012 Added Qt moc support for the VSSolutionBuilder, for both .vcproj and .vcxproj.

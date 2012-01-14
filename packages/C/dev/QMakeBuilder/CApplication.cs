@@ -77,6 +77,15 @@ namespace QMakeBuilder
 
                 // headers
                 {
+                    Opus.Core.StringArray headerFiles = new Opus.Core.StringArray();
+
+                    // moc headers
+                    if (nodeData.Contains("HEADERS"))
+                    {
+                        headerFiles.AddRange(nodeData["HEADERS"]);
+                    }
+
+                    // other headers
                     System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
                                                                        System.Reflection.BindingFlags.Public |
                                                                        System.Reflection.BindingFlags.NonPublic;
@@ -87,17 +96,24 @@ namespace QMakeBuilder
                         if (headerFileAttributes.Length > 0)
                         {
                             Opus.Core.FileCollection headerFileCollection = field.GetValue(application) as Opus.Core.FileCollection;
-                            if (headerFileCollection.Count > 0)
+                            foreach (string fileName in headerFileCollection)
                             {
-                                System.Text.StringBuilder headersStatement = new System.Text.StringBuilder();
-                                headersStatement.AppendFormat("{0}:HEADERS += ", nodeData.Configuration);
-                                foreach (string headerPath in headerFileCollection)
-                                {
-                                    headersStatement.AppendFormat("\\\n\t{0}", headerPath.Replace('\\', '/'));
-                                }
-                                proFileWriter.WriteLine(headersStatement.ToString());
+                                headerFiles.Add(fileName);
                             }
                         }
+                    }
+
+                    headerFiles.RemoveDuplicates();
+
+                    if (headerFiles.Count > 0)
+                    {
+                        System.Text.StringBuilder headersStatement = new System.Text.StringBuilder();
+                        headersStatement.AppendFormat("{0}:HEADERS += ", nodeData.Configuration);
+                        foreach (string header in headerFiles)
+                        {
+                            headersStatement.AppendFormat("\\\n\t{0}", header.Replace('\\', '/'));
+                        }
+                        proFileWriter.WriteLine(headersStatement.ToString());
                     }
                 }
 

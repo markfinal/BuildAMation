@@ -22,6 +22,14 @@ namespace QtCommon
                                    typeof(MocOptionCollection))]
     public class MocFile : Opus.Core.IModule, Opus.Core.IInjectModules
     {
+        public static string Prefix
+        {
+            get
+            {
+                return "moc_";
+            }
+        }
+
         public void SetAbsolutePath(string absolutePath)
         {
             this.SourceFile = new Opus.Core.File();

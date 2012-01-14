@@ -19,6 +19,14 @@ namespace QMakeBuilder
                 NodeData childData = childNode.Data as NodeData;
                 nodeData.Merge(childData);
             }
+            if (node.ExternalDependents != null)
+            {
+                foreach (Opus.Core.DependencyNode externalDependent in node.ExternalDependents)
+                {
+                    NodeData childData = externalDependent.Data as NodeData;
+                    nodeData.Merge(childData);
+                }
+            }
 
             success = true;
             return nodeData;

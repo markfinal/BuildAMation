@@ -37,13 +37,13 @@ namespace QtCommon
             {
                 string sourceFilePath = mocFile.SourceFile.AbsolutePath;
                 string filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
-                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("moc_{0}.cpp", filename));
+                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
             }
             else
             {
                 // TODO: would like to have a null output path for a collection, but it doesn't work for cloning reference types
                 string filename = node.ModuleName;
-                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("moc_{0}.cpp", filename));
+                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
             }
 
             this.MocOutputPath = mocPath;
