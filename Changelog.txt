@@ -1,3 +1,5 @@
+14-Jan-2012 QMakeBuilder now distinguishes between QMAKE_CFLAGS and QMAKE_CXXFLAGS.
+
 14-Jan-2012 Gcc and Mingw, -Wall and -Wextra are set first on the command line so that subsequent warning disables work.
 
 14-Jan-2012 QMake .pro files now have QMAKE_CC, QMAKE_CXX, QMAKE_LINK and QMAKE_MOC variables set.

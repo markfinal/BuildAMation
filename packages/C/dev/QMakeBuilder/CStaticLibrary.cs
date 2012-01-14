@@ -92,62 +92,48 @@ namespace QMakeBuilder
                     }
                 }
 
-                // cflags, include paths and defines
+                // cflags, cxxflags, include paths, defines, and tools
                 {
-                    Opus.Core.StringArray cflags = nodeData["CFLAGS"];
-                    // TODO: need to replace "<X>" with $$quote(<X>)
-                    System.Text.StringBuilder cflagsStatement = new System.Text.StringBuilder();
                     System.Text.StringBuilder includePathsStatement = new System.Text.StringBuilder();
                     System.Text.StringBuilder definesStatement = new System.Text.StringBuilder();
-                    cflagsStatement.AppendFormat("{0}:QMAKE_CFLAGS += ", nodeData.Configuration);
                     includePathsStatement.AppendFormat("{0}:INCLUDEPATH += ", nodeData.Configuration);
                     definesStatement.AppendFormat("{0}:DEFINES += ", nodeData.Configuration);
-                    foreach (string cflag in cflags)
+
+                    if (nodeData.Contains("CFLAGS"))
                     {
-                        if (cflag.StartsWith("-o") || cflag.StartsWith("/Fo"))
-                        {
-                            // don't include any output path
-                            continue;
-                        }
-
-                        string cflagModified = cflag;
-                        if (cflag.Contains("\""))
-                        {
-                            int indexOfFirstQuote = cflag.IndexOf('"');
-                            cflagModified = cflag.Substring(0, indexOfFirstQuote);
-                            cflagModified += "$$quote(";
-                            int indexOfLastQuote = cflag.IndexOf('"', indexOfFirstQuote + 1);
-                            cflagModified += cflag.Substring(indexOfFirstQuote + 1, indexOfLastQuote - indexOfFirstQuote - 1);
-                            cflagModified += ")";
-                            cflagModified += cflag.Substring(indexOfLastQuote + 1);
-                        }
-
-                        if (cflagModified.StartsWith("-I") || cflagModified.StartsWith("-isystem") || cflagModified.StartsWith("/I"))
-                        {
-                            // strip the include path command
-                            if (cflagModified.StartsWith("-isystem"))
-                            {
-                                cflagModified = cflagModified.Remove(0, 8);
-                            }
-                            else
-                            {
-                                cflagModified = cflagModified.Remove(0, 2);
-                            }
-                            includePathsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
-                        }
-                        else if (cflagModified.StartsWith("-D") || cflagModified.StartsWith("/D"))
-                        {
-                            // strip the define command
-                            cflagModified = cflagModified.Remove(0, 2);
-                            definesStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
-                        }
-                        else
-                        {
-                            cflagsStatement.AppendFormat("\\\n\t{0}", cflagModified.Replace('\\', '/'));
-                        }
+                        Opus.Core.StringArray cflags = nodeData["CFLAGS"];
+                        System.Text.StringBuilder cflagsStatement = new System.Text.StringBuilder();
+                        cflagsStatement.AppendFormat("{0}:QMAKE_CFLAGS += ", nodeData.Configuration);
+                        this.ProcessCompilerFlags(cflags, cflagsStatement, includePathsStatement, definesStatement);
+                        proFileWriter.WriteLine(cflagsStatement.ToString());
                     }
-                    proFileWriter.WriteLine(cflagsStatement.ToString());
-                    proFileWriter.WriteLine("{0}:QMAKE_CXXFLAGS = $$QMAKE_CFLAGS", nodeData.Configuration);
+
+                    if (nodeData.Contains("CXXFLAGS"))
+                    {
+                        Opus.Core.StringArray cxxflags = nodeData["CXXFLAGS"];
+                        System.Text.StringBuilder cxxflagsStatement = new System.Text.StringBuilder();
+                        cxxflagsStatement.AppendFormat("{0}:QMAKE_CXXFLAGS += ", nodeData.Configuration);
+                        this.ProcessCompilerFlags(cxxflags, cxxflagsStatement, includePathsStatement, definesStatement);
+                        proFileWriter.WriteLine(cxxflagsStatement.ToString());
+                    }
+
+                    if (nodeData.Contains("QMAKE_CC"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_CC = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_CC"]);
+                    }
+                    if (nodeData.Contains("QMAKE_CXX"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_CXX = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_CXX"]);
+                    }
+                    if (nodeData.Contains("QMAKE_LINK"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_LINK = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_LINK"]);
+                    }
+                    if (nodeData.Contains("QMAKE_MOC"))
+                    {
+                        proFileWriter.WriteLine("{0}:QMAKE_MOC = $$quote({1})", nodeData.Configuration, nodeData["QMAKE_MOC"]);
+                    }
+
                     proFileWriter.WriteLine(includePathsStatement.ToString());
                     proFileWriter.WriteLine(definesStatement.ToString());
                 }
