@@ -1,3 +1,5 @@
+14-Jan-2012 C.DynamicLibrary dependency checking no longer compares against the static import library, which is not always written after incremental code updates, so gives false positives about the need to relink.
+
 14-Jan-2012 Native build dependency checking will now output Detail messages instead of Debug messages. Running with -verbosity=3 will now show the reasons for dependency failures.
 
 14-Jan-2012 Add a new property to Opus.Core.IModule, ProxyPath, that allows a module to proxy data on another part of a storage medium. For example, if an AddRelativePaths(this, ...) function is called, 'this' will return the proxied path, not the package directory that the module refers to. The ProxyPath can be relative (to the package directory) or absolute.

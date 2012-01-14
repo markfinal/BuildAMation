@@ -48,7 +48,13 @@ namespace NativeBuilder
                 {
                     inputFiles.AddRange(dependentLibraryFiles);
                 }
-                Opus.Core.StringArray outputFiles = dynamicLibrary.Options.OutputPaths.Paths;
+
+                // don't dependency check against the static import library, since it is generally not rewritten
+                // when code changes
+                Opus.Core.OutputPaths filteredOutputPaths = dynamicLibrary.Options.OutputPaths;
+                filteredOutputPaths.Remove(C.OutputFileFlags.StaticImportLibrary);
+
+                Opus.Core.StringArray outputFiles = filteredOutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

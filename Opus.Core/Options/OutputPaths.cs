@@ -47,6 +47,11 @@ namespace Opus.Core
             return containsKey;
         }
 
+        public void Remove(System.Enum key)
+        {
+            this.fileDictionary.Remove(key);
+        }
+
         public Array<System.Enum> Types
         {
             get
