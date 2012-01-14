@@ -40,18 +40,21 @@ namespace NativeBuilder
                 node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
             }
 
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-            inputFiles.AddRange(dependentObjectFiles);
-            if (null != dependentLibraryFiles)
+            // dependency checking
             {
-                inputFiles.AddRange(dependentLibraryFiles);
-            }
-            Opus.Core.StringArray outputFiles = dynamicLibrary.Options.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, inputFiles))
-            {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
-                success = true;
-                return null;
+                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                inputFiles.AddRange(dependentObjectFiles);
+                if (null != dependentLibraryFiles)
+                {
+                    inputFiles.AddRange(dependentLibraryFiles);
+                }
+                Opus.Core.StringArray outputFiles = dynamicLibrary.Options.OutputPaths.Paths;
+                if (!RequiresBuilding(outputFiles, inputFiles))
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    success = true;
+                    return null;
+                }
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

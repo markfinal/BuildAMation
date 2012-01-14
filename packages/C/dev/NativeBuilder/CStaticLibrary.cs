@@ -31,14 +31,17 @@ namespace NativeBuilder
                 return null;
             }
 
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-            inputFiles.AddRange(dependentObjectFiles);
-            Opus.Core.StringArray outputFiles = staticLibrary.Options.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, inputFiles))
+            // dependency checking
             {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
-                success = true;
-                return null;
+                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                inputFiles.AddRange(dependentObjectFiles);
+                Opus.Core.StringArray outputFiles = staticLibrary.Options.OutputPaths.Paths;
+                if (!RequiresBuilding(outputFiles, inputFiles))
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    success = true;
+                    return null;
+                }
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

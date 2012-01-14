@@ -194,12 +194,15 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("There were no source files specified for the module '{0}'", node.ModuleName), false);
             }
 
-            Opus.Core.StringArray outputFiles = assembly.Options.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, sourceFiles))
+            // dependency checking
             {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
-                success = true;
-                return null;
+                Opus.Core.StringArray outputFiles = assembly.Options.OutputPaths.Paths;
+                if (!RequiresBuilding(outputFiles, sourceFiles))
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    success = true;
+                    return null;
+                }
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

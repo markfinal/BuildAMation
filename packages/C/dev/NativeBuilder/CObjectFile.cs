@@ -17,14 +17,17 @@ namespace NativeBuilder
 
             C.CompilerOptionCollection compilerOptions = objectFile.Options as C.CompilerOptionCollection;
 
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-            inputFiles.Add(sourceFilePath);
-            Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, inputFiles))
+            // dependency checking
             {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", objectFile.OwningNode.UniqueModuleName);
-                success = true;
-                return null;
+                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                inputFiles.Add(sourceFilePath);
+                Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
+                if (!RequiresBuilding(outputFiles, inputFiles))
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", objectFile.OwningNode.UniqueModuleName);
+                    success = true;
+                    return null;
+                }
             }
 
             Opus.Core.Target target = objectFile.OwningNode.Target;
