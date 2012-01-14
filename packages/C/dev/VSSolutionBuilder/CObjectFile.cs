@@ -87,7 +87,8 @@ namespace VSSolutionBuilder
                             characterSet = EProjectCharacterSet.Undefined;
                             break;
                     }
-                    configuration = new ProjectConfiguration(configurationName, characterSet, projectData);
+                    configuration = new ProjectConfiguration(configurationName, projectData);
+                    configuration.CharacterSet = characterSet;
 
                     C.CompilerOptionCollection options = objectFile.Options as C.CompilerOptionCollection;
                     configuration.IntermediateDirectory = options.OutputDirectoryPath;
@@ -97,10 +98,8 @@ namespace VSSolutionBuilder
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    if ((C.ECharacterSet)configuration.CharacterSet != ((objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet)
-                    {
-                        throw new Opus.Core.Exception("Inconsistent character set in project");
-                    }
+                    configuration.CharacterSet = (EProjectCharacterSet)((objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
+                    projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
             }
 

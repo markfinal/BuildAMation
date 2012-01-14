@@ -18,7 +18,17 @@ namespace VSSolutionBuilder
         public void Add(Opus.Core.Target target, ProjectConfiguration configuration)
         {
             this.list.Add(configuration);
-            this.targetToConfig.Add(target.ToString(), configuration.Name);
+            this.AddExistingForTarget(target, configuration);
+        }
+
+        public void AddExistingForTarget(Opus.Core.Target target, ProjectConfiguration configuration)
+        {
+            string targetString = target.ToString();
+
+            if (!this.targetToConfig.ContainsKey(targetString))
+            {
+                this.targetToConfig.Add(targetString, configuration.Name);
+            }
         }
 
         public string GetConfigurationNameForTarget(Opus.Core.Target target)

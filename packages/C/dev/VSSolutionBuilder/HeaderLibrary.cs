@@ -53,13 +53,15 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
+                    configuration = new ProjectConfiguration(configurationName, projectData);
                     // arbitrary character set, as nothing is built
-                    configuration = new ProjectConfiguration(configurationName, EProjectCharacterSet.NotSet, projectData);
+                    configuration.CharacterSet = EProjectCharacterSet.NotSet;
                     projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
+                    projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
             }
 

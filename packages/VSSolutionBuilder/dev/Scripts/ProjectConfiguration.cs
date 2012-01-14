@@ -10,11 +10,11 @@ namespace VSSolutionBuilder
         private EProjectConfigurationType type;
         private EProjectCharacterSet characterSet = EProjectCharacterSet.Undefined;
 
-        public ProjectConfiguration(string name, EProjectCharacterSet characterSet, IProject project)
+        public ProjectConfiguration(string name, IProject project)
         {
             this.Name = name;
             this.type = EProjectConfigurationType.Undefined;
-            this.CharacterSet = characterSet;
+            this.CharacterSet = EProjectCharacterSet.Undefined;
             this.Tools = new ProjectToolCollection();
             this.Project = project;
         }

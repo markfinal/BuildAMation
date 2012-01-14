@@ -93,13 +93,15 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    // TODO: fix me
-                    configuration = new ProjectConfiguration(configurationName, EProjectCharacterSet.NotSet, projectData);
+                    // TODO: fix me?
+                    configuration = new ProjectConfiguration(configurationName, projectData);
+                    configuration.CharacterSet = EProjectCharacterSet.NotSet;
                     projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
+                    projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
             }
 

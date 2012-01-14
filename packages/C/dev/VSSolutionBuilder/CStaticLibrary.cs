@@ -64,12 +64,14 @@ namespace VSSolutionBuilder
                             characterSet = EProjectCharacterSet.Undefined;
                             break;
                     }
-                    configuration = new ProjectConfiguration(configurationName, characterSet, projectData);
+                    configuration = new ProjectConfiguration(configurationName, projectData);
+                    configuration.CharacterSet = characterSet;
                     projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
+                    projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
             }
 
