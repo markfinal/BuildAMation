@@ -173,6 +173,57 @@ namespace VisualCCommon
             return visualStudioSupport.ToVisualStudioProjectAttributes(target);
         }
 
+        private static void IncludeSystemPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (!optionCollection.IgnoreStandardIncludePaths)
+            {
+                Opus.Core.Log.Full("Not including system include paths");
+                return;
+            }
+
+            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            foreach (string includePath in includePathsOption.Value)
+            {
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("/I\"{0}\"", includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("/I{0}", includePath));
+                }
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary IncludeSystemPathsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (!optionCollection.IgnoreStandardIncludePaths)
+            {
+                Opus.Core.Log.Full("Not including system include paths");
+                return dictionary;
+            }
+
+            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            System.Text.StringBuilder includePaths = new System.Text.StringBuilder();
+            foreach (string includePath in includePathsOption.Value)
+            {
+                if (includePath.Contains(" "))
+                {
+                    includePaths.AppendFormat("\"{0}\";", includePath);
+                }
+                else
+                {
+                    includePaths.AppendFormat("{0};", includePath);
+                }
+            }
+            dictionary.Add("AdditionalIncludeDirectories", includePaths.ToString());
+            return dictionary;
+        }
+
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;

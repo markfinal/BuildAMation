@@ -1,3 +1,5 @@
+14-Jan-2012 The IgnoreStandardIncludePaths C compiler option really doesn't inject the compiler include paths. VisualC is different, as it assumes an environment is set up.
+
 14-Jan-2012 Added Qt moc support for QMakeBuilder.
 
 14-Jan-2012 Fixing VSSolutionBuilder for .vcxprojs for header files with custom build steps not appearing under the Header Files filter in the solution explorer.

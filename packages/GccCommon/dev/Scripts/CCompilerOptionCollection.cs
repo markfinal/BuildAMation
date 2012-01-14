@@ -119,6 +119,13 @@ namespace GccCommon
 
         private static void SystemIncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            if (!optionCollection.IgnoreStandardIncludePaths)
+            {
+                Opus.Core.Log.Full("Not including system include paths");
+                return;
+            }
+
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
