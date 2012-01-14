@@ -185,7 +185,6 @@ namespace CSharp
 
         private static VisualStudioProcessor.ToolAttributeDictionary TargetVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            OptionCollection options = sender as OptionCollection;
             Opus.Core.ValueTypeOption<ETarget> enumOption = option as Opus.Core.ValueTypeOption<ETarget>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             switch (enumOption.Value)
@@ -493,7 +492,6 @@ namespace CSharp
         private static VisualStudioProcessor.ToolAttributeDictionary DebugInformationVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            OptionCollection options = sender as OptionCollection;
             Opus.Core.ValueTypeOption<EDebugInformation> enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
             switch (enumOption.Value)
             {
