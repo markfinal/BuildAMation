@@ -36,6 +36,9 @@ namespace MingwCommon
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
+            this.AllWarnings = true;
+            this.ExtraWarnings = true;
+
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
@@ -53,9 +56,6 @@ namespace MingwCommon
                 this.InlineFunctions = true;
                 this.OmitFramePointer = true;
             }
-
-            this.AllWarnings = true;
-            this.ExtraWarnings = true;
 
             this.TargetLanguage = C.ETargetLanguage.C;
 

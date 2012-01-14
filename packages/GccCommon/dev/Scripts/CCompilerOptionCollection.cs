@@ -37,6 +37,9 @@ namespace GccCommon
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
+            this.AllWarnings = true;
+            this.ExtraWarnings = true;
+
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
@@ -54,9 +57,6 @@ namespace GccCommon
                 this.InlineFunctions = true;
                 this.OmitFramePointer = true;
             }
-
-            this.AllWarnings = true;
-            this.ExtraWarnings = true;
 
             this.PositionIndependentCode = false;
 
