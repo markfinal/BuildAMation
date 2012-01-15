@@ -66,7 +66,14 @@ namespace QMakeBuilder
 
         public void AddUniqueVariable(string VariableName, Opus.Core.StringArray Value)
         {
-            SingleValueDictionary.Add(VariableName, Value);
+            try
+            {
+                SingleValueDictionary.Add(VariableName, Value);
+            }
+            catch (System.ArgumentException)
+            {
+                Opus.Core.Log.MessageAll("INVESTIGATE: Variable '{0}' already exists in dictionary; existing value '{1}', incoming value = '{2}'", VariableName, SingleValueDictionary[VariableName], Value);
+            }
         }
 
         public void Merge(NodeData data)
