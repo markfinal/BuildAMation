@@ -241,7 +241,11 @@ namespace Opus.Core
 
                             if (newNode.Module is IInjectModules)
                             {
-                                nodesToMove[newNode] = currentRank + 2 - newNode.Rank;
+                                nodesToMove[newNode] = currentRank + 2 - newNode.Rank; // +2 to jump over the collection of objects
+                            }
+                            else if (newNode.Rank < currentRank)
+                            {
+                                nodesToMove[newNode] = currentRank + 1 - newNode.Rank;
                             }
 
                             node.AddExternalDependent(newNode);
@@ -294,10 +298,11 @@ namespace Opus.Core
                             else
                             {
                                 newNode = new DependencyNode(nestedModule, node, node.Target, childIndex, true);
-                                ++childIndex;
 
                                 this.AddDependencyNodeToCollection(newNode, currentRank + 1);
                             }
+
+                            ++childIndex;
                         }
                     }
                 }

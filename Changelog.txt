@@ -1,3 +1,5 @@
+15-Jan-2012 Dependency graph generation used to be able to create multiple DependencyNodes for a single IModule's child dependencies.
+
 14-Jan-2012 QMakeBuilder now distinguishes between QMAKE_CFLAGS and QMAKE_CXXFLAGS.
 
 14-Jan-2012 Gcc and Mingw, -Wall and -Wextra are set first on the command line so that subsequent warning disables work.

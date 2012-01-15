@@ -64,7 +64,8 @@ namespace Opus.Core
 
             if (node.Module.OwningNode != node)
             {
-                throw new Exception(System.String.Format("Node '{0}' has a module that owns a different node. That should not be possible", node.UniqueModuleName), false);
+                throw new Exception(System.String.Format("Node '{0}' has a module with different node ownership '{1}'. That should not be possible",
+                                    node.UniqueModuleName, node.Module.OwningNode.UniqueModuleName), false);
             }
 
             System.Reflection.MethodInfo buildFunction = node.BuildFunction;

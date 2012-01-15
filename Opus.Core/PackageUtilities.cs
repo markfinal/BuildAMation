@@ -622,6 +622,32 @@ namespace Opus.Core
                         topLevelTypeNames.Add(assemblyType.FullName);
                     }
                 }
+
+                // scan the top level types to see if they consist of any types of the fields in the others
+                {
+                    TypeArray tltToRemove = new TypeArray();
+                    foreach (System.Type topLevelType in topLevelTypes)
+                    {
+                        System.Reflection.FieldInfo[] fields = topLevelType.GetFields(System.Reflection.BindingFlags.Instance |
+                                                                                      System.Reflection.BindingFlags.Public |
+                                                                                      System.Reflection.BindingFlags.NonPublic);
+                        foreach (System.Reflection.FieldInfo field in fields)
+                        {
+                            System.Type t = field.FieldType;
+                            if (topLevelTypes.Contains(t))
+                            {
+                                tltToRemove.Add(t);
+                            }
+                        }
+                    }
+
+                    foreach (System.Type t in tltToRemove)
+                    {
+                        Log.DebugMessage("\tRemoving '{0}' as it is used as a field in another top level type", t.FullName);
+                        topLevelTypeNames.Remove(t.FullName);
+                        topLevelTypes.Remove(t);
+                    }
+                }
             }
             catch (System.Reflection.ReflectionTypeLoadException exception)
             {
