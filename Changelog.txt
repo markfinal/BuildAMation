@@ -1,3 +1,5 @@
+15-Jan-2012 Qt.IMocOptions now exposes a PathPrefix option (moc -p <path>)
+
 15-Jan-2012 Modules at the top-level namespace were duplicated even though they were used as fields for another top-level module.
 
 15-Jan-2012 Dependency graph generation used to be able to create multiple DependencyNodes for a single IModule's child dependencies.

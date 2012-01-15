@@ -26,6 +26,7 @@ namespace QtCommon
             this.Defines = new C.DefineCollection();
             this.DoNotGenerateIncludeStatement = false;
             this.DoNotDisplayWarnings = false;
+            this.PathPrefix = null;
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
@@ -56,6 +57,7 @@ namespace QtCommon
             this["Defines"].PrivateData = new MocPrivateData(DefinesCommandLine);
             this["DoNotGenerateIncludeStatement"].PrivateData = new MocPrivateData(DoNotGenerateIncludeStatementCommandLine);
             this["DoNotDisplayWarnings"].PrivateData = new MocPrivateData(DoNotDisplayWarningsCommandLine);
+            this["PathPrefix"].PrivateData = new MocPrivateData(PathPrefixCommandLine);
         }
 
         private static void MocOutputPathSetHandler(object sender, Opus.Core.Option option)
@@ -118,6 +120,15 @@ namespace QtCommon
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-nw");
+            }
+        }
+
+        private static void PathPrefixCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            if (stringOption.Value != null)
+            {
+                commandLineBuilder.Add(System.String.Format("-p {0}", stringOption.Value));
             }
         }
 

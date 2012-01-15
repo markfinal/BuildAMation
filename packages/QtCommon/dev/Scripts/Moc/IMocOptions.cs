@@ -36,5 +36,11 @@ namespace QtCommon
             get;
             set;
         }
+
+        string PathPrefix
+        {
+            get;
+            set;
+        }
     }
 }

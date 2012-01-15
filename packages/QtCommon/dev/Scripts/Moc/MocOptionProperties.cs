@@ -65,5 +65,17 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("DoNotDisplayWarningsSetHandler", this["DoNotDisplayWarnings"]);
             }
         }
+        public string PathPrefix
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("PathPrefix");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("PathPrefix", value);
+                this.ProcessNamedSetHandler("PathPrefixSetHandler", this["PathPrefix"]);
+            }
+        }
     }
 }
