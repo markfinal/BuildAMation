@@ -43,7 +43,27 @@ namespace CommandLineProcessor
                 processStartInfo.EnvironmentVariables["PATH"] = path;
                 //Core.Log.DebugMessage("Path is '{0}'", path);
             }
-            processStartInfo.Arguments = commandLineBuilder.ToString(' ');
+
+            if (tool is Opus.Core.IToolSupportsResponseFile)
+            {
+                string responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;
+
+                Opus.Core.IModule module = node.Module;
+                Opus.Core.BaseOptionCollection options = module.Options;
+                string firstOutputPath = options.OutputPaths.Paths[0];
+                string responseFile = System.IO.Path.ChangeExtension(firstOutputPath, "rsp");
+
+                using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFile))
+                {
+                    writer.WriteLine(commandLineBuilder.ToString('\n'));
+                }
+
+                processStartInfo.Arguments = System.String.Format("{0}{1}", responseFileOption, responseFile);
+            }
+            else
+            {
+                processStartInfo.Arguments = commandLineBuilder.ToString(' ');
+            }
 
             Opus.Core.Log.Detail("Commandline: '{0} {1}'", executablePath, processStartInfo.Arguments);
 
