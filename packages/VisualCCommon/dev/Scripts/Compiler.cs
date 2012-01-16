@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public class CCompiler : C.Compiler, Opus.Core.ITool
+    public class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -60,6 +60,14 @@ namespace VisualCCommon
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolder;
+        }
+
+        string Opus.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
         }
     }
 }

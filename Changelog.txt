@@ -1,3 +1,5 @@
+16-Jan-2012 VisualC compiler, archiver and linker supports response files.
+
 16-Jan-2012 Added new interface, Opus.Core.IToolSupportsResponseFile, that requires a tool to provide the response file argument.
             CommandLineProcessor package uses this to write the options usually passed directly to the tool, to the response file instead, and make use of it.
 
