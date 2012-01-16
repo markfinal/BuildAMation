@@ -317,12 +317,15 @@ namespace VSSolutionBuilder
                         string relativeSubDir = Opus.Core.RelativePathUtilities.GetPath(subdir, this.PackageUri);
 
                         string elementName;
-                        if (0 == file.FileConfigurations.Count)
+                        if ((null == file.FileConfigurations) ||
+                            (0 == file.FileConfigurations.Count))
                         {
+                            // no configuration - the header is just included
                             elementName = "ClInclude";
                         }
                         else
                         {
+                            // a header file has a configuration setting, so must be a custom build step
                             elementName = "CustomBuild";
                         }
 
