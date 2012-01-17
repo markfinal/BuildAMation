@@ -7,7 +7,7 @@ namespace Opus.Core
 {
     public static class OptionUtilities
     {
-        public static void AttachModuleOptionUpdatesFromType<AttributeType>(IModule module, System.Type type, Target target)
+        public static void AttachModuleOptionUpdatesFromType<AttributeType>(IModule module, System.Type type, Target target, int depth)
         {
             System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.NonPublic |
                                                           System.Reflection.BindingFlags.Public |
@@ -22,7 +22,12 @@ namespace Opus.Core
                 {
                     if (!method.IsStatic)
                     {
-                        Log.DebugMessage("\tAdding update option instance delegate '{0}' (type '{3}') from '{1}' to '{2}'", method.Name, type.FullName, module.ToString(), typeof(AttributeType).ToString());
+                        Log.DebugMessage("{4}{2} += {1}'s instance update '{0}' (type {3})",
+                                         method.Name,
+                                         type.FullName,
+                                         module.ToString(),
+                                         typeof(AttributeType).ToString(),
+                                         new string('\t', depth));
 
                         IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
                         if (null == moduleContainingMethod)
@@ -33,7 +38,12 @@ namespace Opus.Core
                     }
                     else
                     {
-                        Log.DebugMessage("\tAdding update option static delegate '{0}' (type '{3}') from '{1}' to '{2}'", method.Name, type.FullName, module.ToString(), typeof(AttributeType).ToString());
+                        Log.DebugMessage("{4}{2} += {1}'s static update '{0}' (type {3})",
+                                         method.Name,
+                                         type.FullName,
+                                         module.ToString(),
+                                         typeof(AttributeType).ToString(),
+                                         new string('\t', depth));
                         module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), method) as UpdateOptionCollectionDelegate;
                     }
                 }
@@ -41,13 +51,13 @@ namespace Opus.Core
         }
 
         // this version only applies the exported attribute type
-        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(IModule module, DependencyNode node)
+        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(IModule module, DependencyNode node, int depth)
         {
             System.Type nodeModuleType = node.Module.GetType();
             Target target = node.Target;
 
-            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target);
-            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target);
+            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, depth + 1);
+            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
 
             if (null != node.ExternalDependents)
             {
@@ -55,7 +65,7 @@ namespace Opus.Core
                 {
                     Core.Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
 
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode);
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
 
                     if (null != dependentNode.Children)
                     {
@@ -64,7 +74,7 @@ namespace Opus.Core
                         {
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
-                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target);
+                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
                         }
                     }
                 }
@@ -72,17 +82,17 @@ namespace Opus.Core
         }
 
         // this applies both local and export, but not local to the external dependents
-        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(IModule module, DependencyNode node)
+        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(IModule module, DependencyNode node, int depth)
         {
             System.Type nodeModuleType = node.Module.GetType();
             Target target = node.Target;
 
             // only apply local here
-            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType, target);
-            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType.BaseType, target);
+            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType, target, depth + 1);
+            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
 
-            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target);
-            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target);
+            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, depth + 1);
+            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
 
             if (null != node.ExternalDependents)
             {
@@ -90,7 +100,7 @@ namespace Opus.Core
                 {
                     Core.Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
 
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode);
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
 
                     if (null != dependentNode.Children)
                     {
@@ -98,7 +108,7 @@ namespace Opus.Core
                         {
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
-                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target);
+                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
                         }
                     }
                 }
@@ -110,7 +120,7 @@ namespace Opus.Core
                 {
                     Core.Log.DebugMessage("Required dependent '{0}' of '{1}'", requiredNode.UniqueModuleName, node.UniqueModuleName);
 
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, requiredNode);
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, requiredNode, depth + 1);
 
                     if (null != requiredNode.Children)
                     {
@@ -118,7 +128,7 @@ namespace Opus.Core
                         {
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
-                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target);
+                            Core.OptionUtilities.AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
                         }
                     }
                 }
@@ -163,16 +173,18 @@ namespace Opus.Core
             }
             else
             {
+                Log.DebugMessage("Creating option collection for node '{0}'", node.UniqueModuleName);
+
                 options = Core.OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
 
                 // apply export and local
-                AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, node);
+                AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, node, 0);
 
                 // update option collections for the current "node group" (i.e. the top-most node of this type, and it's nested objects)
                 Core.DependencyNode parentNode = node.Parent;
                 while (parentNode != null)
                 {
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, parentNode);
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, parentNode, 0);
 
                     // end when both the current and its parent node are not nested (as this is an entirely different node)
                     // TODO: module name is the same
