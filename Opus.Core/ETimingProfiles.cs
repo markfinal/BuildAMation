@@ -14,7 +14,9 @@ namespace Opus.Core
         LoadAssembly,
         AdditionalArgumentProcessing,
         IdentifyBuildableModules,
-        GraphGeneration,
+        PopulateGraph,
+        CreateOptionCollections,
+        HandleInjectionDependents,
         GraphExecution,
         TimedTotal
     }

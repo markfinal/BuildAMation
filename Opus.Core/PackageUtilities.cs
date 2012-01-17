@@ -459,9 +459,6 @@ namespace Opus.Core
                 }
             }
 
-            TimeProfile dependencyGraphGenerationProfile = new TimeProfile(ETimingProfiles.GraphGeneration);
-            dependencyGraphGenerationProfile.StartProfile();
-
             DependencyGraph dependencyGraph = new DependencyGraph();
             State.Set("System", "Graph", dependencyGraph);
             foreach (Target target in targetCollection)
@@ -476,9 +473,6 @@ namespace Opus.Core
             dependencyGraph.PopulateGraph();
             Log.DebugMessage("\nAfter adding dependencies...");
             dependencyGraph.Dump();
-
-            dependencyGraphGenerationProfile.StopProfile();
-            State.TimingProfiles[(int)ETimingProfiles.GraphGeneration] = dependencyGraphGenerationProfile;
 
             TimeProfile dependencyGraphExecutionProfile = new TimeProfile(ETimingProfiles.GraphExecution);
             dependencyGraphExecutionProfile.StartProfile();

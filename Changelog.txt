@@ -1,3 +1,5 @@
+17-Jan-2012 Added better granularity to the timing item GraphGeneration; split into PopulateGraph, CreatOptionCollections, HandleInjectionDependents.
+
 17-Jan-2012 Improved debugging messages while attaching update delegates to modules's UpdateOptions event.
 
 17-Jan-2012 Gcc compiler, archiver and linker supports response files.

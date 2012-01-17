@@ -155,10 +155,37 @@ namespace Opus.Core
                 return;
             }
 
-            this.AddChildAndExternalDependents();
+            {
+                TimeProfile profile = new TimeProfile(ETimingProfiles.PopulateGraph);
+                profile.StartProfile();
+
+                this.AddChildAndExternalDependents();
+
+                profile.StopProfile();
+                State.TimingProfiles[(int)ETimingProfiles.PopulateGraph] = profile;
+            }
+
             Core.State.ReadOnly = true;
-            this.CreateOptionCollections();
-            this.AddInjectedDependents();
+
+            {
+                TimeProfile profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
+                profile.StartProfile();
+
+                this.CreateOptionCollections();
+
+                profile.StopProfile();
+                State.TimingProfiles[(int)ETimingProfiles.CreateOptionCollections] = profile;
+            }
+
+            {
+                TimeProfile profile = new TimeProfile(ETimingProfiles.HandleInjectionDependents);
+                profile.StartProfile();
+
+                this.AddInjectedDependents();
+
+                profile.StopProfile();
+                State.TimingProfiles[(int)ETimingProfiles.HandleInjectionDependents] = profile;
+            }
         }
 
         private DependencyNode FindNodeForTargettedModule(string moduleName, Target target)
