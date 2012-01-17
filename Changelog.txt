@@ -1,3 +1,5 @@
+17-Jan-2012 Gcc compiler, archiver and linker supports response files.
+
 16-Jan-2012 Adding a WindowsSDK version 'VC8PlatformSDK' that is the PlatformSDK within the VisualStudio 2005 installation folder.
 
 16-Jan-2012 VisualC compiler, archiver and linker supports response files.

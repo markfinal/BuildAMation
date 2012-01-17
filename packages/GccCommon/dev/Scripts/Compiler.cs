@@ -6,7 +6,7 @@
 namespace GccCommon
 {
     // Not sealed since the C++ compiler inherits from it
-    public abstract class CCompiler : C.Compiler, Opus.Core.ITool
+    public abstract class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
     {
         public abstract string Executable(Opus.Core.Target target);
 
@@ -211,5 +211,14 @@ namespace GccCommon
 
             return gccDetailsForTarget[target].GxxIncludePath;
         }
+
+        string Opus.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
+        }
     }
 }
+
