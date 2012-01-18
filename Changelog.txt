@@ -1,3 +1,5 @@
+18-Jan-2012 Experimental change to Opus.Core.Target to speed up equivalence comparisons using hashes of the target's key.
+
 18-Jan-2012 Added methods Include and Exclude to Opus.Core.FileCollection. The former maps to AddRelativePaths, while the latter is new and will remove any files matching the pattern that the FileCollection already is aware of.
 
 18-Jan-2012 Only schedule output from nodes built if there is something to output. This is another optimizations - the end of the build was waiting for a thread to process all of the empty strings.

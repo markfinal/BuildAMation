@@ -11,6 +11,12 @@ namespace Opus.Core
 
         private static System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>> completeTargetMap = new System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>>();
 
+        private int HashCode
+        {
+            get;
+            set;
+        }
+
         public static Target CreateIncompleteTarget(EPlatform platform, EConfiguration configuration)
         {
             if (incompleteTargetMap.ContainsKey(platform))
@@ -68,6 +74,8 @@ namespace Opus.Core
                     {
                         completeTargetMap[platform][configuration].Add(toolchain, null);
                     }
+
+                    completed.HashCode = completed.Key.GetHashCode();
 
                     completeTargetMap[platform][configuration][toolchain] = completed;
                     return completed;
@@ -292,6 +300,10 @@ namespace Opus.Core
                 return false;
             }
 
+#if true
+            bool same = (lhs.HashCode == rhs.HashCode);
+            return same;
+#else
             if (!lhs.IsFullyFormed || !rhs.IsFullyFormed)
             {
                 bool platformMatch = lhs.Platform == rhs.Platform;
@@ -303,6 +315,7 @@ namespace Opus.Core
                 bool keysMatch = lhs.Key == rhs.Key;
                 return keysMatch;
             }
+#endif
         }
 
         public static bool operator !=(Target lhs, Target rhs)
