@@ -1,3 +1,5 @@
+18-Jan-2012 The Global Option Override delegate should be executed BEFORE any other.
+
 18-Jan-2012 Renamed Opus.Core.BaseOptionCollection.ProcessSetHandlers() to RefreshCachedValues(), to be more meaningful to users without having to understand the implementation details.
 
 18-Jan-2012 In Opus.Core.Target, cache the 'key' used to identify instances, rather than using System.String.Format for each request, which is slow.

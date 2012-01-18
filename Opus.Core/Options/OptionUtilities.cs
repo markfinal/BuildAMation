@@ -238,15 +238,15 @@ namespace Opus.Core
 
             module.Options = options;
 
-            module.ExecuteOptionUpdate(target);
-
-            // TODO: the global option override ought to happen here
+            // execute the global override before any other, so that local delegates can do overrides
             var globalOverrides = State.ScriptAssembly.GetCustomAttributes(typeof(GlobalOptionCollectionOverrideAttribute), false);
-            if (globalOverrides.Length > 0)
+            foreach (var globalOverride in globalOverrides)
             {
-                IGlobalOptionCollectionOverride instance = (globalOverrides[0] as GlobalOptionCollectionOverrideAttribute).OverrideInterface;
+                IGlobalOptionCollectionOverride instance = (globalOverride as GlobalOptionCollectionOverrideAttribute).OverrideInterface;
                 instance.OverrideOptions(options, target);
             }
+
+            module.ExecuteOptionUpdate(target);
 
             return options;
         }
