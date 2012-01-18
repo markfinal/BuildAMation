@@ -90,6 +90,50 @@ namespace Opus.Core
             }
         }
 
+        public void Include(object module, params string[] pathSegments)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+            }
+
+            string packagePath = package.Identifier.Path;
+            ProxyModulePath proxyPath = (module as IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            StringArray paths = File.GetFiles(packagePath, pathSegments);
+            foreach (string path in paths)
+            {
+                this.filePaths.Add(path);
+            }
+        }
+
+        public void Exclude(object module, params string[] pathSegments)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+            }
+
+            string packagePath = package.Identifier.Path;
+            ProxyModulePath proxyPath = (module as IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            StringArray paths = File.GetFiles(packagePath, pathSegments);
+            foreach (string path in paths)
+            {
+                this.filePaths.Remove(path);
+            }
+        }
+
         public void AddRelativePaths(string baseDirectory, string relativePath)
         {
             if (!System.IO.Directory.Exists(baseDirectory))
