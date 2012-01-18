@@ -83,7 +83,7 @@ namespace Opus.Core
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
-        public void ProcessSetHandlers()
+        public void RefreshCachedValues()
         {
             System.Type type = this.GetType();
             System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.Static |           // don't need an instance
