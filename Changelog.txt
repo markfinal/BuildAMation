@@ -1,3 +1,5 @@
+18-Jan-2012 Only schedule output from nodes built if there is something to output. This is another optimizations - the end of the build was waiting for a thread to process all of the empty strings.
+
 17-Jan-2012 Optimization while creating option collections, so that update delegates are only added once to a node.
 
 17-Jan-2012 Added better granularity to the timing item GraphGeneration; split into PopulateGraph, CreatOptionCollections, HandleInjectionDependents.

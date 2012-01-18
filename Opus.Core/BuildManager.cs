@@ -231,6 +231,11 @@ namespace Opus.Core
         {
             node.CompletedEvent -= this.CompletedNode;
 
+            if ((0 == node.OutputStringBuilder.Length) && (0 == node.ErrorStringBuilder.Length))
+            {
+                return;
+            }
+
             OutputQueueData OutputQueueData = new OutputQueueData();
             OutputQueueData.node = node;
             OutputQueueData.output = node.OutputStringBuilder;
