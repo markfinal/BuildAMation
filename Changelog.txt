@@ -1,4 +1,4 @@
-18-Jan-2012 Experimental change to Opus.Core.Target to speed up equivalence comparisons using hashes of the target's key.
+18-Jan-2012 In Opus.Core.Target, cache the 'key' used to identify instances, rather than using System.String.Format for each request, which is slow.
 
 18-Jan-2012 Added methods Include and Exclude to Opus.Core.FileCollection. The former maps to AddRelativePaths, while the latter is new and will remove any files matching the pattern that the FileCollection already is aware of.
 

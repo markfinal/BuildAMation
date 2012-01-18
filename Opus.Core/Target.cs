@@ -11,11 +11,7 @@ namespace Opus.Core
 
         private static System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>> completeTargetMap = new System.Collections.Generic.Dictionary<EPlatform, System.Collections.Generic.Dictionary<EConfiguration, System.Collections.Generic.Dictionary<string, Target>>>();
 
-        private int HashCode
-        {
-            get;
-            set;
-        }
+        private string internalKey;
 
         public static Target CreateIncompleteTarget(EPlatform platform, EConfiguration configuration)
         {
@@ -37,6 +33,9 @@ namespace Opus.Core
 
             Target incompleteTarget = new Target(platform, configuration);
             incompleteTargetMap[platform][configuration] = incompleteTarget;
+
+            incompleteTarget.GenerateKey();
+
             return incompleteTarget;
         }
 
@@ -75,7 +74,7 @@ namespace Opus.Core
                         completeTargetMap[platform][configuration].Add(toolchain, null);
                     }
 
-                    completed.HashCode = completed.Key.GetHashCode();
+                    completed.GenerateKey();
 
                     completeTargetMap[platform][configuration][toolchain] = completed;
                     return completed;
@@ -130,21 +129,27 @@ namespace Opus.Core
             get;
             private set;
         }
+
+        private void GenerateKey()
+        {
+            string key;
+            if (this.IsFullyFormed)
+            {
+                key = System.String.Format("{0}-{1}-{2}", this.Platform.ToString().ToLower(), this.Configuration.ToString().ToLower(), this.Toolchain);
+            }
+            else
+            {
+                key = System.String.Format("{0}-{1} (incomplete)", this.Platform.ToString().ToLower(), this.Configuration.ToString().ToLower());
+            }
+
+            this.internalKey = key;
+        }
         
         public string Key
         {
             get
             {
-                if (this.IsFullyFormed)
-                {
-                    string key = System.String.Format("{0}-{1}-{2}", this.Platform.ToString().ToLower(), this.Configuration.ToString().ToLower(), this.Toolchain);
-                    return key;
-                }
-                else
-                {
-                    string key = System.String.Format("{0}-{1} (incomplete)", this.Platform.ToString().ToLower(), this.Configuration.ToString().ToLower());
-                    return key;
-                }
+                return this.internalKey;
             }
         }
 
@@ -300,10 +305,6 @@ namespace Opus.Core
                 return false;
             }
 
-#if true
-            bool same = (lhs.HashCode == rhs.HashCode);
-            return same;
-#else
             if (!lhs.IsFullyFormed || !rhs.IsFullyFormed)
             {
                 bool platformMatch = lhs.Platform == rhs.Platform;
@@ -315,7 +316,6 @@ namespace Opus.Core
                 bool keysMatch = lhs.Key == rhs.Key;
                 return keysMatch;
             }
-#endif
         }
 
         public static bool operator !=(Target lhs, Target rhs)
