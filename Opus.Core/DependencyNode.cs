@@ -36,6 +36,18 @@ namespace Opus.Core
         public delegate void CompleteEventHandler(DependencyNode node);
         public event CompleteEventHandler CompletedEvent;
 
+        public TypeArray LocalUpdatesAdded
+        {
+            get;
+            set;
+        }
+
+        public TypeArray ExportedUpdatesAdded
+        {
+            get;
+            set;
+        }
+
         private void AddChild(DependencyNode childNode)
         {
             if (null == this.Children)
@@ -102,6 +114,9 @@ namespace Opus.Core
             {
                 this.BuildFunction = null;
             }
+
+            this.LocalUpdatesAdded = new TypeArray();
+            this.ExportedUpdatesAdded = new TypeArray();
         }
 
         public void CreateOptionCollection()
