@@ -1,3 +1,5 @@
+18-Jan-2012 Any directory structure in the main package's Script folder is now represented faithfully in a debugging Opus project.
+
 18-Jan-2012 The Global Option Override delegate should be executed BEFORE any other.
 
 18-Jan-2012 Renamed Opus.Core.BaseOptionCollection.ProcessSetHandlers() to RefreshCachedValues(), to be more meaningful to users without having to understand the implementation details.

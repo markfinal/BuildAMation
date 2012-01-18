@@ -219,7 +219,7 @@ namespace Opus
                                         {
                                             xmlWriter.WriteStartElement("Link");
                                             {
-                                                string linkPackageFilename = System.IO.Path.Combine("Scripts", System.IO.Path.GetFileName(scriptFile));
+                                                string linkPackageFilename = scriptFile.Replace(package.Identifier.Path + System.IO.Path.DirectorySeparatorChar, string.Empty);
                                                 xmlWriter.WriteValue(linkPackageFilename);
                                                 xmlWriter.WriteEndElement();
                                             }
