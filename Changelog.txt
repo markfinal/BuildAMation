@@ -1,4 +1,4 @@
-19-Jan-2012 Added Info message at the end of the build, showing the number of data entries (Nodes in the Graph) transformed.
+19-Jan-2012 Added Info message at the end of the build, showing the number of data entries (Nodes in the Graph) as an idea of how much work was done.
 
 19-Jan-2012 Adding Include and Exclude methods to C.ObjectFileCollection, C.CPlusPlus.ObjectFileCollection and MocFileCollection.ObjectFileCollection.
 

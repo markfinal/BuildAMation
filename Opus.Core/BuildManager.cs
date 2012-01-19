@@ -222,7 +222,7 @@ namespace Opus.Core
             // wait on the thread that is outputting text from the nodes
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.allOutputComplete }, -1);
 
-            Log.Info("Build finished; transformed {0} data entries", this.graph.TotalNodeCount);
+            Log.Info("Build finished; graph contained {0} entries", this.graph.TotalNodeCount);
 
             return returnValue;
         }
