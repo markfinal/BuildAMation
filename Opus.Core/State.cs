@@ -67,6 +67,7 @@ namespace Opus.Core
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
             Add<DependencyGraph>("System", "Graph", null);
+            Add<BuildManager>("System", "BuildManager", null);
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
@@ -475,6 +476,19 @@ namespace Opus.Core
             get
             {
                 return Get("Build", "Modules") as StringArray;
+            }
+        }
+
+        public static BuildManager BuildManager
+        {
+            set
+            {
+                Set("System", "BuildManager", value);
+            }
+
+            get
+            {
+                return Get("System", "BuildManager") as BuildManager;
             }
         }
 

@@ -478,6 +478,8 @@ namespace Opus.Core
             dependencyGraphExecutionProfile.StartProfile();
 
             BuildManager buildManager = new BuildManager(dependencyGraph);
+            State.BuildManager = buildManager;
+            State.ReadOnly = true;
             bool success = buildManager.Execute();
 
             dependencyGraphExecutionProfile.StopProfile();

@@ -25,6 +25,12 @@ namespace Opus.Core
         private System.Threading.ManualResetEvent allOutputComplete = new System.Threading.ManualResetEvent(false);
         private System.Collections.Generic.Queue<OutputQueueData> outputQueue = new System.Collections.Generic.Queue<OutputQueueData>();
 
+        public System.Collections.Generic.List<System.Threading.ManualResetEvent> AdditionalThreadCompletionEvents
+        {
+            get;
+            private set;
+        }
+
         public BuildManager(DependencyGraph graph)
         {
             this.cancellationPending = false;
@@ -46,6 +52,9 @@ namespace Opus.Core
                 BuildAgent agent = new BuildAgent(System.String.Format("Agent {0}", job), this.Builder);
                 this.agentFreeList.Insert(job, agent);
             }
+
+            this.Finished = new System.Threading.ManualResetEvent(false);
+            this.AdditionalThreadCompletionEvents = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
         }
 
         private IBuilder Builder
@@ -218,6 +227,14 @@ namespace Opus.Core
             }
 
             this.active = false;
+            this.Finished.Set();
+
+            // wait on any additional threads
+            if (this.AdditionalThreadCompletionEvents.Count > 0)
+            {
+                System.Threading.WaitHandle.WaitAll(this.AdditionalThreadCompletionEvents.ToArray(), -1);
+                this.AdditionalThreadCompletionEvents = null;
+            }
 
             // wait on the thread that is outputting text from the nodes
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.allOutputComplete }, -1);
@@ -225,6 +242,12 @@ namespace Opus.Core
             Log.Info("Build finished; graph contained {0} entries", this.graph.TotalNodeCount);
 
             return returnValue;
+        }
+
+        public System.Threading.ManualResetEvent Finished
+        {
+            get;
+            set;
         }
 
         private void CompletedNode(DependencyNode node)

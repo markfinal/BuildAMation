@@ -165,8 +165,6 @@ namespace Opus.Core
                 State.TimingProfiles[(int)ETimingProfiles.PopulateGraph] = profile;
             }
 
-            Core.State.ReadOnly = true;
-
             {
                 TimeProfile profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
                 profile.StartProfile();
