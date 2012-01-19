@@ -80,5 +80,64 @@ namespace QtCommon
                 this.list.Add(mocFile);
             }
         }
+
+        public void Include(object owner, params string[] pathSegments)
+        {
+            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            foreach (string path in filePaths)
+            {
+                MocFile mocFile = new MocFile();
+                mocFile.ProxyPath = this.ProxyPath;
+                mocFile.SetAbsolutePath(path);
+                this.list.Add(mocFile);
+            }
+        }
+
+        public void Exclude(object owner, params string[] pathSegments)
+        {
+            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            System.Collections.Generic.List<MocFile> toRemove = new System.Collections.Generic.List<MocFile>();
+            foreach (string path in filePaths)
+            {
+                foreach (MocFile file in this.list)
+                {
+                    if (file.SourceFile.AbsolutePath == path)
+                    {
+                        toRemove.Add(file);
+                    }
+                }
+            }
+
+            foreach (MocFile file in toRemove)
+            {
+                this.list.Remove(file);
+            }
+        }
     }
 }

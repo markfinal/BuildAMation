@@ -1,3 +1,5 @@
+19-Jan-2012 Adding Include and Exclude methods to C.ObjectFileCollection, C.CPlusPlus.ObjectFileCollection and MocFileCollection.ObjectFileCollection.
+
 18-Jan-2012 Any directory structure in the main package's Script folder is now represented faithfully in a debugging Opus project.
 
 18-Jan-2012 The Global Option Override delegate should be executed BEFORE any other.
