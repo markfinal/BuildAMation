@@ -144,5 +144,44 @@ namespace Opus.Core
 
             return null;
         }
+
+        public static IModule GetModuleNoToolchain(System.Type type, Core.Target target)
+        {
+            DependencyGraph graph = State.Get("System", "Graph") as DependencyGraph;
+            if (null == graph)
+            {
+                throw new Exception("Dependency graph has not yet been constructed");
+            }
+
+            foreach (DependencyNode node in graph)
+            {
+                System.Type moduleType = node.Module.GetType();
+                bool typeMatch = (moduleType == type);
+                bool targetMatch = ((node.Target.Platform == target.Platform) &&
+                                    (node.Target.Configuration == target.Configuration));
+                if (typeMatch)
+                {
+                    if (targetMatch)
+                    {
+                        return node.Module;
+                    }
+                }
+                else
+                {
+                    System.Type baseType = moduleType.BaseType;
+                    while ((null != baseType) && !baseType.IsInterface)
+                    {
+                        if ((baseType == type) && targetMatch)
+                        {
+                            return node.Module;
+                        }
+
+                        baseType = baseType.BaseType;
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 }
