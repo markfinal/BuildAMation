@@ -8,7 +8,7 @@
 
 namespace Opus
 {
-    [Core.TriggerAction]
+    [Core.PreambleAction]
     internal class AddOpusAssemblyAction : Core.IActionWithArguments
     {
         public string CommandLineSwitch
