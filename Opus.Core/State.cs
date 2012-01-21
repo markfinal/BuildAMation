@@ -161,7 +161,21 @@ namespace Opus.Core
             }
             return value;
         }
-        
+
+        public static T Get<T>(string category, string key, T defaultValue) where T:struct
+        {
+            object value = null;
+            try
+            {
+                value = s[category][key];
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                return defaultValue;
+            }
+            return (T)value;
+        }
+
         public static void Set(string category, string key, object value)
         {
             if (ReadOnly)

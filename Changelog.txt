@@ -1,3 +1,5 @@
+21-Jan-2012 Added Opus.Core.State.Get function with a generic struct type default value argument. If the category/key are not present, the default value is returned.
+
 21-Jan-2012 C.Compiler now has a new abstract property IncludePathCompilerSwitches.
 
 19-Jan-2012 Added new properties to Opus.Core.BuildManager: Finished and AdditionalThreadCompletionEvents. This is so that plugins can attach additional worker threads during the build. The former is a ManualResetEvent that is signalled when the build ends. This can be used to tell the additional threads to prepare to shut down. The latter is a list of ManualResetEvents that plugins can provide for each additional thread, and BuildManager waits on these to be signalled at the end of the build, allowing the threads to shut down cleanly. The current BuildManager can be identified through Opus.Core.State.BuildManager. This will only be valid when a build is just about to start.
