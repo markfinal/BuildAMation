@@ -119,7 +119,7 @@ namespace MingwCommon
             CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
             if (!optionCollection.IgnoreStandardIncludePaths)
             {
-                Opus.Core.Log.Full("Not including system include paths");
+                Opus.Core.Log.Full("System include paths not explicitly added to the build");
                 return;
             }
 
