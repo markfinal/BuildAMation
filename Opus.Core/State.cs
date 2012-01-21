@@ -71,6 +71,7 @@ namespace Opus.Core
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
+            Add<bool>("System", "CacheAssembly", true);
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
@@ -542,6 +543,19 @@ namespace Opus.Core
             get
             {
                 return Get("System", "CompilerUndefines") as StringArray;
+            }
+        }
+
+        public static bool CacheAssembly
+        {
+            set
+            {
+                Set("System", "CacheAssembly", value);
+            }
+
+            get
+            {
+                return (bool)Get("System", "CacheAssembly");
             }
         }
     }

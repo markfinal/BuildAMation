@@ -241,6 +241,12 @@ namespace Opus.Core
             Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
         }
 
+        private static string GetPackageHash(StringArray sourceCode)
+        {
+            string hash = sourceCode.GetHashCode().ToString();
+            return hash;
+        }
+
         public static bool CompilePackageIntoAssembly()
         {
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
@@ -260,7 +266,7 @@ namespace Opus.Core
             StringArray definitions = new StringArray();
 
             // gather source files
-            System.Collections.ArrayList sourceFileList = new System.Collections.ArrayList();
+            StringArray sourceCode = new StringArray();
 
             int packageIndex = 0;
             foreach (PackageInformation package in State.PackageInfo)
@@ -268,13 +274,19 @@ namespace Opus.Core
                 PackageIdentifier id = package.Identifier;
                 Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
 
-                sourceFileList.Add(id.ScriptPathName);
+                using (System.IO.TextReader reader = new System.IO.StreamReader(id.ScriptPathName))
+                {
+                    sourceCode.Add(reader.ReadToEnd());
+                }
                 Log.DebugMessage("\t'{0}'", id.ScriptPathName);
                 if (null != package.Scripts)
                 {
                     foreach (string scriptFile in package.Scripts)
                     {
-                        sourceFileList.Add(scriptFile);
+                        using (System.IO.TextReader reader = new System.IO.StreamReader(scriptFile))
+                        {
+                            sourceCode.Add(reader.ReadToEnd());
+                        }
                         Log.DebugMessage("\t'{0}'", scriptFile);
                     }
                 }
@@ -282,7 +294,10 @@ namespace Opus.Core
                 {
                     foreach (string builderScriptFile in package.BuilderScripts)
                     {
-                        sourceFileList.Add(builderScriptFile);
+                        using (System.IO.TextReader reader = new System.IO.StreamReader(builderScriptFile))
+                        {
+                            sourceCode.Add(reader.ReadToEnd());
+                        }
                         Log.DebugMessage("\t'{0}'", builderScriptFile);
                     }
                 }
@@ -305,6 +320,32 @@ namespace Opus.Core
             TimeProfile assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
             assemblyCompileProfile.StartProfile();
 
+            // assembly is written to the build root
+            string assemblyPathname = System.IO.Path.Combine(State.BuildRoot, "OpusPackageAssembly");
+            assemblyPathname = System.IO.Path.Combine(assemblyPathname, mainPackage.Name) + ".dll";
+
+            // can an existing assembly be reused?
+            string hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
+            if (State.CacheAssembly)
+            {
+                if (System.IO.File.Exists(hashPathName))
+                {
+                    using (System.IO.TextReader reader = new System.IO.StreamReader(hashPathName))
+                    {
+                        string hashCode = reader.ReadLine();
+                        if (hashCode.Equals(GetPackageHash(sourceCode)))
+                        {
+                            Log.DebugMessage("Cached assembly used '{0}', with hash {1}", assemblyPathname, hashCode);
+                            State.ScriptAssemblyPathname = assemblyPathname;
+
+                            assemblyCompileProfile.StopProfile();
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
             System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
 
@@ -315,8 +356,6 @@ namespace Opus.Core
 
             using (Microsoft.CSharp.CSharpCodeProvider provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
             {
-                string[] sourceFiles = sourceFileList.ToArray(typeof(string)) as string[];
-
                 System.CodeDom.Compiler.CompilerParameters compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
                 compilerParameters.TreatWarningsAsErrors = true;
                 if (!State.RunningMono)
@@ -330,7 +369,9 @@ namespace Opus.Core
                 }
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
-                compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
+
+                compilerParameters.OutputAssembly = assemblyPathname;
+
                 string compilerOptions = "/checked+ /unsafe-";
                 if (State.CompileWithDebugSymbols)
                 {
@@ -392,7 +433,21 @@ namespace Opus.Core
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
-                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromFile(compilerParameters, sourceFiles);
+
+                if (State.CacheAssembly)
+                {
+                    using (System.IO.TextWriter writer = new System.IO.StreamWriter(hashPathName))
+                    {
+                        writer.WriteLine(GetPackageHash(sourceCode));
+                    }
+                }
+                else
+                {
+                    // will not throw if the file doesn't exist
+                    System.IO.File.Delete(hashPathName);
+                }
+
+                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
 
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {

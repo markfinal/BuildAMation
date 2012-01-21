@@ -76,6 +76,7 @@
     <Compile Include="Actions\CreatePackageAtAction.cs" />
     <Compile Include="Actions\EnableDebugSymbolsInBuildsAction.cs" />
     <Compile Include="Actions\HelpAction.cs" />
+    <Compile Include="Actions\NoCacheAction.cs" />
     <Compile Include="Actions\RemoveDefineAction.cs" />
     <Compile Include="Actions\RemoveDependencyAction.cs" />
     <Compile Include="Actions\RemoveDotNetAssemblyAction.cs" />

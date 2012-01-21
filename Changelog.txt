@@ -1,3 +1,5 @@
+22-Jan-2012 The compiled assembly for a package is now written to the buildroot, and also a hash of the source code. If this hash is the same for the next run, the assembly is re-used. This can be disabled with the -nocache command line option.
+
 22-Jan-2012 Enabled header dependency generation in C native builds by default. This can be disabled by passing -C.noheaderdeps on the command line to Opus.
 
 21-Jan-2012 Added new plugin package: DependencyGenerator-dev. This adds support for generating .d files containing dependency information from files that have #include statements. Only statements using the quoted version, i.e. #include "file.h" are found. Those using the angle bracket version, i.e. #include <file.h>, are ignored since these are considered to be system headers.
