@@ -1,4 +1,4 @@
-﻿// <copyright file="RelativePathUtilities.cs" company="Mark Final">
+// <copyright file="RelativePathUtilities.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -78,6 +78,7 @@ namespace Opus.Core
             }
 
             string absolutePath = relativePathUri.AbsolutePath;
+            absolutePath = System.IO.Path.GetFullPath(absolutePath);
             absolutePath = System.Uri.UnescapeDataString(absolutePath);
             if (Core.OSUtilities.IsWindowsHosting)
             {
