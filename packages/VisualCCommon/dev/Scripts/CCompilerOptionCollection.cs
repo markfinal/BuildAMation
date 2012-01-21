@@ -182,16 +182,19 @@ namespace VisualCCommon
                 return;
             }
 
+            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
+            string switchPrefix = compilerInstance.IncludePathCompilerSwitches[0];
+
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
                 if (includePath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("/I\"{0}\"", includePath));
+                    commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", switchPrefix, includePath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("/I{0}", includePath));
+                    commandLineBuilder.Add(System.String.Format("{0}{1}", switchPrefix, includePath));
                 }
             }
         }
@@ -226,16 +229,19 @@ namespace VisualCCommon
 
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
+            string switchPrefix = compilerInstance.IncludePathCompilerSwitches[0];
+
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
                 if (includePath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("/I\"{0}\"", includePath));
+                    commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", switchPrefix, includePath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("/I{0}", includePath));
+                    commandLineBuilder.Add(System.String.Format("{0}{1}", switchPrefix, includePath));
                 }
             }
         }

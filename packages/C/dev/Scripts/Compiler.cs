@@ -20,5 +20,10 @@ namespace C
         public abstract string ExecutableCPlusPlus(Opus.Core.Target target);
 
         public abstract Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target);
+
+        public abstract Opus.Core.StringArray IncludePathCompilerSwitches
+        {
+            get;
+        }
     }
 }

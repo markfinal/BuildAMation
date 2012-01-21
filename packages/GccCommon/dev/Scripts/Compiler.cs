@@ -17,6 +17,14 @@ namespace GccCommon
 
         public abstract Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target);
 
+        public override Opus.Core.StringArray IncludePathCompilerSwitches
+        {
+            get
+            {
+                return new Opus.Core.StringArray("-isystem", "-I");
+            }
+        }
+
         private class GccDetails
         {
             public GccDetails(string version,

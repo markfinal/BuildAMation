@@ -62,6 +62,14 @@ namespace VisualCCommon
             return this.includeFolder;
         }
 
+        public override Opus.Core.StringArray IncludePathCompilerSwitches
+        {
+            get
+            {
+                return new Opus.Core.StringArray("-I");
+            }
+        }
+
         string Opus.Core.IToolSupportsResponseFile.Option
         {
             get
