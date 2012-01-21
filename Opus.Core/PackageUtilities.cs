@@ -243,21 +243,12 @@ namespace Opus.Core
 
         private static string GetPackageHash(StringArray sourceCode)
         {
-            string hash = null;
-            if (State.RunningMono)
+            int hashCode = 0;
+            foreach (string source in sourceCode)
             {
-                // crazily, calling GetHashCode() on the StringArray in Mono returns non-deterministic values
-                int hashCode = 0;
-                foreach (string source in sourceCode)
-                {
-                    hashCode ^= source.GetHashCode();
-                }
-                hash = hashCode.ToString();
+                hashCode ^= source.GetHashCode();
             }
-            else
-            {
-                hash = sourceCode.GetHashCode().ToString();
-            }
+            string hash = hashCode.ToString();
             return hash;
         }
 
