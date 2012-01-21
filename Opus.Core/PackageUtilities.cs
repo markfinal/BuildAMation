@@ -488,6 +488,179 @@ namespace Opus.Core
             return true;
         }
 
+        // special function for debugging, because you MUST compile from the source files, not source in memory
+        public static bool CompileDebuggablePackageIntoAssembly()
+        {
+            TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
+            gatherSourceProfile.StartProfile();
+
+            IdentifyMainAndDependentPackages();
+
+            PackageInformation mainPackage = State.PackageInfo.MainPackage;
+
+            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
+
+            BuilderUtilities.SetBuilderPackage();
+
+            // Create resource file containing package information
+            string resourceFilePathName = PackageListResourceFile.WriteResourceFile();
+
+            StringArray definitions = new StringArray();
+
+            // gather source files
+            System.Collections.ArrayList sourceFileList = new System.Collections.ArrayList();
+
+            int packageIndex = 0;
+            foreach (PackageInformation package in State.PackageInfo)
+            {
+                PackageIdentifier id = package.Identifier;
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
+
+                sourceFileList.Add(id.ScriptPathName);
+                Log.DebugMessage("\t'{0}'", id.ScriptPathName);
+                if (null != package.Scripts)
+                {
+                    foreach (string scriptFile in package.Scripts)
+                    {
+                        sourceFileList.Add(scriptFile);
+                        Log.DebugMessage("\t'{0}'", scriptFile);
+                    }
+                }
+                if (null != package.BuilderScripts)
+                {
+                    foreach (string builderScriptFile in package.BuilderScripts)
+                    {
+                        sourceFileList.Add(builderScriptFile);
+                        Log.DebugMessage("\t'{0}'", builderScriptFile);
+                    }
+                }
+
+                foreach (string define in package.Identifier.Definition.Definitions)
+                {
+                    if (!definitions.Contains(define))
+                    {
+                        definitions.Add(define);
+                    }
+                }
+
+                ++packageIndex;
+            }
+
+            definitions.Sort();
+
+            gatherSourceProfile.StopProfile();
+
+            TimeProfile assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
+            assemblyCompileProfile.StartProfile();
+
+            System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
+            providerOptions.Add("CompilerVersion", "v3.5");
+
+            if (State.RunningMono)
+            {
+                Log.DebugMessage("Compiling assembly for Mono");
+            }
+
+            using (Microsoft.CSharp.CSharpCodeProvider provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
+            {
+                string[] sourceFiles = sourceFileList.ToArray(typeof(string)) as string[];
+
+                System.CodeDom.Compiler.CompilerParameters compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
+                compilerParameters.TreatWarningsAsErrors = true;
+                if (!State.RunningMono)
+                {
+                    compilerParameters.WarningLevel = 4;
+                }
+                else
+                {
+                    // mono appears to be a lot fussier about warnings
+                    compilerParameters.WarningLevel = 2;
+                }
+                compilerParameters.GenerateExecutable = false;
+                compilerParameters.GenerateInMemory = false;
+                compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
+                string compilerOptions = "/checked+ /unsafe-";
+                if (State.CompileWithDebugSymbols)
+                {
+                    compilerParameters.IncludeDebugInformation = true;
+                    compilerOptions += " /optimize-";
+                    if (State.RunningMono)
+                    {
+                        compilerOptions += " /define:DEBUG";
+                    }
+                }
+                else
+                {
+                    compilerOptions += " /optimize+";
+                }
+                if (!State.RunningMono)
+                {
+                    // apparently, some versions of Mono don't support the /platform option
+                    compilerOptions += " /platform:anycpu";
+                }
+
+                // define strings
+                {
+                    StringArray allDefines = new StringArray();
+                    allDefines.Add(OpusVersionDefineForCompiler);
+                    allDefines.Add(OpusHostPlatformForCompiler);
+                    // custom definitions from all the packages in the compilation
+                    allDefines.AddRange(definitions);
+                    // command line definitions
+                    allDefines.AddRange(State.PackageCompilationDefines);
+                    allDefines.Sort();
+                    allDefines.RemoveAll(State.PackageCompilationUndefines);
+
+                    compilerOptions += " /define:" + allDefines.ToString(';');
+                }
+
+                compilerParameters.CompilerOptions = compilerOptions;
+                compilerParameters.EmbeddedResources.Add(resourceFilePathName);
+
+                if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
+                {
+                    // Opus assembly
+                    foreach (string opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
+                    {
+                        string assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
+                        string assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
+                    }
+
+                    // DotNet assembly
+                    foreach (DotNetAssemblyDescription desc in mainPackage.Identifier.Definition.DotNetAssemblies)
+                    {
+                        string assemblyFileName = System.String.Format("{0}.dll", desc.Name);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
+                    }
+                }
+                else
+                {
+                    throw new Exception("C# compiler does not support Resources", false);
+                }
+
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
+                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromFile(compilerParameters, sourceFiles);
+
+                if (results.Errors.HasErrors || results.Errors.HasWarnings)
+                {
+                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
+                    foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
+                    {
+                        Log.MessageAll("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                    }
+                    return false;
+                }
+
+                Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
+                State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
+            }
+
+            assemblyCompileProfile.StopProfile();
+
+            return true;
+        }
+
         public static bool ExecutePackageAssembly()
         {
             // let's think about a new domain

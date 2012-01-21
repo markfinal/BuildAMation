@@ -30,7 +30,17 @@ namespace Opus
         public bool Execute()
         {
             Core.Log.DebugMessage("Builder is {0}", Core.State.BuilderName);
-            if (!Core.PackageUtilities.CompilePackageIntoAssembly())
+            bool compiledSuccessfully = false;
+            if (Core.State.CompileWithDebugSymbols)
+            {
+                compiledSuccessfully = Core.PackageUtilities.CompileDebuggablePackageIntoAssembly();
+            }
+            else
+            {
+                compiledSuccessfully = Core.PackageUtilities.CompilePackageIntoAssembly();
+            }
+
+            if (!compiledSuccessfully)
             {
                 System.Environment.ExitCode = -3;
             }
