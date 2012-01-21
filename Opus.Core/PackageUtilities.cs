@@ -1,4 +1,4 @@
-﻿// <copyright file="PackageUtilities.cs" company="Mark Final">
+// <copyright file="PackageUtilities.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -243,7 +243,21 @@ namespace Opus.Core
 
         private static string GetPackageHash(StringArray sourceCode)
         {
-            string hash = sourceCode.GetHashCode().ToString();
+            string hash = null;
+            if (State.RunningMono)
+            {
+                // crazily, calling GetHashCode() on the StringArray in Mono returns non-deterministic values
+                int hashCode = 0;
+                foreach (string source in sourceCode)
+                {
+                    hashCode ^= source.GetHashCode();
+                }
+                hash = hashCode.ToString();
+            }
+            else
+            {
+                hash = sourceCode.GetHashCode().ToString();
+            }
             return hash;
         }
 
@@ -313,6 +327,7 @@ namespace Opus.Core
                 ++packageIndex;
             }
 
+            //sourceCode.Sort();
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();
@@ -326,21 +341,26 @@ namespace Opus.Core
 
             // can an existing assembly be reused?
             string hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
+            string thisHashCode = GetPackageHash(sourceCode);
             if (State.CacheAssembly)
             {
                 if (System.IO.File.Exists(hashPathName))
                 {
                     using (System.IO.TextReader reader = new System.IO.StreamReader(hashPathName))
                     {
-                        string hashCode = reader.ReadLine();
-                        if (hashCode.Equals(GetPackageHash(sourceCode)))
+                        string diskHashCode = reader.ReadLine();
+                        if (diskHashCode.Equals(thisHashCode))
                         {
-                            Log.DebugMessage("Cached assembly used '{0}', with hash {1}", assemblyPathname, hashCode);
+                            Log.DebugMessage("Cached assembly used '{0}', with hash {1}", assemblyPathname, diskHashCode);
                             State.ScriptAssemblyPathname = assemblyPathname;
 
                             assemblyCompileProfile.StopProfile();
 
                             return true;
+                        }
+                        else
+                        {
+                            Log.DebugMessage("Hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
                         }
                     }
                 }
@@ -438,7 +458,7 @@ namespace Opus.Core
                 {
                     using (System.IO.TextWriter writer = new System.IO.StreamWriter(hashPathName))
                     {
-                        writer.WriteLine(GetPackageHash(sourceCode));
+                        writer.WriteLine(thisHashCode);
                     }
                 }
                 else
