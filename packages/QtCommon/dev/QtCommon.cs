@@ -8,10 +8,15 @@ namespace QtCommon
     public abstract class QtCommon : C.ThirdPartyModule
     {
         protected static string installPath;
-        protected static string libPath;
         protected static Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
 
         public static string BinPath
+        {
+            get;
+            protected set;
+        }
+
+        public static string libPath
         {
             get;
             protected set;
