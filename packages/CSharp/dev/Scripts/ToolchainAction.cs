@@ -8,6 +8,7 @@
 
 namespace CSharp
 {
+    [Opus.Core.PreambleAction]
     public sealed class ToolchainAction : Opus.Core.IActionWithArguments
     {
         private string Toolchain

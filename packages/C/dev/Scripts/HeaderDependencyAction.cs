@@ -8,6 +8,7 @@
 
 namespace C
 {
+    [Opus.Core.PreambleAction]
     public sealed class HeaderDependencyAction : Opus.Core.IAction
     {
         private string Toolchain

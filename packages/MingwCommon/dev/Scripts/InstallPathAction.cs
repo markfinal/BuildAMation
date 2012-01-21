@@ -8,6 +8,7 @@
 
 namespace MingwCommon
 {
+    [Opus.Core.PreambleAction]
     public sealed class InstallPathAction : Opus.Core.IActionWithArguments
     {
         private string InstallPath

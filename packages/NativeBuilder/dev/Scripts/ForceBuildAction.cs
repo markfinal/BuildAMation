@@ -8,6 +8,7 @@
 
 namespace NativeBuilder
 {
+    [Opus.Core.PreambleAction]
     public sealed class ForceBuildAction : Opus.Core.IAction
     {
         public ForceBuildAction()
