@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class StringArray : Array<string>
+    public sealed class StringArray : Array<string>, System.ICloneable
     {
         public StringArray()
             : base()
@@ -83,6 +83,13 @@ namespace Opus.Core
             }
 
             this.list = newList;
+        }
+
+        object System.ICloneable.Clone()
+        {
+            StringArray clone = new StringArray();
+            clone.list.AddRange(this.list);
+            return clone;
         }
     }
 }

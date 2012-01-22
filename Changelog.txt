@@ -1,3 +1,5 @@
+22-Jan-2012 Opus.Core.StringArray is now cloneable and can be used as an option value.
+
 22-Jan-2012 Improved error checking while cloning reference types used in option collections.
 
 22-Jan-2012 Improved error message if an option value has not been given a default.
