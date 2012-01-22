@@ -18,6 +18,10 @@ REM C compiler option properties
 %OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\Mingw\4.5.0\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Mingw -c=CCompilerOptionCollection
 IF NOT ERRORLEVEL 0 GOTO error
 
+REM C++ compiler option properties
+%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\C\dev\Scripts\ICPlusPlusCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=Mingw -c=CPlusPlusCompilerOptionCollection
+IF NOT ERRORLEVEL 0 GOTO error
+
 PAUSE
 GOTO end
 
