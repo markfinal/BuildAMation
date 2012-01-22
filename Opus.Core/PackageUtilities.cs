@@ -445,6 +445,18 @@ namespace Opus.Core
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
+                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
+
+                if (results.Errors.HasErrors || results.Errors.HasWarnings)
+                {
+                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
+                    foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
+                    {
+                        Log.MessageAll("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                    }
+                    return false;
+                }
+
                 if (State.CacheAssembly)
                 {
                     using (System.IO.TextWriter writer = new System.IO.StreamWriter(hashPathName))
@@ -456,18 +468,6 @@ namespace Opus.Core
                 {
                     // will not throw if the file doesn't exist
                     System.IO.File.Delete(hashPathName);
-                }
-
-                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
-
-                if (results.Errors.HasErrors || results.Errors.HasWarnings)
-                {
-                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
-                    foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
-                    {
-                        Log.MessageAll("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
-                    }
-                    return false;
                 }
 
                 Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
