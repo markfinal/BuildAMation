@@ -11,6 +11,12 @@ namespace QMakeBuilder
         {
             Opus.Core.DependencyNode node = objectFileCollection.OwningNode;
 
+            if ((null == node.Children) || (0 == node.Children.Count))
+            {
+                success = true;
+                return null;
+            }
+
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(node.Target);
 

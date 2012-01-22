@@ -1,3 +1,5 @@
+22-Jan-2012 Fixing Null reference exception in QMakeBuilder for C.ObjectFileCollection when it is empty.
+
 22-Jan-2012 Disabling more Qt configurations by default.
 
 22-Jan-2012 Fixing warnings from QtCreator that unquoted backslashes are deprecated for recent executables added to the scripts.
