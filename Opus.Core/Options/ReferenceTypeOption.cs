@@ -23,10 +23,16 @@ namespace Opus.Core
             System.ICloneable cloneable = this.Value as System.ICloneable;
             if (null == cloneable)
             {
-                throw new Exception(System.String.Format("ReferenceTypeOption type, '{0}', is not cloneable", typeof(T).GetType().ToString()), false);
+                throw new Exception(System.String.Format("ReferenceTypeOption type, '{0}', is not cloneable", typeof(T).ToString()), false);
             }
 
-            ReferenceTypeOption<T> clonedOption = new ReferenceTypeOption<T>(cloneable.Clone() as T);
+            object untypedClonedValue = cloneable.Clone();
+            T clonedValue = untypedClonedValue as T;
+            if (null == clonedValue)
+            {
+                throw new Exception(System.String.Format("Casting type '{0}' as '{1}' is not a defined type conversion", untypedClonedValue.GetType().ToString(), typeof(T).ToString()), false);
+            }
+            ReferenceTypeOption<T> clonedOption = new ReferenceTypeOption<T>(clonedValue);
 
             // we can share private data
             clonedOption.PrivateData = this.PrivateData;

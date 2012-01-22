@@ -1,3 +1,5 @@
+22-Jan-2012 Improved error checking while cloning reference types used in option collections.
+
 22-Jan-2012 Improved error message if an option value has not been given a default.
 
 21-Jan-2012 Fixing Opus.Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir with relative paths containing '..'. These were not collapsed into a canonical pathname.
