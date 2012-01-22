@@ -26,6 +26,7 @@ namespace VisualCCommon
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine, ShowIncludesVisualStudio);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine, AdditionalOptionsVisualStudio);
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLine, OmitFramePointerVisualStudio);
+            this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLine, DisableWarningsVisualStudio);
 
             // compiler specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
@@ -1290,6 +1291,28 @@ namespace VisualCCommon
             {
                 dictionary.Add("OmitFramePointers", boolOption.Value.ToString());
             }
+            return dictionary;
+        }
+
+        private static void DisableWarningsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (string warning in disableWarningsOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("/wd{0}", warning));
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary DisableWarningsVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            System.Text.StringBuilder disableWarnings = new System.Text.StringBuilder();
+            foreach (string warning in disableWarningsOption.Value)
+            {
+                disableWarnings.AppendFormat("{0};", warning);
+            }
+            dictionary.Add("DisableSpecificWarnings", disableWarnings.ToString());
             return dictionary;
         }
 

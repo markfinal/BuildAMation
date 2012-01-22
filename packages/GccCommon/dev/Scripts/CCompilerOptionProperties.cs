@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\GccCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=GccCommon -c=CCompilerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\GccCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=GccCommon -c=CCompilerOptionCollection 
 namespace GccCommon
 {
     public partial class CCompilerOptionCollection
@@ -171,6 +171,18 @@ namespace GccCommon
             {
                 this.SetValueTypeOption<bool>("OmitFramePointer", value);
                 this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
+            }
+        }
+        public Opus.Core.StringArray DisableWarnings
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("DisableWarnings");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("DisableWarnings", value);
+                this.ProcessNamedSetHandler("DisableWarningsSetHandler", this["DisableWarnings"]);
             }
         }
         public bool AllWarnings

@@ -90,5 +90,11 @@ namespace C
             get;
             set;
         }
+
+        Opus.Core.StringArray DisableWarnings
+        {
+            get;
+            set;
+        }
     }
 }

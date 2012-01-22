@@ -1,3 +1,5 @@
+22-Jan-2012 Adding DisableWarnings C options, which takes an Opus.Core.StringArray value. For VisualC, this is a list of compiler warning numbers to disable. For Gcc-like compilers, this is the name of the warning to disable, e.g. for -Wno-used-parameters pass "used-parameters". No warnings are disabled by default.
+
 22-Jan-2012 Opus.Core.StringArray is now cloneable and can be used as an option value.
 
 22-Jan-2012 Improved error checking while cloning reference types used in option collections.

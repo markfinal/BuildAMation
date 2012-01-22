@@ -25,6 +25,7 @@ namespace GccCommon
             this["ShowIncludes"].PrivateData = new PrivateData(ShowIncludesCommandLine);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLine);
+            this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLine);
 
             // compiler specific options
             this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
@@ -429,6 +430,15 @@ namespace GccCommon
             else
             {
                 commandLineBuilder.Add("-fno-omit-frame-pointer");
+            }
+        }
+
+        private static void DisableWarningsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (string warning in disableWarningsOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-Wno-", warning));
             }
         }
 
