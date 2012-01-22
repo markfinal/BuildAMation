@@ -30,7 +30,7 @@ namespace QMakeBuilder
 
             QtCommon.MocTool tool = new QtCommon.MocTool();
             string toolExePath = tool.Executable(target);
-            nodeData.AddUniqueVariable("QMAKE_MOC", new Opus.Core.StringArray(toolExePath));
+            nodeData.AddUniqueVariable("QMAKE_MOC", new Opus.Core.StringArray(toolExePath.Replace("\\", "/")));
 
             success = true;
             return nodeData;

@@ -28,12 +28,12 @@ namespace QMakeBuilder
                 C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
                 if (toolchainOptions.IsCPlusPlus)
                 {
-                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerInstance.ExecutableCPlusPlus(target)));
+                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerInstance.ExecutableCPlusPlus(target).Replace("\\", "/")));
                 }
                 else
                 {
                     Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
-                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target)));
+                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
                 }
             }
 

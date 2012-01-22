@@ -44,13 +44,13 @@ namespace QMakeBuilder
             if (isCPlusPlus)
             {
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
-                nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerInstance.ExecutableCPlusPlus(target)));
+                nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerInstance.ExecutableCPlusPlus(target).Replace("\\", "/")));
             }
             else
             {
                 nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
                 Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-                nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target)));
+                nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
             }
             nodeData.AddUniqueVariable("OBJECTS_DIR", new Opus.Core.StringArray(compilerOptions.OutputDirectoryPath));
 
