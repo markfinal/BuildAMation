@@ -7,6 +7,11 @@ namespace FileUtilities
 {
     public sealed class CopyFilesOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        {
+            // do nothing
+        }
+
         private void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.DestinationDirectory = null;
@@ -15,6 +20,7 @@ namespace FileUtilities
         public CopyFilesOptionCollection(Opus.Core.DependencyNode node)
         {
             this.InitializeDefaults(node);
+            this.SetDelegates(node);
         }
 
         public string DestinationDirectory

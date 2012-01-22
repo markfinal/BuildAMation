@@ -21,6 +21,7 @@ namespace C
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)
         {
             this.InitializeDefaults(node);
+            this.SetDelegates(node);
         }
 
         public string OutputName

@@ -12,11 +12,9 @@ namespace VisualCCommon
             base.InitializeDefaults(node);
 
             this.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
-
-            this.SetDelegates(node.Target);
         }
 
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common toolchain options
             this["IsCPlusPlus"].PrivateData = new PrivateData(null, null);

@@ -39,7 +39,7 @@ namespace CSharp
             options.Modules = new Opus.Core.FileCollection();
         }
 
-        private void SetDelegates()
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["Target"].PrivateData = new PrivateData(TargetCommandLine, TargetVisualStudio);
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
@@ -60,10 +60,8 @@ namespace CSharp
         public OptionCollection(Opus.Core.DependencyNode node)
         {
             this.SetNodeOwnership(node);
-
             this.InitializeDefaults(node);
-
-            this.SetDelegates();
+            this.SetDelegates(node);
         }
 
         public string OutputName

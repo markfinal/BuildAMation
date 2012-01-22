@@ -22,6 +22,7 @@ namespace C
         public ToolchainOptionCollection(Opus.Core.DependencyNode node)
         {
             this.InitializeDefaults(node);
+            this.SetDelegates(node);
         }
 
         // TODO: does this need updating for the new event and delegate model?

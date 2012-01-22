@@ -7,7 +7,7 @@ namespace GccCommon
 {
     public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common archiver options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null);
@@ -30,8 +30,6 @@ namespace GccCommon
 
             // this must be set last, as it appears last on the command line
             this.OutputType = C.EArchiverOutput.StaticLibrary;
-
-            this.SetDelegates(target);
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)

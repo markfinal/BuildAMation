@@ -7,7 +7,7 @@ namespace VisualCCommon
 {
     public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common archiver options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null, null);
@@ -27,8 +27,6 @@ namespace VisualCCommon
             Opus.Core.Target target = node.Target;
 
             this.OutputType = C.EArchiverOutput.StaticLibrary;
-
-            this.SetDelegates(target);
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)

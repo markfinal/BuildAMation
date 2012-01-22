@@ -23,11 +23,9 @@ namespace Mingw
 
             // requires gcc 4.0, and only works on ELFs
             //this.Visibility = EVisibility.Hidden;
-
-            this.SetDelegates(node.Target);
         }
 
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common compiler options
 

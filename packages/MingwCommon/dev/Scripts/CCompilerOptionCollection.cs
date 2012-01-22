@@ -8,7 +8,7 @@ namespace MingwCommon
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common compiler options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine);
@@ -62,8 +62,6 @@ namespace MingwCommon
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
             this.SystemIncludePaths.AddRange(null, compilerInstance.IncludeDirectoryPaths(node.Target));
-
-            this.SetDelegates(target);
         }
 
         public CCompilerOptionCollection()

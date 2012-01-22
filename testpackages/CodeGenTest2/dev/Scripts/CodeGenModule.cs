@@ -47,7 +47,7 @@ namespace CodeGenTest2
             this.OutputName = "function";
         }
 
-        private void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["OutputSourceDirectory"].PrivateData = new PrivateData(OutputSourceDirectoryCommandLine);
             this["OutputName"].PrivateData = new PrivateData(OutputNameCommandLine);

@@ -8,7 +8,7 @@ namespace VisualCCommon
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common compiler options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
@@ -88,8 +88,6 @@ namespace VisualCCommon
             this.ForceConformanceInForLoopScope = true;
             this.UseFullPaths = true;
             this.CompileAsManaged = EManagedCompilation.NoCLR;
-
-            this.SetDelegates(target);
         }
 
         public CCompilerOptionCollection()

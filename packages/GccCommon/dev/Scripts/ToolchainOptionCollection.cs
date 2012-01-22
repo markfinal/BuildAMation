@@ -7,7 +7,7 @@ namespace GccCommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common toolchain options
             this["IsCPlusPlus"].PrivateData = new PrivateData(null);
@@ -17,8 +17,6 @@ namespace GccCommon
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             base.InitializeDefaults(node);
-
-            this.SetDelegates(node.Target);
         }
 
         public ToolchainOptionCollection()

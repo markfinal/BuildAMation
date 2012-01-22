@@ -50,7 +50,7 @@ namespace QtCommon
             this.MocOutputPath = mocPath;
         }
 
-        private void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["MocOutputPath"].PrivateData = new MocPrivateData(MocOutputPathCommandLine);
             this["IncludePaths"].PrivateData = new MocPrivateData(IncludePathsCommandLine);

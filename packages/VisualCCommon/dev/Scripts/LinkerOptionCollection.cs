@@ -7,7 +7,7 @@ namespace VisualCCommon
 {
     public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions, VisualStudioProcessor.IVisualStudioSupport
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common linker options
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
@@ -36,8 +36,6 @@ namespace VisualCCommon
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.LibraryPaths.AddAbsoluteDirectory(toolChainInstance.LibPath(target), true);
-
-            this.SetDelegates(target);
         }
 
         public LinkerOptionCollection(Opus.Core.DependencyNode node)

@@ -82,8 +82,8 @@ namespace C
         public CompilerOptionCollection(Opus.Core.DependencyNode node)
         {
             this.SetNodeOwnership(node);
-
             this.InitializeDefaults(node);
+            this.SetDelegates(node);
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)

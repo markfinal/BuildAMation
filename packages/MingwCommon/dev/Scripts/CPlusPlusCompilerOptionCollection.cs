@@ -7,8 +7,10 @@ namespace MingwCommon
 {
     public abstract partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
     {
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+            base.SetDelegates(node);
+
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLine);
         }
 
@@ -19,8 +21,6 @@ namespace MingwCommon
             (this.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
             this.TargetLanguage = C.ETargetLanguage.CPlusPlus;
             this.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
-
-            this.SetDelegates(node.Target);
         }
 
         public CPlusPlusCompilerOptionCollection()

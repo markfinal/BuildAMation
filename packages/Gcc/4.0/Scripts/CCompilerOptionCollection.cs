@@ -24,12 +24,12 @@ namespace Gcc
 
             // requires gcc 4.0
             this.Visibility = EVisibility.Hidden;
-
-            this.SetDelegates(node.Target);
         }
 
-        private void SetDelegates(Opus.Core.Target target)
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+            base.SetDelegates(node);
+
             // common compiler options
 
             // compiler specific options
