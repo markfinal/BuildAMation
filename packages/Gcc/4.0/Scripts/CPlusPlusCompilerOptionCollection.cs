@@ -5,8 +5,18 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed partial class CPlusPlusCompilerOptionCollection : GccCommon.CPlusPlusCompilerOptionCollection
+    // this implementation is here because the specific version of the Mingw compiler exposes a new interface
+    // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
+    // C option collection
+    public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
     {
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        {
+            base.SetDelegates(node);
+
+            this["ExceptionHandler"].PrivateData = new MingwCommon.PrivateData(GccCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
+        }
+
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             base.InitializeDefaults(node);
@@ -28,6 +38,8 @@ namespace Gcc
 
             this.SystemIncludePaths.Add(null, cppIncludePath);
             this.SystemIncludePaths.Add(null, cppIncludePath2);
+
+            GccCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }
 
         public CPlusPlusCompilerOptionCollection()

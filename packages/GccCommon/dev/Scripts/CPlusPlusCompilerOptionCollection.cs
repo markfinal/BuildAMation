@@ -14,13 +14,17 @@ namespace GccCommon
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLine);
         }
 
+        public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+        {
+            (options.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
+            options.TargetLanguage = C.ETargetLanguage.CPlusPlus;
+            options.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
+        }
+
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             base.InitializeDefaults(node);
-
-            (this.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
-            this.TargetLanguage = C.ETargetLanguage.CPlusPlus;
-            this.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
+            ExportedDefaults(this, node);
         }
 
         public CPlusPlusCompilerOptionCollection()
@@ -33,7 +37,7 @@ namespace GccCommon
         {
         }
 
-        private static void ExceptionHandlerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        public static void ExceptionHandlerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
