@@ -27,6 +27,8 @@ namespace Mingw
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+            base.SetDelegates(node);
+
             // common compiler options
 
             // compiler specific options

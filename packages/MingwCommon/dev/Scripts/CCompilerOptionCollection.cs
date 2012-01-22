@@ -134,7 +134,7 @@ namespace MingwCommon
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("{0{{1}", switchPrefix, includePath));
+                    commandLineBuilder.Add(System.String.Format("{0}{1}", switchPrefix, includePath));
                 }
             }
         }
