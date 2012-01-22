@@ -70,8 +70,6 @@ namespace C
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
 
             compilerOptions.DisableWarnings = new Opus.Core.StringArray();
-
-            compilerOptions.AdditionalOptions = "";
         }
 
         public CompilerOptionCollection()
@@ -83,6 +81,10 @@ namespace C
         {
             this.SetNodeOwnership(node);
             this.InitializeDefaults(node);
+
+            ICCompilerOptions compilerOptions = this as ICCompilerOptions;
+            compilerOptions.AdditionalOptions = "";
+
             this.SetDelegates(node);
         }
 

@@ -1,3 +1,5 @@
+22-Jan-2012 C AdditionalOptions have been moved to the end of the option collection, so that they override all settings before hand.
+
 22-Jan-2012 Versioned compilers with specific option interfaces must also have their C++ equivalents derive from them, in order to propogate the additional C options. (Because of the SetDelegates change.) This still shares a lot of code with the common C++ option collections. This had to be done because C# does not allow deriving from a generic type.
 
 22-Jan-2012 Opus.Core.BaseOptionCollection now has a virtual function SetDelegates(), which is required to be implemented by derived classes in order to assign delegates to handling each option.
