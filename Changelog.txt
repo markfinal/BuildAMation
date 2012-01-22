@@ -1,3 +1,5 @@
+22-Jan-2012 Added VisualC linker option 'StackReserveAndCommit', taking a string of the format 'reserve[,commit]' to set the stack size and, optionally, the commit.
+
 22-Jan-2012 C AdditionalOptions have been moved to the end of the option collection, so that they override all settings before hand.
 
 22-Jan-2012 Versioned compilers with specific option interfaces must also have their C++ equivalents derive from them, in order to propogate the additional C options. (Because of the SetDelegates change.) This still shares a lot of code with the common C++ option collections. This had to be done because C# does not allow deriving from a generic type.

@@ -24,6 +24,7 @@ namespace VisualCCommon
 
             // linker specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
+            this["StackReserveAndCommit"].PrivateData = new PrivateData(StackReserveAndCommitCommandLine, StackReserveAndCommitVisualStudio);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -31,6 +32,7 @@ namespace VisualCCommon
             base.InitializeDefaults(node);
 
             this.NoLogo = true;
+            this.StackReserveAndCommit = null;
 
             Opus.Core.Target target = node.Target;
 
@@ -235,6 +237,35 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             dictionary.Add("SuppressStartupBanner", noLogoOption.Value.ToString().ToLower());
+            return dictionary;
+        }
+
+        private static void StackReserveAndCommitCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<string> stackSizeOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string stackSize = stackSizeOption.Value;
+            if (stackSize != null)
+            {
+                // this will be formatted as "reserve[,commit]"
+                commandLineBuilder.Add(System.String.Format("/STACK:{0}", stackSizeOption.Value));
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary StackReserveAndCommitVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ReferenceTypeOption<string> stackSizeOption = option as Opus.Core.ReferenceTypeOption<string>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            string stackSize = stackSizeOption.Value;
+            if (stackSize != null)
+            {
+                // this will be formatted as "reserve[,commit]"
+                string[] split = stackSize.Split(',');
+                dictionary.Add("StackReserveSize", split[0]);
+                if (split.Length > 1)
+                {
+                    dictionary.Add("StackCommitSize", split[1]);
+                }
+            }
             return dictionary;
         }
 

@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=VisualCCommon -c=LinkerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\VisualCCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=VisualCCommon -c=LinkerOptionCollection 
 namespace VisualCCommon
 {
     public partial class LinkerOptionCollection
@@ -147,6 +147,18 @@ namespace VisualCCommon
             {
                 this.SetValueTypeOption<bool>("NoLogo", value);
                 this.ProcessNamedSetHandler("NoLogoSetHandler", this["NoLogo"]);
+            }
+        }
+        public string StackReserveAndCommit
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("StackReserveAndCommit");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("StackReserveAndCommit", value);
+                this.ProcessNamedSetHandler("StackReserveAndCommitSetHandler", this["StackReserveAndCommit"]);
             }
         }
     }

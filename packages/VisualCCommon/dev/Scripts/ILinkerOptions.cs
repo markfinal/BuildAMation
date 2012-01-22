@@ -12,5 +12,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        string StackReserveAndCommit
+        {
+            get;
+            set;
+        }
     }
 }
