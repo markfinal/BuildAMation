@@ -65,7 +65,7 @@ namespace CommandLineProcessor
                 processStartInfo.Arguments = commandLineBuilder.ToString(' ');
             }
 
-            Opus.Core.Log.Detail("Commandline: '{0} {1}'", executablePath, processStartInfo.Arguments);
+            Opus.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
 
             System.Diagnostics.Process process = null;
             try
