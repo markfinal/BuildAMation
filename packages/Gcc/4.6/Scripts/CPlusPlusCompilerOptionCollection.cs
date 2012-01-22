@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    // this implementation is here because the specific version of the Mingw compiler exposes a new interface
+    // this implementation is here because the specific version of the Gcc compiler exposes a new interface
     // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
     // C option collection
     public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
@@ -14,7 +14,7 @@ namespace Gcc
         {
             base.SetDelegates(node);
 
-            this["ExceptionHandler"].PrivateData = new MingwCommon.PrivateData(GccCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
+            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
