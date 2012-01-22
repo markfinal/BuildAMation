@@ -26,7 +26,7 @@ namespace Opus.Core
             {
                 if (!this.Contains(key))
                 {
-                    string message = System.String.Format("Option '{0}' has not been registered in collection '{1}'\n", key, this.ToString());
+                    string message = System.String.Format("Option '{0}' has not been registered in collection '{1}'. Is a default value missing?\n", key, this.ToString());
                     message += "Options registered are:\n";
                     foreach (string keyName in this.table.Keys)
                     {
