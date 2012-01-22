@@ -436,7 +436,7 @@ namespace GccCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (string warning in disableWarningsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("-Wno-", warning));
+                commandLineBuilder.Add(System.String.Format("-Wno-{0}", warning));
             }
         }
 
