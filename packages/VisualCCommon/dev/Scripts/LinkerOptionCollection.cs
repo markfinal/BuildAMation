@@ -25,6 +25,7 @@ namespace VisualCCommon
             // linker specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
             this["StackReserveAndCommit"].PrivateData = new PrivateData(StackReserveAndCommitCommandLine, StackReserveAndCommitVisualStudio);
+            this["IgnoredLibraries"].PrivateData = new PrivateData(IgnoredLibrariesCommandLine, IgnoredLibrariesVisualStudio);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -33,6 +34,7 @@ namespace VisualCCommon
 
             this.NoLogo = true;
             this.StackReserveAndCommit = null;
+            this.IgnoredLibraries = new Opus.Core.StringArray();
 
             Opus.Core.Target target = node.Target;
 
@@ -265,6 +267,31 @@ namespace VisualCCommon
                 {
                     dictionary.Add("StackCommitSize", split[1]);
                 }
+            }
+            return dictionary;
+        }
+
+        private static void IgnoredLibrariesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (string library in ignoredLibrariesOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("/NODEFAULTLIB:{0}", library));
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary IgnoredLibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            string value = ignoredLibrariesOption.Value.ToString(';');
+            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+            {
+                dictionary.Add("IgnoreDefaultLibraryNames", value);
+            }
+            else
+            {
+                dictionary.Add("IgnoreSpecificDefaultLibraries", value);
             }
             return dictionary;
         }

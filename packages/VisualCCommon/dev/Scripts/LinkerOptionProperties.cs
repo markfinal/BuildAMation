@@ -161,5 +161,17 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("StackReserveAndCommitSetHandler", this["StackReserveAndCommit"]);
             }
         }
+        public Opus.Core.StringArray IgnoredLibraries
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("IgnoredLibraries");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("IgnoredLibraries", value);
+                this.ProcessNamedSetHandler("IgnoredLibrariesSetHandler", this["IgnoredLibraries"]);
+            }
+        }
     }
 }

@@ -18,5 +18,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        Opus.Core.StringArray IgnoredLibraries
+        {
+            get;
+            set;
+        }
     }
 }
