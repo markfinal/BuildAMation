@@ -1,3 +1,5 @@
+23-Jan-2012 Improved threading support in the Opus.Core.BuildManager.
+
 22-Jan-2012 Fixing Null reference exception in QMakeBuilder for C.ObjectFileCollection when it is empty.
 
 22-Jan-2012 Disabling more Qt configurations by default.

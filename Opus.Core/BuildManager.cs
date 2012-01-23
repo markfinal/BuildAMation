@@ -11,9 +11,10 @@ namespace Opus.Core
         private BuildScheduler scheduler;
         private bool active;
         private bool cancellationPending;
-        private System.Collections.ArrayList agentsDone;
-        private System.Collections.ArrayList agentWorkingList;
-        private System.Collections.ArrayList agentFreeList;
+
+        private System.Collections.Generic.List<BuildAgent> agents;
+        private System.Collections.Generic.List<System.Threading.ManualResetEvent> agentsAvailable;
+        private System.Threading.ManualResetEvent AgentReportsFailure = new System.Threading.ManualResetEvent(false);
 
         private class OutputQueueData
         {
@@ -44,13 +45,13 @@ namespace Opus.Core
                 throw new Exception("Zero job count is invalid");
             }
 
-            this.agentsDone = new System.Collections.ArrayList(jobCount);
-            this.agentFreeList = new System.Collections.ArrayList(jobCount);
-            this.agentWorkingList = new System.Collections.ArrayList(jobCount);
+            this.agents = new System.Collections.Generic.List<BuildAgent>(jobCount);
+            this.agentsAvailable = new System.Collections.Generic.List<System.Threading.ManualResetEvent>(jobCount);
             for (int job = 0; job < jobCount; ++job)
             {
-                BuildAgent agent = new BuildAgent(System.String.Format("Agent {0}", job), this.Builder);
-                this.agentFreeList.Insert(job, agent);
+                BuildAgent agent = new BuildAgent(System.String.Format("Agent {0}", job), this.Builder, this.AgentReportsFailure);
+                this.agents.Insert(job, agent);
+                this.agentsAvailable.Insert(job, agent.IsAvailable);
             }
 
             this.Finished = new System.Threading.ManualResetEvent(false);
@@ -62,53 +63,13 @@ namespace Opus.Core
             get;
             set;
         }
-
-        private int WorkingAgentsCount
-        {
-            get
-            {
-                return this.agentWorkingList.Count;
-            }
-        }
         
         private BuildAgent AvailableAgent()
         {
-            // if agents at working, check if any have finished
-            if (this.agentWorkingList.Count > 0)
-            {
-                System.Threading.ManualResetEvent[] agentsDone = this.agentsDone.ToArray(typeof(System.Threading.ManualResetEvent)) as System.Threading.ManualResetEvent[];
-                int finishedAgentIndex = System.Threading.WaitHandle.WaitAny(agentsDone, 0);
-                if (System.Threading.WaitHandle.WaitTimeout != finishedAgentIndex)
-                {
-                    BuildAgent finishedAgent = this.agentWorkingList[finishedAgentIndex] as BuildAgent;
-                    Log.DebugMessage("Agent '{0}' is now free", finishedAgent.Name);
-                    if (!finishedAgent.Success)
-                    {
-                        Log.DebugMessage("Agent '{0}' reported failure", finishedAgent.Name);
-                        this.cancellationPending = true;
-                        return null;
-                    }
-
-                    this.agentWorkingList.RemoveAt(finishedAgentIndex);
-                    this.agentsDone.RemoveAt(finishedAgentIndex);
-                    this.agentFreeList.Add(finishedAgent);
-                }
-            }
-
-            BuildAgent freeAgent = null;
-            if (this.agentFreeList.Count > 0)
-            {
-                freeAgent = this.agentFreeList[0] as BuildAgent;
-            }
-
-            return freeAgent;
-        }
-
-        private void AddAgentToWorkingList(BuildAgent agent)
-        {
-            this.agentFreeList.Remove(agent);
-            int index = this.agentWorkingList.Add(agent);
-            this.agentsDone.Insert(index, agent.DoneEvent);
+            // wait indefinitely for an available agent
+            int availableAgentIndex = System.Threading.WaitHandle.WaitAny(this.agentsAvailable.ToArray(), -1);
+            BuildAgent availableAgent = this.agents[availableAgentIndex];
+            return availableAgent;
         }
         
         private void PreExecute()
@@ -146,6 +107,13 @@ namespace Opus.Core
 
             while (this.scheduler.AreNodesAvailable)
             {
+                // check for failure
+                if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
+                {
+                    Log.DebugMessage("Agent reports failure");
+                    break;
+                }
+
                 if (this.cancellationPending)
                 {
                     Log.DebugMessage("Cancellation pending");
@@ -153,58 +121,26 @@ namespace Opus.Core
                 }
 
                 BuildAgent agent = this.AvailableAgent();
-                if (null != agent)
+                DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
+                if (null != nodeWork)
                 {
-                    DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
-                    if (null != nodeWork)
-                    {
-                        nodeWork.CompletedEvent += new DependencyNode.CompleteEventHandler(CompletedNode);
-                        this.AddAgentToWorkingList(agent);
-                        agent.Execute(nodeWork);
-                    }
-                    else
-                    {
-                        if ((0 == this.WorkingAgentsCount) &&
-                            this.scheduler.AreNodesAvailable)
-                        {
-                            throw new Exception("No node to work on can be found, and no agents are working, so this is a bad state to be in");
-                        }
-                        else
-                        {
-                            Log.DebugMessage("Can't run anything yet");
-                        }
-                    }
-                }
-                else
-                {
-                    // yield time slice until agents have finished
-                    System.Threading.Thread.Sleep(1);
+                    nodeWork.CompletedEvent += new DependencyNode.CompleteEventHandler(CompletedNode);
+                    agent.Execute(nodeWork);
                 }
             }
 
             // wait for all agents to finish
             // TODO: should we be occasionally checking for failure? i.e. this.CancellationPending = true?
-            if (this.agentsDone.Count > 0)
-            {
-                System.Threading.ManualResetEvent[] agentsDone = this.agentsDone.ToArray(typeof(System.Threading.ManualResetEvent)) as System.Threading.ManualResetEvent[];
-                System.Threading.WaitHandle.WaitAll(agentsDone, -1);
-            }
+            System.Threading.WaitHandle.WaitAll(this.agentsAvailable.ToArray(), -1);
 
-            foreach (BuildAgent agent in this.agentWorkingList)
+            // check for failure
+            if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
             {
-                if (!agent.Success)
-                {
-                    this.cancellationPending = true;
-                    break;
-                }
+                this.cancellationPending = true;
             }
 
             bool returnValue;
-            if (this.cancellationPending)
-            {
-                returnValue = false;
-            }
-            else
+            if (!this.cancellationPending)
             {
                 try
                 {
@@ -224,6 +160,10 @@ namespace Opus.Core
                 }
 
                 returnValue = true;
+            }
+            else
+            {
+                returnValue = false;
             }
 
             this.active = false;

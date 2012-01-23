@@ -6,13 +6,13 @@
 namespace Opus.Core
 {
     public sealed class BuildAgent
-    {   
-        public BuildAgent(string name, object builder)
+    {
+        public BuildAgent(string name, object builder, System.Threading.ManualResetEvent reportFailure)
         {
             this.Name = name;
             this.Builder = builder;
-            this.DoneEvent = new System.Threading.ManualResetEvent(false);
-            this.Success = true;
+            this.IsAvailable = new System.Threading.ManualResetEvent(true);
+            this.ReportFailure = reportFailure;
 
             System.Threading.ParameterizedThreadStart threadStart = new System.Threading.ParameterizedThreadStart(Run);
             this.Thread = new System.Threading.Thread(threadStart);
@@ -42,16 +42,16 @@ namespace Opus.Core
             set;
         }
 
-        public System.Threading.ManualResetEvent DoneEvent
+        public System.Threading.ManualResetEvent IsAvailable
         {
             get;
             private set;
         }
 
-        public bool Success
+        public System.Threading.ManualResetEvent ReportFailure
         {
             get;
-            set;
+            private set;
         }
 
         private static void Run(object obj)
@@ -92,8 +92,6 @@ namespace Opus.Core
                 arguments[1] = false;
             }
             bool success = (bool)arguments[1];
-            agent.Success = success;
-            
             if (success)
             {
                 node.BuildState = EBuildState.Succeeded;
@@ -102,19 +100,18 @@ namespace Opus.Core
             {
                 node.BuildState = EBuildState.Failed;
                 Log.MessageAll("Failed while building module '{0}' for target '{1}'", node.ModuleName, node.Target.ToString());
+                agent.ReportFailure.Set();
             }
 
             agent.Node = null;
-
-            agent.DoneEvent.Set();
+            agent.IsAvailable.Set();
         }
         
         public void Execute(DependencyNode node)
         {
             node.BuildState = EBuildState.Pending;
 
-            this.DoneEvent.Reset();
-            this.Success = false;
+            this.IsAvailable.Reset();
             this.Node = node;
 
             // queue up work for the thread pool
