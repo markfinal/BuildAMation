@@ -19,6 +19,8 @@ namespace NativeBuilder
 
             string depFilePath = DependencyChecker.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, compilerOptions.OutputDirectoryPath);
 
+            bool headerDependencyGeneration = (bool)Opus.Core.State.Get("C", "HeaderDependencyGeneration");
+
             // dependency checking, source against output files
             {
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
@@ -27,8 +29,7 @@ namespace NativeBuilder
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     // now try the header dependencies
-                    if (Opus.Core.State.Get("C", "HeaderDependencyGeneration", true) &&
-                        System.IO.File.Exists(depFilePath))
+                    if (headerDependencyGeneration && System.IO.File.Exists(depFilePath))
                     {
                         using (System.IO.TextReader depFileReader = new System.IO.StreamReader(depFilePath))
                         {
@@ -73,7 +74,7 @@ namespace NativeBuilder
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 
-            if (Opus.Core.State.Get("C", "HeaderDependencyGeneration", true))
+            if (headerDependencyGeneration)
             {
                 DependencyChecker.IncludeDependencyGeneration.DependencyQueue.Data dependencyData = new DependencyChecker.IncludeDependencyGeneration.DependencyQueue.Data();
                 dependencyData.sourcePath = sourceFilePath;

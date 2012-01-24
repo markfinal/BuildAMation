@@ -11,10 +11,10 @@ namespace C
     [Opus.Core.PreambleAction]
     public sealed class HeaderDependencyAction : Opus.Core.IAction
     {
-        private string Toolchain
+        public HeaderDependencyAction()
         {
-            get;
-            set;
+            Opus.Core.State.AddCategory("C");
+            Opus.Core.State.Add<bool>("C", "HeaderDependencyGeneration", true);
         }
 
         string Opus.Core.IAction.CommandLineSwitch
@@ -35,12 +35,9 @@ namespace C
 
         bool Opus.Core.IAction.Execute()
         {
-            if (!Opus.Core.State.HasCategory("C"))
-            {
-                Opus.Core.State.AddCategory("C");
-            }
-
             Opus.Core.State.Add<bool>("C", "HeaderDependencyGeneration", false);
+
+            Opus.Core.Log.DebugMessage("C header dependency generation has been disabled");
 
             return true;
         }
