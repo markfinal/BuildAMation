@@ -85,6 +85,7 @@
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\IActionWithArguments.cs" />
     <Compile Include="Interfaces\IBuilder.cs" />
+    <Compile Include="Interfaces\IBuildScheduler.cs" />
     <Compile Include="Interfaces\IFieldAttributeProcessor.cs" />
     <Compile Include="Interfaces\IGlobalOptionCollectionOverride.cs" />
     <Compile Include="Interfaces\IIdentifyExternalDependencies.cs" />

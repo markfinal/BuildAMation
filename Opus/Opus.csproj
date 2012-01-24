@@ -83,6 +83,7 @@
     <Compile Include="Actions\RemoveOpusAssemblyAction.cs" />
     <Compile Include="Actions\RemovePlatformFilterAction.cs" />
     <Compile Include="Actions\RemoveSupportedPlatformAction.cs" />
+    <Compile Include="Actions\SchedulerAction.cs" />
     <Compile Include="Actions\SetBuilderNameAction.cs" />
     <Compile Include="Actions\SetBuildRootAction.cs" />
     <Compile Include="Actions\SetConfigurationsAction.cs" />

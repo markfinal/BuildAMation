@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class BuildScheduler
+    public class BuildScheduler : IBuildScheduler
     {
         private DependencyGraph graph;
         private int scheduledNodeCount = 0;

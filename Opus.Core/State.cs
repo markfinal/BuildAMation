@@ -72,6 +72,7 @@ namespace Opus.Core
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
+            Add<string>("System", "SchedulerType", "Opus.Core.BuildScheduler");
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
@@ -556,6 +557,19 @@ namespace Opus.Core
             get
             {
                 return (bool)Get("System", "CacheAssembly");
+            }
+        }
+
+        public static string SchedulerType
+        {
+            set
+            {
+                Set("System", "SchedulerType", value);
+            }
+
+            get
+            {
+                return Get("System", "SchedulerType") as string;
             }
         }
     }

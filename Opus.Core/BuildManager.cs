@@ -8,7 +8,7 @@ namespace Opus.Core
     public class BuildManager
     {
         private DependencyGraph graph;
-        private BuildScheduler scheduler;
+        private IBuildScheduler scheduler;
         private bool active;
 
         private System.Collections.Generic.List<BuildAgent> agents;
@@ -35,7 +35,22 @@ namespace Opus.Core
         public BuildManager(DependencyGraph graph)
         {
             this.graph = graph;
-            this.scheduler = new BuildScheduler(graph);
+
+            System.Type schedulerType = System.Type.GetType(State.SchedulerType);
+            if (null == schedulerType)
+            {
+                schedulerType = State.ScriptAssembly.GetType(State.SchedulerType);
+                if (null == schedulerType)
+                {
+                    throw new Exception(System.String.Format("Scheduler type '{0}' not found in the Opus.Core assembly, nor the script assembly", State.SchedulerType), false);
+                }
+            }
+            if (!typeof(Core.IBuildScheduler).IsAssignableFrom(schedulerType))
+            {
+                throw new Exception(System.String.Format("Scheduler type '{0}' does not implement the Opus.Core.IBuildScheduler interface", State.SchedulerType), false);
+            }
+
+            this.scheduler = System.Activator.CreateInstance(schedulerType, new object[] { graph }) as IBuildScheduler;
             this.Builder = Core.State.BuilderInstance;
 
             int jobCount = Core.State.JobCount;

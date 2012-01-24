@@ -1,3 +1,5 @@
+24-Jan-2012 Added command line switch '-scheduler=<type name>', which allows defining a custom scheduler for the build. The class must implement the Opus.Core.IBuildScheduler interface.
+
 24-Jan-2012 Replaced System.String.Format with System.Text.StringBuilder in Opus.Core.Log.
 
 24-Jan-2012 Improved threading support in the background thread of the Opus.Core.BuildManager that processes textual messages from DependencyNode build methods.
