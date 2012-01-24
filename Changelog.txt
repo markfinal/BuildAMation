@@ -1,3 +1,5 @@
+24-Jan-2012 Opus.Core.DependencyNodeCollection is now cloneable. The DependencyNodes are not cloned.
+
 24-Jan-2012 Added command line switch '-scheduler=<type name>', which allows defining a custom scheduler for the build. The class must implement the Opus.Core.IBuildScheduler interface.
 
 24-Jan-2012 Replaced System.String.Format with System.Text.StringBuilder in Opus.Core.Log.

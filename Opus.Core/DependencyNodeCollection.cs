@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class DependencyNodeCollection : System.Collections.Generic.ICollection<DependencyNode>
+    public sealed class DependencyNodeCollection : System.Collections.Generic.ICollection<DependencyNode>, System.ICloneable
     {
         private System.Collections.Generic.List<DependencyNode> list = new System.Collections.Generic.List<DependencyNode>();
 
@@ -138,6 +138,13 @@ namespace Opus.Core
                     node.FilterOutputPaths(filter, paths);
                 }
             }
+        }
+
+        public object Clone()
+        {
+            DependencyNodeCollection clone = new DependencyNodeCollection();
+            clone.list.AddRange(this.list);
+            return clone;
         }
     }
 }
