@@ -23,6 +23,7 @@ namespace Opus.Core
         }
 
         private System.Threading.ManualResetEvent allOutputComplete = new System.Threading.ManualResetEvent(false);
+        private System.Threading.ManualResetEvent ioAvailable = new System.Threading.ManualResetEvent(false);
         private System.Collections.Generic.Queue<OutputQueueData> outputQueue = new System.Collections.Generic.Queue<OutputQueueData>();
 
         public System.Collections.Generic.List<System.Threading.ManualResetEvent> AdditionalThreadCompletionEvents
@@ -169,7 +170,11 @@ namespace Opus.Core
                 this.AdditionalThreadCompletionEvents = null;
             }
 
-            // wait on the thread that is outputting text from the nodes
+            // first signal the event that there's output (even though there isn't)
+            this.ioAvailable.Set();
+
+            // wait on the thread that is outputting text from the nodes to finish and notice
+            // that the build manager is shutting down (on this.active)
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.allOutputComplete }, -1);
 
             Log.Info("Build finished; graph contained {0} entries", this.graph.TotalNodeCount);
@@ -200,6 +205,7 @@ namespace Opus.Core
             lock (this.outputQueue)
             {
                 this.outputQueue.Enqueue(OutputQueueData);
+                this.ioAvailable.Set();
             }
         }
 
@@ -208,10 +214,13 @@ namespace Opus.Core
             BuildManager buildManager = state as BuildManager;
             System.Collections.Generic.Queue<OutputQueueData> outputQueue = buildManager.outputQueue;
 
-            while (buildManager.active || outputQueue.Count > 0)
+            while (buildManager.active)
             {
-                int queueSize = outputQueue.Count;
-                if (outputQueue.Count > 0)
+                // this event is signalled at the end of the build as well as whenever a node
+                // has some textual output from it's build
+                System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.ioAvailable }, -1);
+
+                while (outputQueue.Count > 0)
                 {
                     OutputQueueData outputOutputQueueData = null;
                     lock (outputQueue)
@@ -220,7 +229,7 @@ namespace Opus.Core
                     }
                     if (null == outputOutputQueueData)
                     {
-                        throw new Exception(System.String.Format("Output Queue contained a null reference; there was {0} items before the last dequeue", queueSize), false);
+                        throw new Exception(System.String.Format("Output Queue contained a null reference; there was {0} items before the last dequeue", outputQueue.Count + 1), false);
                     }
 
                     bool preamble = false;
@@ -258,8 +267,11 @@ namespace Opus.Core
                     }
                 }
 
-                // yield
-                System.Threading.Thread.Sleep(1);
+                // no more work to be done at this time
+                lock (ioAvailable)
+                {
+                    ioAvailable.Reset();
+                }
             }
 
             // signal complete

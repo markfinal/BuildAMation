@@ -1,3 +1,5 @@
+24-Jan-2012 Improved threading support in the background thread of the Opus.Core.BuildManager that processes textual messages from DependencyNode build methods.
+
 23-Jan-2012 Improved threading support in the Opus.Core.BuildManager.
 
 22-Jan-2012 Fixing Null reference exception in QMakeBuilder for C.ObjectFileCollection when it is empty.
