@@ -66,6 +66,7 @@
     <Compile Include="BuilderUtilities.cs" />
     <Compile Include="BuildManager.cs" />
     <Compile Include="BuildScheduler.cs" />
+    <Compile Include="BuildSchedulerEx.cs" />
     <Compile Include="DirectoryCollection.cs" />
     <Compile Include="DirectoryCollectionEnumerator.cs" />
     <Compile Include="EConfiguration.cs" />
