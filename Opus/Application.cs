@@ -18,22 +18,21 @@ namespace Opus
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
             Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
             Core.Log.Message(level, "Working dir  : '{0}'", Core.State.WorkingDirectory);
-            string arguments = null;
+            System.Text.StringBuilder arguments = new System.Text.StringBuilder();
             foreach (string command in argDict.Keys)
             {
-                if (null != arguments)
-                {
-                    arguments += " ";
-                }
-                arguments += command;
                 string value = argDict[command];
                 if (null != value)
                 {
-                    arguments += "=" + value;
+                    arguments.AppendFormat("{0}={1} ", command, value);
+                }
+                else
+                {
+                    arguments.AppendFormat("{0} ", command);
                 }
             }
             Core.Log.Message(level, "Host Platform: {0} {1}", Core.State.Platform, Core.State.IsLittleEndian ? "(little endian)" : "(big endian)");
-            Core.Log.Message(level, "Arguments    : {0}", arguments);
+            Core.Log.Message(level, "Arguments    : {0}", arguments.ToString().TrimEnd());
             Core.Log.Message(level, "");
         }
 

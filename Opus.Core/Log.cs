@@ -36,23 +36,26 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel >= level)
             {
-                string formattedMessage = System.String.Format(format, args);
-                Message(formattedMessage);
+                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(format, args);
+                Message(formattedMessage.ToString());
             }
         }
 
         public static void MessageAll(string format, params object[] args)
         {
-            string formattedMessage = System.String.Format(format, args);
-            Message(formattedMessage);
+            System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+            formattedMessage.AppendFormat(format, args);
+            Message(formattedMessage.ToString());
         }
 
         public static void Info(string format, params object[] args)
         {
             if (State.VerbosityLevel >= EVerboseLevel.Info)
             {
-                string formattedMessage = System.String.Format(format, args);
-                Message(formattedMessage);
+                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(format, args);
+                Message(formattedMessage.ToString());
             }
         }
 
@@ -60,8 +63,9 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel >= EVerboseLevel.Detail)
             {
-                string formattedMessage = System.String.Format(format, args);
-                Message(formattedMessage);
+                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(format, args);
+                Message(formattedMessage.ToString());
             }
         }
 
@@ -69,16 +73,17 @@ namespace Opus.Core
         {
             if (EVerboseLevel.Full == State.VerbosityLevel)
             {
-                string formattedMessage = System.String.Format(format, args);
-                Message(formattedMessage);
+                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(format, args);
+                Message(formattedMessage.ToString());
             }
         }
 
         public static void ErrorMessage(string format, params object[] args)
         {
-            string formattedMessage = System.String.Format(format, args);
-            string errorMessage = System.String.Format("\nERROR: {0}", formattedMessage);
-            Message(errorMessage);
+            System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+            formattedMessage.AppendFormat("\nERROR: " + format, args);
+            Message(formattedMessage.ToString());
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -86,8 +91,9 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel > EVerboseLevel.Detail)
             {
-                string formattedMessage = System.String.Format(format, args);
-                Message(formattedMessage);
+                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(format, args);
+                Message(formattedMessage.ToString());
             }
         }
     }
