@@ -10,7 +10,6 @@ namespace Opus.Core
         private DependencyGraph graph;
         private BuildScheduler scheduler;
         private bool active;
-        private bool cancellationPending;
 
         private System.Collections.Generic.List<BuildAgent> agents;
         private System.Collections.Generic.List<System.Threading.ManualResetEvent> agentsAvailable;
@@ -34,7 +33,6 @@ namespace Opus.Core
 
         public BuildManager(DependencyGraph graph)
         {
-            this.cancellationPending = false;
             this.graph = graph;
             this.scheduler = new BuildScheduler(graph);
             this.Builder = Core.State.BuilderInstance;
@@ -114,12 +112,6 @@ namespace Opus.Core
                     break;
                 }
 
-                if (this.cancellationPending)
-                {
-                    Log.DebugMessage("Cancellation pending");
-                    break;
-                }
-
                 BuildAgent agent = this.AvailableAgent();
                 DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
                 if (null != nodeWork)
@@ -134,13 +126,14 @@ namespace Opus.Core
             System.Threading.WaitHandle.WaitAll(this.agentsAvailable.ToArray(), -1);
 
             // check for failure
+            bool agentsFailed = false;
             if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
             {
-                this.cancellationPending = true;
+                agentsFailed = true;
             }
 
             bool returnValue;
-            if (!this.cancellationPending)
+            if (!agentsFailed)
             {
                 try
                 {
