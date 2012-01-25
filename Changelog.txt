@@ -1,3 +1,5 @@
+25-Jan-2012 Opus.Core.DependencyNodeCollection now has an overridden ToString() method. This displays the rank and how many nodes are contained within.
+
 25-Jan-2012 The build schedule update event is now in the Opus.Core.IBuildScheduler interface, and delegates are attached through adding them to the array in Opus.Core.State.SchedulerProgressUpdates.
 
 24-Jan-2012 Opus.Core.DependencyNodeCollection is now cloneable. The DependencyNodes are not cloned.

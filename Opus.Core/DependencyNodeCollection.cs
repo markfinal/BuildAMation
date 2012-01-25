@@ -147,5 +147,13 @@ namespace Opus.Core
             clone.list.AddRange(this.list);
             return clone;
         }
+
+        public override string ToString()
+        {
+            System.Text.StringBuilder description = new System.Text.StringBuilder();
+            description.AppendFormat("DependencyNode: rank {0} with {1} nodes",
+                                     this.Rank, this.list.Count);
+            return description.ToString();
+        }
     }
 }
