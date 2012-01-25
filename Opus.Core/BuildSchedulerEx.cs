@@ -14,8 +14,7 @@ namespace Opus.Core
         private DependencyNodeCollection rankInProgress;
         private DependencyGraph graph; // TODO: to remove
 
-        public delegate void ProgressUpdatedDelegate(int percentageComplete);
-        public static event ProgressUpdatedDelegate ProgressUpdated;
+        public event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
         
         public BuildSchedulerEx(DependencyGraph graph)
         {
@@ -28,8 +27,10 @@ namespace Opus.Core
             {
                 this.rankCollections.Enqueue(graph[rank].Clone() as DependencyNodeCollection);
             }
+            //Log.MessageAll("** There are {0} ranks", this.rankCount);
 
             this.rankInProgress = this.rankCollections.Dequeue();
+            //Log.MessageAll("** Current collection = {0}", this.rankInProgress.ToString());
 
             this.TotalNodeCount = graph.TotalNodeCount;
             this.ScheduledNodeCount = 0;
@@ -72,22 +73,27 @@ namespace Opus.Core
         {
             if (null == this.rankInProgress)
             {
+                //Log.MessageAll("** Current rank is null");
                 return null;
             }
 
             if (this.rankInProgress.Complete)
             {
+                //Log.MessageAll("** Current rank is complete");
                 for (; ; )
                 {
                     if (0 == this.rankCollections.Count)
                     {
+                        //Log.MessageAll("** No ranks remaining");
                         this.rankInProgress = null;
                         return null;
                     }
 
                     this.rankInProgress = this.rankCollections.Dequeue();
+                    //Log.MessageAll("** New rank collection is {0}", this.rankInProgress);
                     if (!this.rankInProgress.Complete)
                     {
+                        //Log.MessageAll("\tand is not complete yet");
                         break;
                     }
                 }
@@ -98,11 +104,25 @@ namespace Opus.Core
             {
                 if (EBuildState.NotStarted == node.BuildState)
                 {
-                    return node;
+                    //Log.MessageAll("** Found unstarted node {0}", node.ToString());
+                    ++this.ScheduledNodeCount;
+                    // is the build function empty? if so, just mark as succeeded
+                    if (null == node.BuildFunction)
+                    {
+                        node.BuildState = EBuildState.Succeeded;
+                    }
+                    else
+                    {
+                        this.graph.ExecutedNodes.Add(node);
+                        return node;
+                    }
                 }
             }
 
+            //Log.MessageAll("** Nodes in current rank are all started");
+
             DependencyNodeCollection nextRank = this.rankCollections.Peek();
+            //Log.MessageAll("** Next rank collection is {0}", nextRank.ToString());
             foreach (DependencyNode node in nextRank)
             {
                 DependencyNodeCollection dependents = new DependencyNodeCollection();
@@ -125,6 +145,7 @@ namespace Opus.Core
                 }
                 if (dependentsComplete && (EBuildState.NotStarted == node.BuildState))
                 {
+                    //Log.MessageAll("** Found unstarted node {0} in next rank", node.ToString());
                     ++this.ScheduledNodeCount;
                     // is the build function empty? if so, just mark as succeeded
                     if (null == node.BuildFunction)
@@ -139,9 +160,12 @@ namespace Opus.Core
                 }
             }
 
-            // TODO: I suppose this could happen if the nextRankCollection were tiny
-            // and didn't need to do much work
-            throw new Exception("Unable to locate a node to build");
+            // no Node in the curent rank was found to work on
+            // and no Node in the next rank was found to work on that didn't have all of it's
+            // dependencies satisifed
+            // so we just have to give up and wait for in-flight Nodes to finish
+            //Log.MessageAll("*** Pass-thru - waiting for in-flight nodes to finish ***");
+            return null;
         }
     }
 }
