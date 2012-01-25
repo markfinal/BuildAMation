@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Do not create/use the package assembly cache";
+                return "Provide the typename for the build scheduler";
             }
         }
 
