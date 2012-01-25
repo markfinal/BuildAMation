@@ -51,6 +51,12 @@ namespace Opus.Core
             }
 
             this.scheduler = System.Activator.CreateInstance(schedulerType, new object[] { graph }) as IBuildScheduler;
+            // attach updates
+            foreach (BuildSchedulerProgressUpdatedDelegate function in State.SchedulerProgressUpdates)
+            {
+                this.scheduler.ProgressUpdated += function;
+            }
+
             this.Builder = Core.State.BuilderInstance;
 
             int jobCount = Core.State.JobCount;

@@ -5,15 +5,15 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: rename this to DefaultScheduler
     public class BuildScheduler : IBuildScheduler
     {
         private DependencyGraph graph;
         private int scheduledNodeCount = 0;
         private int percentComplete = 0;
 
-        public delegate void ProgressUpdatedDelegate(int percentageComplete);
-        public static event ProgressUpdatedDelegate ProgressUpdated;
-        
+        public event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
+
         public BuildScheduler(DependencyGraph graph)
         {
             this.graph = graph;
@@ -41,7 +41,7 @@ namespace Opus.Core
                 if (percentComplete != this.percentComplete)
                 {
                     this.percentComplete = percentComplete;
-                    ProgressUpdated(percentComplete);
+                    this.ProgressUpdated(percentComplete);
                 }
             }
         }

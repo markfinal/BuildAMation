@@ -73,6 +73,7 @@ namespace Opus.Core
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
             Add<string>("System", "SchedulerType", "Opus.Core.BuildScheduler");
+            Add<Array<BuildSchedulerProgressUpdatedDelegate>>("System", "SchedulerProgressDelegates", new Array<BuildSchedulerProgressUpdatedDelegate>());
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
@@ -570,6 +571,19 @@ namespace Opus.Core
             get
             {
                 return Get("System", "SchedulerType") as string;
+            }
+        }
+
+        public static Array<BuildSchedulerProgressUpdatedDelegate> SchedulerProgressUpdates
+        {
+            set
+            {
+                Set("System", "SchedulerProgressDelegates", value);
+            }
+
+            get
+            {
+                return Get("System", "SchedulerProgressDelegates") as Array<BuildSchedulerProgressUpdatedDelegate>;
             }
         }
     }

@@ -5,6 +5,8 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    public delegate void BuildSchedulerProgressUpdatedDelegate(int percentageComplete);
+
     public interface IBuildScheduler
     {
         bool AreNodesAvailable
@@ -13,5 +15,7 @@ namespace Opus.Core
         }
 
         DependencyNode GetNextNodeToBuild();
+
+        event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
     }
 }

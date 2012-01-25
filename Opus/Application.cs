@@ -171,7 +171,7 @@ namespace Opus
         public void Run()
         {
             // get notified of the progress of any scheduling updates
-            Core.BuildScheduler.ProgressUpdated += new Core.BuildScheduler.ProgressUpdatedDelegate(scheduler_ProgressUpdated);
+            Core.State.SchedulerProgressUpdates.Add(new Core.BuildSchedulerProgressUpdatedDelegate(scheduler_ProgressUpdated));
 
             Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.PreambleCommandExecution);
             profile.StartProfile();
