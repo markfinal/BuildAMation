@@ -143,6 +143,7 @@ namespace Opus.Core
         public object Clone()
         {
             DependencyNodeCollection clone = new DependencyNodeCollection();
+            clone.Rank = this.Rank;
             clone.list.AddRange(this.list);
             return clone;
         }
