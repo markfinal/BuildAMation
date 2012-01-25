@@ -119,6 +119,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        public string GroupName
+        {
+            get;
+            set;
+        }
+
         private void SerializeVCXProj()
         {
             System.Xml.XmlDocument xmlDocument = null;

@@ -16,6 +16,7 @@ namespace VisualC
     public class Solution
     {
         private static System.Guid ProjectTypeGuid;
+        private static System.Guid SolutionFolderTypeGuid;
 
         static Solution()
         {
@@ -35,10 +36,17 @@ namespace VisualC
                         string projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
                         if (null != projectExtension)
                         {
-                            if (projectExtension == "vcproj")
+                            if ("vcproj" == projectExtension)
                             {
                                 ProjectTypeGuid = new System.Guid(subKeyName);
-                                break;
+                            }
+                        }
+                        string defaultValue = subKey.GetValue("") as string;
+                        if (null != defaultValue)
+                        {
+                            if ("Solution Folder Project" == defaultValue)
+                            {
+                                SolutionFolderTypeGuid = new System.Guid(subKeyName);
                             }
                         }
                     }
@@ -76,6 +84,14 @@ namespace VisualC
             get
             {
                 return ProjectTypeGuid;
+            }
+        }
+
+        public System.Guid SolutionFolderGuid
+        {
+            get
+            {
+                return SolutionFolderTypeGuid;
             }
         }
 

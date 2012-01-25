@@ -36,6 +36,15 @@ namespace VSSolutionBuilder
                 }
             }
 
+            // solution folder
+            {
+                var groups = application.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                if (groups.Length > 0)
+                {
+                    projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
+                }
+            }
+
             if (null != node.ExternalDependents)
             {
                 foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)

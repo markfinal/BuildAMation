@@ -112,6 +112,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        public string GroupName
+        {
+            get;
+            set;
+        }
+
         ProjectFile ICSProject.ApplicationDefinition
         {
             get

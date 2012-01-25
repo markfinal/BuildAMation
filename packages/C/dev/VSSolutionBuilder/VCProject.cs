@@ -119,6 +119,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        public string GroupName
+        {
+            get;
+            set;
+        }
+
         void IProject.Serialize()
         {
             System.Xml.XmlDocument xmlDocument = null;

@@ -56,8 +56,23 @@ namespace VSSolutionBuilder
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, assembly.ProxyPath }) as ICSProject;
 
-                    projectData.Platforms.Add(platformName);
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
+                }
+            }
+
+            {
+                if (!projectData.Platforms.Contains(platformName))
+                {
+                    projectData.Platforms.Add(platformName);
+                }
+            }
+
+            // solution folder
+            {
+                var groups = assembly.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                if (groups.Length > 0)
+                {
+                    projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
                 }
             }
 

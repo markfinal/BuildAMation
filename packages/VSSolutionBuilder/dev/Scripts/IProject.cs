@@ -52,6 +52,12 @@ namespace VSSolutionBuilder
             get;
         }
 
+        string GroupName
+        {
+            get;
+            set;
+        }
+
         void Serialize();
     }
 }

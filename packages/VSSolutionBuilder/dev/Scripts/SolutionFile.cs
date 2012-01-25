@@ -75,9 +75,24 @@ namespace VSSolutionBuilder
 
                 System.Uri solutionLocationUri = new System.Uri(this.PathName, System.UriKind.RelativeOrAbsolute);
 
+                System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Guid>> solutionFolders = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<System.Guid>>();
+                System.Collections.Generic.Dictionary<string, System.Guid> solutionFolderGuids = new System.Collections.Generic.Dictionary<string, System.Guid>();
+
                 // projects
                 foreach (System.Collections.Generic.KeyValuePair<string, IProject> project in this.ProjectDictionary)
                 {
+                    IProject p = project.Value;
+                    if (null != p.GroupName)
+                    {
+                        if (!solutionFolders.ContainsKey(p.GroupName))
+                        {
+                            solutionFolders.Add(p.GroupName, new System.Collections.Generic.List<System.Guid>());
+                            solutionFolderGuids.Add(p.GroupName, System.Guid.NewGuid());
+                        }
+
+                        solutionFolders[p.GroupName].Add(p.Guid);
+                    }
+
                     System.Uri projectLocationUri = new System.Uri(project.Value.PathName, System.UriKind.RelativeOrAbsolute);
                     System.Uri relativeProjectLocationUri = solutionLocationUri.MakeRelativeUri(projectLocationUri);
 
@@ -102,6 +117,20 @@ namespace VSSolutionBuilder
                     }
 
                     textWriter.WriteLine("EndProject");
+                }
+
+                System.Reflection.PropertyInfo SolutionFolderGuidProperty = solutionType.GetProperty("SolutionFolderGuid");
+                System.Guid solutionFolderTypeGuid = (System.Guid)SolutionFolderGuidProperty.GetGetMethod().Invoke(SolutionInstance, null);
+
+                // solution folders
+                if ((solutionFolders.Count > 0) && (0 != solutionFolderTypeGuid.CompareTo(System.Guid.Empty)))
+                {
+                    foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<System.Guid>> folder in solutionFolders)
+                    {
+                        textWriter.WriteLine("Project(\"{0}\") = \"{1}\", \"{1}\", \"{2}\"",
+                                             solutionFolderTypeGuid.ToString("B").ToUpper(), folder.Key, solutionFolderGuids[folder.Key].ToString("B").ToUpper());
+                        textWriter.WriteLine("EndProject");
+                    }
                 }
 
                 // global sections
@@ -135,6 +164,20 @@ namespace VSSolutionBuilder
                     textWriter.WriteLine("\tGlobalSection(SolutionProperties) = preSolution");
                     textWriter.WriteLine("\t\tHideSolutionNode = FALSE");
                     textWriter.WriteLine("\tEndGlobalSection");
+
+                    // solution folders
+                    if ((solutionFolders.Count > 0) && (0 != solutionFolderTypeGuid.CompareTo(System.Guid.Empty)))
+                    {
+                        textWriter.WriteLine("\tGlobalSection(NestedProjects) = preSolution");
+                        foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<System.Guid>> folder in solutionFolders)
+                        {
+                            foreach (System.Guid projectGuid in folder.Value)
+                            {
+                                textWriter.WriteLine("\t\t{0} = {1}", projectGuid.ToString("B").ToUpper(), solutionFolderGuids[folder.Key].ToString("B").ToUpper());
+                            }
+                        }
+                        textWriter.WriteLine("\tEndGlobalSection");
+                    }
                 }
                 textWriter.WriteLine("EndGlobal");
             }

@@ -36,6 +36,15 @@ namespace VSSolutionBuilder
                 }
             }
 
+            // solution folder
+            {
+                var groups = staticLibrary.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                if (groups.Length > 0)
+                {
+                    projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
+                }
+            }
+
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
