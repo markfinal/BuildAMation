@@ -1,3 +1,5 @@
+26-Jan-2012 Optimization to Opus.Core.ModuleUtilities.GetModule(), that speeds up option collection generation.
+
 25-Jan-2012 Adding Opus.Core.ModuleGroup attribute to apply to classes (modules). This accepts a string as the single argument. For some versions of VisualStudio, this is used to generate Solution Folders, and places those marked modules with in them.
 
 25-Jan-2012 Opus.Core.DependencyNodeCollection now has an overridden ToString() method. This displays the rank and how many nodes are contained within.

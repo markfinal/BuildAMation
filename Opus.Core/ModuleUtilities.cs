@@ -107,8 +107,16 @@ namespace Opus.Core
             return GetFieldsWithAttributeType<Core.RequiredModulesAttribute>(module, target);
         }
 
+        private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.Target, IModule>> typeTargetToModuleDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.Target, IModule>>();
+
         public static IModule GetModule(System.Type type, Core.Target target)
         {
+            if (typeTargetToModuleDictionary.ContainsKey(type) &&
+                typeTargetToModuleDictionary[type].ContainsKey(target))
+            {
+                return typeTargetToModuleDictionary[type][target];
+            }
+
             DependencyGraph graph = State.Get("System", "Graph") as DependencyGraph;
             if (null == graph)
             {
@@ -124,6 +132,14 @@ namespace Opus.Core
                 {
                     if (targetMatch)
                     {
+                        if (!typeTargetToModuleDictionary.ContainsKey(type))
+                        {
+                            typeTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.Target, IModule>());
+                        }
+                        if (!typeTargetToModuleDictionary[type].ContainsKey(target))
+                        {
+                            typeTargetToModuleDictionary[type][target] = node.Module;
+                        }
                         return node.Module;
                     }
                 }
@@ -134,6 +150,14 @@ namespace Opus.Core
                     {
                         if ((baseType == type) && targetMatch)
                         {
+                            if (!typeTargetToModuleDictionary.ContainsKey(type))
+                            {
+                                typeTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.Target, IModule>());
+                            }
+                            if (!typeTargetToModuleDictionary[type].ContainsKey(target))
+                            {
+                                typeTargetToModuleDictionary[type][target] = node.Module;
+                            }
                             return node.Module;
                         }
 
@@ -147,6 +171,8 @@ namespace Opus.Core
 
         public static IModule GetModuleNoToolchain(System.Type type, Core.Target target)
         {
+            // Intentionally NOT using typeTargetToModuleDictionary
+
             DependencyGraph graph = State.Get("System", "Graph") as DependencyGraph;
             if (null == graph)
             {
