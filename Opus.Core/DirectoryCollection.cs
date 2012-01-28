@@ -129,6 +129,11 @@ namespace Opus.Core
 
         private static StringArray GetDirectories(string baseDirectory, params string[] pathSegments)
         {
+            if (0 == pathSegments.Length)
+            {
+                return new StringArray(baseDirectory);
+            }
+
             if (State.RunningMono)
             {
                 // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
