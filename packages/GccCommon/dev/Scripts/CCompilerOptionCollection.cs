@@ -62,7 +62,7 @@ namespace GccCommon
             this.PositionIndependentCode = false;
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-            this.SystemIncludePaths.AddRange(null, compilerInstance.IncludeDirectoryPaths(target));
+            this.SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
 
             this.TargetLanguage = C.ETargetLanguage.C;
         }

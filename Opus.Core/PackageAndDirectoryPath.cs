@@ -1,3 +1,4 @@
+#if !NEWDIRECTORYCOLLECTION
 // <copyright file="PackageAndDirectoryPath.cs" company="Mark Final">
 //  Opus
 // </copyright>
@@ -72,3 +73,4 @@ namespace Opus.Core
         }
     }
 }
+#endif

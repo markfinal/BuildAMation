@@ -20,7 +20,11 @@ namespace Opus.Core
         {
             get
             {
+#if NEWDIRECTORYCOLLECTION
+                return this.collection[this.enumeratorIndex];
+#else
                 return this.collection[this.enumeratorIndex].GetAbsolutePath();
+#endif
             }
         }
 

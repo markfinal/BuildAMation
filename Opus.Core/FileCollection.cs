@@ -27,10 +27,7 @@ namespace Opus.Core
         public object Clone()
         {
             FileCollection clone = new FileCollection();
-            foreach (string path in this.filePaths)
-            {
-                clone.Add(path);
-            }
+            clone.filePaths.AddRange(this.filePaths);
             return clone;
         }
 

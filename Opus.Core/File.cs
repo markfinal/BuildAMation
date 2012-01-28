@@ -26,7 +26,7 @@ namespace Opus.Core
             }
         }
 
-        private static string CombinePaths(ref string baseDirectory, params string[] pathSegments)
+        internal static string CombinePaths(ref string baseDirectory, params string[] pathSegments)
         {
             string combinedPath = baseDirectory;
             bool canExtendBaseDirectoryWithUps = true;
@@ -123,14 +123,14 @@ namespace Opus.Core
                 // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
                 // cannot use GetFiles with a pattern containing directories
 
-                string baseDir = baseDirectory;
+                string combinedBaseDirectory = baseDirectory;
                 int i = 0;
                 for (; i < pathSegments.Length; ++i)
                 {
-                    string baseDirTest = System.IO.Path.Combine(baseDir, pathSegments[i]);
+                    string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
                     if (System.IO.Directory.Exists(baseDirTest))
                     {
-                        baseDir = baseDirTest;
+                        combinedBaseDirectory = baseDirTest;
                     }
                     else
                     {
@@ -140,10 +140,10 @@ namespace Opus.Core
 
                 if (i != pathSegments.Length - 1)
                 {
-                    throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", baseDir, pathSegments[i]));
+                    throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]));
                 }
 
-                string[] files = System.IO.Directory.GetFiles(baseDir, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
                 return new StringArray(files);
             }
             else

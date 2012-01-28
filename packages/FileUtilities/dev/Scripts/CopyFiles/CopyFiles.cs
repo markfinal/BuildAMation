@@ -170,7 +170,7 @@ namespace FileUtilities
                     DestinationDirectoryPathAttribute destinationDirectoryAttribute = destinationDirectoryAttributes[0] as DestinationDirectoryPathAttribute;
 
                     Opus.Core.DirectoryCollection destinationDirectoryPaths = field.GetValue(this) as Opus.Core.DirectoryCollection;
-                    this.DestinationDirectory = destinationDirectoryPaths[0].GetAbsolutePath();
+                    this.DestinationDirectory = destinationDirectoryPaths[0];
 
                     this.UpdateOptions += delegate(Opus.Core.IModule dModule, Opus.Core.Target dTarget)
                     {
