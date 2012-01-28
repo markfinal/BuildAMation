@@ -1,3 +1,5 @@
+28-Jan-2012 Ensure that .vcprojs generated have the intermediate directory set, if they have moc entries.
+
 26-Jan-2012 Optimization to Opus.Core.ModuleUtilities.GetModule(), that speeds up option collection generation.
 
 25-Jan-2012 Adding Opus.Core.ModuleGroup attribute to apply to classes (modules). This accepts a string as the single argument. For some versions of VisualStudio, this is used to generate Solution Folders, and places those marked modules with in them.

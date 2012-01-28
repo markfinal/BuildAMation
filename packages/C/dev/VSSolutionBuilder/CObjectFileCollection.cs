@@ -94,9 +94,6 @@ namespace VSSolutionBuilder
                     configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = characterSet;
 
-                    C.CompilerOptionCollection options = objectFileCollection.Options as C.CompilerOptionCollection;
-                    configuration.IntermediateDirectory = options.OutputDirectoryPath;
-
                     projectData.Configurations.Add(target, configuration);
                 }
                 else
@@ -105,6 +102,9 @@ namespace VSSolutionBuilder
                     configuration.CharacterSet = (EProjectCharacterSet)((objectFileCollection.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
+
+                C.CompilerOptionCollection options = objectFileCollection.Options as C.CompilerOptionCollection;
+                configuration.IntermediateDirectory = options.OutputDirectoryPath;
             }
 
             string toolName = "VCCLCompilerTool";
