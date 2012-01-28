@@ -136,7 +136,7 @@ namespace Opus.Core
 
                 string combinedBaseDirectory = baseDirectory;
                 int i = 0;
-                for (; i < pathSegments.Length; ++i)
+                for (; i < pathSegments.Length - 1; ++i)
                 {
                     string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
                     if (System.IO.Directory.Exists(baseDirTest))
