@@ -7,42 +7,14 @@ namespace Opus.Core
 {
     public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable
     {
-#if NEWDIRECTORYCOLLECTION
         private System.Collections.Generic.List<string> directoryPaths = new System.Collections.Generic.List<string>();
-#else
-        private System.Collections.Generic.List<PackageAndDirectoryPath> directoryList = new System.Collections.Generic.List<PackageAndDirectoryPath>();
-#endif
 
         public object Clone()
         {
             DirectoryCollection clone = new DirectoryCollection();
-#if NEWDIRECTORYCOLLECTION
             clone.directoryPaths.AddRange(this.directoryPaths);
-#else
-            foreach (PackageAndDirectoryPath pap in this.directoryList)
-            {
-                clone.Add(pap.Package, pap.RelativePath.Clone() as string, pap.ProxyPath);
-            }
-#endif
             return clone;
         }
-
-#if NEWDIRECTORYCOLLECTION
-#else
-        private bool Contains(PackageAndDirectoryPath pap)
-        {
-            foreach (PackageAndDirectoryPath listPap in this.directoryList)
-            {
-                if (listPap.Package == pap.Package &&
-                    listPap.RelativePath == pap.RelativePath)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-#endif
 
         public void Add(string absoluteDirectoryPath, bool checkForExistence)
         {
@@ -51,7 +23,6 @@ namespace Opus.Core
                 throw new Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath), false);
             }
 
-#if NEWDIRECTORYCOLLECTION
             if (!this.directoryPaths.Contains(absoluteDirectoryPath))
             {
                 this.directoryPaths.Add(absoluteDirectoryPath);
@@ -60,17 +31,6 @@ namespace Opus.Core
             {
                 Log.DebugMessage("Absolute path '{0}' is already present in the list of directories", absoluteDirectoryPath);
             }
-#else
-            PackageAndDirectoryPath pap = new PackageAndDirectoryPath(null, absoluteDirectoryPath, null);
-            if (this.Contains(pap))
-            {
-                Log.DebugMessage("Absolute path '{0}' is already present in the list of directories", absoluteDirectoryPath);
-            }
-            else
-            {
-                this.directoryList.Add(pap);
-            }
-#endif
         }
 
         public void AddAbsoluteDirectory(string absoluteDirectoryPath, bool checkForExistence)
@@ -78,53 +38,16 @@ namespace Opus.Core
             this.Add(absoluteDirectoryPath, checkForExistence);
         }
 
-#if NEWDIRECTORYCOLLECTION
-#else
-        public void Add(PackageInformation package, string relativePath, ProxyModulePath proxyPath)
-        {
-            PackageAndDirectoryPath pap = new PackageAndDirectoryPath(package, relativePath, proxyPath);
-            if (this.Contains(pap))
-            {
-                Log.DebugMessage("Relative path '{0}' is already present for package '{1}'", relativePath, package.FullName);
-            }
-            else
-            {
-                this.directoryList.Add(pap);
-            }
-        }
-#endif
-
         public void Add(object owner, string relativePath)
         {
             if (null == owner)
             {
-#if NEWDIRECTORYCOLLECTION
                 this.AddAbsoluteDirectory(relativePath, false);
-#else
-                this.Add(null, relativePath, null);
-#endif
                 return;
             }
 
-#if NEWDIRECTORYCOLLECTION
             string[] pathSegments = relativePath.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
             this.Include(owner, pathSegments);
-#else
-            if (owner is PackageInformation)
-            {
-                this.Add(owner as PackageInformation, relativePath, null);
-            }
-            else
-            {
-                PackageInformation package = PackageUtilities.GetOwningPackage(owner);
-                if (null == package)
-                {
-                    throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
-                }
-
-                this.Add(package, relativePath, (owner as IModule).ProxyPath);
-            }
-#endif
         }
 
         private static StringArray GetDirectories(string baseDirectory, params string[] pathSegments)
@@ -234,6 +157,31 @@ namespace Opus.Core
             }
         }
 
+        public void Exclude(object module, params string[] pathSegments)
+        {
+            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            if (null == package)
+            {
+                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+            }
+
+            string packagePath = package.Identifier.Path;
+            ProxyModulePath proxyPath = (module as IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            StringArray paths = GetDirectories(packagePath, pathSegments);
+            foreach (string path in paths)
+            {
+                if (!this.directoryPaths.Contains(path))
+                {
+                    this.directoryPaths.Remove(path);
+                }
+            }
+        }
+
         public void AddRange(string[] absolutePaths)
         {
             foreach (string absolutePath in absolutePaths)
@@ -298,7 +246,6 @@ namespace Opus.Core
             this.AddRange(package, relativePaths);
         }
 
-#if NEWDIRECTORYCOLLECTION
         public string this[int index]
         {
             get
@@ -306,25 +253,12 @@ namespace Opus.Core
                 return this.directoryPaths[index];
             }
         }
-#else
-        public PackageAndDirectoryPath this[int index]
-        {
-            get
-            {
-                return this.directoryList[index];
-            }
-        }
-#endif
 
         public int Count
         {
             get
             {
-#if NEWDIRECTORYCOLLECTION
                 return this.directoryPaths.Count;
-#else
-                return this.directoryList.Count;
-#endif
             }
         }
 

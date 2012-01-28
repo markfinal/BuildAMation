@@ -1,3 +1,5 @@
+28-Jan-2012 Opus.Core.DirectoryCollection implementation simplified. Consistency with FileCollections allow using Include and Exclude methods. Opus.Core.PackageAndDirectoryPath is now redundant and has been removed.
+
 28-Jan-2012 Handle the case of cloning a Opus.Core.ReferenceTypeOption that has null as it's value.
 
 28-Jan-2012 Project Guids in .vcprojs/.vcxprojs/.csprojs are now deterministic after regenerating the solution. These are based upon the paths of the project files.
