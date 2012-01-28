@@ -7,31 +7,32 @@ namespace Opus.Core
 {
     public class ProxyModulePath
     {
-        private StringArray pathSegments;
+        private string combinedPathSegments;
 
         public ProxyModulePath()
         {
-            this.pathSegments = null;
+            this.combinedPathSegments = null;
         }
 
         public ProxyModulePath(params string[] segments)
         {
-            this.pathSegments = new StringArray(segments);
-        }
-
-        public string Combine(PackageIdentifier packageId)
-        {
-            if (null == this.pathSegments)
-            {
-                return packageId.Path;
-            }
-
-            string combinedPath = packageId.Path;
-            foreach (string path in this.pathSegments)
+            string combinedPath = string.Empty;
+            foreach (string path in segments)
             {
                 combinedPath = System.IO.Path.Combine(combinedPath, path);
             }
 
+            this.combinedPathSegments = combinedPath;
+        }
+
+        public string Combine(PackageIdentifier packageId)
+        {
+            if (null == this.combinedPathSegments)
+            {
+                return packageId.Path;
+            }
+
+            string combinedPath = System.IO.Path.Combine(packageId.Path, this.combinedPathSegments);
             combinedPath = File.CanonicalPath(combinedPath);
 
             return combinedPath;
