@@ -89,31 +89,30 @@ namespace VSSolutionBuilder
             return platform;
         }
 
-        internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string intermediateDirectoryPath, string projectName, System.Uri projectUri)
+        private static string UseOutDirMacro(string path, string outputDirectory)
         {
-            if (System.String.IsNullOrEmpty(path))
-            {
-                throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
-            }
+            string updatedPath = path.Replace(outputDirectory, "$(OutDir)");
+            return updatedPath;
+        }
 
-            string refactoredPath = path;
+        private static string UseIntDirMacro(string path, string intermediateDirectory)
+        {
+            string updatedPath = path.Replace(intermediateDirectory, "$(IntDir)");
+            return updatedPath;
+        }
 
-            if (outputDirectoryPath != null)
-            {
-                refactoredPath = refactoredPath.Replace(outputDirectoryPath, "$(OutDir)");
-            }
+        private static string UseProjectMacro(string path, string projectName)
+        {
+            string updatedPath = path.Replace(projectName, "$(ProjectName)");
+            return updatedPath; 
+        }
 
-            if (intermediateDirectoryPath != null)
-            {
-                refactoredPath = refactoredPath.Replace(intermediateDirectoryPath, "$(IntDir)");
-            }
-
-            refactoredPath = refactoredPath.Replace(projectName, "$(ProjectName)");
-
-            char splitter = refactoredPath[refactoredPath.Length - 1];
+        private static string QuotePathsWithSpaces(string path, System.Uri projectUri)
+        {
+            char splitter = path[path.Length - 1];
             if (!System.Char.IsLetterOrDigit(splitter))
             {
-                string[] splitPath = refactoredPath.Split(new char[] { splitter });
+                string[] splitPath = path.Split(new char[] { splitter });
                 for (int i = 0; i < splitPath.Length; ++i)
                 {
                     string split = splitPath[i];
@@ -137,8 +136,40 @@ namespace VSSolutionBuilder
                         }
                     }
                 }
-                refactoredPath = System.String.Join(splitter.ToString(), splitPath);
+                path = System.String.Join(splitter.ToString(), splitPath);
             }
+
+            return path;
+        }
+
+        internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string intermediateDirectoryPath, string projectName, System.Uri projectUri)
+        {
+            if (System.String.IsNullOrEmpty(path))
+            {
+                throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
+            }
+
+            string refactoredPath = path;
+            refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
+            refactoredPath = UseIntDirMacro(refactoredPath, intermediateDirectoryPath);
+            refactoredPath = UseProjectMacro(refactoredPath, projectName);
+            refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
+
+            return refactoredPath;
+        }
+
+        // no intermediate directory
+        internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string projectName, System.Uri projectUri)
+        {
+            if (System.String.IsNullOrEmpty(path))
+            {
+                throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
+            }
+
+            string refactoredPath = path;
+            refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
+            refactoredPath = UseProjectMacro(refactoredPath, projectName);
+            refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
 
             return refactoredPath;
         }

@@ -279,7 +279,8 @@ namespace VSSolutionBuilder
                 if ("Name" != attribute.Key)
                 {
                     string value = attribute.Value;
-                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, null, projectName, projectUri);
+                    // no intermediate directory
+                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, projectName, projectUri);
                     configurationGroup.CreateProperty(attribute.Key, value);
                 }
             }
