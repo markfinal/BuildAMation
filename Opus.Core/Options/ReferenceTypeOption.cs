@@ -20,6 +20,13 @@ namespace Opus.Core
 
         public override object Clone()
         {
+            if (null == this.Value)
+            {
+                Option defaultClone = System.Activator.CreateInstance(this.GetType(), new object[] { null }) as Option;
+                defaultClone.PrivateData = this.PrivateData;
+                return defaultClone;
+            }
+
             System.ICloneable cloneable = this.Value as System.ICloneable;
             if (null == cloneable)
             {
