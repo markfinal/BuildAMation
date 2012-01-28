@@ -1,3 +1,5 @@
+28-Jan-2012 Project Guids in .vcprojs/.vcxprojs/.csprojs are now deterministic after regenerating the solution. These are based upon the paths of the project files.
+
 28-Jan-2012 Optimization to writing .vcprojs, while refactoring paths for OutDir and IntDir macros.
 
 28-Jan-2012 Optimization to writing .vcprojs. Only add a trailing directory separator to the OutDir and IntDir variables once.

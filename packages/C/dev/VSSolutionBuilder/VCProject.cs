@@ -10,7 +10,7 @@ namespace VSSolutionBuilder
         private string ProjectName = null;
         private string PathName = null;
         private System.Uri PackageUri = null;
-        private System.Guid ProjectGuid = System.Guid.NewGuid();
+        private System.Guid ProjectGuid;
         private System.Collections.Generic.List<string> PlatformList = new System.Collections.Generic.List<string>();
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
@@ -39,6 +39,8 @@ namespace VSSolutionBuilder
             {
                 this.PackageUri = new System.Uri(this.PackageDirectory + System.IO.Path.DirectorySeparatorChar, System.UriKind.Absolute);
             }
+
+            this.ProjectGuid = new DeterministicGuid(this.PathName).Guid;
         }
 
         string IProject.Name

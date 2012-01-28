@@ -10,7 +10,7 @@ namespace VSSolutionBuilder
         private string ProjectName = null;
         private string PathName = null;
         private System.Uri PackageUri = null;
-        private System.Guid ProjectGuid = System.Guid.NewGuid();
+        private System.Guid ProjectGuid;
         private System.Collections.Generic.List<string> PlatformList = new System.Collections.Generic.List<string>();
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
@@ -39,6 +39,8 @@ namespace VSSolutionBuilder
             {
                 this.PackageUri = new System.Uri(this.PackageDirectory + System.IO.Path.DirectorySeparatorChar, kind);
             }
+
+            this.ProjectGuid = new DeterministicGuid(this.PathName).Guid;
         }
 
         string IProject.Name
@@ -230,6 +232,7 @@ namespace VSSolutionBuilder
                 {
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", "Source Files");
+                        // TODO: does this have to be a unique Guid?
                         sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
@@ -260,6 +263,7 @@ namespace VSSolutionBuilder
                     foreach (string sourceSubDir in sourceSubDirectories)
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Source Files", sourceSubDir));
+                        // TODO: does this have to be a unique Guid?
                         sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
                 }
@@ -267,6 +271,7 @@ namespace VSSolutionBuilder
                 {
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", "Header Files");
+                        // TODO: does this have to be a unique Guid?
                         sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
@@ -297,6 +302,7 @@ namespace VSSolutionBuilder
                     foreach (string sourceSubDir in headerSubDirectories)
                     {
                         MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Header Files", sourceSubDir));
+                        // TODO: does this have to be a unique Guid?
                         sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
                 }

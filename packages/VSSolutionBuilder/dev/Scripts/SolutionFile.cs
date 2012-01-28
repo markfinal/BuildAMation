@@ -87,7 +87,7 @@ namespace VSSolutionBuilder
                         if (!solutionFolders.ContainsKey(p.GroupName))
                         {
                             solutionFolders.Add(p.GroupName, new System.Collections.Generic.List<System.Guid>());
-                            solutionFolderGuids.Add(p.GroupName, System.Guid.NewGuid());
+                            solutionFolderGuids.Add(p.GroupName, new DeterministicGuid(p.GroupName).Guid);
                         }
 
                         solutionFolders[p.GroupName].Add(p.Guid);
