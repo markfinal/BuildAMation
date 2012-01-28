@@ -82,6 +82,8 @@ namespace Opus.Core
                     throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]));
                 }
 
+                combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
+
                 try
                 {
                     StringArray directories = new StringArray(System.IO.Directory.GetDirectories(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly));
@@ -94,6 +96,12 @@ namespace Opus.Core
                             nonHiddenDirectories.Add(dir);
                         }
                     }
+
+                    if (0 == nonHiddenDirectories.Count)
+                    {
+                        Log.Detail("Warning: No directories match the pattern {0}{1}{2}", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
+                    }
+
                     return nonHiddenDirectories;
                 }
                 catch (System.IO.DirectoryNotFoundException)
@@ -109,6 +117,7 @@ namespace Opus.Core
                 if (baseDirChanges != System.String.Empty)
                 {
                     baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
+                    baseDirectory = System.IO.Path.GetFullPath(baseDirectory);
                 }
                 try
                 {
@@ -122,6 +131,12 @@ namespace Opus.Core
                             nonHiddenDirectories.Add(dir);
                         }
                     }
+
+                    if (0 == nonHiddenDirectories.Count)
+                    {
+                        Log.Detail("Warning: No directories match the pattern {0}{1}{2}", baseDirectory, System.IO.Path.DirectorySeparatorChar, relativePath);
+                    }
+
                     return nonHiddenDirectories;
                 }
                 catch (System.IO.DirectoryNotFoundException)

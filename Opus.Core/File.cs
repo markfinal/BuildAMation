@@ -143,6 +143,8 @@ namespace Opus.Core
                     throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]));
                 }
 
+                combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
+
                 string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
                 return new StringArray(files);
             }
@@ -153,6 +155,7 @@ namespace Opus.Core
                 if (baseDirChanges != System.String.Empty)
                 {
                     baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
+                    baseDirectory = System.IO.Path.GetFullPath(baseDirectory);
                 }
                 try
                 {
