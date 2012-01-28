@@ -22,7 +22,7 @@ namespace Opus.Core
         {
             if (ContainsDirectorySeparators(pathSegment))
             {
-                throw new Exception(System.String.Format("Individual file parts cannot contain directory separators; '{0}'", pathSegment));
+                throw new Exception(System.String.Format("Individual file parts cannot contain directory separators; '{0}'", pathSegment), false);
             }
         }
 
