@@ -104,10 +104,6 @@ namespace VSSolutionBuilder
                 if (null != configuration.OutputDirectory)
                 {
                     string outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
-                    if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                    {
-                        outputDir += System.IO.Path.DirectorySeparatorChar;
-                    }
                     MSBuildProperty outDirProperty = dirGroup.CreateProperty("OutDir", outputDir);
                     outDirProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
@@ -115,10 +111,6 @@ namespace VSSolutionBuilder
                 if (null != configuration.IntermediateDirectory)
                 {
                     string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
-                    if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                    {
-                        intermediateDir += System.IO.Path.DirectorySeparatorChar;
-                    }
                     MSBuildProperty intDirProperty = dirGroup.CreateProperty("IntDir", intermediateDir);
                     intDirProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }

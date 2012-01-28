@@ -1,3 +1,5 @@
+28-Jan-2012 Optimization to writing .vcprojs. Only add a trailing directory separator to the OutDir and IntDir variables once.
+
 28-Jan-2012 Ensure that .vcprojs generated have the intermediate directory set, if they have moc entries.
 
 26-Jan-2012 Optimization to Opus.Core.ModuleUtilities.GetModule(), that speeds up option collection generation.

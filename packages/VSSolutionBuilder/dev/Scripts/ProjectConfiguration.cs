@@ -9,6 +9,8 @@ namespace VSSolutionBuilder
     {
         private EProjectConfigurationType type;
         private EProjectCharacterSet characterSet = EProjectCharacterSet.Undefined;
+        private string outputDirectory = null;
+        private string intermediateDirectory = null;
 
         public ProjectConfiguration(string name, IProject project)
         {
@@ -33,14 +35,40 @@ namespace VSSolutionBuilder
 
         public string OutputDirectory
         {
-            get;
-            set;
+            get
+            {
+                return this.outputDirectory;
+            }
+
+            set
+            {
+                string directory = value;
+                if (!directory.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    directory += System.IO.Path.DirectorySeparatorChar;
+                }
+
+                this.outputDirectory = directory;
+            }
         }
 
         public string IntermediateDirectory
         {
-            get;
-            set;
+            get
+            {
+                return this.intermediateDirectory;
+            }
+
+            set
+            {
+                string directory = value;
+                if (!directory.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    directory += System.IO.Path.DirectorySeparatorChar;
+                }
+
+                this.intermediateDirectory = directory;
+            }
         }
 
         public EProjectConfigurationType Type
@@ -139,19 +167,11 @@ namespace VSSolutionBuilder
             if (null != this.OutputDirectory)
             {
                 string outputDir = Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
-                if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                {
-                    outputDir += System.IO.Path.DirectorySeparatorChar;
-                }
                 configurationElement.SetAttribute("OutputDirectory", outputDir);
             }
             if (null != this.IntermediateDirectory)
             {
                 string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
-                if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                {
-                    intermediateDir += System.IO.Path.DirectorySeparatorChar;
-                }
                 configurationElement.SetAttribute("IntermediateDirectory", intermediateDir);
             }
             configurationElement.SetAttribute("ConfigurationType", this.Type.ToString("D"));

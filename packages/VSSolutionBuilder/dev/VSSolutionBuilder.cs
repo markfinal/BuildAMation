@@ -100,22 +100,12 @@ namespace VSSolutionBuilder
 
             if (outputDirectoryPath != null)
             {
-                string outputDir = outputDirectoryPath;
-                if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                {
-                    outputDir += System.IO.Path.DirectorySeparatorChar;
-                }
-                refactoredPath = refactoredPath.Replace(outputDir, "$(OutDir)");
+                refactoredPath = refactoredPath.Replace(outputDirectoryPath, "$(OutDir)");
             }
 
             if (intermediateDirectoryPath != null)
             {
-                string intDir = intermediateDirectoryPath;
-                if (!intDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                {
-                    intDir += System.IO.Path.DirectorySeparatorChar;
-                }
-                refactoredPath = refactoredPath.Replace(intDir, "$(IntDir)");
+                refactoredPath = refactoredPath.Replace(intermediateDirectoryPath, "$(IntDir)");
             }
 
             refactoredPath = refactoredPath.Replace(projectName, "$(ProjectName)");
