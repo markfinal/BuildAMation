@@ -254,6 +254,12 @@ namespace Opus.Core
 
         public static bool CompilePackageIntoAssembly()
         {
+            // validate build root
+            if (null == State.BuildRoot)
+            {
+                throw new Exception("Build root has not been specified", false);
+            }
+
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
@@ -664,12 +670,6 @@ namespace Opus.Core
             TypeArray topLevelTypes = GetTopLevelModuleTypes();
 
             BuilderUtilities.CreateBuilderInstance();
-
-            // validate build root
-            if (null == State.BuildRoot)
-            {
-                throw new Exception("Build root has not been specified", false);
-            }
 
             RegisterTargetToolChainAttribute[] targetToolChains = RegisterTargetToolChainAttribute.TargetToolChains;
             if (null == targetToolChains)
