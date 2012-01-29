@@ -45,7 +45,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Linker options does not support command line translation");
+                throw new Opus.Core.Exception("CopyFiles options does not support command line translation");
             }
 
             string destinationDirectory = null;
