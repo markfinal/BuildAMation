@@ -1,3 +1,5 @@
+29-Jan-2012 Opus.Core.File.SetRelativePath now takes a module's proxy path into account.
+
 29-Jan-2012 While generating the dependent list of packages for compilation, ensure that only those valid for the current platform are considered.
 
 29-Jan-2012 Adding SymLink module types to the FileUtilities package. This supports soft links to files and directories. Native build support is provided. A test package 'SymLinks-dev' is provided to test the support.

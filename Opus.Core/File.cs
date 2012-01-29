@@ -98,7 +98,14 @@ namespace Opus.Core
                 throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
             }
 
-            this.SetPackageRelativePath(package, pathSegments);
+            string packagePath = package.Identifier.Path;
+            ProxyModulePath proxyPath = (owner as IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            this.SetGuaranteedAbsolutePath(CombinePaths(ref packagePath, pathSegments));
         }
 
         public void SetPackageRelativePath(PackageInformation package, params string[] pathSegments)
