@@ -49,10 +49,20 @@ namespace NativeBuilder
             bool requiresBuilding = true;
             if (options.Type == FileUtilities.EType.Directory)
             {
+                if (!System.IO.Directory.Exists(symlinkTarget))
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Symlink target directory '{0}' does not exist", symlinkTarget), false);
+                }
+
                 requiresBuilding = NativeBuilder.DirectoryUpToDate(link, symlinkTarget);
             }
             else
             {
+                if (!System.IO.File.Exists(symlinkTarget))
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Symlink target file '{0}' does not exist", symlinkTarget), false);
+                }
+
                 requiresBuilding = NativeBuilder.RequiresBuilding(link, symlinkTarget);
             }
 
