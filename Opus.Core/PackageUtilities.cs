@@ -172,6 +172,12 @@ namespace Opus.Core
 
                 foreach (PackageIdentifier id2 in definitionFile.PackageIdentifiers)
                 {
+                    if (!OSUtilities.IsCurrentPlatformSupported(id2.PlatformFilter))
+                    {
+                        Log.DebugMessage("Package '{0}-{1}' is not supported on the current platform", id2.Name, id2.Version);
+                        continue;
+                    }
+
                     bool toAdd = true;
                     foreach (PackageIdentifier id3 in State.DependentPackageList)
                     {
