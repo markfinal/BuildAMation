@@ -77,7 +77,7 @@ namespace Opus.Core
                 return null;
             }
 
-            if (this.rankInProgress.Complete)
+            if (0 == this.rankInProgress.Count)
             {
                 //Log.MessageAll("** Current rank is complete");
                 for (; ; )
@@ -91,7 +91,7 @@ namespace Opus.Core
 
                     this.rankInProgress = this.rankCollections.Dequeue();
                     //Log.MessageAll("** New rank collection is {0}", this.rankInProgress);
-                    if (!this.rankInProgress.Complete)
+                    if (this.rankInProgress.Count > 0)
                     {
                         //Log.MessageAll("\tand is not complete yet");
                         break;
@@ -99,32 +99,37 @@ namespace Opus.Core
                 }
             }
 
-            // look for an available node in the current rank
-            foreach (DependencyNode node in this.rankInProgress)
+            // get the next node
+            while (this.rankInProgress.Count > 0)
             {
-                if (EBuildState.NotStarted == node.BuildState)
+                DependencyNode node = this.rankInProgress[0];
+                if (node.BuildState != EBuildState.NotStarted)
                 {
-                    //Log.MessageAll("** Found unstarted node {0}", node.ToString());
-                    ++this.ScheduledNodeCount;
-                    // is the build function empty? if so, just mark as succeeded
-                    if (null == node.BuildFunction)
-                    {
-                        node.BuildState = EBuildState.Succeeded;
-                    }
-                    else
-                    {
-                        this.graph.ExecutedNodes.Add(node);
-                        return node;
-                    }
+                    throw new Exception("Next node to schedule is not in the correct state. This should never happen", false);
+                }
+                this.rankInProgress.Remove(node);
+
+                //Log.MessageAll("** Found unstarted node {0}", node.ToString());
+                ++this.ScheduledNodeCount;
+                // is the build function empty? if so, just mark as succeeded
+                if (null == node.BuildFunction)
+                {
+                    node.BuildState = EBuildState.Succeeded;
+                }
+                else
+                {
+                    this.graph.ExecutedNodes.Add(node);
+                    return node;
                 }
             }
 
             //Log.MessageAll("** Nodes in current rank are all started");
 
             DependencyNodeCollection nextRank = this.rankCollections.Peek();
-            //Log.MessageAll("** Next rank collection is {0}", nextRank.ToString());
-            foreach (DependencyNode node in nextRank)
+            while (nextRank.Count  >0)
             {
+                DependencyNode node = nextRank[0];
+
                 DependencyNodeCollection dependents = new DependencyNodeCollection();
                 if (null != node.Children)
                 {
@@ -145,6 +150,8 @@ namespace Opus.Core
                 }
                 if (dependentsComplete && (EBuildState.NotStarted == node.BuildState))
                 {
+                    nextRank.Remove(node);
+
                     //Log.MessageAll("** Found unstarted node {0} in next rank", node.ToString());
                     ++this.ScheduledNodeCount;
                     // is the build function empty? if so, just mark as succeeded
