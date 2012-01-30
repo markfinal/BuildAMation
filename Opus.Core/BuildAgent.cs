@@ -13,9 +13,6 @@ namespace Opus.Core
             this.Builder = builder;
             this.IsAvailable = new System.Threading.ManualResetEvent(true);
             this.ReportFailure = reportFailure;
-
-            System.Threading.ParameterizedThreadStart threadStart = new System.Threading.ParameterizedThreadStart(Run);
-            this.Thread = new System.Threading.Thread(threadStart);
         }
         
         public string Name
@@ -30,12 +27,6 @@ namespace Opus.Core
             set;
         }
         
-        public System.Threading.Thread Thread
-        {
-            get;
-            private set;
-        }
-
         private DependencyNode Node
         {
             get;
