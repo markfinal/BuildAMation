@@ -17,18 +17,49 @@ namespace Opus.Core
     {
         public override string ToString()
         {
-            return System.String.Format("Family '{0}', instance '{1}', parent '{2}', type '{3}' (base '{4}'), state '{5}', target '{6}', rank {7}, {8}, {9}, {10}",
-                                        this.ModuleName,
-                                        this.UniqueModuleName,
-                                        (this.Parent != null) ? this.Parent.UniqueModuleName : null,
-                                        this.Module.GetType().ToString(),
-                                        this.Module.GetType().BaseType.ToString(),
-                                        this.BuildState.ToString(),
-                                        this.Target.Key,
-                                        this.Rank.ToString(),
-                                        (this.Children != null) ? "Has children" : "No children",
-                                        (this.ExternalDependents != null) ? "Has dependents" : "No dependents",
-                                        (this.RequiredDependents != null) ? "Has required" : "No required");
+            System.Text.StringBuilder output = new System.Text.StringBuilder();
+            output.AppendFormat("Family '{0}'", this.ModuleName);
+            output.AppendFormat(" Instance '{0}'", this.UniqueModuleName);
+            if (this.Parent != null)
+            {
+                output.AppendFormat(" Parent '{0}'", this.Parent.UniqueModuleName);
+            }
+            output.AppendFormat(" Type '{0}'", this.Module.GetType().ToString());
+            output.AppendFormat(" Base '{0}'", this.Module.GetType().BaseType.ToString());
+            output.AppendFormat(" Target '{0}'", this.Target.Key);
+            if (-1 != this.Rank)
+            {
+                output.AppendFormat(" Rank {0}", this.Rank);
+            }
+            if (null != this.Children)
+            {
+                output.Append(" Children { ");
+                foreach (DependencyNode node in this.Children)
+                {
+                    output.AppendFormat("{0} ", node.UniqueModuleName);
+                }
+                output.Append("}");
+            }
+            if (null != this.ExternalDependents)
+            {
+                output.Append(" Deps { ");
+                foreach (DependencyNode node in this.ExternalDependents)
+                {
+                    output.AppendFormat("{0} ", node.UniqueModuleName);
+                }
+                output.Append("}");
+            }
+            if (null != this.RequiredDependents)
+            {
+                output.Append(" Reqs { ");
+                foreach (DependencyNode node in this.RequiredDependents)
+                {
+                    output.AppendFormat("{0} ", node.UniqueModuleName);
+                }
+                output.Append("}");
+            }
+
+            return output.ToString();
         }
 
         private EBuildState buildState;
@@ -60,6 +91,7 @@ namespace Opus.Core
         
         private void Initialize(System.Type moduleType, DependencyNode parent, Target target, int childIndex, bool nestedModule)
         {
+            this.Rank = -1;
             this.Parent = parent;
             if (null != parent)
             {

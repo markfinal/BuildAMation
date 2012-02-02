@@ -1,3 +1,5 @@
+02-Feb-2012 Improved ToString() implementation for DependencyNode.
+
 02-Feb-2012 Bug fix to the dependency graph generation, caused by nested dependencies to the same module, resulting in empty collections of dependency nodes.
 
 30-Jan-2012 Removed redundant Thread from Opus.Core.BuildAgent, since the threadpool is used.
