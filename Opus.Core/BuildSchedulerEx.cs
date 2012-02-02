@@ -31,6 +31,10 @@ namespace Opus.Core
 
             this.rankInProgress = this.rankCollections.Dequeue();
             //Log.MessageAll("** Current collection = {0}", this.rankInProgress.ToString());
+            if (0 == this.rankInProgress.Count)
+            {
+                throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", this.rankInProgress.Rank), false);
+            }
 
             this.TotalNodeCount = graph.TotalNodeCount;
             this.ScheduledNodeCount = 0;
@@ -80,22 +84,17 @@ namespace Opus.Core
             if (0 == this.rankInProgress.Count)
             {
                 //Log.MessageAll("** Current rank is complete");
-                for (; ; )
+                if (0 == this.rankCollections.Count)
                 {
-                    if (0 == this.rankCollections.Count)
-                    {
-                        //Log.MessageAll("** No ranks remaining");
-                        this.rankInProgress = null;
-                        return null;
-                    }
+                    //Log.MessageAll("** No ranks remaining");
+                    this.rankInProgress = null;
+                    return null;
+                }
 
-                    this.rankInProgress = this.rankCollections.Dequeue();
-                    //Log.MessageAll("** New rank collection is {0}", this.rankInProgress);
-                    if (this.rankInProgress.Count > 0)
-                    {
-                        //Log.MessageAll("\tand is not complete yet");
-                        break;
-                    }
+                this.rankInProgress = this.rankCollections.Dequeue();
+                if (0 == this.rankInProgress.Count)
+                {
+                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", this.rankInProgress.Rank), false);
                 }
             }
 

@@ -217,7 +217,7 @@ namespace Opus.Core
             {
                 if (node.Rank < currentRank + 1)
                 {
-                    nodesToMove[node] = currentRank + 1 - node.Rank;
+                    nodesToMove[node] = currentRank + 1;
                 }
             }
             else
@@ -266,11 +266,11 @@ namespace Opus.Core
 
                             if (newNode.Module is IInjectModules)
                             {
-                                nodesToMove[newNode] = currentRank + 2 - newNode.Rank; // +2 to jump over the collection of objects
+                                nodesToMove[newNode] = currentRank + 2; // +2 to jump over the collection of objects
                             }
                             else if (newNode.Rank < currentRank)
                             {
-                                nodesToMove[newNode] = currentRank + 1 - newNode.Rank;
+                                nodesToMove[newNode] = currentRank + 1;
                             }
 
                             node.AddExternalDependent(newNode);
@@ -312,7 +312,7 @@ namespace Opus.Core
                             {
                                 if (newNode.Rank < currentRank + 1)
                                 {
-                                    nodesToMove[newNode] = currentRank + 1 - newNode.Rank;
+                                    nodesToMove[newNode] = currentRank + 1;
                                 }
 
                                 if (newNode.Parent != node)
@@ -334,9 +334,24 @@ namespace Opus.Core
 
                 if (nodesToMove.Count > 0)
                 {
+                    // flatten the hierarchy of nodes, so there is one move per dependency, to the maximum rank needed
+                    System.Collections.Generic.Dictionary<DependencyNode, int> flattenedList = new System.Collections.Generic.Dictionary<DependencyNode, int>();
                     foreach (System.Collections.Generic.KeyValuePair<DependencyNode, int> value in nodesToMove)
                     {
-                        this.IncrementNodeRank(value.Key, value.Value);
+                        DependencyNode node = value.Key;
+                        int targetRank = value.Value;
+
+                        this.FlattenHierarchy(node, targetRank, flattenedList, 0);
+                    }
+
+                    // now move
+                    foreach (System.Collections.Generic.KeyValuePair<DependencyNode, int> value in flattenedList)
+                    {
+                        DependencyNode node = value.Key;
+                        int targetRank = value.Value;
+
+                        this[node.Rank].Remove(node);
+                        this.AddDependencyNodeToCollection(node, targetRank);
                     }
                 }
 
@@ -344,32 +359,43 @@ namespace Opus.Core
             }
         }
 
-        private void IncrementNodeRank(DependencyNode node, int ranksToMove)
+        private void FlattenHierarchy(DependencyNode node, int targetRank, System.Collections.Generic.Dictionary<DependencyNode, int> flattenedList, int depth)
         {
+            if (!flattenedList.ContainsKey(node))
+            {
+                flattenedList.Add(node, targetRank);
+            }
+            else if (targetRank > flattenedList[node])
+            {
+                flattenedList[node] = targetRank;
+            }
+
+            int rankDelta = targetRank - node.Rank;
+
             if (node.Children != null)
             {
                 foreach (DependencyNode childNode in node.Children)
                 {
-                    this.IncrementNodeRank(childNode, ranksToMove);
+                    int childTargetRank = childNode.Rank + rankDelta;
+                    this.FlattenHierarchy(childNode, childTargetRank, flattenedList, depth + 1);
                 }
             }
             if (node.ExternalDependents != null)
             {
                 foreach (DependencyNode dependentNode in node.ExternalDependents)
                 {
-                    this.IncrementNodeRank(dependentNode, ranksToMove);
+                    int dependentTargetRank = dependentNode.Rank + rankDelta;
+                    this.FlattenHierarchy(dependentNode, dependentTargetRank, flattenedList, depth + 1);
                 }
             }
             if (node.RequiredDependents != null)
             {
                 foreach (DependencyNode requiredNode in node.RequiredDependents)
                 {
-                    this.IncrementNodeRank(requiredNode, ranksToMove);
+                    int requiredTargetRank = requiredNode.Rank + rankDelta;
+                    this.FlattenHierarchy(requiredNode, requiredTargetRank, flattenedList, depth + 1);
                 }
             }
-
-            this[node.Rank].Remove(node);
-            this.AddDependencyNodeToCollection(node, node.Rank + ranksToMove);
         }
 
         private void AddInjectedDependents()

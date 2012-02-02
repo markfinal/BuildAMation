@@ -60,6 +60,11 @@ namespace Opus.Core
             for (int rank = rankCount - 1; rank >= 0; --rank)
             {
                 DependencyNodeCollection rankCollection = this.graph[rank];
+                if (0 == rankCollection.Count)
+                {
+                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", rank), false);
+                }
+
                 if (!rankCollection.Complete)
                 {
                     foreach (DependencyNode node in rankCollection)
