@@ -7,7 +7,7 @@ namespace Mingw
 {
     public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
-        private static Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
 
         public Linker(Opus.Core.Target target)
