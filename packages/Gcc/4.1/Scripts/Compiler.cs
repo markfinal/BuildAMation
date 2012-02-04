@@ -6,7 +6,7 @@
 namespace Gcc
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : GccCommon.CCompiler, Opus.Core.IToolEnvironmentPaths
+    public class CCompiler : GccCommon.CCompiler
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
@@ -47,12 +47,6 @@ namespace Gcc
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "g++-4.1");
-        }
-
-        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
-        {
-            Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
-            return toolChainInstance.Environment;
         }
 
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)

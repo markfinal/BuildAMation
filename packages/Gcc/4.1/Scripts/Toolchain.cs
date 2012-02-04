@@ -36,12 +36,6 @@ namespace Gcc
             return this.binFolder;
         }
 
-        public override Opus.Core.StringArray Environment
-        {
-            get;
-            protected set;
-        }
-
         public static string VersionString
         {
             get

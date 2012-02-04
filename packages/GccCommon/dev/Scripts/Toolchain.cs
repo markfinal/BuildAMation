@@ -41,5 +41,12 @@ namespace GccCommon
                 }
             }
         }
+
+        // this is not used
+        public override Opus.Core.StringArray Environment
+        {
+            get;
+            protected set;
+        }
     }
 }
