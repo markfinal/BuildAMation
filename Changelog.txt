@@ -1,3 +1,5 @@
+04-Feb-2012 Removed RequiredEnvironmentVariables property from Opus.Core.ITool, and added it to it's own interface, Opus.Core.ITool.RequiredEnvironmentVariables, as the VariableNames property. Only tools that need environment variables need to implement that interface now.
+
 02-Feb-2012 Improved ToString() implementation for DependencyNode.
 
 02-Feb-2012 Bug fix to the dependency graph generation, caused by nested dependencies to the same module, resulting in empty collections of dependency nodes.

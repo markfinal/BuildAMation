@@ -15,7 +15,7 @@ namespace CSharp
     {
     }
 
-    public sealed class Csc : Opus.Core.ITool
+    public sealed class Csc : Opus.Core.ITool, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private static string CscPath;
         static Csc()
@@ -51,7 +51,7 @@ namespace CSharp
             return CscPath;
         }
 
-        public Opus.Core.StringArray RequiredEnvironmentVariables
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
             get
             {

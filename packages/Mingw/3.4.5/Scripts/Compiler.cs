@@ -6,7 +6,7 @@
 namespace Mingw
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : MingwCommon.CCompiler
+    public class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -46,7 +46,7 @@ namespace Mingw
             return System.IO.Path.Combine(this.binPath, "mingw32-g++");
         }
 
-        public override Opus.Core.StringArray RequiredEnvironmentVariables
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
             get
             {

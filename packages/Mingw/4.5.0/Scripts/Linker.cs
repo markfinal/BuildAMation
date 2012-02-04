@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class Linker : MingwCommon.Linker
+    public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private static Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
@@ -19,6 +19,8 @@ namespace Mingw
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
+
+            this.requiredEnvironmentVariables.Add("TEMP");
         }
 
         public override string Executable(Opus.Core.Target target)
@@ -31,11 +33,11 @@ namespace Mingw
             return System.IO.Path.Combine(binPath, "mingw32-g++.exe");
         }
 
-        public override Opus.Core.StringArray RequiredEnvironmentVariables
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
             get
             {
-                return requiredEnvironmentVariables;
+                return this.requiredEnvironmentVariables;
             }
         }
 

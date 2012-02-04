@@ -9,11 +9,6 @@ namespace Opus.Core
     {
         string Executable(Target target);
 
-        StringArray RequiredEnvironmentVariables
-        {
-            get;
-        }
-
         StringArray EnvironmentPaths(Target target);
     }
 }

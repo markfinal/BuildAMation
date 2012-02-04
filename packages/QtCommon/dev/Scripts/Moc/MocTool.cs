@@ -24,13 +24,5 @@ namespace QtCommon
 
             return mocExePath;
         }
-
-        public Opus.Core.StringArray RequiredEnvironmentVariables
-        {
-            get
-            {
-                return new Opus.Core.StringArray();
-            }
-        }
     }
 }

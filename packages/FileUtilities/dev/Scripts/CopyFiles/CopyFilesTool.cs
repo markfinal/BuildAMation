@@ -39,13 +39,5 @@ namespace FileUtilities
             }
             return executable;
         }
-
-        public Opus.Core.StringArray RequiredEnvironmentVariables
-        {
-            get
-            {
-                return new Opus.Core.StringArray();
-            }
-        }
     }
 }

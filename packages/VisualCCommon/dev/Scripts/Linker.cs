@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class Linker : C.Linker, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
+    public sealed class Linker : C.Linker, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string platformBinFolder;
@@ -34,7 +34,7 @@ namespace VisualCCommon
             return this.Executable(target);
         }
 
-        public Opus.Core.StringArray RequiredEnvironmentVariables
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
             get
             {

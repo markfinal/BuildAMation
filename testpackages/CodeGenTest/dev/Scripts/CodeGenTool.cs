@@ -29,13 +29,5 @@ namespace CodeGenTest
             string exe = options.OutputFilePath;
             return exe; 
         }
-
-        public Opus.Core.StringArray RequiredEnvironmentVariables
-        {
-            get
-            {
-                return new Opus.Core.StringArray();
-            }
-        }
     }
 }

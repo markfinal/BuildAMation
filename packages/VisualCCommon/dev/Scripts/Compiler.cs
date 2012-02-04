@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
+    public class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -43,7 +43,7 @@ namespace VisualCCommon
             return this.Executable(target);
         }
 
-        public Opus.Core.StringArray RequiredEnvironmentVariables
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
             get
             {

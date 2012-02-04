@@ -7,7 +7,6 @@ namespace GccCommon
 {
     public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
     {
-        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
 
         public Archiver(Opus.Core.Target target)
@@ -24,14 +23,6 @@ namespace GccCommon
         public string Executable(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "ar");
-        }
-
-        public Opus.Core.StringArray RequiredEnvironmentVariables
-        {
-            get
-            {
-                return this.requiredEnvironmentVariables;
-            }
         }
 
         public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)

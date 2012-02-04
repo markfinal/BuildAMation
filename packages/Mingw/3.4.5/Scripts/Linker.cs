@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class Linker : MingwCommon.Linker
+    public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
@@ -33,7 +33,7 @@ namespace Mingw
             return System.IO.Path.Combine(this.binPath, "mingw32-g++.exe");
         }
 
-        public override Opus.Core.StringArray RequiredEnvironmentVariables
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
             get
             {

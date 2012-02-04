@@ -8,7 +8,6 @@ namespace Gcc
     // Not sealed since the C++ compiler inherits from it
     public class CCompiler : GccCommon.CCompiler
     {
-        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
 
@@ -56,14 +55,6 @@ namespace Gcc
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "g++-4.5");
-        }
-
-        public override Opus.Core.StringArray RequiredEnvironmentVariables
-        {
-            get
-            {
-                return this.requiredEnvironmentVariables;
-            }
         }
 
         public override Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)

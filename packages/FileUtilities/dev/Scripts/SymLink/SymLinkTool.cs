@@ -35,13 +35,5 @@ namespace FileUtilities
 
             throw new Opus.Core.Exception("Unsupported platform for sym links", false);
         }
-
-        Opus.Core.StringArray Opus.Core.ITool.RequiredEnvironmentVariables
-        {
-            get
-            {
-                return new Opus.Core.StringArray();
-            }
-        }
     }
 }

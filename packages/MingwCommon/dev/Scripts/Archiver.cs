@@ -7,7 +7,6 @@ namespace MingwCommon
 {
     public sealed class Archiver : C.Archiver, Opus.Core.ITool
     {
-        private static Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
 
         static Archiver()
@@ -29,14 +28,6 @@ namespace MingwCommon
         public string Executable(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(binPath, "ar.exe");
-        }
-
-        public Opus.Core.StringArray RequiredEnvironmentVariables
-        {
-            get
-            {
-                return requiredEnvironmentVariables;
-            }
         }
 
         public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
