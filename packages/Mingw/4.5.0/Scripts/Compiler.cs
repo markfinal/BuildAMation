@@ -6,7 +6,7 @@
 namespace Mingw
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables
+    public class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -54,7 +54,7 @@ namespace Mingw
             }
         }
 
-        public override Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             return toolChainInstance.Environment;

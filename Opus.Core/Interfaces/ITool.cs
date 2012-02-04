@@ -8,7 +8,5 @@ namespace Opus.Core
     public interface ITool
     {
         string Executable(Target target);
-
-        StringArray EnvironmentPaths(Target target);
     }
 }

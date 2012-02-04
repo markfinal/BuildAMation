@@ -4,11 +4,6 @@ namespace CodeGenTest2
 {
     public class CodeGenTool : Opus.Core.ITool
     {
-        public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
-        {
-            return new Opus.Core.StringArray();
-        }
-
         public string Executable(Opus.Core.Target target)
         {
             string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainImplementation(typeof(CodeGenTest2.CodeGeneratorTool));

@@ -90,10 +90,15 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
-            success = true;
             MakeFileTargetDictionary exportedTargetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariableDictionary = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, archiverTool.EnvironmentPaths(target));
+            Opus.Core.StringArray environmentPaths = null;
+            if (archiverTool is Opus.Core.IToolEnvironmentPaths)
+            {
+                environmentPaths = (archiverTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environmentPaths);
+            success = true;
             return returnData;
         }
     }

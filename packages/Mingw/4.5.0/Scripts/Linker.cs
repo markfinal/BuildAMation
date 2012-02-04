@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables
+    public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private static Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
@@ -41,7 +41,7 @@ namespace Mingw
             }
         }
 
-        public override Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             return toolChainInstance.Environment;

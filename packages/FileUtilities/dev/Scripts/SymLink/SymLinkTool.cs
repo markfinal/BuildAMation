@@ -17,11 +17,6 @@ namespace FileUtilities
             }
         }
 
-        Opus.Core.StringArray Opus.Core.ITool.EnvironmentPaths(Opus.Core.Target target)
-        {
-            return null;
-        }
-
         public string Executable(Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsWindowsHosting)

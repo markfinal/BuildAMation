@@ -260,7 +260,12 @@ namespace MakeFileBuilder
 
             success = true;
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, compilerTool.EnvironmentPaths(target));
+            Opus.Core.StringArray environmentPaths = null;
+            if (compilerTool is Opus.Core.IToolEnvironmentPaths)
+            {
+                environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths);
             return returnData;
         }
     }

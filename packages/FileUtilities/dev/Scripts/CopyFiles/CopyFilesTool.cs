@@ -17,11 +17,6 @@ namespace FileUtilities
             }
         }
 
-        public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
-        {
-            return new Opus.Core.StringArray();
-        }
-
         public string Executable(Opus.Core.Target target)
         {
             string executable = null;

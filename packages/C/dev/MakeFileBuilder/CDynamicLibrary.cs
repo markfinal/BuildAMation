@@ -117,10 +117,15 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
-            success = true;
             MakeFileTargetDictionary exportedTargets = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariables = makeFile.ExportedVariables;
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, linkerTool.EnvironmentPaths(target));
+            Opus.Core.StringArray environmentPaths = null;
+            if (linkerTool is Opus.Core.IToolEnvironmentPaths)
+            {
+                environmentPaths = (linkerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environmentPaths);
+            success = true;
             return returnData;
         }
     }

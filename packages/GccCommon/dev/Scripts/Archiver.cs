@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
+    public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolEnvironmentPaths
     {
         private string binPath;
 
@@ -25,7 +25,7 @@ namespace GccCommon
             return System.IO.Path.Combine(this.binPath, "ar");
         }
 
-        public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             return toolChainInstance.Environment;

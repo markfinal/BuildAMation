@@ -9,11 +9,6 @@ namespace QtCommon
 {
     public sealed class MocTool : Opus.Core.ITool
     {
-        public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
-        {
-            return new Opus.Core.StringArray();
-        }
-
         public string Executable(Opus.Core.Target target)
         {
             string mocExePath = System.IO.Path.Combine(QtCommon.BinPath, "moc");

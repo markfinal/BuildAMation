@@ -74,9 +74,13 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
+            Opus.Core.StringArray environmentPaths = null;
+            if (tool is Opus.Core.IToolEnvironmentPaths)
+            {
+                environmentPaths = (tool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths);
             success = true;
-
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, tool.EnvironmentPaths(target));
             return returnData;
         }
     }

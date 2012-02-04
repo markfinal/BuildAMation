@@ -1,4 +1,6 @@
-04-Feb-2012 Removed RequiredEnvironmentVariables property from Opus.Core.ITool, and added it to it's own interface, Opus.Core.ITool.RequiredEnvironmentVariables, as the VariableNames property. Only tools that need environment variables need to implement that interface now.
+04-Feb-2012 Removed EnvironmentPaths function from Opus.Core.ITool, and added it to it's own interface, Opus.Core.IToolEnvironmentPaths, as the Paths function. Only tools that need to extend the PATH environment need to implement that interface now.
+
+04-Feb-2012 Removed RequiredEnvironmentVariables property from Opus.Core.ITool, and added it to it's own interface, Opus.Core.IToolRequiredEnvironmentVariables, as the VariableNames property. Only tools that need environment variables need to implement that interface now.
 
 02-Feb-2012 Improved ToString() implementation for DependencyNode.
 

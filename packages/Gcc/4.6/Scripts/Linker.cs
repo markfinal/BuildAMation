@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class Linker : GccCommon.Linker
+    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
         private string binPath;
@@ -33,7 +33,7 @@ namespace Gcc
             return System.IO.Path.Combine(this.binPath, "g++-4.6");
         }
 
-        public override Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
             return this.environmentPaths;
         }

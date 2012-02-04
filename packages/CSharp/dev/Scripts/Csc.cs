@@ -40,12 +40,6 @@ namespace CSharp
             // do nothing
         }
 
-        public Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target)
-        {
-            Opus.Core.StringArray envPaths = new Opus.Core.StringArray();
-            return envPaths;
-        }
-
         public string Executable(Opus.Core.Target target)
         {
             return CscPath;

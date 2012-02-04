@@ -36,10 +36,10 @@ namespace CommandLineProcessor
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
-            if (null != tool.EnvironmentPaths(target))
+            if (tool is Opus.Core.IToolEnvironmentPaths)
             {
                 string path = null;
-                foreach (string env in tool.EnvironmentPaths(target))
+                foreach (string env in (tool as Opus.Core.IToolEnvironmentPaths).Paths(target))
                 {
                     path = System.String.Format("{0}", env);
                 }

@@ -10,8 +10,6 @@ namespace GccCommon
     {
         public abstract string Executable(Opus.Core.Target target);
 
-        public abstract Opus.Core.StringArray EnvironmentPaths(Opus.Core.Target target);
-
         public override Opus.Core.StringArray IncludePathCompilerSwitches
         {
             get
