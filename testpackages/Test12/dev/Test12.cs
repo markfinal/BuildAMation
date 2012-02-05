@@ -28,14 +28,14 @@ namespace Test12
             }
         }
 
-	    class OSXSourceFiles : C.CPlusPlus.ObjectFileCollection
+        class OSXSourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public OSXSourceFiles()
             {
                 this.AddRelativePaths(this, "source", "osx", "osx.cpp");
             }
         }
-	
+    
         [Opus.Core.SourceFiles]
         CommonSourceFiles commonSourceFiles = new CommonSourceFiles();
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]
