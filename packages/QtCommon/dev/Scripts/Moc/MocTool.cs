@@ -11,7 +11,14 @@ namespace QtCommon
     {
         public string Executable(Opus.Core.Target target)
         {
-            string mocExePath = System.IO.Path.Combine(QtCommon.BinPath, "moc");
+            Qt.Qt thirdPartyModule =
+                Opus.Core.ModuleUtilities.GetModuleNoToolchain(typeof(Qt.Qt), target) as Qt.Qt;
+            if (null == thirdPartyModule)
+            {
+                throw new Opus.Core.Exception("Cannot locate Qt module instance", false);
+            }
+
+            string mocExePath = System.IO.Path.Combine(thirdPartyModule.BinPath, "moc");
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 mocExePath = mocExePath + ".exe";

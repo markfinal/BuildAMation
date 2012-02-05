@@ -82,23 +82,35 @@ namespace Test13
     {
         public PublishDynamicLibraries(Opus.Core.Target target)
         {
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(PublishDynamicLibraries_UpdateOptions);
+        }
+
+        void PublishDynamicLibraries_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            Qt.Qt thirdPartyModule =
+                Opus.Core.ModuleUtilities.GetModuleNoToolchain(typeof(Qt.Qt), target) as Qt.Qt;
+            if (null == thirdPartyModule)
+            {
+                throw new Opus.Core.Exception("Cannot locate Qt module instance", false);
+            }
+
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 if (Opus.Core.EConfiguration.Debug == target.Configuration)
                 {
-                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtCored4.dll");
-                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGuid4.dll");
+                    this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "QtCored4.dll");
+                    this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "QtGuid4.dll");
                 }
                 else
                 {
-                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtCore4.dll");
-                    this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "QtGui4.dll");
+                    this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "QtCore4.dll");
+                    this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "QtGui4.dll");
                 }
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
-                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "libQtCore.so");
-                this.sourceFiles.AddRelativePaths(Qt.Qt.BinPath, "libQtGui.so");
+                this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "libQtCore.so");
+                this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "libQtGui.so");
             }
         }
 

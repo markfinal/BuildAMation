@@ -56,17 +56,21 @@ namespace Qt
                     throw new Opus.Core.Exception("Qt identification has not been implemented on the current platform");
                 }
             }
+        }
 
+        public Qt(Opus.Core.Target target)
+        {
             if (Opus.Core.OSUtilities.IsOSXHosting)
             {
-                QtCommon.QtCommon.BinPath = installPath;
+                this.BinPath = installPath;
             }
             else
             {
-                QtCommon.QtCommon.BinPath = System.IO.Path.Combine(installPath, "bin");
+                this.BinPath = System.IO.Path.Combine(installPath, "bin");
             }
-            libPath = System.IO.Path.Combine(installPath, "lib");
-            includePaths.Add(System.IO.Path.Combine(installPath, "include"));
+
+            this.LibPath = System.IO.Path.Combine(installPath, "lib");
+            this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
         }
     }
 }

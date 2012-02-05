@@ -8,15 +8,15 @@ namespace QtCommon
     public abstract class QtCommon : C.ThirdPartyModule
     {
         protected static string installPath;
-        protected static Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+        protected Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
 
-        public static string BinPath
+        public string BinPath
         {
             get;
             protected set;
         }
 
-        public static string libPath
+        public string LibPath
         {
             get;
             protected set;
@@ -43,7 +43,7 @@ namespace QtCommon
             }
             
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
-            linkerOptions.LibraryPaths.AddAbsoluteDirectory(libPath, true);
+            linkerOptions.LibraryPaths.AddAbsoluteDirectory(this.LibPath, true);
         }
 
         [C.ExportCompilerOptionsDelegate]
@@ -55,7 +55,7 @@ namespace QtCommon
             }
             
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            foreach (string includePath in includePaths)
+            foreach (string includePath in this.includePaths)
             {
                 compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
             }
