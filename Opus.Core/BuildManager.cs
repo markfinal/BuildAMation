@@ -25,7 +25,7 @@ namespace Opus.Core
         private System.Threading.ManualResetEvent allOutputComplete = new System.Threading.ManualResetEvent(false);
         private System.Threading.ManualResetEvent ioAvailable = new System.Threading.ManualResetEvent(false);
         private System.Collections.Generic.Queue<OutputQueueData> outputQueue = new System.Collections.Generic.Queue<OutputQueueData>();
-        private System.Collections.Generic.List<System.Threading.ManualResetEvent> nodesProcessing = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
+        private System.Collections.Generic.Dictionary<DependencyNode, System.Threading.ManualResetEvent> nodesProcessing = new System.Collections.Generic.Dictionary<DependencyNode, System.Threading.ManualResetEvent>();
 
         public System.Collections.Generic.List<System.Threading.ManualResetEvent> AdditionalThreadCompletionEvents
         {
@@ -141,7 +141,7 @@ namespace Opus.Core
                 {
                     lock (this.nodesProcessing)
                     {
-                        this.nodesProcessing.Add(nodeWork.CompletedSignal);
+                        this.nodesProcessing.Add(nodeWork, new System.Threading.ManualResetEvent(false));
                     }
 
                     nodeWork.CompletedEvent += new DependencyNode.CompleteEventHandler(CompletedNode);
@@ -150,10 +150,11 @@ namespace Opus.Core
                 else
                 {
                     Log.DebugMessage("**** No available Node found ready to build; waiting for running nodes to finish ****");
-                    System.Threading.ManualResetEvent[] toWaitOn;
+                    System.Threading.ManualResetEvent[] toWaitOn = null;
                     lock (this.nodesProcessing)
                     {
-                        toWaitOn = this.nodesProcessing.ToArray();
+                        toWaitOn = new System.Threading.ManualResetEvent[this.nodesProcessing.Count];
+                        this.nodesProcessing.Values.CopyTo(toWaitOn, 0);
                     }
                     if (toWaitOn.Length > 0)
                     {
@@ -230,9 +231,11 @@ namespace Opus.Core
 
         private void CompletedNode(DependencyNode node)
         {
+            this.nodesProcessing[node].Set();
+
             lock (this.nodesProcessing)
             {
-                this.nodesProcessing.Remove(node.CompletedSignal);
+                this.nodesProcessing.Remove(node);
             }
 
             node.CompletedEvent -= this.CompletedNode;

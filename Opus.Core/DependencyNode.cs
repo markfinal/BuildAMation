@@ -79,12 +79,6 @@ namespace Opus.Core
             set;
         }
 
-        public System.Threading.ManualResetEvent CompletedSignal
-        {
-            get;
-            private set;
-        }
-
         private void AddChild(DependencyNode childNode)
         {
             if (null == this.Children)
@@ -150,7 +144,6 @@ namespace Opus.Core
 
             this.LocalUpdatesAdded = new TypeArray();
             this.ExportedUpdatesAdded = new TypeArray();
-            this.CompletedSignal = new System.Threading.ManualResetEvent(false);
 
             if (null != parent)
             {
@@ -344,7 +337,6 @@ namespace Opus.Core
                     {
                         this.CompletedEvent(this);
                     }
-                    this.CompletedSignal.Set();
                 }
             }
         }
@@ -457,7 +449,7 @@ namespace Opus.Core
 
             if (null != this.Children)
             {
-                bool complete = System.Threading.WaitHandle.WaitAll(this.Children.CompletedSignals, 0);
+                bool complete = System.Threading.WaitHandle.WaitAll(this.Children.AllNodesCompletedEvent, 0);
                 if (!complete)
                 {
                     return false;
@@ -466,7 +458,7 @@ namespace Opus.Core
 
             if (null != this.ExternalDependents)
             {
-                bool complete = System.Threading.WaitHandle.WaitAll(this.ExternalDependents.CompletedSignals, 0);
+                bool complete = System.Threading.WaitHandle.WaitAll(this.ExternalDependents.AllNodesCompletedEvent, 0);
                 if (!complete)
                 {
                     return false;
@@ -475,7 +467,7 @@ namespace Opus.Core
 
             if (null != this.RequiredDependents)
             {
-                bool complete = System.Threading.WaitHandle.WaitAll(this.RequiredDependents.CompletedSignals, 0);
+                bool complete = System.Threading.WaitHandle.WaitAll(this.RequiredDependents.AllNodesCompletedEvent, 0);
                 if (!complete)
                 {
                     return false;

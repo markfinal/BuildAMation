@@ -56,7 +56,7 @@ namespace Opus.Core
 
         static private bool RankedNodeCollectionComplete(DependencyNodeCollection rankCollection)
         {
-            bool rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.CompletedSignals, 0);
+            bool rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.AllNodesCompletedEvent, 0);
             return rankCollectionComplete;
         }
         

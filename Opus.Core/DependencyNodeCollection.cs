@@ -8,7 +8,7 @@ namespace Opus.Core
     public sealed class DependencyNodeCollection : System.Collections.Generic.ICollection<DependencyNode>, System.ICloneable
     {
         private System.Collections.Generic.List<DependencyNode> list = new System.Collections.Generic.List<DependencyNode>();
-        private System.Collections.Generic.List<System.Threading.ManualResetEvent> completedSignals = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
+        private int completedNodeCount = 0;
 
         public DependencyNodeCollection()
             : this(-1)
@@ -18,6 +18,21 @@ namespace Opus.Core
         public DependencyNodeCollection(int rank)
         {
             this.Rank = rank;
+            this.AllNodesCompletedEvent = new System.Threading.ManualResetEvent[1];
+            this.AllNodesCompletedEvent[0] = new System.Threading.ManualResetEvent(false);
+        }
+
+        private void CompletedNode(DependencyNode node)
+        {
+            if (this.list.Contains(node))
+            {
+                if (0 == System.Threading.Interlocked.Decrement(ref this.completedNodeCount))
+                {
+                    this.AllNodesCompletedEvent[0].Set();
+                }
+            }
+
+            node.CompletedEvent -= CompletedNode;
         }
 
         public void Add(DependencyNode item)
@@ -25,7 +40,8 @@ namespace Opus.Core
             if (!this.list.Contains(item))
             {
                 this.list.Add(item);
-                this.completedSignals.Add(item.CompletedSignal);
+                System.Threading.Interlocked.Increment(ref this.completedNodeCount);
+                item.CompletedEvent += CompletedNode;
             }
             else
             {
@@ -44,6 +60,7 @@ namespace Opus.Core
         public void Clear()
         {
             this.list.Clear();
+            this.completedNodeCount = 0;
         }
 
         public bool Contains(DependencyNode item)
@@ -74,7 +91,15 @@ namespace Opus.Core
 
         public bool Remove(DependencyNode item)
         {
-            this.completedSignals.Remove(item.CompletedSignal);
+            lock (this.list)
+            {
+                if (this.list.Contains(item))
+                {
+                    System.Threading.Interlocked.Decrement(ref this.completedNodeCount);
+                }
+            }
+
+            // do not remove the CompletedEvent delegate
             return this.list.Remove(item);
         }
 
@@ -102,13 +127,10 @@ namespace Opus.Core
             private set;
         }
 
-        public System.Threading.ManualResetEvent[] CompletedSignals
+        public System.Threading.ManualResetEvent[] AllNodesCompletedEvent
         {
-            get
-            {
-                System.Threading.ManualResetEvent[] array = this.completedSignals.ToArray();
-                return array;
-            }
+            get;
+            private set;
         }
 
         public void FilterOutputPaths(System.Enum filter, StringArray paths)
@@ -134,8 +156,7 @@ namespace Opus.Core
         {
             DependencyNodeCollection clone = new DependencyNodeCollection();
             clone.Rank = this.Rank;
-            clone.list.AddRange(this.list);
-            clone.completedSignals.AddRange(this.completedSignals);
+            clone.AddRange(this);
             return clone;
         }
 
