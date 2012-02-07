@@ -8,6 +8,7 @@ namespace Opus.Core
     public sealed class DependencyNodeCollection : System.Collections.Generic.ICollection<DependencyNode>, System.ICloneable
     {
         private System.Collections.Generic.List<DependencyNode> list = new System.Collections.Generic.List<DependencyNode>();
+        private System.Collections.Generic.List<System.Threading.ManualResetEvent> completedSignals = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
 
         public DependencyNodeCollection()
             : this(-1)
@@ -24,6 +25,7 @@ namespace Opus.Core
             if (!this.list.Contains(item))
             {
                 this.list.Add(item);
+                this.completedSignals.Add(item.CompletedSignal);
             }
             else
             {
@@ -72,6 +74,7 @@ namespace Opus.Core
 
         public bool Remove(DependencyNode item)
         {
+            this.completedSignals.Remove(item.CompletedSignal);
             return this.list.Remove(item);
         }
 
@@ -99,25 +102,12 @@ namespace Opus.Core
             private set;
         }
 
-        public bool Complete
+        public System.Threading.ManualResetEvent[] CompletedSignals
         {
             get
             {
-                bool complete = true;
-
-                if (this.list.Count > 0)
-                {
-                    foreach (DependencyNode node in this.list)
-                    {
-                        complete &= (EBuildState.Succeeded == node.BuildState);
-                        if (!complete)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                return complete;
+                System.Threading.ManualResetEvent[] array = this.completedSignals.ToArray();
+                return array;
             }
         }
 
@@ -145,6 +135,7 @@ namespace Opus.Core
             DependencyNodeCollection clone = new DependencyNodeCollection();
             clone.Rank = this.Rank;
             clone.list.AddRange(this.list);
+            clone.completedSignals.AddRange(this.completedSignals);
             return clone;
         }
 

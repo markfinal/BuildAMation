@@ -25,6 +25,7 @@ namespace Opus.Core
         private System.Threading.ManualResetEvent allOutputComplete = new System.Threading.ManualResetEvent(false);
         private System.Threading.ManualResetEvent ioAvailable = new System.Threading.ManualResetEvent(false);
         private System.Collections.Generic.Queue<OutputQueueData> outputQueue = new System.Collections.Generic.Queue<OutputQueueData>();
+        private System.Collections.Generic.List<System.Threading.ManualResetEvent> nodesProcessing = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
 
         public System.Collections.Generic.List<System.Threading.ManualResetEvent> AdditionalThreadCompletionEvents
         {
@@ -138,8 +139,26 @@ namespace Opus.Core
                 DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
                 if (null != nodeWork)
                 {
+                    lock (this.nodesProcessing)
+                    {
+                        this.nodesProcessing.Add(nodeWork.CompletedSignal);
+                    }
+
                     nodeWork.CompletedEvent += new DependencyNode.CompleteEventHandler(CompletedNode);
                     agent.Execute(nodeWork);
+                }
+                else
+                {
+                    Log.DebugMessage("**** No available Node found ready to build; waiting for running nodes to finish ****");
+                    System.Threading.ManualResetEvent[] toWaitOn;
+                    lock (this.nodesProcessing)
+                    {
+                        toWaitOn = this.nodesProcessing.ToArray();
+                    }
+                    if (toWaitOn.Length > 0)
+                    {
+                        System.Threading.WaitHandle.WaitAny(toWaitOn, -1);
+                    }
                 }
             }
 
@@ -211,6 +230,11 @@ namespace Opus.Core
 
         private void CompletedNode(DependencyNode node)
         {
+            lock (this.nodesProcessing)
+            {
+                this.nodesProcessing.Remove(node.CompletedSignal);
+            }
+
             node.CompletedEvent -= this.CompletedNode;
 
             if ((0 == node.OutputStringBuilder.Length) && (0 == node.ErrorStringBuilder.Length))

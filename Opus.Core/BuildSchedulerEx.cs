@@ -101,53 +101,38 @@ namespace Opus.Core
             // get the next node
             while (this.rankInProgress.Count > 0)
             {
-                DependencyNode node = this.rankInProgress[0];
-                if (node.BuildState != EBuildState.NotStarted)
+                for (int i = 0; i < this.rankInProgress.Count; ++i)
                 {
-                    throw new Exception("Next node to schedule is not in the correct state. This should never happen", false);
-                }
-                this.rankInProgress.Remove(node);
+                    DependencyNode node = this.rankInProgress[i];
+                    if (!node.IsReadyToBuild())
+                    {
+                        continue;
+                    }
 
-                //Log.MessageAll("** Found unstarted node {0}", node.ToString());
-                ++this.ScheduledNodeCount;
-                // is the build function empty? if so, just mark as succeeded
-                if (null == node.BuildFunction)
-                {
-                    node.BuildState = EBuildState.Succeeded;
-                }
-                else
-                {
-                    this.graph.ExecutedNodes.Add(node);
-                    return node;
+                    this.rankInProgress.Remove(node);
+
+                    //Log.MessageAll("** Found unstarted node {0}", node.ToString());
+                    ++this.ScheduledNodeCount;
+                    // is the build function empty? if so, just mark as succeeded
+                    if (null == node.BuildFunction)
+                    {
+                        node.BuildState = EBuildState.Succeeded;
+                    }
+                    else
+                    {
+                        this.graph.ExecutedNodes.Add(node);
+                        return node;
+                    }
                 }
             }
 
             //Log.MessageAll("** Nodes in current rank are all started");
 
             DependencyNodeCollection nextRank = this.rankCollections.Peek();
-            while (nextRank.Count  >0)
+            while (nextRank.Count > 0)
             {
                 DependencyNode node = nextRank[0];
-
-                DependencyNodeCollection dependents = new DependencyNodeCollection();
-                if (null != node.Children)
-                {
-                    dependents.AddRange(node.Children);
-                }
-                if (null != node.ExternalDependents)
-                {
-                    dependents.AddRange(node.ExternalDependents);
-                }
-                if (null != node.RequiredDependents)
-                {
-                    dependents.AddRange(node.RequiredDependents);
-                }
-                bool dependentsComplete = true;
-                if (0 != dependents.Count)
-                {
-                    dependentsComplete = dependents.Complete;
-                }
-                if (dependentsComplete && (EBuildState.NotStarted == node.BuildState))
+                if (node.IsReadyToBuild())
                 {
                     nextRank.Remove(node);
 
@@ -166,7 +151,7 @@ namespace Opus.Core
                 }
             }
 
-            // no Node in the curent rank was found to work on
+            // no Node in the current rank was found to work on
             // and no Node in the next rank was found to work on that didn't have all of it's
             // dependencies satisifed
             // so we just have to give up and wait for in-flight Nodes to finish

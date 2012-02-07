@@ -79,6 +79,12 @@ namespace Opus.Core
             set;
         }
 
+        public System.Threading.ManualResetEvent CompletedSignal
+        {
+            get;
+            private set;
+        }
+
         private void AddChild(DependencyNode childNode)
         {
             if (null == this.Children)
@@ -93,11 +99,6 @@ namespace Opus.Core
         {
             this.Rank = -1;
             this.Parent = parent;
-            if (null != parent)
-            {
-                parent.AddChild(this);
-            }
-            this.BuildState = EBuildState.NotStarted;
             this.Target = target;
             this.IsModuleNested = nestedModule;
             this.OutputStringBuilder = new System.Text.StringBuilder();
@@ -149,6 +150,13 @@ namespace Opus.Core
 
             this.LocalUpdatesAdded = new TypeArray();
             this.ExportedUpdatesAdded = new TypeArray();
+            this.CompletedSignal = new System.Threading.ManualResetEvent(false);
+
+            if (null != parent)
+            {
+                parent.AddChild(this);
+            }
+            this.BuildState = EBuildState.NotStarted;
         }
 
         public void CreateOptionCollection()
@@ -330,9 +338,13 @@ namespace Opus.Core
             set
             {
                 this.buildState = value;
-                if ((EBuildState.Succeeded == value || EBuildState.Failed == value) && this.CompletedEvent != null)
+                if (EBuildState.Succeeded == value || EBuildState.Failed == value)
                 {
-                    this.CompletedEvent(this);
+                    if (this.CompletedEvent != null)
+                    {
+                        this.CompletedEvent(this);
+                    }
+                    this.CompletedSignal.Set();
                 }
             }
         }
@@ -434,6 +446,43 @@ namespace Opus.Core
             }
 
             options.FilterOutputPaths(filter, paths);
+        }
+
+        public bool IsReadyToBuild()
+        {
+            if (this.BuildState != EBuildState.NotStarted)
+            {
+                return false;
+            }
+
+            if (null != this.Children)
+            {
+                bool complete = System.Threading.WaitHandle.WaitAll(this.Children.CompletedSignals, 0);
+                if (!complete)
+                {
+                    return false;
+                }
+            }
+
+            if (null != this.ExternalDependents)
+            {
+                bool complete = System.Threading.WaitHandle.WaitAll(this.ExternalDependents.CompletedSignals, 0);
+                if (!complete)
+                {
+                    return false;
+                }
+            }
+
+            if (null != this.RequiredDependents)
+            {
+                bool complete = System.Threading.WaitHandle.WaitAll(this.RequiredDependents.CompletedSignals, 0);
+                if (!complete)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

@@ -1,3 +1,5 @@
+07-Feb-2012 Opus.Core.DependencyNode now exposes a ManualResetEvent that is signalled when it has been built. Opus.Core.DependencyNodeCollection can return an array of these. The BuildManager, when an agent is available but there is no Node in a state to be built (waiting on dependencies), will now wait on running Node builds to finish before calling the scheduler again.
+
 05-Feb-2012 QtCommon.BinPath and LibPath and includePaths are now instance field/properties.
 
 04-Feb-2012 Removed EnvironmentPaths function from Opus.Core.ITool, and added it to it's own interface, Opus.Core.IToolEnvironmentPaths, as the Paths function. Only tools that need to extend the PATH environment need to implement that interface now.

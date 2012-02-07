@@ -53,6 +53,12 @@ namespace Opus.Core
                 return (this.ScheduledNodeCount != this.TotalNodeCount);
             }
         }
+
+        static private bool RankedNodeCollectionComplete(DependencyNodeCollection rankCollection)
+        {
+            bool rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.CompletedSignals, 0);
+            return rankCollectionComplete;
+        }
         
         public DependencyNode GetNextNodeToBuild()
         {
@@ -65,29 +71,11 @@ namespace Opus.Core
                     throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", rank), false);
                 }
 
-                if (!rankCollection.Complete)
+                if (!RankedNodeCollectionComplete(rankCollection))
                 {
                     foreach (DependencyNode node in rankCollection)
                     {
-                        DependencyNodeCollection dependents = new DependencyNodeCollection();
-                        if (null != node.Children)
-                        {
-                            dependents.AddRange(node.Children);
-                        }
-                        if (null != node.ExternalDependents)
-                        {
-                            dependents.AddRange(node.ExternalDependents);
-                        }
-                        if (null != node.RequiredDependents)
-                        {
-                            dependents.AddRange(node.RequiredDependents);
-                        }
-                        bool dependentsComplete = true;
-                        if (0 != dependents.Count)
-                        {
-                            dependentsComplete = dependents.Complete;
-                        }
-                        if (dependentsComplete && (EBuildState.NotStarted == node.BuildState))
+                        if (node.IsReadyToBuild())
                         {
                             ++this.ScheduledNodeCount;
                             // is the build function empty? if so, just mark as succeeded
@@ -104,6 +92,7 @@ namespace Opus.Core
                     }
                 }
             }
+
             return null;
         }
     }
