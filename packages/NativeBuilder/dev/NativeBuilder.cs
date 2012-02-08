@@ -57,11 +57,11 @@ namespace NativeBuilder
                 }
             }
 
-            System.DateTime inputFileDate = System.IO.File.GetLastWriteTime(sourceDir);
+            System.DateTime inputDirDate = System.IO.Directory.GetLastWriteTime(sourceDir);
             if (System.IO.Directory.Exists(destinationDir))
             {
-                System.DateTime outputFileDate = System.IO.File.GetLastWriteTime(destinationDir);
-                if (inputFileDate.CompareTo(outputFileDate) > 0)
+                System.DateTime outputDirDate = System.IO.Directory.GetLastWriteTime(destinationDir);
+                if (inputDirDate.CompareTo(outputDirDate) > 0)
                 {
                     Opus.Core.Log.DebugMessage("Source directory '{0}' is newer than destination directory '{1}'. Requires build.", sourceDir, destinationDir);
                     return true;
