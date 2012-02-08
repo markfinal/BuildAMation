@@ -25,6 +25,11 @@ namespace Opus.Core
             // TODO: would like to do a reverse foreach
             for (int rank = this.rankCount - 1; rank >= 0; --rank)
             {
+                if (0 == graph[rank].Count)
+                {
+                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", rank), false);
+                }
+
                 this.rankCollections.Enqueue(graph[rank].Clone() as DependencyNodeCollection);
             }
             //Log.MessageAll("** There are {0} ranks", this.rankCount);
@@ -92,10 +97,6 @@ namespace Opus.Core
                 }
 
                 this.rankInProgress = this.rankCollections.Dequeue();
-                if (0 == this.rankInProgress.Count)
-                {
-                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", this.rankInProgress.Rank), false);
-                }
             }
 
             // get the next node

@@ -11,6 +11,7 @@ namespace Opus.Core
         private DependencyGraph graph;
         private int scheduledNodeCount = 0;
         private int percentComplete = 0;
+        private int highestRankToBuild;
 
         public event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
 
@@ -19,6 +20,16 @@ namespace Opus.Core
             this.graph = graph;
             this.TotalNodeCount = graph.TotalNodeCount;
             this.ScheduledNodeCount = 0;
+            this.highestRankToBuild = this.graph.RankCount - 1;
+
+            for (int rank = this.highestRankToBuild; rank >= 0; --rank)
+            {
+                DependencyNodeCollection rankCollection = this.graph[rank];
+                if (0 == rankCollection.Count)
+                {
+                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", rank), false);
+                }
+            }
         }
 
         public int TotalNodeCount
@@ -62,32 +73,34 @@ namespace Opus.Core
         
         public DependencyNode GetNextNodeToBuild()
         {
-            int rankCount = this.graph.RankCount;
-            for (int rank = rankCount - 1; rank >= 0; --rank)
+            for (int rank = this.highestRankToBuild; rank >= 0; --rank)
             {
                 DependencyNodeCollection rankCollection = this.graph[rank];
-                if (0 == rankCollection.Count)
+
+                if (RankedNodeCollectionComplete(rankCollection))
                 {
-                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", rank), false);
+                    if (rankCollection.Rank == this.highestRankToBuild)
+                    {
+                        --this.highestRankToBuild;
+                    }
+
+                    continue;
                 }
 
-                if (!RankedNodeCollectionComplete(rankCollection))
+                foreach (DependencyNode node in rankCollection)
                 {
-                    foreach (DependencyNode node in rankCollection)
+                    if (node.IsReadyToBuild())
                     {
-                        if (node.IsReadyToBuild())
+                        ++this.ScheduledNodeCount;
+                        // is the build function empty? if so, just mark as succeeded
+                        if (null == node.BuildFunction)
                         {
-                            ++this.ScheduledNodeCount;
-                            // is the build function empty? if so, just mark as succeeded
-                            if (null == node.BuildFunction)
-                            {
-                                node.BuildState = EBuildState.Succeeded;
-                            }
-                            else
-                            {
-                                this.graph.ExecutedNodes.Add(node);
-                                return node;
-                            }
+                            node.BuildState = EBuildState.Succeeded;
+                        }
+                        else
+                        {
+                            this.graph.ExecutedNodes.Add(node);
+                            return node;
                         }
                     }
                 }
