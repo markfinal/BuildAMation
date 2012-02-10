@@ -95,23 +95,21 @@ namespace DependencyChecker
                     fileContents = reader.ReadToEnd();
                 }
 
-                //            Opus.Core.Log.MessageAll(@"{0}", fileContents);
                 System.Text.RegularExpressions.MatchCollection matches =
                     System.Text.RegularExpressions.Regex.Matches(fileContents,
                                                                  "^\\s*#include \"(.*)\"",
                                                                  System.Text.RegularExpressions.RegexOptions.Multiline);
 
-                // no point in writing a dep file if there is nothing to check
+                // no #includes to check - move onto the next file
                 if (0 == matches.Count)
                 {
-                    break;
+                    continue;
                 }
 
                 foreach (System.Text.RegularExpressions.Match match in matches)
                 {
-                    //Opus.Core.Log.MessageAll("Include: {0}", match.Groups[1]);
-
                     bool exists = false;
+                    // search for the file on the include paths the compiler uses
                     foreach (string includePath in entry.includePaths)
                     {
                         try
@@ -119,9 +117,12 @@ namespace DependencyChecker
                             string potentialPath = System.IO.Path.Combine(includePath, match.Groups[1].Value);
                             if (System.IO.File.Exists(potentialPath))
                             {
-                                headerPathsFound.Add(potentialPath);
-                                filesToSearch.Enqueue(potentialPath);
-                                //Opus.Core.Log.MessageAll("\tFound at {0}", potentialPath);
+                                potentialPath = System.IO.Path.GetFullPath(potentialPath);
+                                if (!headerPathsFound.Contains(potentialPath))
+                                {
+                                    headerPathsFound.Add(potentialPath);
+                                    filesToSearch.Enqueue(potentialPath);
+                                }
                                 exists = true;
                                 break;
                             }

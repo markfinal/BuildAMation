@@ -1,3 +1,5 @@
+10-Feb-2012 Include dependency generation no longer writes duplicate file paths to .d files. Also, any 'nested' includes that do not contain any #includes will no longer terminate the search early.
+
 08-Feb-2012 Schedulers now check for empty rank node collections in their constructors, rather than on every call to get the next Node to build. Opus.Core.BuildScheduler also now removes completed ranks from it's search for the next available Node to build.
 
 07-Feb-2012 Opus.Core.DependencyNodeCollection now has a ManualResetEvent (an array of one to be precise) that is signalled when all of it's DependencyNodes have been built. The BuildManager, when an agent is available but there is no Node in a state to be built (waiting on dependencies), will now wait on running Node builds to finish before calling the scheduler again, rather than spinning.
