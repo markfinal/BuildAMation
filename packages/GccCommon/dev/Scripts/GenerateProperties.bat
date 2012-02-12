@@ -23,7 +23,7 @@ REM C++ compiler option properties
 IF NOT ERRORLEVEL 0 GOTO error
 
 REM Linker option properties
-%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\C\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection
+%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\C\dev\Scripts\ILinkerOptions.cs;%OPUS_PACKAGE_DIR%\GccCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection
 IF NOT ERRORLEVEL 0 GOTO error
 
 REM Archiver option properties

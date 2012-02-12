@@ -1,3 +1,5 @@
+12-Feb-2012 Adding CanUseOrigin (bool) and RPath (StringArray) to the Gcc linker options for the 'z origin' and 'rpath' features.
+
 10-Feb-2012 Include dependency generation no longer writes duplicate file paths to .d files. Also, any 'nested' includes that do not contain any #includes will no longer terminate the search early.
 
 08-Feb-2012 Schedulers now check for empty rank node collections in their constructors, rather than on every call to get the next Node to build. Opus.Core.BuildScheduler also now removes completed ranks from it's search for the next available Node to build.

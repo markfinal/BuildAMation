@@ -24,6 +24,8 @@ namespace GccCommon
 
             // linker specific options
             this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
+            this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCL);
+            this["RPath"].PrivateData = new PrivateData(RPathCL);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -35,6 +37,9 @@ namespace GccCommon
             this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
 
             this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+
+            this.CanUseOrigin = false;
+            this.RPaths = new Opus.Core.StringArray();
 
             /*
              This is an example link line using gcc with -v
@@ -287,6 +292,24 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             else
             {
                 commandLineBuilder.Add("-m32");
+            }
+        }
+
+        private static void CanUseOriginCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-z origin");
+            }
+        }
+
+        private static void RPathCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (string rpath in stringsOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-Wl,rpath,", rpath));
             }
         }
 

@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\GccCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection 
 namespace GccCommon
 {
     public partial class LinkerOptionCollection
@@ -135,6 +135,30 @@ namespace GccCommon
             {
                 this.SetReferenceTypeOption<string>("AdditionalOptions", value);
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
+            }
+        }
+        public bool CanUseOrigin
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("CanUseOrigin");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("CanUseOrigin", value);
+                this.ProcessNamedSetHandler("CanUseOriginSetHandler", this["CanUseOrigin"]);
+            }
+        }
+        public Opus.Core.StringArray RPath
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("RPath");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("RPath", value);
+                this.ProcessNamedSetHandler("RPathSetHandler", this["RPath"]);
             }
         }
     }
