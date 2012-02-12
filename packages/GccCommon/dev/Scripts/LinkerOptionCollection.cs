@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions
+    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, GccCommon.ILinkerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -39,7 +39,7 @@ namespace GccCommon
             this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
             this.CanUseOrigin = false;
-            this.RPaths = new Opus.Core.StringArray();
+            this.RPath = new Opus.Core.StringArray();
 
             /*
              This is an example link line using gcc with -v
@@ -309,7 +309,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (string rpath in stringsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("-Wl,rpath,", rpath));
+                commandLineBuilder.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
             }
         }
 
