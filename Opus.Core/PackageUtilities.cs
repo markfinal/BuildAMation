@@ -355,6 +355,7 @@ namespace Opus.Core
                         if (diskHashCode.Equals(thisHashCode))
                         {
                             Log.DebugMessage("Cached assembly used '{0}', with hash {1}", assemblyPathname, diskHashCode);
+                            Log.Detail("Re-using existing package assembly");
                             State.ScriptAssemblyPathname = assemblyPathname;
 
                             assemblyCompileProfile.StopProfile();
@@ -368,6 +369,8 @@ namespace Opus.Core
                     }
                 }
             }
+
+            Log.Detail("Compiling package assembly");
 
             System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
@@ -552,6 +555,8 @@ namespace Opus.Core
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();
+
+            Log.Detail("Compiling package assembly");
 
             TimeProfile assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
             assemblyCompileProfile.StartProfile();
