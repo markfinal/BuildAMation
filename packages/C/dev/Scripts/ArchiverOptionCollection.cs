@@ -51,7 +51,7 @@ namespace C
             }
         }
 
-        public override void Finalize(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.Target target)
         {
             Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 
@@ -61,7 +61,7 @@ namespace C
                 this.LibraryFilePath = libraryPathname;
             }
 
-            base.Finalize(target);
+            base.FinalizeOptions(target);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

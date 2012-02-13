@@ -142,7 +142,7 @@ namespace C
             }
         }
 
-        public override void Finalize(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.Target target)
         {
             if (null != this.OutputName)
             {
@@ -161,7 +161,7 @@ namespace C
                 }
             }
 
-            base.Finalize(target);
+            base.FinalizeOptions(target);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

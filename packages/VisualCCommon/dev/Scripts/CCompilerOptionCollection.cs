@@ -126,7 +126,7 @@ namespace VisualCCommon
             }
         }
 
-        public override void Finalize(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.Target target)
         {
             ICCompilerOptions options = this as ICCompilerOptions;
 
@@ -136,7 +136,7 @@ namespace VisualCCommon
                 this.ProgramDatabaseFilePath = pdbPathName;
             }
 
-            base.Finalize(target);
+            base.FinalizeOptions(target);
         }
 
         protected static void ToolchainOptionCollectionSetHandler(object sender, Opus.Core.Option option)

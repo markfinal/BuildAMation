@@ -60,7 +60,7 @@ namespace VisualCCommon
             }
         }
 
-        public override void Finalize(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.Target target)
         {
             C.ILinkerOptions options = this as C.ILinkerOptions;
 
@@ -70,7 +70,7 @@ namespace VisualCCommon
                 this.ProgramDatabaseFilePath = pdbPathName;
             }
 
-            base.Finalize(target);
+            base.FinalizeOptions(target);
         }
 
         private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

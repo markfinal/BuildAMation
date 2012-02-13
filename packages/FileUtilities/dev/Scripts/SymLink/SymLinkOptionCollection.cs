@@ -29,14 +29,14 @@ namespace FileUtilities
             this["Type"].PrivateData = new SymLinkPrivateData(TypeCL);
         }
 
-        public override void Finalize(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.Target target)
         {
             if (null == this.OutputPaths[SymLinkOutputFileFlags.Link])
             {
                 this.OutputPaths[SymLinkOutputFileFlags.Link] = System.IO.Path.Combine(this.LinkDirectory, this.LinkName);
             }
 
-            base.Finalize(target);
+            base.FinalizeOptions(target);
         }
 
         private static void TypeCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

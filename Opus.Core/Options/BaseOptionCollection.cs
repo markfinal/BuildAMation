@@ -101,7 +101,7 @@ namespace Opus.Core
             }
         }
 
-        public virtual void Finalize(Opus.Core.Target target)
+        public virtual void FinalizeOptions(Opus.Core.Target target)
         {
             // do nothing
         }

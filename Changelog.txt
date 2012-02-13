@@ -1,4 +1,4 @@
-13-Feb-2012 Opus.Core.BaseOptionCollection now has a virtual Finalize method. This can be overridden in any of the option collection classes, and is executed after all option update delegates have been issued. This can be used to set output paths, for example.
+13-Feb-2012 Opus.Core.BaseOptionCollection now has a virtual FinalizeOptions method. This can be overridden in any of the option collection classes, and is executed after all option update delegates have been issued. This can be used to set output paths, for example.
 
 12-Feb-2012 Adding CanUseOrigin (bool) and RPath (StringArray) to the Gcc linker options for the 'z origin' and 'rpath' features.
 
