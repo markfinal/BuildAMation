@@ -71,7 +71,7 @@ namespace MakeFileBuilder
             {
                 recipe += executable;
             }
-            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
+            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
             recipe = recipe.Replace(staticLibrary.Options.OutputPaths[primaryOutput], "$@");

@@ -47,43 +47,6 @@ namespace VisualCCommon
         {
         }
 
-        public override string OutputFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.Executable];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.Executable] = value;
-            }
-        }
-
-        public override string StaticImportLibraryFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
-            }
-        }
-
-        public override string MapFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.MapFile];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
-            }
-        }
-
         public string ProgramDatabaseFilePath
         {
             get
@@ -95,6 +58,19 @@ namespace VisualCCommon
             {
                 this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = value;
             }
+        }
+
+        public override void Finalize(Opus.Core.Target target)
+        {
+            C.ILinkerOptions options = this as C.ILinkerOptions;
+
+            if (options.DebugSymbols && (null == this.ProgramDatabaseFilePath))
+            {
+                string pdbPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + ".pdb";
+                this.ProgramDatabaseFilePath = pdbPathName;
+            }
+
+            base.Finalize(target);
         }
 
         private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -109,33 +85,6 @@ namespace VisualCCommon
             return RuntimeLibraryVisualStudio(sender, toolchainOptions.Value["RuntimeLibrary"], target, vsTarget);
         }
 
-        protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
-            switch (enumOption.Value)
-            {
-                case C.ELinkerOutput.Executable:
-                    {
-                        string executablePathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".exe";
-                        options.OutputFilePath = executablePathname;
-                    }
-                    break;
-
-                case C.ELinkerOutput.DynamicLibrary:
-                    {
-                        string dynamicLibraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".dll";
-                        string importLibraryPathname = System.IO.Path.Combine(options.LibraryDirectoryPath, options.OutputName) + ".lib";
-                        options.OutputFilePath = dynamicLibraryPathname;
-                        options.StaticImportLibraryFilePath = importLibraryPathname;
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
-            }
-        }
-
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
@@ -144,13 +93,14 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-                    if (options.OutputFilePath.Contains(" "))
+                    string outputPathName = options.OutputFilePath;
+                    if (outputPathName.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.OutputFilePath));
+                        commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", outputPathName));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("/OUT:{0}", options.OutputFilePath));
+                        commandLineBuilder.Add(System.String.Format("/OUT:{0}", outputPathName));
                     }
                     break;
 
@@ -178,21 +128,6 @@ namespace VisualCCommon
             }
         }
 
-        protected static void DebugSymbolsSetHandler(object sender, Opus.Core.Option option)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (debugSymbolsOption.Value)
-            {
-                string pdbPathName = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".pdb";
-                options.ProgramDatabaseFilePath = pdbPathName;
-            }
-            else
-            {
-                options.ProgramDatabaseFilePath = null;
-            }
-        }
-
         private static void DebugSymbolsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -201,13 +136,14 @@ namespace VisualCCommon
                 commandLineBuilder.Add("/DEBUG");
 
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                if (options.ProgramDatabaseFilePath.Contains(" "))
+                string pdbPathName = options.ProgramDatabaseFilePath;
+                if (pdbPathName.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("/PDB:\"{0}\"", options.ProgramDatabaseFilePath));
+                    commandLineBuilder.Add(System.String.Format("/PDB:\"{0}\"", pdbPathName));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("/PDB:{0}", options.ProgramDatabaseFilePath));
+                    commandLineBuilder.Add(System.String.Format("/PDB:{0}", pdbPathName));
                 }
             }
         }
@@ -597,21 +533,6 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        protected static void GenerateMapFileSetHandler(object sender, Opus.Core.Option option)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (boolOption.Value)
-            {
-                string mapPathName = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".map";
-                options.MapFilePath = mapPathName;
-            }
-            else
-            {
-                options.MapFilePath = null;
-            }
-        }
-
         private static void GenerateMapFileCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -664,13 +585,16 @@ namespace VisualCCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.OutputFilePath)
+            string outputPathName = this.OutputFilePath;
+            if (null != outputPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
             }
-            if (null != this.StaticImportLibraryFilePath)
+
+            string libraryPathName = this.StaticImportLibraryFilePath;
+            if (null != libraryPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.StaticImportLibraryFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(libraryPathName), false);
             }
 
             return directoriesToCreate;

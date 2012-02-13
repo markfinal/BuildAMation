@@ -77,12 +77,12 @@ namespace MakeFileBuilder
             {
                 recipeBuilder.Append(executable);
             }
-            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileExtension);
+            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
-            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibraryExtension));
-            if (toolchain.StaticLibraryExtension != toolchain.StaticImportLibraryExtension)
+            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibrarySuffix));
+            if (toolchain.StaticLibrarySuffix != toolchain.StaticImportLibrarySuffix)
             {
-                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibraryExtension));
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibrarySuffix));
             }
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
             linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, dynamicLibrary.Options as C.ILinkerOptions, dependentLibraries);

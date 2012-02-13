@@ -106,43 +106,44 @@ namespace CSharp
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory("bin");
         }
 
-        protected static void TargetSetHandler(object sender, Opus.Core.Option option)
+        public override void Finalize(Opus.Core.Target target)
         {
-            OptionCollection options = sender as OptionCollection;
-            Opus.Core.ValueTypeOption<ETarget> enumOption = option as Opus.Core.ValueTypeOption<ETarget>;
-            switch (enumOption.Value)
+            if (null == this.OutputFilePath)
             {
-                case ETarget.Executable:
-                    {
-                        string executablePathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".exe";
-                        options.OutputFilePath = executablePathname;
-                    }
-                    break;
+                string outputSuffix;
+                switch (this.Target)
+                {
+                    case ETarget.Executable:
+                    case ETarget.WindowsExecutable:
+                        outputSuffix = ".exe";
+                        break;
 
-                case ETarget.Library:
-                    {
-                        string libraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".dll";
-                        options.OutputFilePath = libraryPathname;
-                    }
-                    break;
+                    case ETarget.Library:
+                        outputSuffix = ".dll";
+                        break;
 
-                case ETarget.Module:
-                    {
-                        string libraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".netmodule";
-                        options.OutputFilePath = libraryPathname;
-                    }
-                    break;
+                    case ETarget.Module:
+                        outputSuffix = ".netmodule";
+                        break;
 
-                case ETarget.WindowsExecutable:
-                    {
-                        string executablePathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".exe";
-                        options.OutputFilePath = executablePathname;
-                    }
-                    break;
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
+                }
 
-                default:
-                    throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
+                string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + outputSuffix;
+                this.OutputFilePath = outputPathName;
             }
+
+            if ((this.DebugInformation != EDebugInformation.Disabled) && (null == this.ProgramDatabaseFilePath))
+            {
+                if (Opus.Core.OSUtilities.IsWindowsHosting)
+                {
+                    string pdbPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + ".pdb";
+                    this.ProgramDatabaseFilePath = pdbPathname;
+                }
+            }
+
+            base.Finalize(target);
         }
 
         private static void TargetCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -171,13 +172,14 @@ namespace CSharp
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
 
-            if (options.OutputFilePath.Contains(" "))
+            string outputPathName = options.OutputFilePath;
+            if (outputPathName.Contains(" "))
             {
-                commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", options.OutputFilePath));
+                commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", outputPathName));
             }
             else
             {
-                commandLineBuilder.Add(System.String.Format("/out:{0}", options.OutputFilePath));
+                commandLineBuilder.Add(System.String.Format("/out:{0}", outputPathName));
             }
         }
 
@@ -402,32 +404,6 @@ namespace CSharp
             return dictionary;
         }
 
-        protected static void DebugInformationSetHandler(object sender, Opus.Core.Option option)
-        {
-            OptionCollection options = sender as OptionCollection;
-            Opus.Core.ValueTypeOption<EDebugInformation> enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
-            switch (enumOption.Value)
-            {
-                case EDebugInformation.Disabled:
-                    options.ProgramDatabaseFilePath = null;
-                    break;
-
-                case EDebugInformation.ProgramDatabaseOnly:
-                case EDebugInformation.Full:
-                    {
-                        if (Opus.Core.OSUtilities.IsWindowsHosting)
-                        {
-                            string pdbPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".pdb";
-                            options.ProgramDatabaseFilePath = pdbPathname;
-                        }
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized CSharp.EDebugInformation value");
-            }
-        }
-
         private static void DebugInformationCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             OptionCollection options = sender as OptionCollection;
@@ -444,13 +420,14 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:pdbinfo");
-                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            string pdbPathName = options.ProgramDatabaseFilePath;
+                            if (pdbPathName.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", pdbPathName));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbPathName));
                             }
                         }
                         else
@@ -466,13 +443,14 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:full");
-                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            string pdbPathName = options.ProgramDatabaseFilePath;
+                            if (pdbPathName.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", pdbPathName));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbPathName));
                             }
                         }
                         else
@@ -599,13 +577,16 @@ namespace CSharp
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.OutputFilePath)
+            string outputPathName = this.OutputFilePath;
+            if (null != outputPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
             }
-            if (null != this.ProgramDatabaseFilePath)
+
+            string pdbPathName = this.ProgramDatabaseFilePath;
+            if (null != pdbPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ProgramDatabaseFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(pdbPathName), false);
             }
 
             return directoriesToCreate;

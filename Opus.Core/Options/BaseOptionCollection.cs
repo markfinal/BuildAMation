@@ -101,6 +101,11 @@ namespace Opus.Core
             }
         }
 
+        public virtual void Finalize(Opus.Core.Target target)
+        {
+            // do nothing
+        }
+
         public System.Collections.IEnumerator GetEnumerator()
         {
             return this.table.GetEnumerator();

@@ -157,7 +157,7 @@ namespace VSSolutionBuilder
                 string outputPathname;
                 if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
                 {
-                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileExtension);
+                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileSuffix);
 
                     // add source file
                     commandLineBuilder.Add(@" $(InputPath)");
@@ -169,7 +169,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", toolchain.ObjectFileExtension);
+                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", toolchain.ObjectFileSuffix);
 
                     // add source file
                     commandLineBuilder.Add(@" %(FullPath)");

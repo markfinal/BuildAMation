@@ -247,6 +247,7 @@ namespace Opus.Core
             }
 
             module.ExecuteOptionUpdate(target);
+            options.Finalize(target);
 
             return options;
         }

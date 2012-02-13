@@ -113,32 +113,6 @@ namespace VisualCCommon
             set;
         }
 
-        public override string ObjectFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
-            }
-        }
-
-        public override string PreprocessedFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
-            }
-        }
-
         public string ProgramDatabaseFilePath
         {
             get
@@ -150,6 +124,19 @@ namespace VisualCCommon
             {
                 this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = value;
             }
+        }
+
+        public override void Finalize(Opus.Core.Target target)
+        {
+            ICCompilerOptions options = this as ICCompilerOptions;
+
+            if (options.DebugType != EDebugType.Embedded)
+            {
+                string pdbPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + ".pdb";
+                this.ProgramDatabaseFilePath = pdbPathName;
+            }
+
+            base.Finalize(target);
         }
 
         protected static void ToolchainOptionCollectionSetHandler(object sender, Opus.Core.Option option)
@@ -287,37 +274,6 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
-        {
-            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
-            if (null == options.OutputName)
-            {
-                options.ObjectFilePath = null;
-                return;
-            }
-
-            Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
-            switch (enumOption.Value)
-            {
-                case C.ECompilerOutput.CompileOnly:
-                    {
-                        string objectPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".obj";
-                        options.ObjectFilePath = objectPathname;
-                    }
-                    break;
-
-                case C.ECompilerOutput.Preprocess:
-                    {
-                        string preprocessedPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".i";
-                        options.PreprocessedFilePath = preprocessedPathname;
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ECompilerOutput");
-            }
-        }
-
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
@@ -325,30 +281,37 @@ namespace VisualCCommon
             {
                 return;
             }
+
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLineBuilder.Add("/c");
-                    if (options.ObjectFilePath.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("/Fo{0}", options.ObjectFilePath));
+                        commandLineBuilder.Add("/c");
+                        string objPathName = options.ObjectFilePath;
+                        if (objPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", objPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("/Fo{0}", objPathName));
+                        }
                     }
                     break;
 
                 case C.ECompilerOutput.Preprocess: // with line numbers
-                    commandLineBuilder.Add("/P");
-                    if (options.ObjectFilePath.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", options.ObjectFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("/Fo{0}", options.ObjectFilePath));
+                        commandLineBuilder.Add("/P");
+                        string objPathName = options.ObjectFilePath;
+                        if (objPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", objPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("/Fo{0}", objPathName));
+                        }
                     }
                     break;
 
@@ -365,6 +328,7 @@ namespace VisualCCommon
             {
                 return null;
             }
+
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 switch (processOption.Value)
@@ -917,36 +881,6 @@ namespace VisualCCommon
             return dictionary;
         }
 
-        protected static void DebugTypeSetHandler(object sender, Opus.Core.Option option)
-        {
-            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
-            if (options.DebugSymbols)
-            {
-                Opus.Core.ValueTypeOption<EDebugType> enumOption = option as Opus.Core.ValueTypeOption<EDebugType>;
-                switch (options.DebugType)
-                {
-                    case EDebugType.Embedded:
-                        options.ProgramDatabaseFilePath = null;
-                        break;
-
-                    case EDebugType.ProgramDatabase:
-                    case EDebugType.ProgramDatabaseEditAndContinue:
-                        {
-                            string pdbPathName = System.IO.Path.Combine(options.OutputDirectoryPath, options.ProgramDatabaseName) + ".pdb";
-                            options.ProgramDatabaseFilePath = pdbPathName;
-                        }
-                        break;
-
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
-                }
-            }
-            else
-            {
-                options.ProgramDatabaseFilePath = null;
-            }
-        }
-
         private static void DebugTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
@@ -963,17 +897,18 @@ namespace VisualCCommon
                         {
                             commandLineBuilder.Add("/Zi");
 
-                            if (null == options.ProgramDatabaseFilePath)
+                            string pdbPathName = options.ProgramDatabaseFilePath;
+                            if (null == pdbPathName)
                             {
                                 throw new Opus.Core.Exception("PDB file path has not been set");
                             }
-                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            if (pdbPathName.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", pdbPathName));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd{0}", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/Fd{0}", pdbPathName));
                             }
                         }
                         break;
@@ -982,17 +917,18 @@ namespace VisualCCommon
                         {
                             commandLineBuilder.Add("/ZI");
 
-                            if (null == options.ProgramDatabaseFilePath)
+                            string pdbPathName = options.ProgramDatabaseFilePath;
+                            if (null == pdbPathName)
                             {
                                 throw new Opus.Core.Exception("PDB file path has not been set");
                             }
-                            if (options.ProgramDatabaseFilePath.Contains(" "))
+                            if (pdbPathName.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", pdbPathName));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd{0}", options.ProgramDatabaseFilePath));
+                                commandLineBuilder.Add(System.String.Format("/Fd{0}", pdbPathName));
                             }
                         }
                         break;
@@ -1346,13 +1282,16 @@ namespace VisualCCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.ObjectFilePath)
+            string objPathName = this.ObjectFilePath;
+            if (null != objPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ObjectFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
             }
-            if (null != this.ProgramDatabaseFilePath)
+
+            string pdbPathName = this.ProgramDatabaseFilePath;
+            if (null != pdbPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ProgramDatabaseFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(pdbPathName), false);
             }
 
             return directoriesToCreate;

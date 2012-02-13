@@ -151,7 +151,10 @@ namespace VSSolutionBuilder
             }
 
             string refactoredPath = path;
-            refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
+            if (null != outputDirectoryPath)
+            {
+                refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
+            }
             refactoredPath = UseIntDirMacro(refactoredPath, intermediateDirectoryPath);
             refactoredPath = UseProjectMacro(refactoredPath, projectName);
             refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);

@@ -82,22 +82,78 @@ namespace C
             set;
         }
 
-        public abstract string OutputFilePath
+        public string OutputFilePath
         {
-            get;
-            set;
+            get
+            {
+                return this.OutputPaths[C.OutputFileFlags.Executable];
+            }
+            set
+            {
+                this.OutputPaths[C.OutputFileFlags.Executable] = value;
+            }
         }
 
-        public abstract string StaticImportLibraryFilePath
+        public string StaticImportLibraryFilePath
         {
-            get;
-            set;
+            get
+            {
+                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
+            }
+            set
+            {
+                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
+            }
         }
 
-        public abstract string MapFilePath
+        public string MapFilePath
         {
-            get;
-            set;
+            get
+            {
+                return this.OutputPaths[C.OutputFileFlags.MapFile];
+            }
+            set
+            {
+                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
+            }
+        }
+
+        public override void Finalize(Opus.Core.Target target)
+        {
+            Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
+
+            ILinkerOptions options = this as ILinkerOptions;
+
+            if (null == this.OutputFilePath)
+            {
+                string outputPrefix = string.Empty;
+                string outputSuffix = string.Empty;
+                if (options.OutputType == ELinkerOutput.Executable)
+                {
+                    outputSuffix = toolchain.ExecutableSuffix;
+                }
+                else if (options.OutputType == ELinkerOutput.DynamicLibrary)
+                {
+                    outputPrefix = toolchain.DynamicLibraryPrefix;
+                    outputSuffix = toolchain.DynamicLibrarySuffix;
+                }
+
+                string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, outputPrefix + this.OutputName) + outputSuffix;
+                this.OutputFilePath = outputPathName;
+            }
+
+            if (options.DynamicLibrary && null == this.StaticImportLibraryFilePath)
+            {
+                string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, toolchain.StaticImportLibraryPrefix + this.OutputName) + toolchain.StaticImportLibrarySuffix;
+                this.StaticImportLibraryFilePath = importLibraryPathName;
+            }
+            if (options.GenerateMapFile && null == this.MapFilePath)
+            {
+                string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.MapFileSuffix;
+                this.MapFilePath = mapPathName;
+            }
+
+            base.Finalize(target);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

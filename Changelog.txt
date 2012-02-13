@@ -1,3 +1,5 @@
+13-Feb-2012 Opus.Core.BaseOptionCollection now has a virtual Finalize method. This can be overridden in any of the option collection classes, and is executed after all option update delegates have been issued. This can be used to set output paths, for example.
+
 12-Feb-2012 Adding CanUseOrigin (bool) and RPath (StringArray) to the Gcc linker options for the 'z origin' and 'rpath' features.
 
 10-Feb-2012 Include dependency generation no longer writes duplicate file paths to .d files. Also, any 'nested' includes that do not contain any #includes will no longer terminate the search early.

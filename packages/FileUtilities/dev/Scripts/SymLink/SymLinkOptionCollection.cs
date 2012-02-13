@@ -29,11 +29,14 @@ namespace FileUtilities
             this["Type"].PrivateData = new SymLinkPrivateData(TypeCL);
         }
 
-        private static void LinkDirectorySetHandler(object sender, Opus.Core.Option option)
+        public override void Finalize(Opus.Core.Target target)
         {
-            SymLinkOptionCollection options = sender as SymLinkOptionCollection;
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            options.OutputPaths[SymLinkOutputFileFlags.Link] = System.IO.Path.Combine(stringOption.Value, options.LinkName);
+            if (null == this.OutputPaths[SymLinkOutputFileFlags.Link])
+            {
+                this.OutputPaths[SymLinkOutputFileFlags.Link] = System.IO.Path.Combine(this.LinkDirectory, this.LinkName);
+            }
+
+            base.Finalize(target);
         }
 
         private static void TypeCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

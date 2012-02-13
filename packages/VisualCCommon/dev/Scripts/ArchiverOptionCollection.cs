@@ -34,37 +34,6 @@ namespace VisualCCommon
         {
         }
 
-        public override string LibraryFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.StaticLibrary];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = value;
-            }
-        }
-
-        protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
-        {
-            ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-            Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
-            switch (enumOption.Value)
-            {
-                case C.EArchiverOutput.StaticLibrary:
-                    {
-                        string libraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName + ".lib");
-                        options.LibraryFilePath = libraryPathname;
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
-            }
-        }
-
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;

@@ -7,7 +7,15 @@ namespace GccCommon
 {
     public abstract class Toolchain : C.Toolchain
     {
-        public override string ObjectFileExtension
+        public override string PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        public override string ObjectFileSuffix
         {
             get
             {
@@ -15,7 +23,15 @@ namespace GccCommon
             }
         }
 
-        public override string StaticLibraryExtension
+        public override string StaticLibraryPrefix
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        public override string StaticLibrarySuffix
         {
             get
             {
@@ -23,7 +39,15 @@ namespace GccCommon
             }
         }
 
-        public override string StaticImportLibraryExtension
+        public override string StaticImportLibraryPrefix
+        {
+            get
+            {
+                return this.StaticLibraryPrefix;
+            }
+        }
+
+        public override string StaticImportLibrarySuffix
         {
             get
             {
@@ -39,6 +63,38 @@ namespace GccCommon
                 {
                     return null;
                 }
+            }
+        }
+
+        public override string DynamicLibraryPrefix
+        {
+            get
+            {
+                return this.StaticLibraryPrefix;
+            }
+        }
+
+        public override string DynamicLibrarySuffix
+        {
+            get
+            {
+                return this.StaticImportLibrarySuffix;
+            }
+        }
+
+        public override string ExecutableSuffix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        public override string MapFileSuffix
+        {
+            get
+            {
+                return ".map";
             }
         }
 

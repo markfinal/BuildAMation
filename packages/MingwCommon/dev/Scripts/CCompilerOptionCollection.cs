@@ -74,32 +74,6 @@ namespace MingwCommon
         {
         }
 
-        public override string ObjectFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
-            }
-        }
-
-        public override string PreprocessedFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
-            }
-        }
-
         protected static void ToolchainOptionCollectionSetHandler(object sender, Opus.Core.Option option)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
@@ -176,37 +150,6 @@ namespace MingwCommon
             }
         }
 
-        protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
-        {
-            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
-            if (null == options.OutputName)
-            {
-                options.ObjectFilePath = null;
-                return;
-            }
-
-            Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
-            switch (enumOption.Value)
-            {
-                case C.ECompilerOutput.CompileOnly:
-                    {
-                        string objectPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".o";
-                        options.ObjectFilePath = objectPathname;
-                    }
-                    break;
-
-                case C.ECompilerOutput.Preprocess:
-                    {
-                        string preprocessedPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".i";
-                        options.PreprocessedFilePath = preprocessedPathname;
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ECompilerOutput");
-            }
-        }
-
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
@@ -220,26 +163,32 @@ namespace MingwCommon
             switch (enumOption.Value)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLineBuilder.Add("-c");
-                    if (options.ObjectFilePath.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.ObjectFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o {0}", options.ObjectFilePath));
+                        commandLineBuilder.Add("-c");
+                        string objPathName = options.ObjectFilePath;
+                        if (objPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o \"{0}\"", objPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o {0}", objPathName));
+                        }
                     }
                     break;
 
                 case C.ECompilerOutput.Preprocess:
-                    commandLineBuilder.Add("-E");
-                    if (options.ObjectFilePath.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.ObjectFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o {0}", options.ObjectFilePath));
+                        commandLineBuilder.Add("-E");
+                        string objPathName = options.ObjectFilePath;
+                        if (objPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o \"{0}\"", objPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o {0}", objPathName));
+                        }
                     }
                     break;
 
@@ -432,9 +381,10 @@ namespace MingwCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.ObjectFilePath)
+            string objPathName = this.ObjectFilePath;
+            if (null != objPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.ObjectFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
             }
 
             return directoriesToCreate;

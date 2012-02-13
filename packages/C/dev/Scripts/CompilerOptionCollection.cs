@@ -116,16 +116,52 @@ namespace C
             set;
         }
 
-        public abstract string ObjectFilePath
+        public string ObjectFilePath
         {
-            get;
-            set;
+            get
+            {
+                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
+            }
+
+            set
+            {
+                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
+            }
         }
 
-        public abstract string PreprocessedFilePath
+        public string PreprocessedFilePath
         {
-            get;
-            set;
+            get
+            {
+                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
+            }
+
+            set
+            {
+                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
+            }
+        }
+
+        public override void Finalize(Opus.Core.Target target)
+        {
+            if (null != this.OutputName)
+            {
+                Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
+
+                ICCompilerOptions options = this as ICCompilerOptions;
+                if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
+                {
+                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.ObjectFileSuffix;
+                    this.ObjectFilePath = objectPathname;
+                }
+                else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
+                {
+                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.PreprocessedOutputSuffix;
+                    this.PreprocessedFilePath = preprocessedPathname;
+                }
+            }
+
+            base.Finalize(target);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

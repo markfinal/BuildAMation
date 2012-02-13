@@ -60,11 +60,14 @@ namespace QtCommon
             this["PathPrefix"].PrivateData = new MocPrivateData(PathPrefixCommandLine);
         }
 
-        private static void MocOutputPathSetHandler(object sender, Opus.Core.Option option)
+        public override void Finalize(Opus.Core.Target target)
         {
-            MocOptionCollection options = sender as MocOptionCollection;
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            options.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = stringOption.Value;
+            if (null == this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile])
+            {
+                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = this.MocOutputPath;
+            }
+
+            base.Finalize(target);
         }
 
         private static void MocOutputPathCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

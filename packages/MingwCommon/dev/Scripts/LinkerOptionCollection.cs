@@ -47,69 +47,6 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
         }
 
-        public override string OutputFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.Executable];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.Executable] = value;
-            }
-        }
-
-        public override string StaticImportLibraryFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
-            }
-        }
-
-        public override string MapFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.MapFile];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
-            }
-        }
-
-        protected static void OutputTypeSetHandler(object sender, Opus.Core.Option option)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
-            switch (enumOption.Value)
-            {
-                case C.ELinkerOutput.Executable:
-                    {
-                        string executablePathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName + ".exe");
-                        options.OutputFilePath = executablePathname;
-                    }
-                    break;
-
-                case C.ELinkerOutput.DynamicLibrary:
-                    {
-                        string dynamicLibraryPathname = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".dll";
-                        string importLibraryPathname = System.IO.Path.Combine(options.LibraryDirectoryPath, "lib" + options.OutputName) + ".a";
-                        options.OutputFilePath = dynamicLibraryPathname;
-                        options.StaticImportLibraryFilePath = importLibraryPathname;
-                    }
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
-            }
-        }
-
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
@@ -118,13 +55,14 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-                    if (options.OutputFilePath.Contains(" "))
+                    string outputPathName = options.OutputFilePath;
+                    if (outputPathName.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", options.OutputFilePath));
+                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", outputPathName));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("-o {0}", options.OutputFilePath));
+                        commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                     }
                     break;
 
@@ -211,21 +149,6 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             }
         }
 
-        protected static void GenerateMapFileSetHandler(object sender, Opus.Core.Option option)
-        {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (boolOption.Value)
-            {
-                string mapPathName = System.IO.Path.Combine(options.OutputDirectoryPath, options.OutputName) + ".map";
-                options.MapFilePath = mapPathName;
-            }
-            else
-            {
-                options.MapFilePath = null;
-            }
-        }
-
         private static void GenerateMapFileCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -267,13 +190,16 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.OutputFilePath)
+            string outputPathName = this.OutputFilePath;
+            if (null != outputPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.OutputFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
             }
-            if (null != this.StaticImportLibraryFilePath)
+
+            string libraryPathName = this.StaticImportLibraryFilePath;
+            if (null != libraryPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.StaticImportLibraryFilePath), false);
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(libraryPathName), false);
             }
 
             return directoriesToCreate;

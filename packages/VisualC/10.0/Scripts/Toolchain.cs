@@ -176,21 +176,5 @@ namespace VisualC
                 }
             }
         }
-
-        public override string ObjectFileExtension
-        {
-            get
-            {
-                return ".obj";
-            }
-        }
-
-        public override string StaticLibraryExtension
-        {
-            get
-            {
-                return ".lib";
-            }
-        }
     }
 }

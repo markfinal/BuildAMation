@@ -38,10 +38,30 @@ namespace C
             set;
         }
 
-        public abstract string LibraryFilePath
+        public string LibraryFilePath
         {
-            get;
-            set;
+            get
+            {
+                return this.OutputPaths[C.OutputFileFlags.StaticLibrary];
+            }
+
+            set
+            {
+                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = value;
+            }
+        }
+
+        public override void Finalize(Opus.Core.Target target)
+        {
+            Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
+
+            if (null == this.LibraryFilePath)
+            {
+                string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, toolchain.StaticLibraryPrefix + this.OutputName + toolchain.StaticLibrarySuffix);
+                this.LibraryFilePath = libraryPathname;
+            }
+
+            base.Finalize(target);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

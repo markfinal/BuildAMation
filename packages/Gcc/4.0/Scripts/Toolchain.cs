@@ -60,21 +60,5 @@ namespace Gcc
                 return version;
             }
         }
-
-        public override string ObjectFileExtension
-        {
-            get
-            {
-                return ".o";
-            }
-        }
-
-        public override string StaticLibraryExtension
-        {
-            get
-            {
-                return ".a";
-            }
-        }
     }
 }

@@ -21,17 +21,52 @@ namespace C
             protected set;
         }
 
-        public abstract string ObjectFileExtension
+        public abstract string PreprocessedOutputSuffix
+        {
+            get;
+        }
+        
+        public abstract string ObjectFileSuffix
         {
             get;
         }
 
-        public abstract string StaticLibraryExtension
+        public abstract string StaticLibraryPrefix
         {
             get;
         }
 
-        public abstract string StaticImportLibraryExtension
+        public abstract string StaticLibrarySuffix
+        {
+            get;
+        }
+
+        public abstract string StaticImportLibraryPrefix
+        {
+            get;
+        }
+
+        public abstract string StaticImportLibrarySuffix
+        {
+            get;
+        }
+
+        public abstract string DynamicLibraryPrefix
+        {
+            get;
+        }
+
+        public abstract string DynamicLibrarySuffix
+        {
+            get;
+        }
+
+        public abstract string ExecutableSuffix
+        {
+            get;
+        }
+
+        public abstract string MapFileSuffix
         {
             get;
         }

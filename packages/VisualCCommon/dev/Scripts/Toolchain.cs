@@ -17,7 +17,15 @@ namespace VisualCCommon
 
         public abstract string LibPath(Opus.Core.Target target);
 
-        public override string ObjectFileExtension
+        public override string PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        public override string ObjectFileSuffix
         {
             get
             {
@@ -25,7 +33,15 @@ namespace VisualCCommon
             }
         }
 
-        public override string StaticLibraryExtension
+        public override string StaticLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        public override string StaticLibrarySuffix
         {
             get
             {
@@ -33,11 +49,51 @@ namespace VisualCCommon
             }
         }
 
-        public override string StaticImportLibraryExtension
+        public override string StaticImportLibraryPrefix
         {
             get
             {
-                return this.StaticLibraryExtension;
+                return this.StaticLibraryPrefix;
+            }
+        }
+
+        public override string StaticImportLibrarySuffix
+        {
+            get
+            {
+                return this.StaticLibrarySuffix;
+            }
+        }
+
+        public override string DynamicLibraryPrefix
+        {
+            get
+            {
+                return this.StaticLibraryPrefix;
+            }
+        }
+
+        public override string DynamicLibrarySuffix
+        {
+            get
+            {
+                return ".dll";
+            }
+        }
+
+        public override string ExecutableSuffix
+        {
+            get
+            {
+                return ".exe";
+            }
+        }
+
+        public override string MapFileSuffix
+        {
+            get
+            {
+                return ".map";
             }
         }
 
