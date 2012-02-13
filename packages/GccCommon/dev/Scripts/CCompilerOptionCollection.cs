@@ -166,28 +166,32 @@ namespace GccCommon
             switch (enumOption.Value)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLineBuilder.Add("-c");
-                    string objPathName = options.ObjectFilePath;
-                    if (objPathName.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", objPathName));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o {0}", objPathName));
+                        commandLineBuilder.Add("-c");
+                        string objPathName = options.ObjectFilePath;
+                        if (objPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o \"{0}\"", objPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o {0}", objPathName));
+                        }
                     }
                     break;
 
                 case C.ECompilerOutput.Preprocess:
-                    commandLineBuilder.Add("-E");
-                    string objPathName = options.ObjectFilePath;
-                    if (objPathName.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\" ", objPathName));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o {0} ", objPathName));
+                        commandLineBuilder.Add("-E");
+                        string objPathName = options.ObjectFilePath;
+                        if (objPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o \"{0}\" ", objPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o {0} ", objPathName));
+                        }
                     }
                     break;
 

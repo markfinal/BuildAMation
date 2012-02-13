@@ -60,14 +60,16 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
-                    string outputPathName = options.OutputFilePath;
-                    if (outputPathName.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", outputPathName));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
+                        string outputPathName = options.OutputFilePath;
+                        if (outputPathName.Contains(" "))
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o \"{0}\"", outputPathName));
+                        }
+                        else
+                        {
+                            commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
+                        }
                     }
                     break;
 
