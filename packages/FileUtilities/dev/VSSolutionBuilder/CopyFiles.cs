@@ -105,7 +105,8 @@ namespace VSSolutionBuilder
                 else
                 {
                     // TODO: this should probably be a Utility project
-                    throw new Opus.Core.Exception("Unsupported copying explicit source files to an explicit directory");
+                    Opus.Core.Log.MessageAll("TODO: Unsupported copying explicit source files to an explicit directory");
+                    //throw new Opus.Core.Exception("Unsupported copying explicit source files to an explicit directory");
                 }
             }
 
