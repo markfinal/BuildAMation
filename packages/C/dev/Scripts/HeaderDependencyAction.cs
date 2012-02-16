@@ -35,7 +35,7 @@ namespace C
 
         bool Opus.Core.IAction.Execute()
         {
-            Opus.Core.State.Add<bool>("C", "HeaderDependencyGeneration", false);
+            Opus.Core.State.Set("C", "HeaderDependencyGeneration", false);
 
             Opus.Core.Log.DebugMessage("C header dependency generation has been disabled");
 
