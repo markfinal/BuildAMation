@@ -106,6 +106,7 @@ namespace Opus.Core
         {
             Log.Info("Build started");
 
+            State.BuildStartedEvent.Set();
             this.active = true;
             System.Threading.ThreadPool.QueueUserWorkItem(this.OutputErrorProcessingThread, this);
 

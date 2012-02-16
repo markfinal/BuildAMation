@@ -68,6 +68,7 @@ namespace Opus.Core
             Add<string>("System", "BuildRoot", null);
             Add<DependencyGraph>("System", "Graph", null);
             Add<BuildManager>("System", "BuildManager", null);
+            Add<System.Threading.ManualResetEvent>("System", "BuildStartedEvent", new System.Threading.ManualResetEvent(false));
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
@@ -506,6 +507,19 @@ namespace Opus.Core
             get
             {
                 return Get("System", "BuildManager") as BuildManager;
+            }
+        }
+
+        public static System.Threading.ManualResetEvent BuildStartedEvent
+        {
+            set
+            {
+                Set("System", "BuildStartedEvent", value);
+            }
+
+            get
+            {
+                return Get("System", "BuildStartedEvent") as System.Threading.ManualResetEvent;
             }
         }
 

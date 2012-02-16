@@ -168,27 +168,20 @@ namespace DependencyChecker
 
         internal static void ProcessFileQueue(object obj)
         {
+            // wait for the build to start
+            System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Opus.Core.State.BuildStartedEvent }, -1);
+            Opus.Core.BuildManager buildManager = Opus.Core.State.BuildManager;
+            buildManager.AdditionalThreadCompletionEvents.Add(completedEvent);
+
             DependencyQueue data = obj as DependencyQueue;
             for (; ; )
             {
-                // occasionally wake up and see if there is any data, or if the build has finished
-                int timeOutMS = 1000;
-                if (!System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, timeOutMS))
-                {
-                    Opus.Core.BuildManager buildManager = Opus.Core.State.BuildManager;
-                    if (null != buildManager)
-                    {
-                        if (buildManager.AdditionalThreadCompletionEvents.Contains(completedEvent))
-                        {
-                            buildManager.AdditionalThreadCompletionEvents.Add(completedEvent);
-                        }
-                        if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { buildManager.Finished }, 0))
-                        {
-                            break;
-                        }
-                    }
+                // wake up when there is data to be processed
+                int waitResult = System.Threading.WaitHandle.WaitAny(new System.Threading.WaitHandle[] { data.IsAlive, buildManager.Finished }, -1);
 
-                    continue;
+                if (1 == waitResult)
+                {
+                    break;
                 }
 
                 // do work while it's available
