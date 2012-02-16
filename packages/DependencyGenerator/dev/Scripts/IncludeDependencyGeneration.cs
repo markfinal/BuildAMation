@@ -37,7 +37,7 @@ namespace DependencyChecker
             }
 
             private System.Collections.Generic.Queue<Data> data = new System.Collections.Generic.Queue<Data>();
-            private System.Threading.ManualResetEvent alive = new System.Threading.ManualResetEvent(true);
+            private System.Threading.ManualResetEvent alive = new System.Threading.ManualResetEvent(false);
 
             public System.Threading.ManualResetEvent IsAlive
             {
@@ -52,7 +52,7 @@ namespace DependencyChecker
                 lock (this.data)
                 {
                     this.data.Enqueue(value);
-                    this.alive.Reset();
+                    this.alive.Set();
                 }
             }
 
@@ -63,7 +63,7 @@ namespace DependencyChecker
                 {
                     if (1 == this.data.Count)
                     {
-                        this.alive.Set();
+                        this.alive.Reset();
                     }
 
                     result = this.data.Dequeue();
@@ -171,9 +171,9 @@ namespace DependencyChecker
             DependencyQueue data = obj as DependencyQueue;
             for (; ; )
             {
-                int timeOutMS = 1000;
                 // occasionally wake up and see if there is any data, or if the build has finished
-                if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, timeOutMS))
+                int timeOutMS = 1000;
+                if (!System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, timeOutMS))
                 {
                     Opus.Core.BuildManager buildManager = Opus.Core.State.BuildManager;
                     if (null != buildManager)
@@ -197,7 +197,7 @@ namespace DependencyChecker
                     DependencyQueue.Data entry = data.Dequeue();
                     GenerateDepFile(entry, DependencyQueue.Style.Opus);
                 }
-                while (!System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, 0));
+                while (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, 0));
             }
 
             // signal complete so that the BuildManager no longer waits
