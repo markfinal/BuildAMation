@@ -61,11 +61,14 @@ namespace Opus.Core
             set
             {
                 this.scheduledNodeCount = value;
-                int percentComplete = 100 * this.scheduledNodeCount / this.TotalNodeCount;
+                int percentComplete = (this.TotalNodeCount > 0) ? 100 * this.scheduledNodeCount / this.TotalNodeCount : 100;
                 if (percentComplete != this.percentComplete)
                 {
                     this.percentComplete = percentComplete;
-                    ProgressUpdated(percentComplete);
+                    if (null != this.ProgressUpdated)
+                    {
+                        this.ProgressUpdated(percentComplete);
+                    }
                 }
             }
         }
