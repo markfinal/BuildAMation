@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths
+    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
         private string binPath;
@@ -36,6 +36,14 @@ namespace Gcc
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
             return this.environmentPaths;
+        }
+
+        string Opus.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
         }
     }
 }

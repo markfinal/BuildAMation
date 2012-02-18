@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract class Linker : C.Linker, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
+    public abstract class Linker : C.Linker, Opus.Core.ITool
     {
         public abstract string Executable(Opus.Core.Target target);
 
@@ -24,14 +24,6 @@ namespace GccCommon
                 return "-Wl,--end-group";
             }
         }
- 
-        string Opus.Core.IToolSupportsResponseFile.Option
-        {
-            get
-            {
-                return "@";
-            }
-        }
-   }
+    }
 }
 

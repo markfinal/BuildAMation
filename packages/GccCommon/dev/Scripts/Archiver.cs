@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile
+    public class Archiver : C.Archiver, Opus.Core.ITool
     {
         private string binPath;
 
@@ -23,14 +23,6 @@ namespace GccCommon
         public string Executable(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "ar");
-        }
-
-        string Opus.Core.IToolSupportsResponseFile.Option
-        {
-            get
-            {
-                return "@";
-            }
         }
     }
 }

@@ -1,3 +1,5 @@
+18-Feb-2012 Gcc-4.0 manual does not specify response file support. Neither does 4.1, but it does work.
+
 16-Feb-2012 Added Opus.Core.State.BuildStartedEvent, which is issued by the BuildManager. This can be used by additional build threads to wait until the build has started.
 
 16-Feb-2012 Fixed ridiculously high CPU load from the C include dependency checking thread.
