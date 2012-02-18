@@ -33,6 +33,10 @@ namespace Opus.Core
                 }
 
                 TimeProfile profileTime = State.TimingProfiles[(int)profile];
+                if (null == profileTime)
+                {
+                    continue;
+                }
 
                 int minuteLength = profileTime.Elapsed.Minutes.ToString().Length;
                 if (minuteLength > maxMinuteLength)
@@ -76,7 +80,7 @@ namespace Opus.Core
             {
                 int intProfile = (int)profile;
                 TimeProfile profileTime = State.TimingProfiles[intProfile];
-                System.TimeSpan elapsedTime = profileTime.Elapsed;
+                System.TimeSpan elapsedTime = (null != profileTime) ? profileTime.Elapsed : new System.TimeSpan(0);
                 if (ETimingProfiles.TimedTotal != profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
@@ -92,8 +96,8 @@ namespace Opus.Core
                 string minuteString = elapsedTime.Minutes.ToString();
                 string secondString = elapsedTime.Seconds.ToString();
                 string millisecondString = elapsedTime.Milliseconds.ToString();
-                string startTimeString = profileTime.Start.ToString(TimeProfile.DateTimeFormat);
-                string stopTimeString = profileTime.Stop.ToString(TimeProfile.DateTimeFormat);
+                string startTimeString = (null != profileTime) ? profileTime.Start.ToString(TimeProfile.DateTimeFormat) : "0";
+                string stopTimeString = (null != profileTime) ? profileTime.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
 
                 if (ETimingProfiles.TimedTotal == profile)
                 {
