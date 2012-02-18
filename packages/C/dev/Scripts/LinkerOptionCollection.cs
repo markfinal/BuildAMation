@@ -144,9 +144,19 @@ namespace C
 
             if (options.DynamicLibrary && null == this.StaticImportLibraryFilePath)
             {
-                string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, toolchain.StaticImportLibraryPrefix + this.OutputName) + toolchain.StaticImportLibrarySuffix;
-                this.StaticImportLibraryFilePath = importLibraryPathName;
+                if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                {
+                    // explicit import library
+                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, toolchain.StaticImportLibraryPrefix + this.OutputName) + toolchain.StaticImportLibrarySuffix;
+                    this.StaticImportLibraryFilePath = importLibraryPathName;
+                }
+                else
+                {
+                    // shared objects
+                    this.StaticImportLibraryFilePath = this.OutputFilePath;
+                }
             }
+
             if (options.GenerateMapFile && null == this.MapFilePath)
             {
                 string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.MapFileSuffix;
