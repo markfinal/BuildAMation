@@ -1,3 +1,5 @@
+18-Feb-2012 Added a Unix/OSX bash shell script to run the testpackages as a set of unittests.
+
 18-Feb-2012 Added a Windows batch file to run the testpackages as a set of unittests.
 
 18-Feb-2012 If a package definition file has two versions of a package, one with a filter, one without, and the filter matches the current host, fix the problem that the filtered version was not taken.
