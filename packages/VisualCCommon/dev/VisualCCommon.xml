@@ -17,5 +17,7 @@
   </Opus:RequiredDotNetAssemblies>
   <Opus:SupportedPlatforms>
     <Opus:Platform Name="Windows" />
+    <Opus:Platform Name="Unix" />
+    <Opus:Platform Name="OSX" />
   </Opus:SupportedPlatforms>
 </Opus:PackageDefinition>

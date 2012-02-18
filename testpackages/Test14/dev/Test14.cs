@@ -27,10 +27,8 @@ namespace Test14
         [Opus.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc"})]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
     }
 
     class DynamicLibraryB : C.DynamicLibrary
@@ -60,10 +58,8 @@ namespace Test14
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(DynamicLibraryA));
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
     }
 
     class Application : C.Application

@@ -1,3 +1,5 @@
+19-Feb-2012 Reverted 0.30 change; many packages were listed as only being supported on some platforms, which required OPUS_HOST_xxx preprocessor definitions in multiplatform scripts. This made the scripts messy and harder to read and maintain. Since assembly caching now works, the cost of compiling package assemblies is reduced, so removing unused packages on some platforms is less important.
+
 18-Feb-2012 Fixing time profiling utilities for builds with zero nodes in the graph.
 
 18-Feb-2012 Fixing Opus.Core.BuildScheduler for builds with zero nodes in the graph.

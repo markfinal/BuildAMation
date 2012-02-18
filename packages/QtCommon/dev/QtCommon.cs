@@ -64,13 +64,11 @@ namespace QtCommon
         [C.ExportCompilerOptionsDelegate]
         void QtCommon_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
         {
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
             VisualCCommon.ICCompilerOptions compilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != compilerOptions)
             {
                 compilerOptions.WarningLevel = VisualCCommon.EWarningLevel.Level3;
             }
-#endif
         }
 
         public override Opus.Core.StringArray Libraries(Opus.Core.Target target)

@@ -39,10 +39,8 @@ namespace Test13
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(Qt.Qt));
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
 
         [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Configuration=Opus.Core.EConfiguration.Debug, Toolchains=new string[] { "mingw" })]
         Opus.Core.StringArray winMingwDebugLibraries = new Opus.Core.StringArray(

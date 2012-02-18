@@ -13,6 +13,7 @@
     <Opus:DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
   </Opus:RequiredDotNetAssemblies>
   <Opus:SupportedPlatforms>
+    <Opus:Platform Name="Windows" />
     <Opus:Platform Name="Unix" />
     <Opus:Platform Name="OSX" />
   </Opus:SupportedPlatforms>

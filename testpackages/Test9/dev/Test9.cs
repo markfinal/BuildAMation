@@ -61,12 +61,10 @@ namespace Test9
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
             if (Opus.Core.OSUtilities.IsWindows(target.Platform))
             {
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
                 if (linkerOptions is VisualC.LinkerOptionCollection)
                 {
                     linkerOptions.Libraries.Add("KERNEL32.lib");
                 }
-#endif
             }
         }
 
@@ -113,10 +111,8 @@ namespace Test9
         [Opus.Core.SourceFiles]
         CPlusPlusSourceFiles cppSourceFiles = new CPlusPlusSourceFiles();
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] {"visualc"})]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
     }
 
     class CStaticLibraryFromFile : C.StaticLibrary
@@ -228,10 +224,8 @@ namespace Test9
         [Opus.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
@@ -257,10 +251,8 @@ namespace Test9
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
@@ -290,10 +282,8 @@ namespace Test9
         [Opus.Core.SourceFiles]
         C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile();
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
@@ -326,10 +316,8 @@ namespace Test9
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-#if OPUS_HOST_WIN32 || OPUS_HOST_WIN64
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-#endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
