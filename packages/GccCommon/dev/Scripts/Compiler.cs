@@ -6,7 +6,7 @@
 namespace GccCommon
 {
     // Not sealed since the C++ compiler inherits from it
-    public abstract class CCompiler : C.Compiler
+    public abstract class CCompiler : C.Compiler, Opus.Core.ITool
     {
         public abstract string Executable(Opus.Core.Target target);
 
