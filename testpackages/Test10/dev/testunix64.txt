@@ -1,1 +1,1 @@
-../../gccunix.rsp
+../../gcc.rsp

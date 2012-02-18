@@ -1,7 +1,0 @@
--builder=Native
--buildroot=build
--platforms=unix32
--configurations=debug
--C.toolchain=gcc
--CSharp.toolchain=dotnet
--verbosity=2
