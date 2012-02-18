@@ -1,4 +1,6 @@
-19-Feb-2012 Reverted 0.30 change; many packages were listed as only being supported on some platforms, which required OPUS_HOST_xxx preprocessor definitions in multiplatform scripts. This made the scripts messy and harder to read and maintain. Since assembly caching now works, the cost of compiling package assemblies is reduced, so removing unused packages on some platforms is less important.
+18-Feb-2012 If a package definition file has two versions of a package, one with a filter, one without, and the filter matches the current host, fix the problem that the filtered version was not taken.
+
+18-Feb-2012 Reverted 0.30 change; many packages were listed as only being supported on some platforms, which required OPUS_HOST_xxx preprocessor definitions in multiplatform scripts. This made the scripts messy and harder to read and maintain. Since assembly caching now works, the cost of compiling package assemblies is reduced, so removing unused packages on some platforms is less important.
 
 18-Feb-2012 Fixing time profiling utilities for builds with zero nodes in the graph.
 

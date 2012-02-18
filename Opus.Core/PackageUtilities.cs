@@ -179,6 +179,7 @@ namespace Opus.Core
                     }
 
                     bool toAdd = true;
+                    bool toRemoveDuplicate = false;
                     foreach (PackageIdentifier id3 in State.DependentPackageList)
                     {
                         if (id2.MatchName(id3.Name, true))
@@ -201,6 +202,7 @@ namespace Opus.Core
                                 {
                                     Log.DebugMessage("Package '{0}' is older than '{1}' but has different platform filters. Adding.", id2.ToString(), id3.ToString());
                                     toAdd = true;
+                                    toRemoveDuplicate = true;
                                 }
                                 else
                                 {
@@ -215,6 +217,21 @@ namespace Opus.Core
 
                     if (toAdd)
                     {
+                        if (toRemoveDuplicate)
+                        {
+                            PackageIdentifier dupToRemove = null;
+                            foreach (PackageIdentifier dup in State.DependentPackageList)
+                            {
+                                if (dup.Name == id2.Name)
+                                {
+                                    dupToRemove = dup;
+                                    break;
+                                }
+                            }
+
+                            State.DependentPackageList.Remove(dupToRemove);
+                        }
+
                         State.DependentPackageList.Add(id2);
                     }
                 }
