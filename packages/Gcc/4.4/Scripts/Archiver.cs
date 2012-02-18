@@ -7,6 +7,11 @@ namespace Gcc
 {
     public sealed class Archiver : GccCommon.Archiver, Opus.Core.IToolSupportsResponseFile
     {
+        public Archiver(Opus.Core.Target target)
+            : base(target)
+        {
+        }
+
         string Opus.Core.IToolSupportsResponseFile.Option
         {
             get
