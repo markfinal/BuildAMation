@@ -208,7 +208,6 @@ namespace Opus.Core
 
                 // claim ownership
                 options.SetNodeOwnership(node);
-                options.RefreshCachedValues();
             }
             else
             {

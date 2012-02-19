@@ -88,7 +88,9 @@ namespace Opus.Core
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
-        public void RefreshCachedValues()
+        // this is private as I don't think it's needed anywhere now that we have the FinalizeOptions method
+        // but it's kept around just in case
+        private void ProcessAllSetHandlers()
         {
             System.Type type = this.GetType();
             System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.Static |           // don't need an instance
