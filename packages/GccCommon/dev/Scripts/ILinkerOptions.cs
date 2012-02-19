@@ -13,6 +13,12 @@ namespace GccCommon
             set;
         }
 
+        bool AllowUndefinedSymbols
+        {
+            get;
+            set;
+        }
+
         Opus.Core.StringArray RPath
         {
             get;

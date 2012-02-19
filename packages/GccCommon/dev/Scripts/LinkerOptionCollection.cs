@@ -25,6 +25,7 @@ namespace GccCommon
             // linker specific options
             this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
             this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCL);
+            this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCL);
             this["RPath"].PrivateData = new PrivateData(RPathCL);
         }
 
@@ -39,6 +40,7 @@ namespace GccCommon
             this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
             this.CanUseOrigin = false;
+            this.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
             this.RPath = new Opus.Core.StringArray();
 
             /*
@@ -218,6 +220,19 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-z origin");
+            }
+        }
+
+        private static void AllowUndefinedSymbolsCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-z nodefs");
+            }
+            else
+            {
+                commandLineBuilder.Add("-z defs");
             }
         }
 

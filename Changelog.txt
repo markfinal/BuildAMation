@@ -1,3 +1,5 @@
+19-Feb-2012 Added Gcc linker option 'AllowUndefinedSymbols'. This defaults to true for shared objects and false for applications.
+
 19-Feb-2012 Gcc versions now expose the compiler option "Visibility" properly.
 
 18-Feb-2012 Added a Unix/OSX bash shell script to run the testpackages as a set of unittests.

@@ -149,6 +149,18 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("CanUseOriginSetHandler", this["CanUseOrigin"]);
             }
         }
+        public bool AllowUndefinedSymbols
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("AllowUndefinedSymbols");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("AllowUndefinedSymbols", value);
+                this.ProcessNamedSetHandler("AllowUndefinedSymbolsSetHandler", this["AllowUndefinedSymbols"]);
+            }
+        }
         public Opus.Core.StringArray RPath
         {
             get
