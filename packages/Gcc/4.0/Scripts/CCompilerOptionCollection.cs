@@ -6,7 +6,7 @@
 namespace Gcc
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : GccCommon.CCompilerOptionCollection
+    public partial class CCompilerOptionCollection : GccCommon.CCompilerOptionCollection, ICCompilerOptions
     {
         public CCompilerOptionCollection()
             : base()
