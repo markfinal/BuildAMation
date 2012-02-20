@@ -139,5 +139,39 @@ namespace QtCommon
                 this.list.Remove(file);
             }
         }
+
+        public Opus.Core.IModule GetChildModule(object owner, params string[] pathSegments)
+        {
+            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+            }
+
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier);
+            }
+
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            if (filePaths.Count != 1)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n')), false);
+            }
+
+            string pathToFind = filePaths[0];
+
+            foreach (MocFile mocFile in this.list)
+            {
+                if (mocFile.SourceFile.AbsolutePath == pathToFind)
+                {
+                    return mocFile;
+                }
+            }
+
+            return null;
+        }
     }
 }

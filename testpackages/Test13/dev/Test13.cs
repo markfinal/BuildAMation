@@ -25,6 +25,21 @@ namespace Test13
                 public MyMocFiles()
                 {
                     this.AddRelativePaths(this, "source", "*.h");
+
+                    Opus.Core.IModule mocFile = this.GetChildModule(this, "source", "myobject2.h");
+                    if (null != mocFile)
+                    {
+                        mocFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mocFile_UpdateOptions);
+                    }
+                }
+
+                void mocFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+                {
+                    QtCommon.MocOptionCollection options = module.Options as QtCommon.MocOptionCollection;
+                    if (null != options)
+                    {
+                        options.Defines.Add("CUSTOM_MOC_DEFINE_FOR_MYOBJECTS2");
+                    }
                 }
             }
 

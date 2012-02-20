@@ -7,5 +7,6 @@ namespace Opus.Core
 {
     public interface IModuleCollection : IModule, INestedDependents
     {
+        IModule GetChildModule(object owner, params string[] pathSegments);
     }
 }

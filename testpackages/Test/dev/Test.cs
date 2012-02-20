@@ -88,12 +88,26 @@ namespace Test
             this.AddRelativePaths(this, "source", "*.c");
 
             this.UpdateOptions += OverrideOptionCollection;
+
+            // override the options on one specific file
+            Opus.Core.IModule mainObjFile = this.GetChildModule(this, "source", "main.c");
+            if (null != mainObjFile)
+            {
+                mainObjFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mainObjFile_UpdateOptions);
+            }
+        }
+
+        void mainObjFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            compilerOptions.Defines.Add("DEFINE_FOR_MAIN_ONLY");
         }
 
         public void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.WarningsAsErrors = false;
+            compilerOptions.Defines.Add("DEFINE_FOR_ALL_SOURCE");
         }
     }
 
