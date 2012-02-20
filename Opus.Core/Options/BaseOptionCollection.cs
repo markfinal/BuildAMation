@@ -88,6 +88,7 @@ namespace Opus.Core
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
+#if false
         // this is private as I don't think it's needed anywhere now that we have the FinalizeOptions method
         // but it's kept around just in case
         private void ProcessAllSetHandlers()
@@ -102,6 +103,7 @@ namespace Opus.Core
                 InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option.Value);
             }
         }
+#endif
 
         public virtual void FinalizeOptions(Opus.Core.Target target)
         {
