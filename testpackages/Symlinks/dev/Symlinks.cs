@@ -15,7 +15,6 @@ namespace Symlinks
             if (null != options)
             {
                 options.LinkName = "TestFile.txt";
-                module.Options.RefreshCachedValues();
             }
         }
 
@@ -38,7 +37,6 @@ namespace Symlinks
             {
                 options.LinkName = "TestDir";
                 options.Type = FileUtilities.EType.Directory;
-                module.Options.RefreshCachedValues();
             }
         }
 
