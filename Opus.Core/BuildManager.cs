@@ -92,6 +92,20 @@ namespace Opus.Core
             BuildAgent availableAgent = this.agents[availableAgentIndex];
             return availableAgent;
         }
+
+        private bool HasFailed
+        {
+            get
+            {
+                if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
+                {
+                    Log.DebugMessage("Agent reports failure");
+                    return true;
+                }
+
+                return false;
+            }
+        }
         
         private void PreExecute()
         {
@@ -129,15 +143,15 @@ namespace Opus.Core
 
             while (this.scheduler.AreNodesAvailable)
             {
-                // check for failure
-                if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
+                BuildAgent agent = this.AvailableAgent();
+                DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
+
+                // check for failure to build a previous node
+                if (this.HasFailed)
                 {
-                    Log.DebugMessage("Agent reports failure");
                     break;
                 }
 
-                BuildAgent agent = this.AvailableAgent();
-                DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
                 if (null != nodeWork)
                 {
                     lock (this.nodesProcessing)
@@ -169,11 +183,7 @@ namespace Opus.Core
             System.Threading.WaitHandle.WaitAll(this.agentsAvailable.ToArray(), -1);
 
             // check for failure
-            bool agentsFailed = false;
-            if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
-            {
-                agentsFailed = true;
-            }
+            bool agentsFailed = this.HasFailed;
 
             bool returnValue;
             if (!agentsFailed)
