@@ -75,10 +75,12 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.StringArray environmentPaths = null;
+#if false
             if (tool is Opus.Core.IToolEnvironmentPaths)
             {
                 environmentPaths = (tool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
+#endif
             MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths);
             success = true;
             return returnData;
