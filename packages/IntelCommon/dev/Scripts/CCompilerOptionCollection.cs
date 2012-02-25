@@ -43,6 +43,9 @@ namespace IntelCommon
 
             base.InitializeDefaults(node);
 
+            // there is too much of a headache with include paths to enable this!
+            this.IgnoreStandardIncludePaths = false;
+
             Opus.Core.Target target = node.Target;
             this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
 
