@@ -21,6 +21,7 @@ namespace Intel
             this.binPath = toolChainInstance.BinPath(target);
 
             this.environmentPaths.Add("/opt/intel/bin");
+            this.environmentPaths.Add("/usr/bin");
         }
 
         public override string Executable(Opus.Core.Target target)
