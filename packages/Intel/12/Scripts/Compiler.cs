@@ -22,6 +22,7 @@ namespace Intel
             this.binPath = toolChainInstance.BinPath(target);
 
             this.includeFolders.Add("/usr/include");
+#if false
             {
                 // this is for some Linux distributions
                 string path = System.String.Format("/usr/include/{0}", this.MachineType(target));
@@ -30,7 +31,6 @@ namespace Intel
                     this.includeFolders.Add(path);
                 }
             }
-#if false
             string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", this.MachineType(target), this.GccVersion(target));
             string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
             string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
