@@ -176,27 +176,13 @@ Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynam
             if (boolOption.Value)
             {
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
-                if (Opus.Core.OSUtilities.IsUnixHosting)
+                if (options.MapFilePath.Contains(" "))
                 {
-                    if (options.MapFilePath.Contains(" "))
-                    {
-                        commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", options.MapFilePath));
-                    }
+                    commandLineBuilder.Add(System.String.Format("-Map,\"{0}\"", options.MapFilePath));
                 }
-                else if (Opus.Core.OSUtilities.IsOSXHosting)
+                else
                 {
-                    if (options.MapFilePath.Contains(" "))
-                    {
-                        commandLineBuilder.Add(System.String.Format("-Wl,-map,\"{0}\"", options.MapFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-Wl,-map,{0}", options.MapFilePath));
-                    }
+                    commandLineBuilder.Add(System.String.Format("-Map,{0}", options.MapFilePath));
                 }
             }
         }
