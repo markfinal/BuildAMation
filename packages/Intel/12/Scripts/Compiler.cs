@@ -22,6 +22,7 @@ namespace Intel
             this.binPath = toolChainInstance.BinPath(target);
 
             this.includeFolders.Add("/usr/include");
+            this.includeFolders.Add("/usr/include/linux");
 #if false
             {
                 // this is for some Linux distributions
