@@ -192,11 +192,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynam
             Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
             if (sixtyFourBitOption.Value)
             {
-                commandLineBuilder.Add("-m64");
+                commandLineBuilder.Add("-arch elf_x86_64");
             }
             else
             {
-                commandLineBuilder.Add("-m32");
+                commandLineBuilder.Add("-arch elf_i386");
             }
         }
 
