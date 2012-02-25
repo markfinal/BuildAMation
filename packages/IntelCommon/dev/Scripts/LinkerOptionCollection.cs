@@ -178,11 +178,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynam
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (options.MapFilePath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("-Map,\"{0}\"", options.MapFilePath));
+                    commandLineBuilder.Add(System.String.Format("-Map \"{0}\"", options.MapFilePath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("-Map,{0}", options.MapFilePath));
+                    commandLineBuilder.Add(System.String.Format("-Map {0}", options.MapFilePath));
                 }
             }
         }
