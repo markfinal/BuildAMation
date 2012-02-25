@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Intel
 {
-    public sealed partial class ToolchainOptionCollection : GccCommon.ToolchainOptionCollection
+    public sealed partial class ToolchainOptionCollection : IntelCommon.ToolchainOptionCollection
     {
         public ToolchainOptionCollection()
             : base()

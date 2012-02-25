@@ -13,7 +13,7 @@ namespace IntelCommon
         {
             if (!(Opus.Core.OSUtilities.IsUnix(target.Platform) || Opus.Core.OSUtilities.IsOSX(target.Platform)))
             {
-                throw new Opus.Core.Exception("Gcc archiver is only supported under unix32, unix64, osx32 and osx64 platforms");
+                throw new Opus.Core.Exception("Intel archiver is only supported under unix32, unix64, osx32 and osx64 platforms");
             }
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;

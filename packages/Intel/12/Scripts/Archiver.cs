@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Intel
 {
-    public sealed class Archiver : GccCommon.Archiver, Opus.Core.IToolSupportsResponseFile
+    public sealed class Archiver : IntelCommon.Archiver, Opus.Core.IToolSupportsResponseFile
     {
         public Archiver(Opus.Core.Target target)
             : base(target)

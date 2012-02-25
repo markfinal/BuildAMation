@@ -6,7 +6,7 @@
 namespace Intel
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : GccCommon.CCompilerOptionCollection, ICCompilerOptions
+    public partial class CCompilerOptionCollection : IntelCommon.CCompilerOptionCollection, ICCompilerOptions
     {
         public CCompilerOptionCollection()
             : base()
@@ -22,7 +22,6 @@ namespace Intel
         {
             base.InitializeDefaults(node);
 
-            // requires gcc 4.0
             this.Visibility = EVisibility.Hidden;
         }
 
@@ -33,10 +32,9 @@ namespace Intel
             // common compiler options
 
             // compiler specific options
-            this["Visibility"].PrivateData = new GccCommon.PrivateData(VisibilityCommandLine);
+            this["Visibility"].PrivateData = new IntelCommon.PrivateData(VisibilityCommandLine);
         }
 
-        // requires gcc 4.0
         protected static void VisibilityCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EVisibility> enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;

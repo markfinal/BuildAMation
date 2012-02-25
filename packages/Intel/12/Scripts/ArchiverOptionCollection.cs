@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Intel
 {
-    public sealed partial class ArchiverOptionCollection : GccCommon.ArchiverOptionCollection
+    public sealed partial class ArchiverOptionCollection : IntelCommon.ArchiverOptionCollection
     {
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)
             : base(node)

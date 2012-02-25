@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Intel
 {
-    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
+    public sealed class Linker : IntelCommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
         private string binPath;

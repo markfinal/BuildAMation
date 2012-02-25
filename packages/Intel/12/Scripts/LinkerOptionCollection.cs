@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Intel
 {
-    public sealed partial class LinkerOptionCollection : GccCommon.LinkerOptionCollection
+    public sealed partial class LinkerOptionCollection : IntelCommon.LinkerOptionCollection
     {
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)

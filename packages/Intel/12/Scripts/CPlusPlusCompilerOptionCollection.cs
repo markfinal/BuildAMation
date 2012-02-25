@@ -14,7 +14,7 @@ namespace Intel
         {
             base.SetDelegates(node);
 
-            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
+            this["ExceptionHandler"].PrivateData = new IntelCommon.PrivateData(IntelCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -39,7 +39,7 @@ namespace Intel
             this.SystemIncludePaths.Add(null, cppIncludePath);
             this.SystemIncludePaths.Add(null, cppIncludePath2);
 
-            GccCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
+            IntelCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }
 
         public CPlusPlusCompilerOptionCollection()

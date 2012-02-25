@@ -26,7 +26,7 @@ namespace IntelCommon
         {
             get
             {
-                return "-gcc.installpath";
+                return "-Intel.installpath";
             }
         }
 
@@ -34,7 +34,7 @@ namespace IntelCommon
         {
             get
             {
-                return "Override the Gcc installation path";
+                return "Override the Intel installation path";
             }
         }
 
@@ -53,10 +53,10 @@ namespace IntelCommon
                 this.InstallPath = absolutePath;
             }
 
-            Opus.Core.State.AddCategory("Gcc");
-            Opus.Core.State.Set("Gcc", "InstallPath", this.InstallPath);
+            Opus.Core.State.AddCategory("Intel");
+            Opus.Core.State.Set("Intel", "InstallPath", this.InstallPath);
 
-            Opus.Core.Log.DebugMessage("Gcc installation path is now '{0}'", this.InstallPath);
+            Opus.Core.Log.DebugMessage("Intel installation path is now '{0}'", this.InstallPath);
 
             return true;
         }

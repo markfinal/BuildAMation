@@ -6,7 +6,7 @@
 namespace Intel
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : GccCommon.CCompiler, Opus.Core.IToolSupportsResponseFile
+    public class CCompiler : IntelCommon.CCompiler, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
@@ -32,21 +32,21 @@ namespace Intel
                     this.includeFolders.Add(path);
                 }
             }
-            string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", this.MachineType(target), this.GccVersion(target));
-            string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
-            string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
+            string IntelLibFolder = System.String.Format("/usr/lib/Intel/{0}/{1}", this.MachineType(target), this.IntelVersion(target));
+            string IntelIncludeFolder = System.String.Format("{0}/include", IntelLibFolder);
+            string IntelIncludeFixedFolder = System.String.Format("{0}/include-fixed", IntelLibFolder);
 
-            if (!System.IO.Directory.Exists(gccIncludeFolder))
+            if (!System.IO.Directory.Exists(IntelIncludeFolder))
             {
-                throw new Opus.Core.Exception(System.String.Format("Intel include folder '{0}' does not exist", gccIncludeFolder), false);
+                throw new Opus.Core.Exception(System.String.Format("Intel include folder '{0}' does not exist", IntelIncludeFolder), false);
             }
-            this.includeFolders.Add(gccIncludeFolder);
+            this.includeFolders.Add(IntelIncludeFolder);
             
-            if (!System.IO.Directory.Exists(gccIncludeFolder))
+            if (!System.IO.Directory.Exists(IntelIncludeFolder))
             {
-                throw new Opus.Core.Exception(System.String.Format("Intel include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+                throw new Opus.Core.Exception(System.String.Format("Intel include folder '{0}' does not exist", IntelIncludeFixedFolder), false);
             }
-            this.includeFolders.Add(gccIncludeFixedFolder);
+            this.includeFolders.Add(IntelIncludeFixedFolder);
 #endif
         }
 

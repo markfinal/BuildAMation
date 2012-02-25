@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Intel
 {
-    public sealed class Toolchain : GccCommon.Toolchain
+    public sealed class Toolchain : IntelCommon.Toolchain
     {
         private string installPath;
         private string binFolder;

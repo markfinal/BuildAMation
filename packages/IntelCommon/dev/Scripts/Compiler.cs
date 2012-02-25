@@ -18,19 +18,19 @@ namespace IntelCommon
             }
         }
 
-        private class GccDetails
+        private class IntelDetails
         {
-            public GccDetails(string version,
+            public IntelDetails(string version,
                               string gxxIncludePath,
                               string target)
             {
                 if (null == version)
                 {
-                    throw new Opus.Core.Exception("Unable to determine Gcc version", false);
+                    throw new Opus.Core.Exception("Unable to determine Intel version", false);
                 }
                 if (null == target)
                 {
-                    throw new Opus.Core.Exception("Unable to determine Gcc target", false);
+                    throw new Opus.Core.Exception("Unable to determine Intel target", false);
                 }
 
                 this.Version = version;
@@ -57,14 +57,14 @@ namespace IntelCommon
             }
         }
 
-        private static System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetails> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetails>();
+        private static System.Collections.Generic.Dictionary<Opus.Core.Target, IntelDetails> IntelDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, IntelDetails>();
 
-        private void GetGccDetails(Opus.Core.Target target)
+        private void GetIntelDetails(Opus.Core.Target target)
         {
             string pathPrefix = null;
             string gxxIncludeDir = null;
-            string gccTarget = null;
-            string gccVersion = null;
+            string IntelTarget = null;
+            string IntelVersion = null;
 
             // get version
             {
@@ -90,9 +90,9 @@ namespace IntelCommon
                     throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
                 }
 
-                gccVersion = process.StandardOutput.ReadToEnd();
+                IntelVersion = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
-                gccVersion = gccVersion.Trim();
+                IntelVersion = IntelVersion.Trim();
             }
 
             // get paths and targets
@@ -147,7 +147,7 @@ namespace IntelCommon
                             }
                             else if (option.StartsWith(targetKey))
                             {
-                                gccTarget = option.Substring(targetKey.Length).Trim();
+                                IntelTarget = option.Substring(targetKey.Length).Trim();
                             }
                         }
 
@@ -155,14 +155,14 @@ namespace IntelCommon
                     }
                 }
 
-                if (null == gccTarget)
+                if (null == IntelTarget)
                 {
                     foreach (string detail in splitDetails)
                     {
                         string targetKey = "Target: ";
                         if (detail.StartsWith(targetKey))
                         {
-                            gccTarget = detail.Substring(targetKey.Length).Trim();
+                            IntelTarget = detail.Substring(targetKey.Length).Trim();
                         }
                     }
                 }
@@ -175,42 +175,42 @@ namespace IntelCommon
                 }
             }
 
-            GccDetails gccDetails = new GccDetails(gccVersion, gxxIncludeDir, gccTarget);
-            gccDetailsForTarget[target] = gccDetails;
+            IntelDetails IntelDetails = new IntelDetails(IntelVersion, gxxIncludeDir, IntelTarget);
+            IntelDetailsForTarget[target] = IntelDetails;
 
-            Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", target.ToString(), gccDetails.Version);
-            Opus.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", target.ToString(), gccDetails.Target);
-            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", target.ToString(), gccDetails.GxxIncludePath);
+            Opus.Core.Log.DebugMessage("Intel version for target '{0}' is '{1}'", target.ToString(), IntelDetails.Version);
+            Opus.Core.Log.DebugMessage("Intel machine type for target '{0}' is '{1}'", target.ToString(), IntelDetails.Target);
+            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", target.ToString(), IntelDetails.GxxIncludePath);
         }
 
-        public string GccVersion(Opus.Core.Target target)
+        public string IntelVersion(Opus.Core.Target target)
         {
-            if (!gccDetailsForTarget.ContainsKey(target))
+            if (!IntelDetailsForTarget.ContainsKey(target))
             {
-                GetGccDetails(target);
+                GetIntelDetails(target);
             }
 
-            return gccDetailsForTarget[target].Version;
+            return IntelDetailsForTarget[target].Version;
         }
 
         public string MachineType(Opus.Core.Target target)
         {
-            if (!gccDetailsForTarget.ContainsKey(target))
+            if (!IntelDetailsForTarget.ContainsKey(target))
             {
-                GetGccDetails(target);
+                GetIntelDetails(target);
             }
 
-            return gccDetailsForTarget[target].Target;
+            return IntelDetailsForTarget[target].Target;
         }
 
         public string GxxIncludePath(Opus.Core.Target target)
         {
-            if (!gccDetailsForTarget.ContainsKey(target))
+            if (!IntelDetailsForTarget.ContainsKey(target))
             {
-                GetGccDetails(target);
+                GetIntelDetails(target);
             }
 
-            return gccDetailsForTarget[target].GxxIncludePath;
+            return IntelDetailsForTarget[target].GxxIncludePath;
         }
     }
 }
