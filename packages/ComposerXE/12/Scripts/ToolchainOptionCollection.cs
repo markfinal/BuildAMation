@@ -1,11 +1,11 @@
 // <copyright file="ToolchainOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
-    public sealed partial class ToolchainOptionCollection : IntelCommon.ToolchainOptionCollection
+    public sealed partial class ToolchainOptionCollection : ComposerXECommon.ToolchainOptionCollection
     {
         public ToolchainOptionCollection()
             : base()

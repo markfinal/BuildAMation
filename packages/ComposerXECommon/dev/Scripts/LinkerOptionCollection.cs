@@ -1,11 +1,11 @@
 // <copyright file="LinkerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>IntelCommon package</summary>
+// <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
-namespace IntelCommon
+namespace ComposerXECommon
 {
-    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, IntelCommon.ILinkerOptions
+    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ComposerXECommon.ILinkerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -44,9 +44,9 @@ namespace IntelCommon
             this.RPath = new Opus.Core.StringArray();
 
             /*
-             This is an example link line using Intel with -v
+             This is an example link line using ComposerXE with -v
 
-Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynamic -o d:\build\Test2-dev\Application\win32-debug-mingw\Application.exe C:/MinGW/bin/../lib/Intel/mingw32/3.4.5/../../../crt2.o C:/MinGW/bin/../lib/Intel/mingw32/3.4.5/crtbegin.o -LC:/MinGW/bin/../lib/Intel/mingw32/3.4.5 -LC:/MinGW/bin/../lib/Intel -LC:/MinGW/bin/../lib/Intel/mingw32/3.4.5/../../../../mingw32/lib -LC:/MinGW/bin/../lib/Intel/mingw32/3.4.5/../../.. --subsystem console d:\build\Test2-dev\Application\win32-debug-mingw\application.o d:\build\Test2-dev\Library\win32-debug-mingw\libLibrary.a d:\build\Test3-dev\Library2\win32-debug-mingw\libLibrary2.a -lmingw32 -lIntel -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lIntel -lmoldname -lmingwex -lmsvcrt C:/MinGW/bin/../lib/Intel/mingw32/3.4.5/crtend.o'
+Linker Error: ' C:/MinGW/bin/../libexec/ComposerXE/mingw32/3.4.5/collect2.exe -Bdynamic -o d:\build\Test2-dev\Application\win32-debug-mingw\Application.exe C:/MinGW/bin/../lib/ComposerXE/mingw32/3.4.5/../../../crt2.o C:/MinGW/bin/../lib/ComposerXE/mingw32/3.4.5/crtbegin.o -LC:/MinGW/bin/../lib/ComposerXE/mingw32/3.4.5 -LC:/MinGW/bin/../lib/ComposerXE -LC:/MinGW/bin/../lib/ComposerXE/mingw32/3.4.5/../../../../mingw32/lib -LC:/MinGW/bin/../lib/ComposerXE/mingw32/3.4.5/../../.. --subsystem console d:\build\Test2-dev\Application\win32-debug-mingw\application.o d:\build\Test2-dev\Library\win32-debug-mingw\libLibrary.a d:\build\Test3-dev\Library2\win32-debug-mingw\libLibrary2.a -lmingw32 -lComposerXE -lmoldname -lmingwex -lmsvcrt -luser32 -lkernel32 -ladvapi32 -lshell32 -lmingw32 -lComposerXE -lmoldname -lmingwex -lmsvcrt C:/MinGW/bin/../lib/ComposerXE/mingw32/3.4.5/crtend.o'
              */
         }
 
@@ -88,7 +88,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynam
                         }
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
-                        // see http://www.adp-gmbh.ch/cpp/Intel/create_lib.html
+                        // see http://www.adp-gmbh.ch/cpp/ComposerXE/create_lib.html
                         // see http://lists.apple.com/archives/unix-porting/2003/Oct/msg00032.html
                         if (Opus.Core.OSUtilities.IsUnixHosting)
                         {

@@ -1,13 +1,13 @@
 // <copyright file="ICCompilerOptions.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
     public interface ICCompilerOptions
     {
-        Intel.EVisibility Visibility
+        ComposerXE.EVisibility Visibility
         {
             get;
             set;

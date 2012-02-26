@@ -1,9 +1,9 @@
 // <copyright file="Compiler.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>IntelCommon package</summary>
+// <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
-namespace IntelCommon
+namespace ComposerXECommon
 {
     // Not sealed since the C++ compiler inherits from it
     public abstract class CCompiler : C.Compiler, Opus.Core.ITool
@@ -18,19 +18,19 @@ namespace IntelCommon
             }
         }
 
-        private class IntelDetails
+        private class ComposerXEDetails
         {
-            public IntelDetails(string version,
+            public ComposerXEDetails(string version,
                               string gxxIncludePath,
                               string target)
             {
                 if (null == version)
                 {
-                    throw new Opus.Core.Exception("Unable to determine Intel version", false);
+                    throw new Opus.Core.Exception("Unable to determine ComposerXE version", false);
                 }
                 if (null == target)
                 {
-                    throw new Opus.Core.Exception("Unable to determine Intel target", false);
+                    throw new Opus.Core.Exception("Unable to determine ComposerXE target", false);
                 }
 
                 this.Version = version;
@@ -57,14 +57,14 @@ namespace IntelCommon
             }
         }
 
-        private static System.Collections.Generic.Dictionary<Opus.Core.Target, IntelDetails> IntelDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, IntelDetails>();
+        private static System.Collections.Generic.Dictionary<Opus.Core.Target, ComposerXEDetails> ComposerXEDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, ComposerXEDetails>();
 
-        private void GetIntelDetails(Opus.Core.Target target)
+        private void GetComposerXEDetails(Opus.Core.Target target)
         {
             string pathPrefix = null;
             string gxxIncludeDir = null;
-            string IntelTarget = null;
-            string IntelVersion = null;
+            string ComposerXETarget = null;
+            string ComposerXEVersion = null;
 
             // get version
             {
@@ -90,9 +90,9 @@ namespace IntelCommon
                     throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
                 }
 
-                IntelVersion = process.StandardOutput.ReadToEnd();
+                ComposerXEVersion = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
-                IntelVersion = IntelVersion.Trim();
+                ComposerXEVersion = ComposerXEVersion.Trim();
             }
 
             // get paths and targets
@@ -147,7 +147,7 @@ namespace IntelCommon
                             }
                             else if (option.StartsWith(targetKey))
                             {
-                                IntelTarget = option.Substring(targetKey.Length).Trim();
+                                ComposerXETarget = option.Substring(targetKey.Length).Trim();
                             }
                         }
 
@@ -155,14 +155,14 @@ namespace IntelCommon
                     }
                 }
 
-                if (null == IntelTarget)
+                if (null == ComposerXETarget)
                 {
                     foreach (string detail in splitDetails)
                     {
                         string targetKey = "Target: ";
                         if (detail.StartsWith(targetKey))
                         {
-                            IntelTarget = detail.Substring(targetKey.Length).Trim();
+                            ComposerXETarget = detail.Substring(targetKey.Length).Trim();
                         }
                     }
                 }
@@ -175,42 +175,42 @@ namespace IntelCommon
                 }
             }
 
-            IntelDetails IntelDetails = new IntelDetails(IntelVersion, gxxIncludeDir, IntelTarget);
-            IntelDetailsForTarget[target] = IntelDetails;
+            ComposerXEDetails ComposerXEDetails = new ComposerXEDetails(ComposerXEVersion, gxxIncludeDir, ComposerXETarget);
+            ComposerXEDetailsForTarget[target] = ComposerXEDetails;
 
-            Opus.Core.Log.DebugMessage("Intel version for target '{0}' is '{1}'", target.ToString(), IntelDetails.Version);
-            Opus.Core.Log.DebugMessage("Intel machine type for target '{0}' is '{1}'", target.ToString(), IntelDetails.Target);
-            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", target.ToString(), IntelDetails.GxxIncludePath);
+            Opus.Core.Log.DebugMessage("ComposerXE version for target '{0}' is '{1}'", target.ToString(), ComposerXEDetails.Version);
+            Opus.Core.Log.DebugMessage("ComposerXE machine type for target '{0}' is '{1}'", target.ToString(), ComposerXEDetails.Target);
+            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", target.ToString(), ComposerXEDetails.GxxIncludePath);
         }
 
-        public string IntelVersion(Opus.Core.Target target)
+        public string ComposerXEVersion(Opus.Core.Target target)
         {
-            if (!IntelDetailsForTarget.ContainsKey(target))
+            if (!ComposerXEDetailsForTarget.ContainsKey(target))
             {
-                GetIntelDetails(target);
+                GetComposerXEDetails(target);
             }
 
-            return IntelDetailsForTarget[target].Version;
+            return ComposerXEDetailsForTarget[target].Version;
         }
 
         public string MachineType(Opus.Core.Target target)
         {
-            if (!IntelDetailsForTarget.ContainsKey(target))
+            if (!ComposerXEDetailsForTarget.ContainsKey(target))
             {
-                GetIntelDetails(target);
+                GetComposerXEDetails(target);
             }
 
-            return IntelDetailsForTarget[target].Target;
+            return ComposerXEDetailsForTarget[target].Target;
         }
 
         public string GxxIncludePath(Opus.Core.Target target)
         {
-            if (!IntelDetailsForTarget.ContainsKey(target))
+            if (!ComposerXEDetailsForTarget.ContainsKey(target))
             {
-                GetIntelDetails(target);
+                GetComposerXEDetails(target);
             }
 
-            return IntelDetailsForTarget[target].GxxIncludePath;
+            return ComposerXEDetailsForTarget[target].GxxIncludePath;
         }
     }
 }

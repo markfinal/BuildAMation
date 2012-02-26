@@ -1,11 +1,11 @@
 // <copyright file="LinkerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
-    public sealed partial class LinkerOptionCollection : IntelCommon.LinkerOptionCollection
+    public sealed partial class LinkerOptionCollection : ComposerXECommon.LinkerOptionCollection
     {
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)

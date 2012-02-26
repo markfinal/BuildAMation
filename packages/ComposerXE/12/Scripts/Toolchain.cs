@@ -1,21 +1,21 @@
 // <copyright file="Toolchain.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
-    public sealed class Toolchain : IntelCommon.Toolchain
+    public sealed class Toolchain : ComposerXECommon.Toolchain
     {
         private string installPath;
         private string binFolder;
 
         public Toolchain(Opus.Core.Target target)
         {
-            if (Opus.Core.State.HasCategory("Intel") && Opus.Core.State.Has("Intel", "InstallPath"))
+            if (Opus.Core.State.HasCategory("ComposerXE") && Opus.Core.State.Has("ComposerXE", "InstallPath"))
             {
-                this.installPath = Opus.Core.State.Get("Intel", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("Intel install path set from command line to '{0}'", this.installPath);
+                this.installPath = Opus.Core.State.Get("ComposerXE", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("ComposerXE install path set from command line to '{0}'", this.installPath);
             }
 
             if (null == this.installPath)
@@ -45,7 +45,7 @@ namespace Intel
                     return "non-Unix-proxy";
                 }
 
-                string packageName = "Intel";
+                string packageName = "ComposerXE";
                 Opus.Core.PackageInformation package = Opus.Core.State.PackageInfo[packageName];
                 if (null == package)
                 {

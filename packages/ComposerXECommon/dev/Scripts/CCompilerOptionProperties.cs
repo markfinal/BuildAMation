@@ -1,7 +1,7 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\IntelCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=IntelCommon -c=CCompilerOptionCollection 
-namespace IntelCommon
+// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\ComposerXECommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=ComposerXECommon -c=CCompilerOptionCollection 
+namespace ComposerXECommon
 {
     public partial class CCompilerOptionCollection
     {

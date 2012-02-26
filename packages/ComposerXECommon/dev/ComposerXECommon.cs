@@ -1,9 +1,9 @@
-// <copyright file="IntelCommon.cs" company="Mark Final">
+// <copyright file="ComposerXECommon.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>IntelCommon package</summary>
+// <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
-namespace IntelCommon
+namespace ComposerXECommon
 {
     // Define module classes here
 }

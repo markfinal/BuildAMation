@@ -1,12 +1,12 @@
 // <copyright file="Compiler.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : IntelCommon.CCompiler, Opus.Core.IToolSupportsResponseFile
+    public class CCompiler : ComposerXECommon.CCompiler, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
@@ -15,7 +15,7 @@ namespace Intel
         {
             if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
             {
-                throw new Opus.Core.Exception("Intel compiler is only supported under unix32 and unix64 platforms", false);
+                throw new Opus.Core.Exception("ComposerXE compiler is only supported under unix32 and unix64 platforms", false);
             }
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
@@ -32,21 +32,21 @@ namespace Intel
                     this.includeFolders.Add(path);
                 }
             }
-            string IntelLibFolder = System.String.Format("/usr/lib/Intel/{0}/{1}", this.MachineType(target), this.IntelVersion(target));
-            string IntelIncludeFolder = System.String.Format("{0}/include", IntelLibFolder);
-            string IntelIncludeFixedFolder = System.String.Format("{0}/include-fixed", IntelLibFolder);
+            string ComposerXELibFolder = System.String.Format("/usr/lib/ComposerXE/{0}/{1}", this.MachineType(target), this.ComposerXEVersion(target));
+            string ComposerXEIncludeFolder = System.String.Format("{0}/include", ComposerXELibFolder);
+            string ComposerXEIncludeFixedFolder = System.String.Format("{0}/include-fixed", ComposerXELibFolder);
 
-            if (!System.IO.Directory.Exists(IntelIncludeFolder))
+            if (!System.IO.Directory.Exists(ComposerXEIncludeFolder))
             {
-                throw new Opus.Core.Exception(System.String.Format("Intel include folder '{0}' does not exist", IntelIncludeFolder), false);
+                throw new Opus.Core.Exception(System.String.Format("ComposerXE include folder '{0}' does not exist", ComposerXEIncludeFolder), false);
             }
-            this.includeFolders.Add(IntelIncludeFolder);
+            this.includeFolders.Add(ComposerXEIncludeFolder);
             
-            if (!System.IO.Directory.Exists(IntelIncludeFolder))
+            if (!System.IO.Directory.Exists(ComposerXEIncludeFolder))
             {
-                throw new Opus.Core.Exception(System.String.Format("Intel include folder '{0}' does not exist", IntelIncludeFixedFolder), false);
+                throw new Opus.Core.Exception(System.String.Format("ComposerXE include folder '{0}' does not exist", ComposerXEIncludeFixedFolder), false);
             }
-            this.includeFolders.Add(IntelIncludeFixedFolder);
+            this.includeFolders.Add(ComposerXEIncludeFixedFolder);
 #endif
         }
 

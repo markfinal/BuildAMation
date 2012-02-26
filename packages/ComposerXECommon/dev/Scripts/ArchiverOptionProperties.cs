@@ -1,7 +1,7 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\IntelCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=IntelCommon -c=ArchiverOptionCollection 
-namespace IntelCommon
+// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\ComposerXECommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=ComposerXECommon -c=ArchiverOptionCollection 
+namespace ComposerXECommon
 {
     public partial class ArchiverOptionCollection
     {
@@ -41,15 +41,15 @@ namespace IntelCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        public IntelCommon.EArchiverCommand Command
+        public ComposerXECommon.EArchiverCommand Command
         {
             get
             {
-                return this.GetValueTypeOption<IntelCommon.EArchiverCommand>("Command");
+                return this.GetValueTypeOption<ComposerXECommon.EArchiverCommand>("Command");
             }
             set
             {
-                this.SetValueTypeOption<IntelCommon.EArchiverCommand>("Command", value);
+                this.SetValueTypeOption<ComposerXECommon.EArchiverCommand>("Command", value);
                 this.ProcessNamedSetHandler("CommandSetHandler", this["Command"]);
             }
         }

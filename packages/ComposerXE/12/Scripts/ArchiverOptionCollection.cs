@@ -1,11 +1,11 @@
 // <copyright file="ArchiverOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
-    public sealed partial class ArchiverOptionCollection : IntelCommon.ArchiverOptionCollection
+    public sealed partial class ArchiverOptionCollection : ComposerXECommon.ArchiverOptionCollection
     {
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)
             : base(node)

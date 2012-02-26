@@ -15,11 +15,11 @@ ECHO Opus directory is %OPUS_DIR%
 ECHO Opus package directory is %OPUS_PACKAGE_DIR%
 
 REM C compiler option properties
-%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\Intel\4.4\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Intel -c=CCompilerOptionCollection
+%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\ComposerXE\4.4\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=ComposerXE -c=CCompilerOptionCollection
 IF NOT ERRORLEVEL 0 GOTO error
 
 REM C++ compiler option properties
-%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\C\dev\Scripts\ICPlusPlusCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=Intel -c=CPlusPlusCompilerOptionCollection
+%OPUS_DIR%\OpusOptionInterfacePropertyGenerator -i=%OPUS_PACKAGE_DIR%\C\dev\Scripts\ICPlusPlusCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=ComposerXE -c=CPlusPlusCompilerOptionCollection
 IF NOT ERRORLEVEL 0 GOTO error
 
 PAUSE

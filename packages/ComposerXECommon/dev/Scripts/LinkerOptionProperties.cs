@@ -1,7 +1,7 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\IntelCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=IntelCommon -c=LinkerOptionCollection 
-namespace IntelCommon
+// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\ComposerXECommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=ComposerXECommon -c=LinkerOptionCollection 
+namespace ComposerXECommon
 {
     public partial class LinkerOptionCollection
     {

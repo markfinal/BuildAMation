@@ -1,19 +1,19 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=E:\dev\prototypes\Opus\dev\bin32\Debug\..\..\packages\Intel\4.6\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Intel -c=CCompilerOptionCollection 
-namespace Intel
+// -i=E:\dev\prototypes\Opus\dev\bin32\Debug\..\..\packages\ComposerXE\4.6\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=ComposerXE -c=CCompilerOptionCollection 
+namespace ComposerXE
 {
     public partial class CCompilerOptionCollection
     {
-        public Intel.EVisibility Visibility
+        public ComposerXE.EVisibility Visibility
         {
             get
             {
-                return this.GetValueTypeOption<Intel.EVisibility>("Visibility");
+                return this.GetValueTypeOption<ComposerXE.EVisibility>("Visibility");
             }
             set
             {
-                this.SetValueTypeOption<Intel.EVisibility>("Visibility", value);
+                this.SetValueTypeOption<ComposerXE.EVisibility>("Visibility", value);
                 this.ProcessNamedSetHandler("VisibilitySetHandler", this["Visibility"]);
             }
         }

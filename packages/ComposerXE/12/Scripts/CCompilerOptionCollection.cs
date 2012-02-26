@@ -1,12 +1,12 @@
 // <copyright file="CCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : IntelCommon.CCompilerOptionCollection, ICCompilerOptions
+    public partial class CCompilerOptionCollection : ComposerXECommon.CCompilerOptionCollection, ICCompilerOptions
     {
         public CCompilerOptionCollection()
             : base()
@@ -32,7 +32,7 @@ namespace Intel
             // common compiler options
 
             // compiler specific options
-            this["Visibility"].PrivateData = new IntelCommon.PrivateData(VisibilityCommandLine);
+            this["Visibility"].PrivateData = new ComposerXECommon.PrivateData(VisibilityCommandLine);
         }
 
         protected static void VisibilityCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

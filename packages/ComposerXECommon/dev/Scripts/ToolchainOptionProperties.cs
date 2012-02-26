@@ -1,7 +1,7 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\IToolchainOptions.cs -o=ToolchainOptionProperties.cs -n=IntelCommon -c=ToolchainOptionCollection 
-namespace IntelCommon
+// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\IToolchainOptions.cs -o=ToolchainOptionProperties.cs -n=ComposerXECommon -c=ToolchainOptionCollection 
+namespace ComposerXECommon
 {
     public partial class ToolchainOptionCollection
     {

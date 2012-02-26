@@ -1,9 +1,9 @@
 // <copyright file="CCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>IntelCommon package</summary>
+// <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
-namespace IntelCommon
+namespace ComposerXECommon
 {
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions

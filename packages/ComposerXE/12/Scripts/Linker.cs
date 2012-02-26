@@ -1,11 +1,11 @@
 // <copyright file="Linker.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
-    public sealed class Linker : IntelCommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
+    public sealed class Linker : ComposerXECommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
         private string binPath;
@@ -14,7 +14,7 @@ namespace Intel
         {
             if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
             {
-                throw new Opus.Core.Exception("Intel linker is only supported under unix32 and unix64 platforms");
+                throw new Opus.Core.Exception("ComposerXE linker is only supported under unix32 and unix64 platforms");
             }
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;

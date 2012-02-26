@@ -1,13 +1,13 @@
 // <copyright file="IArchiverOptions.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>IntelCommon package</summary>
+// <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
-namespace IntelCommon
+namespace ComposerXECommon
 {
     public interface IArchiverOptions
     {
-        IntelCommon.EArchiverCommand Command
+        ComposerXECommon.EArchiverCommand Command
         {
             get;
             set;

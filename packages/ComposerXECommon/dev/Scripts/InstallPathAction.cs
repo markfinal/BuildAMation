@@ -1,12 +1,12 @@
 // <copyright file="InstallPathAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>IntelCommon package</summary>
+// <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(IntelCommon.InstallPathAction))]
+[assembly: Opus.Core.RegisterAction(typeof(ComposerXECommon.InstallPathAction))]
 
-namespace IntelCommon
+namespace ComposerXECommon
 {
     [Opus.Core.PreambleAction]
     public sealed class InstallPathAction : Opus.Core.IActionWithArguments
@@ -26,7 +26,7 @@ namespace IntelCommon
         {
             get
             {
-                return "-Intel.installpath";
+                return "-ComposerXE.installpath";
             }
         }
 
@@ -34,7 +34,7 @@ namespace IntelCommon
         {
             get
             {
-                return "Override the Intel installation path";
+                return "Override the ComposerXE installation path";
             }
         }
 
@@ -53,10 +53,10 @@ namespace IntelCommon
                 this.InstallPath = absolutePath;
             }
 
-            Opus.Core.State.AddCategory("Intel");
-            Opus.Core.State.Set("Intel", "InstallPath", this.InstallPath);
+            Opus.Core.State.AddCategory("ComposerXE");
+            Opus.Core.State.Set("ComposerXE", "InstallPath", this.InstallPath);
 
-            Opus.Core.Log.DebugMessage("Intel installation path is now '{0}'", this.InstallPath);
+            Opus.Core.Log.DebugMessage("ComposerXE installation path is now '{0}'", this.InstallPath);
 
             return true;
         }

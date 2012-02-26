@@ -1,11 +1,11 @@
 // <copyright file="Archiver.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Intel package</summary>
+// <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-namespace Intel
+namespace ComposerXE
 {
-    public sealed class Archiver : IntelCommon.Archiver, Opus.Core.IToolSupportsResponseFile
+    public sealed class Archiver : ComposerXECommon.Archiver, Opus.Core.IToolSupportsResponseFile
     {
         public Archiver(Opus.Core.Target target)
             : base(target)
