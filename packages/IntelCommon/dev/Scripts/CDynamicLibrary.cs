@@ -13,7 +13,10 @@ namespace C
             if (Opus.Core.OSUtilities.IsUnix(target.Platform))
             {
                 IntelCommon.ICCompilerOptions compilerOptions = module.Options as IntelCommon.ICCompilerOptions;
-                compilerOptions.PositionIndependentCode = true;
+                if (null != compilerOptions)
+                {
+                    compilerOptions.PositionIndependentCode = true;
+                }
             }
         }
     }
