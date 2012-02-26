@@ -21,6 +21,7 @@ namespace Intel
         {
             base.InitializeDefaults(node);
 
+#if false
             Opus.Core.Target target = node.Target;
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
@@ -38,6 +39,7 @@ namespace Intel
 
             this.SystemIncludePaths.Add(null, cppIncludePath);
             this.SystemIncludePaths.Add(null, cppIncludePath2);
+#endif
 
             IntelCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }
