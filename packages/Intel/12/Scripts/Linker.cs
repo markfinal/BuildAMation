@@ -26,12 +26,12 @@ namespace Intel
 
         public override string Executable(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "xild");
+            return System.IO.Path.Combine(this.binPath, "icc");
         }
 
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "xild");
+            return System.IO.Path.Combine(this.binPath, "icpc");
         }
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)

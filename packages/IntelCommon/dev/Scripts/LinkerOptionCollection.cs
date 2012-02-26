@@ -178,11 +178,11 @@ Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynam
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (options.MapFilePath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("-Map \"{0}\"", options.MapFilePath));
+                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("-Map {0}", options.MapFilePath));
+                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", options.MapFilePath));
                 }
             }
         }
@@ -192,7 +192,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/Intel/mingw32/3.4.5/collect2.exe -Bdynam
             Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
             if (sixtyFourBitOption.Value)
             {
-                commandLineBuilder.Add("-arch elf_x86_64");
+                //commandLineBuilder.Add("-arch elf_x86_64");
             }
             else
             {

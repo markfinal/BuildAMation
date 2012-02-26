@@ -13,7 +13,7 @@ namespace IntelCommon
         {
             get
             {
-                return "--start-group";
+                return "-Wl,--start-group";
             }
         }
 
@@ -21,7 +21,7 @@ namespace IntelCommon
         {
             get
             {
-                return "--end-group";
+                return "-Wl,--end-group";
             }
         }
     }
