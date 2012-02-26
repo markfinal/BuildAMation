@@ -8,7 +8,7 @@
       <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
       <Opus:Version Id="4.4" />
     </Opus:Package>
-    <Opus:Package Name="Intel">
+    <Opus:Package Name="ComposerXE">
       <Opus:Version Id="12" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
