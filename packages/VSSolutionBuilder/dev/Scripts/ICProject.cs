@@ -11,5 +11,10 @@ namespace VSSolutionBuilder
         {
             get;
         }
+
+        ProjectFileCollection ResourceFiles
+        {
+            get;
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace VSSolutionBuilder
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
+        private ProjectFileCollection ResourceFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
 
@@ -105,6 +106,14 @@ namespace VSSolutionBuilder
             }
         }
 
+        ProjectFileCollection ICProject.ResourceFiles
+        {
+            get
+            {
+                return this.ResourceFileCollection;
+            }
+        }
+
         System.Collections.Generic.List<IProject> IProject.DependentProjects
         {
             get
@@ -161,6 +170,11 @@ namespace VSSolutionBuilder
                 if (this.HeaderFileCollection.Count > 0)
                 {
                     this.HeaderFileCollection.SerializeMSBuild(project, "ClInclude", projectLocationUri, this.PackageUri);
+                }
+                if (this.ResourceFileCollection.Count > 0)
+                {
+                    // TODO: confirm that ClResource is the right tag
+                    this.ResourceFileCollection.SerializeMSBuild(project, "ClResource", projectLocationUri, this.PackageUri);
                 }
 
                 // project dependencies
@@ -322,7 +336,7 @@ namespace VSSolutionBuilder
                 }
                 if (this.HeaderFileCollection.Count > 0)
                 {
-                    MSBuildItemGroup sourceFilesGroup = project.CreateItemGroup();
+                    MSBuildItemGroup headerFilesGroup = project.CreateItemGroup();
                     foreach (ProjectFile file in this.HeaderFileCollection)
                     {
                         string subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
@@ -341,9 +355,13 @@ namespace VSSolutionBuilder
                             elementName = "CustomBuild";
                         }
 
-                        MSBuildItem item = sourceFilesGroup.CreateItem(elementName, Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
+                        MSBuildItem item = headerFilesGroup.CreateItem(elementName, Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
                         item.CreateMetaData("Filter", System.IO.Path.Combine("Header Files", relativeSubDir));
                     }
+                }
+                if (this.ResourceFileCollection.Count > 0)
+                {
+                    Opus.Core.Log.MessageAll("VCXBuild: resource file support");
                 }
             }
             catch (Opus.Core.Exception exception)

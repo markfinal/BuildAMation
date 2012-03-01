@@ -173,6 +173,8 @@ namespace VSSolutionBuilder
                     toolElementName = "PostBuildEvent";
                     break;
 
+                // TODO: case for VCResourceCompilerTool
+
                 default:
                     throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
             }

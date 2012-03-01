@@ -71,6 +71,14 @@ namespace C
             get;
         }
 
+        public virtual string Win32CompiledResourceSuffix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
         public static string BinaryOutputSubDirectory
         {
             get

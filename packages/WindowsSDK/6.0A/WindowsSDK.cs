@@ -14,10 +14,6 @@ namespace WindowsSDK
         private static string lib64Path;
         private static string includePath;
 
-        static WindowsSDK()
-        {
-        }
-
         public WindowsSDK(Opus.Core.Target target)
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
@@ -96,6 +92,21 @@ namespace WindowsSDK
         public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
+        }
+
+        public static string BinPath(Opus.Core.Target target)
+        {
+            string binPath;
+            if (Opus.Core.OSUtilities.Is64Bit(target.Platform))
+            {
+                binPath = bin64Path;
+            }
+            else
+            {
+                binPath = bin32Path;
+            }
+
+            return binPath;
         }
     }
 }

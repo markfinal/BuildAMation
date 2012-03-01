@@ -1,0 +1,89 @@
+// <copyright file="Win32Resource.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>WindowsSDKCommon package</summary>
+// <author>Mark Final</author>
+namespace MakeFileBuilder
+{
+    public sealed partial class MakeFileBuilder
+    {
+        public object Build(C.Win32Resource resourceFile, out bool success)
+        {
+            string resourceFilePath = resourceFile.ResourceFile.AbsolutePath;
+            if (!System.IO.File.Exists(resourceFilePath))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Resource file '{0}' does not exist", resourceFilePath));
+            }
+
+            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+            inputFiles.Add(resourceFilePath);
+
+            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFile.Options as C.Win32ResourceCompilerOptionCollection;
+
+            Opus.Core.DependencyNode node = (resourceFile as Opus.Core.IModule).OwningNode;
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            Opus.Core.DirectoryCollection directoriesToCreate = null;
+            if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
+            {
+                CommandLineProcessor.ICommandLineSupport commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+
+                directoriesToCreate = commandLineOption.DirectoriesToCreate();
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+            }
+
+            // add output path
+            commandLineBuilder.Add(System.String.Format("/fo {0}", compilerOptions.CompiledResourceFilePath));
+
+            C.Win32ResourceCompiler compilerInstance = C.Win32ResourceCompilerFactory.GetTargetInstance(target);
+            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+
+            string executablePath = compilerTool.Executable(target);
+
+            string recipe = null;
+            if (executablePath.Contains(" "))
+            {
+                recipe += System.String.Format("\"{0}\"", executablePath);
+            }
+            else
+            {
+                recipe += executablePath;
+            }
+            recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
+            // replace target with $@
+            recipe = recipe.Replace(resourceFile.Options.OutputPaths[C.OutputFileFlags.Win32CompiledResource], "$@");
+
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+
+            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+
+            MakeFileRule rule = new MakeFileRule(resourceFile.Options.OutputPaths, C.OutputFileFlags.Win32CompiledResource, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            makeFile.RuleArray.Add(rule);
+
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            {
+                makeFile.Write(makeFileWriter);
+            }
+
+            MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
+            MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
+            Opus.Core.StringArray environmentPaths = null;
+            if (compilerTool is Opus.Core.IToolEnvironmentPaths)
+            {
+                environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths);
+            success = true;
+            return returnData;
+        }
+    }
+}

@@ -4,9 +4,24 @@
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
 
+#if defined(_WINDOWS)
+#include <Windows.h>
+
+int APIENTRY WinMain(
+  HINSTANCE hInstance,
+  HINSTANCE hPrevInstance,
+  LPSTR lpCmdLine,
+  int nCmdShow
+)
+#else
 int main(int argc, char *argv[])
+#endif
 {
+#if defined(_WINDOWS)
+    QApplication app(__argc, __argv);
+#else
     QApplication app(argc, argv);
+#endif
 
     MyClass myClass;
     myClass.DoSomething();

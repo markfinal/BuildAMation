@@ -15,6 +15,7 @@ namespace VSSolutionBuilder
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
+        private ProjectFileCollection ResourceFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
 
@@ -105,6 +106,14 @@ namespace VSSolutionBuilder
             }
         }
 
+        ProjectFileCollection ICProject.ResourceFiles
+        {
+            get
+            {
+                return this.ResourceFileCollection;
+            }
+        }
+
         System.Collections.Generic.List<IProject> IProject.DependentProjects
         {
             get
@@ -181,6 +190,12 @@ namespace VSSolutionBuilder
                 {
                     filesElement.AppendChild(this.HeaderFileCollection.Serialize(xmlDocument, "Header Files", projectLocationUri, this.PackageUri));
                 }
+
+                if (this.ResourceFileCollection.Count > 0)
+                {
+                    filesElement.AppendChild(this.ResourceFileCollection.Serialize(xmlDocument, "Resource Files", projectLocationUri, this.PackageUri));
+                }
+
                 vsProjectElement.AppendChild(filesElement);
 
                 xmlDocument.AppendChild(vsProjectElement);

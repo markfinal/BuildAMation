@@ -97,6 +97,14 @@ namespace VisualCCommon
             }
         }
 
+        public override string Win32CompiledResourceSuffix
+        {
+            get
+            {
+                return ".res";
+            }
+        }
+
         protected static string GetVCRegistryKeyPath(string platformName, string versionNumber, string editionName, int LCID)
         {
             string keyPath = System.String.Format(@"Microsoft\DevDiv\{0}\Servicing\{1}\{2}\{3}", platformName, versionNumber, editionName, LCID);

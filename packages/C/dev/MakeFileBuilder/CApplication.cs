@@ -78,6 +78,10 @@ namespace MakeFileBuilder
                 recipeBuilder.Append(executable);
             }
             recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
+            if (toolchain.Win32CompiledResourceSuffix.Length > 0)
+            {
+                recipeBuilder.AppendFormat("$(filter %{0},$^) ", toolchain.Win32CompiledResourceSuffix);
+            }
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
             dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibrarySuffix));
             if (toolchain.StaticLibrarySuffix != toolchain.StaticImportLibrarySuffix)

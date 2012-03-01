@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public static class ClassNames
+    public static partial class ClassNames
     {
         public const string CCompilerTool = "ClassCCompiler";
         public const string CCompilerToolOptions = "ClassCCompilerOptions";
