@@ -1,3 +1,5 @@
+02-Mar-2012 Fixing bug with CommandLineProcessor with Opus.Core.ITools that require more than one path to be added to PATH.
+
 01-Mar-2012 Added WindowsSDKCommon-dev package. Added Win32Resource module in order to compile .rc files.
 
 01-Mar-2012 Improved VSSolutionBuilder's support for generating paths relative to intermediate and output paths or the project file itself.

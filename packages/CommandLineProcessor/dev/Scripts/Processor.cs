@@ -21,7 +21,7 @@ namespace CommandLineProcessor
                 foreach (string requiredEnvVar in (tool as Opus.Core.IToolRequiredEnvironmentVariables).VariableNames)
                 {
                     requiredEnvironmentVariables[requiredEnvVar] = processStartInfo.EnvironmentVariables[requiredEnvVar];
-                    //Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);
+                    //Opus.Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);
                 }
             }
 
@@ -30,7 +30,7 @@ namespace CommandLineProcessor
             foreach (System.Collections.Generic.KeyValuePair<string, string> requiredEnvVar in requiredEnvironmentVariables)
             {
                 processStartInfo.EnvironmentVariables[requiredEnvVar.Key] = requiredEnvVar.Value;
-                //Core.Log.DebugMessage("Restored envvar '{0}' as '{1}'", requiredEnvVar.Key, requiredEnvVar.Value);
+                //Opus.Core.Log.DebugMessage("Restored envvar '{0}' as '{1}'", requiredEnvVar.Key, requiredEnvVar.Value);
             }
 
             processStartInfo.UseShellExecute = false;
@@ -38,13 +38,16 @@ namespace CommandLineProcessor
             processStartInfo.RedirectStandardError = true;
             if (tool is Opus.Core.IToolEnvironmentPaths)
             {
-                string path = null;
+                System.Text.StringBuilder path = new System.Text.StringBuilder();
+
                 foreach (string env in (tool as Opus.Core.IToolEnvironmentPaths).Paths(target))
                 {
-                    path = System.String.Format("{0}", env);
+                    path.AppendFormat("{0};", env);
                 }
-                processStartInfo.EnvironmentVariables["PATH"] = path;
-                //Core.Log.DebugMessage("Path is '{0}'", path);
+
+                string pathEnv = path.ToString().TrimEnd(new char[] { ';' });
+                processStartInfo.EnvironmentVariables["PATH"] = pathEnv;
+                //Opus.Core.Log.DebugMessage("Path is '{0}'", pathEnv);
             }
 
             if (tool is Opus.Core.IToolSupportsResponseFile)
