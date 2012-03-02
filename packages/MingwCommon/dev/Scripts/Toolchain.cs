@@ -86,5 +86,13 @@ namespace MingwCommon
                 return ".map";
             }
         }
+
+        public override string Win32CompiledResourceSuffix
+        {
+            get
+            {
+                return ".o";
+            }
+        }
     }
 }

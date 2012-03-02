@@ -7,12 +7,12 @@ namespace C
 {
     public static class Win32ResourceCompilerFactory
     {
-        private static System.Collections.Generic.Dictionary<Opus.Core.Target, Win32ResourceCompiler> resourceCompilerMap = new System.Collections.Generic.Dictionary<Opus.Core.Target, Win32ResourceCompiler>();
+        private static System.Collections.Generic.Dictionary<Opus.Core.Target, Win32ResourceCompilerBase> resourceCompilerMap = new System.Collections.Generic.Dictionary<Opus.Core.Target, Win32ResourceCompilerBase>();
 
-        public static Win32ResourceCompiler GetTargetInstance(Opus.Core.Target target)
+        public static Win32ResourceCompilerBase GetTargetInstance(Opus.Core.Target target)
         {
             System.Type type = Opus.Core.State.Get(target.Toolchain, ClassNames.Win32ResourceCompilerTool) as System.Type;
-            Win32ResourceCompiler instance = null;
+            Win32ResourceCompilerBase instance = null;
             // TODO: want to remove this
             lock (resourceCompilerMap)
             {
@@ -24,7 +24,7 @@ namespace C
                 {
                     try
                     {
-                        instance = System.Activator.CreateInstance(type, new object[] { target }) as Win32ResourceCompiler;
+                        instance = System.Activator.CreateInstance(type, new object[] { target }) as Win32ResourceCompilerBase;
                     }
                     catch (System.Exception exception)
                     {

@@ -75,7 +75,7 @@ namespace C
         {
             get
             {
-                return string.Empty;
+                return ".resourcefileextension";
             }
         }
 

@@ -8,7 +8,7 @@ namespace C
     /// <summary>
     /// C/C++ console application
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(C.Win32ResourceCompiler),
+    [Opus.Core.AssignToolForModule(typeof(C.Win32ResourceCompilerBase),
                                    typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute),
                                    typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
                                    ClassNames.Win32ResourceCompilerToolOptions)]

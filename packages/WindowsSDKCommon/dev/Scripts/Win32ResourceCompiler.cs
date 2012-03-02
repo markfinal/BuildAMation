@@ -15,7 +15,25 @@ namespace C
     {
     }
 
-    public sealed class Win32ResourceCompiler : Opus.Core.ITool
+    public abstract class Win32ResourceCompilerBase : Opus.Core.ITool
+    {
+        public abstract string Executable(Opus.Core.Target target);
+
+        public abstract string InputFileSwitch
+        {
+            get;
+        }
+
+        public abstract string OutputFileSwitch
+        {
+            get;
+        }
+    }
+}
+
+namespace WindowsSDKCommon
+{
+    sealed class Win32ResourceCompiler : C.Win32ResourceCompilerBase
     {
         private string platformBinFolder;
 
@@ -29,9 +47,25 @@ namespace C
             this.platformBinFolder = WindowsSDK.WindowsSDK.BinPath(target);
         }
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        public override string Executable(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.platformBinFolder, "rc.exe");
+        }
+
+        public override string InputFileSwitch
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        public override string OutputFileSwitch
+        {
+            get
+            {
+                return "/fo ";
+            }
         }
     }
 }

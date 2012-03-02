@@ -173,8 +173,12 @@ namespace Test
         SourceFiles sourceFiles = new SourceFiles();
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK),
+        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
+            typeof(WindowsSDK.WindowsSDK)
+            );
+
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
+        Opus.Core.TypeArray mingwDependents = new Opus.Core.TypeArray(
             typeof(Win32Resources)
             );
 
