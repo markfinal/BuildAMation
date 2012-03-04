@@ -31,7 +31,7 @@ namespace C
     }
 }
 
-namespace WindowsSDKCommon
+namespace VisualCCommon
 {
     sealed class Win32ResourceCompiler : C.Win32ResourceCompilerBase
     {
