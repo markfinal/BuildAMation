@@ -1,7 +1,7 @@
 // <copyright file="Win32ResoureCompilerBase.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>WindowsSDKCommon package</summary>
+// <summary>C package</summary>
 // <author>Mark Final</author>
 namespace C
 {
