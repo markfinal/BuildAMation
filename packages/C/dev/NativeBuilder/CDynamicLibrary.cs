@@ -15,15 +15,21 @@ namespace NativeBuilder
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
             C.ILinkerOptions linkerOptions = dynamicLibrary.Options as C.ILinkerOptions;
 
+            C.OutputFileFlags objectFileFlags = C.OutputFileFlags.ObjectFile;
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                objectFileFlags |= C.OutputFileFlags.Win32CompiledResource;
+            }
+
             // find dependent object files
             Opus.Core.StringArray dependentObjectFiles = new Opus.Core.StringArray();
             if (null != node.Children)
             {
-                node.Children.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
+                node.Children.FilterOutputPaths(objectFileFlags, dependentObjectFiles);
             }
             if (null != node.ExternalDependents)
             {
-                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
+                node.ExternalDependents.FilterOutputPaths(objectFileFlags, dependentObjectFiles);
             }
             if (0 == dependentObjectFiles.Count)
             {

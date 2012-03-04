@@ -107,39 +107,46 @@ namespace VSSolutionBuilder
             return updatedPath; 
         }
 
+        // semi-colons are the splitter in arguments
+        private static readonly char PathSplitter = ';';
+
         private static string QuotePathsWithSpaces(string path, System.Uri projectUri)
         {
-            char splitter = path[path.Length - 1];
-            if (!System.Char.IsLetterOrDigit(splitter))
+            if (path.Contains(new string(new char[] { PathSplitter })))
             {
-                string[] splitPath = path.Split(new char[] { splitter });
-                for (int i = 0; i < splitPath.Length; ++i)
-                {
-                    string split = splitPath[i];
-                    if (System.String.IsNullOrEmpty(split))
-                    {
-                        continue;
-                    }
-
-                    split = split.Trim(new char[] { '\"' });
-
-                    if (System.IO.Directory.Exists(split) || System.IO.File.Exists(split))
-                    {
-                        split = Opus.Core.RelativePathUtilities.GetPath(split, projectUri);
-                        if (split.Contains(" "))
-                        {
-                            splitPath[i] = System.String.Format("\"{0}\"", split);
-                        }
-                        else
-                        {
-                            splitPath[i] = split;
-                        }
-                    }
-                }
-                path = System.String.Join(splitter.ToString(), splitPath);
+                throw new Opus.Core.Exception("Path should not contain splitter");
             }
 
-            return path;
+            string quote = new string(new char[] { '\"' });
+            if (path.StartsWith(quote) && path.EndsWith(quote))
+            {
+                return path;
+            }
+
+            // remove any stray quotes
+            string quotedPath = path.Trim(new char[] { '\"' });
+
+            // only interested in paths
+            if (quotedPath.Length < 2)
+            {
+                return quotedPath;
+            }
+            // need to test local drives as well as network paths
+            bool isLocalDrive = (quotedPath[1] == System.IO.Path.VolumeSeparatorChar);
+            bool isNetworkDrive = (quotedPath[0] == System.IO.Path.AltDirectorySeparatorChar &&
+                                   quotedPath[1] == System.IO.Path.AltDirectorySeparatorChar);
+            if (!isLocalDrive && !isNetworkDrive)
+            {
+                return quotedPath;
+            }
+
+            quotedPath = Opus.Core.RelativePathUtilities.GetPath(quotedPath, projectUri);
+            if (quotedPath.Contains(" "))
+            {
+                quotedPath = System.String.Format("\"{0}\"", quotedPath);
+            }
+
+            return quotedPath;
         }
 
         internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string intermediateDirectoryPath, string projectName, System.Uri projectUri)
@@ -150,16 +157,29 @@ namespace VSSolutionBuilder
                 return path;
             }
 
-            string refactoredPath = path;
-            if (null != outputDirectoryPath)
-            {
-                refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
-            }
-            refactoredPath = UseIntDirMacro(refactoredPath, intermediateDirectoryPath);
-            refactoredPath = UseProjectMacro(refactoredPath, projectName);
-            refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
+            string[] splitPath = path.Split(PathSplitter);
 
-            return refactoredPath;
+            System.Text.StringBuilder joinedPath = new System.Text.StringBuilder();
+            foreach (string split in splitPath)
+            {
+                if (0 == split.Length)
+                {
+                    continue;
+                }
+
+                string refactoredPath = split;
+                if (null != outputDirectoryPath)
+                {
+                    refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
+                }
+                refactoredPath = UseIntDirMacro(refactoredPath, intermediateDirectoryPath);
+                refactoredPath = UseProjectMacro(refactoredPath, projectName);
+                refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
+
+                joinedPath.AppendFormat("{0};", refactoredPath);
+            }
+
+            return joinedPath.ToString().TrimEnd(PathSplitter);
         }
 
         // no intermediate directory
@@ -170,12 +190,20 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception("Cannot refactor an empty path for VisualStudio projects", false);
             }
 
-            string refactoredPath = path;
-            refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
-            refactoredPath = UseProjectMacro(refactoredPath, projectName);
-            refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
+            string[] splitPath = path.Split(PathSplitter);
 
-            return refactoredPath;
+            System.Text.StringBuilder joinedPath = new System.Text.StringBuilder();
+            foreach (string split in splitPath)
+            {
+                string refactoredPath = split;
+                refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
+                refactoredPath = UseProjectMacro(refactoredPath, projectName);
+                refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
+
+                joinedPath.AppendFormat("{0};", refactoredPath);
+            }
+
+            return joinedPath.ToString().TrimEnd(PathSplitter);
         }
 
         private SolutionFile solutionFile;

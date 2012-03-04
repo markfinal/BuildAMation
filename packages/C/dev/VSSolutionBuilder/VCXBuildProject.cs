@@ -15,6 +15,7 @@ namespace VSSolutionBuilder
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
+        private ProjectFileCollection ResourceFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
 
@@ -105,6 +106,14 @@ namespace VSSolutionBuilder
             }
         }
 
+        ProjectFileCollection ICProject.ResourceFiles
+        {
+            get
+            {
+                return this.ResourceFileCollection;
+            }
+        }
+
         System.Collections.Generic.List<IProject> IProject.DependentProjects
         {
             get
@@ -161,6 +170,10 @@ namespace VSSolutionBuilder
                 if (this.HeaderFileCollection.Count > 0)
                 {
                     this.HeaderFileCollection.SerializeMSBuild(project, "ClInclude", projectLocationUri, this.PackageUri);
+                }
+                if (this.ResourceFileCollection.Count > 0)
+                {
+                    this.ResourceFileCollection.SerializeMSBuild(project, "ResourceCompile", projectLocationUri, this.PackageUri);
                 }
 
                 // project dependencies
@@ -228,6 +241,7 @@ namespace VSSolutionBuilder
                 MSBuildItemGroup filtersGroup = project.CreateItemGroup();
                 Opus.Core.StringArray sourceSubDirectories = new Opus.Core.StringArray();
                 Opus.Core.StringArray headerSubDirectories = new Opus.Core.StringArray();
+                Opus.Core.StringArray resourceSubDirectories = new Opus.Core.StringArray();
                 if (this.SourceFileCollection.Count > 0)
                 {
                     {
@@ -270,9 +284,9 @@ namespace VSSolutionBuilder
                 if (this.HeaderFileCollection.Count > 0)
                 {
                     {
-                        MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", "Header Files");
+                        MSBuildItem headerFilesItem = filtersGroup.CreateItem("Filter", "Header Files");
                         // TODO: does this have to be a unique Guid?
-                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
+                        headerFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
                     foreach (ProjectFile file in this.HeaderFileCollection)
@@ -299,11 +313,50 @@ namespace VSSolutionBuilder
                         }
                     }
 
-                    foreach (string sourceSubDir in headerSubDirectories)
+                    foreach (string headerSubDir in headerSubDirectories)
                     {
-                        MSBuildItem sourceFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Header Files", sourceSubDir));
+                        MSBuildItem headerFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Header Files", headerSubDir));
                         // TODO: does this have to be a unique Guid?
-                        sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
+                        headerFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
+                    }
+                }
+                if (this.ResourceFileCollection.Count > 0)
+                {
+                    {
+                        MSBuildItem resourceFilesItem = filtersGroup.CreateItem("Filter", "Resource Files");
+                        // TODO: does this have to be a unique Guid?
+                        resourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
+                    }
+
+                    foreach (ProjectFile file in this.ResourceFileCollection)
+                    {
+                        string subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
+                        string relativeSubDirFull = Opus.Core.RelativePathUtilities.GetPath(subdir, this.PackageUri);
+                        string[] relativeSubDirs = relativeSubDirFull.Split(System.IO.Path.DirectorySeparatorChar);
+                        string currentBase = null;
+                        foreach (string subd in relativeSubDirs)
+                        {
+                            if (null != currentBase)
+                            {
+                                currentBase = System.IO.Path.Combine(currentBase, subd);
+                            }
+                            else
+                            {
+                                currentBase = subd;
+                            }
+
+                            if (!resourceSubDirectories.Contains(currentBase))
+                            {
+                                resourceSubDirectories.Add(currentBase);
+                            }
+                        }
+                    }
+
+                    foreach (string resourceSubDir in resourceSubDirectories)
+                    {
+                        MSBuildItem resourceFilesItem = filtersGroup.CreateItem("Filter", System.IO.Path.Combine("Resource Files", resourceSubDir));
+                        // TODO: does this have to be a unique Guid?
+                        resourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
                 }
 
@@ -322,7 +375,7 @@ namespace VSSolutionBuilder
                 }
                 if (this.HeaderFileCollection.Count > 0)
                 {
-                    MSBuildItemGroup sourceFilesGroup = project.CreateItemGroup();
+                    MSBuildItemGroup headerFilesGroup = project.CreateItemGroup();
                     foreach (ProjectFile file in this.HeaderFileCollection)
                     {
                         string subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
@@ -341,8 +394,20 @@ namespace VSSolutionBuilder
                             elementName = "CustomBuild";
                         }
 
-                        MSBuildItem item = sourceFilesGroup.CreateItem(elementName, Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
+                        MSBuildItem item = headerFilesGroup.CreateItem(elementName, Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
                         item.CreateMetaData("Filter", System.IO.Path.Combine("Header Files", relativeSubDir));
+                    }
+                }
+                if (this.ResourceFileCollection.Count > 0)
+                {
+                    MSBuildItemGroup resourceFilesGroup = project.CreateItemGroup();
+                    foreach (ProjectFile file in this.ResourceFileCollection)
+                    {
+                        string subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
+                        string relativeSubDir = Opus.Core.RelativePathUtilities.GetPath(subdir, this.PackageUri);
+
+                        MSBuildItem item = resourceFilesGroup.CreateItem("ResourceCompile", Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
+                        item.CreateMetaData("Filter", System.IO.Path.Combine("Resource Files", relativeSubDir));
                     }
                 }
             }

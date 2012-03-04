@@ -17,6 +17,7 @@ namespace C
         ObjectFileCollection = (1 << 6),
 
         CompilerProgramDatabase = (1 << 7),
-        LinkerProgramDatabase = (1 << 8)
+        LinkerProgramDatabase = (1 << 8),
+        Win32CompiledResource = (1 << 9)
     }
 }

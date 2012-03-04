@@ -161,11 +161,26 @@ namespace Test
             }
         }
 
+        sealed class Win32Resources : C.Win32Resource
+        {
+            public Win32Resources()
+            {
+                this.ResourceFile.SetRelativePath(this, "resources", "win32.rc");
+            }
+        }
+
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
+            typeof(WindowsSDK.WindowsSDK)
+            );
+
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
+        Opus.Core.TypeArray mingwDependents = new Opus.Core.TypeArray(
+            typeof(Win32Resources)
+            );
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");

@@ -4,6 +4,15 @@ namespace Test13
     // Define module classes here
     class QtApplication : C.Application
     {
+        [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
+        class Win32ResourceFile : C.Win32Resource
+        {
+            public Win32ResourceFile()
+            {
+                this.ResourceFile.SetRelativePath(this, "resources", "QtApplication.rc");
+            }
+        }
+
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
@@ -89,6 +98,11 @@ namespace Test13
             "-lQtCore",
             "-lQtGui"
         );
+
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
+        Opus.Core.TypeArray resourceFiles = new Opus.Core.TypeArray(
+            typeof(Win32ResourceFile)
+            );
     }
 
     class PublishDynamicLibraries : FileUtilities.CopyFiles

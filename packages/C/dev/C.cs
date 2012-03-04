@@ -21,5 +21,8 @@ namespace C
 
         public const string Toolchain = "ClassToolchain";
         public const string ToolchainOptions = "ClassToolchainOptions";
+
+        public const string Win32ResourceCompilerTool = "ClassWin32ResourceCompiler";
+        public const string Win32ResourceCompilerToolOptions = "ClassWin32ResourceCompilerOptions";
     }
 }
