@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
+            Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
@@ -45,6 +46,8 @@ namespace VSSolutionBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
+
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
@@ -52,7 +55,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    C.IArchiverOptions archiverOptions = staticLibrary.Options as C.IArchiverOptions;
+                    C.IArchiverOptions archiverOptions = staticLibraryOptions as C.IArchiverOptions;
                     C.IToolchainOptions toolchainOptions = archiverOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
                     switch (toolchainOptions.CharacterSet)
@@ -118,12 +121,12 @@ namespace VSSolutionBuilder
                 vcCLLibrarianTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLibrarianTool);
 
-                string outputDirectory = (staticLibrary.Options as C.ArchiverOptionCollection).OutputDirectoryPath;
+                string outputDirectory = (staticLibraryOptions as C.ArchiverOptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
 
-                if (staticLibrary.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (staticLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = staticLibrary.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = staticLibraryOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)

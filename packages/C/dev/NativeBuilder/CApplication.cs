@@ -9,11 +9,13 @@ namespace NativeBuilder
     {
         public object Build(C.Application application, out bool success)
         {
-            Opus.Core.DependencyNode node = application.OwningNode;
+            Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
-            C.ILinkerOptions linkerOptions = application.Options as C.ILinkerOptions;
+            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
+            C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
 
             C.OutputFileFlags objectFileFlags = C.OutputFileFlags.ObjectFile;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
@@ -54,7 +56,7 @@ namespace NativeBuilder
                 {
                     inputFiles.AddRange(dependentLibraryFiles);
                 }
-                Opus.Core.StringArray outputFiles = application.Options.OutputPaths.Paths;
+                Opus.Core.StringArray outputFiles = applicationOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -81,7 +83,7 @@ namespace NativeBuilder
             }
 
             string executablePath;
-            C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
             {
                 executablePath = linkerInstance.ExecutableCPlusPlus(target);

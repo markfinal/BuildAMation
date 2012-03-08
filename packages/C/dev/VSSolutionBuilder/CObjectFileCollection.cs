@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.ObjectFileCollectionBase objectFileCollection, out bool success)
         {
-            Opus.Core.DependencyNode node = objectFileCollection.OwningNode;
+            Opus.Core.IModule objectFileCollectionModule = objectFileCollection as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
             if (null == node.Parent || (node.Parent.Module.GetType().BaseType.BaseType == typeof(C.ObjectFileCollection) && null == node.Parent.Parent))
             {
                 // utility project
@@ -65,12 +66,14 @@ namespace VSSolutionBuilder
             }
             this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);
 
+            Opus.Core.BaseOptionCollection objectFileCollectionOptions = objectFileCollectionModule.Options;
+
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    C.ICCompilerOptions compilerOptions = objectFileCollection.Options as C.ICCompilerOptions;
+                    C.ICCompilerOptions compilerOptions = objectFileCollectionOptions as C.ICCompilerOptions;
                     C.IToolchainOptions toolchainOptions = compilerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
                     switch (toolchainOptions.CharacterSet)
@@ -99,11 +102,11 @@ namespace VSSolutionBuilder
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    configuration.CharacterSet = (EProjectCharacterSet)((objectFileCollection.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
+                    configuration.CharacterSet = (EProjectCharacterSet)((objectFileCollectionOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
 
-                C.CompilerOptionCollection options = objectFileCollection.Options as C.CompilerOptionCollection;
+                C.CompilerOptionCollection options = objectFileCollectionOptions as C.CompilerOptionCollection;
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;
             }
 
@@ -114,9 +117,9 @@ namespace VSSolutionBuilder
                 vcCLCompilerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLCompilerTool);
 
-                if (objectFileCollection.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (objectFileCollectionOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = objectFileCollection.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = objectFileCollectionOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)

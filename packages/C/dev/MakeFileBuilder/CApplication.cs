@@ -9,7 +9,8 @@ namespace MakeFileBuilder
     {
         public object Build(C.Application application, out bool success)
         {
-            Opus.Core.DependencyNode node = application.OwningNode;
+            Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
@@ -43,8 +44,10 @@ namespace MakeFileBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
+
             string executable;
-            C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
             {
                 executable = linkerInstance.ExecutableCPlusPlus(target);
@@ -56,9 +59,9 @@ namespace MakeFileBuilder
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
-            if (application.Options is CommandLineProcessor.ICommandLineSupport)
+            if (applicationOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = application.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = applicationOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
@@ -89,19 +92,19 @@ namespace MakeFileBuilder
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibrarySuffix));
             }
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
-            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, application.Options as C.ILinkerOptions, dependentLibraries);
+            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, applicationOptions as C.ILinkerOptions, dependentLibraries);
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
-            recipe = recipe.Replace(application.Options.OutputPaths[primaryOutput], "$@");
+            recipe = recipe.Replace(applicationOptions.OutputPaths[primaryOutput], "$@");
             string instanceName = MakeFile.InstanceName(node);
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in application.Options.OutputPaths)
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in applicationOptions.OutputPaths)
             {
                 if (!outputPath.Key.Equals(primaryOutput))
                 {
                     string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                    recipe = recipe.Replace(application.Options.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                    recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
                 }
             }
 
@@ -110,7 +113,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(application.Options.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            MakeFileRule rule = new MakeFileRule(applicationOptions.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

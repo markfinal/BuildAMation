@@ -11,7 +11,7 @@ namespace FileUtilities
                                    typeof(SymLinkOptionCollection))]
     public class SymLink : Opus.Core.IModule
     {
-        public void ExecuteOptionUpdate(Opus.Core.Target target)
+        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (null != this.UpdateOptions)
             {
@@ -19,13 +19,13 @@ namespace FileUtilities
             }
         }
 
-        public Opus.Core.BaseOptionCollection Options
+        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
         {
             get;
             set;
         }
 
-        public Opus.Core.DependencyNode OwningNode
+        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
         {
             get;
             set;

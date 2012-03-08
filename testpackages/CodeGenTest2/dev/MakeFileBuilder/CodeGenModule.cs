@@ -4,15 +4,17 @@ namespace MakeFileBuilder
     {
         public object Build(CodeGenTest2.CodeGenModule codeGenModule, out System.Boolean success)
         {
-            Opus.Core.DependencyNode node = codeGenModule.OwningNode;
+            Opus.Core.IModule codeGenModuleModule = codeGenModule as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
             CodeGenTest2.CodeGenTool tool = new CodeGenTest2.CodeGenTool();
-            CodeGenTest2.CodeGenOptions toolOptions = codeGenModule.Options as CodeGenTest2.CodeGenOptions;
+            Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
+            CodeGenTest2.CodeGenOptions toolOptions = codeGenModuleOptions as CodeGenTest2.CodeGenOptions;
             string toolExePath = tool.Executable(target);
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(tool.Executable(target));
-            Opus.Core.StringArray outputFiles = codeGenModule.Options.OutputPaths.Paths;
+            Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
@@ -44,7 +46,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(codeGenModule.Options.OutputPaths, CodeGenTest2.OutputFileFlags.GeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(codeGenModuleOptions.OutputPaths, CodeGenTest2.OutputFileFlags.GeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

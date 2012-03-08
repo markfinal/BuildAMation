@@ -15,7 +15,10 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("Resource file '{0}' does not exist", resourceFilePath));
             }
 
-            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFile.Options as C.Win32ResourceCompilerOptionCollection;
+            Opus.Core.IModule resourceFileModule = resourceFile as Opus.Core.IModule;
+            Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
+
+            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
 
             // dependency checking, source against output files
             {
@@ -24,13 +27,13 @@ namespace NativeBuilder
                 Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", (resourceFile as Opus.Core.IModule).OwningNode.UniqueModuleName);
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", resourceFileModule.OwningNode.UniqueModuleName);
                     success = true;
                     return null;
                 }
             }
 
-            Opus.Core.Target target = (resourceFile as Opus.Core.IModule).OwningNode.Target;
+            Opus.Core.Target target = resourceFileModule.OwningNode.Target;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
@@ -65,7 +68,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(System.String.Format("{0}{1}", compilerInstance.InputFileSwitch, resourceFilePath));
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute((resourceFile as Opus.Core.IModule).OwningNode, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(resourceFileModule.OwningNode, compilerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

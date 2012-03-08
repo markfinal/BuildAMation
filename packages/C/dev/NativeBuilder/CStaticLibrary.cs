@@ -9,7 +9,8 @@ namespace NativeBuilder
     {
         public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
+            Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
             Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;
@@ -31,11 +32,13 @@ namespace NativeBuilder
                 return null;
             }
 
+            Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
+
             // dependency checking
             {
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
                 inputFiles.AddRange(dependentObjectFiles);
-                Opus.Core.StringArray outputFiles = staticLibrary.Options.OutputPaths.Paths;
+                Opus.Core.StringArray outputFiles = staticLibraryOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -45,9 +48,9 @@ namespace NativeBuilder
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (staticLibrary.Options is CommandLineProcessor.ICommandLineSupport)
+            if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibrary.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();

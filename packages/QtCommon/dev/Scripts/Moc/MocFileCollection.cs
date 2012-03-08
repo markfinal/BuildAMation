@@ -16,7 +16,7 @@ namespace QtCommon
     {
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();
 
-        public void ExecuteOptionUpdate(Opus.Core.Target target)
+        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (null != this.UpdateOptions)
             {
@@ -24,7 +24,7 @@ namespace QtCommon
             }
         }
 
-        public Opus.Core.ModuleCollection GetNestedDependents(Opus.Core.Target target)
+        Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             Opus.Core.ModuleCollection collection = new Opus.Core.ModuleCollection();
 
@@ -36,13 +36,13 @@ namespace QtCommon
             return collection;
         }
 
-        public Opus.Core.BaseOptionCollection Options
+        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
         {
             get;
             set;
         }
 
-        public Opus.Core.DependencyNode OwningNode
+        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
         {
             get;
             set;

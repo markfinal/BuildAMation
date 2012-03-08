@@ -9,7 +9,8 @@ namespace QMakeBuilder
     {
         public object Build(C.Application application, out bool success)
         {
-            Opus.Core.DependencyNode node = application.OwningNode;
+            Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
             NodeData nodeData = new NodeData();
@@ -20,9 +21,10 @@ namespace QMakeBuilder
                 nodeData.Merge(childData);
             }
 
-            C.LinkerOptionCollection linkerOptionCollection = application.Options as C.LinkerOptionCollection;
-            C.ILinkerOptions linkerOptions = application.Options as C.ILinkerOptions;
-            C.IToolchainOptions toolchainOptions = (application.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
+            C.LinkerOptionCollection linkerOptionCollection = applicationOptions as C.LinkerOptionCollection;
+            C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
+            C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
 
             {
                 C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
@@ -69,7 +71,7 @@ namespace QMakeBuilder
                     proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
 
-                string targetName = application.OwningNode.ModuleName;
+                string targetName = applicationModule.OwningNode.ModuleName;
                 nodeData.AddUniqueVariable("TARGET", new Opus.Core.StringArray(targetName));
                 proFileWriter.WriteLine("TARGET = {0}", targetName);
                 proFileWriter.WriteLine("TEMPLATE = app");

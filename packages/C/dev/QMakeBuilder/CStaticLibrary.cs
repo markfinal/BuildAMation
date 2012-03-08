@@ -9,7 +9,8 @@ namespace QMakeBuilder
     {
         public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
+            Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
             NodeData nodeData = new NodeData();
@@ -20,8 +21,10 @@ namespace QMakeBuilder
                 nodeData.Merge(childData);
             }
 
-            C.ArchiverOptionCollection archiverOptionCollection = staticLibrary.Options as C.ArchiverOptionCollection;
-            C.IArchiverOptions archiverOptions = staticLibrary.Options as C.IArchiverOptions;
+            Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
+
+            C.ArchiverOptionCollection archiverOptionCollection = staticLibraryOptions as C.ArchiverOptionCollection;
+            C.IArchiverOptions archiverOptions = staticLibraryOptions as C.IArchiverOptions;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (archiverOptions is CommandLineProcessor.ICommandLineSupport)
@@ -47,7 +50,7 @@ namespace QMakeBuilder
                     proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
 
-                string targetName = staticLibrary.OwningNode.ModuleName;
+                string targetName = node.ModuleName;
                 nodeData.AddUniqueVariable("TARGET", new Opus.Core.StringArray(targetName));
                 proFileWriter.WriteLine("TARGET = {0}", targetName);
                 proFileWriter.WriteLine("TEMPLATE = lib");

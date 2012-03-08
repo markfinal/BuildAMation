@@ -11,7 +11,7 @@ namespace C
     [Opus.Core.AssignToolForModule]
     public abstract class ThirdPartyModule : Opus.Core.IModule
     {
-        public void ExecuteOptionUpdate(Opus.Core.Target target)
+        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (null != this.UpdateOptions)
             {
@@ -19,7 +19,7 @@ namespace C
             }
         }
 
-        public Opus.Core.BaseOptionCollection Options
+        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
         {
             get
             {
@@ -31,7 +31,7 @@ namespace C
             }
         }
 
-        public Opus.Core.DependencyNode OwningNode
+        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
         {
             get;
             set;

@@ -9,8 +9,9 @@ namespace NativeBuilder
     {
         public object Build(FileUtilities.SymLink symLink, out bool success)
         {
-            Opus.Core.DependencyNode owningNode = symLink.OwningNode;
-            Opus.Core.Target target = owningNode.Target;
+            Opus.Core.IModule symLinkModule = symLink as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = symLinkModule.OwningNode;
+            Opus.Core.Target target = node.Target;
 
             // locate target
             string symlinkTarget = null;
@@ -43,9 +44,11 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("No symlink target specified", false);
             }
 
-            string link = symLink.Options.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link];
+            Opus.Core.BaseOptionCollection symLinkOptions = symLinkModule.Options;
 
-            FileUtilities.ISymLinkOptions options = symLink.Options as FileUtilities.ISymLinkOptions;
+            string link = symLinkOptions.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link];
+
+            FileUtilities.ISymLinkOptions options = symLinkOptions as FileUtilities.ISymLinkOptions;
             bool requiresBuilding = true;
             if (options.Type == FileUtilities.EType.Directory)
             {
@@ -68,15 +71,15 @@ namespace NativeBuilder
 
             if (!requiresBuilding)
             {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", owningNode.UniqueModuleName);
+                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                 success = true;
                 return null;
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (symLink.Options is CommandLineProcessor.ICommandLineSupport)
+            if (symLinkOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = symLink.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = symLinkOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
@@ -92,19 +95,19 @@ namespace NativeBuilder
 
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                commandLineBuilder.Add(symLink.Options.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link]);
+                commandLineBuilder.Add(symLinkOptions.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link]);
                 commandLineBuilder.Add(symlinkTarget);
             }
             else
             {
                 commandLineBuilder.Add(symlinkTarget);
-                commandLineBuilder.Add(symLink.Options.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link]);
+                commandLineBuilder.Add(symLinkOptions.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link]);
             }
 
             FileUtilities.SymLinkTool tool = new FileUtilities.SymLinkTool();
             string toolExecutable = tool.Executable(target);
 
-            int returnValue = CommandLineProcessor.Processor.Execute(owningNode, tool, toolExecutable, commandLineBuilder);
+            int returnValue = CommandLineProcessor.Processor.Execute(node, tool, toolExecutable, commandLineBuilder);
             success = (0 == returnValue);
 
             return null;

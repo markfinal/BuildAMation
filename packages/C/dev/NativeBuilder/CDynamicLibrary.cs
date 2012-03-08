@@ -9,11 +9,13 @@ namespace NativeBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = dynamicLibrary.OwningNode;
+            Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
-            C.ILinkerOptions linkerOptions = dynamicLibrary.Options as C.ILinkerOptions;
+            Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
+            C.ILinkerOptions linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
 
             C.OutputFileFlags objectFileFlags = C.OutputFileFlags.ObjectFile;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
@@ -58,7 +60,7 @@ namespace NativeBuilder
                 // don't dependency check against the static import library, since it is generally not rewritten
                 // when code changes
                 // note that a copy is taken here as we do not want to remove the static import library from the original outputs
-                Opus.Core.OutputPaths filteredOutputPaths = new Opus.Core.OutputPaths(dynamicLibrary.Options.OutputPaths);
+                Opus.Core.OutputPaths filteredOutputPaths = new Opus.Core.OutputPaths(dynamicLibraryOptions.OutputPaths);
                 filteredOutputPaths.Remove(C.OutputFileFlags.StaticImportLibrary);
 
                 Opus.Core.StringArray outputFiles = filteredOutputPaths.Paths;
@@ -88,7 +90,7 @@ namespace NativeBuilder
             }
 
             string executablePath;
-            C.IToolchainOptions toolchainOptions = (dynamicLibrary.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
             {
                 executablePath = linkerInstance.ExecutableCPlusPlus(target);

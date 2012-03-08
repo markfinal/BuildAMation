@@ -29,12 +29,16 @@ namespace NativeBuilder
                 return null;
             }
 
-            Opus.Core.Target target = copyFiles.OwningNode.Target;
+            Opus.Core.IModule copyFilesModule = copyFiles as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = copyFilesModule.OwningNode;
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.BaseOptionCollection copyFilesOptions = copyFilesModule.Options;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
+            if (copyFilesOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFilesOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
@@ -72,7 +76,7 @@ namespace NativeBuilder
                 bool requiresBuilding = NativeBuilder.RequiresBuilding(destinationFile, sourcePath);
                 if (!requiresBuilding)
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", copyFiles.OwningNode.UniqueModuleName);
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     returnValue = 0;
                     continue;
                 }
@@ -95,7 +99,7 @@ namespace NativeBuilder
                 {
                     thisCommandLineBuilder.Add(destinationDirectory);
                 }
-                returnValue = CommandLineProcessor.Processor.Execute(copyFiles.OwningNode, tool, executablePath, thisCommandLineBuilder);
+                returnValue = CommandLineProcessor.Processor.Execute(node, tool, executablePath, thisCommandLineBuilder);
                 if (0 != returnValue)
                 {
                     break;

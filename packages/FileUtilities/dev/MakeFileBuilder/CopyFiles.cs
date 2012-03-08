@@ -55,14 +55,17 @@ namespace MakeFileBuilder
             }
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-            Opus.Core.DependencyNode node = copyFiles.OwningNode;
+            Opus.Core.IModule copyFilesModule = copyFiles as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = copyFilesModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string toolExecutablePath = tool.Executable(target);
 
+            Opus.Core.BaseOptionCollection copyFilesOptions = copyFilesModule.Options;
+
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
+            if (copyFilesOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFilesOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else

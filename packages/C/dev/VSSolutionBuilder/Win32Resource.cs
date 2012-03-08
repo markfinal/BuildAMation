@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.Win32Resource resourceFile, out bool success)
         {
-            Opus.Core.DependencyNode node = (resourceFile as Opus.Core.IModule).OwningNode;
+            Opus.Core.IModule resourceFileModule = resourceFile as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = resourceFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
             // do not generate a project file for this module
@@ -116,6 +117,8 @@ namespace VSSolutionBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
+
             {
                 string toolName = "VCResourceCompilerTool";
 
@@ -129,9 +132,9 @@ namespace VSSolutionBuilder
                 ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, vcResourceCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
-                if (resourceFile.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (resourceFileOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = resourceFile.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = resourceFileOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
@@ -145,7 +148,7 @@ namespace VSSolutionBuilder
                 }
 
                 // add the output file spec
-                C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFile.Options as C.Win32ResourceCompilerOptionCollection;
+                C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
                 vcResourceCompilerTool["ResourceOutputFileName"] = compilerOptions.CompiledResourceFilePath;
             }
 

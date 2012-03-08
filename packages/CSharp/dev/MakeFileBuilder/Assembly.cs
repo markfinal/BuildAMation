@@ -9,9 +9,11 @@ namespace MakeFileBuilder
     {
         public object Build(CSharp.Assembly assembly, out System.Boolean success)
         {
-            Opus.Core.DependencyNode node = assembly.OwningNode;
+            Opus.Core.IModule assemblyModule = assembly as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            CSharp.OptionCollection options = assembly.Options as CSharp.OptionCollection;
+            Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;
+            CSharp.OptionCollection options = assemblyOptions as CSharp.OptionCollection;
 
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
             System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
@@ -246,7 +248,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(assembly.Options.OutputPaths, CSharp.OutputFileFlags.AssemblyFile, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            MakeFileRule rule = new MakeFileRule(assemblyOptions.OutputPaths, CSharp.OutputFileFlags.AssemblyFile, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

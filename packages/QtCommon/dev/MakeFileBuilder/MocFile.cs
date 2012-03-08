@@ -9,10 +9,12 @@ namespace MakeFileBuilder
     {
         public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
-            Opus.Core.DependencyNode node = mocFile.OwningNode;
+            Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             QtCommon.MocTool tool = new QtCommon.MocTool();
-            QtCommon.MocOptionCollection toolOptions = mocFile.Options as QtCommon.MocOptionCollection;
+            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
+            QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
             string toolExePath = tool.Executable(target);
 
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
@@ -66,7 +68,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(mocFile.Options.OutputPaths, QtCommon.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(mocFileOptions.OutputPaths, QtCommon.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

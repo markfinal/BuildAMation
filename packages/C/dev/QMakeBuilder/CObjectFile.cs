@@ -19,9 +19,11 @@ namespace QMakeBuilder
                 return null;
             }
 
-            Opus.Core.Target target = objectFile.OwningNode.Target;
+            Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
+            Opus.Core.Target target = objectFileModule.OwningNode.Target;
+            Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
 
-            C.CompilerOptionCollection compilerOptions = objectFile.Options as C.CompilerOptionCollection;
+            C.CompilerOptionCollection compilerOptions = objectFileOptions as C.CompilerOptionCollection;
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
@@ -34,7 +36,7 @@ namespace QMakeBuilder
             }
 
             bool isCPlusPlus = false;
-            if (objectFile.Options is C.ICPlusPlusCompilerOptions)
+            if (objectFileOptions is C.ICPlusPlusCompilerOptions)
             {
                 isCPlusPlus = true;
             }

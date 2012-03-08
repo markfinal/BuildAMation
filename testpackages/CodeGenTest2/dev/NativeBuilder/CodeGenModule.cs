@@ -4,15 +4,17 @@ namespace NativeBuilder
     {
         public object Build(CodeGenTest2.CodeGenModule codeGenModule, out bool success)
         {
-            Opus.Core.DependencyNode node = codeGenModule.OwningNode;
+            Opus.Core.IModule codeGenModuleModule = codeGenModule as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
             CodeGenTest2.CodeGenTool tool = new CodeGenTest2.CodeGenTool();
-            CodeGenTest2.CodeGenOptions toolOptions = codeGenModule.Options as CodeGenTest2.CodeGenOptions;
+            Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
+            CodeGenTest2.CodeGenOptions toolOptions = codeGenModuleOptions as CodeGenTest2.CodeGenOptions;
             
             string toolExecutable = tool.Executable(target);
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(toolExecutable);
-            Opus.Core.StringArray outputFiles = codeGenModule.Options.OutputPaths.Paths;
+            Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
             if (!RequiresBuilding(outputFiles, inputFiles))
             {
                 Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

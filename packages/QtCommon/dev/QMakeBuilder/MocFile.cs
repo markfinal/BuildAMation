@@ -9,9 +9,11 @@ namespace QMakeBuilder
     {
         public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
-            Opus.Core.Target target = mocFile.OwningNode.Target;
+            Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
+            Opus.Core.Target target = mocFileModule.OwningNode.Target;
+            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
 
-            QtCommon.MocOptionCollection mocOptions = mocFile.Options as QtCommon.MocOptionCollection;
+            QtCommon.MocOptionCollection mocOptions = mocFileOptions as QtCommon.MocOptionCollection;
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (mocOptions is CommandLineProcessor.ICommandLineSupport)
             {
