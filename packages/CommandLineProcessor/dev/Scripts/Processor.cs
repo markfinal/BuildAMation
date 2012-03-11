@@ -42,10 +42,10 @@ namespace CommandLineProcessor
 
                 foreach (string env in (tool as Opus.Core.IToolEnvironmentPaths).Paths(target))
                 {
-                    path.AppendFormat("{0};", env);
+                    path.AppendFormat("{0}{1}", env, System.IO.Path.PathSeparator);
                 }
 
-                string pathEnv = path.ToString().TrimEnd(new char[] { ';' });
+                string pathEnv = path.ToString().TrimEnd(new char[] { System.IO.Path.PathSeparator });
                 processStartInfo.EnvironmentVariables["PATH"] = pathEnv;
                 //Opus.Core.Log.DebugMessage("Path is '{0}'", pathEnv);
             }
@@ -93,7 +93,7 @@ namespace CommandLineProcessor
                 // TODO: need to poll for an external cancel op? this currently waits forever
                 process.WaitForExit();
                 int exitCode = process.ExitCode;
-                //Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
+                //Opus.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
 
                 return exitCode;
             }
