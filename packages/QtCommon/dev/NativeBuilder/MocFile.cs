@@ -9,10 +9,12 @@ namespace NativeBuilder
     {
         public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
-            Opus.Core.DependencyNode node = mocFile.OwningNode;
+            Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             QtCommon.MocTool tool = new QtCommon.MocTool();
-            QtCommon.MocOptionCollection toolOptions = mocFile.Options as QtCommon.MocOptionCollection;
+            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
+            QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
             string toolExePath = tool.Executable(target);
 
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
@@ -26,7 +28,7 @@ namespace NativeBuilder
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
                 inputFiles.Add(sourceFilePath);
 
-                Opus.Core.StringArray outputFiles = mocFile.Options.OutputPaths.Paths;
+                Opus.Core.StringArray outputFiles = mocFileOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

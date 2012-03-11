@@ -1,6 +1,8 @@
+08-Mar-2012 Many Opus.Core.IModule methods are now implemented explicitly, since they are only used internally, and just clutter the Intellisense in IDEs.
+
 02-Mar-2012 Fixing bug with CommandLineProcessor with Opus.Core.ITools that require more than one path to be added to PATH.
 
-01-Mar-2012 Added WindowsSDKCommon-dev package. Added Win32Resource module in order to compile .rc files.
+01-Mar-2012 Added C.Win32Resource module in order to compile .rc files.
 
 01-Mar-2012 Improved VSSolutionBuilder's support for generating paths relative to intermediate and output paths or the project file itself.
 

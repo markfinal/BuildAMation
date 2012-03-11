@@ -15,7 +15,11 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", sourceFilePath));
             }
 
-            C.CompilerOptionCollection compilerOptions = objectFile.Options as C.CompilerOptionCollection;
+            Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
+            Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
+            Opus.Core.DependencyNode node = objectFileModule.OwningNode;
+
+            C.CompilerOptionCollection compilerOptions = objectFileOptions as C.CompilerOptionCollection;
 
             string depFilePath = DependencyChecker.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, compilerOptions.OutputDirectoryPath);
 
@@ -37,7 +41,7 @@ namespace NativeBuilder
                             Opus.Core.StringArray depsArray = new Opus.Core.StringArray(deps.Split('\n'));
                             if (!RequiresBuilding(outputFiles, depsArray))
                             {
-                                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", objectFile.OwningNode.UniqueModuleName);
+                                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                                 success = true;
                                 return null;
                             }
@@ -45,14 +49,14 @@ namespace NativeBuilder
                     }
                     else
                     {
-                        Opus.Core.Log.DebugMessage("'{0}' is up-to-date", objectFile.OwningNode.UniqueModuleName);
+                        Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                         success = true;
                         return null;
                     }
                 }
             }
 
-            Opus.Core.Target target = objectFile.OwningNode.Target;
+            Opus.Core.Target target = node.Target;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
@@ -114,7 +118,7 @@ namespace NativeBuilder
             }
 
             string executablePath;
-            C.IToolchainOptions toolchainOptions = (objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
             {
                 executablePath = compilerInstance.ExecutableCPlusPlus(target);
@@ -133,7 +137,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(objectFile.OwningNode, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

@@ -18,9 +18,12 @@ namespace MakeFileBuilder
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(resourceFilePath);
 
-            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFile.Options as C.Win32ResourceCompilerOptionCollection;
+            Opus.Core.IModule resourceFileModule = resourceFile as Opus.Core.IModule;
+            Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
 
-            Opus.Core.DependencyNode node = (resourceFile as Opus.Core.IModule).OwningNode;
+            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
+
+            Opus.Core.DependencyNode node = resourceFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
@@ -40,7 +43,7 @@ namespace MakeFileBuilder
             // add output path
             commandLineBuilder.Add(System.String.Format("/fo {0}", compilerOptions.CompiledResourceFilePath));
 
-            C.Win32ResourceCompiler compilerInstance = C.Win32ResourceCompilerFactory.GetTargetInstance(target);
+            C.Win32ResourceCompilerBase compilerInstance = C.Win32ResourceCompilerFactory.GetTargetInstance(target);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 
             string executablePath = compilerTool.Executable(target);
@@ -56,7 +59,7 @@ namespace MakeFileBuilder
             }
             recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
             // replace target with $@
-            recipe = recipe.Replace(resourceFile.Options.OutputPaths[C.OutputFileFlags.Win32CompiledResource], "$@");
+            recipe = recipe.Replace(resourceFileOptions.OutputPaths[C.OutputFileFlags.Win32CompiledResource], "$@");
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
@@ -66,7 +69,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(resourceFile.Options.OutputPaths, C.OutputFileFlags.Win32CompiledResource, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(resourceFileOptions.OutputPaths, C.OutputFileFlags.Win32CompiledResource, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

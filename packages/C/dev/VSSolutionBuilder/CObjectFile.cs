@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.ObjectFile objectFile, out bool success)
         {
-            Opus.Core.DependencyNode node = objectFile.OwningNode;
+            Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
@@ -61,12 +62,14 @@ namespace VSSolutionBuilder
             }
             this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);
 
+            Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
+
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    C.ICCompilerOptions compilerOptions = objectFile.Options as C.ICCompilerOptions;
+                    C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
                     C.IToolchainOptions toolchainOptions = compilerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
                     switch (toolchainOptions.CharacterSet)
@@ -95,11 +98,11 @@ namespace VSSolutionBuilder
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    configuration.CharacterSet = (EProjectCharacterSet)((objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
+                    configuration.CharacterSet = (EProjectCharacterSet)((objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
 
-                C.CompilerOptionCollection options = objectFile.Options as C.CompilerOptionCollection;
+                C.CompilerOptionCollection options = objectFileOptions as C.CompilerOptionCollection;
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;
             }
 
@@ -138,9 +141,9 @@ namespace VSSolutionBuilder
                 {
                     commandLineBuilder.Add(executable);
                 }
-                if (objectFile.Options is CommandLineProcessor.ICommandLineSupport)
+                if (objectFileOptions is CommandLineProcessor.ICommandLineSupport)
                 {
-                    CommandLineProcessor.ICommandLineSupport commandLineOption = objectFile.Options as CommandLineProcessor.ICommandLineSupport;
+                    CommandLineProcessor.ICommandLineSupport commandLineOption = objectFileOptions as CommandLineProcessor.ICommandLineSupport;
                     commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
                 }
                 else
@@ -200,9 +203,9 @@ namespace VSSolutionBuilder
                 ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
-                if (objectFile.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (objectFileOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = objectFile.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = objectFileOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)

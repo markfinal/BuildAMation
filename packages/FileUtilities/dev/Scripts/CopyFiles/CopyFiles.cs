@@ -23,7 +23,7 @@ namespace FileUtilities
     // the system to inspect a module
     public class CopyFiles : Opus.Core.IModule, Opus.Core.IIdentifyExternalDependencies
     {
-        public void ExecuteOptionUpdate(Opus.Core.Target target)
+        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (null != this.UpdateOptions)
             {
@@ -31,13 +31,13 @@ namespace FileUtilities
             }
         }
 
-        public Opus.Core.BaseOptionCollection Options
+        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
         {
             get;
             set;
         }
 
-        public Opus.Core.DependencyNode OwningNode
+        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
         {
             get;
             set;
@@ -87,7 +87,7 @@ namespace FileUtilities
             private set;
         }
 
-        public Opus.Core.TypeArray IdentifyExternalDependencies(Opus.Core.Target target)
+        Opus.Core.TypeArray Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(Opus.Core.Target target)
         {
             Opus.Core.TypeArray externalDependents = new Opus.Core.TypeArray();
 

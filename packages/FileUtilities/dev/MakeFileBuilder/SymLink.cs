@@ -61,8 +61,9 @@ namespace MakeFileBuilder
 
         public object Build(FileUtilities.SymLink symLink, out bool success)
         {
-            Opus.Core.DependencyNode owningNode = symLink.OwningNode;
-            Opus.Core.Target target = owningNode.Target;
+            Opus.Core.IModule symLinkModule = symLink as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = symLinkModule.OwningNode;
+            Opus.Core.Target target = node.Target;
 
             // locate target
             string symlinkTarget = null;
@@ -95,7 +96,9 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("No symlink target specified", false);
             }
 
-            string link = symLink.Options.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link];
+            Opus.Core.BaseOptionCollection symLinkOptions = symLinkModule.Options;
+
+            string link = symLinkOptions.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link];
 
             // TODO
             Opus.Core.Log.MessageAll("TODO: MakeFile support for symlink for '{0}' to '{1}'", symlinkTarget, link);

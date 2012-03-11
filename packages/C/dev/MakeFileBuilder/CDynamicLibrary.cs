@@ -9,7 +9,8 @@ namespace MakeFileBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = dynamicLibrary.OwningNode;
+            Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
@@ -43,8 +44,10 @@ namespace MakeFileBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
+
             string executable;
-            C.IToolchainOptions toolchainOptions = (dynamicLibrary.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.IToolchainOptions toolchainOptions = (dynamicLibraryOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
             {
                 executable = linkerInstance.ExecutableCPlusPlus(target);
@@ -56,9 +59,9 @@ namespace MakeFileBuilder
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
-            if (dynamicLibrary.Options is CommandLineProcessor.ICommandLineSupport)
+            if (dynamicLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = dynamicLibrary.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = dynamicLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
@@ -85,19 +88,19 @@ namespace MakeFileBuilder
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibrarySuffix));
             }
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
-            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, dynamicLibrary.Options as C.ILinkerOptions, dependentLibraries);
+            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, dynamicLibraryOptions as C.ILinkerOptions, dependentLibraries);
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
-            recipe = recipe.Replace(dynamicLibrary.Options.OutputPaths[primaryOutput], "$@");
+            recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[primaryOutput], "$@");
             string instanceName = MakeFile.InstanceName(node);
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibrary.Options.OutputPaths)
+            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibraryOptions.OutputPaths)
             {
                 if (!outputPath.Key.Equals(primaryOutput))
                 {
                     string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                    recipe = recipe.Replace(dynamicLibrary.Options.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                    recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
                 }
             }
 
@@ -106,7 +109,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(dynamicLibrary.Options.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            MakeFileRule rule = new MakeFileRule(dynamicLibraryOptions.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

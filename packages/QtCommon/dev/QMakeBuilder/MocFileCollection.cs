@@ -9,7 +9,8 @@ namespace QMakeBuilder
     {
         public object Build(QtCommon.MocFileCollection mocFileCollection, out bool success)
         {
-            Opus.Core.DependencyNode node = mocFileCollection.OwningNode;
+            Opus.Core.IModule mocFileCollectionModule = mocFileCollection as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = mocFileCollectionModule.OwningNode;
 
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(node.Target);

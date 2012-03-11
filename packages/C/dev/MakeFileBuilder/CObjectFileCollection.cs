@@ -9,7 +9,8 @@ namespace MakeFileBuilder
     {
         public object Build(C.ObjectFileCollectionBase objectFileCollection, out bool success)
         {
-            Opus.Core.DependencyNode node = objectFileCollection.OwningNode;
+            Opus.Core.IModule objectFileCollectionModule = objectFileCollection as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
             MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();

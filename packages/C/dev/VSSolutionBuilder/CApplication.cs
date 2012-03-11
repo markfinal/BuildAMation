@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.Application application, out bool success)
         {
-            Opus.Core.DependencyNode node = application.OwningNode;
+            Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
@@ -64,6 +65,8 @@ namespace VSSolutionBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
+
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
@@ -71,7 +74,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    C.ILinkerOptions linkerOptions = application.Options as C.ILinkerOptions;
+                    C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
                     C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
                     switch (toolchainOptions.CharacterSet)
@@ -137,12 +140,12 @@ namespace VSSolutionBuilder
                 vcCLLinkerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
-                string outputDirectory = (application.Options as C.LinkerOptionCollection).OutputDirectoryPath;
+                string outputDirectory = (applicationOptions as C.LinkerOptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
 
-                if (application.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (applicationOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = application.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = applicationOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)

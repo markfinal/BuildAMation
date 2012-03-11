@@ -133,7 +133,7 @@ namespace CodeGenTest
                                    typeof(CodeGenOptions))]
     public abstract class CodeGenModule : Opus.Core.IModule, Opus.Core.IInjectModules
     {
-        public void ExecuteOptionUpdate(Opus.Core.Target target)
+        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
         {
             if (null != this.UpdateOptions)
             {
@@ -141,13 +141,13 @@ namespace CodeGenTest
             }
         }
 
-        public Opus.Core.BaseOptionCollection Options
+        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
         {
             get;
             set;
         }
 
-        public Opus.Core.DependencyNode OwningNode
+        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
         {
             get;
             set;
@@ -166,9 +166,10 @@ namespace CodeGenTest
             typeof(CodeGeneratorTool)
         });
 
-        public Opus.Core.ModuleCollection GetInjectedModules(Opus.Core.Target target)
+        Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
-            CodeGenOptions options = this.Options as CodeGenOptions;
+            Opus.Core.IModule module = this as Opus.Core.IModule;
+            CodeGenOptions options = module.Options as CodeGenOptions;
             string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
             C.ObjectFile injectedFile = new C.ObjectFile();
             injectedFile.SetGuaranteedAbsolutePath(outputPath);

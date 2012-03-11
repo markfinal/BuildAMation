@@ -9,9 +9,11 @@ namespace NativeBuilder
     {
         public object Build(CSharp.Assembly assembly, out System.Boolean success)
         {
-            Opus.Core.DependencyNode node = assembly.OwningNode;
+            Opus.Core.IModule assemblyModule = assembly as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            CSharp.OptionCollection options = assembly.Options as CSharp.OptionCollection;
+            Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;
+            CSharp.OptionCollection options = assemblyOptions as CSharp.OptionCollection;
 
             if (node.ExternalDependents != null)
             {
@@ -196,7 +198,7 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                Opus.Core.StringArray outputFiles = assembly.Options.OutputPaths.Paths;
+                Opus.Core.StringArray outputFiles = assemblyOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, sourceFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

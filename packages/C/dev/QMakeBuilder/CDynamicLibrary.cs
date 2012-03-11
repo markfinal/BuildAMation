@@ -9,7 +9,8 @@ namespace QMakeBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = dynamicLibrary.OwningNode;
+            Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
             NodeData nodeData = new NodeData();
@@ -20,9 +21,10 @@ namespace QMakeBuilder
                 nodeData.Merge(childData);
             }
 
-            C.LinkerOptionCollection linkerOptionCollection = dynamicLibrary.Options as C.LinkerOptionCollection;
-            C.ILinkerOptions linkerOptions = dynamicLibrary.Options as C.ILinkerOptions;
-            C.IToolchainOptions toolchainOptions = (dynamicLibrary.Options as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
+            C.LinkerOptionCollection linkerOptionCollection = dynamicLibraryOptions as C.LinkerOptionCollection;
+            C.ILinkerOptions linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
+            C.IToolchainOptions toolchainOptions = (dynamicLibraryOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
 
             {
                 C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
@@ -69,7 +71,7 @@ namespace QMakeBuilder
                     proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
 
-                string targetName = dynamicLibrary.OwningNode.ModuleName;
+                string targetName = dynamicLibraryModule.OwningNode.ModuleName;
                 nodeData.AddUniqueVariable("TARGET", new Opus.Core.StringArray(targetName));
                 proFileWriter.WriteLine("TARGET = {0}", targetName);
                 proFileWriter.WriteLine("TEMPLATE = lib");

@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = dynamicLibrary.OwningNode;
+            Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
@@ -64,6 +65,8 @@ namespace VSSolutionBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
+
             string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
@@ -71,7 +74,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
-                    C.ILinkerOptions linkerOptions = dynamicLibrary.Options as C.ILinkerOptions;
+                    C.ILinkerOptions linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
                     C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
                     switch (toolchainOptions.CharacterSet)
@@ -137,12 +140,12 @@ namespace VSSolutionBuilder
                 vcCLLinkerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
-                string outputDirectory = (dynamicLibrary.Options as C.LinkerOptionCollection).OutputDirectoryPath;
+                string outputDirectory = (dynamicLibraryOptions as C.LinkerOptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
 
-                if (dynamicLibrary.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (dynamicLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = dynamicLibrary.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = dynamicLibraryOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)

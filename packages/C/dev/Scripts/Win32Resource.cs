@@ -21,7 +21,7 @@ namespace C
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
-        public Opus.Core.BaseOptionCollection Options
+        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
         {
             get;
             set;

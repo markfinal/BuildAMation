@@ -9,16 +9,17 @@ namespace MakeFileBuilder
     {
         public object Build(C.ObjectFile objectFile, out bool success)
         {
-            Opus.Core.DependencyNode node = objectFile.OwningNode;
+            Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-
-            C.ICCompilerOptions compilerOptions = objectFile.Options as C.ICCompilerOptions;
+            Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
+            C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
             string executable;
-            C.IToolchainOptions toolchainOptions = (objectFile.Options as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
+            C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
             {
                 executable = compilerInstance.ExecutableCPlusPlus(target);
@@ -58,7 +59,7 @@ namespace MakeFileBuilder
             }
             recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
             // replace target with $@
-            recipe = recipe.Replace(objectFile.Options.OutputPaths[C.OutputFileFlags.ObjectFile], "$@");
+            recipe = recipe.Replace(objectFileOptions.OutputPaths[C.OutputFileFlags.ObjectFile], "$@");
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
@@ -68,7 +69,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(objectFile.Options.OutputPaths, C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            MakeFileRule rule = new MakeFileRule(objectFileOptions.OutputPaths, C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

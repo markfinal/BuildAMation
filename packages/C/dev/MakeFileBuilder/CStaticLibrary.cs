@@ -9,7 +9,8 @@ namespace MakeFileBuilder
     {
         public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = staticLibrary.OwningNode;
+            Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
@@ -43,14 +44,16 @@ namespace MakeFileBuilder
                 }
             }
 
+            Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
+
             string executable = archiverTool.Executable(target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
-            if (staticLibrary.Options is CommandLineProcessor.ICommandLineSupport)
+            if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 // TODO: pass in a map of path translations, e.g. outputfile > $@
-                CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibrary.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
@@ -74,12 +77,12 @@ namespace MakeFileBuilder
             recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
-            recipe = recipe.Replace(staticLibrary.Options.OutputPaths[primaryOutput], "$@");
+            recipe = recipe.Replace(staticLibraryOptions.OutputPaths[primaryOutput], "$@");
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
-            MakeFileRule rule = new MakeFileRule(staticLibrary.Options.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            MakeFileRule rule = new MakeFileRule(staticLibraryOptions.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

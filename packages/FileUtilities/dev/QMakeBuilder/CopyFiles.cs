@@ -54,15 +54,18 @@ namespace QMakeBuilder
                 destinationDirectory = copyFiles.DestinationDirectory;
             }
 
-            Opus.Core.Target target = copyFiles.OwningNode.Target;
+            Opus.Core.IModule copyFilesModule = copyFiles as Opus.Core.IModule;
+            Opus.Core.Target target = copyFilesModule.OwningNode.Target;
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
             string toolExecutablePath = tool.Executable(target);
 
+            Opus.Core.BaseOptionCollection copyFilesOptions = copyFilesModule.Options;
+
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (copyFiles.Options is CommandLineProcessor.ICommandLineSupport)
+            if (copyFilesOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFiles.Options as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = copyFilesOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else

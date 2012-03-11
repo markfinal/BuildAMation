@@ -9,7 +9,8 @@ namespace VSSolutionBuilder
     {
         public object Build(C.HeaderLibrary headerLibrary, out bool success)
         {
-            Opus.Core.DependencyNode node = headerLibrary.OwningNode;
+            Opus.Core.IModule headerLibraryModule = headerLibrary as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = headerLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
 
