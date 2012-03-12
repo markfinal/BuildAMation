@@ -35,7 +35,7 @@ namespace Opus
 
         public void AssignArguments(string arguments)
         {
-            string[] roots = arguments.Split(';');
+            string[] roots = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageRoots = new Opus.Core.StringArray(roots);
         }
 

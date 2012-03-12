@@ -29,7 +29,7 @@ namespace Opus
 
         public void AssignArguments(string arguments)
         {
-            this.Platforms = new Core.StringArray(arguments.Split(';'));
+            this.Platforms = new Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Platforms

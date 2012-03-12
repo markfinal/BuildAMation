@@ -521,6 +521,9 @@ namespace CSharp
                 System.Text.StringBuilder fileList = new System.Text.StringBuilder();
                 foreach (string file in fileCollectionOption.Value)
                 {
+                    // TODO: need to check whether ; is appropriate here for *nix platforms
+                    // It hasn't failed before, but if you are to copy-n-paste an Opus command line
+                    // to a shell, would it think that a ; is a continuation character?
                     if (file.Contains(" "))
                     {
                         fileList.AppendFormat("\"{0}\";", file);
@@ -548,6 +551,9 @@ namespace CSharp
                 System.Text.StringBuilder fileList = new System.Text.StringBuilder();
                 foreach (string file in fileCollectionOption.Value)
                 {
+                    // TODO: need to check whether ; is appropriate here for *nix platforms
+                    // It hasn't failed before, but if you are to copy-n-paste an Opus command line
+                    // to a shell, would it think that a ; is a continuation character?
                     if (file.Contains(" "))
                     {
                         fileList.AppendFormat("\"{0}\";", file);

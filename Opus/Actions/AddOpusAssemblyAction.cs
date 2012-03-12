@@ -29,7 +29,7 @@ namespace Opus
 
         public void AssignArguments(string arguments)
         {
-            string[] assemblyNames = arguments.Split(';');
+            string[] assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
             this.OpusAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 

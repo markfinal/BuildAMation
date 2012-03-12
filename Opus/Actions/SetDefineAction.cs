@@ -29,7 +29,7 @@ namespace Opus
 
         public void AssignArguments(string arguments)
         {
-            this.Defines = new Opus.Core.StringArray(arguments.Split(';'));
+            this.Defines = new Opus.Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Defines
