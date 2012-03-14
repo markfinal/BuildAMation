@@ -35,6 +35,7 @@ namespace VisualCCommon
             this.NoLogo = true;
             this.StackReserveAndCommit = null;
             this.IgnoredLibraries = new Opus.Core.StringArray();
+            this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
 
             Opus.Core.Target target = node.Target;
 
@@ -45,6 +46,12 @@ namespace VisualCCommon
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
+        }
+
+        public string ProgamDatabaseDirectoryPath
+        {
+            get;
+            set;
         }
 
         public string ProgramDatabaseFilePath
@@ -66,7 +73,7 @@ namespace VisualCCommon
 
             if (options.DebugSymbols && (null == this.ProgramDatabaseFilePath))
             {
-                string pdbPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + ".pdb";
+                string pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
                 this.ProgramDatabaseFilePath = pdbPathName;
             }
 
@@ -595,6 +602,12 @@ namespace VisualCCommon
             if (null != libraryPathName)
             {
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(libraryPathName), false);
+            }
+
+            string programDatabasePathName = this.ProgramDatabaseFilePath;
+            if (null != programDatabasePathName)
+            {
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(programDatabasePathName), false);
             }
 
             return directoriesToCreate;

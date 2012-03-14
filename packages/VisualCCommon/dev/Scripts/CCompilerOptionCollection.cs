@@ -88,6 +88,8 @@ namespace VisualCCommon
             this.ForceConformanceInForLoopScope = true;
             this.UseFullPaths = true;
             this.CompileAsManaged = EManagedCompilation.NoCLR;
+
+            this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
         }
 
         public CCompilerOptionCollection()
@@ -100,14 +102,7 @@ namespace VisualCCommon
         {
         }
 
-        public override void SetNodeOwnership(Opus.Core.DependencyNode node)
-        {
-            base.SetNodeOwnership(node);
-
-            this.ProgramDatabaseName = node.ModuleName;
-        }
-
-        public string ProgramDatabaseName
+        public string ProgamDatabaseDirectoryPath
         {
             get;
             set;
@@ -132,7 +127,7 @@ namespace VisualCCommon
 
             if (options.DebugType != EDebugType.Embedded)
             {
-                string pdbPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + ".pdb";
+                string pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
                 this.ProgramDatabaseFilePath = pdbPathName;
             }
 

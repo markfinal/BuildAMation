@@ -12,6 +12,12 @@ namespace Test
                 C.ICCompilerOptions compilerOptions = optionCollection as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("GLOBALOVERRIDE");
             }
+
+            if (optionCollection is VisualCCommon.LinkerOptionCollection)
+            {
+                VisualCCommon.LinkerOptionCollection linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
+                linkerOptions.ProgamDatabaseDirectoryPath = System.IO.Path.Combine(Opus.Core.State.BuildRoot, "symbols");
+            }
         }
     }
 

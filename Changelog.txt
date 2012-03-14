@@ -1,3 +1,5 @@
+14-Mar-2012 VisualCCommon's CCompilerOptionCollection and LinkerOptionCollection now expose ProgramDatabaseDirectoryPath, which is the directory containing any .pdb files generated.
+
 14-Mar-2012 Changed Opus.Core.OutputPaths to use a SortedDictionary internally, so that when paths are extracted, they are ordered by their identification key flag.
 
 12-Mar-2012 Action value separators are now System.IO.Path.PathSeparator. Semi-colon ';' on Windows, and ':' for *nix platforms.
