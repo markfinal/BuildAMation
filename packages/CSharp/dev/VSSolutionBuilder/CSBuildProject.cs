@@ -15,7 +15,7 @@ namespace VSSolutionBuilder
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
-        private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
+        private Opus.Core.UniqueList<string> ReferencesList = new Opus.Core.UniqueList<string>();
         private ProjectFile ApplicationDefinitionFile = null;
         private ProjectFileCollection PageFiles = new ProjectFileCollection();
 
@@ -106,7 +106,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        System.Collections.Generic.List<string> IProject.References
+        Opus.Core.UniqueList<string> IProject.References
         {
             get
             {

@@ -47,7 +47,7 @@ namespace VSSolutionBuilder
             get;
         }
 
-        System.Collections.Generic.List<string> References
+        Opus.Core.UniqueList<string> References
         {
             get;
         }

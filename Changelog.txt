@@ -1,3 +1,5 @@
+24-Mar-2012 Ensuring that C# projects generated with multiple configurations do not have duplicate assembly references.
+
 24-Mar-2012 Adding Opus.Core.UniqueList generic class.
 
 14-Mar-2012 VisualCCommon's CCompilerOptionCollection and LinkerOptionCollection now expose ProgramDatabaseDirectoryPath, which is the directory containing any .pdb files generated.
