@@ -85,7 +85,7 @@ namespace VSSolutionBuilder
             MSBuildItemGroup fileItemGroup = project.CreateItemGroup();
             foreach (ProjectFile file in this.list)
             {
-                file.SerializeCSBuild(fileItemGroup, projectUri);
+                file.SerializeCSBuild(fileItemGroup, projectUri, packageDirectoryUri);
             }
         }
     }
