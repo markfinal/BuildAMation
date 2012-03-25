@@ -1,3 +1,5 @@
+25-Mar-2012 Added workaround in Opus.Core.BaseOptionCollection.FilterOutputPaths to an invalid cast exception in Mono, from a SortedDictionary to a KeyValuePair in a foreach.
+
 24-Mar-2012 C# VSSolutions generated now display a directory hierarchy for the source in the projects.
 
 24-Mar-2012 Ensuring that C# projects generated with multiple configurations do not have duplicate assembly references.
