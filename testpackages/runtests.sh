@@ -28,7 +28,7 @@ function runTest
     fi
 }
 
-find $root -maxdepth 1 -type d \( ! -iname ".*" \) | while read FILENAME;
+find $root -maxdepth 1 -mindepth 1 -type d \( ! -iname ".*" \) | while read FILENAME;
 do
   package=`basename $FILENAME`
   if [[ "$package" != "$root" ]]; then

@@ -1,3 +1,5 @@
+25-Mar-2012 Fixing a warning in the Bash scripts for the testpackages under Linux.
+
 25-Mar-2012 Added workaround in Opus.Core.BaseOptionCollection.FilterOutputPaths to an invalid cast exception in Mono, from a SortedDictionary to a KeyValuePair in a foreach.
 
 24-Mar-2012 C# VSSolutions generated now display a directory hierarchy for the source in the projects.
