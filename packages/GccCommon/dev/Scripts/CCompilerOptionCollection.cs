@@ -66,6 +66,8 @@ namespace GccCommon
             this.SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
 
             this.TargetLanguage = C.ETargetLanguage.C;
+
+            this.Pedantic = true;
         }
 
         public CCompilerOptionCollection()
