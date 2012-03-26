@@ -14,12 +14,12 @@
 #if defined(OPUS_DYNAMICLIBRARY)
 #if __GNUC__ >= 4
 #define DYNAMICLIBRARYA_API __attribute__ ((visibility("default")))
-#else // __GNUC__
+#else /* __GNUC__ */
 #define DYNAMICLIBRARYA_API /* empty */
-#endif // __GNUC__
-#else // OPUS_DYNAMICLIBRARY
+#endif /* __GNUC__ */
+#else /* OPUS_DYNAMICLIBRARY */
 #define DYNAMICLIBRARYA_API /* empty */
-#endif // OPUS_DYNAMICLIBRARY
+#endif /* OPUS_DYNAMICLIBRARY */
 
 #else
 
@@ -29,4 +29,4 @@
 
 extern DYNAMICLIBRARYA_API char *dynamicLibraryAFunction();
 
-#endif // DYNAMICLIBRARYA_H
+#endif /* DYNAMICLIBRARYA_H */

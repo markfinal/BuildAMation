@@ -11,9 +11,9 @@ main(int argc, char* argv[])
         return -1;
     }
 
-    //fprintf(stdout, "Tool is '%s'\n", argv[0]);
-    //fprintf(stdout, "Arg1 is '%s'\n", argv[1]);
-    //fprintf(stdout, "Arg2 is '%s'\n", argv[2]);
+    /*fprintf(stdout, "Tool is '%s'\n", argv[0]);*/
+    /*fprintf(stdout, "Arg1 is '%s'\n", argv[1]);*/
+    /*fprintf(stdout, "Arg2 is '%s'\n", argv[2]);*/
  
     {
         char path[256];

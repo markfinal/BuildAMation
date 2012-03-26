@@ -18,6 +18,16 @@ namespace Test13
             public SourceFiles()
             {
                 this.AddRelativePaths(this, "source", "*.cpp");
+
+                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+            }
+
+            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                if (module.Options is MingwCommon.ICCompilerOptions)
+                {
+                    (module.Options as MingwCommon.ICCompilerOptions).Pedantic = false;
+                }
             }
 
             /*
