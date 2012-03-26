@@ -28,6 +28,10 @@ namespace Test13
                 {
                     (module.Options as MingwCommon.ICCompilerOptions).Pedantic = false;
                 }
+                else if (module.Options is GccCommon.ICCompilerOptions)
+                {
+                    (module.Options as GccCommon.ICCompilerOptions).Pedantic = false;
+                }
             }
 
             /*
