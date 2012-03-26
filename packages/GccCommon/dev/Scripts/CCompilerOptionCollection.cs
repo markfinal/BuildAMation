@@ -34,6 +34,7 @@ namespace GccCommon
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLine);
             this["PositionIndependentCode"].PrivateData = new PrivateData(PositionIndependentCodeCommandLine);
             this["InlineFunctions"].PrivateData = new PrivateData(InlineFunctionsCommandLine);
+            this["Pedantic"].PrivateData = new PrivateData(PedanticCL);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -364,6 +365,15 @@ namespace GccCommon
             else
             {
                 commandLineBuilder.Add("-fno-inline-functions");
+            }
+        }
+
+        private static void PedanticCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-pedantic");
             }
         }
 

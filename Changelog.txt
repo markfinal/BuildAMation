@@ -1,3 +1,5 @@
+26-Mar-2012 Adding GccCommon and MingwCommon Pedantic Boolean option for ICCompilerOptions, for -pedantic. Defaults to true.
+
 25-Mar-2012 Using a nice shell script syntax to simplify the env.sh script.
 
 25-Mar-2012 Fixing a warning in the Bash scripts for the testpackages under Linux.

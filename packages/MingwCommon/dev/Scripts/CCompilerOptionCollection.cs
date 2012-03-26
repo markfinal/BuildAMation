@@ -33,6 +33,7 @@ namespace MingwCommon
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLine);
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLine);
             this["InlineFunctions"].PrivateData = new PrivateData(InlineFunctionsCommandLine);
+            this["Pedantic"].PrivateData = new PrivateData(PedanticCL);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -62,6 +63,8 @@ namespace MingwCommon
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
             this.SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(node.Target));
+
+            this.Pedantic = true;
         }
 
         public CCompilerOptionCollection()
@@ -352,6 +355,15 @@ namespace MingwCommon
             else
             {
                 commandLineBuilder.Add("-fno-inline-functions");
+            }
+        }
+
+        private static void PedanticCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-pedantic");
             }
         }
 

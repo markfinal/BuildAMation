@@ -30,5 +30,11 @@ namespace MingwCommon
             get;
             set;
         }
+
+        bool Pedantic
+        {
+            get;
+            set;
+        }
     }
 }
