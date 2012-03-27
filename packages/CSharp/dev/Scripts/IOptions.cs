@@ -72,5 +72,11 @@ namespace CSharp
             get;
             set;
         }
+
+        Opus.Core.StringArray Defines
+        {
+            get;
+            set;
+        }
     }
 }

@@ -1,3 +1,5 @@
+27-Mar-2012 Adding Defines option to CSharp.IOptions. Debug configurations get DEBUG. Profile configurations get TRACE.
+
 27-Mar-2012 Fixing C# VSSolutionBuilder option for Checked (Over/underflow) and Treat Warnings as errors. Profile configurations now also get debug information.
 
 27-Mar-2012 Removed Opus.Core.BuildSchedulerEx that is now redundant.

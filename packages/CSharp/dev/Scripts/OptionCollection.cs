@@ -23,11 +23,13 @@ namespace CSharp
             options.Unsafe = false;
             options.WarningLevel = EWarningLevel.Level4;
             options.WarningsAsErrors = true;
+            options.Defines = new Opus.Core.StringArray();
 
             if (target.Configuration == Opus.Core.EConfiguration.Debug)
             {
                 options.DebugInformation = EDebugInformation.Full;
                 options.Optimize = false;
+                options.Defines.Add("DEBUG");
             }
             else
             {
@@ -38,6 +40,7 @@ namespace CSharp
                 else
                 {
                     options.DebugInformation = EDebugInformation.Full;
+                    options.Defines.Add("TRACE");
                 }
                 options.Optimize = true;
             }
@@ -62,6 +65,7 @@ namespace CSharp
             this["DebugInformation"].PrivateData = new PrivateData(DebugInformationCommandLine, DebugInformationVisualStudio);
             this["References"].PrivateData = new PrivateData(ReferencesCommandLine, ReferencesVisualStudio);
             this["Modules"].PrivateData = new PrivateData(ModulesCommandLine, ModulesVisualStudio);
+            this["Defines"].PrivateData = new PrivateData(DefinesCL, DefinesVS);
         }
 
         public OptionCollection(Opus.Core.DependencyNode node)
@@ -578,6 +582,39 @@ namespace CSharp
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             // TODO
+            return dictionary;
+        }
+
+        private static void DefinesCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            if (stringArrayOption.Value.Count == 0)
+            {
+                return;
+            }
+            System.Text.StringBuilder definesList = new System.Text.StringBuilder();
+            definesList.Append("/define:");
+            foreach (string define in stringArrayOption.Value)
+            {
+                definesList.AppendFormat("{0};", define);
+            }
+            commandLineBuilder.Add(definesList.ToString().TrimEnd(new char [] { ';' }));
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary DefinesVS(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (stringArrayOption.Value.Count == 0)
+            {
+                return dictionary;
+            }
+            System.Text.StringBuilder definesList = new System.Text.StringBuilder();
+            foreach (string define in stringArrayOption.Value)
+            {
+                definesList.AppendFormat("{0};", define);
+            }
+            dictionary.Add("DefineConstants", definesList.ToString().TrimEnd(new char[] { ';' }));
             return dictionary;
         }
 

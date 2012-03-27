@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin32\Debug\..\..\packages\CSharp\dev\Scripts\IOptions.cs -o=OptionProperties.cs -n=CSharp -c=OptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\CSharp\dev\Scripts\IOptions.cs -o=OptionProperties.cs -n=CSharp -c=OptionCollection 
 namespace CSharp
 {
     public partial class OptionCollection
@@ -135,6 +135,18 @@ namespace CSharp
             {
                 this.SetReferenceTypeOption<Opus.Core.FileCollection>("Modules", value);
                 this.ProcessNamedSetHandler("ModulesSetHandler", this["Modules"]);
+            }
+        }
+        public Opus.Core.StringArray Defines
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("Defines");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("Defines", value);
+                this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }
     }
