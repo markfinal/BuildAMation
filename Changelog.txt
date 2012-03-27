@@ -1,3 +1,5 @@
+27-Mar-2012 Only validate package definition schema locations for the top-most package. This avoids errors occuring by the XML parsing when two dependent packages both have valid paths to the same schema.
+
 26-Mar-2012 Fixes to the tests for pedantic warnings.
 
 26-Mar-2012 Adding GccCommon and MingwCommon Pedantic Boolean option for ICCompilerOptions, for -pedantic. Defaults to true.

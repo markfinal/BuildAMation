@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                definitionFile.Read();
+                definitionFile.Read(true);
             }
 
             bool success = true;

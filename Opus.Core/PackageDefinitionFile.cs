@@ -290,7 +290,7 @@ namespace Opus.Core
             }
         }
 
-        public void Read()
+        public void Read(bool validateSchemaLocation)
         {
             System.Xml.XmlReaderSettings xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = true;
@@ -306,7 +306,7 @@ namespace Opus.Core
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
 
             // try reading the current schema version first
-            if (this.ReadCurrent(xmlReaderSettings))
+            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation))
             {
                 return;
             }
@@ -679,7 +679,7 @@ namespace Opus.Core
             return true;
         }
 
-        protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings)
+        protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings, bool validateSchemaLocation)
         {
             try
             {
@@ -687,7 +687,10 @@ namespace Opus.Core
                 settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
                 if (this.validate)
                 {
-                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
+                    if (validateSchemaLocation)
+                    {
+                        settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
+                    }
                     settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
                     settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
                 }

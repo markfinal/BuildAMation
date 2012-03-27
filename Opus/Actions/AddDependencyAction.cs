@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                xmlFile.Read();
+                xmlFile.Read(true);
             }
 
             foreach (string packageAndVersion in this.PackageAndVersionArray)
