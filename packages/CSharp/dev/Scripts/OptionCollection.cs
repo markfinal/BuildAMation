@@ -31,7 +31,14 @@ namespace CSharp
             }
             else
             {
-                options.DebugInformation = EDebugInformation.Disabled;
+                if (target.Configuration != Opus.Core.EConfiguration.Profile)
+                {
+                    options.DebugInformation = EDebugInformation.Disabled;
+                }
+                else
+                {
+                    options.DebugInformation = EDebugInformation.Full;
+                }
                 options.Optimize = true;
             }
 
@@ -299,7 +306,7 @@ namespace CSharp
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("Checked", boolOption.Value ? "true" : "false");
+            dictionary.Add("CheckForOverflowUnderflow", boolOption.Value ? "true" : "false");
             return dictionary;
         }
 
@@ -379,7 +386,7 @@ namespace CSharp
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            dictionary.Add("WarnAsError", boolOption.Value ? "true" : "false");
+            dictionary.Add("TreatWarningsAsErrors", boolOption.Value ? "true" : "false");
             return dictionary;
         }
 
