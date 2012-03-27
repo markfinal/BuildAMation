@@ -27,7 +27,7 @@ namespace Opus
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
             this.NewVersion = arguments;
         }

@@ -27,7 +27,7 @@ namespace Opus
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
             string[] assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
             this.DotNetAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);

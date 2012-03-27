@@ -27,7 +27,7 @@ namespace Opus
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
             string[] definitions = arguments.Split(System.IO.Path.PathSeparator);
             this.DefinitionArray = new Opus.Core.StringArray(definitions);

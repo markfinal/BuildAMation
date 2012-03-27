@@ -27,7 +27,7 @@ namespace Opus
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
             int level = System.Convert.ToInt32(arguments);
             if (!System.Enum.IsDefined(typeof(Core.EVerboseLevel), level))
