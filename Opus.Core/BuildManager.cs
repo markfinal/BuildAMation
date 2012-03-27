@@ -178,8 +178,8 @@ namespace Opus.Core
                 }
             }
 
-            // wait for all agents to finish
-            // TODO: should we be occasionally checking for failure? i.e. this.CancellationPending = true?
+            // wait for all running agents to finish
+            // some may cancel, but we catch this shortly
             System.Threading.WaitHandle.WaitAll(this.agentsAvailable.ToArray(), -1);
 
             // check for failure
