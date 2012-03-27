@@ -73,7 +73,7 @@ namespace Opus.Core
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
-            Add<string>("System", "SchedulerType", "Opus.Core.BuildScheduler");
+            Add<string>("System", "SchedulerType", "Opus.Core.DefaultScheduler");
             Add<Array<BuildSchedulerProgressUpdatedDelegate>>("System", "SchedulerProgressDelegates", new Array<BuildSchedulerProgressUpdatedDelegate>());
 
             AddCategory("PackageCreation");

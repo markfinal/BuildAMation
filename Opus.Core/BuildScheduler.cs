@@ -1,12 +1,11 @@
-// <copyright file="BuildScheduler.cs" company="Mark Final">
+// <copyright file="DefaultScheduler.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    // TODO: rename this to DefaultScheduler
-    public class BuildScheduler : IBuildScheduler
+    public class DefaultScheduler : IBuildScheduler
     {
         private DependencyGraph graph;
         private int scheduledNodeCount = 0;
@@ -15,7 +14,7 @@ namespace Opus.Core
 
         public event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
 
-        public BuildScheduler(DependencyGraph graph)
+        public DefaultScheduler(DependencyGraph graph)
         {
             this.graph = graph;
             this.TotalNodeCount = graph.TotalNodeCount;
