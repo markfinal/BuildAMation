@@ -17,7 +17,7 @@ namespace VSSolutionBuilder
         private ProjectFileCollection HeaderFileCollection = new ProjectFileCollection();
         private ProjectFileCollection ResourceFileCollection = new ProjectFileCollection();
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
-        private System.Collections.Generic.List<string> ReferencesList = new System.Collections.Generic.List<string>();
+        private Opus.Core.UniqueList<string> ReferencesList = new Opus.Core.UniqueList<string>();
 
         public VCXBuildProject(string moduleName, string projectPathName, Opus.Core.PackageIdentifier packageId, Opus.Core.ProxyModulePath proxyPath)
         {
@@ -122,7 +122,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        System.Collections.Generic.List<string> IProject.References
+        Opus.Core.UniqueList<string> IProject.References
         {
             get
             {
