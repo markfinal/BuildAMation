@@ -1,3 +1,5 @@
+29-Mar-2012 Linux/OSX Opus shell script will now call mono with --debug when -debugsymbols is passed as an argument. Running mono with --debug gives additional useful information in stack traces.
+
 27-Mar-2012 Adding Defines option to CSharp.IOptions. Debug configurations get DEBUG. Profile configurations get TRACE.
 
 27-Mar-2012 Fixing C# VSSolutionBuilder option for Checked (Over/underflow) and Treat Warnings as errors. Profile configurations now also get debug information.

@@ -1,4 +1,9 @@
 #!/bin/bash
 
-exec mono $OPUSPATH/Opus.exe $@
+# need to call mono with --debug in order to get proper line numbers etc. when an exception is thrown
+case $* in
+*-debugsymbols*) monoargs=--debug;;
+esac
+
+exec mono $monoargs $OPUSPATH/Opus.exe $@
 
