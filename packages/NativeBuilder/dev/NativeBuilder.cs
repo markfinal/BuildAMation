@@ -76,6 +76,52 @@ namespace NativeBuilder
             return false;
         }
 
+        public enum FileRebuildStatus
+        {
+            AlwaysBuild,
+            TimeStampOutOfDate,
+            UpToDate
+        }
+
+        public static FileRebuildStatus IsSourceTimeStampNewer(Opus.Core.StringArray outputFiles, string inputFile)
+        {
+            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            {
+                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                {
+                    return FileRebuildStatus.AlwaysBuild;
+                }
+            }
+
+            if (0 == outputFiles.Count)
+            {
+                Opus.Core.Log.Full("No output files - always build");
+                return FileRebuildStatus.AlwaysBuild;
+            }
+
+            System.DateTime newestInputFileDate = System.IO.File.GetLastWriteTime(inputFile);
+
+            foreach (string outputFile in outputFiles)
+            {
+                if (System.IO.File.Exists(outputFile))
+                {
+                    System.DateTime outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
+                    if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
+                    {
+                        Opus.Core.Log.Full("Input file '{0}' is newer than output file '{1}'. Requires build.", inputFile, outputFile);
+                        return FileRebuildStatus.TimeStampOutOfDate;
+                    }
+                }
+                else
+                {
+                    Opus.Core.Log.Full("Output file '{0}' does not exist. Requires build.", outputFile);
+                    return FileRebuildStatus.AlwaysBuild;
+                }
+            }
+
+            return FileRebuildStatus.UpToDate;
+        }
+
         // TODO: what if some of the paths passed in are directories? And what if they don't exist?
         public static bool RequiresBuilding(Opus.Core.StringArray outputFiles, Opus.Core.StringArray inputFiles)
         {

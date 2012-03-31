@@ -15,13 +15,17 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", sourceFilePath));
             }
 
+#if OPUS_ENABLE_FILE_HASHING
+            DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(sourceFilePath);
+#endif
+
             Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
 
             C.CompilerOptionCollection compilerOptions = objectFileOptions as C.CompilerOptionCollection;
 
-            string depFilePath = DependencyChecker.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, compilerOptions.OutputDirectoryPath);
+            string depFilePath = DependencyGenerator.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, compilerOptions.OutputDirectoryPath);
 
             bool headerDependencyGeneration = (bool)Opus.Core.State.Get("C", "HeaderDependencyGeneration");
 
@@ -30,7 +34,8 @@ namespace NativeBuilder
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
                 inputFiles.Add(sourceFilePath);
                 Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
-                if (!RequiresBuilding(outputFiles, inputFiles))
+                FileRebuildStatus doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceFilePath);
+                if (FileRebuildStatus.UpToDate == doesSourceFileNeedRebuilding)
                 {
                     // now try the header dependencies
                     if (headerDependencyGeneration && System.IO.File.Exists(depFilePath))
@@ -38,13 +43,18 @@ namespace NativeBuilder
                         using (System.IO.TextReader depFileReader = new System.IO.StreamReader(depFilePath))
                         {
                             string deps = depFileReader.ReadToEnd();
-                            Opus.Core.StringArray depsArray = new Opus.Core.StringArray(deps.Split('\n'));
+                            Opus.Core.StringArray depsArray = new Opus.Core.StringArray(deps.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries));
+#if OPUS_ENABLE_FILE_HASHING
+                            DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(depsArray);
+#endif
                             if (!RequiresBuilding(outputFiles, depsArray))
                             {
                                 Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                                 success = true;
                                 return null;
                             }
+
+                            inputFiles.AddRange(depsArray);
                         }
                     }
                     else
@@ -54,6 +64,18 @@ namespace NativeBuilder
                         return null;
                     }
                 }
+
+#if OPUS_ENABLE_FILE_HASHING
+                if (FileRebuildStatus.AlwaysBuild != doesSourceFileNeedRebuilding)
+                {
+                    if (!DependencyGenerator.FileHashGeneration.HaveFileHashesChanged(inputFiles))
+                    {
+                        Opus.Core.Log.DebugMessage("'{0}' time stamps changed but contents unchanged", node.UniqueModuleName);
+                        success = true;
+                        return null;
+                    }
+                }
+#endif
             }
 
             Opus.Core.Target target = node.Target;
@@ -80,7 +102,7 @@ namespace NativeBuilder
 
             if (headerDependencyGeneration)
             {
-                DependencyChecker.IncludeDependencyGeneration.DependencyQueue.Data dependencyData = new DependencyChecker.IncludeDependencyGeneration.DependencyQueue.Data();
+                DependencyGenerator.IncludeDependencyGeneration.Data dependencyData = new DependencyGenerator.IncludeDependencyGeneration.Data();
                 dependencyData.sourcePath = sourceFilePath;
                 dependencyData.depFilePath = depFilePath;
 
@@ -114,7 +136,7 @@ namespace NativeBuilder
                 }
                 dependencyData.includePaths = includePaths;
 
-                DependencyChecker.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
+                DependencyGenerator.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
             }
 
             string executablePath;
