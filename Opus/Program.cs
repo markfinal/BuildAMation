@@ -16,6 +16,9 @@ namespace Opus
         /// <param name="args">Argument array.</param>
         public static void Main(string[] args)
         {
+            // take control of Ctrl+C
+            System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
+
             try
             {
                 Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
@@ -83,6 +86,17 @@ namespace Opus
                     Core.Log.Info("\nFailed");
                 }
                 Core.Log.DebugMessage("Exit code is {0}", System.Environment.ExitCode);
+            }
+        }
+
+        static void HandleCancellation(object sender, System.ConsoleCancelEventArgs e)
+        {
+            // allow the build to fail gracefully
+            Core.BuildManager buildManager = Core.State.BuildManager;
+            if (null != buildManager)
+            {
+                buildManager.Cancel();
+                e.Cancel = true;
             }
         }
     }
