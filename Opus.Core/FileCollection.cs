@@ -65,26 +65,10 @@ namespace Opus.Core
             return this.filePaths.GetEnumerator();
         }
 
+        [System.Obsolete("Please use the Include method")]
         public void AddRelativePaths(object owner, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
-            }
-
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (owner as IModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier);
-            }
-
-            StringArray paths = File.GetFiles(packagePath, pathSegments);
-            foreach (string path in paths)
-            {
-                this.filePaths.Add(path);
-            }
+            this.Include(owner, pathSegments);
         }
 
         public void Include(object module, params string[] pathSegments)

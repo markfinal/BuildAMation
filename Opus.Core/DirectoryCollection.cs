@@ -38,6 +38,7 @@ namespace Opus.Core
             this.Add(absoluteDirectoryPath, checkForExistence);
         }
 
+        [System.Obsolete("Please use the Include method")]
         public void Add(object owner, string relativePath)
         {
             if (null == owner)
