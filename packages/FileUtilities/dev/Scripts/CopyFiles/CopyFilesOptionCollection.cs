@@ -45,7 +45,7 @@ namespace FileUtilities
 
             if (null != this.DestinationDirectory)
             {
-                directoriesToCreate.Add(null, this.DestinationDirectory);
+                directoriesToCreate.AddAbsoluteDirectory(this.DestinationDirectory, false);
             }
 
             return directoriesToCreate;

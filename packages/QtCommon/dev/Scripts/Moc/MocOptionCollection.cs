@@ -147,7 +147,7 @@ namespace QtCommon
             if (null != this.MocOutputPath)
             {
                 string mocDir = System.IO.Path.GetDirectoryName(this.MocOutputPath);
-                dirsToCreate.Add(null, mocDir);
+                dirsToCreate.AddAbsoluteDirectory(mocDir, false);
             }
 
             return dirsToCreate;

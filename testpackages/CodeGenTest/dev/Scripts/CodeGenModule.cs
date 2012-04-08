@@ -88,7 +88,7 @@ namespace CodeGenTest
 
             if (null != this.OutputSourceDirectory)
             {
-                dirsToCreate.Add(null, this.OutputSourceDirectory);
+                dirsToCreate.AddAbsoluteDirectory(this.OutputSourceDirectory, false);
             }
 
             return dirsToCreate;
