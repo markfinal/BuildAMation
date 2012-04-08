@@ -9,7 +9,7 @@ namespace Test4
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "dynamiclibrary.c");
+                this.Include(this, "source", "dynamiclibrary.c");
                 this.UpdateOptions += SetIncludePaths;
                 this.UpdateOptions += SetRuntimeLibrary;
             }

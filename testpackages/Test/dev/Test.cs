@@ -91,7 +91,7 @@ namespace Test
     {
         public TestCompile3()
         {
-            this.AddRelativePaths(this, "source", "*.c");
+            this.Include(this, "source", "*.c");
 
             this.UpdateOptions += OverrideOptionCollection;
 
@@ -123,7 +123,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "main.c");
+                this.Include(this, "source", "main.c");
 
                 this.UpdateOptions += OverrideOptionCollection;
             }
@@ -163,7 +163,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "main.c");
+                this.Include(this, "source", "main.c");
             }
         }
 

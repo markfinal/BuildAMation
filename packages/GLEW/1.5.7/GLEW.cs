@@ -10,14 +10,14 @@ namespace GLEW
     {
         public GLEWStatic()
         {
-            this.headerFiles.AddRelativePaths(this, "glew-1.5.7", "include", "GL", "*.h");
+            this.headerFiles.Include(this, "glew-1.5.7", "include", "GL", "*.h");
         }
 
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "glew-1.5.7", "src", "glew.c");
+                this.Include(this, "glew-1.5.7", "src", "glew.c");
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));
 

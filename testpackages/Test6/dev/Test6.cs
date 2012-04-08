@@ -27,11 +27,11 @@ namespace Test6
 
                 if (Opus.Core.EConfiguration.Debug == target.Configuration)
                 {
-                    this.AddRelativePaths(this, "source", "debug", "debug.c");
+                    this.Include(this, "source", "debug", "debug.c");
                 }
                 else
                 {
-                    this.AddRelativePaths(this, "source", "optimized", "optimized.c");
+                    this.Include(this, "source", "optimized", "optimized.c");
                 }
             }
 

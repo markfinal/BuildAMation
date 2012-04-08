@@ -8,7 +8,7 @@ namespace Test3
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library2.c");
+                this.Include(this, "source", "library2.c");
                 this.UpdateOptions += SetIncludePaths;
             }
 

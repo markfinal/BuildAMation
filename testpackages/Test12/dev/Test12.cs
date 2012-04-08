@@ -8,7 +8,7 @@ namespace Test12
         {
             public CommonSourceFiles()
             {
-                this.AddRelativePaths(this, "source", "main.cpp");
+                this.Include(this, "source", "main.cpp");
             }
         }
 
@@ -16,7 +16,7 @@ namespace Test12
         {
             public WindowsSourceFiles()
             {
-                this.AddRelativePaths(this, "source", "win", "win.cpp");
+                this.Include(this, "source", "win", "win.cpp");
             }
         }
 
@@ -24,7 +24,7 @@ namespace Test12
         {
             public UnixSourceFiles()
             {
-                this.AddRelativePaths(this, "source", "unix", "unix.cpp");
+                this.Include(this, "source", "unix", "unix.cpp");
             }
         }
 
@@ -32,7 +32,7 @@ namespace Test12
         {
             public OSXSourceFiles()
             {
-                this.AddRelativePaths(this, "source", "osx", "osx.cpp");
+                this.Include(this, "source", "osx", "osx.cpp");
             }
         }
     

@@ -6,16 +6,16 @@ namespace RenderTextureAndProcessor
     {
         public RenderTexture()
         {
-            this.headerFiles.AddRelativePaths(this, "source", "common", "*.h");
-            this.headerFiles.AddRelativePaths(this, "source", "rendertexture", "*.h");
+            this.headerFiles.Include(this, "source", "common", "*.h");
+            this.headerFiles.Include(this, "source", "rendertexture", "*.h");
         }
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "common", "*.cpp");
-                this.AddRelativePaths(this, "source", "rendertexture", "*.cpp");
+                this.Include(this, "source", "common", "*.cpp");
+                this.Include(this, "source", "rendertexture", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
@@ -70,16 +70,16 @@ namespace RenderTextureAndProcessor
     {
         public TextureProcessor()
         {
-            this.headerFiles.AddRelativePaths(this, "source", "common", "*.h");
-            this.headerFiles.AddRelativePaths(this, "source", "textureprocessor", "*.h");
+            this.headerFiles.Include(this, "source", "common", "*.h");
+            this.headerFiles.Include(this, "source", "textureprocessor", "*.h");
         }
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "common", "*.cpp");
-                this.AddRelativePaths(this, "source", "textureprocessor", "*.cpp");
+                this.Include(this, "source", "common", "*.cpp");
+                this.Include(this, "source", "textureprocessor", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 

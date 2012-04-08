@@ -32,7 +32,7 @@ namespace CodeGenTest2
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "testapp", "main.c");
+                this.Include(this, "source", "testapp", "main.c");
             }
 
             [Opus.Core.DependentModules]
