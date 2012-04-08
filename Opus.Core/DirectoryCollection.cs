@@ -223,7 +223,7 @@ namespace Opus.Core
 
             foreach (string path in relativePaths)
             {
-                this.Add(package, path);
+                this.Include(package, path);
             }
         }
 
@@ -236,7 +236,7 @@ namespace Opus.Core
 
             foreach (string path in relativePaths)
             {
-                this.Add(package, path);
+                this.Include(package, path);
             }
         }
 
