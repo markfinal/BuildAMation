@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Set defines on the Opus package compilation step (semi-colon separated)";
+                return "Set defines on the Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

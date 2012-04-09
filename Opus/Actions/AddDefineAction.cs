@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Adds a #define to the package definition and to Opus package compilation step (semi-colon separated)";
+                return "Adds a #define to the package definition and to Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

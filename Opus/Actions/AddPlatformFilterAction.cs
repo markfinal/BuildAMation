@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Adds a platform filter to the specified dependent (semi-colon separated)";
+                return "Adds a platform filter to the specified dependent (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

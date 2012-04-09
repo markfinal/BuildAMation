@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Adds a supported platform to the package (semi-colon separated)";
+                return "Adds a supported platform to the package (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

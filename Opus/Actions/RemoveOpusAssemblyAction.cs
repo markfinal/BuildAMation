@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Removes an Opus assembly from the package definition (semi-colon separated)";
+                return "Removes an Opus assembly from the package definition (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

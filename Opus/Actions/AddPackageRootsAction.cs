@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Add package roots (semi-colon separated)";
+                return "Add package roots (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

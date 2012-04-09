@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Set modules from the top level package to build (semi-colon separated)";
+                return "Set modules from the top level package to build (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

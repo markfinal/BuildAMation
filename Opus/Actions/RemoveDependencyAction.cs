@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Remove dependent package (semi-colon separated)";
+                return "Remove dependent package (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

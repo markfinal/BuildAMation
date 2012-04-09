@@ -1,3 +1,5 @@
+09-Apr-2012 Correcting help text to correspond to the separator for multiple values on different platforms. (Colon or semi-colon)
+
 08-Apr-2012 Deprecated Opus.Core.DirectoryCollection.Add, and other AddRelativePath methods. Use the Include methods instead.
 
 31-Mar-2012 Added source file hashing dependency generation. .c/.cpp/.h source files are hashed in a separate thread and cached. If timestamp checks fail, hashes are compared. If hashes are identical, no build occurs. This feature is disabled by default, and enabled by adding the define OPUS_ENABLE_FILE_HASHING to a package.

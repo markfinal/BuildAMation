@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Add a dependent package (semi-colon separated)";
+                return "Add a dependent package (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

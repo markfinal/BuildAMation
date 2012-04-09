@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Undefines any previously defined #define for package compilation (semi-colon separated)";
+                return "Undefines any previously defined #define for package compilation (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

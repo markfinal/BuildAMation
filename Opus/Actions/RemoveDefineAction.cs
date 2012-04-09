@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Removes a #define from the Opus package compilation step (semi-colon separated)";
+                return "Removes a #define from the Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
