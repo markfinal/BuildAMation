@@ -48,7 +48,7 @@ namespace GLEW
             void GLEW_IncludePathAndStaticDefine(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"glew-1.5.7\include");
+                compilerOptions.IncludePaths.Include(this, "glew-1.5.7", "include");
                 compilerOptions.Defines.Add("GLEW_STATIC");
             }
         }

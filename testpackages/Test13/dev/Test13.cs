@@ -17,7 +17,7 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "*.cpp");
+                this.Include(this, "source", "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
@@ -47,7 +47,7 @@ namespace Test13
             {
                 public MyMocFiles()
                 {
-                    this.AddRelativePaths(this, "source", "*.h");
+                    this.Include(this, "source", "*.h");
 
                     Opus.Core.IModule mocFile = this.GetChildModule(this, "source", "myobject2.h");
                     if (null != mocFile)

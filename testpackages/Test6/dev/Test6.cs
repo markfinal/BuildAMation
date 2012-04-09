@@ -38,14 +38,14 @@ namespace Test6
             private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
 
             private void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("MAIN_C");
-                compilerOptions.IncludePaths.Add(this, @"include/platform");
+                compilerOptions.IncludePaths.Include(this, "include", "platform");
             }
         }
 

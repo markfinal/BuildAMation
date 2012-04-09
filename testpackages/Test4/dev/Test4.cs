@@ -18,7 +18,7 @@ namespace Test4
             private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, "include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
 
             // TODO: this should be in the ExportToolchainOptionsDelegate?
@@ -63,7 +63,7 @@ namespace Test4
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, @"include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Test14
         void DynamicLibraryA_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, "include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
 
         void DynamicLibraryA_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -43,7 +43,7 @@ namespace Test14
         void DynamicLibraryB_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, "include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
 
         void DynamicLibraryB_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
