@@ -1,3 +1,5 @@
+16-Apr-2012 Qt Moc tool now includes a default #define of QT_VERSION which is equal to the hex of the version number, e.g. Qt-4.7.1 is QT_VERSION=0x040701.
+
 09-Apr-2012 Correcting help text to correspond to the separator for multiple values on different platforms. (Colon or semi-colon)
 
 08-Apr-2012 Deprecated Opus.Core.DirectoryCollection.Add, and other AddRelativePath methods. Use the Include methods instead.
