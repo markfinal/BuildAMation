@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Add package roots (semi-colon separated)";
+                return "Add package roots (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
@@ -33,9 +33,9 @@ namespace Opus
             set;
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] roots = arguments.Split(';');
+            string[] roots = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageRoots = new Opus.Core.StringArray(roots);
         }
 

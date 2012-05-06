@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Set platforms to build (semi-colon separated)";
+                return "Set platforms to build (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Platforms = new Core.StringArray(arguments.Split(';'));
+            this.Platforms = new Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Platforms

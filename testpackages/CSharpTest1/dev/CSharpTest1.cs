@@ -6,7 +6,7 @@ namespace CSharpTest1
     {
         public SimpleLibrary()
         {
-            this.source.AddRelativePaths(this, "source", "simpletest.cs");
+            this.source.Include(this, "source", "simpletest.cs");
         }
 
         [Opus.Core.SourceFiles]

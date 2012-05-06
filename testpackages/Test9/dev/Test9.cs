@@ -14,7 +14,7 @@ namespace Test9
     {
         public CFileCollection()
         {
-            this.AddRelativePaths(this, "source", "main_c.c");
+            this.Include(this, "source", "main_c.c");
         }
     }
 
@@ -37,7 +37,7 @@ namespace Test9
     {
         public CppFileCollection()
         {
-            this.AddRelativePaths(this, "source", "main_cpp.c");
+            this.Include(this, "source", "main_cpp.c");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFileCollection_UpdateOptions);
         }
@@ -72,14 +72,14 @@ namespace Test9
         {
             public CSourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library_c.c");
+                this.Include(this, "source", "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePaths);
             }
 
             void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
         }
 
@@ -87,8 +87,8 @@ namespace Test9
         {
             public CPlusPlusSourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library_cpp.c");
-                this.AddRelativePaths(this, "source", "appmain_cpp.c");
+                this.Include(this, "source", "library_cpp.c");
+                this.Include(this, "source", "appmain_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CPlusPlusSourceFiles_UpdateOptions);
                 this.UpdateOptions += IncludePaths;
             }
@@ -96,7 +96,7 @@ namespace Test9
             void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
 
             void CPlusPlusSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -126,7 +126,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, @"include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
 
         [Opus.Core.SourceFiles]
@@ -139,14 +139,14 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library_c.c");
+                this.Include(this, "source", "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
         }
 
@@ -166,7 +166,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, @"include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
 
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
@@ -185,7 +185,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library_cpp.c");
+                this.Include(this, "source", "library_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
@@ -193,7 +193,7 @@ namespace Test9
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
 
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
@@ -218,7 +218,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, @"include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
 
         [Opus.Core.SourceFiles]
@@ -237,14 +237,14 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library_c.c");
+                this.Include(this, "source", "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
         }
 
@@ -270,7 +270,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Add(this, @"include");
+            compilerOptions.IncludePaths.Include(this, "include");
         }
 
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
@@ -295,7 +295,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library_cpp.c");
+                this.Include(this, "source", "library_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
@@ -303,7 +303,7 @@ namespace Test9
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
 
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)

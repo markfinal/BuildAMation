@@ -66,8 +66,7 @@
     <Compile Include="Attributes\DeclareBuilderAttribute.cs" />
     <Compile Include="BuilderUtilities.cs" />
     <Compile Include="BuildManager.cs" />
-    <Compile Include="BuildScheduler.cs" />
-    <Compile Include="BuildSchedulerEx.cs" />
+    <Compile Include="DefaultScheduler.cs" />
     <Compile Include="DirectoryCollection.cs" />
     <Compile Include="DirectoryCollectionEnumerator.cs" />
     <Compile Include="EConfiguration.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />
     <Compile Include="TypeArray.cs" />
+    <Compile Include="UniqueList.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
     <None Include="app.config" />
     <None Include="Schema\OpusPackageDependency.xsd">

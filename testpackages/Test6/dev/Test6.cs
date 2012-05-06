@@ -27,25 +27,25 @@ namespace Test6
 
                 if (Opus.Core.EConfiguration.Debug == target.Configuration)
                 {
-                    this.AddRelativePaths(this, "source", "debug", "debug.c");
+                    this.Include(this, "source", "debug", "debug.c");
                 }
                 else
                 {
-                    this.AddRelativePaths(this, "source", "optimized", "optimized.c");
+                    this.Include(this, "source", "optimized", "optimized.c");
                 }
             }
 
             private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
 
             private void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("MAIN_C");
-                compilerOptions.IncludePaths.Add(this, @"include/platform");
+                compilerOptions.IncludePaths.Include(this, "include", "platform");
             }
         }
 

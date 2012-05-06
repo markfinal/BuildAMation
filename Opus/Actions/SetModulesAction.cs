@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Set modules from the top level package to build (semi-colon separated)";
+                return "Set modules from the top level package to build (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Modules = new Core.StringArray(arguments.Split(';'));
+            this.Modules = new Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Modules

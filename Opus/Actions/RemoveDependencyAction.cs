@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Remove dependent package (semi-colon separated)";
+                return "Remove dependent package (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] packageAndVersions = arguments.Split(';');
+            string[] packageAndVersions = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageAndVersionArray = new Opus.Core.StringArray(packageAndVersions);
         }
 
@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                definitionFile.Read();
+                definitionFile.Read(true);
             }
 
             bool success = true;

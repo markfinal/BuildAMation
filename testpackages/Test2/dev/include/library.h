@@ -3,4 +3,4 @@
 
 extern char *libraryFunction();
 
-#endif // LIBRARY_H
+#endif /* LIBRARY_H */

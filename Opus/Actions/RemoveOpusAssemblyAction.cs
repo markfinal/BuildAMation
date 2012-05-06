@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Removes an Opus assembly from the package definition (semi-colon separated)";
+                return "Removes an Opus assembly from the package definition (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] assemblyNames = arguments.Split(';');
+            string[] assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
             this.OpusAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                xmlFile.Read();
+                xmlFile.Read(true);
             }
 
             bool success = false;

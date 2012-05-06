@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Set defines on the Opus package compilation step (semi-colon separated)";
+                return "Set defines on the Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Defines = new Opus.Core.StringArray(arguments.Split(';'));
+            this.Defines = new Opus.Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Defines

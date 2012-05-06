@@ -3,4 +3,4 @@
 
 extern char *GetConfiguration();
 
-#endif // HEADER_H
+#endif /* HEADER_H */

@@ -19,7 +19,7 @@ function runTest
     if [ -f $inputFile ]; then
         pushd $1/$2/$3
         while IFS=$'\r\n' read responseFile; do
-            Opus @$responseFile -platforms=$platform -configurations="debug;optimized" -buildroot=$buildroot -builder=$builder -verbosity=1;
+            Opus @$responseFile -platforms=$platform -configurations="debug:optimized" -buildroot=$buildroot -builder=$builder -verbosity=1;
             if [ $? != 0 ]; then
                 exit $? # see first line
             fi
@@ -28,7 +28,7 @@ function runTest
     fi
 }
 
-find $root -maxdepth 1 -type d \( ! -iname ".*" \) | while read FILENAME;
+find $root -maxdepth 1 -mindepth 1 -type d \( ! -iname ".*" \) | while read FILENAME;
 do
   package=`basename $FILENAME`
   if [[ "$package" != "$root" ]]; then

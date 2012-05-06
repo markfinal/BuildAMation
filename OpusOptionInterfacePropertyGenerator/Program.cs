@@ -80,7 +80,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     string[] split = arg.Split(new char[] { '=' });
                     string inputFilesString = split[1];
-                    inputPathNames = inputFilesString.Split(new char[] { ';' });
+                    inputPathNames = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
                 }
                 else if (arg.StartsWith("-n="))
                 {

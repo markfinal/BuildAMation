@@ -7,14 +7,14 @@ namespace Direct3DTriangle
     {
         public D3D9TriangleTest()
         {
-            this.headerFiles.AddRelativePaths(this, "source", "*.h");
+            this.headerFiles.Include(this, "source", "*.h");
         }
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "*.cpp");
+                this.Include(this, "source", "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_VCDefines);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_EnableException);

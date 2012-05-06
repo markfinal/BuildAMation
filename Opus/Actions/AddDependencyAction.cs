@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Add a dependent package (semi-colon separated)";
+                return "Add a dependent package (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] packageAndVersions = arguments.Split(';');
+            string[] packageAndVersions = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageAndVersionArray = new Opus.Core.StringArray(packageAndVersions);
         }
 
@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                xmlFile.Read();
+                xmlFile.Read(true);
             }
 
             foreach (string packageAndVersion in this.PackageAndVersionArray)

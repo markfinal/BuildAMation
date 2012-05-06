@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Removes a #define from the Opus package compilation step (semi-colon separated)";
+                return "Removes a #define from the Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] definitions = arguments.Split(';');
+            string[] definitions = arguments.Split(System.IO.Path.PathSeparator);
             this.DefinitionArray = new Opus.Core.StringArray(definitions);
         }
 
@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                xmlFile.Read();
+                xmlFile.Read(true);
             }
 
             bool success = false;

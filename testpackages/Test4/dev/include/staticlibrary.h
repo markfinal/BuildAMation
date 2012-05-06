@@ -3,4 +3,4 @@
 
 extern int StaticTestFunction(int);
 
-#endif // STATICLIBRARY_H
+#endif /* STATICLIBRARY_H */

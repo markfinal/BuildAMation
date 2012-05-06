@@ -17,7 +17,21 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "*.cpp");
+                this.Include(this, "source", "*.cpp");
+
+                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+            }
+
+            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                if (module.Options is MingwCommon.ICCompilerOptions)
+                {
+                    (module.Options as MingwCommon.ICCompilerOptions).Pedantic = false;
+                }
+                else if (module.Options is GccCommon.ICCompilerOptions)
+                {
+                    (module.Options as GccCommon.ICCompilerOptions).Pedantic = false;
+                }
             }
 
             /*
@@ -33,7 +47,7 @@ namespace Test13
             {
                 public MyMocFiles()
                 {
-                    this.AddRelativePaths(this, "source", "*.h");
+                    this.Include(this, "source", "*.h");
 
                     Opus.Core.IModule mocFile = this.GetChildModule(this, "source", "myobject2.h");
                     if (null != mocFile)

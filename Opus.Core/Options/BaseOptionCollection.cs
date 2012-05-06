@@ -1,4 +1,4 @@
-﻿// <copyright file="BaseOptionCollection.cs" company="Mark Final">
+// <copyright file="BaseOptionCollection.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -160,19 +160,43 @@ namespace Opus.Core
             int filterValue = System.Convert.ToInt32(filter);
 
             Opus.Core.OutputPaths outputPaths = this.OutputPaths;
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
+            if (State.RunningMono)
             {
-                if (o.Key.GetType() != filterType)
+                foreach (System.Enum key in outputPaths.Types)
                 {
-                    throw new Exception("Incompatible enum type comparison", false);
+                    if (key.GetType() != filterType)
+                    {
+                        throw new Exception("Incompatible enum type comparison", false);
+                    }
+
+                    int keyValue = System.Convert.ToInt32(key);
+
+                    if (keyValue == (filterValue & keyValue))
+                    //if (o.Key.Includes(filter))
+                    {
+                        string path = outputPaths[key];
+                        paths.Add(path);
+                    }
                 }
-
-                int keyValue = System.Convert.ToInt32(o.Key);
-
-                if (keyValue == (filterValue & keyValue))
-                //if (o.Key.Includes(filter))
+            }
+            else
+            {
+                // TODO: this causes a System.InvalidCastException, Cannot cast from source type to destination type
+                // because it's a SortedDictionary? Can't find any reference to this though
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
                 {
-                    paths.Add(o.Value);
+                    if (o.Key.GetType() != filterType)
+                    {
+                        throw new Exception("Incompatible enum type comparison", false);
+                    }
+
+                    int keyValue = System.Convert.ToInt32(o.Key);
+
+                    if (keyValue == (filterValue & keyValue))
+                    //if (o.Key.Includes(filter))
+                    {
+                        paths.Add(o.Value);
+                    }
                 }
             }
         }

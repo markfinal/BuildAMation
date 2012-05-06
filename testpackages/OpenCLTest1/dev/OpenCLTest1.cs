@@ -8,7 +8,7 @@ namespace OpenCLTest1
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "*.cpp");
+                this.Include(this, "source", "*.cpp");
             }
         }
 
@@ -28,7 +28,7 @@ namespace OpenCLTest1
     {
         public CopyKernels(Opus.Core.Target target)
         {
-            this.sourceFiles.AddRelativePaths(this, "data", "*.cl");
+            this.sourceFiles.Include(this, "data", "*.cl");
         }
 
         [Opus.Core.SourceFiles]

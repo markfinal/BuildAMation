@@ -8,7 +8,7 @@ namespace Test2
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "library.c");
+                this.Include(this, "source", "library.c");
                 this.UpdateOptions += SetIncludePaths;
             }
 
@@ -16,7 +16,7 @@ namespace Test2
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"include");
+                compilerOptions.IncludePaths.Include(this, "include");
             }
         }
 
@@ -30,7 +30,7 @@ namespace Test2
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "application.c");
+                this.Include(this, "source", "application.c");
             }
         }
 

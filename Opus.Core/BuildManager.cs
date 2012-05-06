@@ -10,6 +10,7 @@ namespace Opus.Core
         private DependencyGraph graph;
         private IBuildScheduler scheduler;
         private bool active;
+        private bool cancelled = false;
 
         private System.Collections.Generic.List<BuildAgent> agents;
         private System.Collections.Generic.List<System.Threading.ManualResetEvent> agentsAvailable;
@@ -79,6 +80,11 @@ namespace Opus.Core
             this.AdditionalThreadCompletionEvents = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
         }
 
+        public void Cancel()
+        {
+            this.cancelled = true;
+        }
+
         private IBuilder Builder
         {
             get;
@@ -97,6 +103,11 @@ namespace Opus.Core
         {
             get
             {
+                if (this.cancelled)
+                {
+                    return true;
+                }
+
                 if (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { this.AgentReportsFailure }, 0))
                 {
                     Log.DebugMessage("Agent reports failure");
@@ -178,8 +189,8 @@ namespace Opus.Core
                 }
             }
 
-            // wait for all agents to finish
-            // TODO: should we be occasionally checking for failure? i.e. this.CancellationPending = true?
+            // wait for all running agents to finish
+            // some may cancel, but we catch this shortly
             System.Threading.WaitHandle.WaitAll(this.agentsAvailable.ToArray(), -1);
 
             // check for failure

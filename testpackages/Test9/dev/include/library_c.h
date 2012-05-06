@@ -3,4 +3,4 @@
 
 extern int CLibraryFunction();
 
-#endif // LIBRARY_C_H
+#endif /* LIBRARY_C_H */

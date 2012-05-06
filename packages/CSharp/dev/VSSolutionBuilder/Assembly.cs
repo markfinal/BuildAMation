@@ -9,14 +9,15 @@ namespace VSSolutionBuilder
     {
         public object Build(CSharp.Assembly assembly, out System.Boolean success)
         {
-            Opus.Core.DependencyNode node = assembly.OwningNode;
+            Opus.Core.IModule assemblyModule = assembly as Opus.Core.IModule;
+            Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            CSharp.OptionCollection options = assembly.Options as CSharp.OptionCollection;
+            CSharp.OptionCollection options = assemblyModule.Options as CSharp.OptionCollection;
 
             string moduleName = node.ModuleName;
 
             string platformName;
-            switch ((assembly.Options as CSharp.OptionCollection).Platform)
+            switch ((options as CSharp.OptionCollection).Platform)
             {
                 case CSharp.EPlatform.AnyCpu:
                     platformName = "AnyCPU";
@@ -329,12 +330,12 @@ namespace VSSolutionBuilder
                 vcsCompiler = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcsCompiler);
 
-                string outputDirectory = (assembly.Options as CSharp.OptionCollection).OutputDirectoryPath;
+                string outputDirectory = (options as CSharp.OptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
 
-                if (assembly.Options is VisualStudioProcessor.IVisualStudioSupport)
+                if (options is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = assembly.Options as VisualStudioProcessor.IVisualStudioSupport;
+                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = options as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)

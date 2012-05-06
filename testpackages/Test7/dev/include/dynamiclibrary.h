@@ -16,12 +16,12 @@ typedef int (*ExportedFunction_t)(int);
 #if defined(OPUS_DYNAMICLIBRARY)
 #if __GNUC__ >= 4
 #define API __attribute__ ((visibility("default")))
-#else // __GNUC__
+#else /* __GNUC__ */
 #define API /* empty */
-#endif // __GNUC__
-#else // OPUS_DYNAMICLIBRARY
+#endif /* __GNUC__ */
+#else /* OPUS_DYNAMICLIBRARY */
 #define API /* empty */
-#endif // OPUS_DYNAMICLIBRARY
+#endif /* OPUS_DYNAMICLIBRARY */
 
 #else
 
@@ -31,4 +31,4 @@ typedef int (*ExportedFunction_t)(int);
 
 extern API int MyTestFunction(int);
 
-#endif // DYNAMICLIBRARY_H
+#endif /* DYNAMICLIBRARY_H */

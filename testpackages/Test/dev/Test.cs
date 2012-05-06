@@ -12,6 +12,12 @@ namespace Test
                 C.ICCompilerOptions compilerOptions = optionCollection as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("GLOBALOVERRIDE");
             }
+
+            if (optionCollection is VisualCCommon.LinkerOptionCollection)
+            {
+                VisualCCommon.LinkerOptionCollection linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
+                linkerOptions.ProgamDatabaseDirectoryPath = System.IO.Path.Combine(Opus.Core.State.BuildRoot, "symbols");
+            }
         }
     }
 
@@ -85,7 +91,7 @@ namespace Test
     {
         public TestCompile3()
         {
-            this.AddRelativePaths(this, "source", "*.c");
+            this.Include(this, "source", "*.c");
 
             this.UpdateOptions += OverrideOptionCollection;
 
@@ -117,7 +123,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "main.c");
+                this.Include(this, "source", "main.c");
 
                 this.UpdateOptions += OverrideOptionCollection;
             }
@@ -157,7 +163,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "main.c");
+                this.Include(this, "source", "main.c");
             }
         }
 

@@ -6,14 +6,14 @@ namespace OpenGLUniformBufferTest
     {
         public GLUniformBufferTest()
         {
-            this.headerFiles.AddRelativePaths(this, "source", "*.h");
+            this.headerFiles.Include(this, "source", "*.h");
         }
 
         class SourceFiles : C.CPlusPlus.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "source", "*.cpp");
+                this.Include(this, "source", "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_VCDefines);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_EnableException);

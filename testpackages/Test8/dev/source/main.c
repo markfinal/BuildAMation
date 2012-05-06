@@ -8,7 +8,7 @@
 
 static LONG WINAPI ExceptionHandler(struct _EXCEPTION_POINTERS *excp)
 {
-    printf("#### Unhandled exception caught: data @ %p\n", excp);
+    printf("#### Unhandled exception caught: data @ %p\n", (void *)excp);
 #if defined(_MSC_VER)
     if (0 != excp)
     {
@@ -31,7 +31,7 @@ static LONG WINAPI ExceptionHandler(struct _EXCEPTION_POINTERS *excp)
             printf("Cannot create minidump file '%s'\n", miniDumpPathName);
         }
     }
-#endif // defined(_MSC_VER)
+#endif /* defined(_MSC_VER) */
 
     return EXCEPTION_CONTINUE_SEARCH;
 }

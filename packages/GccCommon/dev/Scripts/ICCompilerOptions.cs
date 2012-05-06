@@ -36,5 +36,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        bool Pedantic
+        {
+            get;
+            set;
+        }
     }
 }

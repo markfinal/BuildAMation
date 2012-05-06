@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Remove a supported platform from the package (semi-colon separated)";
+                return "Remove a supported platform from the package (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] platforms = arguments.Split(';');
+            string[] platforms = arguments.Split(System.IO.Path.PathSeparator);
             this.PlatformArray = new Opus.Core.StringArray(platforms);
         }
 
@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                xmlFile.Read();
+                xmlFile.Read(true);
             }
 
             bool success = false;

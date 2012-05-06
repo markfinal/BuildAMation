@@ -1,14 +1,8 @@
 #!/bin/bash
 
 DefaultFlavour=Release
-
-if [ -n "$1" ]
-then
-  flavour=$1
-else
-  flavour=$DefaultFlavour
-fi
-
+# use the incoming argument as the sub-directory, or fall back on the default
+flavour=${1:-$DefaultFlavour}
 OpusPath=$PWD/bin/$flavour
 
 if [ ! -d "$OpusPath" ]

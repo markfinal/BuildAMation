@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Adds a DotNet assembly to the package definition (semi-colon separated)";
+                return "Adds a DotNet assembly to the package definition (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] assemblyNames = arguments.Split(';');
+            string[] assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
             this.DotNetAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
@@ -55,7 +55,7 @@ namespace Opus
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isComplete)
             {
-                xmlFile.Read();
+                xmlFile.Read(true);
             }
 
             foreach (string dotNetAssemblyName in this.DotNetAssemblyNameArray)

@@ -56,29 +56,10 @@ namespace QtCommon
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
+        [System.Obsolete("Please use the Include method")]
         public void AddRelativePaths(object owner, params string[] pathSegments)
         {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
-            }
-
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier);
-            }
-
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            foreach (string path in filePaths)
-            {
-                MocFile mocFile = new MocFile();
-                mocFile.ProxyPath = this.ProxyPath;
-                mocFile.SetAbsolutePath(path);
-                this.list.Add(mocFile);
-            }
+            this.Include(owner, pathSegments);
         }
 
         public void Include(object owner, params string[] pathSegments)

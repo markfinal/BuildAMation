@@ -34,8 +34,8 @@ namespace Mingw
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
 
             string cppIncludePath = System.IO.Path.Combine(compilerInstance.IncludeDirectoryPaths(node.Target)[1], "c++");
-            this.SystemIncludePaths.Add(null, cppIncludePath);
-            this.SystemIncludePaths.Add(null, System.IO.Path.Combine(cppIncludePath, "mingw32"));
+            this.SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
+            this.SystemIncludePaths.AddAbsoluteDirectory(System.IO.Path.Combine(cppIncludePath, "mingw32"), false);
 
             MingwCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }

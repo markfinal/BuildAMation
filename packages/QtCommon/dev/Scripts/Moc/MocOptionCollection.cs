@@ -27,6 +27,12 @@ namespace QtCommon
             this.DoNotGenerateIncludeStatement = false;
             this.DoNotDisplayWarnings = false;
             this.PathPrefix = null;
+
+            // version number of the current Qt package
+            string QtVersion = Opus.Core.State.PackageInfo["Qt"].Version;
+            string QtVersionFormatted = QtVersion.Replace(".", "0");
+            string VersionDefine = "QT_VERSION=0x0" + QtVersionFormatted;
+            this.Defines.Add(VersionDefine);
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
@@ -147,7 +153,7 @@ namespace QtCommon
             if (null != this.MocOutputPath)
             {
                 string mocDir = System.IO.Path.GetDirectoryName(this.MocOutputPath);
-                dirsToCreate.Add(null, mocDir);
+                dirsToCreate.AddAbsoluteDirectory(mocDir, false);
             }
 
             return dirsToCreate;

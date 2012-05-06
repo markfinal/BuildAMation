@@ -245,5 +245,17 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("InlineFunctionsSetHandler", this["InlineFunctions"]);
             }
         }
+        public bool Pedantic
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("Pedantic");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("Pedantic", value);
+                this.ProcessNamedSetHandler("PedanticSetHandler", this["Pedantic"]);
+            }
+        }
     }
 }

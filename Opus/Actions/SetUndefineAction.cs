@@ -23,13 +23,13 @@ namespace Opus
         {
             get
             {
-                return "Undefines any previously defined #define for package compilation (semi-colon separated)";
+                return "Undefines any previously defined #define for package compilation (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
-        public void AssignArguments(string arguments)
+        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Undefines = new Opus.Core.StringArray(arguments.Split(';'));
+            this.Undefines = new Opus.Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Undefines

@@ -1,3 +1,49 @@
+16-Apr-2012 Qt Moc tool now includes a default #define of QT_VERSION which is equal to the hex of the version number, e.g. Qt-4.7.1 is QT_VERSION=0x040701.
+
+09-Apr-2012 Correcting help text to correspond to the separator for multiple values on different platforms. (Colon or semi-colon)
+
+08-Apr-2012 Deprecated Opus.Core.DirectoryCollection.Add, and other AddRelativePath methods. Use the Include methods instead.
+
+31-Mar-2012 Added source file hashing dependency generation. .c/.cpp/.h source files are hashed in a separate thread and cached. If timestamp checks fail, hashes are compared. If hashes are identical, no build occurs. This feature is disabled by default, and enabled by adding the define OPUS_ENABLE_FILE_HASHING to a package.
+
+31-Mar-2012 Capture Ctrl+C and allow the build to gracefully fail.
+
+29-Mar-2012 Linux/OSX Opus shell script will now call mono with --debug when -debugsymbols is passed as an argument. Running mono with --debug gives additional useful information in stack traces.
+
+27-Mar-2012 Adding Defines option to CSharp.IOptions. Debug configurations get DEBUG. Profile configurations get TRACE.
+
+27-Mar-2012 Fixing C# VSSolutionBuilder option for Checked (Over/underflow) and Treat Warnings as errors. Profile configurations now also get debug information.
+
+27-Mar-2012 Removed Opus.Core.BuildSchedulerEx that is now redundant.
+
+27-Mar-2012 Renamed Opus.Core.BuildScheduler to Opus.Core.DefaultScheduler.
+
+27-Mar-2012 Explicitly implemented the IActionWithArguments method AssignArguments in all the actions, rather than making the method public, as it is not required to be called other than through the interface.
+
+27-Mar-2012 Only validate package definition schema locations for the top-most package. This avoids errors occuring by the XML parsing when two dependent packages both have valid paths to the same schema.
+
+26-Mar-2012 Fixes to the tests for pedantic warnings.
+
+26-Mar-2012 Adding GccCommon and MingwCommon Pedantic Boolean option for ICCompilerOptions, for -pedantic. Defaults to true.
+
+25-Mar-2012 Using a nice shell script syntax to simplify the env.sh script.
+
+25-Mar-2012 Fixing a warning in the Bash scripts for the testpackages under Linux.
+
+25-Mar-2012 Added workaround in Opus.Core.BaseOptionCollection.FilterOutputPaths to an invalid cast exception in Mono, from a SortedDictionary to a KeyValuePair in a foreach.
+
+24-Mar-2012 C# VSSolutions generated now display a directory hierarchy for the source in the projects.
+
+24-Mar-2012 Ensuring that C# projects generated with multiple configurations do not have duplicate assembly references.
+
+24-Mar-2012 Adding Opus.Core.UniqueList generic class.
+
+14-Mar-2012 VisualCCommon's CCompilerOptionCollection and LinkerOptionCollection now expose ProgramDatabaseDirectoryPath, which is the directory containing any .pdb files generated.
+
+14-Mar-2012 Changed Opus.Core.OutputPaths to use a SortedDictionary internally, so that when paths are extracted, they are ordered by their identification key flag.
+
+12-Mar-2012 Action value separators are now System.IO.Path.PathSeparator. Semi-colon ';' on Windows, and ':' for *nix platforms.
+
 08-Mar-2012 Many Opus.Core.IModule methods are now implemented explicitly, since they are only used internally, and just clutter the Intellisense in IDEs.
 
 02-Mar-2012 Fixing bug with CommandLineProcessor with Opus.Core.ITools that require more than one path to be added to PATH.

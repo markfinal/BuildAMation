@@ -106,10 +106,16 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeCSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri)
+        public void SerializeCSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri, System.Uri packageDirectoryUri)
         {
             string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
-            fileCollectionGroup.CreateItem("Compile", relativePath);
+            MSBuildItem compileItem = fileCollectionGroup.CreateItem("Compile", relativePath);
+
+            string relativeToPackage = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, packageDirectoryUri);
+            if (relativePath != relativeToPackage)
+            {
+                compileItem.CreateMetaData("Link", relativeToPackage);
+            }
         }
     }
 }

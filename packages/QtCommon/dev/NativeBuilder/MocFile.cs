@@ -23,18 +23,35 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("Moc source file '{0}' does not exist", sourceFilePath));
             }
 
+#if OPUS_ENABLE_FILE_HASHING
+            DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(sourceFilePath);
+#endif
+
             // dependency checking
             {
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
                 inputFiles.Add(sourceFilePath);
 
                 Opus.Core.StringArray outputFiles = mocFileOptions.OutputPaths.Paths;
-                if (!RequiresBuilding(outputFiles, inputFiles))
+                FileRebuildStatus doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceFilePath);
+                if (FileRebuildStatus.UpToDate == doesSourceFileNeedRebuilding)
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
                     return null;
                 }
+
+#if OPUS_ENABLE_FILE_HASHING
+                if (FileRebuildStatus.AlwaysBuild != doesSourceFileNeedRebuilding)
+                {
+                    if (!DependencyGenerator.FileHashGeneration.HaveFileHashesChanged(inputFiles))
+                    {
+                        Opus.Core.Log.DebugMessage("'{0}' time stamps changed but contents unchanged", node.UniqueModuleName);
+                        success = true;
+                        return null;
+                    }
+                }
+#endif
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

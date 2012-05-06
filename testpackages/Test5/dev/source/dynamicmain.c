@@ -6,7 +6,7 @@
 #ifndef _CONSOLE
 #error Must be compiled with _CONSOLE
 #endif
-#endif // defined(_WIN32)
+#endif /* defined(_WIN32) */
 
 int main()
 {

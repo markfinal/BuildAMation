@@ -10,14 +10,14 @@ namespace GLEW
     {
         public GLEWStatic()
         {
-            this.headerFiles.AddRelativePaths(this, "glew-1.5.7", "include", "GL", "*.h");
+            this.headerFiles.Include(this, "glew-1.5.7", "include", "GL", "*.h");
         }
 
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.AddRelativePaths(this, "glew-1.5.7", "src", "glew.c");
+                this.Include(this, "glew-1.5.7", "src", "glew.c");
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));
 
@@ -48,7 +48,7 @@ namespace GLEW
             void GLEW_IncludePathAndStaticDefine(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Add(this, @"glew-1.5.7\include");
+                compilerOptions.IncludePaths.Include(this, "glew-1.5.7", "include");
                 compilerOptions.Defines.Add("GLEW_STATIC");
             }
         }
