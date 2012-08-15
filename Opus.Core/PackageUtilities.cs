@@ -798,41 +798,41 @@ namespace Opus.Core
             if (State.LazyArguments.Count > 0)
             {
                 var actions = ActionManager.ScriptActions;
-                if (null != actions)
+                if ((null == actions) || (0 == actions.Count))
                 {
-                    StringArray lazyCommandsProcessed = new StringArray();
-                    foreach (string command in State.LazyArguments.Keys)
-                    {
-                        foreach (var action in actions)
-                        {
-                            Core.IAction iaction = action.Action;
-                            if (iaction.CommandLineSwitch == command)
-                            {
-                                if (iaction is IActionWithArguments)
-                                {
-                                    (iaction as IActionWithArguments).AssignArguments(State.LazyArguments[command]);
-                                }
-
-                                if (!iaction.Execute())
-                                {
-                                    throw new Exception(System.String.Format("Action '{0}' failed", command), false);
-                                }
-
-                                lazyCommandsProcessed.Add(command);
-                            }
-                        }
-                    }
-
-                    // remove those that have been processed
-                    foreach (string command in lazyCommandsProcessed)
-                    {
-                        State.LazyArguments.Remove(command);
-                    }
-
-                    lazyCommandsProcessed = null;
+                    throw new Exception("There are unprocessed arguments, but no actions to associate with them", false);
                 }
 
-                HandleUnprocessedArguments();
+                StringArray lazyCommandsProcessed = new StringArray();
+                foreach (string command in State.LazyArguments.Keys)
+                {
+                    foreach (var action in actions)
+                    {
+                        Core.IAction iaction = action.Action;
+                        if (iaction.CommandLineSwitch == command)
+                        {
+                            if (iaction is IActionWithArguments)
+                            {
+                                (iaction as IActionWithArguments).AssignArguments(State.LazyArguments[command]);
+                            }
+
+                            if (!iaction.Execute())
+                            {
+                                throw new Exception(System.String.Format("Action '{0}' failed", command), false);
+                            }
+
+                            lazyCommandsProcessed.Add(command);
+                        }
+                    }
+                }
+
+                // remove those that have been processed
+                foreach (string command in lazyCommandsProcessed)
+                {
+                    State.LazyArguments.Remove(command);
+                }
+
+                lazyCommandsProcessed = null;
             }
         }
 

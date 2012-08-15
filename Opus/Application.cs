@@ -55,17 +55,15 @@ namespace Opus
             
             argDict[command] = value;
         }
-        
+
         /// <summary>
-        /// Initializes a new instance of the Application class.
+        /// Processes the command line arguments
         /// </summary>
         /// <param name="args">Command line arguments.</param>
-        public Application(string[] args)
+        /// <returns>Dictionary of key-value pairs for the arguments</returns>
+        private System.Collections.Generic.Dictionary<string, string> ProcessCommandLine(string[] args)
         {
-            Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
-            profile.StartProfile();
-
-            System.Collections.Generic.Dictionary<string,string> argList = new System.Collections.Generic.Dictionary<string,string>();
+            System.Collections.Generic.Dictionary<string, string> argList = new System.Collections.Generic.Dictionary<string, string>();
             string responseFileArgument = null;
             foreach (string arg in args)
             {
@@ -160,6 +158,19 @@ namespace Opus
                 this.triggerAction = new BuildAction();
             }
 
+            return argList;
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the Application class.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
+        public Application(string[] args)
+        {
+            Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
+            profile.StartProfile();
+
+            System.Collections.Generic.Dictionary<string, string> argList = ProcessCommandLine(args);
             displayInfo(Core.EVerboseLevel.Info, argList);
 
             profile.StopProfile();
