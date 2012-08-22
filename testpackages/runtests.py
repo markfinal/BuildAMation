@@ -59,7 +59,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Builders      : ", configuration.GetBuilders()
         print "Response files: ", configuration.GetResponseFiles()
     if not options.builder in configuration.GetBuilders():
-        outputBuffer.write("Package '%s' does not support the builder, '%s'" % (package.GetDescription(),options.builder))
+        outputBuffer.write("Package '%s' does not support the builder, '%s'\n" % (package.GetDescription(),options.builder))
         return 0
     for responseFile in configuration.GetResponseFiles():
         argList = []
@@ -92,9 +92,10 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 return 0
             else:
                 outputBuffer.write("Package '%s' failed using response file '%s'\n" % (package.GetDescription(), responseFile))
-                outputBuffer.write("Command was: '%s'" % " ".join(argList))
+                outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
                 outputBuffer.write(output)
                 return -1
+    return 0
 
 def CleanUp(options):
     argList = []
@@ -176,9 +177,9 @@ if __name__ == "__main__":
     if not os.path.exists("Logs"):
         os.mkdir("Logs")
     logFileName = os.path.join("Logs", "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log")
-    logFile = os.open(logFileName, 257) # TODO: create and write only?
-    os.write(logFile, outputBuffer.getvalue())
-    os.close(logFile)
+    logFile = open(logFileName, "w")
+    logFile.write(outputBuffer.getvalue())
+    logFile.close()
     outputBuffer.close()
     
     sys.exit(exitCode)
