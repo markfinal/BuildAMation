@@ -164,6 +164,10 @@ if __name__ == "__main__":
             continue
         exitCode += ExecuteTests(package, config, options, outputBuffer)
 
+    if not options.keepFiles:
+        # TODO: consider keeping track of all directories created instead
+        CleanUp(options)
+        
     print "----------------------------------------"
     print "Results summary"
     print "----------------------------------------"
@@ -177,8 +181,4 @@ if __name__ == "__main__":
     os.close(logFile)
     outputBuffer.close()
     
-    if not options.keepFiles:
-        # TODO: consider keeping track of all directories created instead
-        CleanUp(options)
-
     sys.exit(exitCode)
