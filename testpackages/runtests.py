@@ -169,7 +169,9 @@ if __name__ == "__main__":
     print "----------------------------------------"
     print outputBuffer.getvalue()
     
-    logFileName = "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log"
+    if not os.path.exists("Logs"):
+        os.mkdir("Logs")
+    logFileName = os.path.join("Logs", "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log")
     logFile = os.open(logFileName, 257) # TODO: create and write only?
     os.write(logFile, outputBuffer.getvalue())
     os.close(logFile)
