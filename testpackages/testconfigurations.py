@@ -64,7 +64,7 @@ configs["Test13-dev"] = TestConfiguration(builders=["Native"], win=["visualc"],l
 configs["Test14-dev"] = TestConfiguration(builders=["Native"], win=["visualc"],linux=["gcc"],osx=["gcc"])
 configs["CodeGenTest-dev"] = TestConfiguration(builders=["Native"], win=["visualc"],linux=["gcc"],osx=["gcc"])
 configs["CodeGenTest2-dev"] = TestConfiguration(builders=["Native"], win=["visualcandcsharp"],linux=["gccandcsharp"],osx=["gccandcsharp"])
-configs["CSharpTest1-dev"] = TestConfiguration(builders=["Native"], win=["csharp"],linux=["monolinux"],osx=["monoosx"])
+configs["CSharpTest1-dev"] = TestConfiguration(builders=["Native"], win=["csharp"],linux=["monounix"],osx=["monoosx"])
 configs["Direct3DTriangle-dev"] = TestConfiguration(builders=["Native"], win=["visualc"])
 configs["MixedModeCpp-dev"] = TestConfiguration(builders=["Native"], win=["visualc"])
 configs["MixedTest-dev"] = TestConfiguration(builders=["Native"], win=["visualcandcsharp"])
