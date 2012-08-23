@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "$OSTYPE"=="msys" ] || [ "$OSTYPE"=="cygwin" ]; then
+
+exec $OPUSPATH/Opus.exe $@
+
+else
+
 # need to call mono with --debug in order to get proper line numbers etc. when an exception is thrown
 case $* in
 *-debugsymbols*) monoargs=--debug;;
@@ -7,3 +13,4 @@ esac
 
 exec mono $monoargs $OPUSPATH/Opus.exe $@
 
+fi
