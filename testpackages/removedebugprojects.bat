@@ -1,7 +1,17 @@
 @ECHO OFF
 
+SETLOCAL 
+
+IF "%1" == "-nopause" (
+    SET NOPAUSE=1
+) ELSE (
+    SET NOPAUSE=0
+)
+
 FOR /D %%A IN (%CD%\*) DO CALL :FIND_PACKAGE_VERSIONS %%A
-PAUSE
+IF %NOPAUSE%==0 (
+    PAUSE
+)
 GOTO :EOF
 
 :FIND_PACKAGE_VERSIONS
@@ -20,3 +30,5 @@ IF EXIST %1\build (
     ECHO Deleting '%1\build' directory and all children
     RMDIR /S /Q %1\build
 )
+
+ENDLOCAL

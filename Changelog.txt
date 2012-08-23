@@ -1,3 +1,5 @@
+23-Aug-2012 Removed old batch file/shell script/text file unit test framework, and replace with a Python based framework.
+
 23-Aug-2012 The Opus shell script is now compatible with Cygwin and MSYS shells on Windows.
 
 02-Aug-2012 Set version to 0.50.
