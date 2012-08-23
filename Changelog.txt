@@ -1,3 +1,5 @@
+23-Aug-2012 Opus.Core.BuildAgent's ReportFailure property is now entirely private.
+
 23-Aug-2012 Removed old batch file/shell script/text file unit test framework, and replace with a Python based framework.
 
 23-Aug-2012 The Opus shell script is now compatible with Cygwin and MSYS shells on Windows.
