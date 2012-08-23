@@ -39,10 +39,10 @@ namespace Opus.Core
             private set;
         }
 
-        public System.Threading.ManualResetEvent ReportFailure
+        private System.Threading.ManualResetEvent ReportFailure
         {
             get;
-            private set;
+            set;
         }
 
         private static void Run(object obj)
