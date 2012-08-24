@@ -91,7 +91,7 @@ namespace FileUtilities
         {
             Opus.Core.TypeArray externalDependents = new Opus.Core.TypeArray();
 
-            Opus.Core.Target incompleteTarget = Opus.Core.Target.CreateIncompleteTarget(target.Platform, target.Configuration);
+            Opus.Core.BaseTarget baseTarget = Opus.Core.BaseTarget.GetInstance(target.Platform, target.Configuration);
 
             Opus.Core.ModuleCollection sourceModules = new Opus.Core.ModuleCollection();
             Opus.Core.IModule destinationModule = null;
@@ -111,10 +111,10 @@ namespace FileUtilities
                     externalDependents.AddRange(sourceModuleTypes);
                     foreach (System.Type sourceModuleType in sourceModuleTypes)
                     {
-                        Opus.Core.IModule sourceModule = Opus.Core.ModuleUtilities.GetModule(sourceModuleType, incompleteTarget);
+                        Opus.Core.IModule sourceModule = Opus.Core.ModuleUtilities.GetModule(sourceModuleType, baseTarget);
                         if (null == sourceModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}' for target '{2}'", sourceModuleType.FullName, this.GetType().FullName, incompleteTarget.ToString()), false);
+                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}' for base target '{2}'", sourceModuleType.FullName, this.GetType().FullName, baseTarget.ToString()), false);
                         }
 
                         this.SourceOutputFlags = sourceModuleAttribute.OutputFlags;
@@ -154,10 +154,10 @@ namespace FileUtilities
                             throw new Opus.Core.Exception(System.String.Format("Only one destination module may be provided for module '{0}'", this.GetType().FullName), false);
                         }
 
-                        destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, incompleteTarget);
+                        destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, baseTarget);
                         if (null == destinationModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Can't find destination module of type '{0}' in module '{1}' for target '{2}'", destinationModuleType.FullName, this.GetType().FullName, incompleteTarget.ToString()), false);
+                            throw new Opus.Core.Exception(System.String.Format("Can't find destination module of type '{0}' in module '{1}' for basetarget '{2}'", destinationModuleType.FullName, this.GetType().FullName, baseTarget.ToString()), false);
                         }
 
                         this.DirectoryOutputFlags = destinationModuleAttribute.OutputFlags;
