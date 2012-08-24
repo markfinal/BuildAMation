@@ -59,7 +59,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Builders      : ", configuration.GetBuilders()
         print "Response files: ", configuration.GetResponseFiles()
     if not options.builder in configuration.GetBuilders():
-        outputBuffer.write("Package '%s' does not support the builder, '%s'\n" % (package.GetDescription(),options.builder))
+        outputBuffer.write("Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
         return 0
     for responseFile in configuration.GetResponseFiles():
         argList = []
@@ -94,6 +94,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 outputBuffer.write("FAILURE: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
                 outputBuffer.write(output)
+                outputBuffer.write("\n")
                 return -1
     return 0
 
