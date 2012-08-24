@@ -88,10 +88,10 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         finally:
             os.chdir(currentDir)
             if not p.returncode:
-                outputBuffer.write("Package '%s' succeeded using response file '%s'\n" % (package.GetDescription(), responseFile))
+                outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 return 0
             else:
-                outputBuffer.write("Package '%s' failed using response file '%s'\n" % (package.GetDescription(), responseFile))
+                outputBuffer.write("FAILURE: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
                 outputBuffer.write(output)
                 return -1
