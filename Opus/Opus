@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$OSTYPE"=="msys" ] || [ "$OSTYPE"=="cygwin" ]; then
+if [ "$OSTYPE" == "msys" ] || [ "$OSTYPE" == "cygwin" ]; then
 
 exec $OPUSPATH/Opus.exe $@
 
