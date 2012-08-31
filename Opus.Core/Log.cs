@@ -14,7 +14,8 @@ namespace Opus.Core
         /// Log a message, either to the debugger output window or the console.
         /// </summary>
         /// <param name="messageValue">Message to output.</param>
-        private static void Message(string messageValue)
+        /// <param name="isError">True if an error message, false if standard output.</param>
+        private static void Message(string messageValue, bool isError)
         {
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -22,7 +23,14 @@ namespace Opus.Core
             }
             else
             {
-                System.Console.WriteLine(messageValue);
+                if (isError)
+                {
+                    System.Console.Error.WriteLine(messageValue);
+                }
+                else
+                {
+                    System.Console.Out.WriteLine(messageValue);
+                }
             }
         }
 
@@ -38,7 +46,7 @@ namespace Opus.Core
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(format, args);
-                Message(formattedMessage.ToString());
+                Message(formattedMessage.ToString(), false);
             }
         }
 
@@ -46,7 +54,7 @@ namespace Opus.Core
         {
             System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
             formattedMessage.AppendFormat(format, args);
-            Message(formattedMessage.ToString());
+            Message(formattedMessage.ToString(), false);
         }
 
         public static void Info(string format, params object[] args)
@@ -55,7 +63,7 @@ namespace Opus.Core
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(format, args);
-                Message(formattedMessage.ToString());
+                Message(formattedMessage.ToString(), false);
             }
         }
 
@@ -65,7 +73,7 @@ namespace Opus.Core
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(format, args);
-                Message(formattedMessage.ToString());
+                Message(formattedMessage.ToString(), false);
             }
         }
 
@@ -75,15 +83,15 @@ namespace Opus.Core
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(format, args);
-                Message(formattedMessage.ToString());
+                Message(formattedMessage.ToString(), false);
             }
         }
 
         public static void ErrorMessage(string format, params object[] args)
         {
             System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-            formattedMessage.AppendFormat("\nERROR: " + format, args);
-            Message(formattedMessage.ToString());
+            formattedMessage.AppendFormat("ERROR: " + format, args);
+            Message(formattedMessage.ToString(), true);
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -93,7 +101,7 @@ namespace Opus.Core
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(format, args);
-                Message(formattedMessage.ToString());
+                Message(formattedMessage.ToString(), false);
             }
         }
     }
