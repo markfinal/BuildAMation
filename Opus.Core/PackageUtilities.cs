@@ -484,7 +484,7 @@ namespace Opus.Core
                     Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
                     foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
                     {
-                        Log.MessageAll("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                        Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
                     }
                     return false;
                 }
@@ -672,7 +672,7 @@ namespace Opus.Core
                     Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
                     foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
                     {
-                        Log.MessageAll("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                        Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
                     }
                     return false;
                 }
