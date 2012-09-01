@@ -62,10 +62,10 @@ Socket::Socket(int af, int type, int protocol)
 
     REPORTERROR1("Created socket, %d", lSocket);
 
-    this->mhSocket = lSocket;
+    this->mhSocket = static_cast<unsigned int>(lSocket);
 }
 
-Socket::Socket(unsigned int lhSocket)
+Socket::Socket(size_t lhSocket)
     : mhSocket(lhSocket)
 {
     REPORTERROR1("Wrapped existing socket, %d", lhSocket);
@@ -161,7 +161,7 @@ Socket::Accept()
 {
     if (!this->IsValid())
     {
-        return INVALID_SOCKET;
+        return Socket(INVALID_SOCKET);
     }
 
     ::SOCKET lClientSocket = ::accept(this->mhSocket, 0, 0);

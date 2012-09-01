@@ -13,7 +13,7 @@ public:
     static bool Initialize(const int li32Params);
     static void Release();
 
-    Socket(int af, int type, int protocol);
+    explicit Socket(int af, int type, int protocol);
     ~Socket();
 
     bool IsValid() const;
@@ -28,10 +28,10 @@ public:
     bool Receive(void *lpBuffer, int &liBufferLen);
 
 private:
-    Socket(unsigned int lhSocket);
+    explicit Socket(size_t lhSocket);
 
 private:
-    unsigned int mhSocket;
+    size_t mhSocket;
 };
 
 } // namespace Networking

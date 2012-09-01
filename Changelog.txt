@@ -1,3 +1,5 @@
+01-Sep-2012 Fixing the RenderTextureAndProcessor test for MSVC 64-bit compilation.
+
 01-Sep-2012 Fixing the WindowsSDK-6.0A 64-bit binary path.
 
 01-Sep-2012 Fixing the AMDAPPSDK-2.5 64-bit library path.
