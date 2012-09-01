@@ -76,5 +76,5 @@ configs["MixedTest-dev"] = TestConfiguration(builders=nativeMakeFileBuilders, wi
 configs["OpenCLTest1-dev"] = TestConfiguration(builders=nativeVSSolutionBuilders, win=["visualc"])
 configs["OpenGLUniformBufferTest-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"])
 configs["RenderTextureAndProcessor-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"])
-configs["Symlinks-dev"] = TestConfiguration(builders="native", win=["notoolchain"],linux=["notoolchain"],osx=["notoolchain"])
+configs["Symlinks-dev"] = TestConfiguration(builders="Native", win=["notoolchain"],linux=["notoolchain"],osx=["notoolchain"])
 configs["WPFTest-dev"] = TestConfiguration(builders=["VSSolution"], win=["csharp"])
