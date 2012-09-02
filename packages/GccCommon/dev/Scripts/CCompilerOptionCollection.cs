@@ -45,7 +45,7 @@ namespace GccCommon
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
+            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target));
 
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {

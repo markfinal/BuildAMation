@@ -12,7 +12,7 @@ namespace Mingw
 
         public Linker(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (!Opus.Core.OSUtilities.IsWindows(target))
             {
                 throw new Opus.Core.Exception("Mingw linker is only supported under win32 and win64 platforms");
             }

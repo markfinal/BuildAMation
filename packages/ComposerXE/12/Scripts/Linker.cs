@@ -12,7 +12,7 @@ namespace ComposerXE
 
         public Linker(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
+            if (!Opus.Core.OSUtilities.IsUnix(target))
             {
                 throw new Opus.Core.Exception("ComposerXE linker is only supported under unix32 and unix64 platforms");
             }

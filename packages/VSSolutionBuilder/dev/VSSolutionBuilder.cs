@@ -73,11 +73,11 @@ namespace VSSolutionBuilder
         public static string GetPlatformNameFromTarget(Opus.Core.Target target)
         {
             string platform;
-            if (target.Platform == Opus.Core.EPlatform.Win32)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 platform = "Win32";
             }
-            else if (target.Platform == Opus.Core.EPlatform.Win64)
+            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 platform = "x64";
             }

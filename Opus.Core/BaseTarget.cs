@@ -117,6 +117,23 @@ namespace Opus.Core
             return builder.ToString();
         }
 
+        public string PlatformName(char formatter)
+        {
+            string platformString = this.Platform.ToString();
+            if (formatter == 'u')
+            {
+                return platformString.ToUpper();
+            }
+            else if (formatter == 'l')
+            {
+                return platformString.ToLower();
+            }
+            else
+            {
+                return platformString;
+            }
+        }
+
         // TO REMOVE
         public EPlatform PlatformTOREMOVE
         {

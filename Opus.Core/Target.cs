@@ -68,14 +68,6 @@ namespace Opus.Core
         }
 
         // THESE ARE TO BE REMOVED - THEY ARE ONLY TO EASE MIGRATION
-        public EPlatform Platform
-        {
-            get
-            {
-                return this.BaseTarget.PlatformTOREMOVE;
-            }
-        }
-
         public EConfiguration Configuration
         {
             get

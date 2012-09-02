@@ -44,7 +44,7 @@ namespace MingwCommon
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(target.Platform == Opus.Core.EPlatform.Win64);
+            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(target.HasPlatform(Opus.Core.EPlatform.Win64));
 
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {

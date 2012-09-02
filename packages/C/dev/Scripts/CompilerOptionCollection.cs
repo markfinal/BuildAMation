@@ -44,9 +44,9 @@ namespace C
             compilerOptions.ShowIncludes = false;
 
             compilerOptions.Defines = new DefineCollection();
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", target.Platform.ToString().ToUpper()));
+            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Opus.Core.BaseTarget)target).PlatformName('u')));
             {
-                bool is64bit = Opus.Core.OSUtilities.Is64Bit(target.Platform);
+                bool is64bit = Opus.Core.OSUtilities.Is64Bit(target);
                 int bits = (is64bit) ? 64 : 32;
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_BITS={0}", bits.ToString()));
             }

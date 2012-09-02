@@ -153,6 +153,17 @@ namespace Opus.Core
             return isWindows;
         }
 
+        public static bool IsWindows(BaseTarget baseTarget)
+        {
+            bool isWindows = baseTarget.HasPlatform(EPlatform.Windows);
+            return isWindows;
+        }
+
+        public static bool IsWindows(Target target)
+        {
+            return IsWindows((BaseTarget)target);
+        }
+
         public static bool IsWindowsHosting
         {
             get
@@ -166,6 +177,17 @@ namespace Opus.Core
         {
             bool isUnix = (EPlatform.Unix32 == platform || EPlatform.Unix64 == platform);
             return isUnix;
+        }
+
+        public static bool IsUnix(BaseTarget baseTarget)
+        {
+            bool isUnix = baseTarget.HasPlatform(EPlatform.Unix);
+            return isUnix;
+        }
+
+        public static bool IsUnix(Target target)
+        {
+            return IsUnix((BaseTarget)target);
         }
 
         public static bool IsUnixHosting
@@ -183,6 +205,17 @@ namespace Opus.Core
             return isOSX;
         }
 
+        public static bool IsOSX(BaseTarget baseTarget)
+        {
+            bool isOSX = baseTarget.HasPlatform(EPlatform.OSX);
+            return isOSX;
+        }
+
+        public static bool IsOSX(Target target)
+        {
+            return IsOSX((BaseTarget)target);
+        }
+
         public static bool IsOSXHosting
         {
             get
@@ -196,6 +229,17 @@ namespace Opus.Core
         {
             bool is64Bit = (EPlatform.Win64 == platform || EPlatform.Unix64 == platform || EPlatform.OSX64 == platform);
             return is64Bit;
+        }
+
+        public static bool Is64Bit(BaseTarget baseTarget)
+        {
+            bool is64Bit = baseTarget.HasPlatform(EPlatform.Win64 | EPlatform.Unix64 | EPlatform.OSX64);
+            return is64Bit;
+        }
+
+        public static bool Is64Bit(Target target)
+        {
+            return Is64Bit((BaseTarget)target);
         }
 
         public static bool Is64BitHosting

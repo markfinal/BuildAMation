@@ -68,17 +68,17 @@ namespace WindowsSDK
         void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
-            if (target.Platform == Opus.Core.EPlatform.Win32)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib32Path, true);
             }
-            else if (target.Platform == Opus.Core.EPlatform.Win64)
+            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib64Path, true);
             }
             else
             {
-                throw new Opus.Core.Exception(System.String.Format("Windows SDK is not supported for platform '{0}'; use win32 or win64", target.Platform));
+                throw new Opus.Core.Exception(System.String.Format("Windows SDK is not supported for the target '{0}'; only platforms win32 or win64", target.ToString()));
             }
         }
 
@@ -97,7 +97,7 @@ namespace WindowsSDK
         public static string BinPath(Opus.Core.Target target)
         {
             string binPath;
-            if (Opus.Core.OSUtilities.Is64Bit(target.Platform))
+            if (Opus.Core.OSUtilities.Is64Bit(target))
             {
                 binPath = bin64Path;
             }

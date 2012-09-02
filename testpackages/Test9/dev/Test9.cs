@@ -59,7 +59,7 @@ namespace Test9
         static void SetSystemLibraries(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
-            if (Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (Opus.Core.OSUtilities.IsWindows(target))
             {
                 if (linkerOptions is VisualC.LinkerOptionCollection)
                 {

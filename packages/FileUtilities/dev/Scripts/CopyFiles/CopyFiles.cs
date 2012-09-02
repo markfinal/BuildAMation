@@ -91,7 +91,7 @@ namespace FileUtilities
         {
             Opus.Core.TypeArray externalDependents = new Opus.Core.TypeArray();
 
-            Opus.Core.BaseTarget baseTarget = Opus.Core.BaseTarget.GetInstance(target.Platform, target.Configuration);
+            Opus.Core.BaseTarget baseTarget = (Opus.Core.BaseTarget)target;
 
             Opus.Core.ModuleCollection sourceModules = new Opus.Core.ModuleCollection();
             Opus.Core.IModule destinationModule = null;
