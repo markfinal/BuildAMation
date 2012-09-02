@@ -59,7 +59,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Builders      : ", configuration.GetBuilders()
         print "Response files: ", configuration.GetResponseFiles()
     if not options.builder in configuration.GetBuilders():
-        outputBuffer.write("Package '%s' does not support the builder, '%s'\n" % (package.GetDescription(),options.builder))
+        outputBuffer.write("Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
         return 0
     for responseFile in configuration.GetResponseFiles():
         argList = []
@@ -80,8 +80,8 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "\tExecuting: %s" % " ".join(argList)
         currentDir = os.getcwd()
         try:
-            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=sys.stdout, cwd=package.GetPath())
-            (output, error) = p.communicate() # this should WAIT
+            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
+            (outputStream, errorStream) = p.communicate() # this should WAIT
         except Exception, e:
             print "Popen exception: '%s'" % str(e)
             raise
@@ -91,9 +91,15 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 return 0
             else:
-                outputBuffer.write("FAILURE: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
+                outputBuffer.write("* FAILURE *: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
-                outputBuffer.write(output)
+                if outputStream and len(outputStream) > 0:
+                    outputBuffer.write("Messages:\n")
+                    outputBuffer.write(outputStream)
+                if errorStream and len(errorStream) > 0:
+                    outputBuffer.write("Errors:\n")
+                    outputBuffer.write(errorStream)
+                outputBuffer.write("\n")
                 return -1
     return 0
 
@@ -169,9 +175,9 @@ if __name__ == "__main__":
         # TODO: consider keeping track of all directories created instead
         CleanUp(options)
         
-    print "----------------------------------------"
-    print "Results summary"
-    print "----------------------------------------"
+    print "--------------------"
+    print "| Results summary  |"
+    print "--------------------"
     print outputBuffer.getvalue()
     
     if not os.path.exists("Logs"):

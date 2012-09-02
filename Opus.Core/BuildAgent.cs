@@ -90,7 +90,7 @@ namespace Opus.Core
             else
             {
                 node.BuildState = EBuildState.Failed;
-                Log.MessageAll("Failed while building module '{0}' for target '{1}'", node.ModuleName, node.Target.ToString());
+                Log.ErrorMessage("Failed while building module '{0}' for target '{1}'", node.ModuleName, node.Target.ToString());
                 agent.ReportFailure.Set();
             }
 

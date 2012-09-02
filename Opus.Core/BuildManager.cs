@@ -305,33 +305,37 @@ namespace Opus.Core
                     bool preamble = false;
                     if (outputOutputQueueData.output.Length > 0)
                     {
+                        if (!preamble)
+                        {
+                            Log.DebugMessage("**** Output from Node {0}", outputOutputQueueData.node.UniqueModuleName);
+                            preamble = true;
+                        }
+
+                        Log.Info("Messages:");
                         string[] lines = outputOutputQueueData.output.ToString().Split(new char[] { '\n' });
+                        int count = 0;
                         foreach (string line in lines)
                         {
                             if (line.Length > 0)
                             {
-                                if (!preamble)
-                                {
-                                    Log.DebugMessage("**** Output from Node {0}", outputOutputQueueData.node.UniqueModuleName);
-                                    preamble = true;
-                                }
-                                Log.Info("\tMessage '{0}'", line);
+                                Log.Info("{0}: {1}", count++, line);
                             }
                         }
                     }
                     if (outputOutputQueueData.error.Length > 0)
                     {
+                        if (!preamble)
+                        {
+                            Log.DebugMessage("**** Output from Node {0}", outputOutputQueueData.node.UniqueModuleName);
+                            preamble = true;
+                        }
+
                         string[] lines = outputOutputQueueData.error.ToString().Split(new char[] { '\n' });
                         foreach (string line in lines)
                         {
                             if (line.Length > 0)
                             {
-                                if (!preamble)
-                                {
-                                    Log.DebugMessage("**** Output from Node {0}", outputOutputQueueData.node.UniqueModuleName);
-                                    preamble = true;
-                                }
-                                Log.Info("\tError '{0}'", line);
+                                Log.ErrorMessage(line);
                             }
                         }
                     }

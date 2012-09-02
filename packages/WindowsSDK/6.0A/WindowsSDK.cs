@@ -51,7 +51,7 @@ namespace WindowsSDK
                     Opus.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
 
                     bin32Path = System.IO.Path.Combine(installPath, "bin");
-                    bin64Path = System.IO.Path.Combine(bin32Path, "x64");
+                    bin64Path = bin32Path;
 
                     lib32Path = System.IO.Path.Combine(installPath, "lib");
                     lib64Path = System.IO.Path.Combine(lib32Path, "x64");

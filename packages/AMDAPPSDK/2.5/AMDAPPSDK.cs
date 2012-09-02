@@ -76,7 +76,7 @@ namespace AMDAPPSDK
             }
             else if (target.Platform == Opus.Core.EPlatform.Win64)
             {
-                platformLibraryPath = System.IO.Path.Combine(LibraryPath, "x64");
+                platformLibraryPath = System.IO.Path.Combine(LibraryPath, "x86_64");
             }
             else
             {
