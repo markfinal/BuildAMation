@@ -29,11 +29,11 @@ namespace OpenGLSDK
         {
             Opus.Core.StringArray libraries = new Opus.Core.StringArray();
 
-            if (target.MatchFilters(winVCTarget))
+            if (Opus.Core.TargetUtilities.MatchFilters(target, winVCTarget))
             {
                 libraries.Add(@"OPENGL32.lib");
             }
-            else if (target.MatchFilters(winMingwTarget))
+            else if (Opus.Core.TargetUtilities.MatchFilters(target, winMingwTarget))
             {
                 libraries.Add("-lopengl32");
             }

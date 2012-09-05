@@ -53,24 +53,14 @@ namespace Opus.Core
         {
             this.BaseTarget = baseTarget;
             this.Toolchain = toolchain;
-            this.Key = baseTarget.ToString() + "-" + toolchain; // TODO: simplify or remove
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, toolchain);
+            this.Key = builder.ToString();
         }
 
         public static explicit operator BaseTarget(Target target)
         {
             return target.BaseTarget;
-        }
-
-        public bool HasToolchain(string toolchain)
-        {
-            bool hasToolchain = System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToLower(), toolchain.ToLower());
-            return hasToolchain;
-        }
-
-        // THESE ARE TO BE REMOVED - THEY ARE ONLY TO EASE MIGRATION
-        public bool MatchFilters(ITargetFilters filterInterface)
-        {
-            return TargetUtilities.MatchFilters(this, filterInterface);
         }
 
         public bool HasPlatform(EPlatform platforms)
@@ -81,6 +71,12 @@ namespace Opus.Core
         public bool HasConfiguration(EConfiguration configurations)
         {
             return this.BaseTarget.HasConfiguration(configurations);
+        }
+
+        public bool HasToolchain(string toolchain)
+        {
+            bool hasToolchain = System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToLower(), toolchain.ToLower());
+            return hasToolchain;
         }
 
         public override string ToString()

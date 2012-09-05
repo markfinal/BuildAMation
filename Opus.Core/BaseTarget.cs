@@ -110,10 +110,18 @@ namespace Opus.Core
             return base.Equals(obj);
         }
 
+        public static char ToStringSeparator
+        {
+            get
+            {
+                return '-';
+            }
+        }
+
         public override string ToString()
         {
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            builder.AppendFormat("{0}-{1}", this.Platform, this.Configuration);
+            builder.AppendFormat("{0}{1}{2}", this.Platform, ToStringSeparator, this.Configuration);
             return builder.ToString();
         }
 

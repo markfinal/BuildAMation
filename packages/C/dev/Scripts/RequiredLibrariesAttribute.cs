@@ -10,7 +10,7 @@ namespace C
     {
         void Opus.Core.IFieldAttributeProcessor.Execute(object sender, Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (!target.MatchFilters(this))
+            if (!Opus.Core.TargetUtilities.MatchFilters(target, this))
             {
                 return;
             }
