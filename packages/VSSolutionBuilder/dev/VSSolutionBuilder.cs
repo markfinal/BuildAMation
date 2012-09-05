@@ -60,13 +60,13 @@ namespace VSSolutionBuilder
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target)
         {
             string platform = GetPlatformNameFromTarget(target);
-            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platform);
+            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(((Opus.Core.BaseTarget)target).ConfigurationName(' ')), platform);
             return configurationName;
         }
 
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target, string platformName)
         {
-            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platformName);
+            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(((Opus.Core.BaseTarget)target).ConfigurationName(' ')), platformName);
             return configurationName;
         }
 

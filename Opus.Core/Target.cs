@@ -68,14 +68,6 @@ namespace Opus.Core
         }
 
         // THESE ARE TO BE REMOVED - THEY ARE ONLY TO EASE MIGRATION
-        public EConfiguration Configuration
-        {
-            get
-            {
-                return this.BaseTarget.ConfigurationTOREMOVE;
-            }
-        }
-
         public bool MatchFilters(ITargetFilters filterInterface)
         {
             return TargetUtilities.MatchFilters(this, filterInterface);

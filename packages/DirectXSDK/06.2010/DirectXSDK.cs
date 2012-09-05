@@ -73,7 +73,7 @@ namespace DirectXSDK
             Opus.Core.StringArray libraries = new Opus.Core.StringArray();
 
             libraries.Add(@"d3d9.lib");
-            if (Opus.Core.EConfiguration.Debug == target.Configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 libraries.Add(@"d3dx9d.lib");
             }

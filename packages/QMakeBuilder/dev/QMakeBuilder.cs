@@ -26,11 +26,11 @@ namespace QMakeBuilder
 
         public static string GetQtConfiguration(Opus.Core.Target target)
         {
-            if (target.Configuration != Opus.Core.EConfiguration.Debug && target.Configuration != Opus.Core.EConfiguration.Optimized)
+            if (!target.HasConfiguration(Opus.Core.EConfiguration.Debug) && !target.HasConfiguration(Opus.Core.EConfiguration.Optimized))
             {
                 throw new Opus.Core.Exception("QMake only supports debug and optimized configurations");
             }
-            string QMakeConfiguration = (target.Configuration == Opus.Core.EConfiguration.Debug) ? "debug" : "release";
+            string QMakeConfiguration = target.HasConfiguration(Opus.Core.EConfiguration.Debug) ? "debug" : "release";
             return QMakeConfiguration;
         }
     }

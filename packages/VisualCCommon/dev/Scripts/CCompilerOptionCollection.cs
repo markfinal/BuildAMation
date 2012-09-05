@@ -52,7 +52,7 @@ namespace VisualCCommon
 
             this.NoLogo = true;
 
-            if (Opus.Core.EConfiguration.Debug == target.Configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 this.MinimalRebuild = true;
                 this.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;

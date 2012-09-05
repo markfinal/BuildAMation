@@ -137,7 +137,7 @@ namespace Test13
 
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                if (Opus.Core.EConfiguration.Debug == target.Configuration)
+                if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
                     this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "QtCored4.dll");
                     this.sourceFiles.AddRelativePaths(thirdPartyModule.BinPath, "QtGuid4.dll");

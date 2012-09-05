@@ -117,20 +117,39 @@ namespace Opus.Core
             return builder.ToString();
         }
 
+        // TODO: how can we pass in an "empty" char here?
         public string PlatformName(char formatter)
         {
-            string platformString = this.Platform.ToString();
+            string text = this.Platform.ToString();
             if (formatter == 'u')
             {
-                return platformString.ToUpper();
+                return text.ToUpper();
             }
             else if (formatter == 'l')
             {
-                return platformString.ToLower();
+                return text.ToLower();
             }
             else
             {
-                return platformString;
+                return text;
+            }
+        }
+
+        // TODO: how can we pass in an "empty" char here?
+        public string ConfigurationName(char formatter)
+        {
+            string text = this.Configuration.ToString();
+            if (formatter == 'u')
+            {
+                return text.ToUpper();
+            }
+            else if (formatter == 'l')
+            {
+                return text.ToLower();
+            }
+            else
+            {
+                return text;
             }
         }
 
