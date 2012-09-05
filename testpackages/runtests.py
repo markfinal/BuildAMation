@@ -58,7 +58,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Description       : ", package.GetDescription()
         print "Available builders:", configuration.GetBuilders()
     if not options.builder in configuration.GetBuilders():
-        outputBuffer.write("Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
+        outputBuffer.write("IGNORED: Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
         return 0
     if options.verbose:
         print "Response files    : ", configuration.GetResponseFiles(options.builder)
