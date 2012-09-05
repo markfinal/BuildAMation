@@ -5,7 +5,7 @@ import os
 import subprocess
 import StringIO
 import time
-from testconfigurations import TestConfiguration, GetTestConfig
+from testconfigurations import TestSetup, GetTestConfig
 from optparse import OptionParser
 
 # ----------
@@ -53,15 +53,17 @@ def FindAllPackagesToTest(root, options):
     return tests
 
 def ExecuteTests(package, configuration, options, outputBuffer):
-    print "Package       : ", package.GetId()
+    print "Package           : ", package.GetId()
     if options.verbose:
-        print "Description   : ", package.GetDescription()
-        print "Builders      : ", configuration.GetBuilders()
-        print "Response files: ", configuration.GetResponseFiles()
+        print "Description       : ", package.GetDescription()
+        print "Available builders:", configuration.GetBuilders()
     if not options.builder in configuration.GetBuilders():
         outputBuffer.write("Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
         return 0
-    for responseFile in configuration.GetResponseFiles():
+    if options.verbose:
+        print "Response files    : ", configuration.GetResponseFiles(options.builder)
+    exitCode = 0
+    for responseFile in configuration.GetResponseFiles(options.builder):
         argList = []
         argList.append("Opus")
         argList.append("@" + os.path.join(os.getcwd(), responseFile))
@@ -76,7 +78,10 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         argList.append("-j=" + str(options.numJobs))
         if options.debugSymbols:
             argList.append("-debugsymbols")
-        argList.append("-verbosity=0")
+        if options.verbose:
+            argList.append("-verbosity=2")
+        else:
+            argList.append("-verbosity=0")        
         print "\tExecuting: %s" % " ".join(argList)
         currentDir = os.getcwd()
         try:
@@ -89,7 +94,13 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             os.chdir(currentDir)
             if not p.returncode:
                 outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
-                return 0
+                if options.verbose:
+                    if outputStream and len(outputStream) > 0:
+                        outputBuffer.write("Messages:\n")
+                        outputBuffer.write(outputStream)
+                    if errorStream and len(errorStream) > 0:
+                        outputBuffer.write("Errors:\n")
+                        outputBuffer.write(errorStream)
             else:
                 outputBuffer.write("* FAILURE *: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
@@ -100,8 +111,8 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                     outputBuffer.write("Errors:\n")
                     outputBuffer.write(errorStream)
                 outputBuffer.write("\n")
-                return -1
-    return 0
+                exitCode = exitCode - 1
+    return exitCode
 
 def CleanUp(options):
     argList = []
