@@ -51,7 +51,7 @@ def GetTestConfig(packageName, options):
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                osx=["gcc"])
+                                osx={"Native":["gcc"]})
 configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
