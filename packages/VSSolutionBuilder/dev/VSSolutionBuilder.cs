@@ -46,27 +46,16 @@ namespace VSSolutionBuilder
             }
         }
 
-        private static string CapitalizeFirstLetter(string word)
-        {
-            if (System.String.IsNullOrEmpty(word))
-            {
-                return System.String.Empty;
-            }
-            char[] a = word.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
-        }
-
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target)
         {
             string platform = GetPlatformNameFromTarget(target);
-            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(((Opus.Core.BaseTarget)target).ConfigurationName(' ')), platform);
+            string configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platform);
             return configurationName;
         }
 
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target, string platformName)
         {
-            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(((Opus.Core.BaseTarget)target).ConfigurationName(' ')), platformName);
+            string configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platformName);
             return configurationName;
         }
 

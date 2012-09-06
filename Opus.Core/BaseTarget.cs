@@ -125,7 +125,17 @@ namespace Opus.Core
             return builder.ToString();
         }
 
-        // TODO: how can we pass in an "empty" char here?
+        private static string CapitalizeFirstLetter(string word)
+        {
+            if (System.String.IsNullOrEmpty(word))
+            {
+                return System.String.Empty;
+            }
+            char[] a = word.ToCharArray();
+            a[0] = char.ToUpper(a[0]);
+            return new string(a);
+        }
+
         public string PlatformName(char formatter)
         {
             string text = this.Platform.ToString();
@@ -137,13 +147,21 @@ namespace Opus.Core
             {
                 return text.ToLower();
             }
-            else
+            else if (formatter == 'p')
+            {
+                // Pascal case
+                return CapitalizeFirstLetter(text);
+            }
+            else if (formatter == '=')
             {
                 return text;
             }
+            else
+            {
+                throw new Exception(System.String.Format("Unknown format specifier '%0'", formatter), false);
+            }
         }
 
-        // TODO: how can we pass in an "empty" char here?
         public string ConfigurationName(char formatter)
         {
             string text = this.Configuration.ToString();
@@ -155,9 +173,18 @@ namespace Opus.Core
             {
                 return text.ToLower();
             }
-            else
+            else if (formatter == 'p')
+            {
+                // Pascal case
+                return CapitalizeFirstLetter(text);
+            }
+            else if (formatter == '=')
             {
                 return text;
+            }
+            else
+            {
+                throw new Exception(System.String.Format("Unknown format specifier '%0'", formatter), false);
             }
         }
 
