@@ -51,7 +51,7 @@ namespace Opus
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                Core.Log.ErrorMessage("*** Reflection Exception (type {0})***", exception.GetType().ToString());
+                Core.Log.ErrorMessage("*** Reflection Exception (type {0}) ***", exception.GetType().ToString());
                 Core.Log.ErrorMessage(exception.Message);
                 System.Exception innerException = exception;
                 while (innerException.InnerException != null)
