@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=MingwCommon -c=ArchiverOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\MingwCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=MingwCommon -c=ArchiverOptionCollection 
 namespace MingwCommon
 {
     public partial class ArchiverOptionCollection
     {
-        public C.ToolchainOptionCollection ToolchainOptionCollection
+        C.ToolchainOptionCollection C.IArchiverOptions.ToolchainOptionCollection
         {
             get
             {
@@ -17,7 +17,7 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
-        public C.EArchiverOutput OutputType
+        C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get
             {
@@ -29,7 +29,7 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
             }
         }
-        public string AdditionalOptions
+        string C.IArchiverOptions.AdditionalOptions
         {
             get
             {
@@ -41,7 +41,7 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        public MingwCommon.EArchiverCommand Command
+        MingwCommon.EArchiverCommand IArchiverOptions.Command
         {
             get
             {
@@ -53,7 +53,7 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("CommandSetHandler", this["Command"]);
             }
         }
-        public bool DoNotWarnIfLibraryCreated
+        bool IArchiverOptions.DoNotWarnIfLibraryCreated
         {
             get
             {

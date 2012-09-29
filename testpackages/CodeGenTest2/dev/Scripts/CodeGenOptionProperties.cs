@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=ICodeGenOptions.cs -o=CodeGenOptionProperties.cs -n=CodeGenTest -c=CodeGenOptions 
+// -i=ICodeGenOptions.cs -o=CodeGenOptionProperties.cs -n=CodeGenTest2 -c=CodeGenOptions 
 namespace CodeGenTest2
 {
     public partial class CodeGenOptions
     {
-        public string OutputSourceDirectory
+        string ICodeGenOptions.OutputSourceDirectory
         {
             get
             {
@@ -17,7 +17,7 @@ namespace CodeGenTest2
                 this.ProcessNamedSetHandler("OutputSourceDirectorySetHandler", this["OutputSourceDirectory"]);
             }
         }
-        public string OutputName
+        string ICodeGenOptions.OutputName
         {
             get
             {

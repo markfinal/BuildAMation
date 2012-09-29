@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport
+    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -22,11 +22,11 @@ namespace VisualCCommon
         {
             base.InitializeDefaults(node);
 
-            this.NoLogo = true;
+            (this as IArchiverOptions).NoLogo = true;
 
             Opus.Core.Target target = node.Target;
 
-            this.OutputType = C.EArchiverOutput.StaticLibrary;
+            (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)

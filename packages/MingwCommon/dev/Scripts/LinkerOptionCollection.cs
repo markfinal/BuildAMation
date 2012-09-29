@@ -30,8 +30,8 @@ namespace MingwCommon
         {
             base.InitializeDefaults(node);
 
-            this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
-            this.EnableAutoImport = false;
+            (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            (this as ILinkerOptions).EnableAutoImport = false;
 
             Opus.Core.Target target = node.Target;
 

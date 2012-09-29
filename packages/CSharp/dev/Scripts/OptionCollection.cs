@@ -119,10 +119,11 @@ namespace CSharp
 
         public override void FinalizeOptions(Opus.Core.Target target)
         {
+            IOptions options = this as IOptions;
             if (null == this.OutputFilePath)
             {
                 string outputSuffix;
-                switch (this.Target)
+                switch (options.Target)
                 {
                     case ETarget.Executable:
                     case ETarget.WindowsExecutable:
@@ -145,7 +146,7 @@ namespace CSharp
                 this.OutputFilePath = outputPathName;
             }
 
-            if ((this.DebugInformation != EDebugInformation.Disabled) && (null == this.ProgramDatabaseFilePath))
+            if ((options.DebugInformation != EDebugInformation.Disabled) && (null == this.ProgramDatabaseFilePath))
             {
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {

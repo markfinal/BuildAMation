@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\CSharp\dev\Scripts\IOptions.cs -o=OptionProperties.cs -n=CSharp -c=OptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\CSharp\dev\Scripts\IOptions.cs -o=OptionProperties.cs -n=CSharp -c=OptionCollection 
 namespace CSharp
 {
     public partial class OptionCollection
     {
-        public CSharp.ETarget Target
+        CSharp.ETarget IOptions.Target
         {
             get
             {
@@ -17,7 +17,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("TargetSetHandler", this["Target"]);
             }
         }
-        public bool NoLogo
+        bool IOptions.NoLogo
         {
             get
             {
@@ -29,7 +29,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("NoLogoSetHandler", this["NoLogo"]);
             }
         }
-        public CSharp.EPlatform Platform
+        CSharp.EPlatform IOptions.Platform
         {
             get
             {
@@ -41,7 +41,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("PlatformSetHandler", this["Platform"]);
             }
         }
-        public CSharp.EDebugInformation DebugInformation
+        CSharp.EDebugInformation IOptions.DebugInformation
         {
             get
             {
@@ -53,7 +53,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("DebugInformationSetHandler", this["DebugInformation"]);
             }
         }
-        public bool Checked
+        bool IOptions.Checked
         {
             get
             {
@@ -65,7 +65,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("CheckedSetHandler", this["Checked"]);
             }
         }
-        public bool Unsafe
+        bool IOptions.Unsafe
         {
             get
             {
@@ -77,7 +77,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("UnsafeSetHandler", this["Unsafe"]);
             }
         }
-        public CSharp.EWarningLevel WarningLevel
+        CSharp.EWarningLevel IOptions.WarningLevel
         {
             get
             {
@@ -89,7 +89,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("WarningLevelSetHandler", this["WarningLevel"]);
             }
         }
-        public bool WarningsAsErrors
+        bool IOptions.WarningsAsErrors
         {
             get
             {
@@ -101,7 +101,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("WarningsAsErrorsSetHandler", this["WarningsAsErrors"]);
             }
         }
-        public bool Optimize
+        bool IOptions.Optimize
         {
             get
             {
@@ -113,7 +113,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("OptimizeSetHandler", this["Optimize"]);
             }
         }
-        public Opus.Core.FileCollection References
+        Opus.Core.FileCollection IOptions.References
         {
             get
             {
@@ -125,7 +125,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("ReferencesSetHandler", this["References"]);
             }
         }
-        public Opus.Core.FileCollection Modules
+        Opus.Core.FileCollection IOptions.Modules
         {
             get
             {
@@ -137,7 +137,7 @@ namespace CSharp
                 this.ProcessNamedSetHandler("ModulesSetHandler", this["Modules"]);
             }
         }
-        public Opus.Core.StringArray Defines
+        Opus.Core.StringArray IOptions.Defines
         {
             get
             {

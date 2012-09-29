@@ -5,7 +5,7 @@ namespace FileUtilities
 {
     public partial class SymLinkOptionCollection
     {
-        public string LinkDirectory
+        string ISymLinkOptions.LinkDirectory
         {
             get
             {
@@ -17,7 +17,7 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("LinkDirectorySetHandler", this["LinkDirectory"]);
             }
         }
-        public string LinkName
+        string ISymLinkOptions.LinkName
         {
             get
             {
@@ -29,7 +29,7 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("LinkNameSetHandler", this["LinkName"]);
             }
         }
-        public EType Type
+        EType ISymLinkOptions.Type
         {
             get
             {

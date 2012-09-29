@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\VisualCCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=VisualCCommon -c=CCompilerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=VisualCCommon -c=CCompilerOptionCollection 
 namespace VisualCCommon
 {
     public partial class CCompilerOptionCollection
     {
-        public C.ToolchainOptionCollection ToolchainOptionCollection
+        C.ToolchainOptionCollection C.ICCompilerOptions.ToolchainOptionCollection
         {
             get
             {
@@ -17,7 +17,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
-        public C.DefineCollection Defines
+        C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
             {
@@ -29,7 +29,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }
-        public Opus.Core.DirectoryCollection IncludePaths
+        Opus.Core.DirectoryCollection C.ICCompilerOptions.IncludePaths
         {
             get
             {
@@ -41,7 +41,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("IncludePathsSetHandler", this["IncludePaths"]);
             }
         }
-        public Opus.Core.DirectoryCollection SystemIncludePaths
+        Opus.Core.DirectoryCollection C.ICCompilerOptions.SystemIncludePaths
         {
             get
             {
@@ -53,7 +53,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("SystemIncludePathsSetHandler", this["SystemIncludePaths"]);
             }
         }
-        public C.ECompilerOutput OutputType
+        C.ECompilerOutput C.ICCompilerOptions.OutputType
         {
             get
             {
@@ -65,7 +65,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
             }
         }
-        public bool DebugSymbols
+        bool C.ICCompilerOptions.DebugSymbols
         {
             get
             {
@@ -77,7 +77,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DebugSymbolsSetHandler", this["DebugSymbols"]);
             }
         }
-        public bool WarningsAsErrors
+        bool C.ICCompilerOptions.WarningsAsErrors
         {
             get
             {
@@ -89,7 +89,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("WarningsAsErrorsSetHandler", this["WarningsAsErrors"]);
             }
         }
-        public bool IgnoreStandardIncludePaths
+        bool C.ICCompilerOptions.IgnoreStandardIncludePaths
         {
             get
             {
@@ -101,7 +101,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("IgnoreStandardIncludePathsSetHandler", this["IgnoreStandardIncludePaths"]);
             }
         }
-        public C.EOptimization Optimization
+        C.EOptimization C.ICCompilerOptions.Optimization
         {
             get
             {
@@ -113,7 +113,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OptimizationSetHandler", this["Optimization"]);
             }
         }
-        public string CustomOptimization
+        string C.ICCompilerOptions.CustomOptimization
         {
             get
             {
@@ -125,7 +125,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("CustomOptimizationSetHandler", this["CustomOptimization"]);
             }
         }
-        public C.ETargetLanguage TargetLanguage
+        C.ETargetLanguage C.ICCompilerOptions.TargetLanguage
         {
             get
             {
@@ -137,7 +137,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("TargetLanguageSetHandler", this["TargetLanguage"]);
             }
         }
-        public bool ShowIncludes
+        bool C.ICCompilerOptions.ShowIncludes
         {
             get
             {
@@ -149,7 +149,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ShowIncludesSetHandler", this["ShowIncludes"]);
             }
         }
-        public string AdditionalOptions
+        string C.ICCompilerOptions.AdditionalOptions
         {
             get
             {
@@ -161,7 +161,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        public bool OmitFramePointer
+        bool C.ICCompilerOptions.OmitFramePointer
         {
             get
             {
@@ -173,7 +173,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
             }
         }
-        public Opus.Core.StringArray DisableWarnings
+        Opus.Core.StringArray C.ICCompilerOptions.DisableWarnings
         {
             get
             {
@@ -185,7 +185,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DisableWarningsSetHandler", this["DisableWarnings"]);
             }
         }
-        public bool NoLogo
+        bool ICCompilerOptions.NoLogo
         {
             get
             {
@@ -197,7 +197,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("NoLogoSetHandler", this["NoLogo"]);
             }
         }
-        public bool MinimalRebuild
+        bool ICCompilerOptions.MinimalRebuild
         {
             get
             {
@@ -209,7 +209,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("MinimalRebuildSetHandler", this["MinimalRebuild"]);
             }
         }
-        public VisualCCommon.EWarningLevel WarningLevel
+        VisualCCommon.EWarningLevel ICCompilerOptions.WarningLevel
         {
             get
             {
@@ -221,7 +221,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("WarningLevelSetHandler", this["WarningLevel"]);
             }
         }
-        public VisualCCommon.EDebugType DebugType
+        VisualCCommon.EDebugType ICCompilerOptions.DebugType
         {
             get
             {
@@ -233,7 +233,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DebugTypeSetHandler", this["DebugType"]);
             }
         }
-        public VisualCCommon.EBrowseInformation BrowseInformation
+        VisualCCommon.EBrowseInformation ICCompilerOptions.BrowseInformation
         {
             get
             {
@@ -245,7 +245,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("BrowseInformationSetHandler", this["BrowseInformation"]);
             }
         }
-        public bool StringPooling
+        bool ICCompilerOptions.StringPooling
         {
             get
             {
@@ -257,7 +257,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("StringPoolingSetHandler", this["StringPooling"]);
             }
         }
-        public bool DisableLanguageExtensions
+        bool ICCompilerOptions.DisableLanguageExtensions
         {
             get
             {
@@ -269,7 +269,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DisableLanguageExtensionsSetHandler", this["DisableLanguageExtensions"]);
             }
         }
-        public bool ForceConformanceInForLoopScope
+        bool ICCompilerOptions.ForceConformanceInForLoopScope
         {
             get
             {
@@ -281,7 +281,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ForceConformanceInForLoopScopeSetHandler", this["ForceConformanceInForLoopScope"]);
             }
         }
-        public bool UseFullPaths
+        bool ICCompilerOptions.UseFullPaths
         {
             get
             {
@@ -293,7 +293,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("UseFullPathsSetHandler", this["UseFullPaths"]);
             }
         }
-        public EManagedCompilation CompileAsManaged
+        EManagedCompilation ICCompilerOptions.CompileAsManaged
         {
             get
             {
@@ -305,7 +305,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("CompileAsManagedSetHandler", this["CompileAsManaged"]);
             }
         }
-        public EBasicRuntimeChecks BasicRuntimeChecks
+        EBasicRuntimeChecks ICCompilerOptions.BasicRuntimeChecks
         {
             get
             {
@@ -317,7 +317,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("BasicRuntimeChecksSetHandler", this["BasicRuntimeChecks"]);
             }
         }
-        public bool SmallerTypeConversionRuntimeCheck
+        bool ICCompilerOptions.SmallerTypeConversionRuntimeCheck
         {
             get
             {
@@ -329,7 +329,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("SmallerTypeConversionRuntimeCheckSetHandler", this["SmallerTypeConversionRuntimeCheck"]);
             }
         }
-        public EInlineFunctionExpansion InlineFunctionExpansion
+        EInlineFunctionExpansion ICCompilerOptions.InlineFunctionExpansion
         {
             get
             {
@@ -341,7 +341,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("InlineFunctionExpansionSetHandler", this["InlineFunctionExpansion"]);
             }
         }
-        public bool EnableIntrinsicFunctions
+        bool ICCompilerOptions.EnableIntrinsicFunctions
         {
             get
             {

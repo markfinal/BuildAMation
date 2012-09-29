@@ -19,6 +19,7 @@ namespace OpusOptionInterfacePropertyGenerator
         {
             this.Type = null;
             this.Name = null;
+            this.Interface = null;
             this.HasGet = false;
             this.HasSet = false;
         }
@@ -36,6 +37,12 @@ namespace OpusOptionInterfacePropertyGenerator
         }
 
         public string Name
+        {
+            get;
+            set;
+        }
+
+        public string Interface
         {
             get;
             set;
@@ -192,6 +199,8 @@ namespace OpusOptionInterfacePropertyGenerator
                     {
                         throw new Exception(System.String.Format("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]));
                     }
+                    string namespaceName = namespaceStrings[1];
+                    System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
 
                     // opening namespace scope
                     line = ReadLine(reader);
@@ -207,7 +216,8 @@ namespace OpusOptionInterfacePropertyGenerator
                     {
                         throw new Exception("No public interface found");
                     }
-                    System.Console.WriteLine("Interface found is '{0}'", interfaceStrings[2]);
+                    string interfaceName = interfaceStrings[2];
+                    System.Console.WriteLine("Interface found is '{0}'", interfaceName);
 
                     // opening interface scope
                     line = ReadLine(reader);
@@ -230,6 +240,14 @@ namespace OpusOptionInterfacePropertyGenerator
                         Property property = new Property();
                         property.Name = propertyStrings[1];
                         property.Type = propertyStrings[0];
+                        if (outputNamespace != namespaceName)
+                        {
+                            property.Interface = namespaceName + "." + interfaceName;
+                        }
+                        else
+                        {
+                            property.Interface = interfaceName;
+                        }
 
                         // determine if the type is value or reference
                         string[] typeSplit = property.Type.Split(new char[] { '.' });
@@ -320,7 +338,7 @@ namespace OpusOptionInterfacePropertyGenerator
 
                 foreach (Property property in propertyList)
                 {
-                    WriteLine(writer, 2, "public {0} {1}", property.Type, property.Name);
+                    WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
                     WriteLine(writer, 2, "{");
                     if (property.HasGet)
                     {

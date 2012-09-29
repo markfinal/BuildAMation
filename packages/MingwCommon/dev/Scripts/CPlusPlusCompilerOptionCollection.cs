@@ -16,9 +16,12 @@ namespace MingwCommon
 
         public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
         {
-            (options.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
-            options.TargetLanguage = C.ETargetLanguage.CPlusPlus;
-            options.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
+            C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
+            C.ICPlusPlusCompilerOptions cxxInterfaceOptions = options as C.ICPlusPlusCompilerOptions;
+
+            (cInterfaceOptions.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
+            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
+            cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)

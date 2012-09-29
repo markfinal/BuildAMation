@@ -38,36 +38,37 @@ namespace ComposerXECommon
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
-            this.AllWarnings = true;
-            this.ExtraWarnings = true;
+            ICCompilerOptions compilerInterface = this as ICCompilerOptions;
+            compilerInterface.AllWarnings = true;
+            compilerInterface.ExtraWarnings = true;
 
             base.InitializeDefaults(node);
 
             // there is too much of a headache with include paths to enable this!
-            this.IgnoreStandardIncludePaths = false;
+            (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
 
             Opus.Core.Target target = node.Target;
             this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
 
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {
-                this.StrictAliasing = false;
-                this.InlineFunctions = false;
-                this.OmitFramePointer = false;
+                compilerInterface.StrictAliasing = false;
+                compilerInterface.InlineFunctions = false;
+                (this as C.ICCompilerOptions).OmitFramePointer = false;
             }
             else
             {
-                this.StrictAliasing = true;
-                this.InlineFunctions = true;
-                this.OmitFramePointer = true;
+                compilerInterface.StrictAliasing = true;
+                compilerInterface.InlineFunctions = true;
+                (this as C.ICCompilerOptions).OmitFramePointer = true;
             }
 
-            this.PositionIndependentCode = false;
+            compilerInterface.PositionIndependentCode = false;
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-            this.SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
 
-            this.TargetLanguage = C.ETargetLanguage.C;
+            (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
         }
 
         public CCompilerOptionCollection()
@@ -95,7 +96,7 @@ namespace ComposerXECommon
 
         private static void SystemIncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
             if (!optionCollection.IgnoreStandardIncludePaths)
             {
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
@@ -255,7 +256,7 @@ namespace ComposerXECommon
             {
                 commandLineBuilder.Add("-nostdinc");
 
-                CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+                C.ICCompilerOptions options = sender as C.ICCompilerOptions;
                 if (options.TargetLanguage == C.ETargetLanguage.CPlusPlus)
                 {
                     commandLineBuilder.Add("-nostdinc++");

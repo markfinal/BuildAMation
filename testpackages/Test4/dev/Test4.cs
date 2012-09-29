@@ -27,7 +27,7 @@ namespace Test4
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 C.ToolchainOptionCollection toolOptions = compilerOptions.ToolchainOptionCollection;
-                VisualC.ToolchainOptionCollection vcToolOptions = toolOptions as VisualC.ToolchainOptionCollection;
+                VisualCCommon.IToolchainOptions vcToolOptions = toolOptions as VisualCCommon.IToolchainOptions;
                 if (vcToolOptions != null)
                 {
                     vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;

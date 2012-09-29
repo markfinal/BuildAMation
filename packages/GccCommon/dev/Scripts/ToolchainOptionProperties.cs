@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\prototypes\Opus\dev\bin\Debug\..\..\packages\C\dev\Scripts\IToolchainOptions.cs -o=ToolchainOptionProperties.cs -n=GccCommon -c=ToolchainOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IToolchainOptions.cs -o=ToolchainOptionProperties.cs -n=GccCommon -c=ToolchainOptionCollection 
 namespace GccCommon
 {
     public partial class ToolchainOptionCollection
     {
-        public bool IsCPlusPlus
+        bool C.IToolchainOptions.IsCPlusPlus
         {
             get
             {
@@ -17,7 +17,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("IsCPlusPlusSetHandler", this["IsCPlusPlus"]);
             }
         }
-        public C.ECharacterSet CharacterSet
+        C.ECharacterSet C.IToolchainOptions.CharacterSet
         {
             get
             {

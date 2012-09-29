@@ -21,18 +21,19 @@ namespace QtCommon
 
         private void SetDefaults(Opus.Core.DependencyNode node)
         {
-            this.MocOutputPath = null;
-            this.IncludePaths = new Opus.Core.DirectoryCollection();
-            this.Defines = new C.DefineCollection();
-            this.DoNotGenerateIncludeStatement = false;
-            this.DoNotDisplayWarnings = false;
-            this.PathPrefix = null;
+            IMocOptions options = this as IMocOptions;
+            options.MocOutputPath = null;
+            options.IncludePaths = new Opus.Core.DirectoryCollection();
+            options.Defines = new C.DefineCollection();
+            options.DoNotGenerateIncludeStatement = false;
+            options.DoNotDisplayWarnings = false;
+            options.PathPrefix = null;
 
             // version number of the current Qt package
             string QtVersion = Opus.Core.State.PackageInfo["Qt"].Version;
             string QtVersionFormatted = QtVersion.Replace(".", "0");
             string VersionDefine = "QT_VERSION=0x0" + QtVersionFormatted;
-            this.Defines.Add(VersionDefine);
+            options.Defines.Add(VersionDefine);
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
@@ -53,7 +54,7 @@ namespace QtCommon
                 mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
             }
 
-            this.MocOutputPath = mocPath;
+            (this as IMocOptions).MocOutputPath = mocPath;
         }
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)
@@ -70,7 +71,7 @@ namespace QtCommon
         {
             if (null == this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile])
             {
-                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = this.MocOutputPath;
+                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
             }
 
             base.FinalizeOptions(target);
@@ -150,9 +151,10 @@ namespace QtCommon
         {
             Opus.Core.DirectoryCollection dirsToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.MocOutputPath)
+            IMocOptions options = this as IMocOptions;
+            if (null != options.MocOutputPath)
             {
-                string mocDir = System.IO.Path.GetDirectoryName(this.MocOutputPath);
+                string mocDir = System.IO.Path.GetDirectoryName(options.MocOutputPath);
                 dirsToCreate.AddAbsoluteDirectory(mocDir, false);
             }
 

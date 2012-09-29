@@ -13,11 +13,11 @@ namespace QMakeBuilder
             Opus.Core.Target target = mocFileModule.OwningNode.Target;
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
 
-            QtCommon.MocOptionCollection mocOptions = mocFileOptions as QtCommon.MocOptionCollection;
+            QtCommon.IMocOptions mocOptions = mocFileOptions as QtCommon.IMocOptions;
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (mocOptions is CommandLineProcessor.ICommandLineSupport)
+            if (mocFileOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = mocOptions as CommandLineProcessor.ICommandLineSupport;
+                CommandLineProcessor.ICommandLineSupport commandLineOption = mocFileOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else

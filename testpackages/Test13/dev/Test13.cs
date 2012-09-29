@@ -58,7 +58,7 @@ namespace Test13
 
                 void mocFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
                 {
-                    QtCommon.MocOptionCollection options = module.Options as QtCommon.MocOptionCollection;
+                    QtCommon.IMocOptions options = module.Options as QtCommon.IMocOptions;
                     if (null != options)
                     {
                         options.Defines.Add("CUSTOM_MOC_DEFINE_FOR_MYOBJECTS2");

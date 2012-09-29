@@ -80,7 +80,7 @@ namespace CSharpTest1
 
         void ExecutableReferences_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            CSharp.OptionCollection options = module.Options as CSharp.OptionCollection;
+            CSharp.IOptions options = module.Options as CSharp.IOptions;
             options.References.Add("System.Xml.dll");
         }
 

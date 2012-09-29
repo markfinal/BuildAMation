@@ -37,11 +37,11 @@ namespace GccCommon
 
             this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
 
-            this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
-            this.CanUseOrigin = false;
-            this.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
-            this.RPath = new Opus.Core.StringArray();
+            (this as ILinkerOptions).CanUseOrigin = false;
+            (this as ILinkerOptions).AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
+            (this as ILinkerOptions).RPath = new Opus.Core.StringArray();
 
             /*
              This is an example link line using gcc with -v

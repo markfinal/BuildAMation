@@ -18,9 +18,12 @@ namespace VisualCCommon
         {
             base.InitializeDefaults(node);
 
-            (this.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
-            this.TargetLanguage = C.ETargetLanguage.CPlusPlus;
-            this.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
+            C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
+            C.ICPlusPlusCompilerOptions cxxInterfaceOptions = this as C.ICPlusPlusCompilerOptions;
+
+            (cInterfaceOptions.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
+            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
+            cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
         }
 
         public CPlusPlusCompilerOptionCollection()

@@ -23,7 +23,7 @@ namespace CodeGenTest2
         }
     }
 
-    public partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
+    public partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
     {
         public CodeGenOptions(Opus.Core.DependencyNode node)
             : base()
@@ -36,15 +36,17 @@ namespace CodeGenTest2
         {
             if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
             {
-                string outputPath = System.IO.Path.Combine(this.OutputSourceDirectory, this.OutputName) + ".c";
+                ICodeGenOptions options = this as ICodeGenOptions;
+                string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
                 this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
             }
         }
 
         private void SetDefaults(Opus.Core.DependencyNode node)
         {
-            this.OutputSourceDirectory = node.GetTargettedModuleBuildDirectory("src");
-            this.OutputName = "function";
+            ICodeGenOptions options = this as ICodeGenOptions;
+            options.OutputSourceDirectory = node.GetTargettedModuleBuildDirectory("src");
+            options.OutputName = "function";
         }
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)
@@ -86,9 +88,10 @@ namespace CodeGenTest2
         {
             Opus.Core.DirectoryCollection dirsToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.OutputSourceDirectory)
+            ICodeGenOptions options = this as ICodeGenOptions;
+            if (null != options.OutputSourceDirectory)
             {
-                dirsToCreate.AddAbsoluteDirectory(this.OutputSourceDirectory, false);
+                dirsToCreate.AddAbsoluteDirectory(options.OutputSourceDirectory, false);
             }
 
             return dirsToCreate;
@@ -157,7 +160,7 @@ namespace CodeGenTest2
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
             Opus.Core.IModule module = this as Opus.Core.IModule;
-            CodeGenOptions options = module.Options as CodeGenOptions;
+            ICodeGenOptions options = module.Options as ICodeGenOptions;
             string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
             C.ObjectFile injectedFile = new C.ObjectFile();
             injectedFile.SourceFile.SetGuaranteedAbsolutePath(outputPath);

@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=E:\dev\prototypes\Opus\dev\bin32\Debug\..\..\packages\Gcc\4.5\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Gcc -c=CCompilerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\Gcc\4.5\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Gcc -c=CCompilerOptionCollection 
 namespace Gcc
 {
     public partial class CCompilerOptionCollection
     {
-        public Gcc.EVisibility Visibility
+        Gcc.EVisibility ICCompilerOptions.Visibility
         {
             get
             {

@@ -22,7 +22,7 @@ namespace ComposerXE
         {
             base.InitializeDefaults(node);
 
-            this.Visibility = EVisibility.Hidden;
+            (this as ICCompilerOptions).Visibility = EVisibility.Hidden;
         }
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)

@@ -50,44 +50,45 @@ namespace VisualCCommon
 
             Opus.Core.Target target = node.Target;
 
-            this.NoLogo = true;
+            ICCompilerOptions compilerInterface = this as ICCompilerOptions;
+            compilerInterface.NoLogo = true;
 
             if (Opus.Core.EConfiguration.Debug == target.Configuration)
             {
-                this.MinimalRebuild = true;
-                this.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
-                this.SmallerTypeConversionRuntimeCheck = true;
-                this.InlineFunctionExpansion = EInlineFunctionExpansion.None;
-                this.OmitFramePointer = false;
-                this.EnableIntrinsicFunctions = false;
+                compilerInterface.MinimalRebuild = true;
+                compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
+                compilerInterface.SmallerTypeConversionRuntimeCheck = true;
+                compilerInterface.InlineFunctionExpansion = EInlineFunctionExpansion.None;
+                (this as C.ICCompilerOptions).OmitFramePointer = false;
+                compilerInterface.EnableIntrinsicFunctions = false;
             }
             else
             {
-                this.MinimalRebuild = false;
-                this.BasicRuntimeChecks = EBasicRuntimeChecks.None;
-                this.SmallerTypeConversionRuntimeCheck = false;
-                this.InlineFunctionExpansion = EInlineFunctionExpansion.AnySuitable;
-                this.OmitFramePointer = true;
-                this.EnableIntrinsicFunctions = true;
+                compilerInterface.MinimalRebuild = false;
+                compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.None;
+                compilerInterface.SmallerTypeConversionRuntimeCheck = false;
+                compilerInterface.InlineFunctionExpansion = EInlineFunctionExpansion.AnySuitable;
+                (this as C.ICCompilerOptions).OmitFramePointer = true;
+                compilerInterface.EnableIntrinsicFunctions = true;
             }
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-            this.SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
 
-            this.TargetLanguage = C.ETargetLanguage.C;
+            (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
-            this.WarningLevel = EWarningLevel.Level4;
+            compilerInterface.WarningLevel = EWarningLevel.Level4;
 
-            this.DebugType = EDebugType.Embedded;
+            compilerInterface.DebugType = EDebugType.Embedded;
 
             // disable browse information to improve build speed
-            this.BrowseInformation = EBrowseInformation.None;
+            compilerInterface.BrowseInformation = EBrowseInformation.None;
 
-            this.StringPooling = true;
-            this.DisableLanguageExtensions = false;
-            this.ForceConformanceInForLoopScope = true;
-            this.UseFullPaths = true;
-            this.CompileAsManaged = EManagedCompilation.NoCLR;
+            compilerInterface.StringPooling = true;
+            compilerInterface.DisableLanguageExtensions = false;
+            compilerInterface.ForceConformanceInForLoopScope = true;
+            compilerInterface.UseFullPaths = true;
+            compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
 
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
         }
@@ -156,7 +157,7 @@ namespace VisualCCommon
 
         private static void IncludeSystemPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
             if (!optionCollection.IgnoreStandardIncludePaths)
             {
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
@@ -184,7 +185,7 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
 
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
             if (!optionCollection.IgnoreStandardIncludePaths)
             {
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
@@ -596,12 +597,13 @@ namespace VisualCCommon
 
         private static void MinimalRebuildCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
+            ICCompilerOptions vcOptionCollection = sender as ICCompilerOptions;
             Opus.Core.ValueTypeOption<bool> minimalRebuildOption = option as Opus.Core.ValueTypeOption<bool>;
             if (minimalRebuildOption.Value &&
                 optionCollection.DebugSymbols &&
-                (EManagedCompilation.NoCLR == optionCollection.CompileAsManaged) &&
-                ((EDebugType.ProgramDatabase == optionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == optionCollection.DebugType)))
+                (EManagedCompilation.NoCLR == vcOptionCollection.CompileAsManaged) &&
+                ((EDebugType.ProgramDatabase == vcOptionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == vcOptionCollection.DebugType)))
             {
                 commandLineBuilder.Add("/Gm");
             }
@@ -609,14 +611,15 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary MinimalRebuildVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
+            ICCompilerOptions vcOptionCollection = sender as ICCompilerOptions;
             Opus.Core.ValueTypeOption<bool> minimalRebuildOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
             string attributeName = "MinimalRebuild";
             if (minimalRebuildOption.Value &&
                 optionCollection.DebugSymbols &&
-                (EManagedCompilation.NoCLR == optionCollection.CompileAsManaged) &&
-                ((EDebugType.ProgramDatabase == optionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == optionCollection.DebugType)))
+                (EManagedCompilation.NoCLR == vcOptionCollection.CompileAsManaged) &&
+                ((EDebugType.ProgramDatabase == vcOptionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == vcOptionCollection.DebugType)))
             {
                 dictionary.Add(attributeName, "true");
             }
@@ -879,10 +882,10 @@ namespace VisualCCommon
         private static void DebugTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
-            if (options.DebugSymbols)
+            if ((sender as C.ICCompilerOptions).DebugSymbols)
             {
                 Opus.Core.ValueTypeOption<EDebugType> enumOption = option as Opus.Core.ValueTypeOption<EDebugType>;
-                switch (options.DebugType)
+                switch ((sender as ICCompilerOptions).DebugType)
                 {
                     case EDebugType.Embedded:
                         commandLineBuilder.Add("/Z7");
@@ -938,21 +941,21 @@ namespace VisualCCommon
         {
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
             string attributeName = "DebugInformationFormat";
-            if (options.DebugSymbols)
+            if ((sender as C.ICCompilerOptions).DebugSymbols)
             {
                 VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                 Opus.Core.ValueTypeOption<EDebugType> enumOption = option as Opus.Core.ValueTypeOption<EDebugType>;
                 if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                 {
-                    switch (options.DebugType)
+                    switch ((sender as ICCompilerOptions).DebugType)
                     {
                         case EDebugType.Embedded:
-                            dictionary.Add(attributeName, options.DebugType.ToString("D"));
+                            dictionary.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
                             break;
 
                         case EDebugType.ProgramDatabase:
                         case EDebugType.ProgramDatabaseEditAndContinue:
-                            dictionary.Add(attributeName, options.DebugType.ToString("D"));
+                            dictionary.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
                             dictionary.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
                             break;
 
@@ -962,7 +965,7 @@ namespace VisualCCommon
                 }
                 else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
                 {
-                    switch (options.DebugType)
+                    switch ((sender as ICCompilerOptions).DebugType)
                     {
                         case EDebugType.Embedded:
                             dictionary.Add("DebugInformationFormat", "OldStyle");
@@ -992,7 +995,7 @@ namespace VisualCCommon
 
         private static void BasicRuntimeChecksCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            ICCompilerOptions optionCollection = sender as ICCompilerOptions;
             if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
                 return;
@@ -1025,7 +1028,7 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
 
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            ICCompilerOptions optionCollection = sender as ICCompilerOptions;
             if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
                 return dictionary;
@@ -1076,7 +1079,7 @@ namespace VisualCCommon
 
         private static void SmallerTypeConversionRuntimeCheckCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            ICCompilerOptions optionCollection = sender as ICCompilerOptions;
             if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
                 return;
@@ -1093,7 +1096,7 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
 
-            CCompilerOptionCollection optionCollection = sender as CCompilerOptionCollection;
+            ICCompilerOptions optionCollection = sender as ICCompilerOptions;
             if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
                 return dictionary;

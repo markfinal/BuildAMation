@@ -32,15 +32,17 @@ namespace VisualCCommon
         {
             base.InitializeDefaults(node);
 
-            this.NoLogo = true;
-            this.StackReserveAndCommit = null;
-            this.IgnoredLibraries = new Opus.Core.StringArray();
+            ILinkerOptions linkerInterface = this as ILinkerOptions;
+
+            linkerInterface.NoLogo = true;
+            linkerInterface.StackReserveAndCommit = null;
+            linkerInterface.IgnoredLibraries = new Opus.Core.StringArray();
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
 
             Opus.Core.Target target = node.Target;
 
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
-            this.LibraryPaths.AddAbsoluteDirectory(toolChainInstance.LibPath(target), true);
+            (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(toolChainInstance.LibPath(target), true);
         }
 
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
@@ -469,7 +471,7 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary StandardLibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
+            C.ILinkerOptions options = sender as C.ILinkerOptions;
             if (options.DoNotAutoIncludeStandardLibraries)
             {
                 Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> standardLibraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;

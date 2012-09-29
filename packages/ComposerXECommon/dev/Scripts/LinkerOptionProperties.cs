@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\ComposerXECommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=ComposerXECommon -c=LinkerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\ComposerXECommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=ComposerXECommon -c=LinkerOptionCollection 
 namespace ComposerXECommon
 {
     public partial class LinkerOptionCollection
     {
-        public C.ToolchainOptionCollection ToolchainOptionCollection
+        C.ToolchainOptionCollection C.ILinkerOptions.ToolchainOptionCollection
         {
             get
             {
@@ -17,7 +17,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
-        public C.ELinkerOutput OutputType
+        C.ELinkerOutput C.ILinkerOptions.OutputType
         {
             get
             {
@@ -29,7 +29,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
             }
         }
-        public bool DoNotAutoIncludeStandardLibraries
+        bool C.ILinkerOptions.DoNotAutoIncludeStandardLibraries
         {
             get
             {
@@ -41,7 +41,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("DoNotAutoIncludeStandardLibrariesSetHandler", this["DoNotAutoIncludeStandardLibraries"]);
             }
         }
-        public bool DebugSymbols
+        bool C.ILinkerOptions.DebugSymbols
         {
             get
             {
@@ -53,7 +53,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("DebugSymbolsSetHandler", this["DebugSymbols"]);
             }
         }
-        public C.ESubsystem SubSystem
+        C.ESubsystem C.ILinkerOptions.SubSystem
         {
             get
             {
@@ -65,7 +65,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("SubSystemSetHandler", this["SubSystem"]);
             }
         }
-        public bool DynamicLibrary
+        bool C.ILinkerOptions.DynamicLibrary
         {
             get
             {
@@ -77,7 +77,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("DynamicLibrarySetHandler", this["DynamicLibrary"]);
             }
         }
-        public Opus.Core.DirectoryCollection LibraryPaths
+        Opus.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
         {
             get
             {
@@ -89,7 +89,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("LibraryPathsSetHandler", this["LibraryPaths"]);
             }
         }
-        public Opus.Core.FileCollection StandardLibraries
+        Opus.Core.FileCollection C.ILinkerOptions.StandardLibraries
         {
             get
             {
@@ -101,7 +101,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("StandardLibrariesSetHandler", this["StandardLibraries"]);
             }
         }
-        public Opus.Core.FileCollection Libraries
+        Opus.Core.FileCollection C.ILinkerOptions.Libraries
         {
             get
             {
@@ -113,7 +113,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("LibrariesSetHandler", this["Libraries"]);
             }
         }
-        public bool GenerateMapFile
+        bool C.ILinkerOptions.GenerateMapFile
         {
             get
             {
@@ -125,7 +125,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("GenerateMapFileSetHandler", this["GenerateMapFile"]);
             }
         }
-        public string AdditionalOptions
+        string C.ILinkerOptions.AdditionalOptions
         {
             get
             {
@@ -137,7 +137,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        public bool CanUseOrigin
+        bool ILinkerOptions.CanUseOrigin
         {
             get
             {
@@ -149,7 +149,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("CanUseOriginSetHandler", this["CanUseOrigin"]);
             }
         }
-        public bool AllowUndefinedSymbols
+        bool ILinkerOptions.AllowUndefinedSymbols
         {
             get
             {
@@ -161,7 +161,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("AllowUndefinedSymbolsSetHandler", this["AllowUndefinedSymbols"]);
             }
         }
-        public Opus.Core.StringArray RPath
+        Opus.Core.StringArray ILinkerOptions.RPath
         {
             get
             {
