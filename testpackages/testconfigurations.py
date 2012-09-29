@@ -85,7 +85,7 @@ configs["Test11-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution"
 configs["Test12-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
-configs["Test13-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
+configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
