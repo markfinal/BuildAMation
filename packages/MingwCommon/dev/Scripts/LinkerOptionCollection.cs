@@ -30,10 +30,8 @@ namespace MingwCommon
         {
             base.InitializeDefaults(node);
 
-            this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
-            this.EnableAutoImport = false;
-
-            Opus.Core.Target target = node.Target;
+            (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            (this as ILinkerOptions).EnableAutoImport = false;
 
             /*
              This is an example link line using gcc with -v
@@ -181,7 +179,6 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                LinkerOptionCollection options = sender as LinkerOptionCollection;
                 commandLineBuilder.Add("-Wl,--enable-auto-import");
             }
         }

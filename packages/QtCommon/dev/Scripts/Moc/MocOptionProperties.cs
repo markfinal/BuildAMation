@@ -5,7 +5,7 @@ namespace QtCommon
 {
     public partial class MocOptionCollection
     {
-        public string MocOutputPath
+        string IMocOptions.MocOutputPath
         {
             get
             {
@@ -17,7 +17,7 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("MocOutputPathSetHandler", this["MocOutputPath"]);
             }
         }
-        public Opus.Core.DirectoryCollection IncludePaths
+        Opus.Core.DirectoryCollection IMocOptions.IncludePaths
         {
             get
             {
@@ -29,7 +29,7 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("IncludePathsSetHandler", this["IncludePaths"]);
             }
         }
-        public C.DefineCollection Defines
+        C.DefineCollection IMocOptions.Defines
         {
             get
             {
@@ -41,7 +41,7 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }
-        public bool DoNotGenerateIncludeStatement
+        bool IMocOptions.DoNotGenerateIncludeStatement
         {
             get
             {
@@ -53,7 +53,7 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("DoNotGenerateIncludeStatementSetHandler", this["DoNotGenerateIncludeStatement"]);
             }
         }
-        public bool DoNotDisplayWarnings
+        bool IMocOptions.DoNotDisplayWarnings
         {
             get
             {
@@ -65,7 +65,7 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("DoNotDisplayWarningsSetHandler", this["DoNotDisplayWarnings"]);
             }
         }
-        public string PathPrefix
+        string IMocOptions.PathPrefix
         {
             get
             {

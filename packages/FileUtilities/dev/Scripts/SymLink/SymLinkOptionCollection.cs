@@ -15,11 +15,13 @@ namespace FileUtilities
 
         private void InitializeDefaults(Opus.Core.DependencyNode node)
         {
-            this.Type = EType.File;
-            this.LinkName = node.ModuleName;
+            ISymLinkOptions options = this as ISymLinkOptions;
+
+            options.Type = EType.File;
+            options.LinkName = node.ModuleName;
 
             string linkDirectory = node.GetTargettedModuleBuildDirectory("");
-            this.LinkDirectory = linkDirectory;
+            options.LinkDirectory = linkDirectory;
         }
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)
@@ -33,7 +35,8 @@ namespace FileUtilities
         {
             if (null == this.OutputPaths[SymLinkOutputFileFlags.Link])
             {
-                this.OutputPaths[SymLinkOutputFileFlags.Link] = System.IO.Path.Combine(this.LinkDirectory, this.LinkName);
+                ISymLinkOptions options = this as ISymLinkOptions;
+                this.OutputPaths[SymLinkOutputFileFlags.Link] = System.IO.Path.Combine(options.LinkDirectory, options.LinkName);
             }
 
             base.FinalizeOptions(target);
@@ -71,7 +74,7 @@ namespace FileUtilities
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-            directoriesToCreate.AddAbsoluteDirectory(this.LinkDirectory, false);
+            directoriesToCreate.AddAbsoluteDirectory((this as ISymLinkOptions).LinkDirectory, false);
             return directoriesToCreate;
         }
     }

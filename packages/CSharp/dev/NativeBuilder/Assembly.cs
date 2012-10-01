@@ -13,7 +13,7 @@ namespace NativeBuilder
             Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;
-            CSharp.OptionCollection options = assemblyOptions as CSharp.OptionCollection;
+            CSharp.IOptions options = assemblyOptions as CSharp.IOptions;
 
             if (node.ExternalDependents != null)
             {

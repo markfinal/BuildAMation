@@ -11,7 +11,8 @@ namespace VisualCCommon
         {
             base.InitializeDefaults(node);
 
-            this.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
+            IToolchainOptions toolchainInterface = this as IToolchainOptions;
+            toolchainInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
         }
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)

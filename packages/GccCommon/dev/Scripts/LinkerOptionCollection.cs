@@ -37,11 +37,11 @@ namespace GccCommon
 
             this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target));
 
-            this.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
-            this.CanUseOrigin = false;
-            this.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
-            this.RPath = new Opus.Core.StringArray();
+            (this as ILinkerOptions).CanUseOrigin = false;
+            (this as ILinkerOptions).AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
+            (this as ILinkerOptions).RPath = new Opus.Core.StringArray();
 
             /*
              This is an example link line using gcc with -v
@@ -219,7 +219,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("-z origin");
+                commandLineBuilder.Add("-Wl,-z,origin");
             }
         }
 
@@ -228,11 +228,26 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("-z nodefs");
+                if (Opus.Core.OSUtilities.IsOSXHosting)
+                {
+                    // TODO: I did originally think suppress here, but there is an issue with that and 'two level namespaces'
+                    commandLineBuilder.Add("-Wl,-undefined,dynamic_lookup");
+                }
+                else
+                {
+                    commandLineBuilder.Add("-Wl,-z,nodefs");
+                }
             }
             else
             {
-                commandLineBuilder.Add("-z defs");
+                if (Opus.Core.OSUtilities.IsOSXHosting)
+                {
+                    commandLineBuilder.Add("-Wl,-undefined,error");
+                }
+                else
+                {
+                    commandLineBuilder.Add("-Wl,-z,defs");
+                }
             }
         }
 

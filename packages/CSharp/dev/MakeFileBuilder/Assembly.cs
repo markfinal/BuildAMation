@@ -25,7 +25,7 @@ namespace MakeFileBuilder
                     {
                         Opus.Core.StringArray assemblyPaths = new Opus.Core.StringArray();
                         dependentNode.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, assemblyPaths);
-                        options.References.AddRange(assemblyPaths);
+                        (options as CSharp.IOptions).References.AddRange(assemblyPaths);
 
                         MakeFileData data = dependentNode.Data as MakeFileData;
                         inputVariables.Add(CSharp.OutputFileFlags.AssemblyFile, data.VariableDictionary[CSharp.OutputFileFlags.AssemblyFile]);

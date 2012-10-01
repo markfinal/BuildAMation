@@ -23,13 +23,11 @@ namespace ComposerXECommon
         {
             base.InitializeDefaults(node);
 
-            this.Command = EArchiverCommand.Replace;
-            this.DoNotWarnIfLibraryCreated = true;
-
-            Opus.Core.Target target = node.Target;
+            (this as IArchiverOptions).Command = EArchiverCommand.Replace;
+            (this as IArchiverOptions).DoNotWarnIfLibraryCreated = true;
 
             // this must be set last, as it appears last on the command line
-            this.OutputType = C.EArchiverOutput.StaticLibrary;
+            (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)

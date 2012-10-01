@@ -5,7 +5,7 @@ namespace Gcc
 {
     public partial class CPlusPlusCompilerOptionCollection
     {
-        public C.CPlusPlus.EExceptionHandler ExceptionHandler
+        C.CPlusPlus.EExceptionHandler C.ICPlusPlusCompilerOptions.ExceptionHandler
         {
             get
             {

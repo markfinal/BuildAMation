@@ -59,14 +59,24 @@ namespace C
                     parentNode = parentNode.Parent;
                 }
                 System.Type optionCollectionType = parentNode.Module.Options.GetType();
-                System.Reflection.PropertyInfo toolchainOptionCollectionProperty = optionCollectionType.GetProperty("ToolchainOptionCollection");
+                System.Type[] interfaces = optionCollectionType.GetInterfaces();
+                System.Reflection.PropertyInfo toolchainOptionCollectionProperty = null;
+                foreach (System.Type i in interfaces)
+                {
+                    System.Reflection.PropertyInfo toolchainOptionCollectionProperty2 = i.GetProperty("ToolchainOptionCollection");
+                    if (toolchainOptionCollectionProperty2 != null)
+                    {
+                        toolchainOptionCollectionProperty = toolchainOptionCollectionProperty2;
+                        break;
+                    }
+                }
                 if (null == toolchainOptionCollectionProperty)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' has no property called 'ToolchainOptionCollection'", optionCollectionType.FullName), false);
+                    throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' has no property called 'ToolchainOptionCollection' in any of it's interfaces", optionCollectionType.FullName), false);
                 }
                 if (!toolchainOptionCollectionProperty.CanRead)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' has no get method in the 'ToolchainOptionCollection' property", optionCollectionType.FullName), false);
+                    throw new Opus.Core.Exception(System.String.Format("OptionCollection '{0}' has no get method in the 'ToolchainOptionCollection' property in any of it's interfaces", optionCollectionType.FullName), false);
                 }
                 System.Reflection.MethodInfo toolchainOptionCollectionPropertyGet = toolchainOptionCollectionProperty.GetGetMethod();
 

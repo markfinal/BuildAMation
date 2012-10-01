@@ -5,7 +5,7 @@ namespace CodeGenTest
 {
     public partial class CodeGenOptions
     {
-        public string OutputSourceDirectory
+        string ICodeGenOptions.OutputSourceDirectory
         {
             get
             {
@@ -17,7 +17,7 @@ namespace CodeGenTest
                 this.ProcessNamedSetHandler("OutputSourceDirectorySetHandler", this["OutputSourceDirectory"]);
             }
         }
-        public string OutputName
+        string ICodeGenOptions.OutputName
         {
             get
             {

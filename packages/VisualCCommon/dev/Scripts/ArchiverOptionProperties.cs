@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\GoogleCode\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=VisualCCommon -c=ArchiverOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=VisualCCommon -c=ArchiverOptionCollection 
 namespace VisualCCommon
 {
     public partial class ArchiverOptionCollection
     {
-        public C.ToolchainOptionCollection ToolchainOptionCollection
+        C.ToolchainOptionCollection C.IArchiverOptions.ToolchainOptionCollection
         {
             get
             {
@@ -17,7 +17,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
-        public C.EArchiverOutput OutputType
+        C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get
             {
@@ -29,7 +29,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
             }
         }
-        public string AdditionalOptions
+        string C.IArchiverOptions.AdditionalOptions
         {
             get
             {
@@ -41,7 +41,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        public bool NoLogo
+        bool IArchiverOptions.NoLogo
         {
             get
             {

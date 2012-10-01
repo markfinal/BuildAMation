@@ -1,43 +1,44 @@
 #!/usr/bin/python
 import sys
 
-class TestConfiguration:
-    _builders = []
-    _win = []
-    _linux = []
-    _osx = []
+class TestSetup:
+    _win = {}
+    _linux = {}
+    _osx = {}
   
-    def __init__(self, builders=[], win=[], linux=[], osx=[]):
-        if not builders:
-            raise RuntimeError("No builder configured")
-        self._builders = builders
+    def __init__(self, win={}, linux={}, osx={}):
         self._win = win
         self._linux = linux
         self._osx = osx
         
     def GetBuilders(self):
-        return self._builders
-     
-    def GetResponseFiles(self):
         platform = sys.platform
         if platform.startswith("win"):
-            responseFiles = []
-            for i in self._win:
-                responseFiles.append(i+".rsp")
-            return responseFiles
+            return self._win.keys()
         elif platform.startswith("linux"):
-            responseFiles = []
-            for i in self._linux:
-                responseFiles.append(i+".rsp")
-            return responseFiles
+            return self._linux.keys()
         elif platform.startswith("darwin"):
-            responseFiles = []
-            for i in self._osx:
-                responseFiles.append(i+".rsp")
-            return responseFiles
+            return self._osx.keys()
         else:
             raise RuntimeError("Unknown platform " + platform)
-  
+     
+    def GetResponseFiles(self, builder):
+        platform = sys.platform
+        responseFiles = []
+        # TODO: can we do this with a lambda expression?
+        if platform.startswith("win"):
+            for i in self._win[builder]:
+                responseFiles.append(i+".rsp")
+        elif platform.startswith("linux"):
+            for i in self._linux[builder]:
+                responseFiles.append(i+".rsp")
+        elif platform.startswith("darwin"):
+            for i in self._osx[builder]:
+                responseFiles.append(i+".rsp")
+        else:
+            raise RuntimeError("Unknown platform " + platform)
+        return responseFiles
+            
 def GetTestConfig(packageName, options):
     try:
         config = configs[packageName]
@@ -47,34 +48,65 @@ def GetTestConfig(packageName, options):
         return None
     return config
 
-nativeVSSolutionBuilders = ["Native","VSSolution"]
-nativeMakeFileBuilders = ["Native","MakeFile"]
-nativeMakeFileVSSolutionBuilders = ["Native","MakeFile","VSSolution"]
-nativeMakeFileVSSolutionQMakeBuilders = ["Native","MakeFile","VSSolution","QMake"]
-
 configs = {}
-configs["Test-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test2-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test3-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test4-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test5-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test6-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test7-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test8-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test9-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test10-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test11-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test12-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test13-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionQMakeBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["Test14-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["CodeGenTest-dev"] = TestConfiguration(builders=nativeMakeFileBuilders, win=["visualc"],linux=["gcc"],osx=["gcc"])
-configs["CodeGenTest2-dev"] = TestConfiguration(builders=nativeMakeFileBuilders, win=["visualcandcsharp"],linux=["gccandcsharp"],osx=["gccandcsharp"])
-configs["CSharpTest1-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["csharp"],linux=["monounix"],osx=["monoosx"])
-configs["Direct3DTriangle-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"])
-configs["MixedModeCpp-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"])
-configs["MixedTest-dev"] = TestConfiguration(builders=nativeMakeFileBuilders, win=["visualcandcsharp"])
-configs["OpenCLTest1-dev"] = TestConfiguration(builders=nativeVSSolutionBuilders, win=["visualc"])
-configs["OpenGLUniformBufferTest-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"])
-configs["RenderTextureAndProcessor-dev"] = TestConfiguration(builders=nativeMakeFileVSSolutionBuilders, win=["visualc"])
-configs["Symlinks-dev"] = TestConfiguration(builders="Native", win=["notoolchain"],linux=["notoolchain"],osx=["notoolchain"])
-configs["WPFTest-dev"] = TestConfiguration(builders=["VSSolution"], win=["csharp"])
+configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                osx={"Native":["gcc"]})
+configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test4-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test5-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test6-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test7-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test8-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test9-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test10-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test11-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test12-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
+                                       linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                       osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualcandcsharp"],"MakeFile":["visualcandcsharp"]},
+                                        linux={"Native":["gccandcsharp"],"MakeFile":["gccandcsharp"]},
+                                        osx={"Native":["gccandcsharp"],"MakeFile":["gccandcsharp"]})
+configs["CSharpTest1-dev"] = TestSetup(win={"Native":["csharp"],"MakeFile":["csharp"],"VSSolution":["csharp"]},
+                                       linux={"Native":["monounix"],"MakeFile":["monounix"]},
+                                       osx={"Native":["monounix"],"MakeFile":["monounix"]})
+configs["Direct3DTriangle-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
+configs["MixedModeCpp-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
+configs["MixedTest-dev"] = TestSetup(win={"Native":["visualcandcsharp"],"MakeFile":["visualcandcsharp"]})
+configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
+configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
+configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
+configs["Symlinks-dev"] = TestSetup(win={"Native":["notoolchain"]},
+                                    linux={"Native":["notoolchain"]},
+                                    osx={"Native":["notoolchain"]})
+configs["WPFTest-dev"] = TestSetup(win={"VSSolution":["csharp"]})

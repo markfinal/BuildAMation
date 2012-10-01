@@ -17,7 +17,7 @@ namespace VSSolutionBuilder
             string moduleName = node.ModuleName;
 
             string platformName;
-            switch ((options as CSharp.OptionCollection).Platform)
+            switch ((options as CSharp.IOptions).Platform)
             {
                 case CSharp.EPlatform.AnyCpu:
                     platformName = "AnyCPU";
@@ -97,7 +97,7 @@ namespace VSSolutionBuilder
             }
 
             // references
-            foreach (string reference in options.References)
+            foreach (string reference in (options as CSharp.IOptions).References)
             {
                 projectData.References.Add(reference);
             }

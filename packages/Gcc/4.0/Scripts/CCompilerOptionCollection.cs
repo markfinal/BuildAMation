@@ -23,7 +23,7 @@ namespace Gcc
             base.InitializeDefaults(node);
 
             // requires gcc 4.0
-            this.Visibility = EVisibility.Hidden;
+            (this as ICCompilerOptions).Visibility = EVisibility.Hidden;
         }
 
         protected override void SetDelegates(Opus.Core.DependencyNode node)

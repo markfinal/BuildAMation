@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Release\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Release\..\..\packages\GccCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=GccCommon -c=CCompilerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\GccCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=GccCommon -c=CCompilerOptionCollection 
 namespace GccCommon
 {
     public partial class CCompilerOptionCollection
     {
-        public C.ToolchainOptionCollection ToolchainOptionCollection
+        C.ToolchainOptionCollection C.ICCompilerOptions.ToolchainOptionCollection
         {
             get
             {
@@ -17,7 +17,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
-        public C.DefineCollection Defines
+        C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
             {
@@ -29,7 +29,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }
-        public Opus.Core.DirectoryCollection IncludePaths
+        Opus.Core.DirectoryCollection C.ICCompilerOptions.IncludePaths
         {
             get
             {
@@ -41,7 +41,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("IncludePathsSetHandler", this["IncludePaths"]);
             }
         }
-        public Opus.Core.DirectoryCollection SystemIncludePaths
+        Opus.Core.DirectoryCollection C.ICCompilerOptions.SystemIncludePaths
         {
             get
             {
@@ -53,7 +53,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("SystemIncludePathsSetHandler", this["SystemIncludePaths"]);
             }
         }
-        public C.ECompilerOutput OutputType
+        C.ECompilerOutput C.ICCompilerOptions.OutputType
         {
             get
             {
@@ -65,7 +65,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("OutputTypeSetHandler", this["OutputType"]);
             }
         }
-        public bool DebugSymbols
+        bool C.ICCompilerOptions.DebugSymbols
         {
             get
             {
@@ -77,7 +77,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DebugSymbolsSetHandler", this["DebugSymbols"]);
             }
         }
-        public bool WarningsAsErrors
+        bool C.ICCompilerOptions.WarningsAsErrors
         {
             get
             {
@@ -89,7 +89,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("WarningsAsErrorsSetHandler", this["WarningsAsErrors"]);
             }
         }
-        public bool IgnoreStandardIncludePaths
+        bool C.ICCompilerOptions.IgnoreStandardIncludePaths
         {
             get
             {
@@ -101,7 +101,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("IgnoreStandardIncludePathsSetHandler", this["IgnoreStandardIncludePaths"]);
             }
         }
-        public C.EOptimization Optimization
+        C.EOptimization C.ICCompilerOptions.Optimization
         {
             get
             {
@@ -113,7 +113,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("OptimizationSetHandler", this["Optimization"]);
             }
         }
-        public string CustomOptimization
+        string C.ICCompilerOptions.CustomOptimization
         {
             get
             {
@@ -125,7 +125,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("CustomOptimizationSetHandler", this["CustomOptimization"]);
             }
         }
-        public C.ETargetLanguage TargetLanguage
+        C.ETargetLanguage C.ICCompilerOptions.TargetLanguage
         {
             get
             {
@@ -137,7 +137,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("TargetLanguageSetHandler", this["TargetLanguage"]);
             }
         }
-        public bool ShowIncludes
+        bool C.ICCompilerOptions.ShowIncludes
         {
             get
             {
@@ -149,7 +149,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("ShowIncludesSetHandler", this["ShowIncludes"]);
             }
         }
-        public string AdditionalOptions
+        string C.ICCompilerOptions.AdditionalOptions
         {
             get
             {
@@ -161,7 +161,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        public bool OmitFramePointer
+        bool C.ICCompilerOptions.OmitFramePointer
         {
             get
             {
@@ -173,7 +173,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
             }
         }
-        public Opus.Core.StringArray DisableWarnings
+        Opus.Core.StringArray C.ICCompilerOptions.DisableWarnings
         {
             get
             {
@@ -185,7 +185,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DisableWarningsSetHandler", this["DisableWarnings"]);
             }
         }
-        public bool AllWarnings
+        bool ICCompilerOptions.AllWarnings
         {
             get
             {
@@ -197,7 +197,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("AllWarningsSetHandler", this["AllWarnings"]);
             }
         }
-        public bool ExtraWarnings
+        bool ICCompilerOptions.ExtraWarnings
         {
             get
             {
@@ -209,7 +209,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("ExtraWarningsSetHandler", this["ExtraWarnings"]);
             }
         }
-        public bool StrictAliasing
+        bool ICCompilerOptions.StrictAliasing
         {
             get
             {
@@ -221,7 +221,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("StrictAliasingSetHandler", this["StrictAliasing"]);
             }
         }
-        public bool PositionIndependentCode
+        bool ICCompilerOptions.PositionIndependentCode
         {
             get
             {
@@ -233,7 +233,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("PositionIndependentCodeSetHandler", this["PositionIndependentCode"]);
             }
         }
-        public bool InlineFunctions
+        bool ICCompilerOptions.InlineFunctions
         {
             get
             {
@@ -245,7 +245,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("InlineFunctionsSetHandler", this["InlineFunctions"]);
             }
         }
-        public bool Pedantic
+        bool ICCompilerOptions.Pedantic
         {
             get
             {
