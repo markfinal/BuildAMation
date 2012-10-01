@@ -511,7 +511,6 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary LibrariesVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
             Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             System.Text.StringBuilder libraryPaths = new System.Text.StringBuilder();
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)

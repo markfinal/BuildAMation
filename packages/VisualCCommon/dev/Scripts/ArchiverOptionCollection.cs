@@ -24,8 +24,6 @@ namespace VisualCCommon
 
             (this as IArchiverOptions).NoLogo = true;
 
-            Opus.Core.Target target = node.Target;
-
             (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
         }
 

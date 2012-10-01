@@ -884,7 +884,6 @@ namespace VisualCCommon
             CCompilerOptionCollection options = sender as CCompilerOptionCollection;
             if ((sender as C.ICCompilerOptions).DebugSymbols)
             {
-                Opus.Core.ValueTypeOption<EDebugType> enumOption = option as Opus.Core.ValueTypeOption<EDebugType>;
                 switch ((sender as ICCompilerOptions).DebugType)
                 {
                     case EDebugType.Embedded:
@@ -944,7 +943,6 @@ namespace VisualCCommon
             if ((sender as C.ICCompilerOptions).DebugSymbols)
             {
                 VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-                Opus.Core.ValueTypeOption<EDebugType> enumOption = option as Opus.Core.ValueTypeOption<EDebugType>;
                 if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                 {
                     switch ((sender as ICCompilerOptions).DebugType)

@@ -36,8 +36,8 @@ namespace Gcc
                 throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist", cppIncludePath2), false);
             }
 
-            this.SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
-            this.SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
 
             GccCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }

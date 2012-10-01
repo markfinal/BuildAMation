@@ -26,8 +26,6 @@ namespace ComposerXECommon
             (this as IArchiverOptions).Command = EArchiverCommand.Replace;
             (this as IArchiverOptions).DoNotWarnIfLibraryCreated = true;
 
-            Opus.Core.Target target = node.Target;
-
             // this must be set last, as it appears last on the command line
             (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
         }

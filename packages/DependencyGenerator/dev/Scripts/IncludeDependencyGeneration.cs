@@ -51,7 +51,6 @@ namespace DependencyGenerator
 
             Opus.Core.StringArray headerPathsFound = new Opus.Core.StringArray();
 
-            Opus.Core.StringArray headersIncluded = new Opus.Core.StringArray();
             while (filesToSearch.Count > 0)
             {
                 string fileToSearch = filesToSearch.Dequeue();
