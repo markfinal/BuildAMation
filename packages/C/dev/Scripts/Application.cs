@@ -56,7 +56,7 @@ namespace C
                 if (attributes.Length > 0)
                 {
                     Opus.Core.ITargetFilters targetFilters = attributes[0] as Opus.Core.ITargetFilters;
-                    if (!target.MatchFilters(targetFilters))
+                    if (!Opus.Core.TargetUtilities.MatchFilters(target, targetFilters))
                     {
                         Opus.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.ToString(), target.ToString());
                         continue;
@@ -77,7 +77,7 @@ namespace C
         [LocalCompilerOptionsDelegate]
         private static void ApplicationSetConsolePreprocessor(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (Opus.Core.OSUtilities.IsWindows(target))
             {
                 ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
                 compilerOptions.Defines.Add("_CONSOLE");
@@ -87,7 +87,7 @@ namespace C
         [LocalLinkerOptionsDelegate]
         private static void ApplicationSetConsoleSubSystem(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (Opus.Core.OSUtilities.IsWindows(target))
             {
                 ILinkerOptions linkerOptions = module.Options as ILinkerOptions;
                 linkerOptions.SubSystem = C.ESubsystem.Console;

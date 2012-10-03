@@ -53,7 +53,7 @@ namespace VisualCCommon
             ICCompilerOptions compilerInterface = this as ICCompilerOptions;
             compilerInterface.NoLogo = true;
 
-            if (Opus.Core.EConfiguration.Debug == target.Configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 compilerInterface.MinimalRebuild = true;
                 compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;

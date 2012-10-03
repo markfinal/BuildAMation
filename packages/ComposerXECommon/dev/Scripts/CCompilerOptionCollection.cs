@@ -48,9 +48,9 @@ namespace ComposerXECommon
             (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
 
             Opus.Core.Target target = node.Target;
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target.Platform));
+            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target));
 
-            if (Opus.Core.EConfiguration.Debug == target.Configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 compilerInterface.StrictAliasing = false;
                 compilerInterface.InlineFunctions = false;

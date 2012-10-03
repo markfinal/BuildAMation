@@ -16,21 +16,19 @@ namespace C
 
             Opus.Core.Target target = node.Target;
 
-            Opus.Core.EConfiguration configuration = target.Configuration;
-
             compilerOptions.OutputType = ECompilerOutput.CompileOnly;
             compilerOptions.WarningsAsErrors = true;
             compilerOptions.IgnoreStandardIncludePaths = true;
             compilerOptions.TargetLanguage = ETargetLanguage.Default;
 
-            if (Opus.Core.EConfiguration.Debug == configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 compilerOptions.DebugSymbols = true;
                 compilerOptions.Optimization = EOptimization.Off;
             }
             else
             {
-                if (Opus.Core.EConfiguration.Profile != configuration)
+                if (!target.HasConfiguration(Opus.Core.EConfiguration.Profile))
                 {
                     compilerOptions.DebugSymbols = false;
                 }
@@ -44,9 +42,9 @@ namespace C
             compilerOptions.ShowIncludes = false;
 
             compilerOptions.Defines = new DefineCollection();
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", target.Platform.ToString().ToUpper()));
+            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Opus.Core.BaseTarget)target).PlatformName('u')));
             {
-                bool is64bit = Opus.Core.OSUtilities.Is64Bit(target.Platform);
+                bool is64bit = Opus.Core.OSUtilities.Is64Bit(target);
                 int bits = (is64bit) ? 64 : 32;
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_BITS={0}", bits.ToString()));
             }
@@ -61,7 +59,7 @@ namespace C
                     compilerOptions.Defines.Add("D_OPUS_PLATFORM_BIGENDIAN");
                 }
             }
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", target.Configuration.ToString().ToUpper()));
+            compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", ((Opus.Core.BaseTarget)target).ConfigurationName('u')));
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.Toolchain.ToUpper()));
 
             compilerOptions.IncludePaths = new Opus.Core.DirectoryCollection();

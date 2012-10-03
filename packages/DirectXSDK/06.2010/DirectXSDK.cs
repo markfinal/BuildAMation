@@ -45,11 +45,11 @@ namespace DirectXSDK
         {
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
             string platformLibraryPath = null;
-            if (target.Platform == Opus.Core.EPlatform.Win32)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 platformLibraryPath = System.IO.Path.Combine(libraryBasePath, "x86");
             }
-            else if (target.Platform == Opus.Core.EPlatform.Win64)
+            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 platformLibraryPath = System.IO.Path.Combine(libraryBasePath, "x64");
             }
@@ -73,7 +73,7 @@ namespace DirectXSDK
             Opus.Core.StringArray libraries = new Opus.Core.StringArray();
 
             libraries.Add(@"d3d9.lib");
-            if (Opus.Core.EConfiguration.Debug == target.Configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 libraries.Add(@"d3dx9d.lib");
             }

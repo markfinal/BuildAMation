@@ -13,7 +13,7 @@ namespace C
         [LocalCompilerOptionsDelegate]
         private static void WindowsApplicationCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (Opus.Core.OSUtilities.IsWindows(target))
             {
                 ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
                 compilerOptions.Defines.Add("_WINDOWS");
@@ -23,7 +23,7 @@ namespace C
         [LocalLinkerOptionsDelegate]
         private static void WindowApplicationLinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (Opus.Core.OSUtilities.IsWindows(target))
             {
                 ILinkerOptions linkerOptions = module.Options as ILinkerOptions;
                 linkerOptions.SubSystem = ESubsystem.Windows;

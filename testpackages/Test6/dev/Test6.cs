@@ -25,7 +25,7 @@ namespace Test6
                 mainObjectFile.UpdateOptions += MainUpdateOptionCollection;
                 this.Add(mainObjectFile);
 
-                if (Opus.Core.EConfiguration.Debug == target.Configuration)
+                if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
                     this.Include(this, "source", "debug", "debug.c");
                 }

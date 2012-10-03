@@ -19,7 +19,7 @@ namespace VisualCCommon
                 return;
             }
 
-            if (!Opus.Core.OSUtilities.IsWindows(target.Platform))
+            if (!Opus.Core.OSUtilities.IsWindows(target))
             {
                 throw new Opus.Core.Exception("VisualC compiler supports only win32 and win64");
             }

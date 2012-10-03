@@ -363,7 +363,7 @@ namespace Opus.Core
         public string GetTargettedModuleBuildDirectory(string subDirectory)
         {
             string moduleBuildDirectory = this.GetModuleBuildDirectory();
-            string targettedModuleBuildDirectory = System.IO.Path.Combine(moduleBuildDirectory, this.Target.DirectoryName);
+            string targettedModuleBuildDirectory = System.IO.Path.Combine(moduleBuildDirectory, TargetUtilities.DirectoryName(this.Target));
             if (null != subDirectory)
             {
                 targettedModuleBuildDirectory = System.IO.Path.Combine(targettedModuleBuildDirectory, subDirectory);

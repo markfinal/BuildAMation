@@ -70,11 +70,11 @@ namespace AMDAPPSDK
         {
             C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
             string platformLibraryPath = null;
-            if (target.Platform == Opus.Core.EPlatform.Win32)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 platformLibraryPath = System.IO.Path.Combine(LibraryPath, "x86");
             }
-            else if (target.Platform == Opus.Core.EPlatform.Win64)
+            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 platformLibraryPath = System.IO.Path.Combine(LibraryPath, "x86_64");
             }

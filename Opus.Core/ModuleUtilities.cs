@@ -64,7 +64,7 @@ namespace Opus.Core
                         throw new Exception(System.String.Format("More than one attribute not supported on field '{0}'", fieldInfo.Name));
                     }
 
-                    bool targetFiltersMatch = target.MatchFilters(attributes[0]);
+                    bool targetFiltersMatch = TargetUtilities.MatchFilters(target, attributes[0]);
                     if (targetFiltersMatch)
                     {
                         System.Type[] values = null;
@@ -105,6 +105,68 @@ namespace Opus.Core
         public static TypeArray GetRequiredDependents(IModule module, Target target)
         {
             return GetFieldsWithAttributeType<Core.RequiredModulesAttribute>(module, target);
+        }
+
+        private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>> typeBaseTargetToModuleDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>>();
+
+        public static IModule GetModule(System.Type type, Core.BaseTarget baseTarget)
+        {
+            if (typeBaseTargetToModuleDictionary.ContainsKey(type) &&
+                typeBaseTargetToModuleDictionary[type].ContainsKey(baseTarget))
+            {
+                return typeBaseTargetToModuleDictionary[type][baseTarget];
+            }
+
+            DependencyGraph graph = State.Get("System", "Graph") as DependencyGraph;
+            if (null == graph)
+            {
+                throw new Exception("Dependency graph has not yet been constructed");
+            }
+
+            foreach (DependencyNode node in graph)
+            {
+                System.Type moduleType = node.Module.GetType();
+                bool typeMatch = (moduleType == type);
+                bool baseTargetMatch = ((BaseTarget)node.Target == baseTarget);
+                if (typeMatch)
+                {
+                    if (baseTargetMatch)
+                    {
+                        if (!typeBaseTargetToModuleDictionary.ContainsKey(type))
+                        {
+                            typeBaseTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>());
+                        }
+                        if (!typeBaseTargetToModuleDictionary[type].ContainsKey(baseTarget))
+                        {
+                            typeBaseTargetToModuleDictionary[type][baseTarget] = node.Module;
+                        }
+                        return node.Module;
+                    }
+                }
+                else
+                {
+                    System.Type baseType = moduleType.BaseType;
+                    while ((null != baseType) && !baseType.IsInterface)
+                    {
+                        if ((baseType == type) && baseTargetMatch)
+                        {
+                            if (!typeBaseTargetToModuleDictionary.ContainsKey(type))
+                            {
+                                typeBaseTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>());
+                            }
+                            if (!typeBaseTargetToModuleDictionary[type].ContainsKey(baseTarget))
+                            {
+                                typeBaseTargetToModuleDictionary[type][baseTarget] = node.Module;
+                            }
+                            return node.Module;
+                        }
+
+                        baseType = baseType.BaseType;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.Target, IModule>> typeTargetToModuleDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.Target, IModule>>();
@@ -183,8 +245,7 @@ namespace Opus.Core
             {
                 System.Type moduleType = node.Module.GetType();
                 bool typeMatch = (moduleType == type);
-                bool targetMatch = ((node.Target.Platform == target.Platform) &&
-                                    (node.Target.Configuration == target.Configuration));
+                bool targetMatch = (BaseTarget)node.Target == (BaseTarget)target;
                 if (typeMatch)
                 {
                     if (targetMatch)

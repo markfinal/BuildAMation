@@ -60,9 +60,9 @@ namespace Opus.Core
             private set;
         }
         
-        public void AddTopLevelModule(System.Type moduleType, Target target)
+        public void AddTopLevelModule(System.Type moduleType, BaseTarget baseTarget)
         {
-            AddModule(moduleType, 0, null, target);
+            AddModule(moduleType, 0, null, baseTarget);
         }
         
         public int TotalNodeCount
@@ -78,22 +78,16 @@ namespace Opus.Core
             }
         }
         
-        private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, Target target)
+        private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, BaseTarget baseTarget)
         {
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
 
-            Target targetUsed = target;
-            bool isComplete = targetUsed.IsFullyFormed;
-            bool consistentToolChain = targetUsed.Toolchain == toolchainImplementation; // TODO: not sure if this one is necessary at this point as it should've been checked before this call
-            if (!isComplete || !consistentToolChain)
-            {
-                targetUsed = Target.CreateFullyFormedTarget(target, toolchainImplementation);
-            }
+            Target targetUsed = Target.GetInstance(baseTarget, toolchainImplementation);
 
             ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)
             {
-                if (!targetUsed.MatchFilters(moduleTargetFilters[0]))
+                if (!TargetUtilities.MatchFilters(targetUsed, moduleTargetFilters[0]))
                 {
                     Log.DebugMessage("Module '{0}' with filters '{1}' does not match target '{2}'", moduleType.ToString(), moduleTargetFilters[0].ToString(), targetUsed.ToString());
                     return null;
@@ -207,9 +201,9 @@ namespace Opus.Core
         {
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
             Target targetUsed = target;
-            if (targetUsed.Toolchain != toolchainImplementation)
+            if (!targetUsed.HasToolchain(toolchainImplementation))
             {
-                targetUsed = Target.CreateFullyFormedTarget(target, toolchainImplementation);
+                targetUsed = Target.GetInstance((BaseTarget)target, toolchainImplementation);
             }
 
             DependencyNode node = this.FindNodeForTargettedModule(moduleName, targetUsed);
@@ -223,7 +217,7 @@ namespace Opus.Core
             else
             {
                 DependencyNode parentNode = null;
-                node = this.AddModule(moduleType, currentRank + 1, parentNode, targetUsed);
+                node = this.AddModule(moduleType, currentRank + 1, parentNode, (BaseTarget)targetUsed);
             }
 
             return node;

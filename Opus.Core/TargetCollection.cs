@@ -3,6 +3,9 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
+
+// TODO: DON'T THINK THIS IS NECESSARY NOW
+#if false
 namespace Opus.Core
 {
     public sealed class TargetCollection : System.Collections.Generic.ICollection<Target>
@@ -89,3 +92,4 @@ namespace Opus.Core
         }
     }
 }
+#endif

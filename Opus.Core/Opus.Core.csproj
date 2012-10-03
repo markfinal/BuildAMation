@@ -62,6 +62,7 @@
     <Compile Include="Attributes\RegisterToolChainClassAttribute.cs" />
     <Compile Include="Attributes\RequiredModulesAttribute.cs" />
     <Compile Include="Attributes\TriggerActionAttribute.cs" />
+    <Compile Include="BaseTarget.cs" />
     <Compile Include="BuildAgent.cs" />
     <Compile Include="Attributes\DeclareBuilderAttribute.cs" />
     <Compile Include="BuilderUtilities.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="StringArray.cs" />
     <Compile Include="Target.cs" />
     <Compile Include="TargetCollection.cs" />
+    <Compile Include="TargetUtilities.cs" />
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />
     <Compile Include="TypeArray.cs" />

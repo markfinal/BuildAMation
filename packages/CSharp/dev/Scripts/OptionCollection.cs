@@ -25,7 +25,7 @@ namespace CSharp
             options.WarningsAsErrors = true;
             options.Defines = new Opus.Core.StringArray();
 
-            if (target.Configuration == Opus.Core.EConfiguration.Debug)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 options.DebugInformation = EDebugInformation.Full;
                 options.Optimize = false;
@@ -33,7 +33,7 @@ namespace CSharp
             }
             else
             {
-                if (target.Configuration != Opus.Core.EConfiguration.Profile)
+                if (!target.HasConfiguration(Opus.Core.EConfiguration.Profile))
                 {
                     options.DebugInformation = EDebugInformation.Disabled;
                 }

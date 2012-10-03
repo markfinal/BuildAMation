@@ -28,17 +28,15 @@ namespace C
 
             Opus.Core.Target target = node.Target;
 
-            Opus.Core.EConfiguration configuration = target.Configuration;
-
             linkerOptions.SubSystem = ESubsystem.NotSet;
             linkerOptions.DoNotAutoIncludeStandardLibraries = true;
-            if (Opus.Core.EConfiguration.Debug == configuration)
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 linkerOptions.DebugSymbols = true;
             }
             else
             {
-                if (Opus.Core.EConfiguration.Profile != configuration)
+                if (!target.HasConfiguration(Opus.Core.EConfiguration.Profile))
                 {
                     linkerOptions.DebugSymbols = false;
                 }

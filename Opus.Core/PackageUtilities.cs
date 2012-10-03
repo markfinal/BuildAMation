@@ -719,27 +719,23 @@ namespace Opus.Core
                 throw new Exception("No build configurations were specified", false);
             }
 
-            // create targets
-            TargetCollection targetCollection = new TargetCollection();
+            DependencyGraph dependencyGraph = new DependencyGraph();
+            State.Set("System", "Graph", dependencyGraph);
+
+            // add modules in for each target configured
             foreach (EPlatform platform in State.BuildPlatforms)
             {
                 foreach (EConfiguration configuration in State.BuildConfigurations)
                 {
-                    Target target = Target.CreateIncompleteTarget(platform, configuration);
-                    Log.DebugMessage("Added target '{0}'", target);
-                    targetCollection.Add(target);
+                    BaseTarget baseTarget = BaseTarget.GetInstance(platform, configuration);
+                    Log.DebugMessage("Added base target '{0}'", baseTarget);
+                    foreach (System.Type topLevelType in topLevelTypes)
+                    {
+                        dependencyGraph.AddTopLevelModule(topLevelType, baseTarget);
+                    }
                 }
             }
 
-            DependencyGraph dependencyGraph = new DependencyGraph();
-            State.Set("System", "Graph", dependencyGraph);
-            foreach (Target target in targetCollection)
-            {
-                foreach (System.Type topLevelType in topLevelTypes)
-                {
-                    dependencyGraph.AddTopLevelModule(topLevelType, target);
-                }
-            }
             Log.DebugMessage("\nAfter adding top level modules...");
             dependencyGraph.Dump();
             dependencyGraph.PopulateGraph();

@@ -46,38 +46,27 @@ namespace VSSolutionBuilder
             }
         }
 
-        private static string CapitalizeFirstLetter(string word)
-        {
-            if (System.String.IsNullOrEmpty(word))
-            {
-                return System.String.Empty;
-            }
-            char[] a = word.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
-        }
-
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target)
         {
             string platform = GetPlatformNameFromTarget(target);
-            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platform);
+            string configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platform);
             return configurationName;
         }
 
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target, string platformName)
         {
-            string configurationName = System.String.Format("{0}|{1}", CapitalizeFirstLetter(target.Configuration.ToString()), platformName);
+            string configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platformName);
             return configurationName;
         }
 
         public static string GetPlatformNameFromTarget(Opus.Core.Target target)
         {
             string platform;
-            if (target.Platform == Opus.Core.EPlatform.Win32)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 platform = "Win32";
             }
-            else if (target.Platform == Opus.Core.EPlatform.Win64)
+            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 platform = "x64";
             }

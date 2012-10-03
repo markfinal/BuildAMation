@@ -11,7 +11,7 @@ namespace ComposerXECommon
 
         public Archiver(Opus.Core.Target target)
         {
-            if (!(Opus.Core.OSUtilities.IsUnix(target.Platform) || Opus.Core.OSUtilities.IsOSX(target.Platform)))
+            if (!(Opus.Core.OSUtilities.IsUnix(target) || Opus.Core.OSUtilities.IsOSX(target)))
             {
                 throw new Opus.Core.Exception("ComposerXE archiver is only supported under unix32, unix64, osx32 and osx64 platforms");
             }

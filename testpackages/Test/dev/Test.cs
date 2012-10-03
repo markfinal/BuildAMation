@@ -40,7 +40,7 @@ namespace Test
             {
                 Opus.Core.Log.MessageAll("mingw is the toolchain");
 
-                if (Opus.Core.EConfiguration.Debug == target.Configuration)
+                if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
                     compilerOptions.Optimization = C.EOptimization.Custom;
                 }

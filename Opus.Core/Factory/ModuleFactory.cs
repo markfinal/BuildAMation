@@ -7,6 +7,7 @@ namespace Opus.Core
 {
     public static class ModuleFactory
     {
+        // TODO: Make this generic in a typeutilities module
         private static void CheckModuleTypeForInterface(System.Type moduleType)
         {
             if (!typeof(IModule).IsAssignableFrom(moduleType))
