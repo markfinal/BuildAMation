@@ -13,14 +13,27 @@ namespace MakeFileBuilder
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            Opus.Core.ITool toolInterface = null;
+            if (typeof(C.Compiler) == toolType)
+            {
+                toolInterface = C.CCompilerFactory.GetInstance(target);
+            }
+            else if (typeof(C.CxxCompiler) == toolType)
+            {
+                toolInterface = C.CxxCompilerFactory.GetInstance(target);
+            }
+            else
+            {
+                throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
+            }
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
             // NEW STYLE
 #if true
-            string executablePath = compilerTool.Executable(target);
+            string executablePath = toolInterface.Executable(target);
 #else
             string executable;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;

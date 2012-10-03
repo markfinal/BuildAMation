@@ -9,10 +9,6 @@ namespace NativeBuilder
     {
         public object Build(C.ObjectFile objectFile, out bool success)
         {
-            // TODO: this is an experiment to get the tool type
-            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
-
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
@@ -102,24 +98,21 @@ namespace NativeBuilder
             }
 
             // NEW STYLE
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
             Opus.Core.ITool toolInterface = null;
             if (typeof(C.Compiler) == toolType)
             {
-                toolInterface = C.CompilerFactory.GetInstance(target, false) as Opus.Core.ITool;
+                toolInterface = C.CCompilerFactory.GetInstance(target);
             }
             else if (typeof(C.CxxCompiler) == toolType)
             {
-                toolInterface = C.CompilerFactory.GetInstance(target, true) as Opus.Core.ITool;
+                toolInterface = C.CxxCompilerFactory.GetInstance(target);
             }
             else
             {
                 throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
             }
-
-            // END
-
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 
             if (headerDependencyGeneration)
             {
@@ -127,7 +120,7 @@ namespace NativeBuilder
                 dependencyData.sourcePath = sourceFilePath;
                 dependencyData.depFilePath = depFilePath;
 
-                Opus.Core.StringArray includeSwitches = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches;
+                Opus.Core.StringArray includeSwitches = (toolInterface as C.ICompiler).IncludePathCompilerSwitches;
                 Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
                 // TODO: this can be simplified to just use the optioncollection
                 foreach (string option in commandLineBuilder)
@@ -163,7 +156,7 @@ namespace NativeBuilder
 
             // NEW STYLE
 #if true
-            string executablePath = compilerTool.Executable(target);
+            string executablePath = toolInterface.Executable(target);
 #else
             string executablePath;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
@@ -186,7 +179,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, executablePath, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

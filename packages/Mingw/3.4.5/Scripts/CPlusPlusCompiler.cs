@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -54,12 +54,12 @@ namespace Mingw
             return toolChainInstance.Environment;
         }
 
-        public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolders;
         }
 
-        public override Opus.Core.StringArray IncludePathCompilerSwitches
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
         {
             get
             {

@@ -9,11 +9,13 @@ namespace C
                                             typeof(ExportCompilerOptionsDelegateAttribute))]
     public abstract class CxxCompiler
     {
+#if false
         public abstract Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target);
 
         public abstract Opus.Core.StringArray IncludePathCompilerSwitches
         {
             get;
         }
+#endif
     }
 }

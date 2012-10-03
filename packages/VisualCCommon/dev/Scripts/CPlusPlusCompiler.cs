@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -52,12 +52,12 @@ namespace VisualCCommon
             return toolChainInstance.Environment;
         }
 
-        public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolder;
         }
 
-        public override Opus.Core.StringArray IncludePathCompilerSwitches
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
         {
             get
             {

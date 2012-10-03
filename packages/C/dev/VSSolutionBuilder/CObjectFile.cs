@@ -14,8 +14,21 @@ namespace VSSolutionBuilder
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            Opus.Core.ITool toolInterface = null;
+            if (typeof(C.Compiler) == toolType)
+            {
+                toolInterface = C.CCompilerFactory.GetInstance(target);
+            }
+            else if (typeof(C.CxxCompiler) == toolType)
+            {
+                toolInterface = C.CxxCompilerFactory.GetInstance(target);
+            }
+            else
+            {
+                throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
+            }
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -129,7 +142,7 @@ namespace VSSolutionBuilder
                 // this must be a utility configuration
                 configuration.Type = EProjectConfigurationType.Utility;
 
-                string executable = compilerTool.Executable(target);
+                string executable = toolInterface.Executable(target);
                 // TODO: pdb if it exists?
 
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
