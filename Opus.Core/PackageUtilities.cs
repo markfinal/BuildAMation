@@ -243,6 +243,11 @@ namespace Opus.Core
             {
                 PackageInformation info = new PackageInformation(id);
 
+                if (null == id.Definition)
+                {
+                    throw new Exception(System.String.Format("Package '{0}-{1}' has no definition loaded. This is an unexpected error.", id.Name, id.Version), false);
+                }
+
                 if (!OSUtilities.IsCurrentPlatformSupported(id.Definition.SupportedPlatforms))
                 {
                     continue;
