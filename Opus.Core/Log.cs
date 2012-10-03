@@ -17,8 +17,9 @@ namespace Opus.Core
         /// <param name="isError">True if an error message, false if standard output.</param>
         private static void Message(string messageValue, bool isError)
         {
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (System.Diagnostics.Debugger.IsAttached && !State.RunningMono)
             {
+                // In MonoDevelop, this goes nowhere that I can find...
                 System.Diagnostics.Debug.WriteLine(messageValue);
             }
             else
