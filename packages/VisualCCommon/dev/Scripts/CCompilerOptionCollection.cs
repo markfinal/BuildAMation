@@ -73,7 +73,7 @@ namespace VisualCCommon
             }
 
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange((compilerInstance as C.ICompiler).IncludeDirectoryPaths(target));
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
@@ -165,7 +165,7 @@ namespace VisualCCommon
             }
 
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            string switchPrefix = compilerInstance.IncludePathCompilerSwitches[0];
+            string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
@@ -212,7 +212,7 @@ namespace VisualCCommon
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            string switchPrefix = compilerInstance.IncludePathCompilerSwitches[0];
+            string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)

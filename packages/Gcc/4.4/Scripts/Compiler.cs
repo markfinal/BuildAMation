@@ -66,6 +66,14 @@ namespace Gcc
         {
             return this.includeFolders;
         }
+
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
+        {
+            get
+            {
+                return base.CommonIncludePathCompilerSwitches;
+            }
+        }
 #else
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
         {

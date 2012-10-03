@@ -127,7 +127,7 @@ namespace NativeBuilder
                 dependencyData.sourcePath = sourceFilePath;
                 dependencyData.depFilePath = depFilePath;
 
-                Opus.Core.StringArray includeSwitches = compilerInstance.IncludePathCompilerSwitches;
+                Opus.Core.StringArray includeSwitches = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches;
                 Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
                 // TODO: this can be simplified to just use the optioncollection
                 foreach (string option in commandLineBuilder)
