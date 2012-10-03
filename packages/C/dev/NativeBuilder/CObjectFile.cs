@@ -9,6 +9,10 @@ namespace NativeBuilder
     {
         public object Build(C.ObjectFile objectFile, out bool success)
         {
+            // TODO: this is an experiment to get the tool type
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
@@ -97,6 +101,23 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
+            // NEW STYLE
+            Opus.Core.ITool toolInterface = null;
+            if (typeof(C.Compiler) == toolType)
+            {
+                toolInterface = C.CompilerFactory.GetInstance(target, false) as Opus.Core.ITool;
+            }
+            else if (typeof(C.CxxCompiler) == toolType)
+            {
+                toolInterface = C.CompilerFactory.GetInstance(target, true) as Opus.Core.ITool;
+            }
+            else
+            {
+                throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
+            }
+
+            // END
+
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 
@@ -108,6 +129,7 @@ namespace NativeBuilder
 
                 Opus.Core.StringArray includeSwitches = compilerInstance.IncludePathCompilerSwitches;
                 Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+                // TODO: this can be simplified to just use the optioncollection
                 foreach (string option in commandLineBuilder)
                 {
                     string foundSwitch = null;
@@ -139,6 +161,10 @@ namespace NativeBuilder
                 DependencyGenerator.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
             }
 
+            // NEW STYLE
+#if true
+            string executablePath = compilerTool.Executable(target);
+#else
             string executablePath;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -149,6 +175,7 @@ namespace NativeBuilder
             {
                 executablePath = compilerTool.Executable(target);
             }
+#endif
 
             if (sourceFilePath.Contains(" "))
             {

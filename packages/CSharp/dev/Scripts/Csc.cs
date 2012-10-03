@@ -15,6 +15,8 @@ namespace CSharp
     {
     }
 
+    [Opus.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
+                                   typeof(ExportCscOptionsDelegateAttribute))]
     public sealed class Csc : Opus.Core.ITool, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private static string CscPath;

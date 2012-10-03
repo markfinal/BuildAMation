@@ -48,17 +48,21 @@
   <ItemGroup>
     <Compile Include="ActionManager.cs" />
     <Compile Include="Array.cs" />
+    <Compile Include="Attributes\AssignOptionCollectionAttribute.cs" />
     <Compile Include="Attributes\AssignToolForModuleAttribute.cs" />
     <Compile Include="Attributes\BaseTargetFilteredAttribute.cs" />
     <Compile Include="Attributes\DependentModulesAttribute.cs" />
     <Compile Include="Attributes\EmptyBuildFunctionAttribute.cs" />
     <Compile Include="Attributes\GlobalOptionCollectionOverrideAttribute.cs" />
     <Compile Include="Attributes\ImmediateActionAttribute.cs" />
+    <Compile Include="Attributes\LocalAndExportTypesAttribute.cs" />
     <Compile Include="Attributes\MapToolChainClassTypesAttribute.cs" />
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\ModuleTargetsAttribute.cs" />
+    <Compile Include="Attributes\ModuleToolAssignmentAttribute.cs" />
     <Compile Include="Attributes\PreambleActionAttribute.cs" />
     <Compile Include="Attributes\RegisterActionAttribute.cs" />
+    <Compile Include="Attributes\RegisterToolchainAttribute.cs" />
     <Compile Include="Attributes\RegisterToolChainClassAttribute.cs" />
     <Compile Include="Attributes\RequiredModulesAttribute.cs" />
     <Compile Include="Attributes\TriggerActionAttribute.cs" />

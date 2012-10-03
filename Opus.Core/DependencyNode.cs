@@ -160,9 +160,106 @@ namespace Opus.Core
             {
                 throw new Exception(System.String.Format("Module type '{0}' (base type '{1}') does not have a tool type assigned", moduleType.ToString(), moduleType.BaseType.ToString()), false);
             }
+
+            // NEW STYLE
+            // requires inheritence because the attribute is usually on the base class
+            var moduleTools = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
+            if (null == moduleTools || 0 == moduleTools.Length)
+            {
+                throw new Exception(System.String.Format("Module type '{0}' (base type '{1}') does not have any assigned tools", moduleType.ToString(), moduleType.BaseType.ToString()), false);
+            }
+
+            if (moduleTools.Length > 1)
+            {
+                throw new Exception(System.String.Format("There is more than one tool associated with this module '{0}'", moduleType.ToString()), false);
+            }
+
             System.Type toolType = tools[0].ToolType;
+            System.Type newToolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
+            if (toolType != newToolType)
+            {
+                Log.Full("NEW STYLE MISMATCH TOOL TYPE for module '{0}': was '{1}' now '{2}'", moduleType.ToString(), toolType.ToString(), newToolType.ToString());
+                //throw new Exception(System.String.Format("NEW STYLE MISMATCH TOOL TYPE for module '{0}': was '{1}' now '{2}'", moduleType.ToString(), toolType.ToString(), newToolType.ToString()), false);
+            }
+            // do the switcheroo
+            toolType = newToolType;
+            // early out if the module does not have any build tools
+            if (null == toolType)
+            {
+                return;
+            }
             System.Type exportType = tools[0].ExportType;
             System.Type localType = tools[0].LocalType;
+            {
+                var localAndExportTypes = toolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
+
+                if (localAndExportTypes.Length == 0)
+                {
+                    throw new Exception(System.String.Format("NEW STYLE: Missing local and export types attribute on tool type '{0}'", toolType.ToString()), false);
+                }
+
+                if (exportType != (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType)
+                {
+                    throw new Exception("NEW STYLE MISMATCH EXPORT TYPE", false);
+                }
+                if (localType != (localAndExportTypes[0] as LocalAndExportTypesAttribute).LocalType)
+                {
+                    throw new Exception("NEW STYLE MISMATCH LOCAL TYPE", false);
+                }
+            }
+
+            System.Type realToolType = null;
+            System.Type optionCollectionType = null;
+
+            // if there is different toolsets in use, there may be a map for some but not all
+            if (!State.Has("Toolchains", "Map") || !(State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>).ContainsKey(toolType))
+            {
+                realToolType = toolType;
+                var toolchainTypeMap = State.Get("ToolchainTypeMap", toolType.ToString());
+                RegisterToolchainAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, RegisterToolchainAttribute.ToolAndOptions>)[toolType];
+                realToolType = toolAndOptions.ToolType;
+                optionCollectionType = toolAndOptions.OptionType;
+            }
+            else
+            {
+                var toolchainsMap = State.Get("Toolchains", "Map");
+                string toolchainNameForThisTool = (toolchainsMap as System.Collections.Generic.Dictionary<System.Type, string>)[toolType];
+
+                if (!State.Has("ToolchainTypeMap", toolchainNameForThisTool))
+                {
+                    throw new Exception(System.String.Format("NEW STYLE: Toolchain type map has not been registered for tool '{0}'", toolchainNameForThisTool), false);
+                }
+
+                var toolchainTypeMap = State.Get("ToolchainTypeMap", toolchainNameForThisTool);
+#if true
+                RegisterToolchainAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, RegisterToolchainAttribute.ToolAndOptions>)[toolType];
+                realToolType = toolAndOptions.ToolType;
+                optionCollectionType = toolAndOptions.OptionType;
+#else
+                System.Type realToolType = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, System.Type>)[toolType];
+
+                // don't inherit here, as there is sometimes a hierarchy of classes for option collection
+                var optionCollectionTypes = realToolType.GetCustomAttributes(typeof(AssignOptionCollectionAttribute), false);
+                if (null == optionCollectionTypes || 0 == optionCollectionTypes.Length)
+                {
+                    throw new Exception(System.String.Format("NEW STYLE MISSING OPTION COLLECTION ASSIGNMENT for tool type '{0}'", realToolType.ToString()), false);
+                }
+
+                if (optionCollectionTypes.Length > 1)
+                {
+                    throw new Exception(System.String.Format("NEW STYLE TOO MANY OPTION COLLECTIONS for tool type '{0}'", realToolType.ToString()), false);
+                }
+
+                System.Type optionCollectionType = (optionCollectionTypes[0] as AssignOptionCollectionAttribute).OptionCollectionType;
+#endif
+            }
+
+#if true
+            // NEW STYLE
+            System.Reflection.MethodInfo method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
+            this.Module.Options = genericMethod.Invoke(null, new object[] { this }) as BaseOptionCollection;
+#else
             string className = tools[0].ClassName; // TODO: could this be from the ToolType?
             System.Type toolOptionCollectionType = tools[0].OptionsType;
             if (null != toolType)
@@ -182,6 +279,7 @@ namespace Opus.Core
                 System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(new System.Type[] { toolOptionCollectionType, exportType, localType });
                 this.Module.Options = genericMethod.Invoke(null, new object[] { this, className }) as BaseOptionCollection;
             }
+#endif
         }
 
         public DependencyNode(IModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)

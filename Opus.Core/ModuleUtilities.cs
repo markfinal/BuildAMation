@@ -38,7 +38,7 @@ namespace Opus.Core
                 // look up toolchain used for this
                 if (!State.Has("Toolchains", toolchainName))
                 {
-                    throw new Exception(System.String.Format("Toolchain implementation for modules in the namespace '{0}' has not been registered, for module '{1}'", toolchainName, moduleType.ToString()), false);
+                    throw new Exception(System.String.Format("Toolchain implementation for modules in the namespace '{0}' has not been registered for module '{1}'", toolchainName, moduleType.ToString()), false);
                 }
                 toolchainImplementation = State.Get("Toolchains", toolchainName) as string;
             }

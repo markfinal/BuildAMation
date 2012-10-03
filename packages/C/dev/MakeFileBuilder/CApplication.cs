@@ -45,7 +45,11 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
-
+            
+            // NEW STYLE
+#if true
+            string executablePath = linkerTool.Executable(target);
+#else
             string executable;
             C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -56,6 +60,7 @@ namespace MakeFileBuilder
             {
                 executable = linkerTool.Executable(target);
             }
+#endif
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;

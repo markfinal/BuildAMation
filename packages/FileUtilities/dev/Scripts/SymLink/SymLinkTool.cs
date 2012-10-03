@@ -4,9 +4,12 @@
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("symlinktool", "FileUtilities.SymLinkTool.Version")]
+[assembly: FileUtilities.SymLinkRegisterToolchainAttribute("FileUtilities.SymLinkTool")]
 
 namespace FileUtilities
 {
+    [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
+                                   typeof(ExportOptionsDelegateAttribute))]
     public sealed class SymLinkTool : Opus.Core.ITool
     {
         public static string Version

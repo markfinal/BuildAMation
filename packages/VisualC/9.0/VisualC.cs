@@ -12,6 +12,14 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Toolchain, typeof(VisualC.Toolchain), typeof(VisualC.ToolchainOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Win32ResourceCompilerTool, typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
 
+[assembly: C.RegisterToolchain(
+    "visualc",
+    typeof(VisualCCommon.CCompiler), typeof(VisualC.CCompilerOptionCollection),
+    typeof(VisualCCommon.CPlusPlusCompiler), typeof(VisualC.CPlusPlusCompilerOptionCollection),
+    typeof(VisualCCommon.Linker), typeof(VisualC.LinkerOptionCollection),
+    typeof(VisualCCommon.Archiver), typeof(VisualC.ArchiverOptionCollection),
+    typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
+
 namespace VisualC
 {
     public class Solution

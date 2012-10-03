@@ -18,6 +18,10 @@ namespace MakeFileBuilder
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
+            // NEW STYLE
+#if true
+            string executablePath = compilerTool.Executable(target);
+#else
             string executable;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -28,6 +32,7 @@ namespace MakeFileBuilder
             {
                 executable = compilerTool.Executable(target);
             }
+#endif
 
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 

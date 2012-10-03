@@ -28,10 +28,13 @@ namespace Mingw
             return System.IO.Path.Combine(this.binPath, "mingw32-gcc-3.4.5");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "mingw32-g++.exe");
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {

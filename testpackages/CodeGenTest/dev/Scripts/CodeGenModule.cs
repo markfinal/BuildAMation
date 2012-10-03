@@ -134,6 +134,7 @@ namespace CodeGenTest
                                    typeof(ExportCodeGenOptionsDelegateAttribute),
                                    typeof(LocalCodeGenOptionsDelegateAttribute),
                                    typeof(CodeGenOptions))]
+    [Opus.Core.ModuleToolAssignment(typeof(CodeGenTool))]
     public abstract class CodeGenModule : Opus.Core.IModule, Opus.Core.IInjectModules
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)

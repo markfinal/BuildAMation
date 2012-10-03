@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
+    [Opus.Core.AssignOptionCollection(typeof(LinkerOptionCollection))]
     public sealed class Linker : C.Linker, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -29,10 +30,13 @@ namespace VisualCCommon
             return System.IO.Path.Combine(this.platformBinFolder, "link.exe");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return this.Executable(target);
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {

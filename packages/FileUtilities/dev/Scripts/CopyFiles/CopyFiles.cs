@@ -19,6 +19,7 @@ namespace FileUtilities
                                    typeof(ExportOptionsDelegateAttribute),
                                    typeof(LocalOptionsDelegateAttribute),
                                    typeof(CopyFilesOptionCollection))]
+    [Opus.Core.ModuleToolAssignment(typeof(CopyFilesTool))]
     // TODO: kind of need a different interface to nested dependents which allows
     // the system to inspect a module
     public class CopyFiles : Opus.Core.IModule, Opus.Core.IIdentifyExternalDependencies

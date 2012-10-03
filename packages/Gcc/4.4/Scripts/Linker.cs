@@ -28,10 +28,13 @@ namespace Gcc
             return System.IO.Path.Combine(this.binPath, "gcc-4.4");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "g++-4.4");
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {

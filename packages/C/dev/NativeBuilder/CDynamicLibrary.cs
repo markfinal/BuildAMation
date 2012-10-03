@@ -89,6 +89,10 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
+            // NEW STYLE
+#if true
+            string executablePath = linkerTool.Executable(target);
+#else
             string executablePath;
             C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -99,6 +103,7 @@ namespace NativeBuilder
             {
                 executablePath = linkerTool.Executable(target);
             }
+#endif
 
             // object files must come before everything else, for some compilers
             commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));

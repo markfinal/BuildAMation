@@ -15,6 +15,8 @@ namespace C
     {
     }
 
+    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
+                                            typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute))]
     public abstract class Win32ResourceCompilerBase : Opus.Core.ITool
     {
         public abstract string Executable(Opus.Core.Target target);

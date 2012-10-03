@@ -9,6 +9,7 @@ namespace C
     /// C third party library (externally built libraries)
     /// </summary>
     [Opus.Core.AssignToolForModule]
+    [Opus.Core.ModuleToolAssignment(null)]
     public abstract class ThirdPartyModule : Opus.Core.IModule
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)

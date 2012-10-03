@@ -12,6 +12,7 @@ namespace C
                                    typeof(ExportArchiverOptionsDelegateAttribute),
                                    typeof(LocalArchiverOptionsDelegateAttribute),
                                    ClassNames.ArchiverToolOptions)]
+    [Opus.Core.ModuleToolAssignment(typeof(Archiver))]
     public class StaticLibrary : Opus.Core.IModule, Opus.Core.INestedDependents
     {
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;

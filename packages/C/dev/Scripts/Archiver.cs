@@ -15,6 +15,8 @@ namespace C
     {
     }
 
+    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalArchiverOptionsDelegateAttribute),
+                                            typeof(ExportArchiverOptionsDelegateAttribute))]
     public abstract class Archiver
     {
     }

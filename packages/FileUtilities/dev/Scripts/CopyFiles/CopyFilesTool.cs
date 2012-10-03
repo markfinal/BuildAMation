@@ -4,9 +4,12 @@
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("copyfilestool", "FileUtilities.CopyFilesTool.Version")]
+[assembly: FileUtilities.CopyFilesRegisterToolchain("FileUtilities.CopyFilesTool")]
 
 namespace FileUtilities
 {
+    [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
+                                   typeof(ExportOptionsDelegateAttribute))]
     public sealed class CopyFilesTool : Opus.Core.ITool
     {
         public static string Version

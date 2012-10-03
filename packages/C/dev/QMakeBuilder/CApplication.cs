@@ -27,6 +27,12 @@ namespace QMakeBuilder
             C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
 
             {
+            // NEW STYLE
+#if true
+                Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+                nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
+#else
+
                 C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
                 if (toolchainOptions.IsCPlusPlus)
                 {
@@ -37,6 +43,7 @@ namespace QMakeBuilder
                     Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
                     nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
                 }
+#endif
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

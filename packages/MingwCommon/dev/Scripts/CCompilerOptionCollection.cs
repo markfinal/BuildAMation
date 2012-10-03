@@ -62,7 +62,10 @@ namespace MingwCommon
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
-            CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
+            // OLD STYLE
+            //CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
+            // NEW STYLE
+            var compilerInstance = C.CompilerFactory.GetInstance(target, false);
             (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(node.Target));
 
             compilerInterface.Pedantic = true;

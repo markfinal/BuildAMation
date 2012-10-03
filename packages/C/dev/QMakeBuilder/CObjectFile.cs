@@ -45,6 +45,20 @@ namespace QMakeBuilder
             nodeData.Configuration = GetQtConfiguration(target);
             nodeData.AddVariable("SOURCES", sourceFilePath);
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
+            // NEW STYLE
+#if true
+            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            if (compilerTool is C.CPlusPlusCompiler)
+            {
+                nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
+                nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
+            }
+            else
+            {
+                nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
+                nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
+            }
+#else
             if (isCPlusPlus)
             {
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
@@ -56,6 +70,7 @@ namespace QMakeBuilder
                 Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
                 nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
             }
+#endif
             nodeData.AddUniqueVariable("OBJECTS_DIR", new Opus.Core.StringArray(compilerOptions.OutputDirectoryPath));
 
             success = true;

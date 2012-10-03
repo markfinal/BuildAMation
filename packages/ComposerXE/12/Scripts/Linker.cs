@@ -29,10 +29,13 @@ namespace ComposerXE
             return System.IO.Path.Combine(this.binPath, "icc");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "icpc");
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {

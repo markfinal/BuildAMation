@@ -6,7 +6,7 @@
 namespace ComposerXE
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : ComposerXECommon.CCompiler, Opus.Core.IToolSupportsResponseFile
+    public class CCompiler : ComposerXECommon.CCompiler, Opus.Core.IToolSupportsResponseFile, C.ICompiler
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
@@ -55,15 +55,26 @@ namespace ComposerXE
             return System.IO.Path.Combine(this.binPath, "icc");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "icpc");
         }
+#endif
 
+        // NEW STYLE
+#if true
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
+        {
+            return this.includeFolders;
+        }
+#else
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolders;
         }
+#endif
 
         string Opus.Core.IToolSupportsResponseFile.Option
         {

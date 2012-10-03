@@ -4,9 +4,12 @@
 // <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("moctool", "Qt.Qt.VersionString")]
+[assembly: QtCommon.RegisterToolchain()]
 
 namespace QtCommon
 {
+    [Opus.Core.LocalAndExportTypes(typeof(LocalMocOptionsDelegateAttribute),
+                                   typeof(ExportMocOptionsDelegateAttribute))]
     public sealed class MocTool : Opus.Core.ITool
     {
         public string Executable(Opus.Core.Target target)

@@ -5,8 +5,8 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
+    public sealed class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -41,10 +41,13 @@ namespace Mingw
             return System.IO.Path.Combine(this.binPath, "mingw32-gcc-3.4.5");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "mingw32-g++");
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
@@ -60,9 +63,17 @@ namespace Mingw
             return toolChainInstance.Environment;
         }
 
+        // NEW STYLE
+#if true
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
+        {
+            return this.includeFolders;
+        }
+#else
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolders;
         }
+#endif
     }
 }

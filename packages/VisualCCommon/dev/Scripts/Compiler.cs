@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
+    public sealed class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -38,10 +39,13 @@ namespace VisualCCommon
             return System.IO.Path.Combine(platformBinFolder, "cl.exe");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return this.Executable(target);
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
         {
@@ -57,6 +61,21 @@ namespace VisualCCommon
             return toolChainInstance.Environment;
         }
 
+        // NEW STYLE
+#if true
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
+        {
+            return this.includeFolder;
+        }
+
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
+        {
+            get
+            {
+                return new Opus.Core.StringArray("-I");
+            }
+        }
+#else
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolder;
@@ -69,6 +88,7 @@ namespace VisualCCommon
                 return new Opus.Core.StringArray("-I");
             }
         }
+#endif
 
         string Opus.Core.IToolSupportsResponseFile.Option
         {

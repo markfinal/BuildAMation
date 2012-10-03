@@ -1,7 +1,10 @@
 [assembly: Opus.Core.RegisterTargetToolChain("codegentool", "CodeGenTest.CodeGeneratorTool.VersionString")]
+[assembly: CodeGenTest.RegisterToolchain("CodeGenTest")]
 
 namespace CodeGenTest
 {
+    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalCodeGenOptionsDelegateAttribute),
+                                            typeof(ExportCodeGenOptionsDelegateAttribute))]
     public class CodeGenTool : Opus.Core.ITool
     {
         public string Executable(Opus.Core.Target target)

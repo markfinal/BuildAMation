@@ -704,6 +704,10 @@ namespace Opus.Core
 
             BuilderUtilities.CreateBuilderInstance();
 
+            // NEW STYLE
+            RegisterToolchainAttribute.PokeToolchains();
+
+            // OLD STYLE
             RegisterTargetToolChainAttribute[] targetToolChains = RegisterTargetToolChainAttribute.TargetToolChains;
             if (null == targetToolChains)
             {
