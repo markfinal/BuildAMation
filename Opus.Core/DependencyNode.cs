@@ -208,16 +208,13 @@ namespace Opus.Core
                 }
             }
 
-            System.Type realToolType = null;
             System.Type optionCollectionType = null;
 
             // if there is different toolsets in use, there may be a map for some but not all
             if (!State.Has("Toolchains", "Map") || !(State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>).ContainsKey(toolType))
             {
-                realToolType = toolType;
                 var toolchainTypeMap = State.Get("ToolchainTypeMap", toolType.ToString());
                 RegisterToolchainAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, RegisterToolchainAttribute.ToolAndOptions>)[toolType];
-                realToolType = toolAndOptions.ToolType;
                 optionCollectionType = toolAndOptions.OptionType;
             }
             else
@@ -233,7 +230,6 @@ namespace Opus.Core
                 var toolchainTypeMap = State.Get("ToolchainTypeMap", toolchainNameForThisTool);
 #if true
                 RegisterToolchainAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, RegisterToolchainAttribute.ToolAndOptions>)[toolType];
-                realToolType = toolAndOptions.ToolType;
                 optionCollectionType = toolAndOptions.OptionType;
 #else
                 System.Type realToolType = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, System.Type>)[toolType];
