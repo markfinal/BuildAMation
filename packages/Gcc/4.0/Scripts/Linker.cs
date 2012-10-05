@@ -12,7 +12,7 @@ namespace Gcc
 
         public Linker(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsOSX(target.Platform))
+            if (!Opus.Core.OSUtilities.IsOSX(target))
             {
                 throw new Opus.Core.Exception("Gcc linker is only supported under osx32 and osx64 platforms");
             }

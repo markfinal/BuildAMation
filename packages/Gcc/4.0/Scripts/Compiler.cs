@@ -13,7 +13,7 @@ namespace Gcc
 
         public CCompiler(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsOSX(target.Platform))
+            if (!Opus.Core.OSUtilities.IsOSX(target))
             {
                 throw new Opus.Core.Exception("Gcc compiler is only supported under osx32 and osx64 platforms", false);
             }

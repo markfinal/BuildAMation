@@ -1,3 +1,9 @@
+03-Oct-2012 Added Opus.Core.OSUtilities functions taking BaseTarget and Target arguments.
+
+03-Oct-2012 Added Opus.Core.TargetUtilities helper class migrating utility functions from the Target class itself.
+
+03-Oct-2012 Added new Opus.Core.BaseTarget class, which is the Platform+Configuration part of the original Target class. The new Target class now consists of a BaseTarget + toolchain. The internal structure of the BaseTarget and Target classes are no longer exposed directly - there are helper functions available now.
+
 03-Oct-2012 If a debugger is attached, but Mono is detected, output is written to the Console, rather than the Diagnostics.Debug stream, as there is no obvious pane in MonoDevelop to capture the latter.
 
 29-Sep-2012 Property generation for interfaces is now an explicit implementation for the OptionCollections rather than public functions. Interfaces must be used rather than the option collection types to access the properties.
