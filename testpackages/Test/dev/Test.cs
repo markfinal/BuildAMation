@@ -21,7 +21,6 @@ namespace Test
         }
     }
 
-#if false
     sealed class CompileSingleCFile : C.ObjectFile
     {
         public CompileSingleCFile()
@@ -161,7 +160,6 @@ namespace Test
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
-#endif
 
     sealed class BuildTerminalApplicationFromCxx : C.Application
     {
@@ -183,7 +181,6 @@ namespace Test
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
     
-#if false
     sealed class BuildTerminalApplicationWithUpdatedOptions : C.Application
     {
         sealed class SourceFiles : C.ObjectFileCollection
@@ -258,5 +255,4 @@ namespace Test
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
-#endif
 }
