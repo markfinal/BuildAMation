@@ -66,12 +66,12 @@ namespace C
                 map = new System.Collections.Generic.Dictionary<System.Type, string>();
                 Opus.Core.State.Add("Toolchains", "Map", map);
             }
-            map[typeof(C.Compiler)] = this.Toolchain;
+            map[typeof(C.Compiler)]    = this.Toolchain;
             map[typeof(C.CxxCompiler)] = this.Toolchain;
-            map[typeof(C.Linker)] = this.Toolchain;
-            map[typeof(C.Archiver)] = this.Toolchain;
+            map[typeof(C.Linker)]      = this.Toolchain;
+            map[typeof(C.Archiver)]    = this.Toolchain;
             map[typeof(C.Win32ResourceCompilerBase)] = this.Toolchain;
-            map[typeof(C.Toolchain)] = this.Toolchain;
+            map[typeof(C.Toolchain)]   = this.Toolchain;
 
             return true;
         }
