@@ -1,15 +1,15 @@
-// <copyright file="CompilerAction.cs" company="Mark Final">
+// <copyright file="CCompilerAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(C.CompilerAction))]
+[assembly: Opus.Core.RegisterAction(typeof(C.CCompilerAction))]
 
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class CompilerAction : Opus.Core.IActionWithArguments
+    public sealed class CCompilerAction : Opus.Core.IActionWithArguments
     {
         private string Compiler
         {
@@ -26,7 +26,7 @@ namespace C
         {
             get
             {
-                return "-C.compiler";
+                return "-C.CC";
             }
         }
 
