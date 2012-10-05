@@ -11,8 +11,8 @@ namespace C
         public RegisterToolchainAttribute(string name,
                                           System.Type cCompilerType,
                                           System.Type cCompilerOptionType,
-                                          System.Type cppCompilerType,
-                                          System.Type cppCompilerOptionType,
+                                          System.Type cxxCompilerType,
+                                          System.Type cxxCompilerOptionType,
                                           System.Type linkerType,
                                           System.Type linkerOptionType,
                                           System.Type archiverType,
@@ -29,13 +29,13 @@ namespace C
                 throw new Opus.Core.Exception(System.String.Format("C Compiler option type '{0}' does not implement the interface {1}", cCompilerOptionType.ToString(), typeof(C.ICCompilerOptions).ToString()), false);
             }
 
-            if (!typeof(C.CxxCompiler).IsAssignableFrom(cppCompilerType))
+            if (!typeof(C.CxxCompiler).IsAssignableFrom(cxxCompilerType))
             {
-                throw new Opus.Core.Exception(System.String.Format("C++ Compiler type '{0}' does not implement the base class {1}", cppCompilerType.ToString(), typeof(C.CxxCompiler).ToString()), false);
+                throw new Opus.Core.Exception(System.String.Format("C++ Compiler type '{0}' does not implement the base class {1}", cxxCompilerType.ToString(), typeof(C.CxxCompiler).ToString()), false);
             }
-            if (!typeof(C.ICPlusPlusCompilerOptions).IsAssignableFrom(cppCompilerOptionType))
+            if (!typeof(C.ICPlusPlusCompilerOptions).IsAssignableFrom(cxxCompilerOptionType))
             {
-                throw new Opus.Core.Exception(System.String.Format("C++ Compiler option type '{0}' does not implement the interface {1}", cppCompilerOptionType.ToString(), typeof(C.ICPlusPlusCompilerOptions).ToString()), false);
+                throw new Opus.Core.Exception(System.String.Format("C++ Compiler option type '{0}' does not implement the interface {1}", cxxCompilerOptionType.ToString(), typeof(C.ICPlusPlusCompilerOptions).ToString()), false);
             }
 
             if (!typeof(C.Linker).IsAssignableFrom(linkerType))
@@ -62,14 +62,15 @@ namespace C
                 {
                     throw new Opus.Core.Exception(System.String.Format("Win32 resource compiler type '{0}' does not implement the base class {1}", win32ResourceCompilerType.ToString(), typeof(C.Win32ResourceCompilerBase).ToString()), false);
                 }
-                // TODO: there is no interface for the options? WTF?
             }
 
+            // TODO: there are no options to the resource compiler yet
+
             System.Collections.Generic.Dictionary<System.Type, ToolAndOptions> map = new System.Collections.Generic.Dictionary<System.Type, ToolAndOptions>();
-            map[typeof(C.Compiler)] = new ToolAndOptions(cCompilerType, cCompilerOptionType);
-            map[typeof(C.CxxCompiler)] = new ToolAndOptions(cppCompilerType, cppCompilerOptionType);
-            map[typeof(C.Linker)] = new ToolAndOptions(linkerType, linkerOptionType);
-            map[typeof(C.Archiver)] = new ToolAndOptions(archiverType, archiverOptionType);
+            map[typeof(C.Compiler)]    = new ToolAndOptions(cCompilerType, cCompilerOptionType);
+            map[typeof(C.CxxCompiler)] = new ToolAndOptions(cxxCompilerType, cxxCompilerOptionType);
+            map[typeof(C.Linker)]      = new ToolAndOptions(linkerType, linkerOptionType);
+            map[typeof(C.Archiver)]    = new ToolAndOptions(archiverType, archiverOptionType);
             map[typeof(C.Win32ResourceCompilerBase)] = new ToolAndOptions(win32ResourceCompilerType, win32ResourceCompilerOptionType);
 
             if (!Opus.Core.State.HasCategory("ToolchainTypeMap"))
