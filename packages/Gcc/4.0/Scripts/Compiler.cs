@@ -6,7 +6,7 @@
 namespace Gcc
 {
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : GccCommon.CCompiler
+    public class CCompiler : GccCommon.CCompiler, C.ICompiler
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
@@ -52,9 +52,18 @@ namespace Gcc
         }
 #endif
 
-        public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
+        // NEW STYLE
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolders;
+        }
+
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
+        {
+            get
+            {
+                return base.CommonIncludePathCompilerSwitches;
+            }
         }
     }
 }
