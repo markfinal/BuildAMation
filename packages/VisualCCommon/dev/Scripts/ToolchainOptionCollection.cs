@@ -68,6 +68,11 @@ namespace VisualCCommon
 
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            if (!target.HasToolchain("visualc"))
+            {
+                return;
+            }
+
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
@@ -94,6 +99,12 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (!target.HasToolchain("visualc"))
+            {
+                return dictionary;
+            }
+
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
@@ -102,7 +113,6 @@ namespace VisualCCommon
                 case ERuntimeLibrary.MultiThreadedDLL:
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     {
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                         if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                         {
                             dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString("D"));

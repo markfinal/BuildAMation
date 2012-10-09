@@ -14,6 +14,7 @@
 
 [assembly: C.RegisterToolchain(
     "visualc",
+    typeof(VisualC.ToolsetInfo),
     typeof(VisualCCommon.CCompiler), typeof(VisualC.CCompilerOptionCollection),
     typeof(VisualCCommon.CPlusPlusCompiler), typeof(VisualC.CPlusPlusCompilerOptionCollection),
     typeof(VisualCCommon.Linker), typeof(VisualC.LinkerOptionCollection),
@@ -22,6 +23,19 @@
 
 namespace VisualC
 {
+    public class ToolsetInfo : Opus.Core.IToolsetInfo
+    {
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "9.0";
+        }
+
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
     public class Solution
     {
         private static System.Guid ProjectTypeGuid;

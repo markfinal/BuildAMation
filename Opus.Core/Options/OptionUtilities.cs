@@ -283,6 +283,20 @@ namespace Opus.Core
                 Core.DependencyNode parentNode = node.Parent;
                 while (parentNode != null)
                 {
+                    // TODO: I don't know if this is needed or not
+#if false
+                    // can only inherit option types if the Targets match
+                    // TODO: this is not necessarily true - for example, the common C options (include paths etc)
+                    // can be shared, but toolchain specific options cannot
+                    // so this needs to be a bit more sophisticated
+                    // but then, thinking about it, the option update delegates should be casting to the appropriate interfaces in order to apply themselves
+                    if (parentNode.Target != module.OwningNode.Target)
+                    {
+                        parentNode = parentNode.Parent;
+                        continue;
+                    }
+#endif
+
                     AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, parentNode, 0);
 
                     // end when both the current and its parent node are not nested (as this is an entirely different node)

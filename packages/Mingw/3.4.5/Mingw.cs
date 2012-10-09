@@ -13,6 +13,7 @@
 
 [assembly: C.RegisterToolchain(
     "mingw",
+    typeof(Mingw.ToolsetInfo),
     typeof(Mingw.CCompiler), typeof(Mingw.CCompilerOptionCollection),
     typeof(Mingw.CPlusPlusCompiler), typeof(Mingw.CPlusPlusCompilerOptionCollection),
     typeof(Mingw.Linker), typeof(Mingw.LinkerOptionCollection),
@@ -21,4 +22,16 @@
 
 namespace Mingw
 {
+    public class ToolsetInfo : Opus.Core.IToolsetInfo
+    {
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "3.4.5";
+        }
+
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }

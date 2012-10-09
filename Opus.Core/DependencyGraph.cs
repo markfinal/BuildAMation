@@ -80,7 +80,12 @@ namespace Opus.Core
         
         private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, BaseTarget baseTarget)
         {
+            // NEW STYLE
+#if true
+            string toolchainImplementation = ModuleUtilities.GetToolchainForModule(moduleType);
+#else
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
+#endif
 
             Target targetUsed = Target.GetInstance(baseTarget, toolchainImplementation);
 
@@ -199,7 +204,13 @@ namespace Opus.Core
 
         private DependencyNode FindOrCreateUnparentedNode(System.Type moduleType, string moduleName, Target target, int currentRank, System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove)
         {
+            // NEW STYLE
+#if true
+            string toolchainImplementation = ModuleUtilities.GetToolchainForModule(moduleType);
+#else
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
+#endif
+
             Target targetUsed = target;
             if (!targetUsed.HasToolchain(toolchainImplementation))
             {
@@ -316,7 +327,13 @@ namespace Opus.Core
                             }
                             else
                             {
-                                newNode = new DependencyNode(nestedModule, node, node.Target, childIndex, true);
+                                // NEW STYLE
+                                string toolchainImplementation = ModuleUtilities.GetToolchainForModule(nestedModule.GetType());
+                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, toolchainImplementation);
+
+                                newNode = new DependencyNode(nestedModule, node, childTarget, childIndex, true);
+                                // OLD STYLE
+                                //newNode = new DependencyNode(nestedModule, node, node.Target, childIndex, true);
 
                                 this.AddDependencyNodeToCollection(newNode, currentRank + 1);
                             }
