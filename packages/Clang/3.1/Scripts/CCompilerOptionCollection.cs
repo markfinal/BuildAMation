@@ -20,5 +20,10 @@ namespace Clang
         {
             return null;
         }
+
+        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        {
+            // TODO
+        }
     }
 }

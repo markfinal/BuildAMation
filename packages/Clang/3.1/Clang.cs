@@ -11,7 +11,7 @@
 namespace Clang
 {
     // Add modules here
-    public class ToolsetInfo : Opus.Core.IToolsetInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
     {
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
@@ -22,5 +22,33 @@ namespace Clang
         {
             return @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
         }
+
+        #region ICompilerInfo Members
+
+        string C.ICompilerInfo.PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileSuffix
+        {
+            get
+            {
+                return ".obj";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
+        #endregion
     }
 }

@@ -12,7 +12,8 @@ namespace C
         {
             ICCompilerOptions compilerOptions = this as ICCompilerOptions;
 
-            compilerOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
+            // TODO: I'm sure this will break lots of things, but we'll see
+            //compilerOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
 
             Opus.Core.Target target = node.Target;
 
@@ -144,17 +145,29 @@ namespace C
         {
             if (null != this.OutputName)
             {
+#if true
+                ICompilerInfo info = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as ICompilerInfo;
+#else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
+#endif
 
                 ICCompilerOptions options = this as ICCompilerOptions;
                 if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
                 {
+#if true
+                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + info.ObjectFileSuffix;
+#else
                     string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.ObjectFileSuffix;
+#endif
                     this.ObjectFilePath = objectPathname;
                 }
                 else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
                 {
+#if true
+                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + info.PreprocessedOutputSuffix;
+#else
                     string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.PreprocessedOutputSuffix;
+#endif
                     this.PreprocessedFilePath = preprocessedPathname;
                 }
             }
