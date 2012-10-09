@@ -5,22 +5,7 @@
 // <author>Mark Final</author>
 namespace Clang
 {
-    public sealed class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+    public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
     {
-        #region ICPlusPlusCompilerOptions Members
-
-        C.CPlusPlus.EExceptionHandler C.ICPlusPlusCompilerOptions.ExceptionHandler
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-                throw new System.NotImplementedException();
-            }
-        }
-
-        #endregion
     }
 }
