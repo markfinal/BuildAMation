@@ -46,12 +46,12 @@ namespace Opus.Core
 
         public virtual void SetNodeOwnership(DependencyNode node)
         {
-            throw new Exception(System.String.Format("SetNodeOwnership needs to be overridden for module '{0}' of type '{1}' from package '{2}' for target '{3}'", node.UniqueModuleName, node.Module.GetType().BaseType.ToString(), node.Package.ToString(), node.Target.ToString()), false);
+            throw new Exception(System.String.Format("SetNodeOwnership needs to be overridden for '{0}' in module '{1}' of type '{2}' from package '{3}' for target '{4}'", this.ToString(), node.UniqueModuleName, node.Module.GetType().BaseType.ToString(), node.Package.ToString(), node.Target.ToString()), false);
         }
 
         protected virtual void SetDelegates(DependencyNode node)
         {
-            throw new Exception(System.String.Format("SetDelegates needs to be overridden for module '{0}' of type '{1}' from package '{2}' for target '{3}'", node.UniqueModuleName, node.Module.GetType().BaseType.ToString(), node.Package.ToString(), node.Target.ToString()), false);
+            throw new Exception(System.String.Format("SetDelegates needs to be overridden for '{0}' in module '{1}' of type '{2}' from package '{3}' for target '{4}'", this.ToString(), node.UniqueModuleName, node.Module.GetType().BaseType.ToString(), node.Package.ToString(), node.Target.ToString()), false);
         }
 
         public virtual object Clone()
