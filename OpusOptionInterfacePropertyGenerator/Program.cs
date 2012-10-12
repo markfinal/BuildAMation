@@ -13,9 +13,9 @@ namespace OpusOptionInterfacePropertyGenerator
         }
     }
 
-    class Property
+    class PropertySignature
     {
-        public Property()
+        public PropertySignature()
         {
             this.Type = null;
             this.Name = null;
@@ -194,7 +194,7 @@ namespace OpusOptionInterfacePropertyGenerator
 
         static void Execute(Parameters parameters)
         {
-            System.Collections.Generic.List<Property> propertyList = new System.Collections.Generic.List<Property>();
+            System.Collections.Generic.List<PropertySignature> propertyList = new System.Collections.Generic.List<PropertySignature>();
 
             // TODO:
             // handle anything before an interface, e.g. enum
@@ -262,9 +262,9 @@ namespace OpusOptionInterfacePropertyGenerator
                         }
 
                         string[] propertyStrings = line.Split(new char[] { ' ' });
-                        System.Console.WriteLine("Property found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
+                        System.Console.WriteLine("PropertySignature found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
 
-                        Property property = new Property();
+                        PropertySignature property = new PropertySignature();
                         property.Name = propertyStrings[1];
                         property.Type = propertyStrings[0];
                         if (parameters.outputNamespace != namespaceName)
@@ -359,7 +359,7 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
-        private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<Property> propertyList)
+        private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
         {
             // write out C# file containing the properties
             using (System.IO.TextWriter writer = (null != parameters.outputPropertiesPathName) ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
@@ -377,7 +377,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
-                foreach (Property property in propertyList)
+                foreach (PropertySignature property in propertyList)
                 {
                     WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
                     WriteLine(writer, 2, "{");
@@ -408,7 +408,7 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
-        private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<Property> propertyList)
+        private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
         {
             // write out C# file containing the delegates
             using (System.IO.TextWriter writer = (null != parameters.outputDelegatesPathName) ? new System.IO.StreamWriter(parameters.outputDelegatesPathName) : System.Console.Out)
@@ -426,7 +426,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
-                foreach (Property property in propertyList)
+                foreach (PropertySignature property in propertyList)
                 {
 #if false
                     WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
