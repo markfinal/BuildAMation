@@ -340,6 +340,7 @@ namespace OpusOptionInterfacePropertyGenerator
 
             if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
             {
+                System.Console.WriteLine("Generating properties...");
                 WritePropertiesFile(parameters, propertyList);
             }
         }
