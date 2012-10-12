@@ -63,10 +63,17 @@ namespace OpusOptionInterfacePropertyGenerator
 
     class Parameters
     {
+        public enum Mode
+        {
+            GenerateProperties,
+            GenerateDelegates
+        }
+
         public string outputPathName;
         public string[] inputPathNames;
         public string outputNamespace;
         public string outputClassName;
+        public Mode mode;
     }
 
     class Program
@@ -81,6 +88,7 @@ namespace OpusOptionInterfacePropertyGenerator
             }
 
             Parameters parameters = new Parameters();
+            parameters.mode = Parameters.Mode.GenerateProperties;
 
             foreach (string arg in args)
             {
@@ -104,6 +112,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     string[] split = arg.Split(new char[] { '=' });
                     parameters.outputClassName = split[1];
+                }
+                else if (arg.StartsWith("-d"))
+                {
+                    parameters.mode = Parameters.Mode.GenerateDelegates;
                 }
                 else
                 {
