@@ -61,69 +61,77 @@ namespace OpusOptionInterfacePropertyGenerator
         }
     }
 
+    class Parameters
+    {
+        public string outputPathName;
+        public string[] inputPathNames;
+        public string outputNamespace;
+        public string outputClassName;
+    }
+
     class Program
     {
-        static string outputPathName = null;
-        static string[] inputPathNames = null;
-        static string outputNamespace = null;
-        static string outputClassName = null;
         static System.Collections.Generic.List<Property> propertyList = new System.Collections.Generic.List<Property>();
 
-        static void ProcessArgs(string[] args)
+        static Parameters ProcessArgs(string[] args)
         {
             if (0 == args.Length)
             {
                 throw new Exception("Arguments required");
             }
 
+            Parameters parameters = new Parameters();
+
             foreach (string arg in args)
             {
                 if (arg.StartsWith("-o="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
-                    outputPathName = split[1];
+                    parameters.outputPathName = split[1];
                 }
                 else if (arg.StartsWith("-i="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
                     string inputFilesString = split[1];
-                    inputPathNames = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
+                    parameters.inputPathNames = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
                 }
                 else if (arg.StartsWith("-n="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
-                    outputNamespace = split[1];
+                    parameters.outputNamespace = split[1];
                 }
                 else if (arg.StartsWith("-c="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
-                    outputClassName = split[1];
+                    parameters.outputClassName = split[1];
                 }
                 else
                 {
                     throw new Exception(System.String.Format("Unrecognized argument '{0}'", arg));
                 }
             }
+
+            return parameters;
         }
 
-        static void Validate()
+        static void Validate(Parameters parameters)
         {
-            if (null == outputPathName)
+            if (null == parameters.outputPathName)
             {
                 throw new Exception("No output file provided");
             }
 
-            if (null == inputPathNames)
+            if (null == parameters.inputPathNames)
             {
                 throw new Exception("No input files provided");
             }
 
-            if (null == outputNamespace)
+            if (null == parameters.outputNamespace)
             {
                 throw new Exception("No output namespace provided");
             }
 
-            if (null == outputClassName)
+            if (null == parameters.outputClassName)
             {
                 throw new Exception("No output class name provided");
             }
@@ -167,12 +175,12 @@ namespace OpusOptionInterfacePropertyGenerator
             writer.Write(writer.NewLine);
         }
 
-        static void Execute(string[] args)
+        static void Execute(string[] args, Parameters parameters)
         {
             // TODO:
             // handle anything before an interface, e.g. enum
             // handle comments
-            foreach (string inputPath in inputPathNames)
+            foreach (string inputPath in parameters.inputPathNames)
             {
                 if (!System.IO.File.Exists(inputPath))
                 {
@@ -240,7 +248,7 @@ namespace OpusOptionInterfacePropertyGenerator
                         Property property = new Property();
                         property.Name = propertyStrings[1];
                         property.Type = propertyStrings[0];
-                        if (outputNamespace != namespaceName)
+                        if (parameters.outputNamespace != namespaceName)
                         {
                             property.Interface = namespaceName + "." + interfaceName;
                         }
@@ -321,7 +329,7 @@ namespace OpusOptionInterfacePropertyGenerator
             }
 
             // write out C# file containing the properties
-            using (System.IO.TextWriter writer = new System.IO.StreamWriter(outputPathName))
+            using (System.IO.TextWriter writer = new System.IO.StreamWriter(parameters.outputPathName))
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
@@ -331,9 +339,9 @@ namespace OpusOptionInterfacePropertyGenerator
                     Write(writer, 0, "{0} ", arg);
                 }
                 Write(writer, 0, writer.NewLine);
-                WriteLine(writer, 0, "namespace {0}", outputNamespace);
+                WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
                 WriteLine(writer, 0, "{");
-                WriteLine(writer, 1, "public partial class {0}", outputClassName);
+                WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
                 foreach (Property property in propertyList)
@@ -361,16 +369,16 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "}");
                 WriteLine(writer, 0, "}");
             }
-            System.Console.WriteLine("Wrote file '{0}'", outputPathName);
+            System.Console.WriteLine("Wrote file '{0}'", parameters.outputPathName);
         }
 
         static int Main(string[] args)
         {
             try
             {
-                ProcessArgs(args);
-                Validate();
-                Execute(args);
+                Parameters parameters = ProcessArgs(args);
+                Validate(parameters);
+                Execute(args, parameters);
             }
             catch (Exception ex)
             {
