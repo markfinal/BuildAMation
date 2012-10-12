@@ -70,6 +70,7 @@ namespace OpusOptionInterfacePropertyGenerator
             GenerateDelegates  = (1<<1)
         }
 
+        public string[] args;
         public string outputPathName;
         public string[] inputPathNames;
         public string outputNamespace;
@@ -79,8 +80,6 @@ namespace OpusOptionInterfacePropertyGenerator
 
     class Program
     {
-        static System.Collections.Generic.List<Property> propertyList = new System.Collections.Generic.List<Property>();
-
         static Parameters ProcessArgs(string[] args)
         {
             if (0 == args.Length)
@@ -89,6 +88,7 @@ namespace OpusOptionInterfacePropertyGenerator
             }
 
             Parameters parameters = new Parameters();
+            parameters.args = args;
             parameters.mode = Parameters.Mode.GenerateProperties;
 
             foreach (string arg in args)
@@ -188,8 +188,10 @@ namespace OpusOptionInterfacePropertyGenerator
             writer.Write(writer.NewLine);
         }
 
-        static void Execute(string[] args, Parameters parameters)
+        static void Execute(Parameters parameters)
         {
+            System.Collections.Generic.List<Property> propertyList = new System.Collections.Generic.List<Property>();
+
             // TODO:
             // handle anything before an interface, e.g. enum
             // handle comments
@@ -343,50 +345,54 @@ namespace OpusOptionInterfacePropertyGenerator
 
             if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
             {
-                // write out C# file containing the properties
-                using (System.IO.TextWriter writer = new System.IO.StreamWriter(parameters.outputPathName))
-                {
-                    WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
-                    WriteLine(writer, 0, "// Command line:");
-                    Write(writer, 0, "// ");
-                    foreach (string arg in args)
-                    {
-                        Write(writer, 0, "{0} ", arg);
-                    }
-                    Write(writer, 0, writer.NewLine);
-                    WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
-                    WriteLine(writer, 0, "{");
-                    WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
-                    WriteLine(writer, 1, "{");
-    
-                    foreach (Property property in propertyList)
-                    {
-                        WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
-                        WriteLine(writer, 2, "{");
-                        if (property.HasGet)
-                        {
-                            WriteLine(writer, 3, "get");
-                            WriteLine(writer, 3, "{");
-                            WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
-                            WriteLine(writer, 3, "}");
-                        }
-                        if (property.HasSet)
-                        {
-                            WriteLine(writer, 3, "set");
-                            WriteLine(writer, 3, "{");
-                            WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
-                            WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
-                            WriteLine(writer, 3, "}");
-                        }
-                        WriteLine(writer, 2, "}");
-                    }
-    
-                    WriteLine(writer, 1, "}");
-                    WriteLine(writer, 0, "}");
-                }
-                System.Console.WriteLine("Wrote file '{0}'", parameters.outputPathName);
+                WritePropertiesFile(parameters, propertyList);
             }
+        }
 
+        private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<Property> propertyList)
+        {
+            // write out C# file containing the properties
+            using (System.IO.TextWriter writer = new System.IO.StreamWriter(parameters.outputPathName))
+            {
+                WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
+                WriteLine(writer, 0, "// Command line:");
+                Write(writer, 0, "// ");
+                foreach (string arg in parameters.args)
+                {
+                    Write(writer, 0, "{0} ", arg);
+                }
+                Write(writer, 0, writer.NewLine);
+                WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
+                WriteLine(writer, 0, "{");
+                WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
+                WriteLine(writer, 1, "{");
+
+                foreach (Property property in propertyList)
+                {
+                    WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
+                    WriteLine(writer, 2, "{");
+                    if (property.HasGet)
+                    {
+                        WriteLine(writer, 3, "get");
+                        WriteLine(writer, 3, "{");
+                        WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                        WriteLine(writer, 3, "}");
+                    }
+                    if (property.HasSet)
+                    {
+                        WriteLine(writer, 3, "set");
+                        WriteLine(writer, 3, "{");
+                        WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                        WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
+                        WriteLine(writer, 3, "}");
+                    }
+                    WriteLine(writer, 2, "}");
+                }
+
+                WriteLine(writer, 1, "}");
+                WriteLine(writer, 0, "}");
+            }
+            System.Console.WriteLine("Wrote file '{0}'", parameters.outputPathName);
         }
 
         static int Main(string[] args)
@@ -395,7 +401,7 @@ namespace OpusOptionInterfacePropertyGenerator
             {
                 Parameters parameters = ProcessArgs(args);
                 Validate(parameters);
-                Execute(args, parameters);
+                Execute(parameters);
             }
             catch (Exception ex)
             {
