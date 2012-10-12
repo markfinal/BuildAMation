@@ -7,10 +7,10 @@ import subprocess
 def ExecuteProcess(args, verbose=False):
     if verbose:
         print "Executing: '%s'" % " ".join(args)
-    process = subprocess.Popen(get_opus_dir_command, stdout=subprocess.PIPE)
+    process = subprocess.Popen(args, stdout=subprocess.PIPE)
     output = process.communicate()
     if process.returncode != 0:
-      raise RuntimeError("Command '%s' failed", " ".join(get_opus_dir_command))
+        raise RuntimeError("Command '%s' failed: '%s'" % (" ".join(get_opus_dir_command), output[1]))
     return output
 
 get_opus_dir_command = [
@@ -30,4 +30,5 @@ moc_options = [
     "-c=MocOptionCollection"
 ]
 (stdout,stderr) = ExecuteProcess(moc_options, True)
+print stdout
 
