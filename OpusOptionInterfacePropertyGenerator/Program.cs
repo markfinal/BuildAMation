@@ -129,11 +129,6 @@ namespace OpusOptionInterfacePropertyGenerator
 
         static void Validate(Parameters parameters)
         {
-            if (null == parameters.outputPathName)
-            {
-                throw new Exception("No output file provided");
-            }
-
             if (null == parameters.inputPathNames)
             {
                 throw new Exception("No input files provided");
@@ -352,7 +347,7 @@ namespace OpusOptionInterfacePropertyGenerator
         private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<Property> propertyList)
         {
             // write out C# file containing the properties
-            using (System.IO.TextWriter writer = new System.IO.StreamWriter(parameters.outputPathName))
+            using (System.IO.TextWriter writer = (null != parameters.outputPathName) ? new System.IO.StreamWriter(parameters.outputPathName) : System.Console.Out)
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
@@ -392,7 +387,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "}");
                 WriteLine(writer, 0, "}");
             }
-            System.Console.WriteLine("Wrote file '{0}'", parameters.outputPathName);
+            if (null != parameters.outputPathName)
+            {
+                System.Console.WriteLine("Wrote file '{0}'", parameters.outputPathName);
+            }
         }
 
         static int Main(string[] args)
@@ -405,14 +403,14 @@ namespace OpusOptionInterfacePropertyGenerator
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Local exception");
-                System.Console.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+                System.Console.Error.WriteLine("Local exception");
+                System.Console.Error.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
                 return -1;
             }
             catch (System.Exception ex)
             {
-                System.Console.WriteLine("System exception");
-                System.Console.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+                System.Console.Error.WriteLine("System exception");
+                System.Console.Error.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
                 return -2;
             }
 
