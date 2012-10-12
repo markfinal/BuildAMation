@@ -63,10 +63,11 @@ namespace OpusOptionInterfacePropertyGenerator
 
     class Parameters
     {
+        [System.Flags]
         public enum Mode
         {
-            GenerateProperties,
-            GenerateDelegates
+            GenerateProperties = (1<<0),
+            GenerateDelegates  = (1<<1)
         }
 
         public string outputPathName;
@@ -115,7 +116,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 }
                 else if (arg.StartsWith("-d"))
                 {
-                    parameters.mode = Parameters.Mode.GenerateDelegates;
+                    parameters.mode |= Parameters.Mode.GenerateDelegates;
                 }
                 else
                 {
