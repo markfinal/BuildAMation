@@ -54,9 +54,10 @@ namespace OpusOptionInterfacePropertyGenerator
 
     class DelegateSignature
     {
-        public DelegateSignature()
+        public string InNamespace
         {
-            this.Arguments = new System.Collections.Generic.Dictionary<string, string>();
+            get;
+            set;
         }
 
         public string ReturnType
@@ -65,7 +66,7 @@ namespace OpusOptionInterfacePropertyGenerator
             set;
         }
 
-        public System.Collections.Generic.Dictionary<string,string> Arguments
+        public string ArgumentString
         {
             get;
             set;
@@ -88,6 +89,7 @@ namespace OpusOptionInterfacePropertyGenerator
         public string[] inputDelegates;
         public string outputNamespace;
         public string outputClassName;
+        public string privateDataClassName;
         public Mode mode;
         public bool toStdOut;
     }
@@ -127,6 +129,11 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     string[] split = arg.Split(new char[] { '=' });
                     parameters.outputClassName = split[1];
+                }
+                else if (arg.StartsWith("-pv="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    parameters.privateDataClassName = split[1];
                 }
                 else if (arg.StartsWith("-p"))
                 {
@@ -172,11 +179,8 @@ namespace OpusOptionInterfacePropertyGenerator
                 throw new Exception("No output class name provided");
             }
 
-            if (!parameters.toStdOut)
-            {
-                parameters.outputPropertiesPathName = parameters.outputClassName + "Properties.cs";
-                parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
-            }
+            parameters.outputPropertiesPathName = parameters.outputClassName + "Properties.cs";
+            parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
         }
 
         static string ReadLine(System.IO.TextReader reader)
@@ -264,20 +268,14 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     throw new Exception("No public delegate found");
                 }
+                System.Console.WriteLine("Delegate found is '{0}'", line);
                 string returnType = delegateStrings[2];
-                string name = delegateStrings[3];
                 int firstParenthesis = line.IndexOf('(', 0);
-                string arguments = line.Substring(firstParenthesis + 1, line.Length - firstParenthesis - 3);
-                string[] argumentList = System.Array.ConvertAll(arguments.Split(','), p => p.Trim());
-                System.Console.WriteLine("Delegate found is '{0}' ('{2}'): '{1}' '{3}'", name, line, returnType, argumentList);
+                string arguments = line.Substring(firstParenthesis, line.Length - firstParenthesis - 1);
 
+                signature.InNamespace = namespaceName;
                 signature.ReturnType = returnType;
-                foreach (string arg in argumentList)
-                {
-                    System.Console.WriteLine("Splitting {0}", arg);
-                    string[] keyValuePair = arg.Split(' ');
-                    signature.Arguments[keyValuePair[0]] = keyValuePair[1];
-                }
+                signature.ArgumentString = arguments;
             }
 
             return signature;
@@ -453,13 +451,17 @@ namespace OpusOptionInterfacePropertyGenerator
             if (Parameters.Mode.GenerateDelegates == (parameters.mode & Parameters.Mode.GenerateDelegates))
             {
                 System.Console.WriteLine ("Generating delegates...");
-                WriteDelegatesFile(parameters, propertyList);
+                WriteDelegatesFile(parameters, propertyList, delegateSignatures);
             }
         }
 
         private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
         {
             // write out C# file containing the properties
+            if (parameters.toStdOut)
+            {
+                System.Console.WriteLine ("Would have written file '{0}'", parameters.outputPropertiesPathName);
+            }
             using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
@@ -506,9 +508,13 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
-        private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
+        private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList, System.Collections.Generic.List<DelegateSignature> delegateSignatures)
         {
             // write out C# file containing the delegates
+            if (parameters.toStdOut)
+            {
+                System.Console.WriteLine ("Would have written file '{0}'", parameters.outputDelegatesPathName);
+            }
             using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputDelegatesPathName) : System.Console.Out)
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
@@ -524,29 +530,39 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
+                System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> delegatesToRegister = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
+
                 foreach (PropertySignature property in propertyList)
                 {
-#if false
-                    WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
-                    WriteLine(writer, 2, "{");
-                    if (property.HasGet)
+                    delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
+
+                    foreach (DelegateSignature delegateSig in delegateSignatures)
                     {
-                        WriteLine(writer, 3, "get");
-                        WriteLine(writer, 3, "{");
-                        WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
-                        WriteLine(writer, 3, "}");
+                        string delegateName = property.Name + delegateSig.InNamespace;
+                        delegatesToRegister[property.Name].Add(delegateName);
+
+                        System.Text.StringBuilder propertyDelegate = new System.Text.StringBuilder();
+                        propertyDelegate.AppendFormat("private {0} {1}{2}", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
+                        WriteLine(writer, 2, propertyDelegate.ToString());
+                        WriteLine(writer, 2, "{");
+                        WriteLine(writer, 2, "}");
                     }
-                    if (property.HasSet)
-                    {
-                        WriteLine(writer, 3, "set");
-                        WriteLine(writer, 3, "{");
-                        WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
-                        WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
-                        WriteLine(writer, 3, "}");
-                    }
-                    WriteLine(writer, 2, "}");
-#endif
                 }
+
+                WriteLine (writer, 2, "protected override void SetDelegates(Opus.Core.DependencyNode node)");
+                WriteLine(writer, 2, "{");
+                foreach (string propertyName in delegatesToRegister.Keys)
+                {
+                    System.Text.StringBuilder registration = new System.Text.StringBuilder();
+                    registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
+                    foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                    {
+                        registration.Append(delegateToRegister);
+                    }
+                    registration.Append(");");
+                    WriteLine(writer, 3, registration.ToString());
+                }
+                WriteLine(writer, 2, "}");
 
                 WriteLine(writer, 1, "}");
                 WriteLine(writer, 0, "}");
