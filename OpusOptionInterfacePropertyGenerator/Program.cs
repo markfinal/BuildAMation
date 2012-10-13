@@ -15,15 +15,6 @@ namespace OpusOptionInterfacePropertyGenerator
 
     class PropertySignature
     {
-        public PropertySignature()
-        {
-            this.Type = null;
-            this.Name = null;
-            this.Interface = null;
-            this.HasGet = false;
-            this.HasSet = false;
-        }
-
         public string Type
         {
             get;
@@ -55,6 +46,26 @@ namespace OpusOptionInterfacePropertyGenerator
         }
 
         public bool HasSet
+        {
+            get;
+            set;
+        }
+    }
+
+    class DelegateSignature
+    {
+        public DelegateSignature()
+        {
+            this.Arguments = new System.Collections.Generic.Dictionary<string, string>();
+        }
+
+        public string ReturnType
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.Dictionary<string,string> Arguments
         {
             get;
             set;
@@ -121,15 +132,15 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     parameters.mode |= Parameters.Mode.GenerateProperties;
                 }
-                else if (arg.StartsWith("-d"))
-                {
-                    parameters.mode |= Parameters.Mode.GenerateDelegates;
-                }
                 else if (arg.StartsWith("-dd="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
                     string inputFilesString = split[1];
                     parameters.inputDelegates = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
+                }
+                else if (arg.StartsWith("-d"))
+                {
+                    parameters.mode |= Parameters.Mode.GenerateDelegates;
                 }
                 else if (arg.StartsWith("-s"))
                 {
@@ -206,6 +217,72 @@ namespace OpusOptionInterfacePropertyGenerator
             writer.Write(writer.NewLine);
         }
 
+        static DelegateSignature ReadDelegate(string filename)
+        {
+            if (!System.IO.File.Exists(filename))
+            {
+                throw new Exception(System.String.Format("File '{0}' does not exist", filename));
+            }
+            System.Console.WriteLine("\nDelegate to read: '{0}'", filename);
+
+            DelegateSignature signature = new DelegateSignature();
+
+            using (System.IO.TextReader reader = new System.IO.StreamReader(filename))
+            {
+                string line;
+
+                line = ReadLine(reader);
+                if (null == line)
+                {
+                    throw new Exception("Interface file is empty");
+                }
+                // ignore comments
+                while (line.StartsWith("//"))
+                {
+                    line = ReadLine(reader);
+                }
+                // namespace
+                string[] namespaceStrings = line.Split(new char[] { ' ' });
+                if (!namespaceStrings[0].Equals("namespace"))
+                {
+                    throw new Exception(System.String.Format("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]));
+                }
+                string namespaceName = namespaceStrings[1];
+                System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
+
+                // opening namespace scope
+                line = ReadLine(reader);
+                if (!line.StartsWith("{"))
+                {
+                    throw new Exception("No scope opened after namespace");
+                }
+
+                // delegate
+                line = ReadLine(reader);
+                string[] delegateStrings = line.Split(new char[] { ' ' });
+                if ("public" != delegateStrings[0] || "delegate" != delegateStrings[1])
+                {
+                    throw new Exception("No public delegate found");
+                }
+                string returnType = delegateStrings[2];
+                string name = delegateStrings[3];
+                int firstParenthesis = line.IndexOf('(', 0);
+                string arguments = line.Substring(firstParenthesis + 1, line.Length - firstParenthesis - 3);
+                string[] argumentList = System.Array.ConvertAll(arguments.Split(','), p => p.Trim());
+                System.Console.WriteLine("Delegate found is '{0}' ('{2}'): '{1}' '{3}'", name, line, returnType, argumentList);
+
+                signature.ReturnType = returnType;
+                foreach (string arg in argumentList)
+                {
+                    System.Console.WriteLine("Splitting {0}", arg);
+                    string[] keyValuePair = arg.Split(' ');
+                    signature.Arguments[keyValuePair[0]] = keyValuePair[1];
+                }
+            }
+
+            return signature;
+        }
+
         static void Execute(Parameters parameters)
         {
             System.Collections.Generic.List<PropertySignature> propertyList = new System.Collections.Generic.List<PropertySignature>();
@@ -225,16 +302,17 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     string line;
 
-                    // namespace
                     line = ReadLine(reader);
                     if (null == line)
                     {
                         throw new Exception("Interface file is empty");
                     }
+                    // ignore comments
                     while (line.StartsWith("//"))
                     {
                         line = ReadLine(reader);
                     }
+                    // namespace
                     string[] namespaceStrings = line.Split(new char[] { ' ' });
                     if (!namespaceStrings[0].Equals("namespace"))
                     {
@@ -359,6 +437,12 @@ namespace OpusOptionInterfacePropertyGenerator
                         throw new Exception("No properties were found in the interface");
                     }
                 }
+            }
+
+            System.Collections.Generic.List<DelegateSignature> delegateSignatures = new System.Collections.Generic.List<DelegateSignature>();
+            foreach (string path in parameters.inputDelegates)
+            {
+                delegateSignatures.Add(ReadDelegate(path));
             }
 
             if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
