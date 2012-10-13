@@ -74,9 +74,11 @@ namespace OpusOptionInterfacePropertyGenerator
         public string outputPropertiesPathName;
         public string outputDelegatesPathName;
         public string[] inputPathNames;
+        public string[] inputDelegates;
         public string outputNamespace;
         public string outputClassName;
         public Mode mode;
+        public bool toStdOut;
     }
 
     class Program
@@ -90,17 +92,14 @@ namespace OpusOptionInterfacePropertyGenerator
 
             Parameters parameters = new Parameters();
             parameters.args = args;
-            parameters.mode = Parameters.Mode.GenerateProperties;
+            parameters.mode = 0;
 
             foreach (string arg in args)
             {
                 if (arg.StartsWith("-o="))
                 {
-                    string[] split = arg.Split(new char[] { '=' });
-                    if (split.Length > 1)
-                    {
-                        parameters.outputPropertiesPathName = split[1];
-                    }
+                    parameters.mode |= Parameters.Mode.GenerateProperties;
+                    // redundant, ignore
                 }
                 else if (arg.StartsWith("-i="))
                 {
@@ -118,14 +117,23 @@ namespace OpusOptionInterfacePropertyGenerator
                     string[] split = arg.Split(new char[] { '=' });
                     parameters.outputClassName = split[1];
                 }
+                else if (arg.StartsWith("-p"))
+                {
+                    parameters.mode |= Parameters.Mode.GenerateProperties;
+                }
                 else if (arg.StartsWith("-d"))
                 {
                     parameters.mode |= Parameters.Mode.GenerateDelegates;
+                }
+                else if (arg.StartsWith("-dd="))
+                {
                     string[] split = arg.Split(new char[] { '=' });
-                    if (split.Length > 1)
-                    {
-                        parameters.outputDelegatesPathName = split[1];
-                    }
+                    string inputFilesString = split[1];
+                    parameters.inputDelegates = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
+                }
+                else if (arg.StartsWith("-s"))
+                {
+                    parameters.toStdOut = true;
                 }
                 else
                 {
@@ -151,6 +159,12 @@ namespace OpusOptionInterfacePropertyGenerator
             if (null == parameters.outputClassName)
             {
                 throw new Exception("No output class name provided");
+            }
+
+            if (!parameters.toStdOut)
+            {
+                parameters.outputPropertiesPathName = parameters.outputClassName + "Properties.cs";
+                parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
             }
         }
 
@@ -362,7 +376,7 @@ namespace OpusOptionInterfacePropertyGenerator
         private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
         {
             // write out C# file containing the properties
-            using (System.IO.TextWriter writer = (null != parameters.outputPropertiesPathName) ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
+            using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
@@ -411,7 +425,7 @@ namespace OpusOptionInterfacePropertyGenerator
         private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
         {
             // write out C# file containing the delegates
-            using (System.IO.TextWriter writer = (null != parameters.outputDelegatesPathName) ? new System.IO.StreamWriter(parameters.outputDelegatesPathName) : System.Console.Out)
+            using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputDelegatesPathName) : System.Console.Out)
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
