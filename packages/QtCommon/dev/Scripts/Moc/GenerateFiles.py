@@ -10,7 +10,7 @@ def ExecuteProcess(args, verbose=False):
     process = subprocess.Popen(args, stdout=subprocess.PIPE)
     output = process.communicate()
     if process.returncode != 0:
-        raise RuntimeError("Command '%s' failed: '%s'" % (" ".join(get_opus_dir_command), output[1]))
+        raise RuntimeError("Command '%s' failed" % (" ".join(args)))
     return output
 
 get_opus_dir_command = [
@@ -25,9 +25,13 @@ opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, 
 moc_options = [
     os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
     "-i=IMocOptions.cs",
-    "-o=MocOptionProperties.cs",
+    #"-o=MocOptionProperties.cs",
     "-n=QtCommon",
-    "-c=MocOptionCollection"
+    "-c=MocOptionCollection",
+    "-p", # generate properties
+    "-d", # generate delegates
+    "-dd=" + os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs"),
+    "-pv=MocPrivateData"
 ]
 (stdout,stderr) = ExecuteProcess(moc_options, True)
 print stdout
