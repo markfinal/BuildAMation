@@ -11,6 +11,11 @@ namespace OpusOptionInterfacePropertyGenerator
             : base(message)
         {
         }
+
+        public Exception(string message, params object[] args)
+            : base(System.String.Format (message, args))
+        {
+        }
     }
 
     class PropertySignature
@@ -215,10 +220,22 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
+        static void Write(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
+        {
+            builder.Append(new string('\t', tabCount));
+            builder.AppendFormat(format, args);
+        }
+
         static void WriteLine(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
         {
             Write(writer, tabCount, format, args);
             writer.Write(writer.NewLine);
+        }
+
+        static void WriteLine(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
+        {
+            Write(builder, tabCount, format, args);
+            builder.Append(System.Environment.NewLine);
         }
 
         static DelegateSignature ReadDelegate(string filename)
@@ -508,6 +525,127 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
+        class DelegateFileLayout
+        {
+            public System.Text.StringBuilder header = new System.Text.StringBuilder();
+            public string namespaceName = null;
+            public string className = null;
+            public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> functions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
+        }
+
+        private static DelegateFileLayout ReadAndParseDelegatesFile(Parameters parameters)
+        {
+            if (!System.IO.File.Exists(parameters.outputDelegatesPathName))
+            {
+                return null;
+            }
+
+            DelegateFileLayout layout = new DelegateFileLayout();
+            using (System.IO.TextReader reader = new System.IO.StreamReader(parameters.outputDelegatesPathName))
+            {
+                string line = null;
+
+                // read the header
+                for (;;)
+                {
+                    line = ReadLine(reader);
+                    if (null == line)
+                    {
+                        return layout;
+                    }
+                    if (line.StartsWith("//"))
+                    {
+                        layout.header.Append(line);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                while (line == string.Empty)
+                {
+                    line = ReadLine(reader);
+                }
+
+                // read the namespace
+                if (!line.StartsWith("namespace"))
+                {
+                    throw new Exception("Expected 'namespace'; found '{0}'", line);
+                }
+                layout.namespaceName = line.Split(' ')[1];
+                line = ReadLine(reader);
+                if (!line.StartsWith("{"))
+                {
+                    throw new Exception("Expected namespace opening scope '{'; found '{0}'", line);
+                }
+                line = ReadLine(reader);
+                while (line == string.Empty)
+                {
+                    line = ReadLine(reader);
+                }
+
+                // read the class
+                if (!line.Contains("class"))
+                {
+                    throw new Exception("Expected a class; found '{0}'", line);
+                }
+                layout.className = line.Split(' ')[3];
+                line = ReadLine(reader);
+                if (!line.StartsWith("{"))
+                {
+                    throw new Exception("Expected namespace opening scope '{'; found '{0}'", line);
+                }
+                line = ReadLine(reader);
+                while (line == string.Empty)
+                {
+                    line = ReadLine(reader);
+                }
+
+                // find functions
+                for (;;)
+                {
+                    System.Console.WriteLine("C: '{0}'", line);
+                    // done reading - it's the end of the class
+                    if (line.StartsWith("}"))
+                    {
+                        break;
+                    }
+
+                    // look for function signatures
+                    if (line.EndsWith(")"))
+                    {
+                        System.Console.WriteLine("Found function '{0}'", line);
+                        layout.functions[line] = new System.Collections.Generic.List<string>();
+                        System.Collections.Generic.List<string> body = layout.functions[line];
+                        int braceCount = 0;
+                        for (;;)
+                        {
+                            line = ReadLine(reader);
+                            int openBraces = line.Split('{').Length - 1;
+                            int closeBraces = line.Split('}').Length - 1;
+                            System.Console.WriteLine("Found {0} open braces and {1} close braces", openBraces, closeBraces);
+
+                            braceCount += openBraces;
+                            if (braceCount > 0)
+                            {
+                                body.Add(line);
+                            }
+
+                            braceCount -= closeBraces;
+                            if (0 == braceCount)
+                            {
+                                break;
+                            }
+                        }
+
+                        line = ReadLine(reader);
+                    }
+                }
+            }
+
+            return layout;
+        }
+
         private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList, System.Collections.Generic.List<DelegateSignature> delegateSignatures)
         {
             // write out C# file containing the delegates
@@ -515,23 +653,49 @@ namespace OpusOptionInterfacePropertyGenerator
             {
                 System.Console.WriteLine ("Would have written file '{0}'", parameters.outputDelegatesPathName);
             }
-            using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputDelegatesPathName) : System.Console.Out)
+
+            DelegateFileLayout layout = ReadAndParseDelegatesFile(parameters);
+
+            System.IO.MemoryStream memStream = new System.IO.MemoryStream();
+            using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(memStream) : System.Console.Out)
             {
-                WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
-                WriteLine(writer, 0, "// Command line:");
-                Write(writer, 0, "// ");
+                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                builder.Length = 0;
+                bool writeToDisk = (null == layout);
+
+                // write header
+                WriteLine(builder, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
+                WriteLine(builder, 0, "// Command line:");
+                Write(builder, 0, "// ");
                 foreach (string arg in parameters.args)
                 {
-                    Write(writer, 0, "{0} ", arg);
+                    Write(builder, 0, "{0} ", arg);
                 }
-                Write(writer, 0, writer.NewLine);
+                Write(builder, 0, System.Environment.NewLine);
+                if (null != layout && layout.header.Length != 0 && !builder.ToString().Equals(layout.header.ToString()))
+                {
+                    throw new Exception("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.header.ToString(), builder.ToString());
+                }
+
+                // open namespace
+                if (null != layout && layout.namespaceName != parameters.outputNamespace)
+                {
+                    throw new Exception("Namespaces are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.namespaceName, parameters.outputNamespace);
+                }
                 WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
                 WriteLine(writer, 0, "{");
+
+                // open OptionCollection partial class
+                if (null != layout && layout.className != parameters.outputClassName)
+                {
+                    throw new Exception("Classes are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.className, parameters.outputClassName);
+                }
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
                 System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> delegatesToRegister = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
 
+                // write delegates for each property of the interface
                 foreach (PropertySignature property in propertyList)
                 {
                     delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
@@ -544,32 +708,84 @@ namespace OpusOptionInterfacePropertyGenerator
                         System.Text.StringBuilder propertyDelegate = new System.Text.StringBuilder();
                         propertyDelegate.AppendFormat("private {0} {1}{2}", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
                         WriteLine(writer, 2, propertyDelegate.ToString());
-                        WriteLine(writer, 2, "{");
-                        WriteLine(writer, 2, "}");
+                        if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
+                        {
+                            System.Console.WriteLine("Function '{0}' reusing from file", propertyDelegate.ToString());
+                            foreach (string line in layout.functions[propertyDelegate.ToString()])
+                            {
+                                WriteLine(writer, 2, line);
+                            }
+                        }
+                        else
+                        {
+                            System.Console.WriteLine("Function '{0}' generating code for", propertyDelegate.ToString());
+                            WriteLine(writer, 2, "{");
+                            WriteLine(writer, 2, "}");
+                            writeToDisk = true;
+                        }
                     }
                 }
 
-                WriteLine (writer, 2, "protected override void SetDelegates(Opus.Core.DependencyNode node)");
-                WriteLine(writer, 2, "{");
-                foreach (string propertyName in delegatesToRegister.Keys)
+                if (null != layout && (propertyList.Count + 1) != layout.functions.Count)
                 {
-                    System.Text.StringBuilder registration = new System.Text.StringBuilder();
-                    registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
-                    foreach (string delegateToRegister in delegatesToRegister[propertyName])
-                    {
-                        registration.Append(delegateToRegister);
-                    }
-                    registration.Append(");");
-                    WriteLine(writer, 3, registration.ToString());
+                    writeToDisk = true;
                 }
-                WriteLine(writer, 2, "}");
 
+                // write the SetDelegates function that assigns the accumulated delegates above to their named properties
+                string setDelegatesFunctionSignature = "protected override void SetDelegates(Opus.Core.DependencyNode node)";
+                WriteLine(writer, 2, setDelegatesFunctionSignature);
+                if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
+                {
+                    System.Console.WriteLine("Function '{0}' reusing from file", setDelegatesFunctionSignature);
+                    foreach (string line in layout.functions[setDelegatesFunctionSignature])
+                    {
+                        WriteLine(writer, 2, line);
+                    }
+                }
+                else
+                {
+                    System.Console.WriteLine("Function '{0}' generating code for", setDelegatesFunctionSignature);
+                    WriteLine(writer, 2, "{");
+                    foreach (string propertyName in delegatesToRegister.Keys)
+                    {
+                        System.Text.StringBuilder registration = new System.Text.StringBuilder();
+                        registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
+                        foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                        {
+                            registration.Append(delegateToRegister);
+                        }
+                        registration.Append(");");
+                        WriteLine(writer, 3, registration.ToString());
+                    }
+                    WriteLine(writer, 2, "}");
+                    writeToDisk = true;
+                }
+
+                // close the class
                 WriteLine(writer, 1, "}");
+
+                // close the namespace
                 WriteLine(writer, 0, "}");
-            }
-            if (null != parameters.outputPropertiesPathName)
-            {
-                System.Console.WriteLine("Wrote file '{0}'", parameters.outputPropertiesPathName);
+
+                // flush to disk
+                if (!parameters.toStdOut && writeToDisk)
+                {
+                    if (!writeToDisk)
+                    {
+                        System.Console.WriteLine("File '{0}' already up-to-date", parameters.outputPropertiesPathName);
+                    }
+                    else
+                    {
+                        writer.Flush();
+
+                        using (System.IO.StreamWriter finalWriter = new System.IO.StreamWriter(parameters.outputDelegatesPathName))
+                        {
+                            memStream.WriteTo(finalWriter.BaseStream);
+                        }
+
+                        System.Console.WriteLine("Wrote file '{0}'", parameters.outputPropertiesPathName);
+                    }
+                }
             }
         }
 
