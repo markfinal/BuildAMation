@@ -30,7 +30,7 @@ moc_options = [
     "-c=MocOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs"),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=MocPrivateData"
 ]
 (stdout,stderr) = ExecuteProcess(moc_options, True)
