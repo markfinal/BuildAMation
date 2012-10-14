@@ -19,7 +19,7 @@ get_opus_dir_command = [
     "-showdirectory"
 ]
 (stdout,stderr) = ExecuteProcess(get_opus_dir_command)
-opusBinDir = string.strip(stdout, '\n')
+opusBinDir = string.strip(stdout, os.linesep)
 opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
 
 moc_options = [
