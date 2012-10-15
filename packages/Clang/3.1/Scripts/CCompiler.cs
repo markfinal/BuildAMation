@@ -7,24 +7,7 @@ namespace Clang
 {
     public sealed class CCompiler : C.Compiler, C.ICompiler, Opus.Core.ITool
     {
-        // TODO: this needs to be shared
-        private static string InstallPath
-        {
-            get;
-            set;
-        }
-
-        static CCompiler()
-        {
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
-            {
-                InstallPath = @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
-            }
-            else
-            {
-                throw new System.NotImplementedException();
-            }
-        }
+        private Opus.Core.IToolsetInfo toolset = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Clang.ToolsetInfo));
 
         public CCompiler(Opus.Core.Target target)
         {
@@ -35,7 +18,7 @@ namespace Clang
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
             // TODO: can we have this extension somewhere central?
-            return System.IO.Path.Combine(InstallPath, "clang.exe");
+            return System.IO.Path.Combine(this.toolset.InstallPath(target), "clang.exe");
         }
 
         #endregion

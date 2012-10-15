@@ -20,7 +20,14 @@ namespace Clang
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
-            return @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                return @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
+            }
+            else
+            {
+                throw new System.NotSupportedException();
+            }
         }
 
         #region ICompilerInfo Members
