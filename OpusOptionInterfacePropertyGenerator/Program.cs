@@ -703,7 +703,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 bool writeToDisk = (null == layout);
 
                 // write header
-                WriteLine(builder, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
+                WriteLine(builder, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator.");
                 WriteLine(builder, 0, "// Command line:");
                 Write(builder, 0, "// ");
                 foreach (string arg in parameters.args)
