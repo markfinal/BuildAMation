@@ -18,7 +18,7 @@ namespace Clang
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
         {
-            return null;
+            return new Opus.Core.DirectoryCollection();
         }
     }
 }
