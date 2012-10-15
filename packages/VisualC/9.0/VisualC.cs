@@ -23,7 +23,7 @@
 
 namespace VisualC
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
     {
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
@@ -34,6 +34,34 @@ namespace VisualC
         {
             throw new System.NotImplementedException();
         }
+
+        #region ICompilerInfo Members
+
+        string C.ICompilerInfo.PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileSuffix
+        {
+            get
+            {
+                return ".obj";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
+        #endregion
     }
 
     public class Solution
