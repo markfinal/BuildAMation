@@ -144,6 +144,10 @@ namespace C
             {
 #if true
                 ICompilerInfo info = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as ICompilerInfo;
+                if (null == info)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
 #else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 #endif
