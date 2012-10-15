@@ -500,10 +500,10 @@ namespace OpusOptionInterfacePropertyGenerator
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
-                Write(writer, 0, "// ");
+                Write(writer, 0, "//");
                 foreach (string arg in parameters.args)
                 {
-                    Write(writer, 0, "{0} ", arg);
+                    Write(writer, 0, " {0}", arg);
                 }
                 Write(writer, 0, writer.NewLine);
                 WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
@@ -712,15 +712,34 @@ namespace OpusOptionInterfacePropertyGenerator
                 // write header
                 WriteLine(builder, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator.");
                 WriteLine(builder, 0, "// Command line:");
-                Write(builder, 0, "// ");
+                Write(builder, 0, "//");
                 foreach (string arg in parameters.args)
                 {
-                    Write(builder, 0, "{0} ", arg);
+                    Write(builder, 0, " {0}", arg);
                 }
                 Write(builder, 0, System.Environment.NewLine);
                 if (null != layout && layout.header.Length != 0 && !builder.ToString().Equals(layout.header.ToString()))
                 {
-                    throw new Exception("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.header.ToString(), builder.ToString());
+                    System.Text.StringBuilder message = new System.Text.StringBuilder();
+
+                    byte[] layoutHeaderBytes = System.Text.Encoding.ASCII.GetBytes(layout.header.ToString());
+                    byte[] builderHeaderBytes = System.Text.Encoding.ASCII.GetBytes(builder.ToString());
+                    System.Collections.Generic.List<int> differenceIndices = new System.Collections.Generic.List<int>();
+                    for (int i = 0; i < System.Math.Min(layoutHeaderBytes.Length, builderHeaderBytes.Length); ++i)
+                    {
+                        if (layoutHeaderBytes[i] != builderHeaderBytes[i])
+                        {
+                            differenceIndices.Add(i);
+                        }
+                    }
+
+                    message.AppendFormat("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'\nDifferences at:\n", layout.header.ToString(), builder.ToString());
+                    foreach (int diff in differenceIndices)
+                    {
+                        message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
+                    }
+
+                    throw new Exception(message.ToString());
                 }
                 WriteLine(writer, 0, builder.ToString());
 
