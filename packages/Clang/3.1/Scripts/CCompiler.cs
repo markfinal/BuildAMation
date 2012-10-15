@@ -26,6 +26,10 @@ namespace Clang
             }
         }
 
+        public CCompiler(Opus.Core.Target target)
+        {
+        }
+
         #region ITool Members
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
