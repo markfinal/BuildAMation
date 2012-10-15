@@ -97,6 +97,7 @@ namespace OpusOptionInterfacePropertyGenerator
         public string privateDataClassName;
         public Mode mode;
         public bool toStdOut;
+        public bool forceWrite;
     }
 
     class Program
@@ -157,6 +158,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 else if (arg.StartsWith("-s"))
                 {
                     parameters.toStdOut = true;
+                }
+                else if (arg.StartsWith("-f"))
+                {
+                    parameters.forceWrite = true;
                 }
                 else
                 {
@@ -588,6 +593,8 @@ namespace OpusOptionInterfacePropertyGenerator
                     }
                     if (line.StartsWith("//"))
                     {
+                        line.Trim('\n', '\r');
+                        line = line + System.Environment.NewLine;
                         layout.header.Append(line);
                     }
                     else
@@ -812,7 +819,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 // flush to disk
                 if (!parameters.toStdOut)
                 {
-                    if (!writeToDisk)
+                    if (!writeToDisk && !parameters.forceWrite)
                     {
                         System.Console.WriteLine("File '{0}' already up-to-date", parameters.outputPropertiesPathName);
                     }
