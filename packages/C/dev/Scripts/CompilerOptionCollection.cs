@@ -143,10 +143,16 @@ namespace C
             if (null != this.OutputName)
             {
 #if true
-                ICompilerInfo info = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as ICompilerInfo;
-                if (null == info)
+                Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+                if (null == toolsetInfo)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                ICompilerInfo compilerInfo = toolsetInfo as ICompilerInfo;
+                if (null == compilerInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Compiler information for '{0}' is missing", target.Toolchain), false);
                 }
 #else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
@@ -156,7 +162,7 @@ namespace C
                 if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
                 {
 #if true
-                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + info.ObjectFileSuffix;
+                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerInfo.ObjectFileSuffix;
 #else
                     string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.ObjectFileSuffix;
 #endif
@@ -165,7 +171,7 @@ namespace C
                 else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
                 {
 #if true
-                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + info.PreprocessedOutputSuffix;
+                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerInfo.PreprocessedOutputSuffix;
 #else
                     string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.PreprocessedOutputSuffix;
 #endif
