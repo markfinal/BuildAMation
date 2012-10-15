@@ -188,20 +188,32 @@ namespace OpusOptionInterfacePropertyGenerator
             parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
         }
 
-        static string ReadLine(System.IO.TextReader reader)
+        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces)
         {
+            int numPrefixSpaces = 0;
             string line = null;
             do
             {
                 line = reader.ReadLine();
                 if (null == line)
                 {
+                    numPrefixSpaces = 0;
                     break;
                 }
-                line = line.Trim();
+                int originalLineLength = line.Length;
+                line = line.TrimStart();
+                numPrefixSpaces = originalLineLength - line.Length;
+                line = line.TrimEnd();
             }
             while (0 == line.Length);
+            prefixSpaces = numPrefixSpaces;
             return line;
+        }
+
+        static string ReadLine(System.IO.TextReader reader)
+        {
+            int prefixSpaces = 0;
+            return ReadLine(reader, out prefixSpaces);
         }
 
         static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
@@ -525,12 +537,33 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
+        class IndentedString
+        {
+            public IndentedString(int numSpaces, string line)
+            {
+                this.NumSpaces = numSpaces;
+                this.Line = line;
+            }
+
+            public int NumSpaces
+            {
+                get;
+                private set;
+            }
+
+            public string Line
+            {
+                get;
+                private set;
+            }
+        }
+
         class DelegateFileLayout
         {
             public System.Text.StringBuilder header = new System.Text.StringBuilder();
             public string namespaceName = null;
             public string className = null;
-            public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> functions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
+            public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>> functions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>>();
         }
 
         private static DelegateFileLayout ReadAndParseDelegatesFile(Parameters parameters)
@@ -615,12 +648,18 @@ namespace OpusOptionInterfacePropertyGenerator
                     if (line.EndsWith(")"))
                     {
                         System.Console.WriteLine("Found function '{0}'", line);
-                        layout.functions[line] = new System.Collections.Generic.List<string>();
-                        System.Collections.Generic.List<string> body = layout.functions[line];
+                        layout.functions[line] = new System.Collections.Generic.List<IndentedString>();
+                        System.Collections.Generic.List<IndentedString> body = layout.functions[line];
                         int braceCount = 0;
+                        int baselineIndentation = -1;
                         for (;;)
                         {
-                            line = ReadLine(reader);
+                            int indentation;
+                            line = ReadLine(reader, out indentation);
+                            if (baselineIndentation == -1)
+                            {
+                                baselineIndentation = indentation;
+                            }
                             int openBraces = line.Split('{').Length - 1;
                             int closeBraces = line.Split('}').Length - 1;
                             System.Console.WriteLine("Found {0} open braces and {1} close braces", openBraces, closeBraces);
@@ -628,7 +667,7 @@ namespace OpusOptionInterfacePropertyGenerator
                             braceCount += openBraces;
                             if (braceCount > 0)
                             {
-                                body.Add(line);
+                                body.Add(new IndentedString(indentation - baselineIndentation, line));
                             }
 
                             braceCount -= closeBraces;
@@ -711,9 +750,10 @@ namespace OpusOptionInterfacePropertyGenerator
                         if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
                         {
                             System.Console.WriteLine("Function '{0}' reusing from file", propertyDelegate.ToString());
-                            foreach (string line in layout.functions[propertyDelegate.ToString()])
+                            foreach (IndentedString line in layout.functions[propertyDelegate.ToString()])
                             {
-                                WriteLine(writer, 2, line);
+                                // TODO: magic number
+                                WriteLine(writer, 2 + line.NumSpaces / 4, line.Line);
                             }
                         }
                         else
@@ -737,9 +777,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
                 {
                     System.Console.WriteLine("Function '{0}' reusing from file", setDelegatesFunctionSignature);
-                    foreach (string line in layout.functions[setDelegatesFunctionSignature])
+                    foreach (IndentedString line in layout.functions[setDelegatesFunctionSignature])
                     {
-                        WriteLine(writer, 2, line);
+                        // TOOD: magic number
+                        WriteLine(writer, 2 + line.NumSpaces/4, line.Line);
                     }
                 }
                 else
@@ -768,7 +809,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 0, "}");
 
                 // flush to disk
-                if (!parameters.toStdOut && writeToDisk)
+                if (!parameters.toStdOut)
                 {
                     if (!writeToDisk)
                     {
