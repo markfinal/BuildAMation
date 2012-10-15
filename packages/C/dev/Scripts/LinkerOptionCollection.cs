@@ -15,7 +15,7 @@ namespace C
     public abstract class LinkerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         // TODO:  no reason why this can't be a static utility function
-        protected virtual void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.BinaryOutputSubDirectory);
@@ -50,16 +50,12 @@ namespace C
             linkerOptions.GenerateMapFile = true;
             linkerOptions.Libraries = new Opus.Core.FileCollection();
             linkerOptions.StandardLibraries = new Opus.Core.FileCollection();
+            linkerOptions.AdditionalOptions = "";
         }
 
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.InitializeDefaults(node);
-
-            ILinkerOptions linkerOptions = this as ILinkerOptions;
-            linkerOptions.AdditionalOptions = "";
-
-            this.SetDelegates(node);
         }
 
         public string OutputName

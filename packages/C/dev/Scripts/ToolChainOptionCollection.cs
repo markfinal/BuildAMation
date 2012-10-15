@@ -7,7 +7,7 @@ namespace C
 {
     public abstract class ToolchainOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
-        protected virtual void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             IToolchainOptions options = this as IToolchainOptions;
             options.CharacterSet = ECharacterSet.NotSet;
@@ -20,9 +20,8 @@ namespace C
         }
 
         public ToolchainOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.InitializeDefaults(node);
-            this.SetDelegates(node);
         }
 
         // TODO: does this need updating for the new event and delegate model?

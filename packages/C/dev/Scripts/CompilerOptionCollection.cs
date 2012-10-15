@@ -8,7 +8,7 @@ namespace C
     public abstract class CompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         // TODO:  no reason why this can't be a static utility function
-        protected virtual void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             ICCompilerOptions compilerOptions = this as ICCompilerOptions;
 
@@ -69,6 +69,7 @@ namespace C
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
 
             compilerOptions.DisableWarnings = new Opus.Core.StringArray();
+            compilerOptions.AdditionalOptions = "";
         }
 
         public CompilerOptionCollection()
@@ -77,14 +78,8 @@ namespace C
         }
 
         public CompilerOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.SetNodeOwnership(node);
-            this.InitializeDefaults(node);
-
-            ICCompilerOptions compilerOptions = this as ICCompilerOptions;
-            compilerOptions.AdditionalOptions = "";
-
-            this.SetDelegates(node);
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)

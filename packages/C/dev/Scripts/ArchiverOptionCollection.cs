@@ -7,23 +7,19 @@ namespace C
 {
     public abstract class ArchiverOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
-        protected virtual void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
 
             IArchiverOptions archiverOptions = this as IArchiverOptions;
             archiverOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
+            archiverOptions.AdditionalOptions = "";
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.InitializeDefaults(node);
-
-            IArchiverOptions archiverOptions = this as IArchiverOptions;
-            archiverOptions.AdditionalOptions = "";
-
-            this.SetDelegates(node);
         }
 
         public string OutputName

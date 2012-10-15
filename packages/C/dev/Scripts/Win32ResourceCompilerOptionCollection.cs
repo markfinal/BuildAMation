@@ -18,11 +18,13 @@ namespace C
         }
 
         public Win32ResourceCompilerOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.SetNodeOwnership(node);
-            //this.InitializeDefaults(node);
+        }
 
-            this.SetDelegates(node);
+        protected override void InitializeDefaults(Opus.Core.DependencyNode owningNode)
+        {
+            // do nothing
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
