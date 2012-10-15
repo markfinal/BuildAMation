@@ -59,7 +59,6 @@ namespace VisualCCommon
                 compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
                 compilerInterface.SmallerTypeConversionRuntimeCheck = true;
                 compilerInterface.InlineFunctionExpansion = EInlineFunctionExpansion.None;
-                (this as C.ICCompilerOptions).OmitFramePointer = false;
                 compilerInterface.EnableIntrinsicFunctions = false;
             }
             else
@@ -68,7 +67,6 @@ namespace VisualCCommon
                 compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.None;
                 compilerInterface.SmallerTypeConversionRuntimeCheck = false;
                 compilerInterface.InlineFunctionExpansion = EInlineFunctionExpansion.AnySuitable;
-                (this as C.ICCompilerOptions).OmitFramePointer = true;
                 compilerInterface.EnableIntrinsicFunctions = true;
             }
 

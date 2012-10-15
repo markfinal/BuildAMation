@@ -26,6 +26,7 @@ namespace C
             {
                 compilerOptions.DebugSymbols = true;
                 compilerOptions.Optimization = EOptimization.Off;
+                compilerOptions.OmitFramePointer = false;
             }
             else
             {
@@ -38,6 +39,7 @@ namespace C
                     compilerOptions.DebugSymbols = true;
                 }
                 compilerOptions.Optimization = EOptimization.Speed;
+                compilerOptions.OmitFramePointer = true;
             }
             compilerOptions.CustomOptimization = "";
             compilerOptions.ShowIncludes = false;

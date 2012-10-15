@@ -52,13 +52,11 @@ namespace GccCommon
             {
                 compilerInterface.StrictAliasing = false;
                 compilerInterface.InlineFunctions = false;
-                (this as C.ICCompilerOptions).OmitFramePointer = false;
             }
             else
             {
                 compilerInterface.StrictAliasing = true;
                 compilerInterface.InlineFunctions = true;
-                (this as C.ICCompilerOptions).OmitFramePointer = true;
             }
 
             compilerInterface.PositionIndependentCode = false;
