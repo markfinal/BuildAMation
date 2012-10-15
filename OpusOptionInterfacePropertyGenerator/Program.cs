@@ -715,6 +715,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     throw new Exception("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.header.ToString(), builder.ToString());
                 }
+                WriteLine(writer, 0, builder.ToString());
 
                 // open namespace
                 if (null != layout && layout.namespaceName != parameters.outputNamespace)
