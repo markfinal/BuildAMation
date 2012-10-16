@@ -17,9 +17,16 @@ namespace MingwCommon
                 return;
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Mingw.ToolsetInfo));
+            this.platformBinFolder = info.BinPath(target);
+            this.pathEnvironment.AddRange(info.Environment);
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.platformBinFolder = toolChainInstance.BinPath(target);
             this.pathEnvironment.AddRange(toolChainInstance.Environment);
+#endif
             this.pathEnvironment.Add(@"c:\windows\system32");
         }
 

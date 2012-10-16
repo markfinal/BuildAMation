@@ -13,6 +13,7 @@ namespace C
 
     public abstract class Toolchain
     {
+#if false
         public abstract string InstallPath(Opus.Core.Target target);
         public abstract string BinPath(Opus.Core.Target target);
         public abstract Opus.Core.StringArray Environment
@@ -21,7 +22,6 @@ namespace C
             protected set;
         }
 
-#if false
         public abstract string PreprocessedOutputSuffix
         {
             get;

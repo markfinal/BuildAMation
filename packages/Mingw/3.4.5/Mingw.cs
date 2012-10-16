@@ -24,15 +24,69 @@ namespace Mingw
 {
     public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
     {
+        private static string installPath;
+        private static string binPath;
+        private static Opus.Core.StringArray environment;
+
+        static ToolsetInfo()
+        {
+            GetInstallPath();
+        }
+
+        static void GetInstallPath()
+        {
+            if (Opus.Core.State.HasCategory("Mingw") && Opus.Core.State.Has("Mingw", "InstallPath"))
+            {
+                installPath = Opus.Core.State.Get("Mingw", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("Mingw install path set from command line to '{0}'", installPath);
+            }
+
+            if (null == installPath)
+            {
+                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\Windows\CurrentVersion\Uninstall\MinGW"))
+                {
+                    if (null == key)
+                    {
+                        throw new Opus.Core.Exception("mingw was not installed");
+                    }
+
+                    installPath = key.GetValue("InstallLocation") as string;
+                    Opus.Core.Log.DebugMessage("Mingw: Install path from registry '{0}'", installPath);
+                }
+            }
+
+            binPath = System.IO.Path.Combine(installPath, "bin");
+
+            environment = new Opus.Core.StringArray();
+            environment.Add(binPath);
+        }
+
+        #region IToolsetInfo Members
+
+        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        {
+            return binPath;
+        }
+
+        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        {
+            get
+            {
+                return environment;
+            }
+        }
+
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            return installPath;
+        }
+
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
             return "3.4.5";
         }
 
-        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
-        {
-            throw new System.NotImplementedException();
-        }
+        #endregion
 
         #region ICompilerInfo Members
 
@@ -58,6 +112,11 @@ namespace Mingw
             {
                 return "obj";
             }
+        }
+
+        Opus.Core.StringArray C.ICompilerInfo.IncludePaths(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

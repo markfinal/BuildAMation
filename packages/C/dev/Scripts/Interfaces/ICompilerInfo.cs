@@ -21,5 +21,7 @@ namespace C
         {
             get;
         }
+
+        Opus.Core.StringArray IncludePaths(Opus.Core.Target target);
     }
 }

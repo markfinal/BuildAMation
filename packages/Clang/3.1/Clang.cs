@@ -13,9 +13,16 @@ namespace Clang
     // Add modules here
     public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
     {
-        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        #region IToolsetInfo Members
+
+        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
         {
-            return "3.1";
+            throw new System.NotImplementedException();
+        }
+
+        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        {
+            get { throw new System.NotImplementedException(); }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
@@ -29,6 +36,13 @@ namespace Clang
                 throw new System.NotSupportedException();
             }
         }
+
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "3.1";
+        }
+
+        #endregion
 
         #region ICompilerInfo Members
 
@@ -54,6 +68,11 @@ namespace Clang
             {
                 return "obj";
             }
+        }
+
+        Opus.Core.StringArray C.ICompilerInfo.IncludePaths(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

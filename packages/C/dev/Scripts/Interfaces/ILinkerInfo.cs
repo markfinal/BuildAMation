@@ -47,5 +47,7 @@ namespace C
         {
             get;
         }
+
+        Opus.Core.StringArray LibPaths(Opus.Core.Target target);
     }
 }

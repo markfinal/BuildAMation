@@ -25,10 +25,18 @@ namespace VisualCCommon
                 throw new Opus.Core.Exception("VisualC compiler supports only win32 and win64");
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(VisualC.ToolsetInfo));
+            this.platformBinFolder = info.BinPath(target);
+
+            string installPath = info.InstallPath(target);
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.platformBinFolder = toolChainInstance.BinPath(target);
 
             string installPath = toolChainInstance.InstallPath(target);
+#endif
             this.includeFolder.Add(System.IO.Path.Combine(installPath, "include"));
 
             this.requiredEnvironmentVariables.Add("SystemRoot");
@@ -57,8 +65,14 @@ namespace VisualCCommon
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(VisualC.ToolsetInfo));
+            return info.Environment;
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             return toolChainInstance.Environment;
+#endif
         }
 
         // NEW STYLE

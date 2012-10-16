@@ -26,6 +26,7 @@ namespace ComposerXE
             this.binFolder = this.installPath;
         }
 
+#if false
         public override string InstallPath(Opus.Core.Target target)
         {
             return this.installPath;
@@ -35,6 +36,7 @@ namespace ComposerXE
         {
             return this.binFolder;
         }
+#endif
 
         public static string VersionString
         {

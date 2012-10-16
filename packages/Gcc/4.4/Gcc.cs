@@ -24,18 +24,31 @@
 
 namespace Gcc
 {
-#if false
     public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
     {
-        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        #region IToolsetInfo Members
+
+        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
         {
-            return "4.4";
+            throw new System.NotImplementedException();
+        }
+
+        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        {
+            get { throw new System.NotImplementedException(); }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
+
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "4.4";
+        }
+
+        #endregion
 
         #region ICompilerInfo Members
 
@@ -63,7 +76,11 @@ namespace Gcc
             }
         }
 
+        Opus.Core.StringArray C.ICompilerInfo.IncludePaths(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
         #endregion
     }
-#endif
 }

@@ -100,7 +100,6 @@ namespace GccCommon
                 return ".map";
             }
         }
-#endif
 
         // this is not used
         public override Opus.Core.StringArray Environment
@@ -108,5 +107,6 @@ namespace GccCommon
             get;
             protected set;
         }
+#endif
     }
 }

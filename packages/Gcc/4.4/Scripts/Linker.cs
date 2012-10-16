@@ -16,9 +16,15 @@ namespace Gcc
             {
                 throw new Opus.Core.Exception("Gcc linker is only supported under unix32 and unix64 platforms");
             }
-
+            
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Gcc.ToolsetInfo));
+            this.binPath = info.BinPath(target);
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
+#endif
 
             this.environmentPaths.Add("/usr/bin");
         }

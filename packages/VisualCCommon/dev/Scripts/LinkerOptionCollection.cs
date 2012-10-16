@@ -41,8 +41,19 @@ namespace VisualCCommon
 
             Opus.Core.Target target = node.Target;
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(VisualC.ToolsetInfo));
+            C.ILinkerInfo linkerInfo = info as C.ILinkerInfo;
+
+            foreach (string libPath in linkerInfo.LibPaths(target))
+            {
+                (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(libPath, true);
+            }
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(toolChainInstance.LibPath(target), true);
+#endif
         }
 
         public LinkerOptionCollection(Opus.Core.DependencyNode node)

@@ -17,8 +17,14 @@ namespace Mingw
                 throw new Opus.Core.Exception("Mingw linker is only supported under win32 and win64 platforms");
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Mingw.ToolsetInfo));
+            this.binPath = info.BinPath(target);
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
+#endif
 
             this.requiredEnvironmentVariables.Add("TEMP");
         }
@@ -46,8 +52,14 @@ namespace Mingw
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Mingw.ToolsetInfo));
+            return info.Environment;
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             return toolChainInstance.Environment;
+#endif
         }
     }
 }

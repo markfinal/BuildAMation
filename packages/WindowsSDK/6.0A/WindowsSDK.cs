@@ -25,6 +25,9 @@ namespace WindowsSDK
             {
                 if (null == key)
                 {
+                    // NEW STYLE
+#if true
+#else
                     C.Toolchain tc = C.ToolchainFactory.GetTargetInstance(target);
                     string platformSDKPath = System.IO.Path.Combine(tc.InstallPath(target), "PlatformSDK");
 
@@ -44,6 +47,7 @@ namespace WindowsSDK
 
                     lib32Path = System.IO.Path.Combine(installPath, "lib");
                     lib64Path = System.IO.Path.Combine(lib32Path, "AMD64");
+#endif
                 }
                 else
                 {

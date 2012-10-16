@@ -100,7 +100,6 @@ namespace ComposerXECommon
                 return ".map";
             }
         }
-#endif
 
         // this is not used
         public override Opus.Core.StringArray Environment
@@ -108,5 +107,6 @@ namespace ComposerXECommon
             get;
             protected set;
         }
+#endif
     }
 }
