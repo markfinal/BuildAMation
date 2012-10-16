@@ -89,7 +89,6 @@ namespace MingwCommon
                 return ".map";
             }
         }
-#endif
 
         public override string Win32CompiledResourceSuffix
         {
@@ -98,5 +97,6 @@ namespace MingwCommon
                 return ".o";
             }
         }
+#endif
     }
 }

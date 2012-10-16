@@ -23,7 +23,7 @@
 
 namespace VisualC
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo
     {
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
@@ -146,6 +146,18 @@ namespace VisualC
             get
             {
                 return "lib";
+            }
+        }
+
+        #endregion
+
+        #region IWinResourceCompilerInfo Members
+
+        string C.IWinResourceCompilerInfo.CompiledResourceSuffix
+        {
+            get
+            {
+                return ".res";
             }
         }
 

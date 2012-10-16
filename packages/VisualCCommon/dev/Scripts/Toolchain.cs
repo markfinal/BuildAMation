@@ -81,9 +81,7 @@ namespace VisualCCommon
                 return ".dll";
             }
         }
-#endif
 
-#if false
         public override string ExecutableSuffix
         {
             get
@@ -99,7 +97,6 @@ namespace VisualCCommon
                 return ".map";
             }
         }
-#endif
 
         public override string Win32CompiledResourceSuffix
         {
@@ -108,6 +105,7 @@ namespace VisualCCommon
                 return ".res";
             }
         }
+#endif
 
         protected static string GetVCRegistryKeyPath(string platformName, string versionNumber, string editionName, int LCID)
         {

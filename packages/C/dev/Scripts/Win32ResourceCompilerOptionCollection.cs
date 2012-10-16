@@ -61,9 +61,26 @@ namespace C
         {
             if (null == this.CompiledResourceFilePath)
             {
+                // NEW STYLE
+#if true
+                Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+                if (null == toolsetInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                IWinResourceCompilerInfo resourceCompilerInfo = toolsetInfo as IWinResourceCompilerInfo;
+                if (null == resourceCompilerInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Windows Resource Compiler information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerInfo.CompiledResourceSuffix;
+#else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 
                 string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.Win32CompiledResourceSuffix;
+#endif
                 this.CompiledResourceFilePath = objectPathname;
             }
 

@@ -71,7 +71,6 @@ namespace C
         {
             get;
         }
-#endif
 
         public virtual string Win32CompiledResourceSuffix
         {
@@ -81,7 +80,6 @@ namespace C
             }
         }
 
-#if false
         public static string BinaryOutputSubDirectory
         {
             get
