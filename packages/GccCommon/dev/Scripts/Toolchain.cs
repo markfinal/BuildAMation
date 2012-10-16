@@ -68,6 +68,7 @@ namespace GccCommon
             }
         }
 
+#if false
         public override string DynamicLibraryPrefix
         {
             get
@@ -83,6 +84,7 @@ namespace GccCommon
                 return this.StaticImportLibrarySuffix;
             }
         }
+#endif
 
 #if false
         public override string ExecutableSuffix

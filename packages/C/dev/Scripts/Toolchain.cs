@@ -53,6 +53,7 @@ namespace C
             get;
         }
 
+#if false
         public abstract string DynamicLibraryPrefix
         {
             get;
@@ -63,7 +64,6 @@ namespace C
             get;
         }
 
-#if false
         public abstract string ExecutableSuffix
         {
             get;

@@ -161,8 +161,8 @@ namespace C
                 }
                 else if (options.OutputType == ELinkerOutput.DynamicLibrary)
                 {
-                    outputPrefix = toolchain.DynamicLibraryPrefix;
-                    outputSuffix = toolchain.DynamicLibrarySuffix;
+                    outputPrefix = linkerInfo.DynamicLibraryPrefix;
+                    outputSuffix = linkerInfo.DynamicLibrarySuffix;
                 }
 
                 string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, outputPrefix + this.OutputName) + outputSuffix;

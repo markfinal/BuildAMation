@@ -17,6 +17,16 @@ namespace C
             get;
         }
 
+        string DynamicLibraryPrefix
+        {
+            get;
+        }
+
+        string DynamicLibrarySuffix
+        {
+            get;
+        }
+
         string BinaryOutputSubDirectory
         {
             get;

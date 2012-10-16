@@ -68,6 +68,7 @@ namespace ComposerXECommon
             }
         }
 
+#if false
         public override string DynamicLibraryPrefix
         {
             get
@@ -83,6 +84,7 @@ namespace ComposerXECommon
                 return this.StaticImportLibrarySuffix;
             }
         }
+#endif
 
 #if false
         public override string ExecutableSuffix

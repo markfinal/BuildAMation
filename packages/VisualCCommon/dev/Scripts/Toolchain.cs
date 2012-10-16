@@ -67,6 +67,7 @@ namespace VisualCCommon
             }
         }
 
+#if false
         public override string DynamicLibraryPrefix
         {
             get
@@ -82,6 +83,7 @@ namespace VisualCCommon
                 return ".dll";
             }
         }
+#endif
 
 #if false
         public override string ExecutableSuffix

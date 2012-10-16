@@ -81,6 +81,22 @@ namespace VisualC
             }
         }
 
+        string C.ILinkerInfo.DynamicLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        string C.ILinkerInfo.DynamicLibrarySuffix
+        {
+            get
+            {
+                return ".dll";
+            }
+        }
+
         string C.ILinkerInfo.BinaryOutputSubDirectory
         {
             get

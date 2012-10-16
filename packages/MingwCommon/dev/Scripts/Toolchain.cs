@@ -57,6 +57,7 @@ namespace MingwCommon
             }
         }
 
+#if false
         public override string DynamicLibraryPrefix
         {
             get
@@ -72,6 +73,7 @@ namespace MingwCommon
                 return ".dll";
             }
         }
+#endif
 
 #if false
         public override string ExecutableSuffix
