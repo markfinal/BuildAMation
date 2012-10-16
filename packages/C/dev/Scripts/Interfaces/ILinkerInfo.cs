@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
+    // TODO: want to split this out into regular linker stuff, and Windows import library interface
     public interface ILinkerInfo
     {
         string ExecutableSuffix
