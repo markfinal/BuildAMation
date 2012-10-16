@@ -83,6 +83,7 @@ namespace VisualCCommon
             }
         }
 
+#if false
         public override string ExecutableSuffix
         {
             get
@@ -98,6 +99,7 @@ namespace VisualCCommon
                 return ".map";
             }
         }
+#endif
 
         public override string Win32CompiledResourceSuffix
         {

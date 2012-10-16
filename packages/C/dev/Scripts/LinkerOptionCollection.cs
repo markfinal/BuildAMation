@@ -18,15 +18,33 @@ namespace C
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
+
+            Opus.Core.Target target = node.Target;
+
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+            if (null == toolsetInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            ILinkerInfo linkerInfo = toolsetInfo as ILinkerInfo;
+            if (null == linkerInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Linker information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.BinaryOutputSubDirectory);
+#else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.BinaryOutputSubDirectory);
+#endif
             this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
 
             ILinkerOptions linkerOptions = this as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.Executable;
 
             linkerOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
-
-            Opus.Core.Target target = node.Target;
 
             linkerOptions.SubSystem = ESubsystem.NotSet;
             linkerOptions.DoNotAutoIncludeStandardLibraries = true;
@@ -114,6 +132,64 @@ namespace C
 
         public override void FinalizeOptions(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            // TODO: remove me
+            Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
+
+            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+            if (null == toolsetInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            ILinkerInfo linkerInfo = toolsetInfo as ILinkerInfo;
+            if (null == linkerInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Linker information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            ILinkerOptions options = this as ILinkerOptions;
+
+            if (null == this.OutputFilePath)
+            {
+                string outputPrefix = string.Empty;
+                string outputSuffix = string.Empty;
+                if (options.OutputType == ELinkerOutput.Executable)
+                {
+                    outputSuffix = linkerInfo.ExecutableSuffix;
+                }
+                else if (options.OutputType == ELinkerOutput.DynamicLibrary)
+                {
+                    outputPrefix = toolchain.DynamicLibraryPrefix;
+                    outputSuffix = toolchain.DynamicLibrarySuffix;
+                }
+
+                string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, outputPrefix + this.OutputName) + outputSuffix;
+                this.OutputFilePath = outputPathName;
+            }
+
+            if (options.DynamicLibrary && null == this.StaticImportLibraryFilePath)
+            {
+                if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                {
+                    // explicit import library
+                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, toolchain.StaticImportLibraryPrefix + this.OutputName) + toolchain.StaticImportLibrarySuffix;
+                    this.StaticImportLibraryFilePath = importLibraryPathName;
+                }
+                else
+                {
+                    // shared objects
+                    this.StaticImportLibraryFilePath = this.OutputFilePath;
+                }
+            }
+
+            if (options.GenerateMapFile && null == this.MapFilePath)
+            {
+                string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerInfo.MapFileSuffix;
+                this.MapFilePath = mapPathName;
+            }
+#else
             Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 
             ILinkerOptions options = this as ILinkerOptions;
@@ -156,6 +232,7 @@ namespace C
                 string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.MapFileSuffix;
                 this.MapFilePath = mapPathName;
             }
+#endif
 
             base.FinalizeOptions(target);
         }

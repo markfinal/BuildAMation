@@ -73,6 +73,7 @@ namespace MingwCommon
             }
         }
 
+#if false
         public override string ExecutableSuffix
         {
             get
@@ -88,6 +89,7 @@ namespace MingwCommon
                 return ".map";
             }
         }
+#endif
 
         public override string Win32CompiledResourceSuffix
         {

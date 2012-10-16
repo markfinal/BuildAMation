@@ -23,7 +23,7 @@
 
 namespace VisualC
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo
     {
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
@@ -58,6 +58,34 @@ namespace VisualC
             get
             {
                 return "obj";
+            }
+        }
+
+        #endregion
+
+        #region ILinkerInfo Members
+
+        string C.ILinkerInfo.ExecutableSuffix
+        {
+            get
+            {
+                return ".exe";
+            }
+        }
+
+        string C.ILinkerInfo.MapFileSuffix
+        {
+            get
+            {
+                return ".map";
+            }
+        }
+
+        string C.ILinkerInfo.BinaryOutputSubDirectory
+        {
+            get
+            {
+                return "bin";
             }
         }
 

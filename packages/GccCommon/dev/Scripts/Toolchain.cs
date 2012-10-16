@@ -84,6 +84,7 @@ namespace GccCommon
             }
         }
 
+#if false
         public override string ExecutableSuffix
         {
             get
@@ -99,6 +100,7 @@ namespace GccCommon
                 return ".map";
             }
         }
+#endif
 
         // this is not used
         public override Opus.Core.StringArray Environment

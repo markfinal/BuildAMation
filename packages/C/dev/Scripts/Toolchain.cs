@@ -63,6 +63,7 @@ namespace C
             get;
         }
 
+#if false
         public abstract string ExecutableSuffix
         {
             get;
@@ -72,6 +73,7 @@ namespace C
         {
             get;
         }
+#endif
 
         public virtual string Win32CompiledResourceSuffix
         {
@@ -81,6 +83,7 @@ namespace C
             }
         }
 
+#if false
         public static string BinaryOutputSubDirectory
         {
             get
@@ -88,6 +91,7 @@ namespace C
                 return "bin";
             }
         }
+#endif
 
         public static string LibraryOutputSubDirectory
         {
