@@ -69,8 +69,6 @@ namespace C
 
         public override void FinalizeOptions(Opus.Core.Target target)
         {
-            Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
-
             if (null == this.LibraryFilePath)
             {
                 // NEW STYLE
@@ -89,6 +87,7 @@ namespace C
 
                 string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverInfo.StaticLibraryPrefix + this.OutputName + archiverInfo.StaticLibrarySuffix);
 #else
+                Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
                 string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, toolchain.StaticLibraryPrefix + this.OutputName + toolchain.StaticLibrarySuffix);
 #endif
                 this.LibraryFilePath = libraryPathname;

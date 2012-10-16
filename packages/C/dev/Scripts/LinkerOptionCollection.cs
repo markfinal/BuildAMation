@@ -135,9 +135,6 @@ namespace C
         {
             // NEW STYLE
 #if true
-            // TODO: remove me
-            Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
-
             Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
             if (null == toolsetInfo)
             {
