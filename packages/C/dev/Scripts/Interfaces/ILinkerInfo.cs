@@ -17,12 +17,12 @@ namespace C
             get;
         }
 
-        string StaticImportLibraryPrefix
+        string ImportLibraryPrefix
         {
             get;
         }
 
-        string StaticImportLibrarySuffix
+        string ImportLibrarySuffix
         {
             get;
         }
@@ -33,6 +33,11 @@ namespace C
         }
 
         string DynamicLibrarySuffix
+        {
+            get;
+        }
+
+        string ImportLibrarySubDirectory
         {
             get;
         }

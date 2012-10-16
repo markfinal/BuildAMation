@@ -35,14 +35,8 @@ namespace C
                 throw new Opus.Core.Exception(System.String.Format("Linker information for '{0}' is missing", target.Toolchain), false);
             }
 
-            IArchiverInfo archiverInfo = toolsetInfo as IArchiverInfo;
-            if (null == archiverInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Archiver information for '{0}' is missing", target.Toolchain), false);
-            }
-
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.BinaryOutputSubDirectory);
-            this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverInfo.StaticLibraryOutputSubDirectory);
+            this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.ImportLibrarySubDirectory);
 #else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.BinaryOutputSubDirectory);
             this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
@@ -181,7 +175,7 @@ namespace C
                 if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                 {
                     // explicit import library
-                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, linkerInfo.StaticImportLibraryPrefix + this.OutputName) + linkerInfo.StaticImportLibrarySuffix;
+                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, linkerInfo.ImportLibraryPrefix + this.OutputName) + linkerInfo.ImportLibrarySuffix;
                     this.StaticImportLibraryFilePath = importLibraryPathName;
                 }
                 else

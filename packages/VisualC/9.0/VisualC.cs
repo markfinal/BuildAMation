@@ -81,7 +81,7 @@ namespace VisualC
             }
         }
 
-        string C.ILinkerInfo.StaticImportLibraryPrefix
+        string C.ILinkerInfo.ImportLibraryPrefix
         {
             get
             {
@@ -89,7 +89,7 @@ namespace VisualC
             }
         }
 
-        string C.ILinkerInfo.StaticImportLibrarySuffix
+        string C.ILinkerInfo.ImportLibrarySuffix
         {
             get
             {
@@ -110,6 +110,14 @@ namespace VisualC
             get
             {
                 return ".dll";
+            }
+        }
+
+        string C.ILinkerInfo.ImportLibrarySubDirectory
+        {
+            get
+            {
+                return "lib";
             }
         }
 
