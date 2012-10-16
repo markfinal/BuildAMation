@@ -79,7 +79,7 @@ namespace VisualC
 
         public override string BinPath(Opus.Core.Target target)
         {
-            if (target.Platform == Opus.Core.EPlatform.Win64)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 if (Opus.Core.OSUtilities.Is64BitHosting)
                 {
@@ -104,7 +104,7 @@ namespace VisualC
 
         public override string LibPath(Opus.Core.Target target)
         {
-            if (target.Platform == Opus.Core.EPlatform.Win64)
+            if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 return this.lib64Folder;
             }

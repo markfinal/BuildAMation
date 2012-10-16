@@ -12,8 +12,102 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Toolchain, typeof(VisualC.Toolchain), typeof(VisualC.ToolchainOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Win32ResourceCompilerTool, typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
 
+[assembly: C.RegisterToolchain(
+    "visualc",
+    typeof(VisualC.ToolsetInfo),
+    typeof(VisualCCommon.CCompiler), typeof(VisualC.CCompilerOptionCollection),
+    typeof(VisualCCommon.CPlusPlusCompiler), typeof(VisualC.CPlusPlusCompilerOptionCollection),
+    typeof(VisualCCommon.Linker), typeof(VisualC.LinkerOptionCollection),
+    typeof(VisualCCommon.Archiver), typeof(VisualC.ArchiverOptionCollection),
+    typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
+
 namespace VisualC
 {
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo
+    {
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "8.0";
+        }
+        
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+        
+        #region ICompilerInfo Members
+        
+        string C.ICompilerInfo.PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+        
+        string C.ICompilerInfo.ObjectFileSuffix
+        {
+            get
+            {
+                return ".obj";
+            }
+        }
+        
+        string C.ICompilerInfo.ObjectFileOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+        
+#endregion
+        
+        #region ILinkerInfo Members
+        
+        string C.ILinkerInfo.ExecutableSuffix
+        {
+            get
+            {
+                return ".exe";
+            }
+        }
+        
+        string C.ILinkerInfo.MapFileSuffix
+        {
+            get
+            {
+                return ".map";
+            }
+        }
+        
+        string C.ILinkerInfo.DynamicLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+        
+        string C.ILinkerInfo.DynamicLibrarySuffix
+        {
+            get
+            {
+                return ".dll";
+            }
+        }
+        
+        string C.ILinkerInfo.BinaryOutputSubDirectory
+        {
+            get
+            {
+                return "bin";
+            }
+        }
+        
+#endregion
+    }
+    
     public class Solution
     {
         private static System.Guid ProjectTypeGuid;
