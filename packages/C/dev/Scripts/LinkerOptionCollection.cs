@@ -174,7 +174,7 @@ namespace C
                 if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                 {
                     // explicit import library
-                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, toolchain.StaticImportLibraryPrefix + this.OutputName) + toolchain.StaticImportLibrarySuffix;
+                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, linkerInfo.StaticImportLibraryPrefix + this.OutputName) + linkerInfo.StaticImportLibrarySuffix;
                     this.StaticImportLibraryFilePath = importLibraryPathName;
                 }
                 else

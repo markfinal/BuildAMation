@@ -41,6 +41,7 @@ namespace MingwCommon
             }
         }
 
+#if false
         public override string StaticImportLibraryPrefix
         {
             get
@@ -57,7 +58,6 @@ namespace MingwCommon
             }
         }
 
-#if false
         public override string DynamicLibraryPrefix
         {
             get

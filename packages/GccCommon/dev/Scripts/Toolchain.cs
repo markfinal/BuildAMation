@@ -41,6 +41,7 @@ namespace GccCommon
             }
         }
 
+#if false
         public override string StaticImportLibraryPrefix
         {
             get
@@ -68,7 +69,6 @@ namespace GccCommon
             }
         }
 
-#if false
         public override string DynamicLibraryPrefix
         {
             get

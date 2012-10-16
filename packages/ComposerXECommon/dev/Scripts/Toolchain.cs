@@ -41,6 +41,7 @@ namespace ComposerXECommon
             }
         }
 
+#if false
         public override string StaticImportLibraryPrefix
         {
             get
@@ -68,7 +69,6 @@ namespace ComposerXECommon
             }
         }
 
-#if false
         public override string DynamicLibraryPrefix
         {
             get

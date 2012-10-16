@@ -51,6 +51,7 @@ namespace VisualCCommon
             }
         }
 
+#if false
         public override string StaticImportLibraryPrefix
         {
             get
@@ -67,7 +68,6 @@ namespace VisualCCommon
             }
         }
 
-#if false
         public override string DynamicLibraryPrefix
         {
             get

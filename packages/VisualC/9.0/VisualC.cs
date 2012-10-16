@@ -81,6 +81,22 @@ namespace VisualC
             }
         }
 
+        string C.ILinkerInfo.StaticImportLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        string C.ILinkerInfo.StaticImportLibrarySuffix
+        {
+            get
+            {
+                return ".lib";
+            }
+        }
+
         string C.ILinkerInfo.DynamicLibraryPrefix
         {
             get

@@ -43,6 +43,7 @@ namespace C
             get;
         }
 
+#if false
         public abstract string StaticImportLibraryPrefix
         {
             get;
@@ -53,7 +54,6 @@ namespace C
             get;
         }
 
-#if false
         public abstract string DynamicLibraryPrefix
         {
             get;

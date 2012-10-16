@@ -17,6 +17,16 @@ namespace C
             get;
         }
 
+        string StaticImportLibraryPrefix
+        {
+            get;
+        }
+
+        string StaticImportLibrarySuffix
+        {
+            get;
+        }
+
         string DynamicLibraryPrefix
         {
             get;
