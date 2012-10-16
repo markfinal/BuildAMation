@@ -33,7 +33,6 @@ namespace VisualCCommon
                 return ".obj";
             }
         }
-#endif
 
         public override string StaticLibraryPrefix
         {
@@ -51,7 +50,6 @@ namespace VisualCCommon
             }
         }
 
-#if false
         public override string StaticImportLibraryPrefix
         {
             get

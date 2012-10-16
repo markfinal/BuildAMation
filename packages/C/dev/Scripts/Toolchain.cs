@@ -31,7 +31,6 @@ namespace C
         {
             get;
         }
-#endif
 
         public abstract string StaticLibraryPrefix
         {
@@ -43,7 +42,6 @@ namespace C
             get;
         }
 
-#if false
         public abstract string StaticImportLibraryPrefix
         {
             get;
@@ -91,7 +89,6 @@ namespace C
                 return "bin";
             }
         }
-#endif
 
         public static string LibraryOutputSubDirectory
         {
@@ -101,7 +98,6 @@ namespace C
             }
         }
 
-#if false
         public static string ObjectFileOutputSubDirectory
         {
             get

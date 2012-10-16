@@ -10,7 +10,27 @@ namespace C
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
+
+            // NEW STYLE
+#if true
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+            if (null == toolsetInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            IArchiverInfo archiverInfo = toolsetInfo as IArchiverInfo;
+            if (null == archiverInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Archiver information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverInfo.StaticLibraryOutputSubDirectory);
+#else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
+#endif
 
             IArchiverOptions archiverOptions = this as IArchiverOptions;
             archiverOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
@@ -53,7 +73,24 @@ namespace C
 
             if (null == this.LibraryFilePath)
             {
+                // NEW STYLE
+#if true
+                Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+                if (null == toolsetInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                IArchiverInfo archiverInfo = toolsetInfo as IArchiverInfo;
+                if (null == archiverInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Archiver information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverInfo.StaticLibraryPrefix + this.OutputName + archiverInfo.StaticLibrarySuffix);
+#else
                 string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, toolchain.StaticLibraryPrefix + this.OutputName + toolchain.StaticLibrarySuffix);
+#endif
                 this.LibraryFilePath = libraryPathname;
             }
 

@@ -23,7 +23,6 @@ namespace MingwCommon
                 return ".o";
             }
         }
-#endif
 
         public override string StaticLibraryPrefix
         {
@@ -41,7 +40,6 @@ namespace MingwCommon
             }
         }
 
-#if false
         public override string StaticImportLibraryPrefix
         {
             get

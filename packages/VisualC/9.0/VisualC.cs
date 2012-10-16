@@ -23,7 +23,7 @@
 
 namespace VisualC
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo
     {
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
@@ -118,6 +118,34 @@ namespace VisualC
             get
             {
                 return "bin";
+            }
+        }
+
+        #endregion
+
+        #region IArchiverInfo Members
+
+        string C.IArchiverInfo.StaticLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        string C.IArchiverInfo.StaticLibrarySuffix
+        {
+            get
+            {
+                return ".lib";
+            }
+        }
+
+        string C.IArchiverInfo.StaticLibraryOutputSubDirectory
+        {
+            get
+            {
+                return "lib";
             }
         }
 

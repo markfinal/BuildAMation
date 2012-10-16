@@ -23,7 +23,6 @@ namespace ComposerXECommon
                 return ".o";
             }
         }
-#endif
 
         public override string StaticLibraryPrefix
         {
@@ -41,7 +40,6 @@ namespace ComposerXECommon
             }
         }
 
-#if false
         public override string StaticImportLibraryPrefix
         {
             get

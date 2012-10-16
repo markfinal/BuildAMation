@@ -35,11 +35,18 @@ namespace C
                 throw new Opus.Core.Exception(System.String.Format("Linker information for '{0}' is missing", target.Toolchain), false);
             }
 
+            IArchiverInfo archiverInfo = toolsetInfo as IArchiverInfo;
+            if (null == archiverInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Archiver information for '{0}' is missing", target.Toolchain), false);
+            }
+
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.BinaryOutputSubDirectory);
+            this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverInfo.StaticLibraryOutputSubDirectory);
 #else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.BinaryOutputSubDirectory);
-#endif
             this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
+#endif
 
             ILinkerOptions linkerOptions = this as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.Executable;
