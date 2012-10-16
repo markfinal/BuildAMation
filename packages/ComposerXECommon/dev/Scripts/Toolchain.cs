@@ -7,6 +7,7 @@ namespace ComposerXECommon
 {
     public abstract class Toolchain : C.Toolchain
     {
+#if false
         public override string PreprocessedOutputSuffix
         {
             get
@@ -22,6 +23,7 @@ namespace ComposerXECommon
                 return ".o";
             }
         }
+#endif
 
         public override string StaticLibraryPrefix
         {

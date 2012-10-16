@@ -22,7 +22,7 @@
 
 namespace Mingw
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
     {
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
@@ -33,5 +33,33 @@ namespace Mingw
         {
             throw new System.NotImplementedException();
         }
+
+        #region ICompilerInfo Members
+
+        string C.ICompilerInfo.PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileSuffix
+        {
+            get
+            {
+                return ".o";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
+        #endregion
     }
 }

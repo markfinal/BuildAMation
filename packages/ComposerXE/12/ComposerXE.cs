@@ -11,6 +11,59 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "intel", C.ClassNames.LinkerTool, typeof(ComposerXE.Linker), typeof(ComposerXE.LinkerOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "intel", C.ClassNames.Toolchain, typeof(ComposerXE.Toolchain), typeof(ComposerXE.ToolchainOptionCollection))]
 
+#if false
+[assembly: C.RegisterToolchain(
+    "intel",
+    typeof(ComposerXE.ToolsetInfo),
+    typeof(ComposerXE.CCompiler), typeof(ComposerXE.CCompilerOptionCollection),
+    typeof(ComposerXE.CPlusPlusCompiler), typeof(ComposerXE.CPlusPlusCompilerOptionCollection),
+    null, null,
+    null, null,
+    null, null)]
+#endif
+
 namespace ComposerXE
 {
+#if false
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
+    {
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "12";
+        }
+
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #region ICompilerInfo Members
+
+        string C.ICompilerInfo.PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileSuffix
+        {
+            get
+            {
+                return ".o";
+            }
+        }
+
+        string C.ICompilerInfo.ObjectFileOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
+        #endregion
+    }
+#endif
 }

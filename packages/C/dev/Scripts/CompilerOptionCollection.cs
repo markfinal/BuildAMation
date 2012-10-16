@@ -97,7 +97,25 @@ namespace C
                 this.OutputName = null;
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.Target target = node.Target;
+            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+            if (null == toolsetInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            ICompilerInfo compilerInfo = toolsetInfo as ICompilerInfo;
+            if (null == compilerInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Compiler information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerInfo.ObjectFileOutputSubDirectory);
+#else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);
+#endif
         }
 
         public string OutputName

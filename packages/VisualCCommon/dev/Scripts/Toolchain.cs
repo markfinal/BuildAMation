@@ -17,6 +17,7 @@ namespace VisualCCommon
 
         public abstract string LibPath(Opus.Core.Target target);
 
+#if false
         public override string PreprocessedOutputSuffix
         {
             get
@@ -32,6 +33,7 @@ namespace VisualCCommon
                 return ".obj";
             }
         }
+#endif
 
         public override string StaticLibraryPrefix
         {

@@ -21,6 +21,7 @@ namespace C
             protected set;
         }
 
+#if false
         public abstract string PreprocessedOutputSuffix
         {
             get;
@@ -30,6 +31,7 @@ namespace C
         {
             get;
         }
+#endif
 
         public abstract string StaticLibraryPrefix
         {
@@ -95,6 +97,7 @@ namespace C
             }
         }
 
+#if false
         public static string ObjectFileOutputSubDirectory
         {
             get
@@ -102,5 +105,6 @@ namespace C
                 return "obj";
             }
         }
+#endif
     }
 }
