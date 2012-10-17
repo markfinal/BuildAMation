@@ -131,8 +131,15 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(VisualC.ToolsetInfo));
+            VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
+#else
             VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+#endif
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:

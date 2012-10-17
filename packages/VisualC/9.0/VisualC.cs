@@ -23,7 +23,7 @@
 
 namespace VisualC
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, VisualStudioProcessor.IVisualStudioTargetInfo
     {
         private static string installPath;
         private static string bin32Folder;
@@ -269,6 +269,18 @@ namespace VisualC
             get
             {
                 return ".res";
+            }
+        }
+
+        #endregion
+
+        #region IVisualStudioTargetInfo Members
+
+        VisualStudioProcessor.EVisualStudioTarget VisualStudioProcessor.IVisualStudioTargetInfo.VisualStudioTarget
+        {
+            get
+            {
+                return VisualStudioProcessor.EVisualStudioTarget.VCPROJ;
             }
         }
 
