@@ -9,9 +9,9 @@ namespace ComposerXECommon
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+#if false
             // common toolchain options
             this["IsCPlusPlus"].PrivateData = new PrivateData(null);
-#if false
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine);
 #endif
         }

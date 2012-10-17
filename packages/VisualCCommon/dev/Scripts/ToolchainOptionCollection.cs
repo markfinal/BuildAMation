@@ -18,8 +18,8 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common toolchain options
-            this["IsCPlusPlus"].PrivateData = new PrivateData(null, null);
 #if false
+            this["IsCPlusPlus"].PrivateData = new PrivateData(null, null);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine, null);
 #endif
 

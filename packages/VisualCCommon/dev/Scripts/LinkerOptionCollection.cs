@@ -320,41 +320,51 @@ namespace VisualCCommon
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
+#if false
             C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
             bool isCPlusPlus = toolchainOptions.IsCPlusPlus;
+#endif
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
                     options.StandardLibraries.Add("LIBCMT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
                     options.StandardLibraries.Add("LIBCMTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMTD.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
                     options.StandardLibraries.Add("MSVCRT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRTD.lib");
                     }
+#endif
                     break;
 
                 default:
@@ -365,41 +375,51 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
+#if false
             C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
             bool isCPlusPlus = toolchainOptions.IsCPlusPlus;
+#endif
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
                     options.StandardLibraries.Add("LIBCMT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
                     options.StandardLibraries.Add("LIBCMTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMTD.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
                     options.StandardLibraries.Add("MSVCRT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRTD.lib");
                     }
+#endif
                     break;
 
                 default:

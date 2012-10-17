@@ -7,11 +7,13 @@ namespace C
 {
     public interface IToolchainOptions
     {
+#if false
         bool IsCPlusPlus
         {
             get;
             set;
         }
+#endif
 
 #if false
         C.ECharacterSet CharacterSet

@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class ToolchainOptionCollection
     {
+#if false
         bool C.IToolchainOptions.IsCPlusPlus
         {
             get
@@ -17,7 +18,6 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("IsCPlusPlusSetHandler", this["IsCPlusPlus"]);
             }
         }
-#if false
         C.ECharacterSet C.IToolchainOptions.CharacterSet
         {
             get
