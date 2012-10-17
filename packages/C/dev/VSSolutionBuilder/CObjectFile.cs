@@ -13,7 +13,6 @@ namespace VSSolutionBuilder
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
             Opus.Core.ITool toolInterface = null;
@@ -166,6 +165,26 @@ namespace VSSolutionBuilder
 
                 ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
 
+                // NEW STYLE
+#if true
+                Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+                if (null == toolsetInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                C.ICompilerInfo compilerInfo = toolsetInfo as C.ICompilerInfo;
+                if (null == compilerInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Compiler information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                string objectFileSuffix = compilerInfo.ObjectFileSuffix;
+#else
+                C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
+                string objectFileSuffix = toolchain.ObjectFileSuffix;
+#endif
+
                 string commandToken;
                 string outputsToken;
                 string messageToken;
@@ -173,7 +192,7 @@ namespace VSSolutionBuilder
                 string outputPathname;
                 if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
                 {
-                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileSuffix);
+                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", objectFileSuffix);
 
                     // add source file
                     commandLineBuilder.Add(@" $(InputPath)");
@@ -185,7 +204,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", toolchain.ObjectFileSuffix);
+                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", objectFileSuffix);
 
                     // add source file
                     commandLineBuilder.Add(@" %(FullPath)");
