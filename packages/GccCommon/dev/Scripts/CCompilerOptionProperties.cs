@@ -5,6 +5,7 @@ namespace GccCommon
 {
     public partial class CCompilerOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.ICCompilerOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get

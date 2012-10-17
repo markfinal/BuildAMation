@@ -5,6 +5,7 @@ namespace ComposerXECommon
 {
     public partial class CCompilerOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.ICCompilerOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get

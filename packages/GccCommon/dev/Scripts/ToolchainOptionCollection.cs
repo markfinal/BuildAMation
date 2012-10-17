@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>GccCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace GccCommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions
@@ -63,3 +64,4 @@ namespace GccCommon
         }
     }
 }
+#endif

@@ -7,11 +7,13 @@ namespace C
 {
     public interface IArchiverOptions
     {
+#if false
         C.ToolchainOptionCollection ToolchainOptionCollection
         {
             get;
             set;
         }
+#endif
 
         C.EArchiverOutput OutputType
         {

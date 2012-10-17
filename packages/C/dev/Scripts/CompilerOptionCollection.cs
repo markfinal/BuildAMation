@@ -12,7 +12,9 @@ namespace C
         {
             ICCompilerOptions compilerOptions = this as ICCompilerOptions;
 
+#if false
             compilerOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
+#endif
 
             Opus.Core.Target target = node.Target;
 

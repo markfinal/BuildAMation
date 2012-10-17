@@ -71,7 +71,9 @@ namespace C
             map[typeof(C.Linker)]      = this.Toolchain;
             map[typeof(C.Archiver)]    = this.Toolchain;
             map[typeof(C.Win32ResourceCompilerBase)] = this.Toolchain;
+#if false
             map[typeof(C.Toolchain)]   = this.Toolchain;
+#endif
 
             return true;
         }

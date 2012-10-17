@@ -28,10 +28,14 @@ namespace Opus.Core
                     }
                 }
             }
+            // NEW STYLE
+#if true
+#else
             if (null == versionString)
             {
                 throw new Exception(System.String.Format("Cannot find the toolchain name version property '{0}'", versionStringFunction), false);
             }
+#endif
 
             this.ImplementationName = null;
             this.VersionStringDelegate = versionStringFunction;

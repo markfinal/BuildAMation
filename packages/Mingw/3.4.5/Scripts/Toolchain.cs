@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>Mingw package</summary>
 // <author>Mark Final</author>
+#if false
 namespace Mingw
 {
     public sealed class Toolchain : MingwCommon.Toolchain
@@ -89,3 +90,4 @@ namespace Mingw
         }
     }
 }
+#endif

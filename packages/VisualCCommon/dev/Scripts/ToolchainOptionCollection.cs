@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>VisualCCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualCCommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions, IToolchainOptions, VisualStudioProcessor.IVisualStudioSupport
@@ -158,3 +159,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif

@@ -3,11 +3,11 @@
 // </copyright>
 // <summary>GccCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace GccCommon
 {
     public abstract class Toolchain : C.Toolchain
     {
-#if false
         public override string PreprocessedOutputSuffix
         {
             get
@@ -82,9 +82,7 @@ namespace GccCommon
                 return this.StaticImportLibrarySuffix;
             }
         }
-#endif
 
-#if false
         public override string ExecutableSuffix
         {
             get
@@ -107,6 +105,6 @@ namespace GccCommon
             get;
             protected set;
         }
-#endif
     }
 }
+#endif

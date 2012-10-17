@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>MingwCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace MingwCommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions
@@ -63,3 +64,4 @@ namespace MingwCommon
         }
     }
 }
+#endif

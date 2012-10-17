@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
+#if false
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
@@ -13,7 +14,6 @@ namespace C
 
     public abstract class Toolchain
     {
-#if false
         public abstract string InstallPath(Opus.Core.Target target);
         public abstract string BinPath(Opus.Core.Target target);
         public abstract Opus.Core.StringArray Environment
@@ -103,6 +103,6 @@ namespace C
                 return "obj";
             }
         }
-#endif
     }
 }
+#endif

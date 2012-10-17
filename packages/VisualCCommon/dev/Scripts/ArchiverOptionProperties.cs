@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class ArchiverOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.IArchiverOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get

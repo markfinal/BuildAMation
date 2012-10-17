@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
+#if false
 namespace ComposerXE
 {
     public sealed class Toolchain : ComposerXECommon.Toolchain
@@ -64,3 +65,4 @@ namespace ComposerXE
         }
     }
 }
+#endif

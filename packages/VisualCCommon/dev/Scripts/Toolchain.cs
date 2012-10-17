@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>VisualCCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualCCommon
 {
     public abstract class Toolchain : C.Toolchain
@@ -131,3 +132,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif

@@ -3,11 +3,11 @@
 // </copyright>
 // <summary>MingwCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace MingwCommon
 {
     public abstract class Toolchain : C.Toolchain
     {
-#if false
         public override string PreprocessedOutputSuffix
         {
             get
@@ -71,9 +71,7 @@ namespace MingwCommon
                 return ".dll";
             }
         }
-#endif
 
-#if false
         public override string ExecutableSuffix
         {
             get
@@ -97,6 +95,6 @@ namespace MingwCommon
                 return ".o";
             }
         }
-#endif
     }
 }
+#endif

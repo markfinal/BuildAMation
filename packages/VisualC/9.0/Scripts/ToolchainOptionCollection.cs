@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualC
 {
     public sealed partial class ToolchainOptionCollection : VisualCCommon.ToolchainOptionCollection
@@ -18,3 +19,4 @@ namespace VisualC
         }
     }
 }
+#endif

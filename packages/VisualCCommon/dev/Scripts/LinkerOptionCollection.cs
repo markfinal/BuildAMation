@@ -10,7 +10,9 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common linker options
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
+#endif
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine, OutputTypeVisualStudio);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine, DebugSymbolsVisualStudio);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLine, SubSystemVisualStudio);
@@ -93,6 +95,7 @@ namespace VisualCCommon
             base.FinalizeOptions(target);
         }
 
+#if false
         private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
@@ -104,6 +107,7 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
             return RuntimeLibraryVisualStudio(sender, toolchainOptions.Value["RuntimeLibrary"], target, vsTarget);
         }
+#endif
 
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {

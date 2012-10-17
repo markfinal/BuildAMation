@@ -5,6 +5,7 @@ namespace ComposerXECommon
 {
     public partial class ArchiverOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.IArchiverOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get

@@ -3,17 +3,16 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
+#if false
 namespace C
 {
     public abstract class ToolchainOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
-#if false
             IToolchainOptions options = this as IToolchainOptions;
             options.CharacterSet = ECharacterSet.NotSet;
             options.IsCPlusPlus = false;
-#endif
         }
 
         public ToolchainOptionCollection()
@@ -113,3 +112,4 @@ namespace C
         public abstract Opus.Core.DirectoryCollection DirectoriesToCreate();
     }
 }
+#endif

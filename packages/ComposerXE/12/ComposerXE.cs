@@ -9,7 +9,9 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "intel", C.ClassNames.CCompilerTool, typeof(ComposerXE.CCompiler), typeof(ComposerXE.CCompilerOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "intel", C.ClassNames.CPlusPlusCompilerTool, typeof(ComposerXE.CPlusPlusCompiler), typeof(ComposerXE.CPlusPlusCompilerOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "intel", C.ClassNames.LinkerTool, typeof(ComposerXE.Linker), typeof(ComposerXE.LinkerOptionCollection))]
+#if false
 [assembly: Opus.Core.MapToolChainClassTypes("C", "intel", C.ClassNames.Toolchain, typeof(ComposerXE.Toolchain), typeof(ComposerXE.ToolchainOptionCollection))]
+#endif
 
 #if false
 [assembly: C.RegisterToolchain(

@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace ComposerXECommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions
@@ -63,3 +64,4 @@ namespace ComposerXECommon
         }
     }
 }
+#endif
