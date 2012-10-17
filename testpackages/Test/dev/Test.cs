@@ -13,6 +13,12 @@ namespace Test
                 compilerOptions.Defines.Add("GLOBALOVERRIDE");
             }
 
+            if (optionCollection is C.ICPlusPlusCompilerOptions)
+            {
+                C.ICPlusPlusCompilerOptions compilerOptions = optionCollection as C.ICPlusPlusCompilerOptions;
+                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Asynchronous;
+            }
+
             if (optionCollection is VisualCCommon.LinkerOptionCollection)
             {
                 VisualCCommon.LinkerOptionCollection linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;

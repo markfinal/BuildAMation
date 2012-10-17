@@ -8,7 +8,15 @@ class MyClass
 public:
     MyClass()
     {
-        printf("MyClass constructor\n");
+        try
+        {
+            printf("MyClass constructor\n");
+        }
+        catch (...)
+        {
+            printf("Exception...\n");
+            throw;
+        }
     }
     
     int returnValue() const
