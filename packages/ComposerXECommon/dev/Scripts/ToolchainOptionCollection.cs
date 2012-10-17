@@ -11,7 +11,9 @@ namespace ComposerXECommon
         {
             // common toolchain options
             this["IsCPlusPlus"].PrivateData = new PrivateData(null);
+#if false
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine);
+#endif
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)

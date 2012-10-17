@@ -10,7 +10,9 @@ namespace C
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             IToolchainOptions options = this as IToolchainOptions;
+#if false
             options.CharacterSet = ECharacterSet.NotSet;
+#endif
             options.IsCPlusPlus = false;
         }
 

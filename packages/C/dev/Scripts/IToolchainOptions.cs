@@ -13,10 +13,12 @@ namespace C
             set;
         }
 
+#if false
         C.ECharacterSet CharacterSet
         {
             get;
             set;
         }
+#endif
     }
 }

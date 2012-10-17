@@ -55,6 +55,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
+#if false
                     C.IArchiverOptions archiverOptions = staticLibraryOptions as C.IArchiverOptions;
                     C.IToolchainOptions toolchainOptions = archiverOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
@@ -76,8 +77,9 @@ namespace VSSolutionBuilder
                             characterSet = EProjectCharacterSet.Undefined;
                             break;
                     }
-                    configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = characterSet;
+#endif
+                    configuration = new ProjectConfiguration(configurationName, projectData);
                     projectData.Configurations.Add(target, configuration);
                 }
                 else

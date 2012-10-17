@@ -87,7 +87,9 @@ namespace VSSolutionBuilder
                 configurationGroup.Label = "Configuration";
                 configurationGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 configurationGroup.CreateProperty("ConfigurationType", configuration.Type.ToString());
+#if false
                 configurationGroup.CreateProperty("CharacterSet", configuration.CharacterSet.ToString());
+#endif
             }
 
             // import property sheets AFTER the configuration types

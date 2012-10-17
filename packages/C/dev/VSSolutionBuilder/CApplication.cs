@@ -74,6 +74,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
+#if false
                     C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
                     C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
@@ -95,8 +96,9 @@ namespace VSSolutionBuilder
                             characterSet = EProjectCharacterSet.Undefined;
                             break;
                     }
-                    configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = characterSet;
+#endif
+                    configuration = new ProjectConfiguration(configurationName, projectData);
                     projectData.Configurations.Add(target, configuration);
                 }
                 else

@@ -17,6 +17,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("IsCPlusPlusSetHandler", this["IsCPlusPlus"]);
             }
         }
+#if false
         C.ECharacterSet C.IToolchainOptions.CharacterSet
         {
             get
@@ -29,6 +30,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+#endif
         VisualCCommon.ERuntimeLibrary IToolchainOptions.RuntimeLibrary
         {
             get

@@ -17,6 +17,7 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("IsCPlusPlusSetHandler", this["IsCPlusPlus"]);
             }
         }
+#if false
         C.ECharacterSet C.IToolchainOptions.CharacterSet
         {
             get
@@ -29,5 +30,6 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+#endif
     }
 }

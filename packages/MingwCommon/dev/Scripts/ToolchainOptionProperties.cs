@@ -17,6 +17,7 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("IsCPlusPlusSetHandler", this["IsCPlusPlus"]);
             }
         }
+#if false
         C.ECharacterSet C.IToolchainOptions.CharacterSet
         {
             get
@@ -29,5 +30,6 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+#endif
     }
 }

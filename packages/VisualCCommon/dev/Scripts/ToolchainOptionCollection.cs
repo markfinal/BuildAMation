@@ -19,7 +19,9 @@ namespace VisualCCommon
         {
             // common toolchain options
             this["IsCPlusPlus"].PrivateData = new PrivateData(null, null);
+#if false
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine, null);
+#endif
 
             // toolchain specific options
             this["RuntimeLibrary"].PrivateData = new PrivateData(RuntimeLibraryCommandLine, RuntimeLibraryVisualStudio);
@@ -41,6 +43,7 @@ namespace VisualCCommon
             return dirsToCreate;
         }
 
+#if false
         private static void CharacterSetCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
@@ -65,6 +68,7 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized C.ECharacterSet option");
             }
         }
+#endif
 
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
