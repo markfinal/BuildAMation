@@ -24,7 +24,7 @@
 
 namespace Mingw
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IWinResourceCompilerInfo, C.IArchiverInfo
     {
         private static string installPath;
         private static string binPath;
@@ -119,6 +119,119 @@ namespace Mingw
         Opus.Core.StringArray C.ICompilerInfo.IncludePaths(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
+        }
+
+        #endregion
+
+        #region ILinkerInfo Members
+
+        string C.ILinkerInfo.ExecutableSuffix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        string C.ILinkerInfo.MapFileSuffix
+        {
+            get
+            {
+                return ".map";
+            }
+        }
+
+        string C.ILinkerInfo.ImportLibraryPrefix
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        string C.ILinkerInfo.ImportLibrarySuffix
+        {
+            get
+            {
+                return ".a";
+            }
+        }
+
+        string C.ILinkerInfo.DynamicLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        string C.ILinkerInfo.DynamicLibrarySuffix
+        {
+            get
+            {
+                return ".dll";
+            }
+        }
+
+        string C.ILinkerInfo.ImportLibrarySubDirectory
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        string C.ILinkerInfo.BinaryOutputSubDirectory
+        {
+            get
+            {
+                return "bin";
+            }
+        }
+
+        Opus.Core.StringArray C.ILinkerInfo.LibPaths(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+
+        #region IWinResourceCompilerInfo Members
+
+        string C.IWinResourceCompilerInfo.CompiledResourceSuffix
+        {
+            get
+            {
+                return ".obj";
+            }
+        }
+
+        #endregion
+
+        #region IArchiverInfo Members
+
+        string C.IArchiverInfo.StaticLibraryPrefix
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        string C.IArchiverInfo.StaticLibrarySuffix
+        {
+            get
+            {
+                return ".a";
+            }
+        }
+
+        string C.IArchiverInfo.StaticLibraryOutputSubDirectory
+        {
+            get
+            {
+                return "lib";
+            }
         }
 
         #endregion
