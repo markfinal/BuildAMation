@@ -10,7 +10,9 @@ namespace MingwCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common linker options
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null);
+#endif
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLine);

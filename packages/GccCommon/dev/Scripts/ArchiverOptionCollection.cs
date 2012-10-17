@@ -10,7 +10,9 @@ namespace GccCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common archiver options
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null);
+#endif
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine);
 
