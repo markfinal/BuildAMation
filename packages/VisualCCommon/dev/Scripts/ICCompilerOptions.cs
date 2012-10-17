@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
+    // TODO: extend with runtime library option
     public interface ICCompilerOptions
     {
         bool NoLogo
