@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
+    // TODO: reminder to add a CharacterSet option to this
     public interface ICCompilerOptions
     {
         C.ToolchainOptionCollection ToolchainOptionCollection
