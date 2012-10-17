@@ -50,7 +50,7 @@ namespace C
 #endif
 
             linkerOptions.SubSystem = ESubsystem.NotSet;
-            linkerOptions.DoNotAutoIncludeStandardLibraries = true;
+            linkerOptions.DoNotAutoIncludeStandardLibraries = false;
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 linkerOptions.DebugSymbols = true;
