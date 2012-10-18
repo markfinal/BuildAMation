@@ -8,12 +8,11 @@ namespace FileUtilities
     public sealed partial class SymLinkOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ISymLinkOptions
     {
         public SymLinkOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.InitializeDefaults(node);
-            this.SetDelegates(node);
         }
 
-        private void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             ISymLinkOptions options = this as ISymLinkOptions;
 

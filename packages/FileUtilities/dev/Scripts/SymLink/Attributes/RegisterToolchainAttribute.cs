@@ -3,8 +3,15 @@ namespace FileUtilities
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed class SymLinkRegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
-        public SymLinkRegisterToolchainAttribute(string name)
+        public SymLinkRegisterToolchainAttribute(System.Type infoType)
         {
+            if (!typeof(Opus.Core.IToolsetInfo).IsAssignableFrom(infoType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolsetInfo).ToString()), false);
+            }
+
+            string name = "FileUtilities.SymLink";
+
             if (!typeof(ISymLinkOptions).IsAssignableFrom(typeof(SymLinkOptionCollection)))
             {
                 throw new Opus.Core.Exception(System.String.Format("C Compiler option type '{0}' does not implement the interface {1}", typeof(SymLinkOptionCollection).ToString(), typeof(ISymLinkOptions).ToString()), false);
@@ -20,6 +27,36 @@ namespace FileUtilities
                     Opus.Core.State.AddCategory("ToolchainTypeMap");
                 }
                 Opus.Core.State.Add("ToolchainTypeMap", name, map);
+            }
+
+            // TODO: we do this here because we know that this will be executed
+            {
+                if (!Opus.Core.State.HasCategory("Toolchains"))
+                {
+                    Opus.Core.State.AddCategory("Toolchains");
+                }
+
+                // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
+                System.Collections.Generic.Dictionary<System.Type, string> map = null;
+                if (Opus.Core.State.Has("Toolchains", "Map"))
+                {
+                    map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+                }
+                else
+                {
+                    map = new System.Collections.Generic.Dictionary<System.Type, string>();
+                    Opus.Core.State.Add("Toolchains", "Map", map);
+                }
+                map[typeof(SymLinkTool)] = name;
+            }
+
+            // define where toolset information can be located
+            {
+                if (!Opus.Core.State.HasCategory("ToolsetInfo"))
+                {
+                    Opus.Core.State.AddCategory("ToolsetInfo");
+                }
+                Opus.Core.State.Add("ToolsetInfo", name, Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(infoType));
             }
         }
     }
