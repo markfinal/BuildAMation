@@ -3,8 +3,13 @@ namespace CodeGenTest
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
-        public RegisterToolchainAttribute(string name)
+        public RegisterToolchainAttribute(string name, System.Type infoType)
         {
+            if (!typeof(Opus.Core.IToolsetInfo).IsAssignableFrom(infoType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolsetInfo).ToString()), false);
+            }
+
             if (!typeof(ICodeGenOptions).IsAssignableFrom(typeof(CodeGenOptions)))
             {
                 throw new Opus.Core.Exception(System.String.Format("C Compiler option type '{0}' does not implement the interface {1}", typeof(CodeGenOptions).ToString(), typeof(ICodeGenOptions).ToString()), false);
@@ -36,6 +41,15 @@ namespace CodeGenTest
                     Opus.Core.State.Add("Toolchains", "Map", map);
                 }
                 map[typeof(CodeGenTool)] = "CodeGenTest";
+            }
+
+            // define where toolset information can be located
+            {
+                if (!Opus.Core.State.HasCategory("ToolsetInfo"))
+                {
+                    Opus.Core.State.AddCategory("ToolsetInfo");
+                }
+                Opus.Core.State.Add("ToolsetInfo", name, Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(infoType));
             }
         }
     }
