@@ -29,6 +29,11 @@ namespace CodeGenTest
 
             // TODO: we do this here because we know that this will be executed
             {
+                if (!Opus.Core.State.HasCategory("Toolchains"))
+                {
+                    Opus.Core.State.AddCategory("Toolchains");
+                }
+
                 // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
                 System.Collections.Generic.Dictionary<System.Type, string> map = null;
                 if (Opus.Core.State.Has("Toolchains", "Map"))
