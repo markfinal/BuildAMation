@@ -27,7 +27,6 @@ namespace Opus.Core
 
                 ModuleToolAssignmentAttribute attr = t[0] as ModuleToolAssignmentAttribute;
                 System.Type toolType = attr.ToolchainType;
-
                 if (null == toolType)
                 {
                     // module does not require a toolchain
