@@ -3,8 +3,13 @@ namespace CodeGenTest2
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
-        public RegisterToolchainAttribute(string name)
+        public RegisterToolchainAttribute(string name, System.Type infoType)
         {
+            if (!typeof(Opus.Core.IToolsetInfo).IsAssignableFrom(infoType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolsetInfo).ToString()), false);
+            }
+
             if (!typeof(ICodeGenOptions).IsAssignableFrom(typeof(CodeGenOptions)))
             {
                 throw new Opus.Core.Exception(System.String.Format("C Compiler option type '{0}' does not implement the interface {1}", typeof(CodeGenOptions).ToString(), typeof(ICodeGenOptions).ToString()), false);
@@ -24,6 +29,11 @@ namespace CodeGenTest2
 
             // TODO: we do this here because we know that this will be executed
             {
+                if (!Opus.Core.State.HasCategory("Toolchains"))
+                {
+                    Opus.Core.State.AddCategory("Toolchains");
+                }
+
                 // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
                 System.Collections.Generic.Dictionary<System.Type, string> map = null;
                 if (Opus.Core.State.Has("Toolchains", "Map"))
@@ -36,6 +46,15 @@ namespace CodeGenTest2
                     Opus.Core.State.Add("Toolchains", "Map", map);
                 }
                 map[typeof(CodeGenTool)] = "CodeGenTest2";
+            }
+
+            // define where toolset information can be located
+            {
+                if (!Opus.Core.State.HasCategory("ToolsetInfo"))
+                {
+                    Opus.Core.State.AddCategory("ToolsetInfo");
+                }
+                Opus.Core.State.Add("ToolsetInfo", name, Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(infoType));
             }
         }
     }

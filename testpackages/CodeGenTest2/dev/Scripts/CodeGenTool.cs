@@ -1,8 +1,35 @@
 [assembly: Opus.Core.RegisterTargetToolChain("codegentool", "CodeGenTest2.CodeGeneratorTool.VersionString")]
-[assembly: CodeGenTest2.RegisterToolchain("CodeGenTest2")]
+[assembly: CodeGenTest2.RegisterToolchain("CodeGenTest2", typeof(CodeGenTest2.ToolInfo))]
 
 namespace CodeGenTest2
 {
+    public class ToolInfo : Opus.Core.IToolsetInfo
+    {
+        #region IToolsetInfo Members
+
+        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            return "dev";
+        }
+
+        #endregion
+    }
+
     [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalCodeGenOptionsDelegateAttribute),
                                             typeof(ExportCodeGenOptionsDelegateAttribute))]
     public class CodeGenTool : Opus.Core.ITool
@@ -11,7 +38,7 @@ namespace CodeGenTest2
         {
             // NEW STYLE
 #if true
-            string toolchainImplementation = ModuleUtilities.GetToolchainForModule(typeof(CodeGenTest2.CodeGeneratorTool));
+            string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainForModule(typeof(CodeGenTest2.CodeGeneratorTool));
 #else
             string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainImplementation(typeof(CodeGenTest2.CodeGeneratorTool));
 #endif

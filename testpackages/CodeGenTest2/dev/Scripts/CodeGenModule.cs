@@ -26,10 +26,8 @@ namespace CodeGenTest2
     public partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
     {
         public CodeGenOptions(Opus.Core.DependencyNode node)
-            : base()
+            : base(node)
         {
-            this.SetDefaults(node);
-            this.SetDelegates(node);
         }
 
         private void SetGeneratedFilePath()
@@ -42,7 +40,7 @@ namespace CodeGenTest2
             }
         }
 
-        private void SetDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             ICodeGenOptions options = this as ICodeGenOptions;
             options.OutputSourceDirectory = node.GetTargettedModuleBuildDirectory("src");
