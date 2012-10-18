@@ -23,7 +23,7 @@ namespace C
         {
             if (!typeof(Opus.Core.IToolsetInfo).IsAssignableFrom(infoType))
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", cCompilerType.ToString(), typeof(Opus.Core.IToolsetInfo).ToString()), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolsetInfo).ToString()), false);
             }
 
             if (null != cCompilerType)
