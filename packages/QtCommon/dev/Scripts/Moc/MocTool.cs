@@ -4,10 +4,38 @@
 // <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("moctool", "Qt.Qt.VersionString")]
-[assembly: QtCommon.RegisterToolchain()]
+[assembly: QtCommon.RegisterToolchain(typeof(QtCommon.MocToolsetInfo))]
 
 namespace QtCommon
 {
+    public sealed class MocToolsetInfo : Opus.Core.IToolsetInfo
+    {
+        #region IToolsetInfo Members
+
+        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        {
+            // TODO:
+            return "dev";
+        }
+
+        #endregion
+    }
+
     [Opus.Core.LocalAndExportTypes(typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(ExportMocOptionsDelegateAttribute))]
     public sealed class MocTool : Opus.Core.ITool

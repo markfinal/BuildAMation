@@ -13,13 +13,11 @@ namespace QtCommon
         }
 
         public MocOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.SetDefaults(node);
-            this.SetNodeOwnership(node);
-            this.SetDelegates(node);
         }
 
-        private void SetDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             IMocOptions options = this as IMocOptions;
             options.MocOutputPath = null;

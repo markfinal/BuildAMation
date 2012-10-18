@@ -3,8 +3,12 @@ namespace QtCommon
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
-        public RegisterToolchainAttribute()
+        public RegisterToolchainAttribute(System.Type infoType)
         {
+            if (!typeof(Opus.Core.IToolsetInfo).IsAssignableFrom(infoType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolsetInfo).ToString()), false);
+            }
             string name = "QtCommon.MocTool";
 
             if (!typeof(IMocOptions).IsAssignableFrom(typeof(MocOptionCollection)))
@@ -22,6 +26,36 @@ namespace QtCommon
                     Opus.Core.State.AddCategory("ToolchainTypeMap");
                 }
                 Opus.Core.State.Add("ToolchainTypeMap", name, map);
+            }
+
+            // TODO: we do this here because we know that this will be executed
+            {
+                if (!Opus.Core.State.HasCategory("Toolchains"))
+                {
+                    Opus.Core.State.AddCategory("Toolchains");
+                }
+
+                // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
+                System.Collections.Generic.Dictionary<System.Type, string> map = null;
+                if (Opus.Core.State.Has("Toolchains", "Map"))
+                {
+                    map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+                }
+                else
+                {
+                    map = new System.Collections.Generic.Dictionary<System.Type, string>();
+                    Opus.Core.State.Add("Toolchains", "Map", map);
+                }
+                map[typeof(MocTool)] = name;
+            }
+
+            // define where toolset information can be located
+            {
+                if (!Opus.Core.State.HasCategory("ToolsetInfo"))
+                {
+                    Opus.Core.State.AddCategory("ToolsetInfo");
+                }
+                Opus.Core.State.Add("ToolsetInfo", name, Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(infoType));
             }
         }
     }
