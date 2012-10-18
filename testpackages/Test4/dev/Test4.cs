@@ -25,6 +25,9 @@ namespace Test4
             [C.ExportCompilerOptionsDelegate]
             private static void SetRuntimeLibrary(Opus.Core.IModule module, Opus.Core.Target target)
             {
+            // NEW STYLE
+#if true
+#else
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 C.ToolchainOptionCollection toolOptions = compilerOptions.ToolchainOptionCollection;
                 VisualCCommon.IToolchainOptions vcToolOptions = toolOptions as VisualCCommon.IToolchainOptions;
@@ -32,6 +35,7 @@ namespace Test4
                 {
                     vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
                 }
+#endif
             }
         }
 
