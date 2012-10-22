@@ -22,10 +22,35 @@ namespace Gcc
 #if true
             Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Gcc.ToolsetInfo));
             this.binPath = info.BinPath(target);
+            
+            GccCommon.IGCCInfo gccInfo = info as GccCommon.IGCCInfo;
+            this.includeFolders.Add("/usr/include");
+            {
+                // this is for some Linux distributions
+                string path = System.String.Format("/usr/include/{0}", gccInfo.MachineType(target));
+                if (System.IO.Directory.Exists(path))
+                {
+                    this.includeFolders.Add(path);
+                }
+            }
+            string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", gccInfo.MachineType(target), gccInfo.GccVersion(target));
+            string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
+            string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
+
+            if (!System.IO.Directory.Exists(gccIncludeFolder))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFolder), false);
+            }
+            this.includeFolders.Add(gccIncludeFolder);
+            
+            if (!System.IO.Directory.Exists(gccIncludeFolder))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+            }
+            this.includeFolders.Add(gccIncludeFixedFolder);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
-#endif
 
             this.includeFolders.Add("/usr/include");
             {
@@ -51,6 +76,7 @@ namespace Gcc
                 throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
             }
             this.includeFolders.Add(gccIncludeFixedFolder);
+#endif
         }
 
         public override string Executable(Opus.Core.Target target)
