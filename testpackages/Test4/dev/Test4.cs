@@ -27,6 +27,12 @@ namespace Test4
             {
             // NEW STYLE
 #if true
+                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                VisualCCommon.ICCompilerOptions vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
+                if (vcCompilerOptions != null)
+                {
+                    vcCompilerOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
+                }
 #else
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 C.ToolchainOptionCollection toolOptions = compilerOptions.ToolchainOptionCollection;
