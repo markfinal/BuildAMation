@@ -32,7 +32,7 @@ namespace C
             ILinkerInfo linkerInfo = toolsetInfo as ILinkerInfo;
             if (null == linkerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Linker information for '{0}' is missing", target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
             }
 
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.BinaryOutputSubDirectory);
@@ -146,7 +146,7 @@ namespace C
             ILinkerInfo linkerInfo = toolsetInfo as ILinkerInfo;
             if (null == linkerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Linker information for '{0}' is missing", target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
             }
 
             ILinkerOptions options = this as ILinkerOptions;

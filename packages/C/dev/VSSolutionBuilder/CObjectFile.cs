@@ -180,7 +180,7 @@ namespace VSSolutionBuilder
                 C.ICompilerInfo compilerInfo = toolsetInfo as C.ICompilerInfo;
                 if (null == compilerInfo)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Compiler information for '{0}' is missing", target.Toolchain), false);
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
                 }
 
                 string objectFileSuffix = compilerInfo.ObjectFileSuffix;

@@ -48,7 +48,7 @@ namespace C
             ICompilerInfo compilerInfo = toolsetInfo as ICompilerInfo;
             if (null == compilerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Compiler information for '{0}' is missing", target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(ICompilerInfo).ToString(), target.Toolchain), false);
             }
 
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerInfo.ObjectFileOutputSubDirectory);
@@ -72,7 +72,7 @@ namespace C
                 IWinResourceCompilerInfo resourceCompilerInfo = toolsetInfo as IWinResourceCompilerInfo;
                 if (null == resourceCompilerInfo)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Windows Resource Compiler information for '{0}' is missing", target.Toolchain), false);
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(IWinResourceCompilerInfo).ToString(), target.Toolchain), false);
                 }
 
                 string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerInfo.CompiledResourceSuffix;

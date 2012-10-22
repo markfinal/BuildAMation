@@ -24,7 +24,7 @@ namespace C
             IArchiverInfo archiverInfo = toolsetInfo as IArchiverInfo;
             if (null == archiverInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Archiver information for '{0}' is missing", target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(IArchiverInfo).ToString(), target.Toolchain), false);
             }
 
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverInfo.StaticLibraryOutputSubDirectory);
@@ -84,7 +84,7 @@ namespace C
                 IArchiverInfo archiverInfo = toolsetInfo as IArchiverInfo;
                 if (null == archiverInfo)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Archiver information for '{0}' is missing", target.Toolchain), false);
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(IArchiverInfo).ToString(), target.Toolchain), false);
                 }
 
                 string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverInfo.StaticLibraryPrefix + this.OutputName + archiverInfo.StaticLibrarySuffix);
