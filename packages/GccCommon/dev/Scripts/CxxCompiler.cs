@@ -5,8 +5,16 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public sealed class CxxCompiler : C.CxxCompiler
+    public abstract class CxxCompiler : C.CxxCompiler
     {
+        protected Opus.Core.StringArray CommonIncludePathCompilerSwitches
+        {
+            get
+            {
+                return new Opus.Core.StringArray("-isystem", "-I");
+            }
+        }
+
 #if false
         public abstract string Executable(Opus.Core.Target target);
 

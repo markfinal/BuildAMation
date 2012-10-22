@@ -17,7 +17,7 @@
     "gcc",
     typeof(Gcc.ToolsetInfo),
     typeof(Gcc.CCompiler), typeof(Gcc.CCompilerOptionCollection),
-    typeof(GccCommon.CxxCompiler), typeof(Gcc.CPlusPlusCompilerOptionCollection),
+    typeof(Gcc.CxxCompiler), typeof(Gcc.CPlusPlusCompilerOptionCollection),
     typeof(Gcc.Linker), typeof(Gcc.LinkerOptionCollection),
     typeof(Gcc.Archiver), typeof(Gcc.ArchiverOptionCollection),
     null,null)]
