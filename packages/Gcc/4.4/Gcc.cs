@@ -24,7 +24,7 @@
 
 namespace Gcc
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, GccCommon.IGCCInfo
+    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, GccCommon.IGCCInfo, C.ILinkerInfo, C.IArchiverInfo
     {
         private static string installPath;
         
@@ -306,6 +306,74 @@ namespace Gcc
             }
 
             return gccDetailsForTarget[target].GxxIncludePath;
+        }
+
+        #endregion
+
+        #region ILinkerInfo Members
+
+        string C.ILinkerInfo.ExecutableSuffix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.MapFileSuffix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.ImportLibraryPrefix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.ImportLibrarySuffix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.DynamicLibraryPrefix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.DynamicLibrarySuffix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.ImportLibrarySubDirectory
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.ILinkerInfo.BinaryOutputSubDirectory
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        Opus.Core.StringArray C.ILinkerInfo.LibPaths(Opus.Core.Target target)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #endregion
+
+        #region IArchiverInfo Members
+
+        string C.IArchiverInfo.StaticLibraryPrefix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.IArchiverInfo.StaticLibrarySuffix
+        {
+            get { throw new System.NotImplementedException(); }
+        }
+
+        string C.IArchiverInfo.StaticLibraryOutputSubDirectory
+        {
+            get { throw new System.NotImplementedException(); }
         }
 
         #endregion
