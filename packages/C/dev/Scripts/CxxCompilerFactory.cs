@@ -44,7 +44,17 @@ namespace C
                 }
                 else
                 {
-                    instance = map[type][target] = System.Activator.CreateInstance(type, new object[] { target }) as Opus.Core.ITool;
+                    object compiler = System.Activator.CreateInstance(type, new object[] { target });
+                    if (null == compiler)
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("Unable to create C++ compiler for type '{0}'", type.ToString()), false);
+                    }
+
+                    instance = map[type][target] = compiler as Opus.Core.ITool;
+                    if (null == instance)
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("C++ compiler '{0}' does not implement the interface '{1}'", type.ToString(), typeof(Opus.Core.ITool).ToString()), false);
+                    }
                 }
             }
 
