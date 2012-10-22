@@ -355,5 +355,17 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("EnableIntrinsicFunctionsSetHandler", this["EnableIntrinsicFunctions"]);
             }
         }
+        ERuntimeLibrary ICCompilerOptions.RuntimeLibrary
+        {
+            get
+            {
+                return this.GetValueTypeOption<ERuntimeLibrary>("RuntimeLibrary");
+            }
+            set
+            {
+                this.SetValueTypeOption<ERuntimeLibrary>("RuntimeLibrary", value);
+                this.ProcessNamedSetHandler("RuntimeLibrarySetHandler", this["RuntimeLibrary"]);
+            }
+        }
     }
 }

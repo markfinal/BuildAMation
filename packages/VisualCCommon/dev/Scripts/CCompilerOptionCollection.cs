@@ -44,6 +44,7 @@ namespace VisualCCommon
             this["SmallerTypeConversionRuntimeCheck"].PrivateData = new PrivateData(SmallerTypeConversionRuntimeCheckCommandLine, SmallerTypeConversionRuntimeCheckVisualStudio);
             this["InlineFunctionExpansion"].PrivateData = new PrivateData(InlineFunctionExpansionCommandLine, InlineFunctionExpansionVisualStudio);
             this["EnableIntrinsicFunctions"].PrivateData = new PrivateData(EnableIntrinsicFunctionsCommandLine, EnableIntrinsicFunctionsVisualStudio);
+            this["RuntimeLibrary"].PrivateData = new PrivateData(RuntimeLibraryCommandLine, RuntimeLibraryVisualStudio);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -89,6 +90,7 @@ namespace VisualCCommon
             compilerInterface.ForceConformanceInForLoopScope = true;
             compilerInterface.UseFullPaths = true;
             compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
+            compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
 
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
         }
@@ -1274,6 +1276,75 @@ namespace VisualCCommon
                 dictionary.Add("IntrinsicFunctions", boolOption.Value.ToString());
             }
             return dictionary;
+        }
+
+        private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // TODO: do I really need this, given where it is?
+#if false
+            if (!target.HasToolchain("visualc"))
+            {
+                return;
+            }
+#endif
+
+            Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
+            switch (runtimeLibraryOption.Value)
+            {
+                case ERuntimeLibrary.MultiThreaded:
+                    commandLineBuilder.Add("/MT");
+                    break;
+
+                case ERuntimeLibrary.MultiThreadedDebug:
+                    commandLineBuilder.Add("/MTd");
+                    break;
+
+                case ERuntimeLibrary.MultiThreadedDLL:
+                    commandLineBuilder.Add("/MD");
+                    break;
+
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
+                    commandLineBuilder.Add("/MDd");
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized runtime library option");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            // TODO: do I really need this, given where it is?
+#if false
+            if (!target.HasToolchain("visualc"))
+            {
+                return dictionary;
+            }
+#endif
+
+            Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
+            switch (runtimeLibraryOption.Value)
+            {
+                case ERuntimeLibrary.MultiThreaded:
+                case ERuntimeLibrary.MultiThreadedDebug:
+                case ERuntimeLibrary.MultiThreadedDLL:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
+                    {
+                        if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+                        {
+                            dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString("D"));
+                        }
+                        else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+                        {
+                            dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString());
+                        }
+                        return dictionary;
+                    }
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized runtime library option");
+            }
         }
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
