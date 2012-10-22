@@ -314,42 +314,66 @@ namespace Gcc
 
         string C.ILinkerInfo.ExecutableSuffix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return string.Empty;
+            }
         }
 
         string C.ILinkerInfo.MapFileSuffix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return ".map";
+            }
         }
 
         string C.ILinkerInfo.ImportLibraryPrefix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return "lib";
+            }
         }
 
         string C.ILinkerInfo.ImportLibrarySuffix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return ".a";
+            }
         }
 
         string C.ILinkerInfo.DynamicLibraryPrefix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return "lib";
+            }
         }
 
         string C.ILinkerInfo.DynamicLibrarySuffix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return ".so";
+            }
         }
 
         string C.ILinkerInfo.ImportLibrarySubDirectory
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return "lib";
+            }
         }
 
         string C.ILinkerInfo.BinaryOutputSubDirectory
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return "bin";
+            }
         }
 
         Opus.Core.StringArray C.ILinkerInfo.LibPaths(Opus.Core.Target target)
@@ -363,17 +387,26 @@ namespace Gcc
 
         string C.IArchiverInfo.StaticLibraryPrefix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return "lib";
+            }
         }
 
         string C.IArchiverInfo.StaticLibrarySuffix
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return ".a";
+            }
         }
 
         string C.IArchiverInfo.StaticLibraryOutputSubDirectory
         {
-            get { throw new System.NotImplementedException(); }
+            get
+            {
+                return "lib";
+            }
         }
 
         #endregion
