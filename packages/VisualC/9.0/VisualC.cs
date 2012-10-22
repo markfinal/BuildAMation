@@ -35,13 +35,13 @@ namespace VisualC
         private static Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
         private static Opus.Core.StringArray environment = new Opus.Core.StringArray();
 
-        static ToolsetInfo()
-        {
-            GetInstallPath();
-        }
-
         static void GetInstallPath()
         {
+            if (null != installPath)
+            {
+                return;
+            }
+            
             if (Opus.Core.State.HasCategory("VisualC") && Opus.Core.State.Has("VisualC", "InstallPath"))
             {
                 installPath = Opus.Core.State.Get("VisualC", "InstallPath") as string;
@@ -86,6 +86,8 @@ namespace VisualC
 
         string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
         {
+            GetInstallPath();
+            
             if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 if (Opus.Core.OSUtilities.Is64BitHosting)
@@ -107,17 +109,20 @@ namespace VisualC
         {
             get
             {
+                GetInstallPath();
                 return environment;
             }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
+            GetInstallPath();
             return installPath;
         }
 
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
+            GetInstallPath();
             return "9.0";
         }
 
@@ -224,6 +229,7 @@ namespace VisualC
 
         Opus.Core.StringArray C.ILinkerInfo.LibPaths(Opus.Core.Target target)
         {
+            GetInstallPath();
             if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 return lib64Folder;

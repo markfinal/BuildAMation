@@ -30,13 +30,13 @@ namespace Mingw
         private static string binPath;
         private static Opus.Core.StringArray environment;
 
-        static ToolsetInfo()
-        {
-            GetInstallPath();
-        }
-
         static void GetInstallPath()
         {
+            if (null != installPath)
+            {
+                return;
+            }
+            
             if (Opus.Core.State.HasCategory("Mingw") && Opus.Core.State.Has("Mingw", "InstallPath"))
             {
                 installPath = Opus.Core.State.Get("Mingw", "InstallPath") as string;
@@ -67,6 +67,7 @@ namespace Mingw
 
         string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
         {
+            GetInstallPath();
             return binPath;
         }
 
@@ -74,12 +75,14 @@ namespace Mingw
         {
             get
             {
+                GetInstallPath();
                 return environment;
             }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
+            GetInstallPath();
             return installPath;
         }
 
