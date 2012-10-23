@@ -7,28 +7,28 @@ namespace VisualC
 {
     public sealed class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, VisualStudioProcessor.IVisualStudioTargetInfo
     {
-        private static string installPath;
-        private static string bin32Folder;
-        private static string bin64Folder;
-        private static string bin6432Folder;
-        private static Opus.Core.StringArray lib32Folder = new Opus.Core.StringArray();
-        private static Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
-        private static Opus.Core.StringArray environment = new Opus.Core.StringArray();
+        private string installPath;
+        private string bin32Folder;
+        private string bin64Folder;
+        private string bin6432Folder;
+        private Opus.Core.StringArray lib32Folder = new Opus.Core.StringArray();
+        private Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
+        private Opus.Core.StringArray environment = new Opus.Core.StringArray();
 
-        static void GetInstallPath()
+        void GetInstallPath()
         {
-            if (null != installPath)
+            if (null != this.installPath)
             {
                 return;
             }
 
             if (Opus.Core.State.HasCategory("VisualC") && Opus.Core.State.Has("VisualC", "InstallPath"))
             {
-                installPath = Opus.Core.State.Get("VisualC", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("VisualC 2008 install path set from command line to '{0}'", installPath);
+                this.installPath = Opus.Core.State.Get("VisualC", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("VisualC 2008 install path set from command line to '{0}'", this.installPath);
             }
 
-            if (null == installPath)
+            if (null == this.installPath)
             {
                 using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VisualStudio\Sxs\VC7"))
                 {
@@ -37,29 +37,29 @@ namespace VisualC
                         throw new Opus.Core.Exception("VisualStudio was not installed");
                     }
 
-                    installPath = key.GetValue("9.0") as string;
-                    if (null == installPath)
+                    this.installPath = key.GetValue("9.0") as string;
+                    if (null == this.installPath)
                     {
                         throw new Opus.Core.Exception("VisualStudio 2008 was not installed");
                     }
 
-                    installPath = installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
-                    Opus.Core.Log.DebugMessage("VisualStudio 2008: Installation path from registry '{0}'", installPath);
+                    this.installPath = this.installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
+                    Opus.Core.Log.DebugMessage("VisualStudio 2008: Installation path from registry '{0}'", this.installPath);
                 }
             }
 
-            bin32Folder = System.IO.Path.Combine(installPath, "bin");
-            bin64Folder = System.IO.Path.Combine(bin32Folder, "amd64");
-            bin6432Folder = System.IO.Path.Combine(bin32Folder, "x86_amd64");
+            this.bin32Folder = System.IO.Path.Combine(this.installPath, "bin");
+            this.bin64Folder = System.IO.Path.Combine(this.bin32Folder, "amd64");
+            this.bin6432Folder = System.IO.Path.Combine(this.bin32Folder, "x86_amd64");
 
-            lib32Folder.Add(System.IO.Path.Combine(installPath, "lib"));
-            lib64Folder.Add(System.IO.Path.Combine(lib32Folder[0], "amd64"));
+            this.lib32Folder.Add(System.IO.Path.Combine(this.installPath, "lib"));
+            this.lib64Folder.Add(System.IO.Path.Combine(this.lib32Folder[0], "amd64"));
 
-            string parent = System.IO.Directory.GetParent(installPath).FullName;
+            string parent = System.IO.Directory.GetParent(this.installPath).FullName;
             string common7 = System.IO.Path.Combine(parent, "Common7");
             string ide = System.IO.Path.Combine(common7, "IDE");
 
-            environment.Add(ide);
+            this.environment.Add(ide);
         }
 
         #region IToolsetInfo Members
@@ -72,16 +72,16 @@ namespace VisualC
             {
                 if (Opus.Core.OSUtilities.Is64BitHosting)
                 {
-                    return bin64Folder;
+                    return this.bin64Folder;
                 }
                 else
                 {
-                    return bin6432Folder;
+                    return this.bin6432Folder;
                 }
             }
             else
             {
-                return bin32Folder;
+                return this.bin32Folder;
             }
         }
 
@@ -90,14 +90,14 @@ namespace VisualC
             get
             {
                 GetInstallPath();
-                return environment;
+                return this.environment;
             }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
             GetInstallPath();
-            return installPath;
+            return this.installPath;
         }
 
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
@@ -212,11 +212,11 @@ namespace VisualC
             GetInstallPath();
             if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
-                return lib64Folder;
+                return this.lib64Folder;
             }
             else
             {
-                return lib32Folder;
+                return this.lib32Folder;
             }
         }
 
