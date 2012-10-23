@@ -18,7 +18,15 @@ namespace Clang
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
         {
-            return new Opus.Core.DirectoryCollection();
+            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
+
+            string objPathName = this.ObjectFilePath;
+            if (null != objPathName)
+            {
+                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
+            }
+
+            return directoriesToCreate;
         }
     }
 }
