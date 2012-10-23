@@ -7,24 +7,24 @@ namespace Mingw
 {
     public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IWinResourceCompilerInfo, C.IArchiverInfo
     {
-        private static string installPath;
-        private static string binPath;
-        private static Opus.Core.StringArray environment;
+        protected string installPath;
+        protected string binPath;
+        protected Opus.Core.StringArray environment;
 
-        static void GetInstallPath()
+        protected void GetInstallPath()
         {
-            if (null != installPath)
+            if (null != this.installPath)
             {
                 return;
             }
 
             if (Opus.Core.State.HasCategory("Mingw") && Opus.Core.State.Has("Mingw", "InstallPath"))
             {
-                installPath = Opus.Core.State.Get("Mingw", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("Mingw install path set from command line to '{0}'", installPath);
+                this.installPath = Opus.Core.State.Get("Mingw", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("Mingw install path set from command line to '{0}'", this.installPath);
             }
 
-            if (null == installPath)
+            if (null == this.installPath)
             {
                 using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\Windows\CurrentVersion\Uninstall\MinGW"))
                 {
@@ -33,38 +33,38 @@ namespace Mingw
                         throw new Opus.Core.Exception("mingw was not installed");
                     }
 
-                    installPath = key.GetValue("InstallLocation") as string;
-                    Opus.Core.Log.DebugMessage("Mingw: Install path from registry '{0}'", installPath);
+                    this.installPath = key.GetValue("InstallLocation") as string;
+                    Opus.Core.Log.DebugMessage("Mingw: Install path from registry '{0}'", this.installPath);
                 }
             }
 
-            binPath = System.IO.Path.Combine(installPath, "bin");
+            this.binPath = System.IO.Path.Combine(this.installPath, "bin");
 
-            environment = new Opus.Core.StringArray();
-            environment.Add(binPath);
+            this.environment = new Opus.Core.StringArray();
+            this.environment.Add(this.binPath);
         }
 
         #region IToolsetInfo Members
 
         string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
         {
-            GetInstallPath();
-            return binPath;
+            this.GetInstallPath();
+            return this.binPath;
         }
 
         Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
         {
             get
             {
-                GetInstallPath();
-                return environment;
+                this.GetInstallPath();
+                return this.environment;
             }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
-            GetInstallPath();
-            return installPath;
+            this.GetInstallPath();
+            return this.installPath;
         }
 
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
