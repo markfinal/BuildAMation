@@ -66,7 +66,7 @@ namespace VisualC
 
         string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
         {
-            GetInstallPath();
+            this.GetInstallPath();
 
             if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
@@ -89,20 +89,20 @@ namespace VisualC
         {
             get
             {
-                GetInstallPath();
+                this.GetInstallPath();
                 return this.environment;
             }
         }
 
         string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
         {
-            GetInstallPath();
+            this.GetInstallPath();
             return this.installPath;
         }
 
         string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
         {
-            GetInstallPath();
+            this.GetInstallPath();
             return "9.0";
         }
 
@@ -209,7 +209,7 @@ namespace VisualC
 
         Opus.Core.StringArray C.ILinkerInfo.LibPaths(Opus.Core.Target target)
         {
-            GetInstallPath();
+            this.GetInstallPath();
             if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 return this.lib64Folder;
