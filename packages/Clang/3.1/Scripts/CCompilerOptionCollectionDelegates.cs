@@ -6,9 +6,11 @@ namespace Clang
 {
     public partial class CCompilerOptionCollection
     {
+#if false
         private static void ToolchainOptionCollectionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
+#endif
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
@@ -53,7 +55,9 @@ namespace Clang
         }
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLineProcessor);
+#endif
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLineProcessor);
             this["IncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLineProcessor);
             this["SystemIncludePaths"].PrivateData = new PrivateData(SystemIncludePathsCommandLineProcessor);
