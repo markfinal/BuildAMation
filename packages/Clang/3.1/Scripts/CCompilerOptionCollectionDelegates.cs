@@ -22,6 +22,16 @@ namespace Clang
         }
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            CCompilerOptionCollection options = sender as CCompilerOptionCollection;
+            if (null == options.OutputName)
+            {
+                options.ObjectFilePath = null;
+                return;
+            }
+
+            commandLineBuilder.Add("-c");
+            commandLineBuilder.Add("-o");
+            commandLineBuilder.Add(options.ObjectFilePath);
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
