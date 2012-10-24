@@ -35,12 +35,6 @@ namespace QMakeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            bool isCPlusPlus = false;
-            if (objectFileOptions is C.ICPlusPlusCompilerOptions)
-            {
-                isCPlusPlus = true;
-            }
-
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(target);
             nodeData.AddVariable("SOURCES", sourceFilePath);
@@ -48,7 +42,7 @@ namespace QMakeBuilder
             // NEW STYLE
 #if true
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-            if (compilerTool is C.CPlusPlusCompiler)
+            if (compilerTool is C.CxxCompiler)
             {
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
                 nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
@@ -59,6 +53,12 @@ namespace QMakeBuilder
                 nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
             }
 #else
+            bool isCPlusPlus = false;
+            if (objectFileOptions is C.ICPlusPlusCompilerOptions)
+            {
+                isCPlusPlus = true;
+            }
+
             if (isCPlusPlus)
             {
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);

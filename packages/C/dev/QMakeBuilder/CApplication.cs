@@ -24,14 +24,15 @@ namespace QMakeBuilder
             Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
             C.LinkerOptionCollection linkerOptionCollection = applicationOptions as C.LinkerOptionCollection;
             C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
-            C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
 
             {
             // NEW STYLE
 #if true
+                C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
                 Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
                 nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
 #else
+                C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
 
                 C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
                 if (toolchainOptions.IsCPlusPlus)
