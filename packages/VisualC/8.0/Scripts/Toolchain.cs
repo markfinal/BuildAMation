@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualC
 {
     public sealed class Toolchain : VisualCCommon.Toolchain
@@ -170,3 +171,4 @@ namespace VisualC
         }
     }
 }
+#endif

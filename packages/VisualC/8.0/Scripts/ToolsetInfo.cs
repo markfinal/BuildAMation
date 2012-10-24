@@ -1,0 +1,64 @@
+// <copyright file="ToolsetInfo.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>VisualC package</summary>
+// <author>Mark Final</author>
+namespace VisualC
+{
+    public sealed class ToolsetInfo : VisualCCommon.ToolsetInfo
+    {
+        static ToolsetInfo()
+        {
+            Opus.Core.State.AddCategory("VSSolutionBuilder");
+            Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
+        }
+
+        protected override void GetInstallPath()
+        {
+            if (null != this.installPath)
+            {
+                return;
+            }
+
+            if (Opus.Core.State.HasCategory("VisualC") && Opus.Core.State.Has("VisualC", "InstallPath"))
+            {
+                this.installPath = Opus.Core.State.Get("VisualC", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("VisualC 2005 install path set from command line to '{0}'", this.installPath);
+            }
+            
+            if (null == this.installPath)
+            {
+                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VisualStudio\Sxs\VC7"))
+                {
+                    if (null == key)
+                    {
+                        throw new Opus.Core.Exception("VisualStudio was not installed");
+                    }
+                    
+                    this.installPath = key.GetValue("8.0") as string;
+                    if (null == this.installPath)
+                    {
+                        throw new Opus.Core.Exception("VisualStudio 2005 was not installed");
+                    }
+                    
+                    this.installPath = this.installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
+                    Opus.Core.Log.DebugMessage("VisualStudio 2005: Installation path from registry '{0}'", this.installPath);
+                }
+            }
+            
+            this.bin32Folder = System.IO.Path.Combine(this.installPath, "bin");
+            this.bin64Folder = System.IO.Path.Combine(this.bin32Folder, "amd64");
+            this.bin6432Folder = System.IO.Path.Combine(this.bin32Folder, "x86_amd64");
+            
+            this.lib32Folder.Add(System.IO.Path.Combine(this.installPath, "lib"));
+            this.lib64Folder.Add(System.IO.Path.Combine(this.lib32Folder[0], "amd64"));
+
+            string parent = System.IO.Directory.GetParent(this.installPath).FullName;
+            string common7 = System.IO.Path.Combine(parent, "Common7");
+            string ide = System.IO.Path.Combine(common7, "IDE");
+
+            this.environment = new Opus.Core.StringArray();
+            this.environment.Add(ide);
+        }
+    }
+}
