@@ -27,6 +27,31 @@ namespace WindowsSDK
                 {
                     // NEW STYLE
 #if true
+                    // TODO: do I want to hard code VisualC here?
+                    Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", "visualc") as Opus.Core.IToolsetInfo;
+                    if (null == toolsetInfo)
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                    }
+
+                    string platformSDKPath = System.IO.Path.Combine(toolsetInfo.InstallPath(target), "PlatformSDK");
+                    
+                    if (System.IO.Directory.Exists(platformSDKPath))
+                    {
+                        installPath = platformSDKPath;
+                    }
+                    else
+                    {
+                        throw new Opus.Core.Exception("WindowsSDK 6.0A was not installed");
+                    }
+                    Opus.Core.Log.DebugMessage("Windows SDK installation folder is from the MSVC PlatformSDK: {0}", installPath);
+                    
+                    bin32Path = System.IO.Path.Combine(installPath, "bin");
+                    bin64Path = System.IO.Path.Combine(bin32Path, "win64");
+                    bin64Path = System.IO.Path.Combine(bin64Path, "AMD64");
+                    
+                    lib32Path = System.IO.Path.Combine(installPath, "lib");
+                    lib64Path = System.IO.Path.Combine(lib32Path, "AMD64");
 #else
                     C.Toolchain tc = C.ToolchainFactory.GetTargetInstance(target);
                     string platformSDKPath = System.IO.Path.Combine(tc.InstallPath(target), "PlatformSDK");
