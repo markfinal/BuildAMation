@@ -7,6 +7,12 @@ namespace VisualC
 {
     public sealed class ToolsetInfo : VisualCCommon.ToolsetInfo
     {
+        static ToolsetInfo()
+        {
+            Opus.Core.State.AddCategory("VSSolutionBuilder");
+            Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
+        }
+
         protected override void GetInstallPath()
         {
             if (null != this.installPath)
