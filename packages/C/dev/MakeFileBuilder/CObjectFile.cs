@@ -12,7 +12,6 @@ namespace MakeFileBuilder
             Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
             Opus.Core.ITool toolInterface = null;
@@ -33,7 +32,7 @@ namespace MakeFileBuilder
 
             // NEW STYLE
 #if true
-            string executablePath = toolInterface.Executable(target);
+            string executable = toolInterface.Executable(target);
 #else
             string executable;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
@@ -98,9 +97,9 @@ namespace MakeFileBuilder
             MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
             Opus.Core.StringArray environmentPaths = null;
-            if (compilerTool is Opus.Core.IToolEnvironmentPaths)
+            if (toolInterface is Opus.Core.IToolEnvironmentPaths)
             {
-                environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+                environmentPaths = (toolInterface as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
             MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths);
             success = true;

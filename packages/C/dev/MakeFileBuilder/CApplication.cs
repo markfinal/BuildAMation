@@ -12,7 +12,6 @@ namespace MakeFileBuilder
             Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
             Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
 
@@ -48,7 +47,7 @@ namespace MakeFileBuilder
             
             // NEW STYLE
 #if true
-            string executablePath = linkerTool.Executable(target);
+            string executable = linkerTool.Executable(target);
 #else
             string executable;
             C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
@@ -85,6 +84,49 @@ namespace MakeFileBuilder
             {
                 recipeBuilder.Append(executable);
             }
+
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+            if (null == toolsetInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            C.ICompilerInfo compilerInfo = toolsetInfo as C.ICompilerInfo;
+            if (null == compilerInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
+            }
+
+            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerInfo.ObjectFileSuffix);
+            if (toolsetInfo is C.IWinResourceCompilerInfo)
+            {
+                C.IWinResourceCompilerInfo win32ResourceCompilerInfo = toolsetInfo as C.IWinResourceCompilerInfo;
+                recipeBuilder.AppendFormat("$(filter %{0},$^) ", win32ResourceCompilerInfo.CompiledResourceSuffix);
+            }
+
+            C.IArchiverInfo archiverInfo = toolsetInfo as C.IArchiverInfo;
+            if (null == archiverInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.IArchiverInfo).ToString(), target.Toolchain), false);
+            }
+
+            C.ILinkerInfo linkerInfo = toolsetInfo as C.ILinkerInfo;
+            if (null == linkerInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ILinkerInfo).ToString(), target.Toolchain), false);
+            }
+
+            Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
+            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverInfo.StaticLibrarySuffix));
+            // TODO: ratify that import libraries are a Windows only creation
+            if (archiverInfo.StaticLibrarySuffix != linkerInfo.ImportLibrarySuffix)
+            {
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerInfo.ImportLibrarySuffix));
+            }
+#else
+            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
             if (toolchain.Win32CompiledResourceSuffix.Length > 0)
             {
@@ -96,6 +138,7 @@ namespace MakeFileBuilder
             {
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibrarySuffix));
             }
+#endif
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
             linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, applicationOptions as C.ILinkerOptions, dependentLibraries);
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));

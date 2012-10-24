@@ -12,7 +12,6 @@ namespace MakeFileBuilder
             Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
             Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;
 
@@ -74,7 +73,27 @@ namespace MakeFileBuilder
             {
                 recipe += executable;
             }
+
+            // NEW STYLE
+#if true
+            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
+            if (null == toolsetInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+            }
+
+            C.ICompilerInfo compilerInfo = toolsetInfo as C.ICompilerInfo;
+            if (null == compilerInfo)
+            {
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
+            }
+
+            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), compilerInfo.ObjectFileSuffix);
+#else
+            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
+#endif
+
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
             recipe = recipe.Replace(staticLibraryOptions.OutputPaths[primaryOutput], "$@");
