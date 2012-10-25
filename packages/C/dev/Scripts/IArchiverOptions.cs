@@ -15,12 +15,18 @@ namespace C
         }
 #endif
 
+        /// <summary>
+        /// The output type of the archiving operation
+        /// </summary>
         C.EArchiverOutput OutputType
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Additional options passed to the archiver
+        /// </summary>
         string AdditionalOptions
         {
             get;
