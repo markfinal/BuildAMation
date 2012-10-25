@@ -9,7 +9,8 @@ namespace MingwCommon
     {
         protected string installPath;
         protected string binPath;
-        protected Opus.Core.StringArray environment;
+        protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
+        protected Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
 
         protected abstract void GetInstallPath();
 
@@ -71,7 +72,8 @@ namespace MingwCommon
 
         Opus.Core.StringArray C.ICompilerInfo.IncludePaths(Opus.Core.Target target)
         {
-            throw new System.NotImplementedException();
+            this.GetInstallPath();
+            return this.includePaths;
         }
 
         #endregion
