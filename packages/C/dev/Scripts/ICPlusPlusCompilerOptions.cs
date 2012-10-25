@@ -7,6 +7,9 @@ namespace C
 {
     public interface ICPlusPlusCompilerOptions
     {
+        /// <summary>
+        /// Specify the type of exception handling used by the compiler
+        /// </summary>
         C.CPlusPlus.EExceptionHandler ExceptionHandler
         {
             get;
