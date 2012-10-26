@@ -30,5 +30,7 @@ namespace Opus.Core
             get;
             set;
         }
+
+        IToolset GetToolset(Target target);
     }
 }

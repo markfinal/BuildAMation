@@ -154,6 +154,8 @@ namespace Opus.Core
 
         public void CreateOptionCollection()
         {
+            IToolset toolset = this.Module.GetToolset(this.Target);
+
             System.Type moduleType = this.Module.GetType();
             AssignToolForModuleAttribute[] tools = moduleType.GetCustomAttributes(typeof(AssignToolForModuleAttribute), true) as AssignToolForModuleAttribute[];
             if (null == tools || 0 == tools.Length)
