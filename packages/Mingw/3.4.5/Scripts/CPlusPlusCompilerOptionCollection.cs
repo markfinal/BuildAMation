@@ -23,7 +23,7 @@ namespace Mingw
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Mingw.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Mingw.Toolset));
 
             string cppIncludePath = System.IO.Path.Combine((info as C.ICompilerInfo).IncludePaths(node.Target)[0], "c++");
 #else

@@ -1,11 +1,11 @@
-// <copyright file="ToolsetInfo.cs" company="Mark Final">
+// <copyright file="Toolset.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>MingwCommon package</summary>
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public abstract class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo, C.ILinkerInfo, C.IWinResourceCompilerInfo, C.IArchiverInfo
+    public abstract class Toolset : Opus.Core.IToolset, C.ICompilerInfo, C.ILinkerInfo, C.IWinResourceCompilerInfo, C.IArchiverInfo
     {
         protected string installPath;
         protected string binPath;
@@ -14,15 +14,15 @@ namespace MingwCommon
 
         protected abstract void GetInstallPath();
 
-        #region IToolsetInfo Members
+        #region IToolset Members
 
-        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
         {
             this.GetInstallPath();
             return this.binPath;
         }
 
-        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        Opus.Core.StringArray Opus.Core.IToolset.Environment
         {
             get
             {
@@ -31,13 +31,13 @@ namespace MingwCommon
             }
         }
 
-        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
         {
             this.GetInstallPath();
             return this.installPath;
         }
 
-        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.Target target)
         {
             return "3.4.5";
         }

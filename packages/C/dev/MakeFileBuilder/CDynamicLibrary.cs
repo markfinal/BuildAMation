@@ -87,36 +87,36 @@ namespace MakeFileBuilder
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
-            if (null == toolsetInfo)
+            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+            if (null == toolset)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            C.ICompilerInfo compilerInfo = toolsetInfo as C.ICompilerInfo;
+            C.ICompilerInfo compilerInfo = toolset as C.ICompilerInfo;
             if (null == compilerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
             }
 
             recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerInfo.ObjectFileSuffix);
 
-            if (toolsetInfo is C.IWinResourceCompilerInfo)
+            if (toolset is C.IWinResourceCompilerInfo)
             {
-                C.IWinResourceCompilerInfo win32ResourceCompilerInfo = toolsetInfo as C.IWinResourceCompilerInfo;
+                C.IWinResourceCompilerInfo win32ResourceCompilerInfo = toolset as C.IWinResourceCompilerInfo;
                 recipeBuilder.AppendFormat("$(filter %{0},$^) ", win32ResourceCompilerInfo.CompiledResourceSuffix);
             }
 
-            C.IArchiverInfo archiverInfo = toolsetInfo as C.IArchiverInfo;
+            C.IArchiverInfo archiverInfo = toolset as C.IArchiverInfo;
             if (null == archiverInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.IArchiverInfo).ToString(), target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.IArchiverInfo).ToString(), target.Toolchain), false);
             }
 
-            C.ILinkerInfo linkerInfo = toolsetInfo as C.ILinkerInfo;
+            C.ILinkerInfo linkerInfo = toolset as C.ILinkerInfo;
             if (null == linkerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ILinkerInfo).ToString(), target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ILinkerInfo).ToString(), target.Toolchain), false);
             }
 
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();

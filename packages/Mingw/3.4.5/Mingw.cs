@@ -15,7 +15,7 @@
 
 [assembly: C.RegisterToolchain(
     "mingw",
-    typeof(Mingw.ToolsetInfo),
+    typeof(Mingw.Toolset),
     typeof(Mingw.CCompiler), typeof(Mingw.CCompilerOptionCollection),
     typeof(Mingw.CPlusPlusCompiler), typeof(Mingw.CPlusPlusCompilerOptionCollection),
     typeof(Mingw.Linker), typeof(Mingw.LinkerOptionCollection),

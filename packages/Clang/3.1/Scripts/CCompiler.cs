@@ -7,7 +7,7 @@ namespace Clang
 {
     public sealed class CCompiler : C.Compiler, C.ICompiler, Opus.Core.ITool
     {
-        private Opus.Core.IToolsetInfo toolset = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Clang.ToolsetInfo));
+        private Opus.Core.IToolset toolset = Opus.Core.ToolsetFactory.CreateToolset(typeof(Clang.Toolset));
 
         public CCompiler(Opus.Core.Target target)
         {

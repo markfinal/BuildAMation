@@ -23,16 +23,16 @@ namespace C
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
-            if (null == toolsetInfo)
+            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+            if (null == toolset)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            ILinkerInfo linkerInfo = toolsetInfo as ILinkerInfo;
+            ILinkerInfo linkerInfo = toolset as ILinkerInfo;
             if (null == linkerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
             }
 
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.BinaryOutputSubDirectory);
@@ -137,16 +137,16 @@ namespace C
         {
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
-            if (null == toolsetInfo)
+            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+            if (null == toolset)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            ILinkerInfo linkerInfo = toolsetInfo as ILinkerInfo;
+            ILinkerInfo linkerInfo = toolset as ILinkerInfo;
             if (null == linkerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
             }
 
             ILinkerOptions options = this as ILinkerOptions;

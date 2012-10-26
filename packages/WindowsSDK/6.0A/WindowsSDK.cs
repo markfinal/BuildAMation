@@ -28,13 +28,13 @@ namespace WindowsSDK
                     // NEW STYLE
 #if true
                     // TODO: do I want to hard code VisualC here?
-                    Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", "visualc") as Opus.Core.IToolsetInfo;
-                    if (null == toolsetInfo)
+                    Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", "visualc") as Opus.Core.IToolset;
+                    if (null == toolset)
                     {
                         throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
                     }
 
-                    string platformSDKPath = System.IO.Path.Combine(toolsetInfo.InstallPath(target), "PlatformSDK");
+                    string platformSDKPath = System.IO.Path.Combine(toolset.InstallPath(target), "PlatformSDK");
                     
                     if (System.IO.Directory.Exists(platformSDKPath))
                     {

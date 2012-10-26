@@ -171,16 +171,16 @@ namespace VSSolutionBuilder
 
                 // NEW STYLE
 #if true
-                Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
-                if (null == toolsetInfo)
+                Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                if (null == toolset)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
                 }
 
-                C.ICompilerInfo compilerInfo = toolsetInfo as C.ICompilerInfo;
+                C.ICompilerInfo compilerInfo = toolset as C.ICompilerInfo;
                 if (null == compilerInfo)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
                 }
 
                 string objectFileSuffix = compilerInfo.ObjectFileSuffix;

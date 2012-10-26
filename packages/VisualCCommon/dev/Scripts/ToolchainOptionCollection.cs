@@ -138,7 +138,7 @@ namespace VisualCCommon
         {
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(VisualC.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
             VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
 #else

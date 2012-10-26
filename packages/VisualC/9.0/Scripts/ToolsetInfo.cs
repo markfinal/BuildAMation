@@ -1,13 +1,13 @@
-// <copyright file="ToolsetInfo.cs" company="Mark Final">
+// <copyright file="Toolset.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed class ToolsetInfo : VisualCCommon.ToolsetInfo
+    public sealed class Toolset : VisualCCommon.Toolset
     {
-        static ToolsetInfo()
+        static Toolset()
         {
             Opus.Core.State.AddCategory("VSSolutionBuilder");
             Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));

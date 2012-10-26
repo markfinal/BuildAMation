@@ -18,7 +18,7 @@ namespace ComposerXECommon
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(ComposerXE.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(ComposerXE.Toolset));
             this.binPath = info.BinPath(target);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;

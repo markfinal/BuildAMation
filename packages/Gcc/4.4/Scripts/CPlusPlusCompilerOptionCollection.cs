@@ -25,7 +25,7 @@ namespace Gcc
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Gcc.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Gcc.Toolset));
             GccCommon.IGCCInfo gccInfo = info as GccCommon.IGCCInfo;
             
             string cppIncludePath = gccInfo.GxxIncludePath(target);

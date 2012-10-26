@@ -39,16 +39,16 @@ namespace C
             // NEW STYLE
 #if true
             Opus.Core.Target target = node.Target;
-            Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
-            if (null == toolsetInfo)
+            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+            if (null == toolset)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            ICompilerInfo compilerInfo = toolsetInfo as ICompilerInfo;
+            ICompilerInfo compilerInfo = toolset as ICompilerInfo;
             if (null == compilerInfo)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(ICompilerInfo).ToString(), target.Toolchain), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ICompilerInfo).ToString(), target.Toolchain), false);
             }
 
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerInfo.ObjectFileOutputSubDirectory);
@@ -63,16 +63,16 @@ namespace C
             {
                 // NEW STYLE
 #if true
-                Opus.Core.IToolsetInfo toolsetInfo = Opus.Core.State.Get("ToolsetInfo", target.Toolchain) as Opus.Core.IToolsetInfo;
-                if (null == toolsetInfo)
+                Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                if (null == toolset)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
                 }
 
-                IWinResourceCompilerInfo resourceCompilerInfo = toolsetInfo as IWinResourceCompilerInfo;
+                IWinResourceCompilerInfo resourceCompilerInfo = toolset as IWinResourceCompilerInfo;
                 if (null == resourceCompilerInfo)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolsetInfo.GetType().ToString(), typeof(IWinResourceCompilerInfo).ToString(), target.Toolchain), false);
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(IWinResourceCompilerInfo).ToString(), target.Toolchain), false);
                 }
 
                 string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerInfo.CompiledResourceSuffix;
@@ -128,7 +128,7 @@ namespace C
         {
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(VisualC.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
             VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
 #else

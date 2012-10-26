@@ -16,7 +16,7 @@
 #if false
 [assembly: C.RegisterToolchain(
     "intel",
-    typeof(ComposerXE.ToolsetInfo),
+    typeof(ComposerXE.Toolset),
     typeof(ComposerXE.CCompiler), typeof(ComposerXE.CCompilerOptionCollection),
     typeof(ComposerXE.CPlusPlusCompiler), typeof(ComposerXE.CPlusPlusCompilerOptionCollection),
     null, null,
@@ -26,26 +26,26 @@
 
 namespace ComposerXE
 {
-    public class ToolsetInfo : Opus.Core.IToolsetInfo, C.ICompilerInfo
+    public class Toolset : Opus.Core.IToolset, C.ICompilerInfo
     {
-        #region IToolsetInfo Members
+        #region IToolset Members
 
-        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        Opus.Core.StringArray Opus.Core.IToolset.Environment
         {
             get { throw new System.NotImplementedException(); }
         }
 
-        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.Target target)
         {
             return "12";
         }

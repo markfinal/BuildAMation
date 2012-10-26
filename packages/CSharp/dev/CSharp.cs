@@ -5,30 +5,30 @@
 // <author>Mark Final</author>
 [assembly: Opus.Core.MapToolChainClassTypes("CSharp", "dotnet", "ClassCsc", typeof(CSharp.Csc), typeof(CSharp.OptionCollection))]
 
-[assembly: CSharp.RegisterToolchain("dotnet", typeof(CSharp.ToolsetInfo))]
+[assembly: CSharp.RegisterToolchain("dotnet", typeof(CSharp.Toolset))]
 
 namespace CSharp
 {
-    public sealed class ToolsetInfo : Opus.Core.IToolsetInfo
+    public sealed class Toolset : Opus.Core.IToolset
     {
-        #region IToolsetInfo Members
+        #region IToolset Members
 
-        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        Opus.Core.StringArray Opus.Core.IToolset.Environment
         {
             get { throw new System.NotImplementedException(); }
         }
 
-        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.Target target)
         {
             return "dev";
         }

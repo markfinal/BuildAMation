@@ -17,7 +17,7 @@ namespace Gcc
                 throw new Opus.Core.Exception("Gcc compiler is only supported under unix32 and unix64 platforms", false);
             }
 
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Gcc.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Gcc.Toolset));
             this.binPath = info.BinPath(target);
             
             GccCommon.IGCCInfo gccInfo = info as GccCommon.IGCCInfo;

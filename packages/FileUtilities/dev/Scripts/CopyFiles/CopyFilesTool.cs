@@ -4,30 +4,30 @@
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("copyfilestool", "FileUtilities.CopyFilesTool.Version")]
-[assembly: FileUtilities.CopyFilesRegisterToolchain(typeof(FileUtilities.CopyFilesToolsetInfo))]
+[assembly: FileUtilities.CopyFilesRegisterToolchain(typeof(FileUtilities.CopyFilesToolset))]
 
 namespace FileUtilities
 {
-    public sealed class CopyFilesToolsetInfo : Opus.Core.IToolsetInfo
+    public sealed class CopyFilesToolset : Opus.Core.IToolset
     {
-        #region IToolsetInfo Members
+        #region IToolset Members
 
-        string Opus.Core.IToolsetInfo.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        Opus.Core.StringArray Opus.Core.IToolsetInfo.Environment
+        Opus.Core.StringArray Opus.Core.IToolset.Environment
         {
             get { throw new System.NotImplementedException(); }
         }
 
-        string Opus.Core.IToolsetInfo.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        string Opus.Core.IToolsetInfo.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.Target target)
         {
             return "dev";
         }

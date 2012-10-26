@@ -19,7 +19,7 @@ namespace MingwCommon
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolsetInfo info = Opus.Core.ToolsetInfoFactory.CreateToolsetInfo(typeof(Mingw.ToolsetInfo));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Mingw.Toolset));
             this.platformBinFolder = info.BinPath(target);
             this.pathEnvironment.AddRange(info.Environment);
 #else

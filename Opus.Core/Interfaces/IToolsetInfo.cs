@@ -1,11 +1,11 @@
-// <copyright file="IToolsetInfo.cs" company="Mark Final">
+// <copyright file="IToolset.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public interface IToolsetInfo
+    public interface IToolset
     {
         string Version(Opus.Core.Target target);
 

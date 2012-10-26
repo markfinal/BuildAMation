@@ -1,11 +1,11 @@
-// <copyright file="ToolsetInfo.cs" company="Mark Final">
+// <copyright file="Toolset.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Mingw package</summary>
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class ToolsetInfo : MingwCommon.ToolsetInfo
+    public sealed class Toolset : MingwCommon.Toolset
     {
         protected override void GetInstallPath()
         {

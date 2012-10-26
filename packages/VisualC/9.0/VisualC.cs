@@ -16,7 +16,7 @@
 
 [assembly: C.RegisterToolchain(
     "visualc",
-    typeof(VisualC.ToolsetInfo),
+    typeof(VisualC.Toolset),
     typeof(VisualCCommon.CCompiler), typeof(VisualC.CCompilerOptionCollection),
     typeof(VisualCCommon.CPlusPlusCompiler), typeof(VisualC.CPlusPlusCompilerOptionCollection),
     typeof(VisualCCommon.Linker), typeof(VisualC.LinkerOptionCollection),
