@@ -7,6 +7,7 @@ namespace Opus.Core
 {
     public interface IToolset
     {
+        // TODO: all these Targets should be BaseTargets
         string Version(Opus.Core.Target target);
 
         string InstallPath(Opus.Core.Target target);
