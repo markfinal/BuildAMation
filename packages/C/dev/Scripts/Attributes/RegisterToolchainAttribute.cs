@@ -9,7 +9,7 @@ namespace C
     public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
         public RegisterToolchainAttribute(string name,
-                                          System.Type infoType,
+                                          System.Type toolsetType,
                                           System.Type cCompilerType,
                                           System.Type cCompilerOptionType,
                                           System.Type cxxCompilerType,
@@ -20,10 +20,11 @@ namespace C
                                           System.Type archiverOptionType,
                                           System.Type win32ResourceCompilerType,
                                           System.Type win32ResourceCompilerOptionType)
+            : base(name, toolsetType)
         {
-            if (!typeof(Opus.Core.IToolset).IsAssignableFrom(infoType))
+            if (!typeof(Opus.Core.IToolset).IsAssignableFrom(toolsetType))
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolset).ToString()), false);
+                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", toolsetType.ToString(), typeof(Opus.Core.IToolset).ToString()), false);
             }
 
             if (null != cCompilerType)
@@ -98,15 +99,6 @@ namespace C
                     Opus.Core.State.AddCategory("ToolchainTypeMap");
                 }
                 Opus.Core.State.Add("ToolchainTypeMap", name, map);
-            }
-
-            // define where toolset information can be located
-            {
-                if (!Opus.Core.State.HasCategory("Toolset"))
-                {
-                    Opus.Core.State.AddCategory("Toolset");
-                }
-                Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.CreateToolset(infoType));
             }
         }
     }

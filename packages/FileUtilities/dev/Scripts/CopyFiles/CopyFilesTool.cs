@@ -3,47 +3,17 @@
 // </copyright>
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
+#if false
 [assembly: Opus.Core.RegisterTargetToolChain("copyfilestool", "FileUtilities.CopyFilesTool.Version")]
-[assembly: FileUtilities.CopyFilesRegisterToolchain(typeof(FileUtilities.CopyFilesToolset))]
+#endif
 
 namespace FileUtilities
 {
-    public sealed class CopyFilesToolset : Opus.Core.IToolset
-    {
-        #region IToolset Members
-
-        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        Opus.Core.StringArray Opus.Core.IToolset.Environment
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
-        {
-            return "dev";
-        }
-
-        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
-        {
-            return null;
-        }
-
-        #endregion
-    }
-
     [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
                                    typeof(ExportOptionsDelegateAttribute))]
-    public sealed class CopyFilesTool : Opus.Core.ITool
+    public sealed class CopyFilesTool : ICopyFilesTool
     {
+#if false
         public static string Version
         {
             get
@@ -51,8 +21,11 @@ namespace FileUtilities
                 return "dev";
             }
         }
+#endif
 
-        public string Executable(Opus.Core.Target target)
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
             string executable = null;
             if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -69,5 +42,7 @@ namespace FileUtilities
             }
             return executable;
         }
+
+        #endregion
     }
 }

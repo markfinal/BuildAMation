@@ -1,3 +1,4 @@
+#if false
 namespace FileUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
@@ -61,3 +62,4 @@ namespace FileUtilities
         }
     }
 }
+#endif

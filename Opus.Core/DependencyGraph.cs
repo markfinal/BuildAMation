@@ -82,12 +82,21 @@ namespace Opus.Core
         {
             // NEW STYLE
 #if true
-            string toolchainImplementation = ModuleUtilities.GetToolchainForModule(moduleType);
+            IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+            string toolchainImplementation;
+            if (null == toolset)
+            {
+                toolchainImplementation = ModuleUtilities.GetToolchainForModule(moduleType);
+            }
+            else
+            {
+                toolchainImplementation = toolset.ToString();
+            }
 #else
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
 #endif
 
-            Target targetUsed = Target.GetInstance(baseTarget, toolchainImplementation);
+            Target targetUsed = Target.GetInstance(baseTarget, toolchainImplementation, toolset);
 
             ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)

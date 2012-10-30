@@ -9,7 +9,7 @@ namespace FileUtilities
                                    typeof(ExportOptionsDelegateAttribute),
                                    typeof(LocalOptionsDelegateAttribute),
                                    typeof(SymLinkOptionCollection))]
-    [Opus.Core.ModuleToolAssignment(typeof(SymLinkTool))]
+    [Opus.Core.ModuleToolAssignment(typeof(ICopyFilesTool))]
     public class SymLink : Opus.Core.IModule
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
@@ -42,7 +42,7 @@ namespace FileUtilities
 
         Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
         {
-            return Opus.Core.ToolsetFactory.CreateToolset(typeof(SymLinkToolset));
+            return Opus.Core.ToolsetFactory.CreateToolset(typeof(Toolset));
         }
     }
 }

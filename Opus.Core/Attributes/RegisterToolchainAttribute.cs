@@ -6,8 +6,17 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly)]
-    public abstract class RegisterToolchainAttribute : System.Attribute
+    public class RegisterToolchainAttribute : System.Attribute
     {
+        public RegisterToolchainAttribute(string name, System.Type toolsetType)
+        {
+            if (!Opus.Core.State.HasCategory("Toolset"))
+            {
+                Opus.Core.State.AddCategory("Toolset");
+            }
+            Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.CreateToolset(toolsetType));
+        }
+
         public class ToolAndOptions
         {
             public ToolAndOptions(System.Type toolType, System.Type optionsType)

@@ -30,6 +30,12 @@ namespace Opus.Core
             private set;
         }
 
+        public IToolset Toolset
+        {
+            get;
+            private set;
+        }
+
         public static Target GetInstance(BaseTarget baseTarget, string toolchain)
         {
             Target target = null;
@@ -49,10 +55,39 @@ namespace Opus.Core
             return target;
         }
 
+        public static Target GetInstance(BaseTarget baseTarget, string toolchain, IToolset toolset)
+        {
+            Target target = null;
+            if (!map.ContainsKey(baseTarget.HashKey))
+            {
+                map[baseTarget.HashKey] = new System.Collections.Generic.Dictionary<string, Target>();
+            }
+            if (!map[baseTarget.HashKey].ContainsKey(toolchain))
+            {
+                target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolchain, toolset);
+            }
+            else
+            {
+                target = map[baseTarget.HashKey][toolchain];
+            }
+
+            return target;
+        }
+
         private Target(BaseTarget baseTarget, string toolchain)
         {
             this.BaseTarget = baseTarget;
             this.Toolchain = toolchain;
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, toolchain);
+            this.Key = builder.ToString();
+        }
+
+        private Target(BaseTarget baseTarget, string toolchain, IToolset toolset)
+        {
+            this.BaseTarget = baseTarget;
+            this.Toolchain = toolchain;
+            this.Toolset = toolset;
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, toolchain);
             this.Key = builder.ToString();
