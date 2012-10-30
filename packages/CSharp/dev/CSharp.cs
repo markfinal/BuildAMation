@@ -33,6 +33,11 @@ namespace CSharp
             return "dev";
         }
 
+        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        {
+            return null;
+        }
+
         #endregion
     }
 }

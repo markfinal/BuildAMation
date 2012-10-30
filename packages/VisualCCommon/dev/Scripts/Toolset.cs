@@ -61,6 +61,11 @@ namespace VisualCCommon
             return "9.0";
         }
 
+        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        {
+            return null;
+        }
+
         #endregion
 
         #region ICompilerInfo Members

@@ -241,6 +241,11 @@ namespace Gcc
             return "4.4";
         }
 
+        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        {
+            return null;
+        }
+
         #endregion
 
         #region ICompilerInfo Members

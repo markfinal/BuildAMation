@@ -42,6 +42,11 @@ namespace MingwCommon
             return "3.4.5";
         }
 
+        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        {
+            return null;
+        }
+
         #endregion
 
         #region ICompilerInfo Members
