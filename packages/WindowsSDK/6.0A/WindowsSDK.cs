@@ -34,7 +34,7 @@ namespace WindowsSDK
                         throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
                     }
 
-                    string platformSDKPath = System.IO.Path.Combine(toolset.InstallPath(target), "PlatformSDK");
+                    string platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");
                     
                     if (System.IO.Directory.Exists(platformSDKPath))
                     {

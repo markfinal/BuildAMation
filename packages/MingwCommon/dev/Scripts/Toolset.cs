@@ -16,7 +16,7 @@ namespace MingwCommon
 
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
             return this.binPath;
@@ -31,13 +31,13 @@ namespace MingwCommon
             }
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
             return this.installPath;
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
             return "3.4.5";
         }

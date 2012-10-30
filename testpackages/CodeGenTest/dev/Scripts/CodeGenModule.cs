@@ -181,5 +181,10 @@ namespace CodeGenTest
 
             return moduleCollection;
         }
+
+        Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
+        {
+            return Opus.Core.ToolsetFactory.CreateToolset(typeof(ToolInfo));
+        }
     }
 }

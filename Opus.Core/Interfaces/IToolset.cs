@@ -7,12 +7,11 @@ namespace Opus.Core
 {
     public interface IToolset
     {
-        // TODO: all these Targets should be BaseTargets
-        string Version(Opus.Core.Target target);
+        string Version(Opus.Core.BaseTarget baseTarget);
 
-        string InstallPath(Opus.Core.Target target);
-        
-        string BinPath(Opus.Core.Target target);
+        string InstallPath(Opus.Core.BaseTarget baseTarget);
+
+        string BinPath(Opus.Core.BaseTarget baseTarget);
         
         Opus.Core.StringArray Environment
         {

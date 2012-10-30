@@ -214,12 +214,12 @@ namespace Gcc
         
         private string Executable(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine((this as Opus.Core.IToolset).BinPath(target), "gcc-4.4");
+            return System.IO.Path.Combine((this as Opus.Core.IToolset).BinPath((Opus.Core.BaseTarget)target), "gcc-4.4");
         }
         
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
             GetInstallPath();
             return installPath;
@@ -230,13 +230,13 @@ namespace Gcc
             get { throw new System.NotImplementedException(); }
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
             GetInstallPath();
             return installPath;
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
             return "4.4";
         }

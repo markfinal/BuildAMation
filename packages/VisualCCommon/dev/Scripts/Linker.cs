@@ -21,7 +21,7 @@ namespace VisualCCommon
             // NEW STYLE
 #if true
             Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
-            this.platformBinFolder = info.BinPath(target);
+            this.platformBinFolder = info.BinPath((Opus.Core.BaseTarget)target);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.platformBinFolder = toolChainInstance.BinPath(target);

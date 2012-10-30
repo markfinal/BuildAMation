@@ -21,7 +21,7 @@ namespace Gcc
             // NEW STYLE
 #if true
             Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Gcc.Toolset));
-            this.binPath = info.BinPath(target);
+            this.binPath = info.BinPath((Opus.Core.BaseTarget)target);
             
             GccCommon.IGCCInfo gccInfo = info as GccCommon.IGCCInfo;
             this.includeFolders.Add("/usr/include");

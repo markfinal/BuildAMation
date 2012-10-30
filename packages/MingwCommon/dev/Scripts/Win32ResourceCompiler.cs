@@ -20,7 +20,7 @@ namespace MingwCommon
             // NEW STYLE
 #if true
             Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Mingw.Toolset));
-            this.platformBinFolder = info.BinPath(target);
+            this.platformBinFolder = info.BinPath((Opus.Core.BaseTarget)target);
             this.pathEnvironment.AddRange(info.Environment);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;

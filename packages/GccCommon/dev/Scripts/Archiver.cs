@@ -19,7 +19,7 @@ namespace GccCommon
             // NEW STYLE
 #if true
             Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Gcc.Toolset));
-            this.binPath = info.BinPath(target);
+            this.binPath = info.BinPath((Opus.Core.BaseTarget)target);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);

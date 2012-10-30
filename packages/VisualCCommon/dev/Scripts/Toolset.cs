@@ -19,11 +19,11 @@ namespace VisualCCommon
 
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
 
-            if (target.HasPlatform(Opus.Core.EPlatform.Win64))
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 if (Opus.Core.OSUtilities.Is64BitHosting)
                 {
@@ -49,13 +49,13 @@ namespace VisualCCommon
             }
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
             return this.installPath;
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
             return "9.0";

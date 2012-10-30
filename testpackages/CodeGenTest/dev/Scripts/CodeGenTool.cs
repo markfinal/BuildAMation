@@ -7,7 +7,7 @@ namespace CodeGenTest
     {
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
@@ -17,12 +17,12 @@ namespace CodeGenTest
             get { throw new System.NotImplementedException(); }
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.Target target)
+        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.Target target)
+        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
             return "dev";
         }
