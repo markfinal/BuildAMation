@@ -19,5 +19,7 @@ namespace Opus.Core
         }
 
         ITool Tool(System.Type toolType);
+
+        System.Type ToolOptionType(System.Type toolType);
     }
 }

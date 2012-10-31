@@ -38,6 +38,11 @@ namespace QtCommon
             return null;
         }
 
+        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        {
+            return null;
+        }
+
         #endregion
     }
 

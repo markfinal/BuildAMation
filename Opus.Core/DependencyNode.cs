@@ -179,6 +179,32 @@ namespace Opus.Core
 
             System.Type toolType = tools[0].ToolType;
             System.Type newToolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
+
+            if (null != toolset)
+            {
+                System.Type optionCollectionType2 = toolset.ToolOptionType(newToolType);
+                if (null == optionCollectionType2)
+                {
+                    throw new Exception(System.String.Format("NEW STYLE: No option collection type for tool '{0}' from toolset '{1}'", newToolType.ToString(), toolset.ToString()), false);
+                }
+
+                var localAndExportTypes = newToolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
+
+                if (localAndExportTypes.Length == 0)
+                {
+                    throw new Exception(System.String.Format("NEW STYLE: Missing local and export types attribute on tool type '{0}'", toolType.ToString()), false);
+                }
+
+                System.Type exportType2 = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
+                System.Type localType2 = (localAndExportTypes[0] as LocalAndExportTypesAttribute).LocalType;
+
+                System.Reflection.MethodInfo method2 = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                System.Reflection.MethodInfo genericMethod2 = method2.MakeGenericMethod(new System.Type[] { optionCollectionType2, exportType2, localType2 });
+                this.Module.Options = genericMethod2.Invoke(null, new object[] { this }) as BaseOptionCollection;
+
+                return;
+            }
+
             if (toolType != newToolType)
             {
                 Log.Full("NEW STYLE MISMATCH TOOL TYPE for module '{0}': was '{1}' now '{2}'", moduleType.ToString(), toolType.ToString(), newToolType.ToString());

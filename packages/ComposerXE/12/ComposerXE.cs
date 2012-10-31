@@ -55,6 +55,11 @@ namespace ComposerXE
             return null;
         }
 
+        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        {
+            return null;
+        }
+
         #endregion
 
         #region ICompilerInfo Members

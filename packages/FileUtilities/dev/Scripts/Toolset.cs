@@ -10,11 +10,15 @@ namespace FileUtilities
     public sealed class Toolset : Opus.Core.IToolset
     {
         private System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
+        private System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
 
         public Toolset()
         {
             this.toolMap[typeof(ICopyFilesTool)] = new CopyFilesTool();
             this.toolMap[typeof(ISymLinkTool)] = new SymLinkTool();
+
+            this.toolOptionsMap[typeof(ICopyFilesTool)] = typeof(CopyFilesOptionCollection);
+            this.toolOptionsMap[typeof(ISymLinkOptions)] = typeof(SymLinkOptionCollection);
         }
 
         #region IToolset Members
@@ -47,6 +51,16 @@ namespace FileUtilities
             }
 
             return this.toolMap[toolType];
+        }
+
+        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        {
+            if (!this.toolOptionsMap.ContainsKey(toolType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+            }
+
+            return this.toolOptionsMap[toolType];
         }
 
         #endregion
