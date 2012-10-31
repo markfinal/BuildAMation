@@ -22,11 +22,6 @@ namespace C
                                           System.Type win32ResourceCompilerOptionType)
             : base(name, toolsetType)
         {
-            if (!typeof(Opus.Core.IToolset).IsAssignableFrom(toolsetType))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", toolsetType.ToString(), typeof(Opus.Core.IToolset).ToString()), false);
-            }
-
             if (null != cCompilerType)
             {
                 if (!typeof(C.Compiler).IsAssignableFrom(cCompilerType))

@@ -3,13 +3,9 @@ namespace CSharp
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
-        public RegisterToolchainAttribute(string name, System.Type infoType)
+        public RegisterToolchainAttribute(string name, System.Type toolsetType)
+            : base(name, toolsetType)
         {
-            if (!typeof(Opus.Core.IToolset).IsAssignableFrom(infoType))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolset).ToString()), false);
-            }
-
             if (!typeof(IOptions).IsAssignableFrom(typeof(OptionCollection)))
             {
                 throw new Opus.Core.Exception(System.String.Format("C Compiler option type '{0}' does not implement the interface {1}", typeof(OptionCollection).ToString(), typeof(IOptions).ToString()), false);
@@ -25,15 +21,6 @@ namespace CSharp
                     Opus.Core.State.AddCategory("ToolchainTypeMap");
                 }
                 Opus.Core.State.Add("ToolchainTypeMap", name, map);
-            }
-
-            // define where toolset information can be located
-            {
-                if (!Opus.Core.State.HasCategory("Toolset"))
-                {
-                    Opus.Core.State.AddCategory("Toolset");
-                }
-                Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.CreateToolset(infoType));
             }
         }
     }

@@ -3,12 +3,10 @@ namespace QtCommon
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
     {
-        public RegisterToolchainAttribute(System.Type infoType)
+        public RegisterToolchainAttribute(System.Type toolsetType)
+            // TODO: rename the name here back to Qt
+            : base("QtCommon.MocTool", toolsetType)
         {
-            if (!typeof(Opus.Core.IToolset).IsAssignableFrom(infoType))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information type '{0}' does not implement the interface {1}", infoType.ToString(), typeof(Opus.Core.IToolset).ToString()), false);
-            }
             string name = "QtCommon.MocTool";
 
             if (!typeof(IMocOptions).IsAssignableFrom(typeof(MocOptionCollection)))
@@ -47,15 +45,6 @@ namespace QtCommon
                     Opus.Core.State.Add("Toolchains", "Map", map);
                 }
                 map[typeof(MocTool)] = name;
-            }
-
-            // define where toolset information can be located
-            {
-                if (!Opus.Core.State.HasCategory("Toolset"))
-                {
-                    Opus.Core.State.AddCategory("Toolset");
-                }
-                Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.CreateToolset(infoType));
             }
         }
     }
