@@ -44,12 +44,20 @@ namespace Opus.Core
         {
             // NEW STYLE
 #if true
-            if (!State.Has("Toolset", target.Toolchain))
+            string versionString = null;
+            if (target.Toolset != null)
             {
-                throw new Exception(System.String.Format("No tool set information registered for toolchain '{0}'.", target.Toolchain), false);
+                versionString = target.Toolset.Version((BaseTarget)target);
             }
+            else
+            {
+                if (!State.Has("Toolset", target.Toolchain))
+                {
+                    throw new Exception(System.String.Format("No tool set information registered for toolchain '{0}' in order to locate version information", target.Toolchain), false);
+                }
 
-            string versionString = (State.Get("Toolset", target.Toolchain) as IToolset).Version((BaseTarget)target);
+                versionString = (State.Get("Toolset", target.Toolchain) as IToolset).Version((BaseTarget)target);
+            }
 #else
             // TODO: this needs changing. See comment at the top of Target
             if (!State.Has(target.Toolchain, "Version"))

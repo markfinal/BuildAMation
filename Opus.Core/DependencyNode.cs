@@ -187,6 +187,10 @@ namespace Opus.Core
             else
             {
                 Opus.Core.Log.MessageAll("DEBUG: Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != newToolType) ? newToolType.ToString() : "undefined", moduleType.ToString());
+                if (!newToolType.IsInterface)
+                {
+                    throw new Exception(System.String.Format("NEW STYLE: Tool '{0}' is NOT an interface", newToolType.ToString()), false);
+                }
 
                 System.Type optionCollectionType2 = toolset.ToolOptionType(newToolType);
                 if (null == optionCollectionType2)

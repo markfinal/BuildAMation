@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    [System.AttributeUsage(System.AttributeTargets.Assembly)]
+    [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public class RegisterToolchainAttribute : System.Attribute
     {
         public RegisterToolchainAttribute(string name, System.Type toolsetType)

@@ -213,18 +213,31 @@ namespace Opus.Core
 
         private DependencyNode FindOrCreateUnparentedNode(System.Type moduleType, string moduleName, Target target, int currentRank, System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove)
         {
+            Target targetUsed = target;
             // NEW STYLE
 #if true
-            string toolchainImplementation = ModuleUtilities.GetToolchainForModule(moduleType);
+            IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+            string toolchainImplementation;
+            if (null == toolset)
+            {
+                toolchainImplementation = ModuleUtilities.GetToolchainForModule(moduleType);
+                if (!targetUsed.HasToolchain(toolchainImplementation))
+                {
+                    targetUsed = Target.GetInstance((BaseTarget)target, toolchainImplementation);
+                }
+            }
+            else
+            {
+                toolchainImplementation = toolset.ToString();
+                targetUsed = Target.GetInstance((BaseTarget)target, toolchainImplementation, toolset);
+            }
 #else
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
-#endif
-
-            Target targetUsed = target;
             if (!targetUsed.HasToolchain(toolchainImplementation))
             {
                 targetUsed = Target.GetInstance((BaseTarget)target, toolchainImplementation);
             }
+#endif
 
             DependencyNode node = this.FindNodeForTargettedModule(moduleName, targetUsed);
             if (null != node)
@@ -337,8 +350,19 @@ namespace Opus.Core
                             else
                             {
                                 // NEW STYLE
-                                string toolchainImplementation = ModuleUtilities.GetToolchainForModule(nestedModule.GetType());
-                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, toolchainImplementation);
+                                IToolset toolset = ModuleUtilities.GetToolsetForModule(nestedModule.GetType());
+                                string toolchainImplementation;
+                                Target childTarget = null;
+                                if (null == toolset)
+                                {
+                                    toolchainImplementation = ModuleUtilities.GetToolchainForModule(nestedModule.GetType());
+                                    childTarget = Target.GetInstance((BaseTarget)node.Target, toolchainImplementation);
+                                }
+                                else
+                                {
+                                    toolchainImplementation = toolset.ToString();
+                                    childTarget = Target.GetInstance((BaseTarget)node.Target, toolchainImplementation, toolset);
+                                }
 
                                 newNode = new DependencyNode(nestedModule, node, childTarget, childIndex, true);
                                 // OLD STYLE
