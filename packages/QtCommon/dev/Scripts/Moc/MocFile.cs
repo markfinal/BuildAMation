@@ -20,7 +20,7 @@ namespace QtCommon
                                    typeof(ExportMocOptionsDelegateAttribute),
                                    typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(MocOptionCollection))]
-    [Opus.Core.ModuleToolAssignment(typeof(MocTool))]
+    [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
     public class MocFile : Opus.Core.IModule, Opus.Core.IInjectModules
     {
         public static string Prefix

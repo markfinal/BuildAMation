@@ -1,3 +1,4 @@
+#if false
 namespace QtCommon
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
@@ -49,3 +50,4 @@ namespace QtCommon
         }
     }
 }
+#endif
