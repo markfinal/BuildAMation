@@ -180,8 +180,14 @@ namespace Opus.Core
             System.Type toolType = tools[0].ToolType;
             System.Type newToolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
 
-            if (null != toolset)
+            if (null == toolset)
             {
+                Opus.Core.Log.MessageAll("DEBUG: No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != newToolType) ? newToolType.ToString() : "undefined", moduleType.ToString());
+            }
+            else
+            {
+                Opus.Core.Log.MessageAll("DEBUG: Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != newToolType) ? newToolType.ToString() : "undefined", moduleType.ToString());
+
                 System.Type optionCollectionType2 = toolset.ToolOptionType(newToolType);
                 if (null == optionCollectionType2)
                 {
