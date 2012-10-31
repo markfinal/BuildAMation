@@ -9,8 +9,10 @@
 
 namespace FileUtilities
 {
+#if false
     [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
                                    typeof(ExportOptionsDelegateAttribute))]
+#endif
     public sealed class SymLinkTool : ISymLinkTool
     {
 #if false
