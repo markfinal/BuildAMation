@@ -1,4 +1,4 @@
-// <copyright file="ICompilerInfo.cs" company="Mark Final">
+// <copyright file="ICompilerTool.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
