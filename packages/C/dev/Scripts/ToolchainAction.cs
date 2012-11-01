@@ -67,7 +67,7 @@ namespace C
                 Opus.Core.State.Add("Toolchains", "Map", map);
             }
             map[typeof(C.ICompilerTool)]    = this.Toolchain;
-            map[typeof(C.CxxCompiler)] = this.Toolchain;
+            map[typeof(C.ICxxCompilerTool)] = this.Toolchain;
             map[typeof(C.Linker)]      = this.Toolchain;
             map[typeof(C.Archiver)]    = this.Toolchain;
             map[typeof(C.Win32ResourceCompilerBase)] = this.Toolchain;

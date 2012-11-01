@@ -100,20 +100,7 @@ namespace NativeBuilder
             // NEW STYLE
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
-            Opus.Core.ITool toolInterface = null;
-            // TODO: this will simplify
-            if (typeof(C.ICompilerTool) == toolType)
-            {
-                toolInterface = target.Toolset.Tool(toolType);
-            }
-            else if (typeof(C.CxxCompiler) == toolType)
-            {
-                toolInterface = C.CxxCompilerFactory.GetInstance(target);
-            }
-            else
-            {
-                throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
-            }
+            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 
             if (headerDependencyGeneration)
             {

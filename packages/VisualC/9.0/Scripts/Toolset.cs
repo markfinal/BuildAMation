@@ -16,8 +16,10 @@ namespace VisualC
         public Toolset()
         {
             this.toolMap[typeof(C.ICompilerTool)] = new VisualCCommon.CCompiler(this);
+            this.toolMap[typeof(C.ICxxCompilerTool)] = new VisualCCommon.CxxCompiler(this);
 
             this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(VisualC.CCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(VisualC.CPlusPlusCompilerOptionCollection);
         }
 
         protected override void GetInstallPath()

@@ -53,7 +53,7 @@ namespace C
                 Opus.Core.State.Add("Toolchains", "Map", map);
             }
 
-            map[typeof(C.CxxCompiler)] = this.Compiler;
+            map[typeof(C.ICxxCompilerTool)] = this.Compiler;
 
             return true;
         }

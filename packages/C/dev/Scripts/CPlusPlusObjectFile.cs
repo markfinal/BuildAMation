@@ -12,7 +12,7 @@ namespace C.CPlusPlus
                                    typeof(ExportCompilerOptionsDelegateAttribute),
                                    typeof(LocalCompilerOptionsDelegateAttribute),
                                    C.ClassNames.CPlusPlusCompilerToolOptions)]
-    [Opus.Core.ModuleToolAssignment(typeof(CxxCompiler))]
+    [Opus.Core.ModuleToolAssignment(typeof(ICxxCompilerTool))]
     public class ObjectFile : C.ObjectFile
     {
     }
