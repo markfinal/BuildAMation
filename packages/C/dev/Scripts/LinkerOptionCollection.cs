@@ -23,20 +23,25 @@ namespace C
 
             // NEW STYLE
 #if true
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            ILinkerTool linkerTool = toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
+#else
             Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
             if (null == toolset)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            ILinkerInfo linkerInfo = toolset as ILinkerInfo;
-            if (null == linkerInfo)
+            ILinkerInfo linkerTool = toolset as ILinkerInfo;
+            if (null == linkerTool)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
             }
+#endif
 
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.BinaryOutputSubDirectory);
-            this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerInfo.ImportLibrarySubDirectory);
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.BinaryOutputSubDirectory);
+            this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.ImportLibrarySubDirectory);
 #else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.BinaryOutputSubDirectory);
             this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
@@ -137,17 +142,9 @@ namespace C
         {
             // NEW STYLE
 #if true
-            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-            if (null == toolset)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-            }
+            Opus.Core.IToolset toolset = target.Toolset;
 
-            ILinkerInfo linkerInfo = toolset as ILinkerInfo;
-            if (null == linkerInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ILinkerInfo).ToString(), target.Toolchain), false);
-            }
+            ILinkerTool linkerTool = toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
 
             ILinkerOptions options = this as ILinkerOptions;
 
@@ -157,12 +154,12 @@ namespace C
                 string outputSuffix = string.Empty;
                 if (options.OutputType == ELinkerOutput.Executable)
                 {
-                    outputSuffix = linkerInfo.ExecutableSuffix;
+                    outputSuffix = linkerTool.ExecutableSuffix;
                 }
                 else if (options.OutputType == ELinkerOutput.DynamicLibrary)
                 {
-                    outputPrefix = linkerInfo.DynamicLibraryPrefix;
-                    outputSuffix = linkerInfo.DynamicLibrarySuffix;
+                    outputPrefix = linkerTool.DynamicLibraryPrefix;
+                    outputSuffix = linkerTool.DynamicLibrarySuffix;
                 }
 
                 string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, outputPrefix + this.OutputName) + outputSuffix;
@@ -174,7 +171,7 @@ namespace C
                 if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                 {
                     // explicit import library
-                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, linkerInfo.ImportLibraryPrefix + this.OutputName) + linkerInfo.ImportLibrarySuffix;
+                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, linkerTool.ImportLibraryPrefix + this.OutputName) + linkerTool.ImportLibrarySuffix;
                     this.StaticImportLibraryFilePath = importLibraryPathName;
                 }
                 else
@@ -186,7 +183,7 @@ namespace C
 
             if (options.GenerateMapFile && null == this.MapFilePath)
             {
-                string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerInfo.MapFileSuffix;
+                string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerTool.MapFileSuffix;
                 this.MapFilePath = mapPathName;
             }
 #else

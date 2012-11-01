@@ -46,7 +46,6 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("C++ Compiler option type '{0}' does not implement the interface {1}", cxxCompilerOptionType.ToString(), typeof(C.ICPlusPlusCompilerOptions).ToString()), false);
                 }
             }
-#endif
 
             if (null != linkerType)
             {
@@ -59,6 +58,7 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("Linker option type '{0}' does not implement the interface {1}", linkerOptionType.ToString(), typeof(C.ILinkerOptions).ToString()), false);
                 }
             }
+#endif
 
             if (null != archiverType)
             {
@@ -87,7 +87,7 @@ namespace C
                 System.Collections.Generic.Dictionary<System.Type, ToolAndOptions> map = new System.Collections.Generic.Dictionary<System.Type, ToolAndOptions>();
                 map[typeof(C.ICompilerTool)]    = new ToolAndOptions(cCompilerType, cCompilerOptionType);
                 map[typeof(C.ICxxCompilerTool)] = new ToolAndOptions(cxxCompilerType, cxxCompilerOptionType);
-                map[typeof(C.Linker)]      = new ToolAndOptions(linkerType, linkerOptionType);
+                map[typeof(C.ILinkerTool)]      = new ToolAndOptions(linkerType, linkerOptionType);
                 map[typeof(C.Archiver)]    = new ToolAndOptions(archiverType, archiverOptionType);
                 map[typeof(C.Win32ResourceCompilerBase)] = new ToolAndOptions(win32ResourceCompilerType, win32ResourceCompilerOptionType);
 

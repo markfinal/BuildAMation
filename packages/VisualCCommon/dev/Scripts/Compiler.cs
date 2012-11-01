@@ -5,7 +5,6 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
 #if true
     public sealed class CCompiler : C.ICompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
@@ -106,6 +105,7 @@ namespace VisualCCommon
         #endregion
     }
 #else
+    [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
     public sealed class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();

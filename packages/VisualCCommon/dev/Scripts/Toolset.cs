@@ -5,14 +5,14 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract class Toolset : Opus.Core.IToolset, /*C.ICompilerInfo, */C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, VisualStudioProcessor.IVisualStudioTargetInfo
+    public abstract class Toolset : Opus.Core.IToolset, /*C.ICompilerInfo, C.ILinkerInfo, */C.IArchiverInfo, C.IWinResourceCompilerInfo, VisualStudioProcessor.IVisualStudioTargetInfo
     {
-        protected string installPath;
-        protected string bin32Folder;
-        protected string bin64Folder;
-        protected string bin6432Folder;
-        protected Opus.Core.StringArray lib32Folder = new Opus.Core.StringArray();
-        protected Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
+        public string installPath;
+        public string bin32Folder;
+        public string bin64Folder;
+        public string bin6432Folder;
+        public Opus.Core.StringArray lib32Folder = new Opus.Core.StringArray();
+        public Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
         protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
 
         protected abstract void GetInstallPath();
@@ -119,7 +119,6 @@ namespace VisualCCommon
         }
 
         #endregion
-#endif
 
         #region ILinkerInfo Members
 
@@ -201,6 +200,7 @@ namespace VisualCCommon
         }
 
         #endregion
+#endif
 
         #region IArchiverInfo Members
 

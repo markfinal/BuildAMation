@@ -1,4 +1,4 @@
-// <copyright file="ILinkerInfo.cs" company="Mark Final">
+// <copyright file="ILinkerTool.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
@@ -6,7 +6,10 @@
 namespace C
 {
     // TODO: want to split this out into regular linker stuff, and Windows import library interface
-    public interface ILinkerInfo
+    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalLinkerOptionsDelegateAttribute),
+                                            typeof(ExportLinkerOptionsDelegateAttribute))]
+    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetLinkerToolset")]
+    public interface ILinkerTool : Opus.Core.ITool
     {
         string ExecutableSuffix
         {
@@ -14,6 +17,16 @@ namespace C
         }
 
         string MapFileSuffix
+        {
+            get;
+        }
+
+        string StartLibraryList
+        {
+            get;
+        }
+
+        string EndLibraryList
         {
             get;
         }

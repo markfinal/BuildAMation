@@ -45,10 +45,10 @@ namespace VisualCCommon
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
-            C.ILinkerInfo linkerInfo = info as C.ILinkerInfo;
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
 
-            foreach (string libPath in linkerInfo.LibPaths(target))
+            foreach (string libPath in linkerTool.LibPaths(target))
             {
                 (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(libPath, true);
             }
