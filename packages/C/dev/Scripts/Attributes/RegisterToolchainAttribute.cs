@@ -6,7 +6,7 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
-    public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolchainAttribute
+    public sealed class RegisterToolchainAttribute : Opus.Core.RegisterToolsetAttribute
     {
         public RegisterToolchainAttribute(string name,
                                           System.Type toolsetType,

@@ -60,11 +60,11 @@ namespace C
             }
             string toolchainNameForThisTool = (toolchainsMap as System.Collections.Generic.Dictionary<System.Type, string>)[typeof(C.Compiler)];
             var toolchainTypeMap = Opus.Core.State.Get("ToolchainTypeMap", toolchainNameForThisTool);
-            if (!(toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolchainAttribute.ToolAndOptions>).ContainsKey(typeof(C.Compiler)))
+            if (!(toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolsetAttribute.ToolAndOptions>).ContainsKey(typeof(C.Compiler)))
             {
                 throw new Opus.Core.Exception("Unable to locate targetted tool type for type C.Compiler", false);
             }
-            Opus.Core.RegisterToolchainAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolchainAttribute.ToolAndOptions>)[typeof(C.Compiler)];
+            Opus.Core.RegisterToolsetAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolsetAttribute.ToolAndOptions>)[typeof(C.Compiler)];
             System.Type type = toolAndOptions.ToolType;
 
             Compiler instance = null;

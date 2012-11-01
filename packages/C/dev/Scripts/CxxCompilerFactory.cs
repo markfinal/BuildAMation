@@ -18,11 +18,11 @@ namespace C
             }
             string toolchainNameForThisTool = (toolchainsMap as System.Collections.Generic.Dictionary<System.Type, string>)[typeof(C.CxxCompiler)];
             var toolchainTypeMap = Opus.Core.State.Get("ToolchainTypeMap", toolchainNameForThisTool);
-            if (!(toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolchainAttribute.ToolAndOptions>).ContainsKey(typeof(C.CxxCompiler)))
+            if (!(toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolsetAttribute.ToolAndOptions>).ContainsKey(typeof(C.CxxCompiler)))
             {
                 throw new Opus.Core.Exception("Unable to locate targetted tool type for type C.CxxCompiler", false);
             }
-            Opus.Core.RegisterToolchainAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolchainAttribute.ToolAndOptions>)[typeof(C.CxxCompiler)];
+            Opus.Core.RegisterToolsetAttribute.ToolAndOptions toolAndOptions = (toolchainTypeMap as System.Collections.Generic.Dictionary<System.Type, Opus.Core.RegisterToolsetAttribute.ToolAndOptions>)[typeof(C.CxxCompiler)];
             System.Type type = toolAndOptions.ToolType;
 
             Opus.Core.ITool instance = null;

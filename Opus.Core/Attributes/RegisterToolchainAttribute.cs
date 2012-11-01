@@ -1,4 +1,4 @@
-// <copyright file="RegisterToolchainAttribute.cs" company="Mark Final">
+// <copyright file="RegisterToolsetAttribute.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -6,9 +6,9 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
-    public class RegisterToolchainAttribute : System.Attribute
+    public class RegisterToolsetAttribute : System.Attribute
     {
-        public RegisterToolchainAttribute(string name, System.Type toolsetType)
+        public RegisterToolsetAttribute(string name, System.Type toolsetType)
         {
             if (!Opus.Core.State.HasCategory("Toolset"))
             {
@@ -38,10 +38,10 @@ namespace Opus.Core
             }
         }
 
-        public static void PokeToolchains()
+        public static void RegisterAll()
         {
             // need to use inheritence here as the base class is abstract
-            var array = State.ScriptAssembly.GetCustomAttributes(typeof(RegisterToolchainAttribute), 
+            var array = State.ScriptAssembly.GetCustomAttributes(typeof(RegisterToolsetAttribute), 
 true);
             if (null == array || 0 == array.Length)
             {

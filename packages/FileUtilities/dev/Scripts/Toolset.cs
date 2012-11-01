@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
-[assembly:Opus.Core.RegisterToolchain("FileUtilities", typeof(FileUtilities.Toolset))]
+[assembly:Opus.Core.RegisterToolset("FileUtilities", typeof(FileUtilities.Toolset))]
 
 namespace FileUtilities
 {
