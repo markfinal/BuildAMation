@@ -33,6 +33,26 @@ namespace Opus.Core
                     return null;
                 }
 
+                Opus.Core.Log.MessageAll("DEBUG: Looking for toolset for tooltype '{0}'", toolType.ToString());
+
+#if true
+                var providers = toolType.GetCustomAttributes(typeof(AssignToolsetProviderAttribute), false);
+                if (0 == providers.Length)
+                {
+                    return null;
+                }
+
+                string toolsetName = (providers[0] as AssignToolsetProviderAttribute).ToolsetName(toolType);
+                if (Opus.Core.State.Has("Toolset", toolsetName))
+                {
+                    IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
+                    return toolset;
+                }
+                else
+                {
+                    return null;
+                }
+#else
                 if (Opus.Core.State.Has("Toolset", toolType.Namespace))
                 {
                     IToolset toolset = Opus.Core.State.Get("Toolset", toolType.Namespace) as IToolset;
@@ -42,6 +62,7 @@ namespace Opus.Core
                 {
                     return null;
                 }
+#endif
             }
 
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
