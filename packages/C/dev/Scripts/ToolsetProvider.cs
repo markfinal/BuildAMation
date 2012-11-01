@@ -12,5 +12,11 @@ namespace C
             System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(ICompilerTool)];
         }
+
+        static string GetCxxCompilerToolset(System.Type toolType)
+        {
+            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            return map[typeof(ICxxCompilerTool)];
+        }
     }
 }
