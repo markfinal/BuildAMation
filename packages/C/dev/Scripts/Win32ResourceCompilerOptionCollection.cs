@@ -45,13 +45,8 @@ namespace C
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            ICompilerInfo compilerInfo = toolset as ICompilerInfo;
-            if (null == compilerInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ICompilerInfo).ToString(), target.Toolchain), false);
-            }
-
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerInfo.ObjectFileOutputSubDirectory);
+            ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
 #else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);
 #endif

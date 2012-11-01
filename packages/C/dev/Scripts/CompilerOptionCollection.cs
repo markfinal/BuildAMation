@@ -101,19 +101,18 @@ namespace C
             // NEW STYLE
 #if true
             Opus.Core.Target target = node.Target;
-            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-            if (null == toolset)
+            Opus.Core.IToolset toolset = target.Toolset;
+            if (null == target.Toolset)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                if (null == toolset)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
             }
 
-            ICompilerInfo compilerInfo = toolset as ICompilerInfo;
-            if (null == compilerInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ICompilerInfo).ToString(), target.Toolchain), false);
-            }
-
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerInfo.ObjectFileOutputSubDirectory);
+            ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
 #else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);
 #endif
@@ -162,17 +161,17 @@ namespace C
             if (null != this.OutputName)
             {
 #if true
-                Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-                if (null == toolset)
+                Opus.Core.IToolset toolset = target.Toolset;
+                if (null == target.Toolset)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                    toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                    if (null == toolset)
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                    }
                 }
 
-                ICompilerInfo compilerInfo = toolset as ICompilerInfo;
-                if (null == compilerInfo)
-                {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(ICompilerInfo).ToString(), target.Toolchain), false);
-                }
+                ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
 #else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 #endif
@@ -181,7 +180,7 @@ namespace C
                 if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
                 {
 #if true
-                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerInfo.ObjectFileSuffix;
+                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
 #else
                     string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.ObjectFileSuffix;
 #endif
@@ -190,7 +189,7 @@ namespace C
                 else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
                 {
 #if true
-                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerInfo.PreprocessedOutputSuffix;
+                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
 #else
                     string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.PreprocessedOutputSuffix;
 #endif

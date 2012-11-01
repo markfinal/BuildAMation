@@ -13,6 +13,13 @@ namespace VisualC
             Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
         }
 
+        public Toolset()
+        {
+            this.toolMap[typeof(C.ICompilerTool)] = new VisualCCommon.CCompiler(this);
+
+            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(VisualC.CCompilerOptionCollection);
+        }
+
         protected override void GetInstallPath()
         {
             if (null != this.installPath)
@@ -58,6 +65,11 @@ namespace VisualC
             string ide = System.IO.Path.Combine(common7, "IDE");
 
             this.environment.Add(ide);
+        }
+
+        protected override string GetVersion(Opus.Core.BaseTarget baseTarget)
+        {
+            return "9.0"; // TODO: CRT version please
         }
     }
 }

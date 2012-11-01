@@ -6,6 +6,106 @@
 namespace VisualCCommon
 {
     [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
+#if true
+    public sealed class CCompiler : C.ICompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    {
+        private Opus.Core.IToolset toolset;
+        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+
+        public CCompiler(Opus.Core.IToolset toolset)
+        {
+            this.toolset = toolset;
+            this.requiredEnvironmentVariables.Add("SystemRoot");
+        }
+
+        #region ICompilerTool Members
+
+        string C.ICompilerTool.PreprocessedOutputSuffix
+        {
+            get
+            {
+                return ".i";
+            }
+        }
+
+        string C.ICompilerTool.ObjectFileSuffix
+        {
+            get
+            {
+                return ".obj";
+            }
+        }
+
+        string C.ICompilerTool.ObjectFileOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
+        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.Target target)
+        {
+            string installPath = this.toolset.InstallPath((Opus.Core.BaseTarget)target);
+            Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+            includePaths.Add(System.IO.Path.Combine(installPath, "include"));
+            return includePaths;
+        }
+
+        Opus.Core.StringArray C.ICompilerTool.IncludePathCompilerSwitches
+        {
+            get
+            {
+                return new Opus.Core.StringArray("-I");
+            }
+        }
+
+        #endregion
+
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        {
+            string platformBinFolder = this.toolset.BinPath((Opus.Core.BaseTarget)target);
+            return System.IO.Path.Combine(platformBinFolder, "cl.exe");
+        }
+
+        #endregion
+
+        #region IToolSupportsResponseFile Members
+
+        string Opus.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
+        #endregion
+
+        #region IToolRequiredEnvironmentVariables Members
+
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        {
+            get
+            {
+                return this.requiredEnvironmentVariables;
+            }
+        }
+
+        #endregion
+
+        #region IToolEnvironmentPaths Members
+
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
+        {
+            return this.toolset.Environment;
+        }
+
+        #endregion
+    }
+#else
     public sealed class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
@@ -13,14 +113,14 @@ namespace VisualCCommon
 
         private string platformBinFolder;
 
-        public CCompiler(Opus.Core.Target target)
+        public CCompiler(Opus.Core.BaseTarget baseTarget)
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
             }
 
-            if (!Opus.Core.OSUtilities.IsWindows(target))
+            if (!Opus.Core.OSUtilities.IsWindows(baseTarget))
             {
                 throw new Opus.Core.Exception("VisualC compiler supports only win32 and win64");
             }
@@ -28,9 +128,9 @@ namespace VisualCCommon
             // NEW STYLE
 #if true
             Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
-            this.platformBinFolder = info.BinPath((Opus.Core.BaseTarget)target);
+            this.platformBinFolder = info.BinPath(baseTarget);
 
-            string installPath = info.InstallPath((Opus.Core.BaseTarget)target);
+            string installPath = info.InstallPath(baseTarget);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.platformBinFolder = toolChainInstance.BinPath(target);
@@ -112,4 +212,5 @@ namespace VisualCCommon
             }
         }
     }
+#endif
 }

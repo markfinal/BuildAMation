@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract class Toolset : Opus.Core.IToolset, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, VisualStudioProcessor.IVisualStudioTargetInfo
+    public abstract class Toolset : Opus.Core.IToolset, /*C.ICompilerInfo, */C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, VisualStudioProcessor.IVisualStudioTargetInfo
     {
         protected string installPath;
         protected string bin32Folder;
@@ -16,6 +16,10 @@ namespace VisualCCommon
         protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
 
         protected abstract void GetInstallPath();
+        protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
+
+        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
+        protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
 
         #region IToolset Members
 
@@ -57,22 +61,32 @@ namespace VisualCCommon
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
-            this.GetInstallPath();
-            return "9.0";
+            return this.GetVersion(baseTarget);
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
         {
-            return null;
+            if (!this.toolMap.ContainsKey(toolType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+            }
+
+            return this.toolMap[toolType];
         }
 
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            return null;
+            if (!this.toolOptionsMap.ContainsKey(toolType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+            }
+
+            return this.toolOptionsMap[toolType];
         }
 
         #endregion
 
+#if false
         #region ICompilerInfo Members
 
         string C.ICompilerInfo.PreprocessedOutputSuffix
@@ -105,6 +119,7 @@ namespace VisualCCommon
         }
 
         #endregion
+#endif
 
         #region ILinkerInfo Members
 

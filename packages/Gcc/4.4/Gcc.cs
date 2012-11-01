@@ -24,7 +24,7 @@
 
 namespace Gcc
 {
-    public class Toolset : Opus.Core.IToolset, C.ICompilerInfo, GccCommon.IGCCInfo, C.ILinkerInfo, C.IArchiverInfo
+    public class Toolset : Opus.Core.IToolset, /*C.ICompilerInfo, */GccCommon.IGCCInfo, C.ILinkerInfo, C.IArchiverInfo
     {
         private static string installPath;
         
@@ -253,6 +253,7 @@ namespace Gcc
 
         #endregion
 
+#if false
         #region ICompilerInfo Members
 
         string C.ICompilerInfo.PreprocessedOutputSuffix
@@ -285,6 +286,7 @@ namespace Gcc
         }
 
         #endregion
+#endif
         
         #region IGCCInfo Members
 

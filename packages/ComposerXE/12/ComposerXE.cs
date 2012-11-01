@@ -26,7 +26,7 @@
 
 namespace ComposerXE
 {
-    public class Toolset : Opus.Core.IToolset, C.ICompilerInfo
+    public class Toolset : Opus.Core.IToolset/*, C.ICompilerInfo*/
     {
         #region IToolset Members
 
@@ -62,6 +62,7 @@ namespace ComposerXE
 
         #endregion
 
+#if false
         #region ICompilerInfo Members
 
         string C.ICompilerInfo.PreprocessedOutputSuffix
@@ -94,5 +95,6 @@ namespace ComposerXE
         }
 
         #endregion
+#endif
     }
 }

@@ -22,6 +22,7 @@ namespace C
                                           System.Type win32ResourceCompilerOptionType)
             : base(name, toolsetType)
         {
+#if false
             if (null != cCompilerType)
             {
                 if (!typeof(C.Compiler).IsAssignableFrom(cCompilerType))
@@ -33,6 +34,7 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("C Compiler option type '{0}' does not implement the interface {1}", cCompilerOptionType.ToString(), typeof(C.ICCompilerOptions).ToString()), false);
                 }
             }
+#endif
 
             if (null != cxxCompilerType)
             {
@@ -83,7 +85,7 @@ namespace C
             // for each tool type exposed in the toolset, define it's targetted type and option collection
             {
                 System.Collections.Generic.Dictionary<System.Type, ToolAndOptions> map = new System.Collections.Generic.Dictionary<System.Type, ToolAndOptions>();
-                map[typeof(C.Compiler)]    = new ToolAndOptions(cCompilerType, cCompilerOptionType);
+                map[typeof(C.ICompilerTool)]    = new ToolAndOptions(cCompilerType, cCompilerOptionType);
                 map[typeof(C.CxxCompiler)] = new ToolAndOptions(cxxCompilerType, cxxCompilerOptionType);
                 map[typeof(C.Linker)]      = new ToolAndOptions(linkerType, linkerOptionType);
                 map[typeof(C.Archiver)]    = new ToolAndOptions(archiverType, archiverOptionType);

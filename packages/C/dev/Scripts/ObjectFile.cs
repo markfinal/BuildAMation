@@ -12,7 +12,7 @@ namespace C
                                    typeof(ExportCompilerOptionsDelegateAttribute),
                                    typeof(LocalCompilerOptionsDelegateAttribute),
                                    ClassNames.CCompilerToolOptions)]
-    [Opus.Core.ModuleToolAssignment(typeof(Compiler))]
+    [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFile : Opus.Core.IModule
     {
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;

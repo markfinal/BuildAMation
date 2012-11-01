@@ -25,7 +25,8 @@ namespace Mingw
 #if true
             Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Mingw.Toolset));
 
-            string cppIncludePath = System.IO.Path.Combine((info as C.ICompilerInfo).IncludePaths(node.Target)[0], "c++");
+            C.ICompilerTool compilerTool = info.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            string cppIncludePath = System.IO.Path.Combine(compilerTool.IncludePaths(node.Target)[0], "c++");
 #else
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(node.Target, C.ClassNames.CCompilerTool) as CCompiler;
 
