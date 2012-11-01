@@ -4,8 +4,7 @@
 // <summary>Qt package</summary>
 // <author>Mark Final</author>
 
-// TODO: the name really ought to be QtCommon but ModuleUtilities.GetToolsetForModule only checks the NameSpace currently
-[assembly:Opus.Core.RegisterToolset("QtCommon", typeof(Qt.Toolset))]
+[assembly:Opus.Core.RegisterToolset("Qt", typeof(Qt.Toolset))]
 
 namespace Qt
 {

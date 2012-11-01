@@ -7,6 +7,7 @@ namespace FileUtilities
 {
     [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
                                    typeof(ExportOptionsDelegateAttribute))]
+    [Opus.Core.AssignToolsetProvider("FileUtilities")]
     public interface ICopyFilesTool : Opus.Core.ITool
     {
     }
