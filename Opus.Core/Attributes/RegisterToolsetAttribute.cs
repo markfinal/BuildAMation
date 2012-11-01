@@ -8,8 +8,12 @@ namespace Opus.Core
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
     public class RegisterToolsetAttribute : System.Attribute
     {
+        private string name;
+
         public RegisterToolsetAttribute(string name, System.Type toolsetType)
         {
+            this.name = name;
+
             if (!Opus.Core.State.HasCategory("Toolset"))
             {
                 Opus.Core.State.AddCategory("Toolset");
@@ -46,6 +50,11 @@ true);
             if (null == array || 0 == array.Length)
             {
                 throw new Exception("No toolchains were registered", false);
+            }
+
+            foreach (var a in array)
+            {
+                Opus.Core.Log.MessageAll("DEBUG: Registered toolset '{0}'", (a as RegisterToolsetAttribute).name);
             }
         }
     }
