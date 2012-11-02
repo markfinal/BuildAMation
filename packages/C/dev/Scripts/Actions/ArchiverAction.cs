@@ -1,17 +1,17 @@
-// <copyright file="LinkerAction.cs" company="Mark Final">
+// <copyright file="ArchiverAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(C.LinkerAction))]
+[assembly: Opus.Core.RegisterAction(typeof(C.ArchiverAction))]
 
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class LinkerAction : Opus.Core.IActionWithArguments
+    public sealed class ArchiverAction : Opus.Core.IActionWithArguments
     {
-        private string Linker
+        private string Archiver
         {
             get;
             set;
@@ -19,14 +19,14 @@ namespace C
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Linker = arguments;
+            this.Archiver = arguments;
         }
 
         string Opus.Core.IAction.CommandLineSwitch
         {
             get
             {
-                return "-C.LINK";
+                return "-C.LIB";
             }
         }
 
@@ -34,13 +34,13 @@ namespace C
         {
             get
             {
-                return "Assign the linker used.";
+                return "Assign the archiver used.";
             }
         }
 
         bool Opus.Core.IAction.Execute()
         {
-            Opus.Core.Log.DebugMessage("Linker is '{0}'", this.Linker);
+            Opus.Core.Log.DebugMessage("Archiver is '{0}'", this.Archiver);
 
             System.Collections.Generic.Dictionary<System.Type, string> map = null;
             if (Opus.Core.State.Has("Toolchains", "Map"))
@@ -53,7 +53,7 @@ namespace C
                 Opus.Core.State.Add("Toolchains", "Map", map);
             }
 
-            map[typeof(ILinkerTool)] = this.Linker;
+            map[typeof(IArchiverTool)] = this.Archiver;
 
             return true;
         }

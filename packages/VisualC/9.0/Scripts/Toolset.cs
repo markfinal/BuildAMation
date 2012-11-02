@@ -18,10 +18,12 @@ namespace VisualC
             this.toolMap[typeof(C.ICompilerTool)] = new VisualCCommon.CCompiler(this);
             this.toolMap[typeof(C.ICxxCompilerTool)] = new VisualCCommon.CxxCompiler(this);
             this.toolMap[typeof(C.ILinkerTool)] = new VisualCCommon.Linker(this);
+            this.toolMap[typeof(C.IArchiverTool)] = new VisualCCommon.Archiver(this);
 
             this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(VisualC.CCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(VisualC.CPlusPlusCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(VisualC.LinkerOptionCollection);
+            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(VisualC.ArchiverOptionCollection);
         }
 
         protected override void GetInstallPath()

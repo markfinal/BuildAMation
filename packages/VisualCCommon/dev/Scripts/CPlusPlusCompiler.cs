@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
+    // NEW STYLE
 #if true
     public sealed class CxxCompiler : C.ICxxCompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {

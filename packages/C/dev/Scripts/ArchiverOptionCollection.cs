@@ -15,19 +15,24 @@ namespace C
 #if true
             Opus.Core.Target target = node.Target;
 
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            IArchiverTool archiverTool = toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
+#else
             Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
             if (null == toolset)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
             }
 
-            IArchiverInfo archiverInfo = toolset as IArchiverInfo;
-            if (null == archiverInfo)
+            IArchiverInfo archiverTool = toolset as IArchiverInfo;
+            if (null == archiverTool)
             {
                 throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(IArchiverInfo).ToString(), target.Toolchain), false);
             }
+#endif
 
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverInfo.StaticLibraryOutputSubDirectory);
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverTool.StaticLibraryOutputSubDirectory);
 #else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.LibraryOutputSubDirectory);
 #endif
@@ -75,19 +80,24 @@ namespace C
             {
                 // NEW STYLE
 #if true
+#if true
+                Opus.Core.IToolset toolset = target.Toolset;
+                IArchiverTool archiverTool = toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
+#else
                 Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
                 if (null == toolset)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
                 }
 
-                IArchiverInfo archiverInfo = toolset as IArchiverInfo;
-                if (null == archiverInfo)
+                IArchiverInfo archiverTool = toolset as IArchiverInfo;
+                if (null == archiverTool)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(IArchiverInfo).ToString(), target.Toolchain), false);
                 }
+#endif
 
-                string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverInfo.StaticLibraryPrefix + this.OutputName + archiverInfo.StaticLibrarySuffix);
+                string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverTool.StaticLibraryPrefix + this.OutputName + archiverTool.StaticLibrarySuffix);
 #else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
                 string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, toolchain.StaticLibraryPrefix + this.OutputName + toolchain.StaticLibrarySuffix);

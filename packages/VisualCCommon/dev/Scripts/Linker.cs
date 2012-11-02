@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
+    // NEW STYLE
 #if true
     public sealed class Linker : C.ILinkerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {

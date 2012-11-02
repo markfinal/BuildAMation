@@ -58,7 +58,6 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("Linker option type '{0}' does not implement the interface {1}", linkerOptionType.ToString(), typeof(C.ILinkerOptions).ToString()), false);
                 }
             }
-#endif
 
             if (null != archiverType)
             {
@@ -71,6 +70,7 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("Archiver option type '{0}' does not implement the interface {1}", archiverOptionType.ToString(), typeof(C.IArchiverOptions).ToString()), false);
                 }
             }
+#endif
 
             if (null != win32ResourceCompilerType)
             {
@@ -85,11 +85,11 @@ namespace C
             // for each tool type exposed in the toolset, define it's targetted type and option collection
             {
                 System.Collections.Generic.Dictionary<System.Type, ToolAndOptions> map = new System.Collections.Generic.Dictionary<System.Type, ToolAndOptions>();
-                map[typeof(C.ICompilerTool)]    = new ToolAndOptions(cCompilerType, cCompilerOptionType);
-                map[typeof(C.ICxxCompilerTool)] = new ToolAndOptions(cxxCompilerType, cxxCompilerOptionType);
-                map[typeof(C.ILinkerTool)]      = new ToolAndOptions(linkerType, linkerOptionType);
-                map[typeof(C.Archiver)]    = new ToolAndOptions(archiverType, archiverOptionType);
-                map[typeof(C.Win32ResourceCompilerBase)] = new ToolAndOptions(win32ResourceCompilerType, win32ResourceCompilerOptionType);
+                map[typeof(ICompilerTool)]    = new ToolAndOptions(cCompilerType, cCompilerOptionType);
+                map[typeof(ICxxCompilerTool)] = new ToolAndOptions(cxxCompilerType, cxxCompilerOptionType);
+                map[typeof(ILinkerTool)]      = new ToolAndOptions(linkerType, linkerOptionType);
+                map[typeof(IArchiverTool)]    = new ToolAndOptions(archiverType, archiverOptionType);
+                map[typeof(Win32ResourceCompilerBase)] = new ToolAndOptions(win32ResourceCompilerType, win32ResourceCompilerOptionType);
 
                 if (!Opus.Core.State.HasCategory("ToolchainTypeMap"))
                 {
