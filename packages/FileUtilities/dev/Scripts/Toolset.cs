@@ -18,7 +18,7 @@ namespace FileUtilities
             this.toolMap[typeof(ISymLinkTool)] = new SymLinkTool();
 
             this.toolOptionsMap[typeof(ICopyFilesTool)] = typeof(CopyFilesOptionCollection);
-            this.toolOptionsMap[typeof(ISymLinkOptions)] = typeof(SymLinkOptionCollection);
+            this.toolOptionsMap[typeof(ISymLinkTool)] = typeof(SymLinkOptionCollection);
         }
 
         #region IToolset Members
