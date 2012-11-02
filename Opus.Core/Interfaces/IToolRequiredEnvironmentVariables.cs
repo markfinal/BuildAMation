@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: rename to IToolForwardedEnvironmentVariables
     public interface IToolRequiredEnvironmentVariables
     {
         StringArray VariableNames
