@@ -50,7 +50,7 @@ namespace CommandLineProcessor
                 //Opus.Core.Log.DebugMessage("Path is '{0}'", pathEnv);
             }
 
-            if (tool is Opus.Core.IToolSupportsResponseFile)
+            if (tool is Opus.Core.IToolSupportsResponseFile && false)
             {
                 string responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;
 

@@ -70,7 +70,6 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("Archiver option type '{0}' does not implement the interface {1}", archiverOptionType.ToString(), typeof(C.IArchiverOptions).ToString()), false);
                 }
             }
-#endif
 
             if (null != win32ResourceCompilerType)
             {
@@ -79,6 +78,7 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("Win32 resource compiler type '{0}' does not implement the base class {1}", win32ResourceCompilerType.ToString(), typeof(C.Win32ResourceCompilerBase).ToString()), false);
                 }
             }
+#endif
 
             // TODO: there are no options to the resource compiler yet
 
@@ -89,7 +89,7 @@ namespace C
                 map[typeof(ICxxCompilerTool)] = new ToolAndOptions(cxxCompilerType, cxxCompilerOptionType);
                 map[typeof(ILinkerTool)]      = new ToolAndOptions(linkerType, linkerOptionType);
                 map[typeof(IArchiverTool)]    = new ToolAndOptions(archiverType, archiverOptionType);
-                map[typeof(Win32ResourceCompilerBase)] = new ToolAndOptions(win32ResourceCompilerType, win32ResourceCompilerOptionType);
+                map[typeof(IWinResourceCompilerTool)] = new ToolAndOptions(win32ResourceCompilerType, win32ResourceCompilerOptionType);
 
                 if (!Opus.Core.State.HasCategory("ToolchainTypeMap"))
                 {

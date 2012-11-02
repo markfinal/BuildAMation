@@ -70,7 +70,7 @@ namespace C
             map[typeof(ICxxCompilerTool)] = this.Toolchain;
             map[typeof(ILinkerTool)]      = this.Toolchain;
             map[typeof(IArchiverTool)]    = this.Toolchain;
-            map[typeof(Win32ResourceCompilerBase)] = this.Toolchain;
+            map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
 #if false
             map[typeof(C.Toolchain)]   = this.Toolchain;
 #endif

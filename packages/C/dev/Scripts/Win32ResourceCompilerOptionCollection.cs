@@ -39,12 +39,7 @@ namespace C
             // NEW STYLE
 #if true
             Opus.Core.Target target = node.Target;
-            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-            if (null == toolset)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-            }
-
+            Opus.Core.IToolset toolset = target.Toolset;
             ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
 #else
@@ -58,19 +53,24 @@ namespace C
             {
                 // NEW STYLE
 #if true
+#if true
+                Opus.Core.IToolset toolset = target.Toolset;
+                IWinResourceCompilerTool resourceCompilerTool = toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
+#else
                 Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
                 if (null == toolset)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
                 }
 
-                IWinResourceCompilerInfo resourceCompilerInfo = toolset as IWinResourceCompilerInfo;
+                IWinResourceCompilerInfo resourceCompilerTool = toolset as IWinResourceCompilerInfo;
                 if (null == resourceCompilerInfo)
                 {
                     throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(IWinResourceCompilerInfo).ToString(), target.Toolchain), false);
                 }
+#endif
 
-                string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerInfo.CompiledResourceSuffix;
+                string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
 #else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 

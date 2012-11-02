@@ -52,20 +52,26 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.IWinResourceCompilerTool compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+#else
             C.Win32ResourceCompilerBase compilerInstance = C.Win32ResourceCompilerFactory.GetTargetInstance(target);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+#endif
 
             // add output path
-            commandLineBuilder.Add(System.String.Format("{0}{1}", compilerInstance.OutputFileSwitch, compilerOptions.CompiledResourceFilePath));
+            commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.OutputFileSwitch, compilerOptions.CompiledResourceFilePath));
 
             string executablePath = compilerTool.Executable(target);
             if (resourceFilePath.Contains(" "))
             {
-                commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", compilerInstance.InputFileSwitch, resourceFilePath));
+                commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", compilerTool.InputFileSwitch, resourceFilePath));
             }
             else
             {
-                commandLineBuilder.Add(System.String.Format("{0}{1}", compilerInstance.InputFileSwitch, resourceFilePath));
+                commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.InputFileSwitch, resourceFilePath));
             }
 
             int exitCode = CommandLineProcessor.Processor.Execute(resourceFileModule.OwningNode, compilerTool, executablePath, commandLineBuilder);

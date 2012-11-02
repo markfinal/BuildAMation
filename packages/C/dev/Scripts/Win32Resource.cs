@@ -12,7 +12,7 @@ namespace C
                                    typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute),
                                    typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
                                    ClassNames.Win32ResourceCompilerToolOptions)]
-    [Opus.Core.ModuleToolAssignment(typeof(C.Win32ResourceCompilerBase))]
+    [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
     public class Win32Resource : Opus.Core.IModule
     {
         public Win32Resource()

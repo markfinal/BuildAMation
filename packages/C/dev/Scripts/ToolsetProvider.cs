@@ -30,5 +30,11 @@ namespace C
             System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(IArchiverTool)];
         }
+
+        static string GetWinResourceompilerToolset(System.Type toolType)
+        {
+            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            return map[typeof(IWinResourceCompilerTool)];
+        }
     }
 }
