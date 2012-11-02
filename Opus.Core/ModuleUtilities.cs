@@ -98,7 +98,7 @@ namespace Opus.Core
                 System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
                 if (!map.ContainsKey(toolType))
                 {
-                    throw new Exception(System.String.Format("The tool '{0}' has not been registered a toolchain", toolType.ToString()), false);
+                    throw new Exception(System.String.Format("The tool '{0}' has not been registered a toolchain (provider)", toolType.ToString()), false);
                 }
 
                 string toolchain = map[toolType];
