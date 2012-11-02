@@ -13,6 +13,19 @@ namespace VisualC
             Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
         }
 
+        public Toolset()
+        {
+            this.toolMap[typeof(C.ICompilerTool)] = new VisualCCommon.CCompiler(this);
+            this.toolMap[typeof(C.ICxxCompilerTool)] = new VisualCCommon.CxxCompiler(this);
+            this.toolMap[typeof(C.ILinkerTool)] = new VisualCCommon.Linker(this);
+            this.toolMap[typeof(C.IArchiverTool)] = new VisualCCommon.Archiver(this);
+            
+            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(VisualC.CCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(VisualC.CPlusPlusCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(VisualC.LinkerOptionCollection);
+            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(VisualC.ArchiverOptionCollection);
+        }
+        
         protected override void GetInstallPath()
         {
             if (null != this.installPath)
@@ -59,6 +72,11 @@ namespace VisualC
 
             this.environment = new Opus.Core.StringArray();
             this.environment.Add(ide);
+        }
+
+        protected override string GetVersion (Opus.Core.BaseTarget baseTarget)
+        {
+            return "8.0"; // TODO: return CRT version
         }
     }
 }
