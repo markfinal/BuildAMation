@@ -119,22 +119,8 @@ namespace VisualCCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-            VisualCCommon.Toolset toolset = this.toolset as VisualCCommon.Toolset;
-            if (target.HasPlatform(Opus.Core.EPlatform.Win64))
-            {
-                if (Opus.Core.OSUtilities.Is64BitHosting)
-                {
-                    return System.IO.Path.Combine(toolset.bin64Folder, "link.exe");
-                }
-                else
-                {
-                    return System.IO.Path.Combine(toolset.bin6432Folder, "link.exe");
-                }
-            }
-            else
-            {
-                return System.IO.Path.Combine(toolset.bin32Folder, "link.exe");
-            }
+            string binPath = target.Toolset.BinPath((Opus.Core.BaseTarget)target);
+            return System.IO.Path.Combine(binPath, "link.exe");
         }
 
         #endregion
@@ -167,7 +153,7 @@ namespace VisualCCommon
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
-            return target.Toolset.Environment;
+            return this.toolset.Environment;
         }
 
         #endregion

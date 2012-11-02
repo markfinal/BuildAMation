@@ -50,22 +50,8 @@ namespace VisualCCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-            VisualCCommon.Toolset toolset = this.toolset as VisualCCommon.Toolset;
-            if (target.HasPlatform(Opus.Core.EPlatform.Win64))
-            {
-                if (Opus.Core.OSUtilities.Is64BitHosting)
-                {
-                    return System.IO.Path.Combine(toolset.bin64Folder, "lib.exe");
-                }
-                else
-                {
-                    return System.IO.Path.Combine(toolset.bin6432Folder, "lib.exe");
-                }
-            }
-            else
-            {
-                return System.IO.Path.Combine(toolset.bin32Folder, "lib.exe");
-            }
+            string binPath = this.toolset.BinPath((Opus.Core.BaseTarget)target);
+            return System.IO.Path.Combine(binPath, "lib.exe");
         }
 
         #endregion

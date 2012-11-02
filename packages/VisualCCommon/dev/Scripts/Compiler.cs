@@ -66,8 +66,8 @@ namespace VisualCCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-            string platformBinFolder = this.toolset.BinPath((Opus.Core.BaseTarget)target);
-            return System.IO.Path.Combine(platformBinFolder, "cl.exe");
+            string binPath = this.toolset.BinPath((Opus.Core.BaseTarget)target);
+            return System.IO.Path.Combine(binPath, "cl.exe");
         }
 
         #endregion
