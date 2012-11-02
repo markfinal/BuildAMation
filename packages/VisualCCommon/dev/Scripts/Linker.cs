@@ -7,7 +7,7 @@ namespace VisualCCommon
 {
     // NEW STYLE
 #if true
-    public sealed class Linker : C.ILinkerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class Linker : C.ILinkerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -154,6 +154,17 @@ namespace VisualCCommon
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
             return this.toolset.Environment;
+        }
+
+        #endregion
+
+        #region IToolEnvironmentVariables Members
+
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
+        {
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            environmentVariables.Add("LIB", (this as C.ILinkerTool).LibPaths(target));
+            return environmentVariables;
         }
 
         #endregion
