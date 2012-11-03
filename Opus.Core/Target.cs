@@ -64,7 +64,7 @@ namespace Opus.Core
             }
             if (!map[baseTarget.HashKey].ContainsKey(toolchain))
             {
-                target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolchain, toolset);
+                target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolset);
             }
             else
             {
@@ -83,13 +83,13 @@ namespace Opus.Core
             this.Key = builder.ToString();
         }
 
-        private Target(BaseTarget baseTarget, string toolchain, IToolset toolset)
+        private Target(BaseTarget baseTarget, IToolset toolset)
         {
             this.BaseTarget = baseTarget;
-            this.Toolchain = toolchain;
+            this.Toolchain = toolset.GetType().Namespace;
             this.Toolset = toolset;
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, toolchain);
+            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, this.Toolchain);
             this.Key = builder.ToString();
         }
 
