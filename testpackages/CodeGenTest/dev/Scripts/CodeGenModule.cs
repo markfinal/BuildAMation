@@ -132,7 +132,7 @@ namespace CodeGenTest
                                    typeof(ExportCodeGenOptionsDelegateAttribute),
                                    typeof(LocalCodeGenOptionsDelegateAttribute),
                                    typeof(CodeGenOptions))]
-    [Opus.Core.ModuleToolAssignment(typeof(CodeGenTool))]
+    [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
     public abstract class CodeGenModule : Opus.Core.IModule, Opus.Core.IInjectModules
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
@@ -184,7 +184,7 @@ namespace CodeGenTest
 
         Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
         {
-            return Opus.Core.ToolsetFactory.CreateToolset(typeof(ToolInfo));
+            return Opus.Core.ToolsetFactory.CreateToolset(typeof(Toolset));
         }
     }
 }
