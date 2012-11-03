@@ -5,6 +5,79 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
+    // NEW STYLE
+#if true
+    public sealed class Archiver : C.IArchiverTool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolRequiredEnvironmentVariables
+    {
+        private Opus.Core.IToolset toolset;
+        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+
+        public Archiver(Opus.Core.IToolset toolset)
+        {
+            this.toolset = toolset;
+            this.requiredEnvironmentVariables.Add("TEMP");
+        }
+
+        #region IArchiverTool Members
+
+        string C.IArchiverTool.StaticLibraryPrefix
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        string C.IArchiverTool.StaticLibrarySuffix
+        {
+            get
+            {
+                return ".a";
+            }
+        }
+
+        string C.IArchiverTool.StaticLibraryOutputSubDirectory
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        #endregion
+
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        {
+            string binPath = this.toolset.BinPath((Opus.Core.BaseTarget)target);
+            return System.IO.Path.Combine(binPath, "ar.exe");
+        }
+
+        #endregion
+
+        #region IToolEnvironmentPaths Members
+
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
+        {
+            return this.toolset.Environment;
+        }
+
+        #endregion
+
+        #region IToolRequiredEnvironmentVariables Members
+
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        {
+            get
+            {
+                return this.requiredEnvironmentVariables;
+            }
+        }
+
+        #endregion
+    }
+#else
     public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolRequiredEnvironmentVariables
     {
         private static Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -57,4 +130,5 @@ namespace MingwCommon
 #endif
         }
     }
+#endif
 }

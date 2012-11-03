@@ -12,17 +12,13 @@ namespace Mingw
             this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
             this.toolMap[typeof(C.ICxxCompilerTool)] = new CxxCompiler(this);
             this.toolMap[typeof(C.ILinkerTool)] = new Linker(this);
-#if false
             this.toolMap[typeof(C.IArchiverTool)] = new MingwCommon.Archiver(this);
-#endif
             this.toolMap[typeof(C.IWinResourceCompilerTool)] = new MingwCommon.Win32ResourceCompiler(this);
 
             this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Mingw.CCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Mingw.CPlusPlusCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Mingw.LinkerOptionCollection);
-#if false
             this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Mingw.ArchiverOptionCollection);
-#endif
             this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
         }
 
