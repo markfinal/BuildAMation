@@ -46,10 +46,12 @@ namespace Opus.Core
                 if (Opus.Core.State.Has("Toolset", toolsetName))
                 {
                     IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
+                    Opus.Core.Log.MessageAll("\tfound '{0}'", toolset);
                     return toolset;
                 }
                 else
                 {
+                    Opus.Core.Log.MessageAll("\tnot found");
                     return null;
                 }
 #else
