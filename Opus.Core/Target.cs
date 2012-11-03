@@ -64,7 +64,15 @@ namespace Opus.Core
             }
             if (!map[baseTarget.HashKey].ContainsKey(toolchain))
             {
-                target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolset);
+                // TODO: change this to an exception
+                if (null == toolset)
+                {
+                    target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolchain);
+                }
+                else
+                {
+                    target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolset);
+                }
             }
             else
             {
