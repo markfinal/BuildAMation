@@ -26,7 +26,7 @@ namespace C
         {
             get
             {
-                return "-C.LIB";
+                return "-C.AR";
             }
         }
 
