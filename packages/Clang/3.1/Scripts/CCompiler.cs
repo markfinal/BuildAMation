@@ -18,7 +18,7 @@ namespace Clang
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
             // TODO: can we have this extension somewhere central?
-            return System.IO.Path.Combine(this.toolset.InstallPath(target), "clang.exe");
+            return System.IO.Path.Combine(this.toolset.InstallPath((Opus.Core.BaseTarget)target), "clang.exe");
         }
 
         #endregion
