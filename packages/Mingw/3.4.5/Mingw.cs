@@ -7,8 +7,8 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "mingw", C.ClassNames.ArchiverTool, typeof(MingwCommon.Archiver), typeof(Mingw.ArchiverOptionCollection))]
 #if false
 [assembly: Opus.Core.MapToolChainClassTypes("C", "mingw", C.ClassNames.CCompilerTool, typeof(Mingw.CCompiler), typeof(Mingw.CCompilerOptionCollection))]
-#endif
 [assembly: Opus.Core.MapToolChainClassTypes("C", "mingw", C.ClassNames.CPlusPlusCompilerTool, typeof(Mingw.CPlusPlusCompiler), typeof(Mingw.CPlusPlusCompilerOptionCollection))]
+#endif
 [assembly: Opus.Core.MapToolChainClassTypes("C", "mingw", C.ClassNames.LinkerTool, typeof(Mingw.Linker), typeof(Mingw.LinkerOptionCollection))]
 #if false
 [assembly: Opus.Core.MapToolChainClassTypes("C", "mingw", C.ClassNames.Toolchain, typeof(Mingw.Toolchain), typeof(Mingw.ToolchainOptionCollection))]
@@ -19,7 +19,7 @@
     "mingw",
     typeof(Mingw.Toolset),
     typeof(MingwCommon.CCompiler), typeof(Mingw.CCompilerOptionCollection),
-    typeof(Mingw.CPlusPlusCompiler), typeof(Mingw.CPlusPlusCompilerOptionCollection),
+    typeof(Mingw.CxxCompiler), typeof(Mingw.CPlusPlusCompilerOptionCollection),
     typeof(Mingw.Linker), typeof(Mingw.LinkerOptionCollection),
     typeof(MingwCommon.Archiver), typeof(Mingw.ArchiverOptionCollection),
     typeof(MingwCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
