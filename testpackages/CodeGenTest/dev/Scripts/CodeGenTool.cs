@@ -23,10 +23,7 @@ namespace CodeGenTest
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-            // NEW STYLE
-#if true
-            string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainForModule(typeof(CodeGenTest.CodeGeneratorTool));
-#else
+#if false
             string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainImplementation(typeof(CodeGenTest.CodeGeneratorTool));
 #endif
 
