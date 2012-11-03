@@ -35,6 +35,7 @@ namespace CSharp
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
+            // TODO: fix this - might come from the DotNetFramework
             return "dev";
         }
 
