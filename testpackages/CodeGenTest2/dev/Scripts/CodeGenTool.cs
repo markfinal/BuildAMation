@@ -1,55 +1,29 @@
 [assembly: Opus.Core.RegisterTargetToolChain("codegentool", "CodeGenTest2.CodeGeneratorTool.VersionString")]
+
+#if true
+[assembly: Opus.Core.RegisterToolset("CodeGenTest2", typeof(CodeGenTest2.Toolset))]
+#else
 [assembly: CodeGenTest2.RegisterToolchain("CodeGenTest2", typeof(CodeGenTest2.ToolInfo))]
+#endif
 
 namespace CodeGenTest2
 {
-    public class ToolInfo : Opus.Core.IToolset
-    {
-        #region IToolset Members
-
-        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        Opus.Core.StringArray Opus.Core.IToolset.Environment
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
-        {
-            return "dev";
-        }
-
-        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
-        {
-            return null;
-        }
-
-        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
-        {
-            return null;
-        }
-
-        #endregion
-    }
-
     [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalCodeGenOptionsDelegateAttribute),
                                             typeof(ExportCodeGenOptionsDelegateAttribute))]
-    public class CodeGenTool : Opus.Core.ITool
+    public class CodeGenTool : ICodeGenTool
     {
-        public string Executable(Opus.Core.Target target)
+        private Opus.Core.IToolset toolset;
+
+        public CodeGenTool(Opus.Core.IToolset toolset)
         {
-            // NEW STYLE
-#if true
-            string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainForModule(typeof(CodeGenTest2.CodeGeneratorTool));
-#else
+            this.toolset = toolset;
+        }
+
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        {
+#if false
             string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainImplementation(typeof(CodeGenTest2.CodeGeneratorTool));
 #endif
 
@@ -70,5 +44,7 @@ namespace CodeGenTest2
             string exe = options.OutputFilePath;
             return exe;
         }
+
+        #endregion
     }
 }

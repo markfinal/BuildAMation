@@ -1,3 +1,4 @@
+#if false
 namespace CodeGenTest2
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
@@ -46,3 +47,4 @@ namespace CodeGenTest2
         }
     }
 }
+#endif

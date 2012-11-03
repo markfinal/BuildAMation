@@ -7,19 +7,28 @@ namespace NativeBuilder
             Opus.Core.IModule codeGenModuleModule = codeGenModule as Opus.Core.IModule;
             Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool tool = toolset.Tool(typeof(CodeGenTest2.ICodeGenTool));
+#else
             CodeGenTest2.CodeGenTool tool = new CodeGenTest2.CodeGenTool();
+#endif
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
             CodeGenTest2.CodeGenOptions toolOptions = codeGenModuleOptions as CodeGenTest2.CodeGenOptions;
-            
+
             string toolExecutable = tool.Executable(target);
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-            inputFiles.Add(toolExecutable);
-            Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
-            if (!RequiresBuilding(outputFiles, inputFiles))
+            // dependency checking
             {
-                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
-                success = true;
-                return null;
+                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                inputFiles.Add(toolExecutable);
+                Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
+                if (!RequiresBuilding(outputFiles, inputFiles))
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    success = true;
+                    return null;
+                }
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
@@ -27,14 +36,14 @@ namespace NativeBuilder
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
-                
+
                 // OSX insists on running C# assemblies through mono
                 if (target.HasPlatform(Opus.Core.EPlatform.OSX))
                 {
                     commandLineBuilder.Insert(0, toolExecutable);
                     toolExecutable = "mono";
                 }
-    
+
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
                 {

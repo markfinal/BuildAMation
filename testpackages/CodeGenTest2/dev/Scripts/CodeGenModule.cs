@@ -23,7 +23,7 @@ namespace CodeGenTest2
         }
     }
 
-    public partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
+    public sealed partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
     {
         public CodeGenOptions(Opus.Core.DependencyNode node)
             : base(node)
@@ -40,10 +40,10 @@ namespace CodeGenTest2
             }
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode owningNode)
         {
             ICodeGenOptions options = this as ICodeGenOptions;
-            options.OutputSourceDirectory = node.GetTargettedModuleBuildDirectory("src");
+            options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectory("src");
             options.OutputName = "function";
         }
 
@@ -59,7 +59,7 @@ namespace CodeGenTest2
             options.SetGeneratedFilePath();
         }
 
-        protected static void OutputSourceDirectoryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputSourceDirectoryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.Add(stringOption.Value);
@@ -71,7 +71,7 @@ namespace CodeGenTest2
             options.SetGeneratedFilePath();
         }
 
-        protected static void OutputNameCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputNameCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.Add(stringOption.Value);
@@ -122,7 +122,7 @@ namespace CodeGenTest2
                                    typeof(ExportCodeGenOptionsDelegateAttribute),
                                    typeof(LocalCodeGenOptionsDelegateAttribute),
                                    typeof(CodeGenOptions))]
-    [Opus.Core.ModuleToolAssignment(typeof(CodeGenTool))]
+    [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
     public abstract class CodeGenModule : Opus.Core.IModule, Opus.Core.IInjectModules
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
@@ -172,7 +172,7 @@ namespace CodeGenTest2
 
         Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
         {
-            return Opus.Core.ToolsetFactory.CreateToolset(typeof(ToolInfo));
+            return Opus.Core.ToolsetFactory.CreateToolset(typeof(Toolset));
         }
     }
 }
