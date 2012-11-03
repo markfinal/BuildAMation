@@ -5,6 +5,24 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
+    // NEW STYLE
+#if true
+    public sealed class CCompiler : MingwCommon.CCompiler
+    {
+        public CCompiler(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        protected override string Filename
+        {
+            get
+            {
+                return "mingw32-gcc-3.4.5";
+            }
+        }
+    }
+#else
     [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
     public sealed class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
@@ -97,4 +115,5 @@ namespace Mingw
         }
 #endif
     }
+#endif
 }

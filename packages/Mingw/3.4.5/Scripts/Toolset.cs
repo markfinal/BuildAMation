@@ -7,6 +7,25 @@ namespace Mingw
 {
     public sealed class Toolset : MingwCommon.Toolset
     {
+        public Toolset()
+        {
+            this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
+#if false
+            this.toolMap[typeof(C.ICxxCompilerTool)] = new CPlusPlusCompiler(this);
+            this.toolMap[typeof(C.ILinkerTool)] = new Linker(this);
+            this.toolMap[typeof(C.IArchiverTool)] = new MingwCommon.Archiver(this);
+            this.toolMap[typeof(C.IWinResourceCompilerTool)] = new MingwCommon.Win32ResourceCompiler(this);
+#endif
+
+            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Mingw.CCompilerOptionCollection);
+#if false
+            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Mingw.CPlusPlusCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Mingw.LinkerOptionCollection);
+            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Mingw.ArchiverOptionCollection);
+            this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
+#endif
+        }
+
         protected override void GetInstallPath()
         {
             if (null != this.installPath)
@@ -46,6 +65,11 @@ namespace Mingw
 
             this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
             this.includePaths.Add(gccIncludeFolder);
+        }
+
+        protected override string GetVersion(Opus.Core.BaseTarget baseTarget)
+        {
+            return "3.4.5";
         }
     }
 }

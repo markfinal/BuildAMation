@@ -10,9 +10,13 @@ namespace MingwCommon
         protected string installPath;
         protected string binPath;
         protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
-        protected Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+        public Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
 
         protected abstract void GetInstallPath();
+        protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
+
+        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
+        protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
 
         #region IToolset Members
 
@@ -39,17 +43,27 @@ namespace MingwCommon
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
-            return "3.4.5";
+            return this.GetVersion(baseTarget);
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
         {
-            return null;
+            if (!this.toolMap.ContainsKey(toolType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+            }
+
+            return this.toolMap[toolType];
         }
 
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            return null;
+            if (!this.toolOptionsMap.ContainsKey(toolType))
+            {
+                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+            }
+
+            return this.toolOptionsMap[toolType];
         }
 
         #endregion
