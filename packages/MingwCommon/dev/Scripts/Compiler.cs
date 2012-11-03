@@ -12,10 +12,9 @@ namespace MingwCommon
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
 
-        public CCompiler(Opus.Core.IToolset toolset)
+        protected CCompiler(Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
-
             this.requiredEnvironmentVariables.Add("TEMP");
         }
 
