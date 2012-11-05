@@ -15,19 +15,7 @@ namespace VSSolutionBuilder
             string moduleName = node.ModuleName;
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
-            Opus.Core.ITool toolInterface = null;
-            if (typeof(C.Compiler) == toolType)
-            {
-                toolInterface = C.CCompilerFactory.GetInstance(target);
-            }
-            else if (typeof(C.CxxCompiler) == toolType)
-            {
-                toolInterface = C.CxxCompilerFactory.GetInstance(target);
-            }
-            else
-            {
-                throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
-            }
+            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -171,19 +159,10 @@ namespace VSSolutionBuilder
 
                 // NEW STYLE
 #if true
-                Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-                if (null == toolset)
-                {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-                }
+                Opus.Core.IToolset toolset = target.Toolset;
 
-                C.ICompilerInfo compilerInfo = toolset as C.ICompilerInfo;
-                if (null == compilerInfo)
-                {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
-                }
-
-                string objectFileSuffix = compilerInfo.ObjectFileSuffix;
+                C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+                string objectFileSuffix = compilerTool.ObjectFileSuffix;
 #else
                 C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
                 string objectFileSuffix = toolchain.ObjectFileSuffix;
