@@ -38,21 +38,22 @@ namespace QMakeBuilder
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(target);
             nodeData.AddVariable("SOURCES", sourceFilePath);
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             // NEW STYLE
 #if true
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-            if (compilerTool is C.CxxCompiler)
+            if (objectFileOptions is C.ICPlusPlusCompilerOptions)
             {
+                Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool));
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
                 nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
             }
             else
             {
+                Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICxxCompilerTool));
                 nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
                 nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
             }
 #else
+            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             bool isCPlusPlus = false;
             if (objectFileOptions is C.ICPlusPlusCompilerOptions)
             {

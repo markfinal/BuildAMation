@@ -28,8 +28,7 @@ namespace QMakeBuilder
             {
             // NEW STYLE
 #if true
-                C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
-                Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+                Opus.Core.ITool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool));
                 nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
 #else
                 C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
@@ -236,9 +235,15 @@ namespace QMakeBuilder
 
                 // libraries
                 {
-                    C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
+                    // NEW STYLE
                     Opus.Core.StringArray libraryFiles = new Opus.Core.StringArray();
+#if true
+                    C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+                    C.LinkerUtilities.AppendLibrariesToCommandLine(libraryFiles, linkerTool, linkerOptions, dependentLibraryFiles);
+#else
+                    C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
                     linkerInstance.AppendLibrariesToCommandLine(libraryFiles, linkerOptions, dependentLibraryFiles);
+#endif
 
                     System.Text.StringBuilder libStatement = new System.Text.StringBuilder();
                     libStatement.AppendFormat("{0}:QMAKE_LIBS += ", nodeData.Configuration);
