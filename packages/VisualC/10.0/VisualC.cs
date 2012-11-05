@@ -12,6 +12,8 @@
 //[assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Toolchain, typeof(VisualC.Toolchain), typeof(VisualC.ToolchainOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Win32ResourceCompilerTool, typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
 
+[assembly: Opus.Core.RegisterToolset("visualc", typeof(VisualC.Toolset))]
+
 namespace VisualC
 {
     // Define module classes here
