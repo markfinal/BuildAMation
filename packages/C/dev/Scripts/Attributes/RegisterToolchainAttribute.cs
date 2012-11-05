@@ -78,10 +78,10 @@ namespace C
                     throw new Opus.Core.Exception(System.String.Format("Win32 resource compiler type '{0}' does not implement the base class {1}", win32ResourceCompilerType.ToString(), typeof(C.Win32ResourceCompilerBase).ToString()), false);
                 }
             }
-#endif
 
             // TODO: there are no options to the resource compiler yet
 
+            // TODO: I don't think the following is used
             // for each tool type exposed in the toolset, define it's targetted type and option collection
             {
                 System.Collections.Generic.Dictionary<System.Type, ToolAndOptions> map = new System.Collections.Generic.Dictionary<System.Type, ToolAndOptions>();
@@ -97,6 +97,7 @@ namespace C
                 }
                 Opus.Core.State.Add("ToolchainTypeMap", name, map);
             }
+#endif
         }
     }
 }
