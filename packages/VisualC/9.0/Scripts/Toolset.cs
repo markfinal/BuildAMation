@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed class Toolset : VisualCCommon.Toolset
+    public sealed class Toolset : VisualCCommon.Toolset, VisualStudioProcessor.IVisualStudioTargetInfo
     {
         static Toolset()
         {
@@ -79,5 +79,17 @@ namespace VisualC
         {
             return "9.0"; // TODO: CRT version please
         }
+
+        #region IVisualStudioTargetInfo Members
+
+        VisualStudioProcessor.EVisualStudioTarget VisualStudioProcessor.IVisualStudioTargetInfo.VisualStudioTarget
+        {
+            get
+            {
+                return VisualStudioProcessor.EVisualStudioTarget.VCPROJ;
+            }
+        }
+
+        #endregion
     }
 }

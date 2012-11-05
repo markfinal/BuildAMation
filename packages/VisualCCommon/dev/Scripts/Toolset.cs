@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract class Toolset : Opus.Core.IToolset, /*C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, */VisualStudioProcessor.IVisualStudioTargetInfo
+    public abstract class Toolset : Opus.Core.IToolset/*, C.ICompilerInfo, C.ILinkerInfo, C.IArchiverInfo, C.IWinResourceCompilerInfo, */
     {
         public string installPath;
         public string bin32Folder;
@@ -241,17 +241,5 @@ namespace VisualCCommon
 
         #endregion
 #endif
-
-        #region IVisualStudioTargetInfo Members
-
-        VisualStudioProcessor.EVisualStudioTarget VisualStudioProcessor.IVisualStudioTargetInfo.VisualStudioTarget
-        {
-            get
-            {
-                return VisualStudioProcessor.EVisualStudioTarget.VCPROJ;
-            }
-        }
-
-        #endregion
     }
 }
