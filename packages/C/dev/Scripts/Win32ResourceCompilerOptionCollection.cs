@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
+    // TODO: this does not implement any options interface
     public sealed partial class Win32ResourceCompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, VisualStudioProcessor.IVisualStudioSupport
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
