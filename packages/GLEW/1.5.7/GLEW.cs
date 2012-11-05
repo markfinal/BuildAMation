@@ -63,5 +63,10 @@ namespace GLEW
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
             typeof(OpenGLSDK.OpenGL)
         );
+
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
+        Opus.Core.TypeArray winDependents = new Opus.Core.TypeArray(
+            typeof(WindowsSDK.WindowsSDK)
+        );
     }
 }
