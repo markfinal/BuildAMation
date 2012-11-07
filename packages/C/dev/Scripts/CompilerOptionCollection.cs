@@ -7,7 +7,6 @@ namespace C
 {
     public abstract class CompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
-        // TODO:  no reason why this can't be a static utility function
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             ICCompilerOptions compilerOptions = this as ICCompilerOptions;

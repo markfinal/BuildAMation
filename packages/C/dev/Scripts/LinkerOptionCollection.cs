@@ -14,7 +14,6 @@ namespace C
 
     public abstract class LinkerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
-        // TODO:  no reason why this can't be a static utility function
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
