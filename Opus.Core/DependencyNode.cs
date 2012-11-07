@@ -154,7 +154,6 @@ namespace Opus.Core
 
         public void CreateOptionCollection()
         {
-            //IToolset toolset = this.Module.GetToolset(this.Target);
             IToolset toolset = this.Target.Toolset;
 
             System.Type moduleType = this.Module.GetType();

@@ -35,10 +35,5 @@ namespace CSharp
         }
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
-        Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
-        {
-            return Opus.Core.ToolsetFactory.CreateToolset(typeof(Toolset));
-        }
     }
 }

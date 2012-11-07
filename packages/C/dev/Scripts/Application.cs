@@ -94,16 +94,5 @@ namespace C
                 linkerOptions.SubSystem = C.ESubsystem.Console;
             }
         }
-
-        Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
-        {
-            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-            if (null == toolset)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-            }
-
-            return toolset;
-        }
     }
 }

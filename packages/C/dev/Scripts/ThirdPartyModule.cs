@@ -47,10 +47,5 @@ namespace C
         public abstract Opus.Core.StringArray Libraries(Opus.Core.Target target);
 
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
-        Opus.Core.IToolset Opus.Core.IModule.GetToolset(Opus.Core.Target target)
-        {
-            return null;
-        }
     }
 }
