@@ -115,7 +115,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (archiverTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (archiverTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (archiverTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environmentPaths, environment);
             success = true;
             return returnData;
         }

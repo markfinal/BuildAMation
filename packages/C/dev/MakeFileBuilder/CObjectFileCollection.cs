@@ -60,7 +60,7 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null, null);
             success = true;
             return returnData;
         }

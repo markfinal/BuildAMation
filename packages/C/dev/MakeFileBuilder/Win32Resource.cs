@@ -90,7 +90,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (compilerTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths, environment);
             success = true;
             return returnData;
         }

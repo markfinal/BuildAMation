@@ -165,7 +165,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (linkerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (linkerTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environmentPaths, environment);
             success = true;
             return returnData;
         }
