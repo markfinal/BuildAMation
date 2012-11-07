@@ -14,19 +14,7 @@ namespace MakeFileBuilder
             Opus.Core.Target target = node.Target;
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
-            Opus.Core.ITool toolInterface = null;
-            if (typeof(C.Compiler) == toolType)
-            {
-                toolInterface = C.CCompilerFactory.GetInstance(target);
-            }
-            else if (typeof(C.CxxCompiler) == toolType)
-            {
-                toolInterface = C.CxxCompilerFactory.GetInstance(target);
-            }
-            else
-            {
-                throw new Opus.Core.Exception(System.String.Format("Unrecognized compiler tool type, '{0}'", toolType.ToString()));
-            }
+            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
 

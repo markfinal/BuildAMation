@@ -233,7 +233,13 @@ namespace MakeFileBuilder
                 }
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool compilerInstance = toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
+#else
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
+#endif
             string executablePath = compilerInstance.Executable(target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();

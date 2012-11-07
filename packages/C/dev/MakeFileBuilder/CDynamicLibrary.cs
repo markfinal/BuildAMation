@@ -12,8 +12,14 @@ namespace MakeFileBuilder
             Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+#else
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+#endif
 
             // dependents
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -87,44 +93,28 @@ namespace MakeFileBuilder
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-            if (null == toolset)
+            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+
+            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
+
+            C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+            if (null != winResourceCompilerTool)
             {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
             }
 
-            C.ICompilerInfo compilerInfo = toolset as C.ICompilerInfo;
-            if (null == compilerInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
-            }
-
-            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerInfo.ObjectFileSuffix);
-
-            if (toolset is C.IWinResourceCompilerInfo)
-            {
-                C.IWinResourceCompilerInfo win32ResourceCompilerInfo = toolset as C.IWinResourceCompilerInfo;
-                recipeBuilder.AppendFormat("$(filter %{0},$^) ", win32ResourceCompilerInfo.CompiledResourceSuffix);
-            }
-
-            C.IArchiverInfo archiverInfo = toolset as C.IArchiverInfo;
-            if (null == archiverInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.IArchiverInfo).ToString(), target.Toolchain), false);
-            }
-
-            C.ILinkerInfo linkerInfo = toolset as C.ILinkerInfo;
-            if (null == linkerInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ILinkerInfo).ToString(), target.Toolchain), false);
-            }
+            // TODO: don't want to access the archiver tool here really, as creating
+            // an application does not require one
+            C.IArchiverTool archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
 
             Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
-            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverInfo.StaticLibrarySuffix));
-            if (archiverInfo.StaticLibrarySuffix != linkerInfo.ImportLibrarySuffix)
+            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
+            if (archiverTool.StaticLibrarySuffix != linkerTool.ImportLibrarySuffix)
             {
-                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerInfo.ImportLibrarySuffix));
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.ImportLibrarySuffix));
             }
+            Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
+            C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, dynamicLibraryOptions as C.ILinkerOptions, dependentLibraries);
 #else
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
@@ -134,9 +124,9 @@ namespace MakeFileBuilder
             {
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibrarySuffix));
             }
-#endif
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
             linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, dynamicLibraryOptions as C.ILinkerOptions, dependentLibraries);
+#endif
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@

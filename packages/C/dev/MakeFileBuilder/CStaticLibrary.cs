@@ -12,8 +12,14 @@ namespace MakeFileBuilder
             Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool archiverTool = toolset.Tool(typeof(C.IArchiverTool));
+#else
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
             Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;
+#endif
 
             // dependents
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -76,19 +82,9 @@ namespace MakeFileBuilder
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-            if (null == toolset)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-            }
+            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
 
-            C.ICompilerInfo compilerInfo = toolset as C.ICompilerInfo;
-            if (null == compilerInfo)
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(C.ICompilerInfo).ToString(), target.Toolchain), false);
-            }
-
-            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), compilerInfo.ObjectFileSuffix);
+            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
 #else
             C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
