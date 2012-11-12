@@ -1,10 +1,6 @@
 [assembly: Opus.Core.RegisterTargetToolChain("codegentool", "CodeGenTest2.CodeGeneratorTool.VersionString")]
 
-#if true
 [assembly: Opus.Core.RegisterToolset("CodeGenTest2", typeof(CodeGenTest2.Toolset))]
-#else
-[assembly: CodeGenTest2.RegisterToolchain("CodeGenTest2", typeof(CodeGenTest2.ToolInfo))]
-#endif
 
 namespace CodeGenTest2
 {
