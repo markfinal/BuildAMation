@@ -179,6 +179,7 @@ namespace Opus.Core
             System.Type toolType = tools[0].ToolType;
             System.Type newToolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
 
+            // TODO: turn this into an exception
             if (null == toolset)
             {
                 Opus.Core.Log.MessageAll("DEBUG: No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != newToolType) ? newToolType.ToString() : "undefined", moduleType.ToString());
@@ -212,6 +213,7 @@ namespace Opus.Core
                 this.Module.Options = genericMethod2.Invoke(null, new object[] { this }) as BaseOptionCollection;
 
                 return;
+                // TODO: AND THIS IS THE END OF THIS FUNCTION
             }
 
             if (toolType != newToolType)
