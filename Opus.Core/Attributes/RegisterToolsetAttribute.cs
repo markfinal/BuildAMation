@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
-    public class RegisterToolsetAttribute : System.Attribute
+    public sealed class RegisterToolsetAttribute : System.Attribute
     {
         private string name;
 
