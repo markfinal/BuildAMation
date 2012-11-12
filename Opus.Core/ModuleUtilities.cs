@@ -52,6 +52,7 @@ namespace Opus.Core
                 else
                 {
                     Opus.Core.Log.MessageAll("\tnot found");
+                    // TODO: always throw an exception if not found
                     return null;
                 }
 #else
@@ -70,6 +71,7 @@ namespace Opus.Core
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
         }
 
+        // TODO: remove this function
         public static string GetToolchainForModule(System.Type moduleType)
         {
             System.Type type = moduleType;
@@ -110,6 +112,7 @@ namespace Opus.Core
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
         }
 
+        // TODO: remove this function
         public static string GetToolchainImplementation(System.Type moduleType)
         {
             // TODO: should this start at moduleType.BaseType?
