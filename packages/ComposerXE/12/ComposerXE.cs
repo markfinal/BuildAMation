@@ -14,14 +14,7 @@
 #endif
 
 #if false
-[assembly: C.RegisterToolchain(
-    "intel",
-    typeof(ComposerXE.Toolset),
-    typeof(ComposerXE.CCompiler), typeof(ComposerXE.CCompilerOptionCollection),
-    typeof(ComposerXE.CPlusPlusCompiler), typeof(ComposerXE.CPlusPlusCompilerOptionCollection),
-    null, null,
-    null, null,
-    null, null)]
+[assembly: Opus.Core.RegisterToolset("intel", typeof(ComposerXE.Toolset))]
 #endif
 
 namespace ComposerXE

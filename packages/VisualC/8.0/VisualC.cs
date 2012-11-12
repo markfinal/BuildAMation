@@ -16,14 +16,7 @@
 #endif
 [assembly: Opus.Core.MapToolChainClassTypes("C", "visualc", C.ClassNames.Win32ResourceCompilerTool, typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
 
-[assembly: C.RegisterToolchain(
-    "visualc",
-    typeof(VisualC.Toolset),
-    typeof(VisualCCommon.CCompiler), typeof(VisualC.CCompilerOptionCollection),
-    typeof(VisualCCommon.CxxCompiler), typeof(VisualC.CPlusPlusCompilerOptionCollection),
-    typeof(VisualCCommon.Linker), typeof(VisualC.LinkerOptionCollection),
-    typeof(VisualCCommon.Archiver), typeof(VisualC.ArchiverOptionCollection),
-    typeof(VisualCCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
+[assembly: Opus.Core.RegisterToolset("visualc", typeof(VisualC.Toolset))]
 
 namespace VisualC
 {

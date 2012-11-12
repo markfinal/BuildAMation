@@ -13,14 +13,7 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "gcc", C.ClassNames.Toolchain, typeof(Gcc.Toolchain), typeof(Gcc.ToolchainOptionCollection))]
 #endif
 
-[assembly: C.RegisterToolchain(
-    "gcc",
-    typeof(Gcc.Toolset),
-    typeof(Gcc.CCompiler), typeof(Gcc.CCompilerOptionCollection),
-    typeof(Gcc.CxxCompiler), typeof(Gcc.CPlusPlusCompilerOptionCollection),
-    typeof(Gcc.Linker), typeof(Gcc.LinkerOptionCollection),
-    typeof(Gcc.Archiver), typeof(Gcc.ArchiverOptionCollection),
-    null,null)]
+[assembly: Opus.Core.RegisterToolset("gcc", typeof(Gcc.Toolset))]
 
 namespace Gcc
 {

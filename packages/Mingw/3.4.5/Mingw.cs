@@ -15,14 +15,7 @@
 #endif
 [assembly: Opus.Core.MapToolChainClassTypes("C", "mingw", C.ClassNames.Win32ResourceCompilerTool, typeof(MingwCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
 
-[assembly: C.RegisterToolchain(
-    "mingw",
-    typeof(Mingw.Toolset),
-    typeof(MingwCommon.CCompiler), typeof(Mingw.CCompilerOptionCollection),
-    typeof(Mingw.CxxCompiler), typeof(Mingw.CPlusPlusCompilerOptionCollection),
-    typeof(Mingw.Linker), typeof(Mingw.LinkerOptionCollection),
-    typeof(MingwCommon.Archiver), typeof(Mingw.ArchiverOptionCollection),
-    typeof(MingwCommon.Win32ResourceCompiler), typeof(C.Win32ResourceCompilerOptionCollection))]
+[assembly: Opus.Core.RegisterToolset("mingw", typeof(Mingw.Toolset))]
 
 namespace Mingw
 {
