@@ -5,6 +5,26 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
+    // NEW STYLE
+#if true
+    public sealed class CCompiler : GccCommon.CCompiler
+    {
+        public CCompiler(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        #region implemented abstract members of GccCommon.CCompiler
+        protected override string Filename
+        {
+            get
+            {
+                return "gcc-4.4";
+            }
+        }
+        #endregion
+    }
+#else
     // Not sealed since the C++ compiler inherits from it
     public class CCompiler : GccCommon.CCompiler, Opus.Core.IToolSupportsResponseFile, C.ICompiler, Opus.Core.ITool
     {
@@ -125,4 +145,5 @@ namespace Gcc
             }
         }
     }
+#endif
 }

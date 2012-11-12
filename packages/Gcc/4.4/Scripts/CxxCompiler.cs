@@ -5,6 +5,26 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
+    // NEW STYLE
+#if true
+    public sealed class CxxCompiler : GccCommon.CxxCompiler
+    {
+        public CxxCompiler(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        #region implemented abstract members of GccCommon.CxxCompiler
+        protected override string Filename
+        {
+            get
+            {
+                return "g++-4.4";
+            }
+        }
+        #endregion
+    }
+#else
     public sealed class CxxCompiler : GccCommon.CxxCompiler, Opus.Core.IToolSupportsResponseFile, C.ICompiler, Opus.Core.ITool
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -79,4 +99,5 @@ namespace Gcc
         }
 #endregion
     }
+#endif
 }

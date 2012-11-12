@@ -25,29 +25,28 @@ namespace Gcc
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Gcc.Toolset));
-            GccCommon.IGCCInfo gccInfo = info as GccCommon.IGCCInfo;
-            
-            string cppIncludePath = gccInfo.GxxIncludePath(target);
-            string machineType = gccInfo.MachineType(target);
+            Opus.Core.IToolset toolset = target.Toolset;
+            GccCommon.Toolset gccToolset = toolset as GccCommon.Toolset;
+            string machineType = gccToolset.GetMachineType((Opus.Core.BaseTarget)target);
+            string cxxIncludePath = gccToolset.cxxIncludePath;
 #else
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
 
-            string cppIncludePath = compilerInstance.GxxIncludePath(target);
+            string cxxIncludePath = compilerInstance.GxxIncludePath(target);
             string machineType = compilerInstance.MachineType(target);
 #endif
-            if (!System.IO.Directory.Exists(cppIncludePath))
+            if (!System.IO.Directory.Exists(cxxIncludePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath), false);
+                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath), false);
             }
-            string cppIncludePath2 = System.String.Format("{0}/{1}", cppIncludePath, machineType);
-            if (!System.IO.Directory.Exists(cppIncludePath2))
+            string cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
+            if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
-                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath2), false);
+                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2), false);
             }
 
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath2, false);
 
             GccCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }
