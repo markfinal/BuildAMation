@@ -9,8 +9,15 @@ namespace VisualC
     {
         static Toolset()
         {
-            Opus.Core.State.AddCategory("VSSolutionBuilder");
-            Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(VisualC.Solution));
+            if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
+            {
+                Opus.Core.State.AddCategory("VSSolutionBuilder");
+            }
+
+            if (!Opus.Core.State.Has("VSSolutionBuilder", "SolutionType"))
+            {
+                Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(Solution));
+            }
         }
 
         public Toolset()

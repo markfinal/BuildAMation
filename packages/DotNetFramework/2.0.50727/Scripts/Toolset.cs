@@ -12,6 +12,16 @@ namespace DotNetFramework
 
         public Toolset()
         {
+            if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
+            {
+                Opus.Core.State.AddCategory("VSSolutionBuilder");
+            }
+
+            if (!Opus.Core.State.Has("VSSolutionBuilder", "SolutionType"))
+            {
+                Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(Solution));
+            }
+
             this.toolMap[typeof(CSharp.ICSharpCompilerTool)] = new Csc(this);
             this.toolOptionsMap[typeof(CSharp.ICSharpCompilerTool)] = typeof(CSharp.OptionCollection);
         }

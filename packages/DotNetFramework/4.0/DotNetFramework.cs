@@ -104,15 +104,6 @@ namespace DotNetFramework
     // Define module classes here
     public class DotNet
     {
-        static DotNet()
-        {
-            if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
-            {
-                Opus.Core.State.AddCategory("VSSolutionBuilder");
-                Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(DotNetFramework.Solution));
-            }
-        }
-
         public static string VersionString
         {
             get
