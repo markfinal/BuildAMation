@@ -1,4 +1,4 @@
-// <copyright file="Compiler.cs" company="Mark Final">
+// <copyright file="CxxCompiler.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Gcc package</summary>
@@ -7,50 +7,50 @@ namespace Gcc
 {
     // NEW STYLE
 #if true
-    public sealed class CCompiler : GccCommon.CCompiler
+    public sealed class CxxCompiler : GccCommon.CxxCompiler
     {
-        public CCompiler(Opus.Core.IToolset toolset)
+        public CxxCompiler(Opus.Core.IToolset toolset)
             : base(toolset)
         {
         }
 
-        #region implemented abstract members of GccCommon.CCompiler
+        #region implemented abstract members of GccCommon.CxxCompiler
         protected override string Filename
         {
             get
             {
-                return "gcc-4.6";
+                return "g++-4.4";
             }
         }
         #endregion
     }
 #else
-    // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : GccCommon.CCompiler, Opus.Core.IToolSupportsResponseFile
+    public sealed class CxxCompiler : GccCommon.CxxCompiler, Opus.Core.IToolSupportsResponseFile, C.ICompiler, Opus.Core.ITool
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
 
-        public CCompiler(Opus.Core.Target target)
+        public CxxCompiler(Opus.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsUnix(target.Platform))
+            if (!Opus.Core.OSUtilities.IsUnix(target))
             {
                 throw new Opus.Core.Exception("Gcc compiler is only supported under unix32 and unix64 platforms", false);
             }
 
-            Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
-            this.binPath = toolChainInstance.BinPath(target);
-
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Gcc.Toolset));
+            this.binPath = info.BinPath((Opus.Core.BaseTarget)target);
+            
+            GccCommon.IGCCInfo gccInfo = info as GccCommon.IGCCInfo;
             this.includeFolders.Add("/usr/include");
             {
                 // this is for some Linux distributions
-                string path = System.String.Format("/usr/include/{0}", this.MachineType(target));
+                string path = System.String.Format("/usr/include/{0}", gccInfo.MachineType(target));
                 if (System.IO.Directory.Exists(path))
                 {
                     this.includeFolders.Add(path);
                 }
             }
-            string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", this.MachineType(target), this.GccVersion(target));
+            string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", gccInfo.MachineType(target), gccInfo.GccVersion(target));
             string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
             string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
 
@@ -67,24 +67,29 @@ namespace Gcc
             this.includeFolders.Add(gccIncludeFixedFolder);
         }
 
-        public override string Executable(Opus.Core.Target target)
+#region Opus.Core.ITool
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-            return System.IO.Path.Combine(this.binPath, "gcc-4.6");
+            return System.IO.Path.Combine(this.binPath, "g++-4.4");
         }
+#endregion
 
-        // OLD STYLE
-#if false
-        public override string ExecutableCPlusPlus(Opus.Core.Target target)
-        {
-            return System.IO.Path.Combine(this.binPath, "g++-4.6");
-        }
-#endif
-
-        public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
+#region C.ICompiler
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolders;
         }
 
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
+        {
+            get
+            {
+                return base.CommonIncludePathCompilerSwitches;
+            }
+        }
+#endregion
+
+#region Opus.Core.IToolSupportsResponseFile
         string Opus.Core.IToolSupportsResponseFile.Option
         {
             get
@@ -92,6 +97,7 @@ namespace Gcc
                 return "@";
             }
         }
+#endregion
     }
 #endif
 }
