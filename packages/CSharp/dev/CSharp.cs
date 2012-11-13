@@ -5,8 +5,6 @@
 // <author>Mark Final</author>
 [assembly: Opus.Core.MapToolChainClassTypes("CSharp", "dotnet", "ClassCsc", typeof(CSharp.Csc), typeof(CSharp.OptionCollection))]
 
-[assembly: Opus.Core.RegisterToolset("csharp", typeof(CSharp.Toolset))]
-
 namespace CSharp
 {
 }

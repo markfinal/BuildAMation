@@ -1,19 +1,19 @@
 // <copyright file="Toolset.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>CSharp package</summary>
+// <summary>DotNetFramework package</summary>
 // <author>Mark Final</author>
-namespace CSharp
+namespace DotNetFramework
 {
     public sealed class Toolset : Opus.Core.IToolset
     {
         private System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         private System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
-        
+
         public Toolset()
         {
-            this.toolMap[typeof(ICSharpCompilerTool)] = new Csc(this);
-            this.toolOptionsMap[typeof(ICSharpCompilerTool)] = typeof(OptionCollection);
+            this.toolMap[typeof(CSharp.ICSharpCompilerTool)] = new Csc(this);
+            this.toolOptionsMap[typeof(CSharp.ICSharpCompilerTool)] = typeof(CSharp.OptionCollection);
         }
 
         #region IToolset Members
@@ -30,13 +30,24 @@ namespace CSharp
 
         string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
-            throw new System.NotImplementedException();
-        }
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                string toolsPath = null;
+                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\4.0"))
+                {
+                    toolsPath = key.GetValue("MSBuildToolsPath") as string;
+                }
 
-        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
-        {
-            // TODO: fix this - might come from the DotNetFramework
-            return "dev";
+                return toolsPath;
+            }
+            else if (Opus.Core.OSUtilities.IsUnixHosting || Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                return "/usr/bin";
+            }
+            else
+            {
+                throw new Opus.Core.Exception("DotNetFramework not supported on the current platform");
+            }
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
@@ -57,6 +68,11 @@ namespace CSharp
             }
 
             return this.toolOptionsMap[toolType];
+        }
+
+        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
+        {
+            return "4.0";
         }
 
         #endregion

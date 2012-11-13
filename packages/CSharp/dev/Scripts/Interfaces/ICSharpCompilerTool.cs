@@ -7,7 +7,7 @@ namespace CSharp
 {
     [Opus.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
                                    typeof(ExportCscOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider("csharp")]
+    [Opus.Core.AssignToolsetProvider("dotnet")]
     public interface ICSharpCompilerTool : Opus.Core.ITool
     {
     }
