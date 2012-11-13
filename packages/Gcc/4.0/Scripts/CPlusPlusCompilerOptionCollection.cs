@@ -23,21 +23,30 @@ namespace Gcc
 
             Opus.Core.Target target = node.Target;
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            GccCommon.Toolset gccToolset = toolset as GccCommon.Toolset;
+            string machineType = gccToolset.GetMachineType((Opus.Core.BaseTarget)target);
+            string cxxIncludePath = gccToolset.cxxIncludePath;
+#else
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
 
-            string cppIncludePath = compilerInstance.GxxIncludePath(target);
-            if (!System.IO.Directory.Exists(cppIncludePath))
+            string cxxIncludePath = compilerInstance.GxxIncludePath(target);
+            string machineType = compilerInstance.MachineType(target);
+#endif
+            if (!System.IO.Directory.Exists(cxxIncludePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist", cppIncludePath), false);
+                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath), false);
             }
-            string cppIncludePath2 = System.String.Format("{0}/{1}", cppIncludePath, compilerInstance.MachineType(target));
-            if (!System.IO.Directory.Exists(cppIncludePath2))
+            string cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
+            if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
-                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist", cppIncludePath2), false);
+                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2), false);
             }
 
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath2, false);
 
             GccCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
         }

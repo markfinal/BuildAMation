@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>Gcc package</summary>
 // <author>Mark Final</author>
+#if false
 namespace Gcc
 {
     public sealed partial class ToolchainOptionCollection : GccCommon.ToolchainOptionCollection
@@ -18,3 +19,4 @@ namespace Gcc
         }
     }
 }
+#endif

@@ -11,6 +11,8 @@
 [assembly: Opus.Core.MapToolChainClassTypes("C", "gcc", C.ClassNames.LinkerTool, typeof(Gcc.Linker), typeof(Gcc.LinkerOptionCollection))]
 [assembly: Opus.Core.MapToolChainClassTypes("C", "gcc", C.ClassNames.Toolchain, typeof(Gcc.Toolchain), typeof(Gcc.ToolchainOptionCollection))]
 
+[assembly: Opus.Core.RegisterToolset("gcc", typeof(Gcc.Toolset))]
+
 namespace Gcc
 {
 }

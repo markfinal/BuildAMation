@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>Gcc package</summary>
 // <author>Mark Final</author>
+#if false
 namespace Gcc
 {
     public sealed class Toolchain : GccCommon.Toolchain
@@ -62,3 +63,4 @@ namespace Gcc
         }
     }
 }
+#endif
