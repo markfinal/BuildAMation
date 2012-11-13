@@ -7,13 +7,15 @@ namespace GccCommon
 {
     // NEW STYLE
 #if true
-    public abstract class Linker : C.ILinkerTool
+    public abstract class Linker : C.ILinkerTool, Opus.Core.IToolEnvironmentPaths
     {
         protected Opus.Core.IToolset toolset;
+        private Opus.Core.StringArray environment;
 
         protected Linker(Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
+            this.environment = new Opus.Core.StringArray("/usr/bin");
         }
 
         protected abstract string Filename
@@ -141,6 +143,13 @@ namespace GccCommon
             return executablePath;
         }
 
+        #endregion
+
+        #region IToolEnvironmentPaths implementation
+        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths (Opus.Core.Target target)
+        {
+            return this.environment;
+        }
         #endregion
     }
 #else
