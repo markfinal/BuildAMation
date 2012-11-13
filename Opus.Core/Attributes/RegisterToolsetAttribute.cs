@@ -14,10 +14,6 @@ namespace Opus.Core
         {
             this.name = name;
 
-            if (!Opus.Core.State.HasCategory("Toolset"))
-            {
-                Opus.Core.State.AddCategory("Toolset");
-            }
             Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.CreateToolset(toolsetType));
         }
 
