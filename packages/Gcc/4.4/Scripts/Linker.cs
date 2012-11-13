@@ -5,6 +5,24 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
+    // NEW STYLE
+#if true
+    public sealed class Linker : GccCommon.Linker
+    {
+        public Linker(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        protected override string Filename
+        {
+            get
+            {
+                return "gcc-4.4";
+            }
+        }
+    }
+#else
     public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
@@ -55,4 +73,5 @@ namespace Gcc
             }
         }
     }
+#endif
 }

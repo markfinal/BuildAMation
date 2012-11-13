@@ -178,16 +178,16 @@ namespace Gcc
         {
             this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
             this.toolMap[typeof(C.ICxxCompilerTool)] = new CxxCompiler(this);
-#if false
             this.toolMap[typeof(C.ILinkerTool)] = new Linker(this);
+#if false
             this.toolMap[typeof(C.IArchiverTool)] = new MingwCommon.Archiver(this);
             this.toolMap[typeof(C.IWinResourceCompilerTool)] = new MingwCommon.Win32ResourceCompiler(this);
 #endif
 
             this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Gcc.CCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Gcc.CPlusPlusCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Gcc.LinkerOptionCollection);
 #if false
-            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Mingw.LinkerOptionCollection);
             this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Mingw.ArchiverOptionCollection);
             this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
 #endif
