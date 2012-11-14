@@ -16,6 +16,7 @@ namespace MingwCommon
         {
             this.toolset = toolset;
             this.pathEnvironment.Add(@"c:\windows\system32");
+            this.pathEnvironment.AddRange(toolset.Environment);
         }
 
         #region IWinResourceCompilerTool Members

@@ -5,6 +5,24 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
+    // NEW STYLE
+#if true
+    public sealed class Linker : MingwCommon.Linker
+    {
+        public Linker(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        protected override string Filename
+        {
+            get
+            {
+                return "mingw32-gcc-4.5.0";
+            }
+        }
+    }
+#else
     public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -50,4 +68,5 @@ namespace Mingw
             return toolChainInstance.Environment;
         }
     }
+#endif
 }

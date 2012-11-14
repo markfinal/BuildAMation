@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public partial class CCompilerOptionCollection : MingwCommon.CCompilerOptionCollection
+    public partial class CCompilerOptionCollection : MingwCommon.CCompilerOptionCollection, ICCompilerOptions
     {
         public CCompilerOptionCollection()
             : base()

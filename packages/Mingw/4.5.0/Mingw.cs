@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("C", "mingw", "Mingw.Toolchain.GetVersion")]
 
+[assembly: Opus.Core.RegisterToolset("mingw", typeof(Mingw.Toolset))]
+
 namespace Mingw
 {
-    // Define module classes here
 }
