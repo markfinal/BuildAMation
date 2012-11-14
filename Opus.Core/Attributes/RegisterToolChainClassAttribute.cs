@@ -82,11 +82,14 @@ namespace Opus.Core
             {
                 RegisterTargetToolChainAttribute[] array = State.ScriptAssembly.GetCustomAttributes(typeof(RegisterTargetToolChainAttribute), false) as Core.RegisterTargetToolChainAttribute[];
 
+                // NEW STYLE
+#if false
                 MapToolChainClassTypesAttribute[] toolsMap = State.ScriptAssembly.GetCustomAttributes(typeof(MapToolChainClassTypesAttribute), false) as MapToolChainClassTypesAttribute[];
                 if (null == toolsMap)
                 {
                     throw new Exception("No tools were registered");
                 }
+#endif
 
                 return array;
             }

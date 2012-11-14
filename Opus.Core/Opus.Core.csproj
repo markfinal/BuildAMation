@@ -57,7 +57,6 @@
     <Compile Include="Attributes\GlobalOptionCollectionOverrideAttribute.cs" />
     <Compile Include="Attributes\ImmediateActionAttribute.cs" />
     <Compile Include="Attributes\LocalAndExportTypesAttribute.cs" />
-    <Compile Include="Attributes\MapToolChainClassTypesAttribute.cs" />
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\ModuleTargetsAttribute.cs" />
     <Compile Include="Attributes\ModuleToolAssignmentAttribute.cs" />
