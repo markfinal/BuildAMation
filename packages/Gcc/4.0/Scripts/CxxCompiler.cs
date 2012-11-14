@@ -19,7 +19,7 @@ namespace Gcc
         {
             get
             {
-                return "g++-4.4";
+                return "g++-4.0";
             }
         }
         #endregion
