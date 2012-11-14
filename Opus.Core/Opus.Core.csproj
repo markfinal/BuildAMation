@@ -132,7 +132,6 @@
     <Compile Include="State.cs" />
     <Compile Include="StringArray.cs" />
     <Compile Include="Target.cs" />
-    <Compile Include="TargetCollection.cs" />
     <Compile Include="TargetUtilities.cs" />
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />

@@ -83,8 +83,6 @@ namespace Opus.Core
             AddCategory("Build");
             Add<IBuilder>("Build", "BuilderInstance", null);
             Add<PackageInformation>("Build", "BuilderPackage", null);
-            // TODO: decide if unnecessary
-            //Add<TargetCollection>("Build", "Targets", new TargetCollection());
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
             Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
@@ -387,22 +385,6 @@ namespace Opus.Core
                 return Get("Build", "BuilderPackage") as PackageInformation;
             }
         }
-        
-        // TODO: decide if necessary
-#if false
-        public static TargetCollection Targets
-        {
-            set
-            {
-                Set("Build", "Targets", value);
-            }
-            
-            get
-            {
-                return Get("Build", "Targets") as TargetCollection;
-            }
-        }
-#endif
 
         public static int JobCount
         {

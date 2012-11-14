@@ -1,3 +1,5 @@
+14-Nov-2012 Removed Opus.Core.TargetCollection that is no longer used.
+
 14-Nov-2012 VisualCCommon.ICCompilerOptions now has a RuntimeLibrary option. This is in replacement to the option from the now removed Toolchain.
 
 14-Nov-2012 CSharp Csc tool has moved to the DotNetFramework package, the latter of which now implements a 'dotnet' toolset.
