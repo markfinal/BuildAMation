@@ -174,8 +174,14 @@ namespace VisualCCommon
                 return;
             }
 
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
+#else
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
+#endif
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)

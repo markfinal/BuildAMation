@@ -65,8 +65,14 @@ namespace ComposerXECommon
 
             compilerInterface.PositionIndependentCode = false;
 
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths(target));
+#else
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
             (this as C.ICCompilerOptions).SystemIncludePaths.AddRange((compilerInstance as C.ICompiler).IncludeDirectoryPaths(target));
+#endif
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
         }
@@ -105,8 +111,14 @@ namespace ComposerXECommon
                 return;
             }
 
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
+#else
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
+#endif
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
@@ -124,8 +136,14 @@ namespace ComposerXECommon
 
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
+#else
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[1];
+#endif
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
