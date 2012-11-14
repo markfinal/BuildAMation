@@ -16,10 +16,6 @@ namespace QtCommon
     /// <summary>
     /// Create meta data from a C++ header or source file
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(MocTool),
-                                   typeof(ExportMocOptionsDelegateAttribute),
-                                   typeof(LocalMocOptionsDelegateAttribute),
-                                   typeof(MocOptionCollection))]
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
     public class MocFile : Opus.Core.IModule, Opus.Core.IInjectModules
     {

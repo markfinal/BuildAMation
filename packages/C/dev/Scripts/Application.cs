@@ -8,10 +8,6 @@ namespace C
     /// <summary>
     /// C/C++ console application
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Linker),
-                                   typeof(ExportLinkerOptionsDelegateAttribute),
-                                   typeof(LocalLinkerOptionsDelegateAttribute),
-                                   ClassNames.LinkerToolOptions)]
     [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
     public class Application : Opus.Core.IModule, Opus.Core.INestedDependents
     {

@@ -8,10 +8,6 @@ namespace C
     /// <summary>
     /// C/C++ dynamic library
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Linker),
-                                   typeof(ExportLinkerOptionsDelegateAttribute),
-                                   typeof(LocalLinkerOptionsDelegateAttribute),
-                                   ClassNames.LinkerToolOptions)]
     public partial class DynamicLibrary : Application
     {
         [LocalCompilerOptionsDelegate]

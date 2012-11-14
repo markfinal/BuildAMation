@@ -8,10 +8,6 @@ namespace CSharp
     /// <summary>
     /// C# executable
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Csc),
-                                   typeof(ExportCscOptionsDelegateAttribute),
-                                   typeof(LocalCscOptionsDelegateAttribute),
-                                   "ClassCscOptions")]
     public class Executable : Assembly
     {
         [CSharp.LocalCscOptionsDelegate]

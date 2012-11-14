@@ -8,10 +8,6 @@ namespace QtCommon
     /// <summary>
     /// Create meta data from a collection of C++ header or source files
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(MocTool),
-                                   typeof(ExportMocOptionsDelegateAttribute),
-                                   typeof(LocalMocOptionsDelegateAttribute),
-                                   typeof(MocOptionCollection))]
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
     public abstract class MocFileCollection : Opus.Core.IModuleCollection
     {

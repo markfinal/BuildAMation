@@ -115,41 +115,7 @@ namespace Opus.Core
         // TODO: remove this function
         public static string GetToolchainImplementation(System.Type moduleType)
         {
-            // TODO: should this start at moduleType.BaseType?
-            System.Type toolchainType = moduleType;
-            string toolchainImplementation = null;
-            for (;;)
-            {
-                var assignToolAttributes = toolchainType.GetCustomAttributes(typeof(AssignToolForModuleAttribute), false);
-                if (assignToolAttributes.Length > 0)
-                {
-                    AssignToolForModuleAttribute attribute = assignToolAttributes[0] as AssignToolForModuleAttribute;
-                    if (attribute.OptionsType != null)
-                    {
-                        toolchainImplementation = attribute.ToolType.Name.ToLower();
-                    }
-                    break;
-                }
-
-                toolchainType = toolchainType.BaseType;
-                if (null == toolchainType)
-                {
-                    throw new Exception(System.String.Format("Unable to locate an identifiable toolchain for module '{0}'", moduleType.ToString()), false);
-                }
-            }
-
-            if (null == toolchainImplementation)
-            {
-                string toolchainName = toolchainType.Namespace;
-                // look up toolchain used for this
-                if (!State.Has("Toolchains", toolchainName))
-                {
-                    throw new Exception(System.String.Format("Toolchain implementation for modules in the namespace '{0}' has not been registered for module '{1}'", toolchainName, moduleType.ToString()), false);
-                }
-                toolchainImplementation = State.Get("Toolchains", toolchainName) as string;
-            }
-
-            return toolchainImplementation;
+            return null;
         }
 
         private static TypeArray GetFieldsWithAttributeType<T>(IModule module, Target target) where T : class, ITargetFilters

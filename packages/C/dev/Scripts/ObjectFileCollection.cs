@@ -8,10 +8,6 @@ namespace C
     /// <summary>
     /// C object file collection
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Compiler),
-                                   typeof(ExportCompilerOptionsDelegateAttribute),
-                                   typeof(LocalCompilerOptionsDelegateAttribute),
-                                   ClassNames.CCompilerToolOptions)]
     [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFileCollection : ObjectFileCollectionBase
     {

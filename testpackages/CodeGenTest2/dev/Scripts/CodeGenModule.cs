@@ -118,10 +118,6 @@ namespace CodeGenTest2
     /// <summary>
     /// Code generation of C++ source
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(CodeGenTool),
-                                   typeof(ExportCodeGenOptionsDelegateAttribute),
-                                   typeof(LocalCodeGenOptionsDelegateAttribute),
-                                   typeof(CodeGenOptions))]
     [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
     public abstract class CodeGenModule : Opus.Core.IModule, Opus.Core.IInjectModules
     {

@@ -5,10 +5,6 @@
 // <author>Mark Final</author>
 namespace FileUtilities
 {
-    [Opus.Core.AssignToolForModule(typeof(SymLinkTool),
-                                   typeof(ExportOptionsDelegateAttribute),
-                                   typeof(LocalOptionsDelegateAttribute),
-                                   typeof(SymLinkOptionCollection))]
     [Opus.Core.ModuleToolAssignment(typeof(ISymLinkTool))]
     public class SymLink : Opus.Core.IModule
     {

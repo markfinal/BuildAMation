@@ -8,7 +8,6 @@ namespace C
     /// <summary>
     /// C third party library (externally built libraries)
     /// </summary>
-    [Opus.Core.AssignToolForModule]
     [Opus.Core.ModuleToolAssignment(null)]
     public abstract class ThirdPartyModule : Opus.Core.IModule
     {

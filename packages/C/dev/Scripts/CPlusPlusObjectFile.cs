@@ -8,10 +8,6 @@ namespace C.CPlusPlus
     /// <summary>
     /// C++ object file
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Compiler),
-                                   typeof(ExportCompilerOptionsDelegateAttribute),
-                                   typeof(LocalCompilerOptionsDelegateAttribute),
-                                   C.ClassNames.CPlusPlusCompilerToolOptions)]
     [Opus.Core.ModuleToolAssignment(typeof(ICxxCompilerTool))]
     public class ObjectFile : C.ObjectFile
     {

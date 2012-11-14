@@ -8,10 +8,6 @@ namespace CSharp
     /// <summary>
     /// C# module
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Csc),
-                                   typeof(ExportCscOptionsDelegateAttribute),
-                                   typeof(LocalCscOptionsDelegateAttribute),
-                                   "ClassCscOptions")]
     public class Module : Assembly
     {
         [CSharp.LocalCscOptionsDelegate]

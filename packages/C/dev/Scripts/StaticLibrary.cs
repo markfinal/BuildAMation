@@ -8,10 +8,6 @@ namespace C
     /// <summary>
     /// C/C++ static library
     /// </summary>
-    [Opus.Core.AssignToolForModule(typeof(Archiver),
-                                   typeof(ExportArchiverOptionsDelegateAttribute),
-                                   typeof(LocalArchiverOptionsDelegateAttribute),
-                                   ClassNames.ArchiverToolOptions)]
     [Opus.Core.ModuleToolAssignment(typeof(IArchiverTool))]
     public class StaticLibrary : Opus.Core.IModule, Opus.Core.INestedDependents
     {

@@ -8,7 +8,6 @@ namespace C
     /// <summary>
     /// C/C++ header only library
     /// </summary>
-    [Opus.Core.AssignToolForModule]
     public class HeaderLibrary : Opus.Core.IModule
     {
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
