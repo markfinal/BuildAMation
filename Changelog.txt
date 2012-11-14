@@ -1,3 +1,5 @@
+14-Nov-2012 Removed Opus.Core.RegisterTargetToolChainAttribute as it has been superceded by Toolsets.
+
 14-Nov-2012 Removed C.ClassNames as it has been superceded by Toolsets and tool interfaces.
 
 14-Nov-2012 Removed Opus.Core.AssignToolForModuleAttribute as it has been superceded by Toolsets.

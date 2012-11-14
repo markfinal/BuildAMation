@@ -3,8 +3,6 @@
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterTargetToolChain("C", "visualc", "VisualC.Toolchain.VersionString")]
-
 [assembly: Opus.Core.RegisterToolset("visualc", typeof(VisualC.Toolset))]
 
 namespace VisualC

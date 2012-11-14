@@ -3,8 +3,6 @@
 // </copyright>
 // <summary>DotNetFramework package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterTargetToolChain("CSharp", "dotnet", "DotNetFramework.DotNet.VersionString")]
-
 [assembly: Opus.Core.RegisterToolset("dotnet", typeof(DotNetFramework.Toolset))]
 
 namespace DotNetFramework

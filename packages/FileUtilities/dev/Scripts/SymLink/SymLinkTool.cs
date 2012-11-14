@@ -3,10 +3,6 @@
 // </copyright>
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
-#if false
-[assembly: Opus.Core.RegisterTargetToolChain("symlinktool", "FileUtilities.SymLinkTool.Version")]
-#endif
-
 namespace FileUtilities
 {
 #if false

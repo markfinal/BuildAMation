@@ -3,8 +3,6 @@
 // </copyright>
 // <summary>Gcc package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterTargetToolChain("C", "gcc", "Gcc.Toolchain.VersionString")]
-
 [assembly: Opus.Core.RegisterToolset("gcc", typeof(Gcc.Toolset))]
 
 namespace Gcc

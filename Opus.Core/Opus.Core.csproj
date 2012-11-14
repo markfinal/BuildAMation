@@ -61,7 +61,6 @@
     <Compile Include="Attributes\ModuleToolAssignmentAttribute.cs" />
     <Compile Include="Attributes\PreambleActionAttribute.cs" />
     <Compile Include="Attributes\RegisterActionAttribute.cs" />
-    <Compile Include="Attributes\RegisterToolChainClassAttribute.cs" />
     <Compile Include="Attributes\RegisterToolsetAttribute.cs" />
     <Compile Include="Attributes\RequiredModulesAttribute.cs" />
     <Compile Include="Attributes\TriggerActionAttribute.cs" />

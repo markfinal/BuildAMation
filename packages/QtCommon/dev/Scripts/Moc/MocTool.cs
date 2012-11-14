@@ -3,11 +3,6 @@
 // </copyright>
 // <summary>QtCommon package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterTargetToolChain("moctool", "Qt.Qt.VersionString")]
-#if false
-[assembly: QtCommon.RegisterToolchain(typeof(QtCommon.Toolset))]
-#endif
-
 namespace QtCommon
 {
 #if false

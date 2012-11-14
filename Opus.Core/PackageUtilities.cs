@@ -704,16 +704,7 @@ namespace Opus.Core
 
             BuilderUtilities.CreateBuilderInstance();
 
-            // NEW STYLE
-#if true
             RegisterToolsetAttribute.RegisterAll();
-#else
-            RegisterTargetToolChainAttribute[] targetToolChains = RegisterTargetToolChainAttribute.TargetToolChains;
-            if (null == targetToolChains)
-            {
-                throw new Exception("No target toolchains were registered", false);
-            }
-#endif
 
             if (null == State.BuildPlatforms)
             {

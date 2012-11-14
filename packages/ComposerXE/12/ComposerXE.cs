@@ -3,8 +3,6 @@
 // </copyright>
 // <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterTargetToolChain("C", "intel", "ComposerXE.Toolchain.VersionString")]
-
 #if false
 [assembly: Opus.Core.RegisterToolset("intel", typeof(ComposerXE.Toolset))]
 #endif
