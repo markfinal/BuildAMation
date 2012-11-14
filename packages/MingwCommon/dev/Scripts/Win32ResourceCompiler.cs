@@ -16,7 +16,6 @@ namespace MingwCommon
         {
             this.toolset = toolset;
             this.pathEnvironment.Add(@"c:\windows\system32");
-            this.pathEnvironment.AddRange(toolset.Environment);
         }
 
         #region IWinResourceCompilerTool Members
@@ -61,7 +60,10 @@ namespace MingwCommon
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
-            return this.pathEnvironment;
+            Opus.Core.StringArray paths = new Opus.Core.StringArray();
+            paths.AddRange(this.pathEnvironment);
+            paths.AddRange(this.toolset.Environment);
+            return paths;
         }
 
         #endregion
