@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Interface)]
+    [System.AttributeUsage(System.AttributeTargets.Interface)]
     public sealed class LocalAndExportTypesAttribute : System.Attribute
     {
         public LocalAndExportTypesAttribute(System.Type localType, System.Type exportType)

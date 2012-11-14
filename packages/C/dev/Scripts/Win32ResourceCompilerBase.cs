@@ -14,21 +14,4 @@ namespace C
     public class LocalWin32ResourceCompilerOptionsDelegateAttribute : System.Attribute
     {
     }
-
-    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
-                                            typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute))]
-    public abstract class Win32ResourceCompilerBase : Opus.Core.ITool
-    {
-        public abstract string Executable(Opus.Core.Target target);
-
-        public abstract string InputFileSwitch
-        {
-            get;
-        }
-
-        public abstract string OutputFileSwitch
-        {
-            get;
-        }
-    }
 }

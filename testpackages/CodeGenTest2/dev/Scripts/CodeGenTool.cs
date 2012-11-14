@@ -2,8 +2,6 @@
 
 namespace CodeGenTest2
 {
-    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalCodeGenOptionsDelegateAttribute),
-                                            typeof(ExportCodeGenOptionsDelegateAttribute))]
     public class CodeGenTool : ICodeGenTool
     {
         private Opus.Core.IToolset toolset;
