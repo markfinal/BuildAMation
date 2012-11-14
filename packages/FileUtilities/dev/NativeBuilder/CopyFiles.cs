@@ -66,7 +66,7 @@ namespace NativeBuilder
             }
 
             FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-            string executablePath = tool.Executable(target);
+            string executablePath = (tool as Opus.Core.ITool).Executable(target);
 
             int returnValue = -1;
             foreach (string sourcePath in sourceFiles)

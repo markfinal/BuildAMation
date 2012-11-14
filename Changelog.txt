@@ -1,3 +1,38 @@
+14-Nov-2012 VisualCCommon.ICCompilerOptions now has a RuntimeLibrary option. This is in replacement to the option from the now removed Toolchain.
+
+14-Nov-2012 CSharp Csc tool has moved to the DotNetFramework package, the latter of which now implements a 'dotnet' toolset.
+
+14-Nov-2012 Tool interfaces are now required for each type of tool implemented. Local and export types must be assigned to the interfaces using the Opus.Core.LocalAndExportTypes attribute. Toolset providers must also be provided using the Opus.Core.AssignToolsetProvider attribute.
+
+14-Nov-2012 Opus.Core.AssignToolsetProvider is a new attribute for tool interfaces that accept a name of a toolset, or a type of a class and a delegate method in that class to dynamically assign a toolset.
+
+14-Nov-2012 C and C++ compilers are now separate tool interfaces.
+
+14-Nov-2012 Modules now require an attribute of Opus.Core.ModuleToolAssignment, which accepts one argument, the type of the tool interface to use to build the module. The type may be null to indicate no tool required.
+
+14-Nov-2012 Added actions to override the C compiler, C++ compiler, Linker, Archiver, and Win32 resource compiler by specifying the toolset defining the tool:
+* -C.CC=<toolset>
+* -C.CXX=<toolset>
+* -C.LINK=<toolset>
+* -C.AR=<toolset>
+* -C.RC=<toolset>
+
+14-Nov-2012 Optimized header file dependency checking for Native C object file builds.
+
+14-Nov-2012 MakeFileBuilder module Build functions will forward on any environment variables required.
+
+14-Nov-2012 Added Opus.Core.IToolEnvironmentVariables if a tool requires environment variables other than PATH.
+
+14-Nov-2012 C.Toolchain has been removed.
+
+14-Nov-2012 The OpusOptionInterfacePropertyGenerator tool now outputs delegate function stubs, as well as properties. Delegates with implementations are preserved.
+
+14-Nov-2012 Opus.Core.BaseOptionCollection declares two abstract methods, InitializeDefaults and SetDelegates. Derived classes are now required to implemente this. It is no longer the responsibility of the derived classes to call these functions as they are invoked by BaseOptionCollection.
+
+14-Nov-2012 Opus.Core.Target now contains a reference to an IToolset, instead of a name of a toolchain.
+
+14-Nov-2012 Opus.Core.IToolset introduced. A toolset is a named collection of tools.
+
 03-Oct-2012 Added Opus.Core.OSUtilities functions taking BaseTarget and Target arguments.
 
 03-Oct-2012 Added Opus.Core.TargetUtilities helper class migrating utility functions from the Target class itself.

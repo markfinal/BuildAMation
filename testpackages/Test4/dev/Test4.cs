@@ -21,10 +21,19 @@ namespace Test4
                 compilerOptions.IncludePaths.Include(this, "include");
             }
 
-            // TODO: this should be in the ExportToolchainOptionsDelegate?
             [C.ExportCompilerOptionsDelegate]
             private static void SetRuntimeLibrary(Opus.Core.IModule module, Opus.Core.Target target)
             {
+            // NEW STYLE
+#if true
+                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                VisualCCommon.ICCompilerOptions vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
+                if (vcCompilerOptions != null)
+                {
+                    vcCompilerOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
+                }
+#else
+                // TODO: this should be in the ExportToolchainOptionsDelegate?
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
                 C.ToolchainOptionCollection toolOptions = compilerOptions.ToolchainOptionCollection;
                 VisualCCommon.IToolchainOptions vcToolOptions = toolOptions as VisualCCommon.IToolchainOptions;
@@ -32,6 +41,7 @@ namespace Test4
                 {
                     vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
                 }
+#endif
             }
         }
 

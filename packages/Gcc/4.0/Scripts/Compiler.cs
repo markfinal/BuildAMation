@@ -5,8 +5,28 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
+    // NEW STYLE
+#if true
+    public sealed class CCompiler : GccCommon.CCompiler
+    {
+        public CCompiler(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        #region implemented abstract members of GccCommon.CCompiler
+        protected override string Filename
+        {
+            get
+            {
+                return "gcc-4.0";
+            }
+        }
+        #endregion
+    }
+#else
     // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : GccCommon.CCompiler
+    public class CCompiler : GccCommon.CCompiler, C.ICompiler
     {
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
         private string binPath;
@@ -44,14 +64,27 @@ namespace Gcc
             return System.IO.Path.Combine(this.binPath, "gcc-4.0");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "g++-4.0");
         }
+#endif
 
-        public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
+        // NEW STYLE
+        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
         {
             return this.includeFolders;
         }
+
+        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
+        {
+            get
+            {
+                return base.CommonIncludePathCompilerSwitches;
+            }
+        }
     }
+#endif
 }

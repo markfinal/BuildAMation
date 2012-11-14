@@ -11,7 +11,9 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common compiler options
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
+#endif
             this["SystemIncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLine, IncludePathsVisualStudio);
             this["IncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLine, IncludePathsVisualStudio);
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLine, DefinesVisualStudio);
@@ -42,6 +44,7 @@ namespace VisualCCommon
             this["SmallerTypeConversionRuntimeCheck"].PrivateData = new PrivateData(SmallerTypeConversionRuntimeCheckCommandLine, SmallerTypeConversionRuntimeCheckVisualStudio);
             this["InlineFunctionExpansion"].PrivateData = new PrivateData(InlineFunctionExpansionCommandLine, InlineFunctionExpansionVisualStudio);
             this["EnableIntrinsicFunctions"].PrivateData = new PrivateData(EnableIntrinsicFunctionsCommandLine, EnableIntrinsicFunctionsVisualStudio);
+            this["RuntimeLibrary"].PrivateData = new PrivateData(RuntimeLibraryCommandLine, RuntimeLibraryVisualStudio);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -59,7 +62,6 @@ namespace VisualCCommon
                 compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
                 compilerInterface.SmallerTypeConversionRuntimeCheck = true;
                 compilerInterface.InlineFunctionExpansion = EInlineFunctionExpansion.None;
-                (this as C.ICCompilerOptions).OmitFramePointer = false;
                 compilerInterface.EnableIntrinsicFunctions = false;
             }
             else
@@ -68,12 +70,17 @@ namespace VisualCCommon
                 compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.None;
                 compilerInterface.SmallerTypeConversionRuntimeCheck = false;
                 compilerInterface.InlineFunctionExpansion = EInlineFunctionExpansion.AnySuitable;
-                (this as C.ICCompilerOptions).OmitFramePointer = true;
                 compilerInterface.EnableIntrinsicFunctions = true;
             }
 
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths(target));
+#else
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerInstance.IncludeDirectoryPaths(target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange((compilerInstance as C.ICompiler).IncludeDirectoryPaths(target));
+#endif
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
@@ -89,6 +96,7 @@ namespace VisualCCommon
             compilerInterface.ForceConformanceInForLoopScope = true;
             compilerInterface.UseFullPaths = true;
             compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
+            compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
 
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
         }
@@ -135,6 +143,7 @@ namespace VisualCCommon
             base.FinalizeOptions(target);
         }
 
+#if false
         protected static void ToolchainOptionCollectionSetHandler(object sender, Opus.Core.Option option)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
@@ -154,6 +163,7 @@ namespace VisualCCommon
             VisualStudioProcessor.IVisualStudioSupport visualStudioSupport = toolchainOptions.Value as VisualStudioProcessor.IVisualStudioSupport;
             return visualStudioSupport.ToVisualStudioProjectAttributes(target);
         }
+#endif
 
         private static void IncludeSystemPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -165,7 +175,7 @@ namespace VisualCCommon
             }
 
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            string switchPrefix = compilerInstance.IncludePathCompilerSwitches[0];
+            string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
@@ -211,8 +221,14 @@ namespace VisualCCommon
 
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
+#else
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            string switchPrefix = compilerInstance.IncludePathCompilerSwitches[0];
+            string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
+#endif
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
@@ -1274,6 +1290,75 @@ namespace VisualCCommon
             return dictionary;
         }
 
+        private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // TODO: do I really need this, given where it is?
+#if false
+            if (!target.HasToolchain("visualc"))
+            {
+                return;
+            }
+#endif
+
+            Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
+            switch (runtimeLibraryOption.Value)
+            {
+                case ERuntimeLibrary.MultiThreaded:
+                    commandLineBuilder.Add("/MT");
+                    break;
+
+                case ERuntimeLibrary.MultiThreadedDebug:
+                    commandLineBuilder.Add("/MTd");
+                    break;
+
+                case ERuntimeLibrary.MultiThreadedDLL:
+                    commandLineBuilder.Add("/MD");
+                    break;
+
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
+                    commandLineBuilder.Add("/MDd");
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized runtime library option");
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            // TODO: do I really need this, given where it is?
+#if false
+            if (!target.HasToolchain("visualc"))
+            {
+                return dictionary;
+            }
+#endif
+
+            Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
+            switch (runtimeLibraryOption.Value)
+            {
+                case ERuntimeLibrary.MultiThreaded:
+                case ERuntimeLibrary.MultiThreadedDebug:
+                case ERuntimeLibrary.MultiThreadedDLL:
+                case ERuntimeLibrary.MultiThreadedDebugDLL:
+                    {
+                        if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
+                        {
+                            dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString("D"));
+                        }
+                        else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
+                        {
+                            dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString());
+                        }
+                        return dictionary;
+                    }
+
+                default:
+                    throw new Opus.Core.Exception("Unrecognized runtime library option");
+            }
+        }
+
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
@@ -1295,8 +1380,15 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
+            VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
+#else
             VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+#endif
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:

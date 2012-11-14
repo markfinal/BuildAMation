@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
+    [Opus.Core.ModuleToolAssignment(typeof(ICSharpCompilerTool))]
     public abstract class Assembly : Opus.Core.IModule
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)

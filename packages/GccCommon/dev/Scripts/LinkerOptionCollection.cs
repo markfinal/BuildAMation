@@ -10,7 +10,9 @@ namespace GccCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common linker options
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(null);
+#endif
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine);
             this["SubSystem"].PrivateData = new PrivateData(null);
@@ -42,6 +44,16 @@ namespace GccCommon
             (this as ILinkerOptions).CanUseOrigin = false;
             (this as ILinkerOptions).AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
             (this as ILinkerOptions).RPath = new Opus.Core.StringArray();
+
+            // we use gcc as the linker - if there is C++ code included, link against libstdc++
+            foreach (Opus.Core.DependencyNode child in node.Children)
+            {
+                if (child.Module is C.CPlusPlus.ObjectFile || child.Module is C.CPlusPlus.ObjectFileCollection)
+                {
+                    (this as C.ILinkerOptions).Libraries.Add("-lstdc++");
+                    break;
+                }
+            }
 
             /*
              This is an example link line using gcc with -v

@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: deprecate this interface in favour of IToolEnvironmentVariables
     public interface IToolEnvironmentPaths
     {
         StringArray Paths(Target target);

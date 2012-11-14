@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace ComposerXECommon
 {
     public abstract class Toolchain : C.Toolchain
@@ -106,3 +107,4 @@ namespace ComposerXECommon
         }
     }
 }
+#endif

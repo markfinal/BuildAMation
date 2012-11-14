@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
+#if false
 namespace C
 {
     public interface IToolchainOptions
@@ -20,3 +21,4 @@ namespace C
         }
     }
 }
+#endif

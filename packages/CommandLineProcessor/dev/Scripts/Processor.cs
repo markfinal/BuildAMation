@@ -50,6 +50,22 @@ namespace CommandLineProcessor
                 //Opus.Core.Log.DebugMessage("Path is '{0}'", pathEnv);
             }
 
+            if (tool is Opus.Core.IToolEnvironmentVariables)
+            {
+                System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+                foreach (string key in variables.Keys)
+                {
+                    System.Text.StringBuilder paths = new System.Text.StringBuilder();
+                    foreach (string path in variables[key])
+                    {
+                        paths.AppendFormat("{0}{1}", path, System.IO.Path.PathSeparator);
+                    }
+
+                    string pathEnv = paths.ToString().TrimEnd(new char[] { System.IO.Path.PathSeparator });
+                    processStartInfo.EnvironmentVariables[key] = pathEnv;
+                }
+            }
+
             if (tool is Opus.Core.IToolSupportsResponseFile)
             {
                 string responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;

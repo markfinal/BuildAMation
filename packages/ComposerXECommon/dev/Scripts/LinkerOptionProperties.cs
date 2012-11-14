@@ -5,6 +5,7 @@ namespace ComposerXECommon
 {
     public partial class LinkerOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.ILinkerOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.ELinkerOutput C.ILinkerOptions.OutputType
         {
             get

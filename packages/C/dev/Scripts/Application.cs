@@ -12,6 +12,7 @@ namespace C
                                    typeof(ExportLinkerOptionsDelegateAttribute),
                                    typeof(LocalLinkerOptionsDelegateAttribute),
                                    ClassNames.LinkerToolOptions)]
+    [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
     public class Application : Opus.Core.IModule, Opus.Core.INestedDependents
     {
         public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;

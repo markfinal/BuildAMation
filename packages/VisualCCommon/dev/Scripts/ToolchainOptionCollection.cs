@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>VisualCCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualCCommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions, IToolchainOptions, VisualStudioProcessor.IVisualStudioSupport
@@ -18,8 +19,10 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common toolchain options
+#if false
             this["IsCPlusPlus"].PrivateData = new PrivateData(null, null);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine, null);
+#endif
 
             // toolchain specific options
             this["RuntimeLibrary"].PrivateData = new PrivateData(RuntimeLibraryCommandLine, RuntimeLibraryVisualStudio);
@@ -41,6 +44,7 @@ namespace VisualCCommon
             return dirsToCreate;
         }
 
+#if false
         private static void CharacterSetCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
@@ -65,9 +69,15 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized C.ECharacterSet option");
             }
         }
+#endif
 
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            if (!target.HasToolchain("visualc"))
+            {
+                return;
+            }
+
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
@@ -94,6 +104,12 @@ namespace VisualCCommon
 
         private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            if (!target.HasToolchain("visualc"))
+            {
+                return dictionary;
+            }
+
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
@@ -102,7 +118,6 @@ namespace VisualCCommon
                 case ERuntimeLibrary.MultiThreadedDLL:
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     {
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                         if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                         {
                             dictionary.Add("RuntimeLibrary", runtimeLibraryOption.Value.ToString("D"));
@@ -121,8 +136,15 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
+            VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
+#else
             VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+#endif
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
@@ -137,3 +159,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif

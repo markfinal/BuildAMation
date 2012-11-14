@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
+#if false
 namespace ComposerXE
 {
     public sealed class Toolchain : ComposerXECommon.Toolchain
@@ -26,6 +27,7 @@ namespace ComposerXE
             this.binFolder = this.installPath;
         }
 
+#if false
         public override string InstallPath(Opus.Core.Target target)
         {
             return this.installPath;
@@ -35,6 +37,7 @@ namespace ComposerXE
         {
             return this.binFolder;
         }
+#endif
 
         public static string VersionString
         {
@@ -62,3 +65,4 @@ namespace ComposerXE
         }
     }
 }
+#endif

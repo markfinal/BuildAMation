@@ -54,6 +54,19 @@ namespace CSharp
 
             Opus.Core.State.Add<string>("Toolchains", "CSharp", this.Toolchain);
 
+            // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
+            System.Collections.Generic.Dictionary<System.Type, string> map = null;
+            if (Opus.Core.State.Has("Toolchains", "Map"))
+            {
+                map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            }
+            else
+            {
+                map = new System.Collections.Generic.Dictionary<System.Type, string>();
+                Opus.Core.State.Add("Toolchains", "Map", map);
+            }
+            map[typeof(CSharp.Csc)] = this.Toolchain;
+
             return true;
         }
     }

@@ -3,15 +3,23 @@
 // </copyright>
 // <summary>Mingw package</summary>
 // <author>Mark Final</author>
+#if false
 namespace Mingw
 {
     public sealed class Toolchain : MingwCommon.Toolchain
     {
+        //NEW STYLE
+#if true
+#else
         private string installPath;
         private string binFolder;
+#endif
 
         public Toolchain(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+#else
             if (Opus.Core.State.HasCategory("Mingw") && Opus.Core.State.Has("Mingw", "InstallPath"))
             {
                 this.installPath = Opus.Core.State.Get("Mingw", "InstallPath") as string;
@@ -35,8 +43,10 @@ namespace Mingw
             this.binFolder = System.IO.Path.Combine(this.installPath, "bin");
             this.Environment = new Opus.Core.StringArray();
             this.Environment.Add(this.binFolder);
+#endif
         }
 
+#if false
         public override string InstallPath(Opus.Core.Target target)
         {
             return this.installPath;
@@ -52,6 +62,7 @@ namespace Mingw
             get;
             protected set;
         }
+#endif
 
         public static string GetVersion
         {
@@ -79,3 +90,4 @@ namespace Mingw
         }
     }
 }
+#endif

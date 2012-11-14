@@ -12,15 +12,14 @@ namespace FileUtilities
             // do nothing
         }
 
-        private void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             this.DestinationDirectory = null;
         }
 
         public CopyFilesOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.InitializeDefaults(node);
-            this.SetDelegates(node);
         }
 
         public string DestinationDirectory

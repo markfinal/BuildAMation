@@ -35,16 +35,31 @@ namespace QMakeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
+            NodeData nodeData = new NodeData();
+            nodeData.Configuration = GetQtConfiguration(target);
+            nodeData.AddVariable("SOURCES", sourceFilePath);
+            // NEW STYLE
+#if true
+            if (objectFileOptions is C.ICPlusPlusCompilerOptions)
+            {
+                Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool));
+                nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
+                nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
+            }
+            else
+            {
+                Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICxxCompilerTool));
+                nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
+                nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
+            }
+#else
+            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             bool isCPlusPlus = false;
             if (objectFileOptions is C.ICPlusPlusCompilerOptions)
             {
                 isCPlusPlus = true;
             }
 
-            NodeData nodeData = new NodeData();
-            nodeData.Configuration = GetQtConfiguration(target);
-            nodeData.AddVariable("SOURCES", sourceFilePath);
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             if (isCPlusPlus)
             {
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
@@ -56,6 +71,7 @@ namespace QMakeBuilder
                 Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
                 nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable(target).Replace("\\", "/")));
             }
+#endif
             nodeData.AddUniqueVariable("OBJECTS_DIR", new Opus.Core.StringArray(compilerOptions.OutputDirectoryPath));
 
             success = true;

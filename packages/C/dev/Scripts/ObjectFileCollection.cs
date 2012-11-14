@@ -12,6 +12,7 @@ namespace C
                                    typeof(ExportCompilerOptionsDelegateAttribute),
                                    typeof(LocalCompilerOptionsDelegateAttribute),
                                    ClassNames.CCompilerToolOptions)]
+    [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFileCollection : ObjectFileCollectionBase
     {
         public void Add(ObjectFile objectFile)

@@ -12,12 +12,16 @@ namespace MakeFileBuilder
             Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
+            // NEW STYLE
+#if true
+            string executable = toolInterface.Executable(target);
+#else
             string executable;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -28,6 +32,7 @@ namespace MakeFileBuilder
             {
                 executable = compilerTool.Executable(target);
             }
+#endif
 
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 
@@ -80,11 +85,16 @@ namespace MakeFileBuilder
             MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
             Opus.Core.StringArray environmentPaths = null;
-            if (compilerTool is Opus.Core.IToolEnvironmentPaths)
+            if (toolInterface is Opus.Core.IToolEnvironmentPaths)
             {
-                environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
+                environmentPaths = (toolInterface as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (toolInterface is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (toolInterface as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths, environment);
             success = true;
             return returnData;
         }

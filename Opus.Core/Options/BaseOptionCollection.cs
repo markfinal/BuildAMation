@@ -15,9 +15,25 @@ namespace Opus.Core
             private set;
         }
 
-        public BaseOptionCollection()
+        protected BaseOptionCollection()
         {
             this.OutputPaths = new OutputPaths();
+        }
+
+        protected BaseOptionCollection(DependencyNode owningNode)
+            : this()
+        {
+            this.SetNodeOwnership(owningNode);
+            this.InitializeDefaults(owningNode);
+            this.SetDelegates(owningNode);
+        }
+
+        protected abstract void InitializeDefaults(DependencyNode owningNode);
+        protected abstract void SetDelegates(DependencyNode owningNode);
+
+        public virtual void SetNodeOwnership(DependencyNode node)
+        {
+            // do nothing by default
         }
 
         public Option this[string key]
@@ -42,16 +58,6 @@ namespace Opus.Core
             {
                 this.table[key] = value;
             }
-        }
-
-        public virtual void SetNodeOwnership(DependencyNode node)
-        {
-            throw new Exception(System.String.Format("SetNodeOwnership needs to be overridden for module '{0}' of type '{1}' from package '{2}'", node.UniqueModuleName, node.Module.GetType().BaseType.ToString(), node.Package.ToString()), false);
-        }
-
-        protected virtual void SetDelegates(DependencyNode node)
-        {
-            throw new Exception(System.String.Format("SetDelegates needs to be overridden for module '{0}' of type '{1}' from package '{2}'", node.UniqueModuleName, node.Module.GetType().BaseType.ToString(), node.Package.ToString()), false);
         }
 
         public virtual object Clone()

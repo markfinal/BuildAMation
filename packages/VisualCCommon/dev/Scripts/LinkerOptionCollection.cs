@@ -10,7 +10,9 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common linker options
+#if false
             this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
+#endif
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine, OutputTypeVisualStudio);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine, DebugSymbolsVisualStudio);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLine, SubSystemVisualStudio);
@@ -41,8 +43,19 @@ namespace VisualCCommon
 
             Opus.Core.Target target = node.Target;
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+
+            foreach (string libPath in linkerTool.LibPaths(target))
+            {
+                (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(libPath, true);
+            }
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(toolChainInstance.LibPath(target), true);
+#endif
         }
 
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
@@ -82,6 +95,7 @@ namespace VisualCCommon
             base.FinalizeOptions(target);
         }
 
+#if false
         private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
@@ -93,6 +107,7 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
             return RuntimeLibraryVisualStudio(sender, toolchainOptions.Value["RuntimeLibrary"], target, vsTarget);
         }
+#endif
 
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -309,41 +324,51 @@ namespace VisualCCommon
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
+#if false
             C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
             bool isCPlusPlus = toolchainOptions.IsCPlusPlus;
+#endif
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
                     options.StandardLibraries.Add("LIBCMT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
                     options.StandardLibraries.Add("LIBCMTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMTD.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
                     options.StandardLibraries.Add("MSVCRT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRTD.lib");
                     }
+#endif
                     break;
 
                 default:
@@ -354,41 +379,51 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
+#if false
             C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
             bool isCPlusPlus = toolchainOptions.IsCPlusPlus;
+#endif
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
                     options.StandardLibraries.Add("LIBCMT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
                     options.StandardLibraries.Add("LIBCMTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("LIBCPMTD.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
                     options.StandardLibraries.Add("MSVCRT.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRT.lib");
                     }
+#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
+#if false
                     if (isCPlusPlus)
                     {
                         options.StandardLibraries.Add("MSVCPRTD.lib");
                     }
+#endif
                     break;
 
                 default:
@@ -616,8 +651,15 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
+            VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
+#else
             VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+#endif
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:

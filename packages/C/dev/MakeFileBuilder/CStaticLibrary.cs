@@ -12,9 +12,14 @@ namespace MakeFileBuilder
             Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool archiverTool = toolset.Tool(typeof(C.IArchiverTool));
+#else
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
             Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;
+#endif
 
             // dependents
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -74,7 +79,17 @@ namespace MakeFileBuilder
             {
                 recipe += executable;
             }
+
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+
+            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
+#else
+            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
+#endif
+
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
             recipe = recipe.Replace(staticLibraryOptions.OutputPaths[primaryOutput], "$@");
@@ -100,7 +115,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (archiverTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (archiverTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (archiverTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environmentPaths, environment);
             success = true;
             return returnData;
         }

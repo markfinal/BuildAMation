@@ -1,0 +1,57 @@
+// <copyright file="Csc.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>DotNetFramework package</summary>
+// <author>Mark Final</author>
+namespace DotNetFramework
+{
+    public sealed class Csc : CSharp.ICSharpCompilerTool, Opus.Core.IToolRequiredEnvironmentVariables
+    {
+        private Opus.Core.IToolset toolset;
+
+        public Csc(Opus.Core.IToolset toolset)
+        {
+            this.toolset = toolset;
+        }
+
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        {
+            string CscPath = null;
+
+            string installPath = this.toolset.InstallPath((Opus.Core.BaseTarget)target);
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                CscPath = System.IO.Path.Combine(installPath, "Csc.exe");
+            }
+            else if (Opus.Core.OSUtilities.IsUnixHosting)
+            {
+                CscPath = System.IO.Path.Combine(installPath, "mono-csc");
+            }
+            else if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                CscPath = System.IO.Path.Combine(installPath, "mcs");
+            }
+
+            return CscPath;
+        }
+
+        #endregion
+
+        #region IToolRequiredEnvironmentVariables Members
+
+        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        {
+            get
+            {
+                Opus.Core.StringArray envVars = new Opus.Core.StringArray();
+                envVars.Add("SystemRoot");
+                envVars.Add("TEMP"); // otherwise you get errors like this CS0016: Could not write to output file 'd:\build\CSharpTest1-dev\SimpleAssembly\win32-dotnet2.0.50727-debug\bin\SimpleAssembly.dll' -- 'Access is denied.
+                return envVars;
+            }
+        }
+
+        #endregion
+    }
+}

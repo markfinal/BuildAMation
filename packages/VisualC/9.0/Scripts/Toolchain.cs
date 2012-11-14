@@ -3,16 +3,21 @@
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualC
 {
     public sealed class Toolchain : VisualCCommon.Toolchain
     {
+        // NEW STYLE
+#if true
+#else
         private string installPath;
         private string bin32Folder;
         private string bin64Folder;
         private string bin6432Folder;
         private string lib32Folder;
         private string lib64Folder;
+#endif
 
         static Toolchain()
         {
@@ -25,6 +30,9 @@ namespace VisualC
 
         public Toolchain(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+#else
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
@@ -70,8 +78,10 @@ namespace VisualC
 
             this.Environment = new Opus.Core.StringArray();
             this.Environment.Add(ide);
+#endif
         }
 
+#if false
         public override string InstallPath(Opus.Core.Target target)
         {
             return this.installPath;
@@ -113,6 +123,7 @@ namespace VisualC
                 return this.lib32Folder;
             }
         }
+#endif
 
         public static string VersionString
         {
@@ -170,3 +181,4 @@ namespace VisualC
         }
     }
 }
+#endif

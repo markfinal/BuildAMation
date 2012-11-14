@@ -9,6 +9,7 @@ namespace FileUtilities
                                    typeof(ExportOptionsDelegateAttribute),
                                    typeof(LocalOptionsDelegateAttribute),
                                    typeof(SymLinkOptionCollection))]
+    [Opus.Core.ModuleToolAssignment(typeof(ISymLinkTool))]
     public class SymLink : Opus.Core.IModule
     {
         void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)

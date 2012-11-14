@@ -5,7 +5,25 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths
+    // NEW STYLE
+#if true
+    public sealed class Linker : GccCommon.Linker
+    {
+        public Linker(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        protected override string Filename
+        {
+            get
+            {
+                return "gcc-4.0";
+            }
+        }
+    }
+#else
+    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
         private string binPath;
@@ -28,10 +46,13 @@ namespace Gcc
             return System.IO.Path.Combine(this.binPath, "gcc-4.0");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "g++-4.0");
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {
@@ -54,4 +75,5 @@ namespace Gcc
             }
         }
     }
+#endif
 }

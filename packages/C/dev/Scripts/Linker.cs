@@ -15,9 +15,12 @@ namespace C
     {
     }
 
+    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalLinkerOptionsDelegateAttribute),
+                                            typeof(ExportLinkerOptionsDelegateAttribute))]
     public abstract class Linker
     {
-        public abstract string ExecutableCPlusPlus(Opus.Core.Target target);
+        // OLD STYLE
+        //public abstract string ExecutableCPlusPlus(Opus.Core.Target target);
 
         protected abstract string StartLibraryList
         {

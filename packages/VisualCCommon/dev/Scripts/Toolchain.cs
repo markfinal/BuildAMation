@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>VisualCCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace VisualCCommon
 {
     public abstract class Toolchain : C.Toolchain
@@ -15,6 +16,7 @@ namespace VisualCCommon
             }
         }
 
+#if false
         public abstract string LibPath(Opus.Core.Target target);
 
         public override string PreprocessedOutputSuffix
@@ -104,6 +106,7 @@ namespace VisualCCommon
                 return ".res";
             }
         }
+#endif
 
         protected static string GetVCRegistryKeyPath(string platformName, string versionNumber, string editionName, int LCID)
         {
@@ -129,3 +132,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif

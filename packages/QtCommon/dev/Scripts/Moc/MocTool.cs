@@ -4,13 +4,39 @@
 // <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("moctool", "Qt.Qt.VersionString")]
+#if false
+[assembly: QtCommon.RegisterToolchain(typeof(QtCommon.Toolset))]
+#endif
 
 namespace QtCommon
 {
-    public sealed class MocTool : Opus.Core.ITool
+#if false
+    [Opus.Core.LocalAndExportTypes(typeof(LocalMocOptionsDelegateAttribute),
+                                   typeof(ExportMocOptionsDelegateAttribute))]
+#endif
+    public sealed class MocTool : IMocTool
     {
-        public string Executable(Opus.Core.Target target)
+        private Opus.Core.IToolset toolset;
+
+        public MocTool(Opus.Core.IToolset toolset)
         {
+            this.toolset = toolset;
+        }
+
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        {
+            // NEW STYLE
+#if true
+            string mocExePath = System.IO.Path.Combine(this.toolset.BinPath((Opus.Core.BaseTarget)target), "moc");
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                mocExePath += ".exe";
+            }
+
+            return mocExePath;
+#else
             Qt.Qt thirdPartyModule =
                 Opus.Core.ModuleUtilities.GetModuleNoToolchain(typeof(Qt.Qt), target) as Qt.Qt;
             if (null == thirdPartyModule)
@@ -25,6 +51,9 @@ namespace QtCommon
             }
 
             return mocExePath;
+#endif
         }
+
+        #endregion
     }
 }

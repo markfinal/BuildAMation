@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
+#if false
 namespace C
 {
     public static class ToolchainFactory
@@ -47,3 +48,4 @@ namespace C
         }
     }
 }
+#endif

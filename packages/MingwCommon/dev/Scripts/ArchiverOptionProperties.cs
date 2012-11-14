@@ -5,6 +5,7 @@ namespace MingwCommon
 {
     public partial class ArchiverOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.IArchiverOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get

@@ -12,9 +12,14 @@ namespace MakeFileBuilder
             Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
             Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+#else
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+#endif
 
             // dependents
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -45,7 +50,11 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
-
+            
+            // NEW STYLE
+#if true
+            string executable = linkerTool.Executable(target);
+#else
             string executable;
             C.IToolchainOptions toolchainOptions = (applicationOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -56,6 +65,7 @@ namespace MakeFileBuilder
             {
                 executable = linkerTool.Executable(target);
             }
+#endif
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
@@ -80,6 +90,34 @@ namespace MakeFileBuilder
             {
                 recipeBuilder.Append(executable);
             }
+
+            // NEW STYLE
+#if true
+            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+
+            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
+
+            C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+            if (null != winResourceCompilerTool)
+            {
+                recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
+            }
+
+            // TODO: don't want to access the archiver tool here really, as creating
+            // an application does not require one
+            C.IArchiverTool archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
+
+            Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
+            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
+            // TODO: ratify that import libraries are a Windows only creation
+            if (archiverTool.StaticLibrarySuffix != linkerTool.ImportLibrarySuffix)
+            {
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.ImportLibrarySuffix));
+            }
+            Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
+            C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
+#else
+            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
             recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
             if (toolchain.Win32CompiledResourceSuffix.Length > 0)
             {
@@ -93,6 +131,7 @@ namespace MakeFileBuilder
             }
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
             linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, applicationOptions as C.ILinkerOptions, dependentLibraries);
+#endif
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
@@ -131,7 +170,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (linkerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (linkerTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environmentPaths, environment);
             success = true;
             return returnData;
         }

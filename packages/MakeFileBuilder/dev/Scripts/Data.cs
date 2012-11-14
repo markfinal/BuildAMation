@@ -16,6 +16,32 @@ namespace MakeFileBuilder
             this.TargetDictionary = targetDictionary;
             this.VariableDictionary = variableDictionary;
             this.EnvironmentPaths = environmentPaths;
+            this.Environment = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+        }
+
+        public MakeFileData(string makeFilePath,
+                            MakeFileTargetDictionary targetDictionary,
+                            MakeFileVariableDictionary variableDictionary,
+                            Opus.Core.StringArray environmentPaths, // TODO: redundant
+                            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment)
+        {
+            this.MakeFilePath = makeFilePath;
+            this.TargetDictionary = targetDictionary;
+            this.VariableDictionary = variableDictionary;
+            this.EnvironmentPaths = null;
+            // TODO: better way to do a copy?
+            if (null != environment)
+            {
+                this.Environment = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+                foreach (string key in environment.Keys)
+                {
+                    this.Environment[key] = environment[key];
+                }
+            }
+            else
+            {
+                this.Environment = null;
+            }
         }
 
         public string MakeFilePath
@@ -37,6 +63,12 @@ namespace MakeFileBuilder
         }
 
         public Opus.Core.StringArray EnvironmentPaths
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Environment
         {
             get;
             private set;

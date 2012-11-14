@@ -233,7 +233,13 @@ namespace MakeFileBuilder
                 }
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool compilerInstance = toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
+#else
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
+#endif
             string executablePath = compilerInstance.Executable(target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
@@ -267,7 +273,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (compilerTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths, environment);
             return returnData;
         }
     }

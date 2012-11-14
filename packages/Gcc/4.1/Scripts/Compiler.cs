@@ -5,6 +5,26 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
+    // NEW STYLE
+#if true
+    public sealed class CCompiler : GccCommon.CCompiler
+    {
+        public CCompiler(Opus.Core.IToolset toolset)
+            : base(toolset)
+        {
+        }
+
+        #region implemented abstract members of GccCommon.CCompiler
+        protected override string Filename
+        {
+            get
+            {
+                return "gcc-4.1";
+            }
+        }
+        #endregion
+    }
+#else
     // Not sealed since the C++ compiler inherits from it
     public class CCompiler : GccCommon.CCompiler, Opus.Core.IToolSupportsResponseFile
     {
@@ -44,10 +64,13 @@ namespace Gcc
             return System.IO.Path.Combine(this.binPath, "gcc-4.1");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "g++-4.1");
         }
+#endif
 
         public override Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target)
         {
@@ -62,4 +85,5 @@ namespace Gcc
             }
         }
     }
+#endif
 }

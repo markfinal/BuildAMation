@@ -17,8 +17,14 @@ namespace ComposerXE
                 throw new Opus.Core.Exception("ComposerXE linker is only supported under unix32 and unix64 platforms");
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(ComposerXE.Toolset));
+            this.binPath = info.BinPath((Opus.Core.BaseTarget)target);
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
+#endif
 
             this.environmentPaths.Add("/opt/intel/bin");
             this.environmentPaths.Add("/usr/bin");
@@ -29,10 +35,13 @@ namespace ComposerXE
             return System.IO.Path.Combine(this.binPath, "icc");
         }
 
+        // OLD STYLE
+#if false
         public override string ExecutableCPlusPlus(Opus.Core.Target target)
         {
             return System.IO.Path.Combine(this.binPath, "icpc");
         }
+#endif
 
         Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
         {

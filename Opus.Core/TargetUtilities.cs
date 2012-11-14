@@ -42,6 +42,23 @@ namespace Opus.Core
         /// <returns>The Target's directory name.</returns>
         public static string DirectoryName(Target target)
         {
+            // NEW STYLE
+#if true
+            string versionString = null;
+            if (target.Toolset != null)
+            {
+                versionString = target.Toolset.Version((BaseTarget)target);
+            }
+            else
+            {
+                if (!State.Has("Toolset", target.Toolchain))
+                {
+                    throw new Exception(System.String.Format("No tool set information registered for toolchain '{0}' in order to locate version information", target.Toolchain), false);
+                }
+
+                versionString = (State.Get("Toolset", target.Toolchain) as IToolset).Version((BaseTarget)target);
+            }
+#else
             // TODO: this needs changing. See comment at the top of Target
             if (!State.Has(target.Toolchain, "Version"))
             {
@@ -49,6 +66,7 @@ namespace Opus.Core
             }
 
             string versionString = State.Get(target.Toolchain, "Version") as string;
+#endif
 
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}", target.ToString(), versionString);

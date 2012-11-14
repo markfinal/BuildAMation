@@ -73,6 +73,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
+#if false
                     C.ICCompilerOptions compilerOptions = objectFileCollectionOptions as C.ICCompilerOptions;
                     C.IToolchainOptions toolchainOptions = compilerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
@@ -94,15 +95,17 @@ namespace VSSolutionBuilder
                             characterSet = EProjectCharacterSet.Undefined;
                             break;
                     }
-                    configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = characterSet;
-
+#endif
+                    configuration = new ProjectConfiguration(configurationName, projectData);
                     projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
+#if false
                     configuration.CharacterSet = (EProjectCharacterSet)((objectFileCollectionOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
+#endif
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
 

@@ -12,8 +12,13 @@ namespace NativeBuilder
             Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
+            // NEW STYLE
+#if true
+            Opus.Core.ITool archiverTool = target.Toolset.Tool(typeof(C.IArchiverTool));
+#else
             C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
             Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;
+#endif
 
             // find dependent object files
             Opus.Core.StringArray dependentObjectFiles = new Opus.Core.StringArray();

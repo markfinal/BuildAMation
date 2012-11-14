@@ -3,12 +3,19 @@
 // </copyright>
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
+#if false
 [assembly: Opus.Core.RegisterTargetToolChain("copyfilestool", "FileUtilities.CopyFilesTool.Version")]
+#endif
 
 namespace FileUtilities
 {
-    public sealed class CopyFilesTool : Opus.Core.ITool
+#if false
+    [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
+                                   typeof(ExportOptionsDelegateAttribute))]
+#endif
+    public sealed class CopyFilesTool : ICopyFilesTool
     {
+#if false
         public static string Version
         {
             get
@@ -16,8 +23,11 @@ namespace FileUtilities
                 return "dev";
             }
         }
+#endif
 
-        public string Executable(Opus.Core.Target target)
+        #region ITool Members
+
+        string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
             string executable = null;
             if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -34,5 +44,7 @@ namespace FileUtilities
             }
             return executable;
         }
+
+        #endregion
     }
 }

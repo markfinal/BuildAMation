@@ -3,10 +3,16 @@
 // </copyright>
 // <summary>Qt package</summary>
 // <author>Mark Final</author>
+
+[assembly:Opus.Core.RegisterToolset("Qt", typeof(Qt.Toolset))]
+
 namespace Qt
 {
     public sealed class Qt : QtCommon.QtCommon
     {
+        // NEW STYLE
+#if true
+#else
         public static string VersionString
         {
             get
@@ -57,9 +63,13 @@ namespace Qt
                 }
             }
         }
+#endif
 
         public Qt(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            string installPath = Opus.Core.ToolsetFactory.CreateToolset(typeof(Toolset)).InstallPath((Opus.Core.BaseTarget)target);
             if (Opus.Core.OSUtilities.IsOSXHosting)
             {
                 this.BinPath = installPath;
@@ -68,6 +78,16 @@ namespace Qt
             {
                 this.BinPath = System.IO.Path.Combine(installPath, "bin");
             }
+#else
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                this.BinPath = installPath;
+            }
+            else
+            {
+                this.BinPath = System.IO.Path.Combine(installPath, "bin");
+            }
+#endif
 
             this.LibPath = System.IO.Path.Combine(installPath, "lib");
             this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));

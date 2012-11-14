@@ -7,12 +7,13 @@ namespace C
 {
     public abstract class CompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
-        // TODO:  no reason why this can't be a static utility function
-        protected virtual void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             ICCompilerOptions compilerOptions = this as ICCompilerOptions;
 
+#if false
             compilerOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
+#endif
 
             Opus.Core.Target target = node.Target;
 
@@ -25,6 +26,7 @@ namespace C
             {
                 compilerOptions.DebugSymbols = true;
                 compilerOptions.Optimization = EOptimization.Off;
+                compilerOptions.OmitFramePointer = false;
             }
             else
             {
@@ -37,6 +39,7 @@ namespace C
                     compilerOptions.DebugSymbols = true;
                 }
                 compilerOptions.Optimization = EOptimization.Speed;
+                compilerOptions.OmitFramePointer = true;
             }
             compilerOptions.CustomOptimization = "";
             compilerOptions.ShowIncludes = false;
@@ -68,6 +71,7 @@ namespace C
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
 
             compilerOptions.DisableWarnings = new Opus.Core.StringArray();
+            compilerOptions.AdditionalOptions = "";
         }
 
         public CompilerOptionCollection()
@@ -76,14 +80,8 @@ namespace C
         }
 
         public CompilerOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.SetNodeOwnership(node);
-            this.InitializeDefaults(node);
-
-            ICCompilerOptions compilerOptions = this as ICCompilerOptions;
-            compilerOptions.AdditionalOptions = "";
-
-            this.SetDelegates(node);
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
@@ -99,7 +97,24 @@ namespace C
                 this.OutputName = null;
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.Target target = node.Target;
+            Opus.Core.IToolset toolset = target.Toolset;
+            if (null == target.Toolset)
+            {
+                toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                if (null == toolset)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
+            }
+
+            ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
+#else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);
+#endif
         }
 
         public string OutputName
@@ -144,17 +159,39 @@ namespace C
         {
             if (null != this.OutputName)
             {
+#if true
+                Opus.Core.IToolset toolset = target.Toolset;
+                if (null == target.Toolset)
+                {
+                    toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                    if (null == toolset)
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                    }
+                }
+
+                ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+#else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
+#endif
 
                 ICCompilerOptions options = this as ICCompilerOptions;
                 if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
                 {
+#if true
+                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
+#else
                     string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.ObjectFileSuffix;
+#endif
                     this.ObjectFilePath = objectPathname;
                 }
                 else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
                 {
+#if true
+                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
+#else
                     string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.PreprocessedOutputSuffix;
+#endif
                     this.PreprocessedFilePath = preprocessedPathname;
                 }
             }

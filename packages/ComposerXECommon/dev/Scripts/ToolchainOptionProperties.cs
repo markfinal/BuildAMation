@@ -5,6 +5,7 @@ namespace ComposerXECommon
 {
     public partial class ToolchainOptionCollection
     {
+#if false
         bool C.IToolchainOptions.IsCPlusPlus
         {
             get
@@ -29,5 +30,6 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+#endif
     }
 }

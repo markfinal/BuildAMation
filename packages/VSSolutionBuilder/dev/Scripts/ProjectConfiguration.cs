@@ -156,10 +156,12 @@ namespace VSSolutionBuilder
             {
                 throw new Opus.Core.Exception("Project type is undefined");
             }
+#if false
             if (this.CharacterSet == EProjectCharacterSet.Undefined)
             {
                 throw new Opus.Core.Exception("Project character set is undefined");
             }
+#endif
 
             System.Xml.XmlElement configurationElement = document.CreateElement("Configuration");
 
@@ -175,7 +177,9 @@ namespace VSSolutionBuilder
                 configurationElement.SetAttribute("IntermediateDirectory", intermediateDir);
             }
             configurationElement.SetAttribute("ConfigurationType", this.Type.ToString("D"));
+#if false
             configurationElement.SetAttribute("CharacterSet", this.CharacterSet.ToString("D"));
+#endif
 
             if (this.Tools.Count > 0)
             {

@@ -91,6 +91,8 @@ namespace Opus.Core
             Add<StringArray>("Build", "Platforms", null);
             Add<Array<EConfiguration>>("Build", "Configurations", null);
             Add<StringArray>("Build", "Modules", null);
+
+            AddCategory("Toolset");
         }
         
         [System.Diagnostics.Conditional("DEBUG")]

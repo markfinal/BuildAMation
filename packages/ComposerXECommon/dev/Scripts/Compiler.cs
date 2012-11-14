@@ -10,7 +10,7 @@ namespace ComposerXECommon
     {
         public abstract string Executable(Opus.Core.Target target);
 
-        public override Opus.Core.StringArray IncludePathCompilerSwitches
+        protected Opus.Core.StringArray CommonIncludePathCompilerSwitches
         {
             get
             {

@@ -3,15 +3,18 @@
 // </copyright>
 // <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace ComposerXECommon
 {
     public abstract partial class ToolchainOptionCollection : C.ToolchainOptionCollection, C.IToolchainOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+#if false
             // common toolchain options
             this["IsCPlusPlus"].PrivateData = new PrivateData(null);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine);
+#endif
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -61,3 +64,4 @@ namespace ComposerXECommon
         }
     }
 }
+#endif

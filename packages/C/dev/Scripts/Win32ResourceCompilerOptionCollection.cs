@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
+    // TODO: this does not implement any options interface
     public sealed partial class Win32ResourceCompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, VisualStudioProcessor.IVisualStudioSupport
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
@@ -18,11 +19,13 @@ namespace C
         }
 
         public Win32ResourceCompilerOptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.SetNodeOwnership(node);
-            //this.InitializeDefaults(node);
+        }
 
-            this.SetDelegates(node);
+        protected override void InitializeDefaults(Opus.Core.DependencyNode owningNode)
+        {
+            // do nothing
         }
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
@@ -34,16 +37,46 @@ namespace C
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.Target target = node.Target;
+            Opus.Core.IToolset toolset = target.Toolset;
+            ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
+#else
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);
+#endif
         }
 
         public override void FinalizeOptions(Opus.Core.Target target)
         {
             if (null == this.CompiledResourceFilePath)
             {
+                // NEW STYLE
+#if true
+#if true
+                Opus.Core.IToolset toolset = target.Toolset;
+                IWinResourceCompilerTool resourceCompilerTool = toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
+#else
+                Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
+                if (null == toolset)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
+                }
+
+                IWinResourceCompilerInfo resourceCompilerTool = toolset as IWinResourceCompilerInfo;
+                if (null == resourceCompilerInfo)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Toolset information '{0}' does not implement the '{1}' interface for toolchain '{2}'", toolset.GetType().ToString(), typeof(IWinResourceCompilerInfo).ToString(), target.Toolchain), false);
+                }
+#endif
+
+                string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
+#else
                 Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
 
                 string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.Win32CompiledResourceSuffix;
+#endif
                 this.CompiledResourceFilePath = objectPathname;
             }
 
@@ -89,8 +122,15 @@ namespace C
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
+            VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
+#else
             VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
             VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
+#endif
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:

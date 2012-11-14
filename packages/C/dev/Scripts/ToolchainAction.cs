@@ -55,6 +55,26 @@ namespace C
             Opus.Core.State.Add<string>("Toolchains", "C", this.Toolchain);
             Opus.Core.State.Add<string>("Toolchains", "C.CPlusPlus", this.Toolchain);
 
+            // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
+            System.Collections.Generic.Dictionary<System.Type, string> map = null;
+            if (Opus.Core.State.Has("Toolchains", "Map"))
+            {
+                map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            }
+            else
+            {
+                map = new System.Collections.Generic.Dictionary<System.Type, string>();
+                Opus.Core.State.Add("Toolchains", "Map", map);
+            }
+            map[typeof(ICompilerTool)]    = this.Toolchain;
+            map[typeof(ICxxCompilerTool)] = this.Toolchain;
+            map[typeof(ILinkerTool)]      = this.Toolchain;
+            map[typeof(IArchiverTool)]    = this.Toolchain;
+            map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
+#if false
+            map[typeof(C.Toolchain)]   = this.Toolchain;
+#endif
+
             return true;
         }
     }

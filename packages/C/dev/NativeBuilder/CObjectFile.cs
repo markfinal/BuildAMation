@@ -97,17 +97,35 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            // NEW STYLE
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 
             if (headerDependencyGeneration)
             {
                 DependencyGenerator.IncludeDependencyGeneration.Data dependencyData = new DependencyGenerator.IncludeDependencyGeneration.Data();
                 dependencyData.sourcePath = sourceFilePath;
                 dependencyData.depFilePath = depFilePath;
-
-                Opus.Core.StringArray includeSwitches = compilerInstance.IncludePathCompilerSwitches;
+#if true
+                C.ICCompilerOptions cOptions = objectFileOptions as C.ICCompilerOptions;
+                Opus.Core.StringArray includePaths = cOptions.IncludePaths.ToStringArray();
+                dependencyData.includePaths = new Opus.Core.StringArray();
+                foreach (string path in includePaths)
+                {
+                    if (path == ".")
+                    {
+                        dependencyData.includePaths.Add(System.IO.Path.GetDirectoryName(sourceFilePath));
+                    }
+                    else
+                    {
+                        dependencyData.includePaths.Add(path);
+                    }
+                }
+#else
+                Opus.Core.StringArray includeSwitches = (toolInterface as C.ICompiler).IncludePathCompilerSwitches;
                 Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+                // TODO: this can be simplified to just use the optioncollection
                 foreach (string option in commandLineBuilder)
                 {
                     string foundSwitch = null;
@@ -135,10 +153,15 @@ namespace NativeBuilder
                     }
                 }
                 dependencyData.includePaths = includePaths;
+#endif
 
                 DependencyGenerator.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
             }
 
+            // NEW STYLE
+#if true
+            string executablePath = toolInterface.Executable(target);
+#else
             string executablePath;
             C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -149,6 +172,7 @@ namespace NativeBuilder
             {
                 executablePath = compilerTool.Executable(target);
             }
+#endif
 
             if (sourceFilePath.Contains(" "))
             {
@@ -159,7 +183,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, executablePath, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

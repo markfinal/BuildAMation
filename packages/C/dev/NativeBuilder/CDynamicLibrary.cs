@@ -12,8 +12,14 @@ namespace NativeBuilder
             Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool linkerTool = toolset.Tool(typeof(C.ILinkerTool));
+#else
             C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
             Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+#endif
             Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
             C.ILinkerOptions linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
 
@@ -89,6 +95,10 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
+            // NEW STYLE
+#if true
+            string executablePath = linkerTool.Executable(target);
+#else
             string executablePath;
             C.IToolchainOptions toolchainOptions = linkerOptions.ToolchainOptionCollection as C.IToolchainOptions;
             if (toolchainOptions.IsCPlusPlus)
@@ -99,12 +109,18 @@ namespace NativeBuilder
             {
                 executablePath = linkerTool.Executable(target);
             }
+#endif
 
             // object files must come before everything else, for some compilers
             commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));
 
             // then libraries
+            // NEW STYLE
+#if true
+            C.LinkerUtilities.AppendLibrariesToCommandLine(commandLineBuilder, linkerTool as C.ILinkerTool, linkerOptions, dependentLibraryFiles);
+#else
             linkerInstance.AppendLibrariesToCommandLine(commandLineBuilder, linkerOptions, dependentLibraryFiles);
+#endif
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, executablePath, commandLineBuilder);
             success = (0 == exitCode);

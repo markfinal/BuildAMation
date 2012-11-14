@@ -13,6 +13,12 @@ namespace Test
                 compilerOptions.Defines.Add("GLOBALOVERRIDE");
             }
 
+            if (optionCollection is C.ICPlusPlusCompilerOptions)
+            {
+                C.ICPlusPlusCompilerOptions compilerOptions = optionCollection as C.ICPlusPlusCompilerOptions;
+                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Asynchronous;
+            }
+
             if (optionCollection is VisualCCommon.LinkerOptionCollection)
             {
                 VisualCCommon.LinkerOptionCollection linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
@@ -21,9 +27,17 @@ namespace Test
         }
     }
 
-    sealed class TestCompile : C.ObjectFile
+    sealed class CompileSingleCFile : C.ObjectFile
     {
-        public TestCompile()
+        public CompileSingleCFile()
+        {
+            this.SetRelativePath(this, "source", "main.c");
+        }
+    }
+
+    sealed class CompileSingleCFileWithCustomOptions : C.ObjectFile
+    {
+        public CompileSingleCFileWithCustomOptions()
         {
             this.SetRelativePath(this, "source", "main.c");
             this.UpdateOptions += UpdateCompilerOptions;
@@ -79,17 +93,33 @@ namespace Test
         }
     }
 
-    sealed class TestCompile2 : C.ObjectFile
+    sealed class CompileCSourceCollection : C.ObjectFileCollection
     {
-        public TestCompile2()
+        public CompileCSourceCollection()
+        {
+            this.Include(this, "source", "*.c");
+        }
+    }
+
+    sealed class CompileSingleCppFile : C.CPlusPlus.ObjectFile
+    {
+        public CompileSingleCppFile()
         {
             this.SetRelativePath(this, "source", "main.c");
         }
     }
 
-    sealed class TestCompile3 : C.ObjectFileCollection
+    sealed class CompileCppSourceCollection : C.CPlusPlus.ObjectFileCollection
     {
-        public TestCompile3()
+        public CompileCppSourceCollection()
+        {
+            this.Include(this, "source", "*.c");
+        }
+    }
+
+    sealed class CompileCSourceCollectionWithCustomOptions : C.ObjectFileCollection
+    {
+        public CompileCSourceCollectionWithCustomOptions()
         {
             this.Include(this, "source", "*.c");
 
@@ -117,7 +147,47 @@ namespace Test
         }
     }
 
-    sealed class TestApplication1 : C.Application
+    sealed class BuildTerminalApplicationFromC : C.Application
+    {
+        sealed class SourceFiles : C.ObjectFileCollection
+        {
+            public SourceFiles()
+            {
+                this.Include(this, "source", "main.c");
+            }
+        }
+
+        [Opus.Core.SourceFiles]
+        SourceFiles sourceFiles = new SourceFiles();
+
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
+
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+    }
+
+    sealed class BuildTerminalApplicationFromCxx : C.Application
+    {
+        sealed class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        {
+            public SourceFiles()
+            {
+                this.Include(this, "source", "main.c");
+            }
+        }
+
+        [Opus.Core.SourceFiles]
+        SourceFiles sourceFiles = new SourceFiles();
+
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
+
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+    }
+    
+    sealed class BuildTerminalApplicationWithUpdatedOptions : C.Application
     {
         sealed class SourceFiles : C.ObjectFileCollection
         {
@@ -157,7 +227,7 @@ namespace Test
     }
 
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
-    sealed class TestWindowsApplication1 : C.WindowsApplication
+    sealed class BuildWindowsApplication : C.WindowsApplication
     {
         sealed class SourceFiles : C.ObjectFileCollection
         {

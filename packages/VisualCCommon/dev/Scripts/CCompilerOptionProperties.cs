@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class CCompilerOptionCollection
     {
+#if false
         C.ToolchainOptionCollection C.ICCompilerOptions.ToolchainOptionCollection
         {
             get
@@ -17,6 +18,7 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
             }
         }
+#endif
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
@@ -351,6 +353,18 @@ namespace VisualCCommon
             {
                 this.SetValueTypeOption<bool>("EnableIntrinsicFunctions", value);
                 this.ProcessNamedSetHandler("EnableIntrinsicFunctionsSetHandler", this["EnableIntrinsicFunctions"]);
+            }
+        }
+        ERuntimeLibrary ICCompilerOptions.RuntimeLibrary
+        {
+            get
+            {
+                return this.GetValueTypeOption<ERuntimeLibrary>("RuntimeLibrary");
+            }
+            set
+            {
+                this.SetValueTypeOption<ERuntimeLibrary>("RuntimeLibrary", value);
+                this.ProcessNamedSetHandler("RuntimeLibrarySetHandler", this["RuntimeLibrary"]);
             }
         }
     }

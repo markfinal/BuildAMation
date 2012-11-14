@@ -26,6 +26,8 @@ namespace MakeFileBuilder
 
             public override string ToString()
             {
+                // TODO: check whether the separator needs to be different on Linux and OSX?
+
                 System.Text.StringBuilder builder = new System.Text.StringBuilder();
                 foreach (string environmentPath in this.pathList)
                 {
@@ -40,7 +42,8 @@ namespace MakeFileBuilder
             Opus.Core.Log.DebugMessage("PostExecute for MakeFiles");
 
             string targetList = null;
-            UniquePathCollection environmentPaths = new UniquePathCollection();
+            UniquePathCollection environmentPaths = new UniquePathCollection(); // TODO: redundant
+            System.Collections.Generic.Dictionary<string, UniquePathCollection> environment = new System.Collections.Generic.Dictionary<string, UniquePathCollection>();
             foreach (Opus.Core.DependencyNode node in nodeCollection)
             {
                 MakeFileData data = node.Data as MakeFileData;
@@ -66,6 +69,22 @@ namespace MakeFileBuilder
                         foreach (string environmentPath in data.EnvironmentPaths)
                         {
                             environmentPaths.Add(environmentPath);
+                        }
+                    }
+
+                    if (data.Environment != null)
+                    {
+                        foreach (string key in data.Environment.Keys)
+                        {
+                            if (!environment.ContainsKey(key))
+                            {
+                                environment[key] = new UniquePathCollection();
+                            }
+
+                            foreach (string path in data.Environment[key])
+                            {
+                                environment[key].Add(path);
+                            }
                         }
                     }
                 }
@@ -101,6 +120,17 @@ namespace MakeFileBuilder
                         makeFileWriter.WriteLine("# Environment PATH for all tools");
                         makeFileWriter.WriteLine("INITIALPATH := $(PATH)");
                         makeFileWriter.WriteLine("PATH := {0}$(INITIALPATH)", environmentPaths.ToString());
+                        makeFileWriter.WriteLine("");
+                    }
+
+                    if (null != environment && environment.Count > 0)
+                    {
+                        makeFileWriter.WriteLine("# Environment variables for all tools");
+                        foreach (string key in environment.Keys)
+                        {
+                            makeFileWriter.WriteLine("INITIAL{0} := $({0})", key);
+                            makeFileWriter.WriteLine("{0} := {1}$(INITIAL{0})", key, environment[key].ToString());
+                        }
                         makeFileWriter.WriteLine("");
                     }
 

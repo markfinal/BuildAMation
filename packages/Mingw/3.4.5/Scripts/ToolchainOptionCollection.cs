@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>Mingw package</summary>
 // <author>Mark Final</author>
+#if false
 namespace Mingw
 {
     public class ToolchainOptionCollection : MingwCommon.ToolchainOptionCollection
@@ -18,3 +19,4 @@ namespace Mingw
         }
     }
 }
+#endif

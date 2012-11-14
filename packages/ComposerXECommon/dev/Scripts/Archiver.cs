@@ -16,8 +16,14 @@ namespace ComposerXECommon
                 throw new Opus.Core.Exception("ComposerXE archiver is only supported under unix32, unix64, osx32 and osx64 platforms");
             }
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(ComposerXE.Toolset));
+            this.binPath = info.BinPath((Opus.Core.BaseTarget)target);
+#else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
             this.binPath = toolChainInstance.BinPath(target);
+#endif
         }
 
         public string Executable(Opus.Core.Target target)

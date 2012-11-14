@@ -7,7 +7,7 @@ namespace CSharp
 {
     public partial class OptionCollection : Opus.Core.BaseOptionCollection, IOptions, CommandLineProcessor.ICommandLineSupport, VisualStudioProcessor.IVisualStudioSupport
     {
-        private void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             Opus.Core.Target target = node.Target;
 
@@ -69,10 +69,8 @@ namespace CSharp
         }
 
         public OptionCollection(Opus.Core.DependencyNode node)
+            : base(node)
         {
-            this.SetNodeOwnership(node);
-            this.InitializeDefaults(node);
-            this.SetDelegates(node);
         }
 
         public string OutputName

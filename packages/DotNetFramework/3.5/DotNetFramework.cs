@@ -5,6 +5,8 @@
 // <author>Mark Final</author>
 [assembly: Opus.Core.RegisterTargetToolChain("CSharp", "dotnet", "DotNetFramework.DotNet.VersionString")]
 
+[assembly: Opus.Core.RegisterToolset("dotnet", typeof(DotNetFramework.Toolset))]
+
 namespace DotNetFramework
 {
     public class Solution
@@ -102,15 +104,6 @@ namespace DotNetFramework
     // Define module classes here
     public class DotNet
     {
-        static DotNet()
-        {
-            if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
-            {
-                Opus.Core.State.AddCategory("VSSolutionBuilder");
-                Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(DotNetFramework.Solution));
-            }
-        }
-
         public static string VersionString
         {
             get

@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
+#if false
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
@@ -104,3 +105,4 @@ namespace C
         }
     }
 }
+#endif

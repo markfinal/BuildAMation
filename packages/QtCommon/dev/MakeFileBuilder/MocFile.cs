@@ -12,7 +12,13 @@ namespace MakeFileBuilder
             Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool tool = toolset.Tool(typeof(QtCommon.IMocTool));
+#else
             QtCommon.MocTool tool = new QtCommon.MocTool();
+#endif
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
             string toolExePath = tool.Executable(target);
@@ -77,13 +83,16 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.StringArray environmentPaths = null;
-#if false
             if (tool is Opus.Core.IToolEnvironmentPaths)
             {
                 environmentPaths = (tool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-#endif
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (tool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (tool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths, environment);
             success = true;
             return returnData;
         }

@@ -15,9 +15,13 @@ namespace C
     {
     }
 
+    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalCompilerOptionsDelegateAttribute),
+                                            typeof(ExportCompilerOptionsDelegateAttribute))]
     public abstract class Compiler
     {
-        public abstract string ExecutableCPlusPlus(Opus.Core.Target target);
+        // OLD STYLE
+#if false
+        //public abstract string ExecutableCPlusPlus(Opus.Core.Target target);
 
         public abstract Opus.Core.StringArray IncludeDirectoryPaths(Opus.Core.Target target);
 
@@ -25,5 +29,6 @@ namespace C
         {
             get;
         }
+#endif
     }
 }

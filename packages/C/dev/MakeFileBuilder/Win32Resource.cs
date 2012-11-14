@@ -43,8 +43,14 @@ namespace MakeFileBuilder
             // add output path
             commandLineBuilder.Add(System.String.Format("/fo {0}", compilerOptions.CompiledResourceFilePath));
 
+            // NEW STYLE
+#if true
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool));
+#else
             C.Win32ResourceCompilerBase compilerInstance = C.Win32ResourceCompilerFactory.GetTargetInstance(target);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+#endif
 
             string executablePath = compilerTool.Executable(target);
 
@@ -84,7 +90,12 @@ namespace MakeFileBuilder
             {
                 environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths);
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
+            if (compilerTool is Opus.Core.IToolEnvironmentVariables)
+            {
+                environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+            }
+            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths, environment);
             success = true;
             return returnData;
         }

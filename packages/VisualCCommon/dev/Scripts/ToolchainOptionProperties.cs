@@ -1,6 +1,7 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
 // -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IToolchainOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\IToolchainOptions.cs -o=ToolchainOptionProperties.cs -n=VisualCCommon -c=ToolchainOptionCollection 
+#if false
 namespace VisualCCommon
 {
     public partial class ToolchainOptionCollection
@@ -43,3 +44,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif

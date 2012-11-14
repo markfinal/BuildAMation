@@ -282,5 +282,11 @@ namespace Opus.Core
         {
             return new DirectoryCollectionEnumerator(this);
         }
+
+        public StringArray ToStringArray()
+        {
+            StringArray array = new StringArray(this.directoryPaths);
+            return array;
+        }
     }
 }

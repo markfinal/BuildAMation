@@ -194,6 +194,8 @@ namespace Opus.Core
             }
         }
 
+#if false
+        // OLD STYLE
         public static OptionCollectionType CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(Core.DependencyNode node, string className) where OptionCollectionType : Core.BaseOptionCollection
         {
             Core.IModule module = node.Module;
@@ -222,6 +224,79 @@ namespace Opus.Core
                 Core.DependencyNode parentNode = node.Parent;
                 while (parentNode != null)
                 {
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, parentNode, 0);
+
+                    // end when both the current and its parent node are not nested (as this is an entirely different node)
+                    // TODO: module name is the same
+                    if (!parentNode.IsModuleNested && (parentNode.Parent != null) && !parentNode.Parent.IsModuleNested)
+                    {
+                        break;
+                    }
+
+                    parentNode = parentNode.Parent;
+                }
+            }
+
+            module.Options = options;
+
+            // execute the global override before any other, so that local delegates can do overrides
+            var globalOverrides = State.ScriptAssembly.GetCustomAttributes(typeof(GlobalOptionCollectionOverrideAttribute), false);
+            foreach (var globalOverride in globalOverrides)
+            {
+                IGlobalOptionCollectionOverride instance = (globalOverride as GlobalOptionCollectionOverrideAttribute).OverrideInterface;
+                instance.OverrideOptions(options, target);
+            }
+
+            module.ExecuteOptionUpdate(target);
+            options.FinalizeOptions(target);
+
+            return options;
+        }
+#endif
+
+        // NEW STYLE
+        public static OptionCollectionType CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(Core.DependencyNode node) where OptionCollectionType : Core.BaseOptionCollection
+        {
+            Core.IModule module = node.Module;
+            Core.Target target = node.Target;
+
+            ProcessFieldAttributes(module, target);
+
+            OptionCollectionType options;
+            if (null != node.Parent && node.Parent.Module.Options is OptionCollectionType)
+            {
+                options = (node.Parent.Module.Options as OptionCollectionType).Clone() as OptionCollectionType;
+
+                // claim ownership
+                options.SetNodeOwnership(node);
+            }
+            else
+            {
+                Log.DebugMessage("Creating option collection for node '{0}'", node.UniqueModuleName);
+
+                options = Core.OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
+
+                // apply export and local
+                AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, node, 0);
+
+                // update option collections for the current "node group" (i.e. the top-most node of this type, and it's nested objects)
+                Core.DependencyNode parentNode = node.Parent;
+                while (parentNode != null)
+                {
+                    // TODO: I don't know if this is needed or not
+#if false
+                    // can only inherit option types if the Targets match
+                    // TODO: this is not necessarily true - for example, the common C options (include paths etc)
+                    // can be shared, but toolchain specific options cannot
+                    // so this needs to be a bit more sophisticated
+                    // but then, thinking about it, the option update delegates should be casting to the appropriate interfaces in order to apply themselves
+                    if (parentNode.Target != module.OwningNode.Target)
+                    {
+                        parentNode = parentNode.Parent;
+                        continue;
+                    }
+#endif
+
                     AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, parentNode, 0);
 
                     // end when both the current and its parent node are not nested (as this is an entirely different node)

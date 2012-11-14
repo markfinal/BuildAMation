@@ -13,9 +13,9 @@ namespace VSSolutionBuilder
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -69,6 +69,7 @@ namespace VSSolutionBuilder
             {
                 if (!projectData.Configurations.Contains(configurationName))
                 {
+#if false
                     C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
                     C.IToolchainOptions toolchainOptions = compilerOptions.ToolchainOptionCollection as C.IToolchainOptions;
                     EProjectCharacterSet characterSet;
@@ -90,15 +91,18 @@ namespace VSSolutionBuilder
                             characterSet = EProjectCharacterSet.Undefined;
                             break;
                     }
-                    configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = characterSet;
+#endif
+                    configuration = new ProjectConfiguration(configurationName, projectData);
 
                     projectData.Configurations.Add(target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
+#if false
                     configuration.CharacterSet = (EProjectCharacterSet)((objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
+#endif
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
 
@@ -129,7 +133,7 @@ namespace VSSolutionBuilder
                 // this must be a utility configuration
                 configuration.Type = EProjectConfigurationType.Utility;
 
-                string executable = compilerTool.Executable(target);
+                string executable = toolInterface.Executable(target);
                 // TODO: pdb if it exists?
 
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
@@ -153,6 +157,17 @@ namespace VSSolutionBuilder
 
                 ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
 
+                // NEW STYLE
+#if true
+                Opus.Core.IToolset toolset = target.Toolset;
+
+                C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+                string objectFileSuffix = compilerTool.ObjectFileSuffix;
+#else
+                C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
+                string objectFileSuffix = toolchain.ObjectFileSuffix;
+#endif
+
                 string commandToken;
                 string outputsToken;
                 string messageToken;
@@ -160,7 +175,7 @@ namespace VSSolutionBuilder
                 string outputPathname;
                 if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
                 {
-                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", toolchain.ObjectFileSuffix);
+                    outputPathname = System.String.Format("\"$(IntDir)$(InputName){0}\"", objectFileSuffix);
 
                     // add source file
                     commandLineBuilder.Add(@" $(InputPath)");
@@ -172,7 +187,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", toolchain.ObjectFileSuffix);
+                    outputPathname = System.String.Format("$(IntDir)%(Filename){0}", objectFileSuffix);
 
                     // add source file
                     commandLineBuilder.Add(@" %(FullPath)");

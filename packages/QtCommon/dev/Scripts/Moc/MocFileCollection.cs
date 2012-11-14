@@ -12,6 +12,7 @@ namespace QtCommon
                                    typeof(ExportMocOptionsDelegateAttribute),
                                    typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(MocOptionCollection))]
+    [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
     public abstract class MocFileCollection : Opus.Core.IModuleCollection
     {
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();

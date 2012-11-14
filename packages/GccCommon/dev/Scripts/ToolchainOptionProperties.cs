@@ -5,6 +5,7 @@ namespace GccCommon
 {
     public partial class ToolchainOptionCollection
     {
+#if false
         bool C.IToolchainOptions.IsCPlusPlus
         {
             get
@@ -29,5 +30,6 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+#endif
     }
 }

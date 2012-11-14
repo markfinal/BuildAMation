@@ -11,19 +11,15 @@ namespace OpusOptionInterfacePropertyGenerator
             : base(message)
         {
         }
+
+        public Exception(string message, params object[] args)
+            : base(System.String.Format (message, args))
+        {
+        }
     }
 
-    class Property
+    class PropertySignature
     {
-        public Property()
-        {
-            this.Type = null;
-            this.Name = null;
-            this.Interface = null;
-            this.HasGet = false;
-            this.HasSet = false;
-        }
-
         public string Type
         {
             get;
@@ -61,88 +57,168 @@ namespace OpusOptionInterfacePropertyGenerator
         }
     }
 
+    class DelegateSignature
+    {
+        public string InNamespace
+        {
+            get;
+            set;
+        }
+
+        public string ReturnType
+        {
+            get;
+            set;
+        }
+
+        public string ArgumentString
+        {
+            get;
+            set;
+        }
+    }
+
+    class Parameters
+    {
+        [System.Flags]
+        public enum Mode
+        {
+            GenerateProperties = (1<<0),
+            GenerateDelegates  = (1<<1)
+        }
+
+        public string[] args;
+        public string outputPropertiesPathName;
+        public string outputDelegatesPathName;
+        public string[] inputPathNames;
+        public string[] inputDelegates;
+        public string outputNamespace;
+        public string outputClassName;
+        public string privateDataClassName;
+        public Mode mode;
+        public bool toStdOut;
+        public bool forceWrite;
+    }
+
     class Program
     {
-        static string outputPathName = null;
-        static string[] inputPathNames = null;
-        static string outputNamespace = null;
-        static string outputClassName = null;
-        static System.Collections.Generic.List<Property> propertyList = new System.Collections.Generic.List<Property>();
-
-        static void ProcessArgs(string[] args)
+        static Parameters ProcessArgs(string[] args)
         {
             if (0 == args.Length)
             {
                 throw new Exception("Arguments required");
             }
 
+            Parameters parameters = new Parameters();
+            parameters.args = args;
+            parameters.mode = 0;
+
             foreach (string arg in args)
             {
                 if (arg.StartsWith("-o="))
                 {
-                    string[] split = arg.Split(new char[] { '=' });
-                    outputPathName = split[1];
+                    parameters.mode |= Parameters.Mode.GenerateProperties;
+                    // redundant, ignore
                 }
                 else if (arg.StartsWith("-i="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
                     string inputFilesString = split[1];
-                    inputPathNames = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
+                    parameters.inputPathNames = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
                 }
                 else if (arg.StartsWith("-n="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
-                    outputNamespace = split[1];
+                    parameters.outputNamespace = split[1];
                 }
                 else if (arg.StartsWith("-c="))
                 {
                     string[] split = arg.Split(new char[] { '=' });
-                    outputClassName = split[1];
+                    parameters.outputClassName = split[1];
+                }
+                else if (arg.StartsWith("-pv="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    parameters.privateDataClassName = split[1];
+                }
+                else if (arg.StartsWith("-p"))
+                {
+                    parameters.mode |= Parameters.Mode.GenerateProperties;
+                }
+                else if (arg.StartsWith("-dd="))
+                {
+                    string[] split = arg.Split(new char[] { '=' });
+                    string inputFilesString = split[1];
+                    parameters.inputDelegates = inputFilesString.Split(new char[] { System.IO.Path.PathSeparator });
+                }
+                else if (arg.StartsWith("-d"))
+                {
+                    parameters.mode |= Parameters.Mode.GenerateDelegates;
+                }
+                else if (arg.StartsWith("-s"))
+                {
+                    parameters.toStdOut = true;
+                }
+                else if (arg.StartsWith("-f"))
+                {
+                    parameters.forceWrite = true;
                 }
                 else
                 {
                     throw new Exception(System.String.Format("Unrecognized argument '{0}'", arg));
                 }
             }
+
+            return parameters;
         }
 
-        static void Validate()
+        static void Validate(Parameters parameters)
         {
-            if (null == outputPathName)
-            {
-                throw new Exception("No output file provided");
-            }
-
-            if (null == inputPathNames)
+            if (null == parameters.inputPathNames)
             {
                 throw new Exception("No input files provided");
             }
 
-            if (null == outputNamespace)
+            if (null == parameters.outputNamespace)
             {
                 throw new Exception("No output namespace provided");
             }
 
-            if (null == outputClassName)
+            if (null == parameters.outputClassName)
             {
                 throw new Exception("No output class name provided");
             }
+
+            parameters.outputPropertiesPathName = parameters.outputClassName + "Properties.cs";
+            parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
         }
 
-        static string ReadLine(System.IO.TextReader reader)
+        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces)
         {
+            int numPrefixSpaces = 0;
             string line = null;
             do
             {
                 line = reader.ReadLine();
                 if (null == line)
                 {
+                    numPrefixSpaces = 0;
                     break;
                 }
-                line = line.Trim();
+                int originalLineLength = line.Length;
+                line = line.TrimStart();
+                numPrefixSpaces = originalLineLength - line.Length;
+                line = line.TrimEnd();
             }
             while (0 == line.Length);
+            prefixSpaces = numPrefixSpaces;
             return line;
+        }
+
+        static string ReadLine(System.IO.TextReader reader)
+        {
+            int prefixSpaces = 0;
+            return ReadLine(reader, out prefixSpaces);
         }
 
         static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
@@ -161,18 +237,92 @@ namespace OpusOptionInterfacePropertyGenerator
             }
         }
 
+        static void Write(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
+        {
+            builder.Append(new string('\t', tabCount));
+            builder.AppendFormat(format, args);
+        }
+
         static void WriteLine(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
         {
             Write(writer, tabCount, format, args);
             writer.Write(writer.NewLine);
         }
 
-        static void Execute(string[] args)
+        static void WriteLine(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
         {
+            Write(builder, tabCount, format, args);
+            builder.Append(System.Environment.NewLine);
+        }
+
+        static DelegateSignature ReadDelegate(string filename)
+        {
+            if (!System.IO.File.Exists(filename))
+            {
+                throw new Exception(System.String.Format("File '{0}' does not exist", filename));
+            }
+            System.Console.WriteLine("\nDelegate to read: '{0}'", filename);
+
+            DelegateSignature signature = new DelegateSignature();
+
+            using (System.IO.TextReader reader = new System.IO.StreamReader(filename))
+            {
+                string line;
+
+                line = ReadLine(reader);
+                if (null == line)
+                {
+                    throw new Exception("Interface file is empty");
+                }
+                // ignore comments
+                while (line.StartsWith("//"))
+                {
+                    line = ReadLine(reader);
+                }
+                // namespace
+                string[] namespaceStrings = line.Split(new char[] { ' ' });
+                if (!namespaceStrings[0].Equals("namespace"))
+                {
+                    throw new Exception(System.String.Format("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]));
+                }
+                string namespaceName = namespaceStrings[1];
+                System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
+
+                // opening namespace scope
+                line = ReadLine(reader);
+                if (!line.StartsWith("{"))
+                {
+                    throw new Exception("No scope opened after namespace");
+                }
+
+                // delegate
+                line = ReadLine(reader);
+                string[] delegateStrings = line.Split(new char[] { ' ' });
+                if ("public" != delegateStrings[0] || "delegate" != delegateStrings[1])
+                {
+                    throw new Exception("No public delegate found");
+                }
+                System.Console.WriteLine("Delegate found is '{0}'", line);
+                string returnType = delegateStrings[2];
+                int firstParenthesis = line.IndexOf('(', 0);
+                string arguments = line.Substring(firstParenthesis, line.Length - firstParenthesis - 1);
+
+                signature.InNamespace = namespaceName;
+                signature.ReturnType = returnType;
+                signature.ArgumentString = arguments;
+            }
+
+            return signature;
+        }
+
+        static void Execute(Parameters parameters)
+        {
+            System.Collections.Generic.List<PropertySignature> propertyList = new System.Collections.Generic.List<PropertySignature>();
+
             // TODO:
             // handle anything before an interface, e.g. enum
             // handle comments
-            foreach (string inputPath in inputPathNames)
+            foreach (string inputPath in parameters.inputPathNames)
             {
                 if (!System.IO.File.Exists(inputPath))
                 {
@@ -184,16 +334,17 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     string line;
 
-                    // namespace
                     line = ReadLine(reader);
                     if (null == line)
                     {
                         throw new Exception("Interface file is empty");
                     }
+                    // ignore comments
                     while (line.StartsWith("//"))
                     {
                         line = ReadLine(reader);
                     }
+                    // namespace
                     string[] namespaceStrings = line.Split(new char[] { ' ' });
                     if (!namespaceStrings[0].Equals("namespace"))
                     {
@@ -235,12 +386,12 @@ namespace OpusOptionInterfacePropertyGenerator
                         }
 
                         string[] propertyStrings = line.Split(new char[] { ' ' });
-                        System.Console.WriteLine("Property found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
+                        System.Console.WriteLine("PropertySignature found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
 
-                        Property property = new Property();
+                        PropertySignature property = new PropertySignature();
                         property.Name = propertyStrings[1];
                         property.Type = propertyStrings[0];
-                        if (outputNamespace != namespaceName)
+                        if (parameters.outputNamespace != namespaceName)
                         {
                             property.Interface = namespaceName + "." + interfaceName;
                         }
@@ -320,23 +471,47 @@ namespace OpusOptionInterfacePropertyGenerator
                 }
             }
 
+            System.Collections.Generic.List<DelegateSignature> delegateSignatures = new System.Collections.Generic.List<DelegateSignature>();
+            foreach (string path in parameters.inputDelegates)
+            {
+                delegateSignatures.Add(ReadDelegate(path));
+            }
+
+            if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
+            {
+                System.Console.WriteLine("Generating properties...");
+                WritePropertiesFile(parameters, propertyList);
+            }
+            if (Parameters.Mode.GenerateDelegates == (parameters.mode & Parameters.Mode.GenerateDelegates))
+            {
+                System.Console.WriteLine ("Generating delegates...");
+                WriteDelegatesFile(parameters, propertyList, delegateSignatures);
+            }
+        }
+
+        private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
+        {
             // write out C# file containing the properties
-            using (System.IO.TextWriter writer = new System.IO.StreamWriter(outputPathName))
+            if (parameters.toStdOut)
+            {
+                System.Console.WriteLine ("Would have written file '{0}'", parameters.outputPropertiesPathName);
+            }
+            using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
             {
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
-                Write(writer, 0, "// ");
-                foreach (string arg in args)
+                Write(writer, 0, "//");
+                foreach (string arg in parameters.args)
                 {
-                    Write(writer, 0, "{0} ", arg);
+                    Write(writer, 0, " {0}", arg);
                 }
                 Write(writer, 0, writer.NewLine);
-                WriteLine(writer, 0, "namespace {0}", outputNamespace);
+                WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
                 WriteLine(writer, 0, "{");
-                WriteLine(writer, 1, "public partial class {0}", outputClassName);
+                WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
-                foreach (Property property in propertyList)
+                foreach (PropertySignature property in propertyList)
                 {
                     WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
                     WriteLine(writer, 2, "{");
@@ -361,27 +536,345 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "}");
                 WriteLine(writer, 0, "}");
             }
-            System.Console.WriteLine("Wrote file '{0}'", outputPathName);
+            if (null != parameters.outputPropertiesPathName)
+            {
+                System.Console.WriteLine("Wrote file '{0}'", parameters.outputPropertiesPathName);
+            }
+        }
+
+        class IndentedString
+        {
+            public IndentedString(int numSpaces, string line)
+            {
+                this.NumSpaces = numSpaces;
+                this.Line = line;
+            }
+
+            public int NumSpaces
+            {
+                get;
+                private set;
+            }
+
+            public string Line
+            {
+                get;
+                private set;
+            }
+        }
+
+        class DelegateFileLayout
+        {
+            public System.Text.StringBuilder header = new System.Text.StringBuilder();
+            public string namespaceName = null;
+            public string className = null;
+            public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>> functions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>>();
+        }
+
+        private static DelegateFileLayout ReadAndParseDelegatesFile(Parameters parameters)
+        {
+            if (!System.IO.File.Exists(parameters.outputDelegatesPathName))
+            {
+                return null;
+            }
+
+            DelegateFileLayout layout = new DelegateFileLayout();
+            using (System.IO.TextReader reader = new System.IO.StreamReader(parameters.outputDelegatesPathName))
+            {
+                string line = null;
+
+                // read the header
+                for (;;)
+                {
+                    line = ReadLine(reader);
+                    if (null == line)
+                    {
+                        return layout;
+                    }
+                    if (line.StartsWith("//"))
+                    {
+                        line.Trim('\n', '\r');
+                        line = line + System.Environment.NewLine;
+                        layout.header.Append(line);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                while (line == string.Empty)
+                {
+                    line = ReadLine(reader);
+                }
+
+                // read the namespace
+                if (!line.StartsWith("namespace"))
+                {
+                    throw new Exception("Expected 'namespace'; found '{0}'", line);
+                }
+                layout.namespaceName = line.Split(' ')[1];
+                line = ReadLine(reader);
+                if (!line.StartsWith("{"))
+                {
+                    throw new Exception("Expected namespace opening scope '{'; found '{0}'", line);
+                }
+                line = ReadLine(reader);
+                while (line == string.Empty)
+                {
+                    line = ReadLine(reader);
+                }
+
+                // read the class
+                if (!line.Contains("class"))
+                {
+                    throw new Exception("Expected a class; found '{0}'", line);
+                }
+                layout.className = line.Split(' ')[3];
+                line = ReadLine(reader);
+                if (!line.StartsWith("{"))
+                {
+                    throw new Exception("Expected namespace opening scope '{'; found '{0}'", line);
+                }
+                line = ReadLine(reader);
+                while (line == string.Empty)
+                {
+                    line = ReadLine(reader);
+                }
+
+                // find functions
+                for (;;)
+                {
+                    System.Console.WriteLine("C: '{0}'", line);
+                    // done reading - it's the end of the class
+                    if (line.StartsWith("}"))
+                    {
+                        break;
+                    }
+
+                    // look for function signatures
+                    if (line.EndsWith(")"))
+                    {
+                        System.Console.WriteLine("Found function '{0}'", line);
+                        layout.functions[line] = new System.Collections.Generic.List<IndentedString>();
+                        System.Collections.Generic.List<IndentedString> body = layout.functions[line];
+                        int braceCount = 0;
+                        int baselineIndentation = -1;
+                        for (;;)
+                        {
+                            int indentation;
+                            line = ReadLine(reader, out indentation);
+                            if (baselineIndentation == -1)
+                            {
+                                baselineIndentation = indentation;
+                            }
+                            int openBraces = line.Split('{').Length - 1;
+                            int closeBraces = line.Split('}').Length - 1;
+                            System.Console.WriteLine("Found {0} open braces and {1} close braces", openBraces, closeBraces);
+
+                            braceCount += openBraces;
+                            if (braceCount > 0)
+                            {
+                                body.Add(new IndentedString(indentation - baselineIndentation, line));
+                            }
+
+                            braceCount -= closeBraces;
+                            if (0 == braceCount)
+                            {
+                                break;
+                            }
+                        }
+
+                        line = ReadLine(reader);
+                    }
+                }
+            }
+
+            return layout;
+        }
+
+        private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList, System.Collections.Generic.List<DelegateSignature> delegateSignatures)
+        {
+            // write out C# file containing the delegates
+            if (parameters.toStdOut)
+            {
+                System.Console.WriteLine ("Would have written file '{0}'", parameters.outputDelegatesPathName);
+            }
+
+            DelegateFileLayout layout = ReadAndParseDelegatesFile(parameters);
+
+            System.IO.MemoryStream memStream = new System.IO.MemoryStream();
+            using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(memStream) : System.Console.Out)
+            {
+                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                builder.Length = 0;
+                bool writeToDisk = (null == layout);
+
+                // write header
+                WriteLine(builder, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator.");
+                WriteLine(builder, 0, "// Command line:");
+                Write(builder, 0, "//");
+                foreach (string arg in parameters.args)
+                {
+                    Write(builder, 0, " {0}", arg);
+                }
+                Write(builder, 0, System.Environment.NewLine);
+                if (null != layout && layout.header.Length != 0 && !builder.ToString().Equals(layout.header.ToString()))
+                {
+                    System.Text.StringBuilder message = new System.Text.StringBuilder();
+
+                    byte[] layoutHeaderBytes = System.Text.Encoding.ASCII.GetBytes(layout.header.ToString());
+                    byte[] builderHeaderBytes = System.Text.Encoding.ASCII.GetBytes(builder.ToString());
+                    System.Collections.Generic.List<int> differenceIndices = new System.Collections.Generic.List<int>();
+                    for (int i = 0; i < System.Math.Min(layoutHeaderBytes.Length, builderHeaderBytes.Length); ++i)
+                    {
+                        if (layoutHeaderBytes[i] != builderHeaderBytes[i])
+                        {
+                            differenceIndices.Add(i);
+                        }
+                    }
+
+                    message.AppendFormat("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'\nDifferences at:\n", layout.header.ToString(), builder.ToString());
+                    foreach (int diff in differenceIndices)
+                    {
+                        message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
+                    }
+
+                    throw new Exception(message.ToString());
+                }
+                WriteLine(writer, 0, builder.ToString());
+
+                // open namespace
+                if (null != layout && layout.namespaceName != parameters.outputNamespace)
+                {
+                    throw new Exception("Namespaces are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.namespaceName, parameters.outputNamespace);
+                }
+                WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
+                WriteLine(writer, 0, "{");
+
+                // open OptionCollection partial class
+                if (null != layout && layout.className != parameters.outputClassName)
+                {
+                    throw new Exception("Classes are different:\nFile:\n'{0}'\nNew:\n'{1}'", layout.className, parameters.outputClassName);
+                }
+                WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
+                WriteLine(writer, 1, "{");
+
+                System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> delegatesToRegister = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
+
+                // write delegates for each property of the interface
+                foreach (PropertySignature property in propertyList)
+                {
+                    delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
+
+                    foreach (DelegateSignature delegateSig in delegateSignatures)
+                    {
+                        string delegateName = property.Name + delegateSig.InNamespace;
+                        delegatesToRegister[property.Name].Add(delegateName);
+
+                        System.Text.StringBuilder propertyDelegate = new System.Text.StringBuilder();
+                        propertyDelegate.AppendFormat("private static {0} {1}{2}", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
+                        WriteLine(writer, 2, propertyDelegate.ToString());
+                        if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
+                        {
+                            System.Console.WriteLine("Function '{0}' reusing from file", propertyDelegate.ToString());
+                            foreach (IndentedString line in layout.functions[propertyDelegate.ToString()])
+                            {
+                                // TODO: magic number
+                                WriteLine(writer, 2 + line.NumSpaces / 4, line.Line);
+                            }
+                        }
+                        else
+                        {
+                            System.Console.WriteLine("Function '{0}' generating code for", propertyDelegate.ToString());
+                            WriteLine(writer, 2, "{");
+                            WriteLine(writer, 2, "}");
+                            writeToDisk = true;
+                        }
+                    }
+                }
+
+                if (null != layout && (propertyList.Count + 1) != layout.functions.Count)
+                {
+                    writeToDisk = true;
+                }
+
+                // write the SetDelegates function that assigns the accumulated delegates above to their named properties
+                string setDelegatesFunctionSignature = "protected override void SetDelegates(Opus.Core.DependencyNode node)";
+                WriteLine(writer, 2, setDelegatesFunctionSignature);
+                if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
+                {
+                    System.Console.WriteLine("Function '{0}' reusing from file", setDelegatesFunctionSignature);
+                    foreach (IndentedString line in layout.functions[setDelegatesFunctionSignature])
+                    {
+                        // TOOD: magic number
+                        WriteLine(writer, 2 + line.NumSpaces/4, line.Line);
+                    }
+                }
+                else
+                {
+                    System.Console.WriteLine("Function '{0}' generating code for", setDelegatesFunctionSignature);
+                    WriteLine(writer, 2, "{");
+                    foreach (string propertyName in delegatesToRegister.Keys)
+                    {
+                        System.Text.StringBuilder registration = new System.Text.StringBuilder();
+                        registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
+                        foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                        {
+                            registration.Append(delegateToRegister);
+                        }
+                        registration.Append(");");
+                        WriteLine(writer, 3, registration.ToString());
+                    }
+                    WriteLine(writer, 2, "}");
+                    writeToDisk = true;
+                }
+
+                // close the class
+                WriteLine(writer, 1, "}");
+
+                // close the namespace
+                WriteLine(writer, 0, "}");
+
+                // flush to disk
+                if (!parameters.toStdOut)
+                {
+                    if (!writeToDisk && !parameters.forceWrite)
+                    {
+                        System.Console.WriteLine("File '{0}' already up-to-date", parameters.outputPropertiesPathName);
+                    }
+                    else
+                    {
+                        writer.Flush();
+
+                        using (System.IO.StreamWriter finalWriter = new System.IO.StreamWriter(parameters.outputDelegatesPathName))
+                        {
+                            memStream.WriteTo(finalWriter.BaseStream);
+                        }
+
+                        System.Console.WriteLine("Wrote file '{0}'", parameters.outputPropertiesPathName);
+                    }
+                }
+            }
         }
 
         static int Main(string[] args)
         {
             try
             {
-                ProcessArgs(args);
-                Validate();
-                Execute(args);
+                Parameters parameters = ProcessArgs(args);
+                Validate(parameters);
+                Execute(parameters);
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine("Local exception");
-                System.Console.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+                System.Console.Error.WriteLine("Local exception");
+                System.Console.Error.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
                 return -1;
             }
             catch (System.Exception ex)
             {
-                System.Console.WriteLine("System exception");
-                System.Console.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+                System.Console.Error.WriteLine("System exception");
+                System.Console.Error.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
                 return -2;
             }
 

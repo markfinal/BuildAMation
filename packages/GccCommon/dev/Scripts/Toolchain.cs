@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>GccCommon package</summary>
 // <author>Mark Final</author>
+#if false
 namespace GccCommon
 {
     public abstract class Toolchain : C.Toolchain
@@ -106,3 +107,4 @@ namespace GccCommon
         }
     }
 }
+#endif

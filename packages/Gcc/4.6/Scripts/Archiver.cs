@@ -3,6 +3,7 @@
 // </copyright>
 // <summary>Gcc package</summary>
 // <author>Mark Final</author>
+#if false
 namespace Gcc
 {
     public sealed class Archiver : GccCommon.Archiver, Opus.Core.IToolSupportsResponseFile
@@ -21,3 +22,4 @@ namespace Gcc
         }
     }
 }
+#endif
