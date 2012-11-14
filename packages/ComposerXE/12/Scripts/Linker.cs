@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace ComposerXE
 {
+    // NEW STYLE
+#if true
+#else
     public sealed class Linker : ComposerXECommon.Linker, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolSupportsResponseFile
     {
         private Opus.Core.StringArray environmentPaths = new Opus.Core.StringArray();
@@ -56,4 +59,5 @@ namespace ComposerXE
             }
         }
     }
+#endif
 }

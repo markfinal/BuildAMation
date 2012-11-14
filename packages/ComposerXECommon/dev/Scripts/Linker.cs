@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
+    // NEW STYLE
+#if true
+#else
     public abstract class Linker : C.Linker, Opus.Core.ITool
     {
         public abstract string Executable(Opus.Core.Target target);
@@ -25,5 +28,6 @@ namespace ComposerXECommon
             }
         }
     }
+#endif
 }
 

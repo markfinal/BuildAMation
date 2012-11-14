@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
+    // NEW STYLE
+#if true
+#else
     public class Archiver : C.Archiver, Opus.Core.ITool
     {
         private string binPath;
@@ -31,5 +34,6 @@ namespace ComposerXECommon
             return System.IO.Path.Combine(this.binPath, "xiar");
         }
     }
+#endif
 }
 

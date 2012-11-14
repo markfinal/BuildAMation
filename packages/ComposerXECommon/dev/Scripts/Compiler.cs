@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
+    // NEW STYLE
+#if true
+#else
     // Not sealed since the C++ compiler inherits from it
     public abstract class CCompiler : C.Compiler, Opus.Core.ITool
     {
@@ -213,5 +216,6 @@ namespace ComposerXECommon
             return ComposerXEDetailsForTarget[target].GxxIncludePath;
         }
     }
+#endif
 }
 

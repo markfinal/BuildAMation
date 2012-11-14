@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace ComposerXE
 {
+    // NEW STYLE
+#if true
+#else
     public sealed class Archiver : ComposerXECommon.Archiver, Opus.Core.IToolSupportsResponseFile
     {
         public Archiver(Opus.Core.Target target)
@@ -20,4 +23,5 @@ namespace ComposerXE
             }
         }
     }
+#endif
 }

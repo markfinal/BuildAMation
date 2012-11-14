@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace ComposerXE
 {
+    // NEW STYLE
+#if true
+#else
     // Not sealed since the C++ compiler inherits from it
     public class CCompiler : ComposerXECommon.CCompiler, Opus.Core.IToolSupportsResponseFile, C.ICompiler
     {
@@ -98,4 +101,5 @@ namespace ComposerXE
             }
         }
     }
+#endif
 }
