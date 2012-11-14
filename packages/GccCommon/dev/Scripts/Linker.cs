@@ -45,7 +45,14 @@ namespace GccCommon
         {
             get
             {
-                return "-Wl,--start-group";
+                if (Opus.Core.OSUtilities.IsUnixHosting)
+                {
+                    return "-Wl,--start-group";
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
         }
 
@@ -53,7 +60,14 @@ namespace GccCommon
         {
             get
             {
-                return "-Wl,--end-group";
+                if (Opus.Core.OSUtilities.IsUnixHosting)
+                {
+                    return "-Wl,--end-group";
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
         }
 
