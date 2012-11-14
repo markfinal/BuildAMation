@@ -9,11 +9,11 @@ namespace VisualCCommon
 #if true
     sealed class Win32ResourceCompiler : C.IWinResourceCompilerTool
     {
-        private Opus.Core.IToolset toolset;
+        //private Opus.Core.IToolset toolset;
 
         public Win32ResourceCompiler(Opus.Core.IToolset toolset)
         {
-            this.toolset = toolset;
+            //this.toolset = toolset;
         }
 
         #region IWinResourceCompilerTool Members

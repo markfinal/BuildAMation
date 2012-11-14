@@ -9,11 +9,11 @@ namespace GccCommon
 #if true
     public sealed class Archiver : C.IArchiverTool
     {
-        private Opus.Core.IToolset toolset;
+        //private Opus.Core.IToolset toolset;
 
         public Archiver(Opus.Core.IToolset toolset)
         {
-            this.toolset = toolset;
+            //this.toolset = toolset;
         }
 
         #region IArchiverTool Members
