@@ -119,7 +119,7 @@ namespace MakeFileBuilder
                     {
                         makeFileWriter.WriteLine("# Environment PATH for all tools");
                         makeFileWriter.WriteLine("INITIALPATH := $(PATH)");
-                        makeFileWriter.WriteLine("PATH := {0}$(INITIALPATH)", environmentPaths.ToString());
+                        makeFileWriter.WriteLine("export PATH := {0}$(INITIALPATH)", environmentPaths.ToString());
                         makeFileWriter.WriteLine("");
                     }
 
@@ -129,7 +129,7 @@ namespace MakeFileBuilder
                         foreach (string key in environment.Keys)
                         {
                             makeFileWriter.WriteLine("INITIAL{0} := $({0})", key);
-                            makeFileWriter.WriteLine("{0} := {1}$(INITIAL{0})", key, environment[key].ToString());
+                            makeFileWriter.WriteLine("export {0} := {1}$(INITIAL{0})", key, environment[key].ToString());
                         }
                         makeFileWriter.WriteLine("");
                     }
