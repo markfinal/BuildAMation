@@ -8,14 +8,6 @@ namespace C
     // TODO: reminder to add a CharacterSet option to this
     public interface ICCompilerOptions
     {
-#if false
-        C.ToolchainOptionCollection ToolchainOptionCollection
-        {
-            get;
-            set;
-        }
-#endif
-
         /// <summary>
         /// Preprocessor definitions
         /// </summary>

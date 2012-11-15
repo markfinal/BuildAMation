@@ -38,9 +38,6 @@ namespace C
 #endif
 
             IArchiverOptions archiverOptions = this as IArchiverOptions;
-#if false
-            archiverOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
-#endif
             archiverOptions.AdditionalOptions = "";
         }
 

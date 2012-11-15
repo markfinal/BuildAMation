@@ -51,22 +51,6 @@ namespace MakeFileBuilder
 
             Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
 
-            // NEW STYLE
-#if true
-            string executable = linkerTool.Executable(target);
-#else
-            string executable;
-            C.IToolchainOptions toolchainOptions = (dynamicLibraryOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
-            if (toolchainOptions.IsCPlusPlus)
-            {
-                executable = linkerInstance.ExecutableCPlusPlus(target);
-            }
-            else
-            {
-                executable = linkerTool.Executable(target);
-            }
-#endif
-
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (dynamicLibraryOptions is CommandLineProcessor.ICommandLineSupport)
@@ -80,6 +64,8 @@ namespace MakeFileBuilder
             {
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
+
+            string executable = linkerTool.Executable(target);
 
             System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
             if (executable.Contains(" "))

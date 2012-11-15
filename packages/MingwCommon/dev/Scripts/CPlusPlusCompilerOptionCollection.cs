@@ -19,9 +19,6 @@ namespace MingwCommon
             C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
             C.ICPlusPlusCompilerOptions cxxInterfaceOptions = options as C.ICPlusPlusCompilerOptions;
 
-#if false
-            (cInterfaceOptions.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
-#endif
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
             cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
         }

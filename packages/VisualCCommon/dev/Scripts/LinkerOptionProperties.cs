@@ -5,20 +5,6 @@ namespace VisualCCommon
 {
     public partial class LinkerOptionCollection
     {
-#if false
-        C.ToolchainOptionCollection C.ILinkerOptions.ToolchainOptionCollection
-        {
-            get
-            {
-                return this.GetReferenceTypeOption<C.ToolchainOptionCollection>("ToolchainOptionCollection");
-            }
-            set
-            {
-                this.SetReferenceTypeOption<C.ToolchainOptionCollection>("ToolchainOptionCollection", value);
-                this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
-            }
-        }
-#endif
         C.ELinkerOutput C.ILinkerOptions.OutputType
         {
             get

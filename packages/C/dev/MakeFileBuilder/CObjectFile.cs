@@ -18,22 +18,6 @@ namespace MakeFileBuilder
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
-            // NEW STYLE
-#if true
-            string executable = toolInterface.Executable(target);
-#else
-            string executable;
-            C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
-            if (toolchainOptions.IsCPlusPlus)
-            {
-                executable = compilerInstance.ExecutableCPlusPlus(target);
-            }
-            else
-            {
-                executable = compilerTool.Executable(target);
-            }
-#endif
-
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
@@ -52,6 +36,8 @@ namespace MakeFileBuilder
             {
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
+
+            string executable = toolInterface.Executable(target);
 
             string recipe = null;
             if (executable.Contains(" "))

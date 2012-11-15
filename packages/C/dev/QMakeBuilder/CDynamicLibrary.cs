@@ -26,25 +26,8 @@ namespace QMakeBuilder
             C.ILinkerOptions linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
 
             {
-                // NEW STYLE
-#if true
-                C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
-                Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
+                Opus.Core.ITool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool));
                 nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
-#else
-                C.IToolchainOptions toolchainOptions = (dynamicLibraryOptions as C.ILinkerOptions).ToolchainOptionCollection as C.IToolchainOptions;
-
-                C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
-                if (toolchainOptions.IsCPlusPlus)
-                {
-                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerInstance.ExecutableCPlusPlus(target).Replace("\\", "/")));
-                }
-                else
-                {
-                    Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
-                    nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
-                }
-#endif
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

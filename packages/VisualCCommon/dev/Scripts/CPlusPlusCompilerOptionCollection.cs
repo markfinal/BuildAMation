@@ -21,9 +21,6 @@ namespace VisualCCommon
             C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
             C.ICPlusPlusCompilerOptions cxxInterfaceOptions = this as C.ICPlusPlusCompilerOptions;
 
-#if false
-            (cInterfaceOptions.ToolchainOptionCollection as C.IToolchainOptions).IsCPlusPlus = true;
-#endif
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
             cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
         }

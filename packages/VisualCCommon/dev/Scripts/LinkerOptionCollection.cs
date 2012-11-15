@@ -10,9 +10,6 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common linker options
-#if false
-            this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
-#endif
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLine, OutputTypeVisualStudio);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLine, DebugSymbolsVisualStudio);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLine, SubSystemVisualStudio);
@@ -94,20 +91,6 @@ namespace VisualCCommon
 
             base.FinalizeOptions(target);
         }
-
-#if false
-        private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            RuntimeLibraryCommandLine(sender, commandLineBuilder, toolchainOptions.Value["RuntimeLibrary"], target);
-        }
-
-        private static VisualStudioProcessor.ToolAttributeDictionary ToolchainOptionCollectionVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            return RuntimeLibraryVisualStudio(sender, toolchainOptions.Value["RuntimeLibrary"], target, vsTarget);
-        }
-#endif
 
         private static void OutputTypeCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -321,54 +304,27 @@ namespace VisualCCommon
             return dictionary;
         }
 
+        // TODO: this function is not called by anything... I think that the user should be responsible for adding runtime libraries if they have overridden the default
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
-#if false
-            C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
-            bool isCPlusPlus = toolchainOptions.IsCPlusPlus;
-#endif
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
                     options.StandardLibraries.Add("LIBCMT.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("LIBCPMT.lib");
-                    }
-#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
                     options.StandardLibraries.Add("LIBCMTD.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("LIBCPMTD.lib");
-                    }
-#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
                     options.StandardLibraries.Add("MSVCRT.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("MSVCPRT.lib");
-                    }
-#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("MSVCPRTD.lib");
-                    }
-#endif
                     break;
 
                 default:
@@ -376,54 +332,27 @@ namespace VisualCCommon
             }
         }
 
+        // TODO: this function is not called by anything... I think that the user should be responsible for adding runtime libraries if they have overridden the default
         private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             C.ILinkerOptions options = sender as C.ILinkerOptions;
-#if false
-            C.IToolchainOptions toolchainOptions = options.ToolchainOptionCollection as C.IToolchainOptions;
-            bool isCPlusPlus = toolchainOptions.IsCPlusPlus;
-#endif
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
                     options.StandardLibraries.Add("LIBCMT.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("LIBCPMT.lib");
-                    }
-#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebug:
                     options.StandardLibraries.Add("LIBCMTD.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("LIBCPMTD.lib");
-                    }
-#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDLL:
                     options.StandardLibraries.Add("MSVCRT.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("MSVCPRT.lib");
-                    }
-#endif
                     break;
 
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     options.StandardLibraries.Add("MSVCRTD.lib");
-#if false
-                    if (isCPlusPlus)
-                    {
-                        options.StandardLibraries.Add("MSVCPRTD.lib");
-                    }
-#endif
                     break;
 
                 default:

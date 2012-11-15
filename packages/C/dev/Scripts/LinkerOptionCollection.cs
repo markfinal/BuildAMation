@@ -48,11 +48,6 @@ namespace C
 
             ILinkerOptions linkerOptions = this as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.Executable;
-
-#if false
-            linkerOptions.ToolchainOptionCollection = ToolchainOptionCollection.GetSharedFromNode(node);
-#endif
-
             linkerOptions.SubSystem = ESubsystem.NotSet;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))

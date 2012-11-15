@@ -7,14 +7,6 @@ namespace C
 {
     public interface IArchiverOptions
     {
-#if false
-        C.ToolchainOptionCollection ToolchainOptionCollection
-        {
-            get;
-            set;
-        }
-#endif
-
         /// <summary>
         /// The output type of the archiving operation
         /// </summary>

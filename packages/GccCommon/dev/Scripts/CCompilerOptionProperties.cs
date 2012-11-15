@@ -5,20 +5,6 @@ namespace GccCommon
 {
     public partial class CCompilerOptionCollection
     {
-#if false
-        C.ToolchainOptionCollection C.ICCompilerOptions.ToolchainOptionCollection
-        {
-            get
-            {
-                return this.GetReferenceTypeOption<C.ToolchainOptionCollection>("ToolchainOptionCollection");
-            }
-            set
-            {
-                this.SetReferenceTypeOption<C.ToolchainOptionCollection>("ToolchainOptionCollection", value);
-                this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
-            }
-        }
-#endif
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get

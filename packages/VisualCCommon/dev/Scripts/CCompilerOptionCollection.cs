@@ -11,9 +11,6 @@ namespace VisualCCommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common compiler options
-#if false
-            this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine, ToolchainOptionCollectionVisualStudio);
-#endif
             this["SystemIncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLine, IncludePathsVisualStudio);
             this["IncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLine, IncludePathsVisualStudio);
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLine, DefinesVisualStudio);
@@ -142,28 +139,6 @@ namespace VisualCCommon
 
             base.FinalizeOptions(target);
         }
-
-#if false
-        protected static void ToolchainOptionCollectionSetHandler(object sender, Opus.Core.Option option)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            toolchainOptions.Value.CCompilerOptionsInterface = sender as C.ICCompilerOptions;
-        }
-
-        private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            CommandLineProcessor.ICommandLineSupport commandLineSupport = toolchainOptions.Value as CommandLineProcessor.ICommandLineSupport;
-            commandLineSupport.ToCommandLineArguments(commandLineBuilder, target);
-        }
-
-        private static VisualStudioProcessor.ToolAttributeDictionary ToolchainOptionCollectionVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            VisualStudioProcessor.IVisualStudioSupport visualStudioSupport = toolchainOptions.Value as VisualStudioProcessor.IVisualStudioSupport;
-            return visualStudioSupport.ToVisualStudioProjectAttributes(target);
-        }
-#endif
 
         private static void IncludeSystemPathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {

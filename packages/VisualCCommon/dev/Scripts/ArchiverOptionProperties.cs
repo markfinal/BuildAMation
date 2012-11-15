@@ -5,20 +5,6 @@ namespace VisualCCommon
 {
     public partial class ArchiverOptionCollection
     {
-#if false
-        C.ToolchainOptionCollection C.IArchiverOptions.ToolchainOptionCollection
-        {
-            get
-            {
-                return this.GetReferenceTypeOption<C.ToolchainOptionCollection>("ToolchainOptionCollection");
-            }
-            set
-            {
-                this.SetReferenceTypeOption<C.ToolchainOptionCollection>("ToolchainOptionCollection", value);
-                this.ProcessNamedSetHandler("ToolchainOptionCollectionSetHandler", this["ToolchainOptionCollection"]);
-            }
-        }
-#endif
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get

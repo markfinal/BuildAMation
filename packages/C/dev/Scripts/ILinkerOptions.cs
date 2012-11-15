@@ -7,14 +7,6 @@ namespace C
 {
     public interface ILinkerOptions
     {
-#if false
-        C.ToolchainOptionCollection ToolchainOptionCollection
-        {
-            get;
-            set;
-        }
-#endif
-
         /// <summary>
         /// Specify the output type of the linked binary
         /// </summary>

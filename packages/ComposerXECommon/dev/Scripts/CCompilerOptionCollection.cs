@@ -11,9 +11,6 @@ namespace ComposerXECommon
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // common compiler options
-#if false
-            this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLine);
-#endif
             this["SystemIncludePaths"].PrivateData = new PrivateData(SystemIncludePathsCommandLine);
             this["IncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLine);
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLine);
@@ -86,21 +83,6 @@ namespace ComposerXECommon
             : base(node)
         {
         }
-
-#if false
-        protected static void ToolchainOptionCollectionSetHandler(object sender, Opus.Core.Option option)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            toolchainOptions.Value.CCompilerOptionsInterface = sender as C.ICCompilerOptions;
-        }
-
-        private static void ToolchainOptionCollectionCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection> toolchainOptions = option as Opus.Core.ReferenceTypeOption<C.ToolchainOptionCollection>;
-            CommandLineProcessor.ICommandLineSupport commandLineSupport = toolchainOptions.Value as CommandLineProcessor.ICommandLineSupport;
-            commandLineSupport.ToCommandLineArguments(commandLineBuilder, target);
-        }
-#endif
 
         private static void SystemIncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {

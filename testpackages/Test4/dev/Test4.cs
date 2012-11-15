@@ -24,24 +24,11 @@ namespace Test4
             [C.ExportCompilerOptionsDelegate]
             private static void SetRuntimeLibrary(Opus.Core.IModule module, Opus.Core.Target target)
             {
-            // NEW STYLE
-#if true
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                VisualCCommon.ICCompilerOptions vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
+                VisualCCommon.ICCompilerOptions vcCompilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (vcCompilerOptions != null)
                 {
                     vcCompilerOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
                 }
-#else
-                // TODO: this should be in the ExportToolchainOptionsDelegate?
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                C.ToolchainOptionCollection toolOptions = compilerOptions.ToolchainOptionCollection;
-                VisualCCommon.IToolchainOptions vcToolOptions = toolOptions as VisualCCommon.IToolchainOptions;
-                if (vcToolOptions != null)
-                {
-                    vcToolOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
-                }
-#endif
             }
         }
 

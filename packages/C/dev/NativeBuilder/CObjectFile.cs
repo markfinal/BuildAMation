@@ -158,22 +158,6 @@ namespace NativeBuilder
                 DependencyGenerator.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
             }
 
-            // NEW STYLE
-#if true
-            string executablePath = toolInterface.Executable(target);
-#else
-            string executablePath;
-            C.IToolchainOptions toolchainOptions = (objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions;
-            if (toolchainOptions.IsCPlusPlus)
-            {
-                executablePath = compilerInstance.ExecutableCPlusPlus(target);
-            }
-            else
-            {
-                executablePath = compilerTool.Executable(target);
-            }
-#endif
-
             if (sourceFilePath.Contains(" "))
             {
                 commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
@@ -182,6 +166,8 @@ namespace NativeBuilder
             {
                 commandLineBuilder.Add(sourceFilePath);
             }
+
+            string executablePath = toolInterface.Executable(target);
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, executablePath, commandLineBuilder);
             success = (0 == exitCode);

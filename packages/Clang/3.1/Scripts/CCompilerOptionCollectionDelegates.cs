@@ -65,9 +65,6 @@ namespace Clang
         }
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
-#if false
-            this["ToolchainOptionCollection"].PrivateData = new PrivateData(ToolchainOptionCollectionCommandLineProcessor);
-#endif
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLineProcessor);
             this["IncludePaths"].PrivateData = new PrivateData(IncludePathsCommandLineProcessor);
             this["SystemIncludePaths"].PrivateData = new PrivateData(SystemIncludePathsCommandLineProcessor);
