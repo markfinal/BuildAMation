@@ -218,9 +218,16 @@ namespace QMakeBuilder
 
                 // libraries
                 {
+                    // NEW STYLE
+                    Opus.Core.StringArray libraryFiles = new Opus.Core.StringArray();
+#if true
+                    C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+                    C.LinkerUtilities.AppendLibrariesToCommandLine(libraryFiles, linkerTool, linkerOptions, dependentLibraryFiles);
+#else
                     C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
                     Opus.Core.StringArray libraryFiles = new Opus.Core.StringArray();
                     linkerInstance.AppendLibrariesToCommandLine(libraryFiles, linkerOptions, dependentLibraryFiles);
+#endif
 
                     System.Text.StringBuilder libStatement = new System.Text.StringBuilder();
                     libStatement.AppendFormat("{0}:QMAKE_LIBS += ", nodeData.Configuration);
