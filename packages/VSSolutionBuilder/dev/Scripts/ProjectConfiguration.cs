@@ -204,10 +204,12 @@ namespace VSSolutionBuilder
             {
                 throw new Opus.Core.Exception("Project type is undefined");
             }
+#if false
             if (this.CharacterSet == EProjectCharacterSet.Undefined)
             {
                 throw new Opus.Core.Exception("Project character set is undefined");
             }
+#endif
 
             MSBuildItem projectConfiguration = configurationGroup.CreateItem("ProjectConfiguration", this.Name);
 
