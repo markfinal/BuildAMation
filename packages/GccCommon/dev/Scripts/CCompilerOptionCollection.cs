@@ -124,7 +124,7 @@ namespace GccCommon
 #if true
             Opus.Core.IToolset toolset = target.Toolset;
             C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            string switchPrefix = compiler.IncludePathCompilerSwitches[0];
+            string switchPrefix = compiler.IncludePathCompilerSwitches[1];
 #else
             C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
             string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[1];
