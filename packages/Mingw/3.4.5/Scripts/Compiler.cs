@@ -24,7 +24,7 @@ namespace Mingw
     }
 #else
     [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
-    public sealed class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
+    public sealed class CCompiler : MingwCommon.CCompiler, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -75,7 +75,7 @@ namespace Mingw
         }
 #endif
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

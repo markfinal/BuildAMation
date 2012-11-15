@@ -7,7 +7,7 @@ namespace VisualCCommon
 {
     // NEW STYLE
 #if true
-    public sealed class CxxCompiler : C.ICxxCompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class CxxCompiler : C.ICxxCompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -84,9 +84,9 @@ namespace VisualCCommon
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -106,7 +106,7 @@ namespace VisualCCommon
         #endregion
     }
 #else
-    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
+    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -147,7 +147,7 @@ namespace VisualCCommon
             return System.IO.Path.Combine(platformBinFolder, "cl.exe");
         }
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

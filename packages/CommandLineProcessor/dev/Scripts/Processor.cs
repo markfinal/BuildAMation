@@ -16,9 +16,9 @@ namespace CommandLineProcessor
             processStartInfo.ErrorDialog = true;
 
             System.Collections.Generic.Dictionary<string, string> requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
-            if (tool is Opus.Core.IToolRequiredEnvironmentVariables)
+            if (tool is Opus.Core.IToolForwardedEnvironmentVariables)
             {
-                foreach (string requiredEnvVar in (tool as Opus.Core.IToolRequiredEnvironmentVariables).VariableNames)
+                foreach (string requiredEnvVar in (tool as Opus.Core.IToolForwardedEnvironmentVariables).VariableNames)
                 {
                     requiredEnvironmentVariables[requiredEnvVar] = processStartInfo.EnvironmentVariables[requiredEnvVar];
                     //Opus.Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);

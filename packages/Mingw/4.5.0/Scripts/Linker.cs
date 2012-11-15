@@ -23,7 +23,7 @@ namespace Mingw
         }
     }
 #else
-    public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class Linker : MingwCommon.Linker, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
@@ -54,7 +54,7 @@ namespace Mingw
         }
 #endif
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

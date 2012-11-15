@@ -7,7 +7,7 @@ namespace MingwCommon
 {
     // NEW STYLE
 #if true
-    public abstract class CCompiler : C.ICompilerTool, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public abstract class CCompiler : C.ICompilerTool, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -77,9 +77,9 @@ namespace MingwCommon
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

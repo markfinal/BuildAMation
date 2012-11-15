@@ -23,7 +23,7 @@ namespace Mingw
         }
     }
 #else
-    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
+    public sealed class CPlusPlusCompiler : C.CxxCompiler, Opus.Core.ITool, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
@@ -65,7 +65,7 @@ namespace Mingw
             return System.IO.Path.Combine(this.binPath, "mingw32-g++");
         }
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

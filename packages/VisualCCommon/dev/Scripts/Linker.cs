@@ -7,7 +7,7 @@ namespace VisualCCommon
 {
     // NEW STYLE
 #if true
-    public sealed class Linker : C.ILinkerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolEnvironmentVariables
+    public sealed class Linker : C.ILinkerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -137,9 +137,9 @@ namespace VisualCCommon
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -171,7 +171,7 @@ namespace VisualCCommon
     }
 #else
     [Opus.Core.AssignOptionCollection(typeof(LinkerOptionCollection))]
-    public sealed class Linker : C.Linker, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class Linker : C.Linker, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string platformBinFolder;
@@ -209,7 +209,7 @@ namespace VisualCCommon
         }
 #endif
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

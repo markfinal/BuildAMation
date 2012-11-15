@@ -7,7 +7,7 @@ namespace VisualCCommon
 {
     // NEW STYLE
 #if true
-    public sealed class CCompiler : C.ICompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public sealed class CCompiler : C.ICompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -84,9 +84,9 @@ namespace VisualCCommon
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -107,7 +107,7 @@ namespace VisualCCommon
     }
 #else
     [Opus.Core.AssignOptionCollection(typeof(CCompilerOptionCollection))]
-    public sealed class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolRequiredEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
+    public sealed class CCompiler : C.Compiler, Opus.Core.ITool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, C.ICompiler
     {
         private Opus.Core.StringArray includeFolder = new Opus.Core.StringArray();
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -156,7 +156,7 @@ namespace VisualCCommon
         }
 #endif
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

@@ -7,7 +7,7 @@ namespace MingwCommon
 {
     // NEW STYLE
 #if true
-    public sealed class Archiver : C.IArchiverTool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolRequiredEnvironmentVariables
+    public sealed class Archiver : C.IArchiverTool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolForwardedEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -65,9 +65,9 @@ namespace MingwCommon
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -78,7 +78,7 @@ namespace MingwCommon
         #endregion
     }
 #else
-    public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolRequiredEnvironmentVariables
+    public sealed class Archiver : C.Archiver, Opus.Core.ITool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolForwardedEnvironmentVariables
     {
         private static Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
         private string binPath;
@@ -110,7 +110,7 @@ namespace MingwCommon
             return System.IO.Path.Combine(binPath, "ar.exe");
         }
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

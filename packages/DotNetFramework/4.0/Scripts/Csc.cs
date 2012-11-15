@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace DotNetFramework
 {
-    public sealed class Csc : CSharp.ICSharpCompilerTool, Opus.Core.IToolRequiredEnvironmentVariables
+    public sealed class Csc : CSharp.ICSharpCompilerTool, Opus.Core.IToolForwardedEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
 
@@ -39,9 +39,9 @@ namespace DotNetFramework
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

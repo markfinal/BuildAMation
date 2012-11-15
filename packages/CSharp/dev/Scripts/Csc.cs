@@ -17,7 +17,7 @@ namespace CSharp
 
     // NEW STYLE
 #if true
-    public sealed class Csc : ICSharpCompilerTool, Opus.Core.IToolRequiredEnvironmentVariables
+    public sealed class Csc : ICSharpCompilerTool, Opus.Core.IToolForwardedEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
 
@@ -51,9 +51,9 @@ namespace CSharp
 
         #endregion
 
-        #region IToolRequiredEnvironmentVariables Members
+        #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -69,7 +69,7 @@ namespace CSharp
 #else
     [Opus.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
                                    typeof(ExportCscOptionsDelegateAttribute))]
-    public sealed class Csc : Opus.Core.ITool, Opus.Core.IToolRequiredEnvironmentVariables
+    public sealed class Csc : Opus.Core.ITool, Opus.Core.IToolForwardedEnvironmentVariables
     {
         private static string CscPath;
         static Csc()
@@ -99,7 +99,7 @@ namespace CSharp
             return CscPath;
         }
 
-        Opus.Core.StringArray Opus.Core.IToolRequiredEnvironmentVariables.VariableNames
+        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
