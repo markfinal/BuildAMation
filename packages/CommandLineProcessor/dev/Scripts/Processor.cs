@@ -7,9 +7,10 @@ namespace CommandLineProcessor
 {
     public static class Processor
     {
-        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, string executablePath, Opus.Core.StringArray commandLineBuilder)
+        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder)
         {
             Opus.Core.Target target = node.Target;
+            string executablePath = tool.Executable(target);
 
             System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
             processStartInfo.FileName = executablePath;

@@ -64,7 +64,6 @@ namespace NativeBuilder
             // add output path
             commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.OutputFileSwitch, compilerOptions.CompiledResourceFilePath));
 
-            string executablePath = compilerTool.Executable(target);
             if (resourceFilePath.Contains(" "))
             {
                 commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", compilerTool.InputFileSwitch, resourceFilePath));
@@ -74,7 +73,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.InputFileSwitch, resourceFilePath));
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(resourceFileModule.OwningNode, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(resourceFileModule.OwningNode, compilerTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

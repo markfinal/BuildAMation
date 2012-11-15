@@ -65,8 +65,7 @@ namespace NativeBuilder
                 destinationDirectory = copyFiles.DestinationDirectory;
             }
 
-            FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-            string executablePath = (tool as Opus.Core.ITool).Executable(target);
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFilesTool));
 
             int returnValue = -1;
             foreach (string sourcePath in sourceFiles)
@@ -99,7 +98,7 @@ namespace NativeBuilder
                 {
                     thisCommandLineBuilder.Add(destinationDirectory);
                 }
-                returnValue = CommandLineProcessor.Processor.Execute(node, tool, executablePath, thisCommandLineBuilder);
+                returnValue = CommandLineProcessor.Processor.Execute(node, tool, thisCommandLineBuilder);
                 if (0 != returnValue)
                 {
                     break;

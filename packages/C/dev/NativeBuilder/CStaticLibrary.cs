@@ -69,14 +69,12 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Archiver options does not support command line translation");
             }
 
-            string executablePath = archiverTool.Executable(target);
-
             foreach (string dependentObjectFile in dependentObjectFiles)
             {
                 commandLineBuilder.Add(dependentObjectFile);
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, archiverTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, archiverTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

@@ -106,9 +106,7 @@ namespace NativeBuilder
             linkerInstance.AppendLibrariesToCommandLine(commandLineBuilder, linkerOptions, dependentLibraryFiles);
 #endif
 
-            string executablePath = linkerTool.Executable(target);
-
-            int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

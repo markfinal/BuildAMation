@@ -34,6 +34,11 @@ namespace CodeGenTest2
             }
 
             string exe = options.OutputFilePath;
+            // OSX insists on running C# assemblies through mono
+            if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                exe = "mono " + exe;
+            }
             return exe;
         }
 

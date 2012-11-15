@@ -104,10 +104,8 @@ namespace NativeBuilder
                 commandLineBuilder.Add(symLinkOptions.OutputPaths[FileUtilities.SymLinkOutputFileFlags.Link]);
             }
 
-            FileUtilities.SymLinkTool tool = new FileUtilities.SymLinkTool();
-            string toolExecutable = (tool as Opus.Core.ITool).Executable(target);
-
-            int returnValue = CommandLineProcessor.Processor.Execute(node, tool, toolExecutable, commandLineBuilder);
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ISymLinkTool));
+            int returnValue = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
             success = (0 == returnValue);
 
             return null;

@@ -240,14 +240,13 @@ namespace NativeBuilder
 #if true
             Opus.Core.IToolset toolset = target.Toolset;
             Opus.Core.ITool compilerTool = toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
-            string executablePath = compilerTool.Executable(target);
 #else
             CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
             string executablePath = compilerInstance.Executable(target);
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
 #endif
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

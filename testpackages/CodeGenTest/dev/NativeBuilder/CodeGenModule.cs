@@ -47,7 +47,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("CodeGen options does not support command line translation");
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, tool.Executable(target), commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

@@ -20,7 +20,6 @@ namespace NativeBuilder
 #endif
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
-            string toolExePath = tool.Executable(target);
 
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
@@ -85,7 +84,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, toolExePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

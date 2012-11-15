@@ -167,9 +167,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
-            string executablePath = toolInterface.Executable(target);
-
-            int exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, executablePath, commandLineBuilder);
+            int exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;
