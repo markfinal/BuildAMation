@@ -33,7 +33,7 @@ namespace Opus.Core
                     return null;
                 }
 
-                Opus.Core.Log.MessageAll("DEBUG: Looking for toolset for tooltype '{0}'", toolType.ToString());
+                Opus.Core.Log.DebugMessage("Looking for toolset for tooltype '{0}'", toolType.ToString());
 
 #if true
                 var providers = toolType.GetCustomAttributes(typeof(AssignToolsetProviderAttribute), false);
@@ -46,12 +46,12 @@ namespace Opus.Core
                 if (Opus.Core.State.Has("Toolset", toolsetName))
                 {
                     IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
-                    Opus.Core.Log.MessageAll("\tfound '{0}'", toolset);
+                    Opus.Core.Log.DebugMessage("\tfound '{0}'", toolset);
                     return toolset;
                 }
                 else
                 {
-                    Opus.Core.Log.MessageAll("\tnot found");
+                    Opus.Core.Log.DebugMessage("\tnot found");
                     // TODO: always throw an exception if not found
                     return null;
                 }

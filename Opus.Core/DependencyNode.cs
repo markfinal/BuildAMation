@@ -177,7 +177,7 @@ namespace Opus.Core
                 //throw new Exception(System.String.Format("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString()));
             }
 
-            Opus.Core.Log.MessageAll("DEBUG: Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+            Opus.Core.Log.DebugMessage("Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             if (!toolType.IsInterface)
             {
                 throw new Exception(System.String.Format("NEW STYLE: Tool '{0}' is NOT an interface", toolType.ToString()), false);
