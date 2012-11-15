@@ -1,3 +1,5 @@
+15-Nov-2012 VisualC 10.0 now checks for both Express and Professional versions for solution builds.
+
 15-Nov-2012 Renamed Opus.Core.IToolRequiredEnvironmentVariables to Opus.Core.IToolForwardedEnvironmentVariables
 
 14-Nov-2012 Removed Opus.Core.AssignOptionCollectionAttribute as it is has been superceded by Toolsets.
