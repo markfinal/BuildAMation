@@ -35,7 +35,6 @@ namespace Opus.Core
 
                 Opus.Core.Log.DebugMessage("Looking for toolset for tooltype '{0}'", toolType.ToString());
 
-#if true
                 var providers = toolType.GetCustomAttributes(typeof(AssignToolsetProviderAttribute), false);
                 if (0 == providers.Length)
                 {
@@ -55,17 +54,6 @@ namespace Opus.Core
                     // TODO: always throw an exception if not found
                     return null;
                 }
-#else
-                if (Opus.Core.State.Has("Toolset", toolType.Namespace))
-                {
-                    IToolset toolset = Opus.Core.State.Get("Toolset", toolType.Namespace) as IToolset;
-                    return toolset;
-                }
-                else
-                {
-                    return null;
-                }
-#endif
             }
 
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
