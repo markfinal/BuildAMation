@@ -22,13 +22,13 @@ namespace MakeFileBuilder
         public MakeFileData(string makeFilePath,
                             MakeFileTargetDictionary targetDictionary,
                             MakeFileVariableDictionary variableDictionary,
-                            Opus.Core.StringArray environmentPaths, // TODO: redundant
+                            Opus.Core.StringArray environmentPaths,
                             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment)
         {
             this.MakeFilePath = makeFilePath;
             this.TargetDictionary = targetDictionary;
             this.VariableDictionary = variableDictionary;
-            this.EnvironmentPaths = null;
+            this.EnvironmentPaths = environmentPaths;
             // TODO: better way to do a copy?
             if (null != environment)
             {
