@@ -52,14 +52,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            C.IWinResourceCompilerTool compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-#else
-            C.Win32ResourceCompilerBase compilerInstance = C.Win32ResourceCompilerFactory.GetTargetInstance(target);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-#endif
+            C.IWinResourceCompilerTool compilerTool = target.Toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
 
             // add output path
             commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.OutputFileSwitch, compilerOptions.CompiledResourceFilePath));

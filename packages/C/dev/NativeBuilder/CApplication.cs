@@ -12,13 +12,6 @@ namespace NativeBuilder
             Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
             Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.ITool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool));
-#else
-            C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
-            Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
-#endif
             Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
             C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
 
@@ -91,12 +84,8 @@ namespace NativeBuilder
             commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));
 
             // then libraries
-            // NEW STYLE
-#if true
-            C.LinkerUtilities.AppendLibrariesToCommandLine(commandLineBuilder, linkerTool as C.ILinkerTool, linkerOptions, dependentLibraryFiles);
-#else
-            linkerInstance.AppendLibrariesToCommandLine(commandLineBuilder, linkerOptions, dependentLibraryFiles);
-#endif
+            C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+            C.LinkerUtilities.AppendLibrariesToCommandLine(commandLineBuilder, linkerTool, linkerOptions, dependentLibraryFiles);
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, commandLineBuilder);
             success = (0 == exitCode);

@@ -93,24 +93,9 @@ namespace C
                 this.OutputName = null;
             }
 
-            // NEW STYLE
-#if true
             Opus.Core.Target target = node.Target;
-            Opus.Core.IToolset toolset = target.Toolset;
-            if (null == target.Toolset)
-            {
-                toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-                if (null == toolset)
-                {
-                    throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-                }
-            }
-
-            ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
-#else
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(C.Toolchain.ObjectFileOutputSubDirectory);
-#endif
         }
 
         public string OutputName
