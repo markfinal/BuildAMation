@@ -94,19 +94,19 @@ configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution"
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                        osx={"Native":["gcc"],"MakeFile":["gcc"]})
-configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualcandcsharp"],"MakeFile":["visualcandcsharp"]},
-                                        linux={"Native":["gccandcsharp"],"MakeFile":["gccandcsharp"]},
-                                        osx={"Native":["gccandcsharp"],"MakeFile":["gccandcsharp"]})
-configs["CSharpTest1-dev"] = TestSetup(win={"Native":["csharp"],"MakeFile":["csharp"],"VSSolution":["csharp"]},
+configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]},
+                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                        osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["CSharpTest1-dev"] = TestSetup(win={"Native":["notoolchain"],"MakeFile":["notoolchain"],"VSSolution":["notoolchain"]},
                                        linux={"Native":["monounix"],"MakeFile":["monounix"]},
                                        osx={"Native":["monounix"],"MakeFile":["monounix"]})
 configs["Direct3DTriangle-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["MixedModeCpp-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["MixedTest-dev"] = TestSetup(win={"Native":["visualcandcsharp"],"MakeFile":["visualcandcsharp"]})
+configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]})
 configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["Symlinks-dev"] = TestSetup(win={"Native":["notoolchain"]},
                                     linux={"Native":["notoolchain"]},
                                     osx={"Native":["notoolchain"]})
-configs["WPFTest-dev"] = TestSetup(win={"VSSolution":["csharp"]})
+configs["WPFTest-dev"] = TestSetup(win={"VSSolution":["notoolchain"]})

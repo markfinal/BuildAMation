@@ -1,3 +1,5 @@
+16-Nov-2012 CSharp package no longer has a -CSharp.toolchain action. This is due to changes to where the C# compiler is location (now the DotNetFramework package).
+
 15-Nov-2012 CommandLineProcessor.Processor.Execute no longer takes a string for the executable path, since it can be derived from the ITool and the Node's Target.
 
 15-Nov-2012 VisualC 10.0 now checks for both Express and Professional versions for solution builds.
