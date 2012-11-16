@@ -82,6 +82,7 @@ namespace Opus.Core
         {
             // NEW STYLE
 #if true
+            // TODO: this should never return null
             IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
             string toolchainImplementation;
             if (null == toolset)
@@ -216,6 +217,7 @@ namespace Opus.Core
             Target targetUsed = target;
             // NEW STYLE
 #if true
+            // TODO: this should never return null
             IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
             string toolchainImplementation;
             if (null == toolset)
@@ -350,6 +352,7 @@ namespace Opus.Core
                             else
                             {
                                 // NEW STYLE
+                                // TODO: this should never return null
                                 IToolset toolset = ModuleUtilities.GetToolsetForModule(nestedModule.GetType());
                                 string toolchainImplementation;
                                 Target childTarget = null;

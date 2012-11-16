@@ -87,6 +87,9 @@ namespace Opus.Core
                 }
 
                 // now look up the toolchain associated with that tool
+#if true
+                throw new Exception(System.String.Format("The tool '{0}' has not been registered a toolchain (provider)", toolType.ToString()), false);
+#else
                 System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
                 if (!map.ContainsKey(toolType))
                 {
@@ -95,6 +98,7 @@ namespace Opus.Core
 
                 string toolchain = map[toolType];
                 return toolchain;
+#endif
             }
 
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
