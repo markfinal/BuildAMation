@@ -13,7 +13,10 @@ namespace C
     {
         public HeaderDependencyAction()
         {
-            Opus.Core.State.AddCategory("C");
+            if (!Opus.Core.State.HasCategory("C"))
+            {
+                Opus.Core.State.AddCategory("C");
+            }
             Opus.Core.State.Add<bool>("C", "HeaderDependencyGeneration", true);
         }
 

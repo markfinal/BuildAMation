@@ -11,6 +11,20 @@ namespace C
     [Opus.Core.PreambleAction]
     public sealed class ToolchainAction : Opus.Core.IActionWithArguments
     {
+        public ToolchainAction()
+        {
+            if (!Opus.Core.State.HasCategory("C"))
+            {
+                Opus.Core.State.AddCategory("C");
+            }
+
+            if (!Opus.Core.State.Has("C", "ToolToToolsetName"))
+            {
+                var map = new System.Collections.Generic.Dictionary<System.Type, string>();
+                Opus.Core.State.Add("C", "ToolToToolsetName", map);
+            }
+        }
+
         private string Toolchain
         {
             get;
@@ -42,38 +56,12 @@ namespace C
         {
             Opus.Core.Log.DebugMessage("C toolchain is '{0}'", this.Toolchain);
 
-            if (!Opus.Core.State.HasCategory("Toolchains"))
-            {
-                Opus.Core.State.AddCategory("Toolchains");
-            }
-
-            if (Opus.Core.State.Has("Toolchains", "C"))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Toolchain for 'C' has already been defined as '{0}'", Opus.Core.State.Get("Toolchains", "C") as string));
-            }
-
-            Opus.Core.State.Add<string>("Toolchains", "C", this.Toolchain);
-            Opus.Core.State.Add<string>("Toolchains", "C.CPlusPlus", this.Toolchain);
-
-            // NEW STYLE: mapping each type of tool to it's toolchain (this is the default)
-            System.Collections.Generic.Dictionary<System.Type, string> map = null;
-            if (Opus.Core.State.Has("Toolchains", "Map"))
-            {
-                map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
-            }
-            else
-            {
-                map = new System.Collections.Generic.Dictionary<System.Type, string>();
-                Opus.Core.State.Add("Toolchains", "Map", map);
-            }
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             map[typeof(ICompilerTool)]    = this.Toolchain;
             map[typeof(ICxxCompilerTool)] = this.Toolchain;
             map[typeof(ILinkerTool)]      = this.Toolchain;
             map[typeof(IArchiverTool)]    = this.Toolchain;
             map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
-#if false
-            map[typeof(C.Toolchain)]   = this.Toolchain;
-#endif
 
             return true;
         }

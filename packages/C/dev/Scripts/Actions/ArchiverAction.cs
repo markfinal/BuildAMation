@@ -11,6 +11,20 @@ namespace C
     [Opus.Core.PreambleAction]
     public sealed class ArchiverAction : Opus.Core.IActionWithArguments
     {
+        public ArchiverAction()
+        {
+            if (!Opus.Core.State.HasCategory("C"))
+            {
+                Opus.Core.State.AddCategory("C");
+            }
+
+            if (!Opus.Core.State.Has("C", "ToolToToolsetName"))
+            {
+                var map = new System.Collections.Generic.Dictionary<System.Type, string>();
+                Opus.Core.State.Add("C", "ToolToToolsetName", map);
+            }
+        }
+
         private string Archiver
         {
             get;
@@ -42,17 +56,7 @@ namespace C
         {
             Opus.Core.Log.DebugMessage("Archiver is '{0}'", this.Archiver);
 
-            System.Collections.Generic.Dictionary<System.Type, string> map = null;
-            if (Opus.Core.State.Has("Toolchains", "Map"))
-            {
-                map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
-            }
-            else
-            {
-                map = new System.Collections.Generic.Dictionary<System.Type, string>();
-                Opus.Core.State.Add("Toolchains", "Map", map);
-            }
-
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             map[typeof(IArchiverTool)] = this.Archiver;
 
             return true;

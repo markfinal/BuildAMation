@@ -9,56 +9,56 @@ namespace C
     {
         static string GetCCompilerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("Toolchains") || !Opus.Core.State.Has("Toolchains", "Map"))
+            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
                 throw new Opus.Core.Exception("C compiler toolset has not been specified. Use C.CC=<toolset>", false);
             }
 
-            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(ICompilerTool)];
         }
 
         static string GetCxxCompilerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("Toolchains") || !Opus.Core.State.Has("Toolchains", "Map"))
+            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
                 throw new Opus.Core.Exception("C++ compiler toolset has not been specified. Use C.CXX=<toolset>", false);
             }
 
-            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(ICxxCompilerTool)];
         }
 
         static string GetLinkerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("Toolchains") || !Opus.Core.State.Has("Toolchains", "Map"))
+            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
                 throw new Opus.Core.Exception("C linker toolset has not been specified. Use C.LINK=<toolset>", false);
             }
 
-            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(ILinkerTool)];
         }
 
         static string GetArchiverToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("Toolchains") || !Opus.Core.State.Has("Toolchains", "Map"))
+            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
                 throw new Opus.Core.Exception("C archiver toolset has not been specified. Use C.AR=<toolset>", false);
             }
 
-            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(IArchiverTool)];
         }
 
         static string GetWinResourceompilerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("Toolchains") || !Opus.Core.State.Has("Toolchains", "Map"))
+            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
                 throw new Opus.Core.Exception("C windows resource compiler toolset has not been specified. Use C.RC=<toolset>", false);
             }
 
-            System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             return map[typeof(IWinResourceCompilerTool)];
         }
     }
