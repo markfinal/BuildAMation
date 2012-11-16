@@ -1,6 +1,0 @@
--builder=Native
--buildroot=build
--platforms=osx32
--configurations=debug
--CSharp.toolchain=dotnet
--verbosity=2

@@ -98,8 +98,8 @@ configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["v
                                         linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                         osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["CSharpTest1-dev"] = TestSetup(win={"Native":["notoolchain"],"MakeFile":["notoolchain"],"VSSolution":["notoolchain"]},
-                                       linux={"Native":["monounix"],"MakeFile":["monounix"]},
-                                       osx={"Native":["monounix"],"MakeFile":["monounix"]})
+                                       linux={"Native":["notoolchain"],"MakeFile":["notoolchain"]},
+                                       osx={"Native":["notoolchain"],"MakeFile":["notoolchain"]})
 configs["Direct3DTriangle-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["MixedModeCpp-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]})
