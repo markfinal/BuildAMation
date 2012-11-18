@@ -12,14 +12,6 @@ namespace MakeFileBuilder
             Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
             Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
-#else
-            C.Linker linkerInstance = C.LinkerFactory.GetTargetInstance(target);
-            Opus.Core.ITool linkerTool = linkerInstance as Opus.Core.ITool;
-#endif
 
             // dependents
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -50,7 +42,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
-            
+
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (applicationOptions is CommandLineProcessor.ICommandLineSupport)
@@ -65,6 +57,8 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
             string executable = linkerTool.Executable(target);
 
             System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
@@ -77,47 +71,32 @@ namespace MakeFileBuilder
                 recipeBuilder.Append(executable);
             }
 
-            // NEW STYLE
-#if true
-            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-
-            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
-
-            C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-            if (null != winResourceCompilerTool)
-            {
-                recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
-            }
-
-            // TODO: don't want to access the archiver tool here really, as creating
-            // an application does not require one
-            C.IArchiverTool archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
-
-            Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
-            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
-            // TODO: ratify that import libraries are a Windows only creation
-            if (archiverTool.StaticLibrarySuffix != linkerTool.ImportLibrarySuffix)
-            {
-                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.ImportLibrarySuffix));
-            }
             Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
-            C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
-#else
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-            recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
-            if (toolchain.Win32CompiledResourceSuffix.Length > 0)
             {
-                recipeBuilder.AppendFormat("$(filter %{0},$^) ", toolchain.Win32CompiledResourceSuffix);
+                C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+
+                recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
+
+                C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+                if (null != winResourceCompilerTool)
+                {
+                    recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
+                }
+
+                // TODO: don't want to access the archiver tool here really, as creating
+                // an application does not require one
+                C.IArchiverTool archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
+
+                Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
+                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
+                // TODO: ratify that import libraries are a Windows only creation
+                if (archiverTool.StaticLibrarySuffix != linkerTool.ImportLibrarySuffix)
+                {
+                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.ImportLibrarySuffix));
+                }
+                C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
             }
-            Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
-            dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticLibrarySuffix));
-            if (toolchain.StaticLibrarySuffix != toolchain.StaticImportLibrarySuffix)
-            {
-                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", toolchain.StaticImportLibrarySuffix));
-            }
-            Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
-            linkerInstance.AppendLibrariesToCommandLine(dependentLibraryCommandLine, applicationOptions as C.ILinkerOptions, dependentLibraries);
-#endif
+
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@

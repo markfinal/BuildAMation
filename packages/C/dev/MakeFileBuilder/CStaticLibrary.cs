@@ -12,14 +12,6 @@ namespace MakeFileBuilder
             Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.ITool archiverTool = toolset.Tool(typeof(C.IArchiverTool));
-#else
-            C.Archiver archiverInstance = C.ArchiverFactory.GetTargetInstance(target);
-            Opus.Core.ITool archiverTool = archiverInstance as Opus.Core.ITool;
-#endif
 
             // dependents
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -51,6 +43,8 @@ namespace MakeFileBuilder
 
             Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
 
+            Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.ITool archiverTool = toolset.Tool(typeof(C.IArchiverTool));
             string executable = archiverTool.Executable(target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
@@ -80,15 +74,11 @@ namespace MakeFileBuilder
                 recipe += executable;
             }
 
-            // NEW STYLE
-#if true
-            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            {
+                C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
 
-            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
-#else
-            C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-            recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), toolchain.ObjectFileSuffix);
-#endif
+                recipe += System.String.Format(" {0} $(filter %{1},$^)", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
+            }
 
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
