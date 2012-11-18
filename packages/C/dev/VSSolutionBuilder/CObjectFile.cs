@@ -157,16 +157,8 @@ namespace VSSolutionBuilder
 
                 ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
 
-                // NEW STYLE
-#if true
-                Opus.Core.IToolset toolset = target.Toolset;
-
-                C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+                C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
                 string objectFileSuffix = compilerTool.ObjectFileSuffix;
-#else
-                C.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target);
-                string objectFileSuffix = toolchain.ObjectFileSuffix;
-#endif
 
                 string commandToken;
                 string outputsToken;
