@@ -236,15 +236,7 @@ namespace NativeBuilder
                 }
             }
 
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.ITool compilerTool = toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
-#else
-            CSharp.Csc compilerInstance = CSharp.CscFactory.GetTargetInstance(target);
-            string executablePath = compilerInstance.Executable(target);
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-#endif
+            Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, commandLineBuilder);
             success = (0 == exitCode);

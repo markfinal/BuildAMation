@@ -5,6 +5,16 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
+    [System.AttributeUsage(System.AttributeTargets.Method)]
+    public class ExportCscOptionsDelegateAttribute : System.Attribute
+    {
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Method)]
+    public class LocalCscOptionsDelegateAttribute : System.Attribute
+    {
+    }
+
     [Opus.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
                                    typeof(ExportCscOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider("dotnet")]
