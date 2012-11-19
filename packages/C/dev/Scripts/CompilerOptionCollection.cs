@@ -140,39 +140,16 @@ namespace C
         {
             if (null != this.OutputName)
             {
-#if true
-                Opus.Core.IToolset toolset = target.Toolset;
-                if (null == target.Toolset)
-                {
-                    toolset = Opus.Core.State.Get("Toolset", target.Toolchain) as Opus.Core.IToolset;
-                    if (null == toolset)
-                    {
-                        throw new Opus.Core.Exception(System.String.Format("Toolset information for '{0}' is missing", target.Toolchain), false);
-                    }
-                }
-
-                ICompilerTool compilerTool = toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
-#else
-                Toolchain toolchain = ToolchainFactory.GetTargetInstance(target);
-#endif
-
+                ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                 ICCompilerOptions options = this as ICCompilerOptions;
                 if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
                 {
-#if true
                     string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
-#else
-                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.ObjectFileSuffix;
-#endif
                     this.ObjectFilePath = objectPathname;
                 }
                 else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
                 {
-#if true
                     string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
-#else
-                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + toolchain.PreprocessedOutputSuffix;
-#endif
                     this.PreprocessedFilePath = preprocessedPathname;
                 }
             }
