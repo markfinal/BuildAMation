@@ -24,6 +24,22 @@ namespace Opus.Core
             {
                 return false;
             }
+            // NEW STYLE
+#if true
+            if (null == filterInterface.ToolsetTypes)
+            {
+                return true;
+            }
+
+            foreach (System.Type toolsetType in filterInterface.ToolsetTypes)
+            {
+                if (target.HasToolsetType(toolsetType))
+                {
+                    Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), target.ToString());
+                    return true;
+                }
+            }
+#else
             foreach (string toolchain in filterInterface.Toolchains)
             {
                 if (target.HasToolchain(toolchain))
@@ -32,6 +48,7 @@ namespace Opus.Core
                     return true;
                 }
             }
+#endif
             return false;
         }
 

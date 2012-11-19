@@ -116,6 +116,14 @@ namespace Opus.Core
             return this.BaseTarget.HasConfiguration(configurations);
         }
 
+        // NEW STYLE
+        public bool HasToolsetType(System.Type toolsetType)
+        {
+            bool hasToolset = toolsetType.IsAssignableFrom(this.Toolset.GetType());
+            return hasToolset;
+        }
+
+        // TODO: remove this
         public bool HasToolchain(string toolchain)
         {
             bool hasToolchain = System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToLower(), toolchain.ToLower());

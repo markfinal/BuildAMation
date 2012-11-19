@@ -1,3 +1,5 @@
+19-Nov-2012 Opus.Core.ITargetFilters no longer accepts a Toolchains keyword attribute, but now a ToolsetTypes System.Type[] keyword attribute. Generally, use typeof(package.Toolset) to fill out this attribute.
+
 16-Nov-2012 CSharp package no longer has a -CSharp.toolchain action. This is due to changes to where the C# compiler is location (now the DotNetFramework package).
 
 15-Nov-2012 CommandLineProcessor.Processor.Execute no longer takes a string for the executable path, since it can be derived from the ITool and the Node's Target.

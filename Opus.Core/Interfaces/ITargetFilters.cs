@@ -19,10 +19,19 @@ namespace Opus.Core
             set;
         }
 
+        // NEW STYLE
+#if true
+        System.Type[] ToolsetTypes
+        {
+            get;
+            set;
+        }
+#else
         string[] Toolchains
         {
             get;
             set;
         }
+#endif
     }
 }
