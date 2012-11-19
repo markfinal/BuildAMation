@@ -1255,14 +1255,6 @@ namespace VisualCCommon
 
         private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // TODO: do I really need this, given where it is?
-#if false
-            if (!target.HasToolchain("visualc"))
-            {
-                return;
-            }
-#endif
-
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
@@ -1290,14 +1282,6 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
-            // TODO: do I really need this, given where it is?
-#if false
-            if (!target.HasToolchain("visualc"))
-            {
-                return dictionary;
-            }
-#endif
-
             Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
             switch (runtimeLibraryOption.Value)
             {
