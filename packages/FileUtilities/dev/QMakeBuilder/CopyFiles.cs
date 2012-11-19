@@ -55,17 +55,10 @@ namespace QMakeBuilder
             }
 
             Opus.Core.IModule copyFilesModule = copyFiles as Opus.Core.IModule;
-            Opus.Core.Target target = copyFilesModule.OwningNode.Target;
-
-            // NEW STYLE
-#if true
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFilesTool));
-#else
-            FileUtilities.CopyFilesTool tool = new FileUtilities.CopyFilesTool();
-#endif
-            string toolExecutablePath = tool.Executable(target);
-
             Opus.Core.BaseOptionCollection copyFilesOptions = copyFilesModule.Options;
+            Opus.Core.Target target = copyFilesModule.OwningNode.Target;
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFilesTool));
+            string toolExecutablePath = tool.Executable(target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (copyFilesOptions is CommandLineProcessor.ICommandLineSupport)
