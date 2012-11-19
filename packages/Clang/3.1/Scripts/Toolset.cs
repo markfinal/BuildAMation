@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Clang
 {
-    public class Toolset : Opus.Core.IToolset/*, C.ICompilerInfo*/
+    public class Toolset : Opus.Core.IToolset
     {
         private System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         private System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -70,40 +70,5 @@ namespace Clang
         }
 
         #endregion
-
-#if false
-        #region ICompilerInfo Members
-
-        string C.ICompilerInfo.PreprocessedOutputSuffix
-        {
-            get
-            {
-                return ".i";
-            }
-        }
-
-        string C.ICompilerInfo.ObjectFileSuffix
-        {
-            get
-            {
-                return ".obj";
-            }
-        }
-
-        string C.ICompilerInfo.ObjectFileOutputSubDirectory
-        {
-            get
-            {
-                return "obj";
-            }
-        }
-
-        Opus.Core.StringArray C.ICompilerInfo.IncludePaths(Opus.Core.Target target)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
-#endif
     }
 }

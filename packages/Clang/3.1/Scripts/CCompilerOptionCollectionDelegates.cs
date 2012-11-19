@@ -6,11 +6,6 @@ namespace Clang
 {
     public partial class CCompilerOptionCollection
     {
-#if false
-        private static void ToolchainOptionCollectionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-        }
-#endif
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
