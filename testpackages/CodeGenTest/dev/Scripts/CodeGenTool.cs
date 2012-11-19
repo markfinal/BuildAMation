@@ -15,10 +15,6 @@ namespace CodeGenTest
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-#if false
-            string toolchainImplementation = Opus.Core.ModuleUtilities.GetToolchainImplementation(typeof(CodeGenTest.CodeGeneratorTool));
-#endif
-
             Opus.Core.BaseTarget baseTargetToUse = (Opus.Core.BaseTarget)target;
 
             Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest.CodeGeneratorTool), baseTargetToUse);
