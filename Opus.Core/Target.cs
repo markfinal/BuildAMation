@@ -119,6 +119,12 @@ namespace Opus.Core
         // NEW STYLE
         public bool HasToolsetType(System.Type toolsetType)
         {
+            // TODO: investigate this for ThirdPartyModule types
+            if (null == this.Toolset)
+            {
+                return false;
+            }
+
             bool hasToolset = toolsetType.IsAssignableFrom(this.Toolset.GetType());
             return hasToolset;
         }
