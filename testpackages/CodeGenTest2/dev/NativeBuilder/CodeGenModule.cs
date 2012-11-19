@@ -7,15 +7,9 @@ namespace NativeBuilder
             Opus.Core.IModule codeGenModuleModule = codeGenModule as Opus.Core.IModule;
             Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.ITool tool = toolset.Tool(typeof(CodeGenTest2.ICodeGenTool));
-#else
-            CodeGenTest2.CodeGenTool tool = new CodeGenTest2.CodeGenTool();
-#endif
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
             CodeGenTest2.CodeGenOptions toolOptions = codeGenModuleOptions as CodeGenTest2.CodeGenOptions;
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(CodeGenTest2.ICodeGenTool));
 
             // dependency checking
             {
