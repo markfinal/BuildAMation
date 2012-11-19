@@ -5,22 +5,8 @@
 // <author>Mark Final</author>
 namespace FileUtilities
 {
-#if false
-    [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute),
-                                   typeof(ExportOptionsDelegateAttribute))]
-#endif
     public sealed class SymLinkTool : ISymLinkTool
     {
-#if false
-        public static string Version
-        {
-            get
-            {
-                return "dev";
-            }
-        }
-#endif
-
         #region ITool Members
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
