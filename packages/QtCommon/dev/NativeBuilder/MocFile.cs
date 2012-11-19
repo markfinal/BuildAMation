@@ -12,12 +12,6 @@ namespace NativeBuilder
             Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-#else
-            QtCommon.MocTool tool = new QtCommon.MocTool();
-#endif
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
 
@@ -84,6 +78,7 @@ namespace NativeBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
             int exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
             success = (0 == exitCode);
 

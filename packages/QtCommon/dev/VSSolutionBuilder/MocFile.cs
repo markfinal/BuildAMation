@@ -12,15 +12,8 @@ namespace VSSolutionBuilder
             Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-#else
-            QtCommon.MocTool tool = new QtCommon.MocTool();
-#endif
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
-            string toolExePath = tool.Executable(target);
 
             Opus.Core.DependencyNode parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
@@ -111,6 +104,9 @@ namespace VSSolutionBuilder
                     sourceFile = cProject.HeaderFiles[sourceFilePath];
                 }
             }
+
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
+            string toolExePath = tool.Executable(target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (toolExePath.Contains(" "))

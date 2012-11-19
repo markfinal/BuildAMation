@@ -30,12 +30,7 @@ namespace QMakeBuilder
             nodeData.AddVariable("HEADERS", mocFile.SourceFile.AbsolutePath);
             nodeData.AddUniqueVariable("MOC_DIR", new Opus.Core.StringArray(System.IO.Path.GetDirectoryName(mocOptions.MocOutputPath)));
 
-            // NEW STYLE
-#if true
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-#else
-            QtCommon.MocTool tool = new QtCommon.MocTool();
-#endif
             string toolExePath = tool.Executable(target);
             nodeData.AddUniqueVariable("QMAKE_MOC", new Opus.Core.StringArray(toolExePath.Replace("\\", "/")));
 

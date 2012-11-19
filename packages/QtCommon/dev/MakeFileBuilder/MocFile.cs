@@ -12,16 +12,8 @@ namespace MakeFileBuilder
             Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.ITool tool = toolset.Tool(typeof(QtCommon.IMocTool));
-#else
-            QtCommon.MocTool tool = new QtCommon.MocTool();
-#endif
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
-            string toolExePath = tool.Executable(target);
 
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
@@ -57,6 +49,9 @@ namespace MakeFileBuilder
             {
                 commandLineBuilder.Add(sourceFilePath);
             }
+
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
+            string toolExePath = tool.Executable(target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             if (toolExePath.Contains(" "))
