@@ -70,14 +70,8 @@ namespace VisualCCommon
                 compilerInterface.EnableIntrinsicFunctions = true;
             }
 
-            // NEW STYLE
-#if true
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths(target));
-#else
-            CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange((compilerInstance as C.ICompiler).IncludeDirectoryPaths(target));
-#endif
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
@@ -149,14 +143,8 @@ namespace VisualCCommon
                 return;
             }
 
-            // NEW STYLE
-#if true
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
-#else
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
-#endif
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
@@ -202,14 +190,8 @@ namespace VisualCCommon
 
         private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // NEW STYLE
-#if true
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
-#else
-            C.Compiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool);
-            string switchPrefix = (compilerInstance as C.ICompiler).IncludePathCompilerSwitches[0];
-#endif
 
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
@@ -1361,15 +1343,7 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(VisualC.Toolset));
-            VisualStudioProcessor.IVisualStudioTargetInfo vsInfo = info as VisualStudioProcessor.IVisualStudioTargetInfo;
-            VisualStudioProcessor.EVisualStudioTarget vsTarget = vsInfo.VisualStudioTarget;
-#else
-            VisualCCommon.Toolchain toolchain = C.ToolchainFactory.GetTargetInstance(target) as VisualCCommon.Toolchain;
-            VisualStudioProcessor.EVisualStudioTarget vsTarget = toolchain.VisualStudioTarget;
-#endif
+            VisualStudioProcessor.EVisualStudioTarget vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
