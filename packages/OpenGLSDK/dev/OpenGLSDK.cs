@@ -18,11 +18,11 @@ namespace OpenGLSDK
         {
             winVCTarget = new TargetFilter();
             winVCTarget.Platform = Opus.Core.EPlatform.Windows;
-            winVCTarget.Toolchains = new string[] { "visualc" };
+            winVCTarget.ToolsetTypes = new[] { typeof(VisualC.Toolset) };
 
             winMingwTarget = new TargetFilter();
             winMingwTarget.Platform = Opus.Core.EPlatform.Windows;
-            winMingwTarget.Toolchains = new string[] { "mingw" };
+            winMingwTarget.ToolsetTypes = new[] { typeof(Mingw.Toolset) };
         }
 
         public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
@@ -45,7 +45,7 @@ namespace OpenGLSDK
             return libraries;
         }
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray winVCDependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 }

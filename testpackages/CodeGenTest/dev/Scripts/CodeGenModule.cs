@@ -121,7 +121,7 @@ namespace CodeGenTest
         [Opus.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 

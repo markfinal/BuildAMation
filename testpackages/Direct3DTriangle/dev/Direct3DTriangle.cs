@@ -2,7 +2,7 @@
 namespace Direct3DTriangle
 {
     // Define module classes here
-    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
     class D3D9TriangleTest : C.WindowsApplication
     {
         public D3D9TriangleTest()
@@ -48,7 +48,7 @@ namespace Direct3DTriangle
             typeof(WindowsSDK.WindowsSDK)
         );
 
-        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib",

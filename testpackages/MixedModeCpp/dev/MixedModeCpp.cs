@@ -2,7 +2,7 @@
 namespace MixedModeCpp
 {
     // Define module classes here
-    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
     class TestApplication : C.Application
     {
         public TestApplication()

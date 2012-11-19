@@ -77,37 +77,37 @@ namespace Test13
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(Qt.Qt));
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Configuration=Opus.Core.EConfiguration.Debug, Toolchains=new string[] { "mingw" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(Mingw.Toolset) } )]
         Opus.Core.StringArray winMingwDebugLibraries = new Opus.Core.StringArray(
             "-lQtCored4",
             "-lQtGuid4"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, Toolchains = new string[] { "mingw" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
         Opus.Core.StringArray winMingwOptimizedLibraries = new Opus.Core.StringArray(
             "-lQtCore4",
             "-lQtGui4"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration=Opus.Core.EConfiguration.Debug, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray winVCDebugLibraries = new Opus.Core.StringArray(
             "QtCored4.lib",
             "QtGuid4.lib"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray winVCOptimizedLibraries = new Opus.Core.StringArray(
             "QtCore4.lib",
             "QtGui4.lib"
         );
 
-        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Unix, Toolchains=new string[] { "gcc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Unix, ToolsetTypes = new[] { typeof(Gcc.Toolset) })]
         Opus.Core.StringArray unixGCCLibraries = new Opus.Core.StringArray(
             "-lQtCore",
             "-lQtGui"

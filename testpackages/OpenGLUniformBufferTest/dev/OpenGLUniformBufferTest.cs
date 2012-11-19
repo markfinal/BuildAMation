@@ -47,7 +47,7 @@ namespace OpenGLUniformBufferTest
             typeof(GLEW.GLEWStatic)
         );
 
-        [C.RequiredLibraries(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib",
@@ -55,7 +55,7 @@ namespace OpenGLUniformBufferTest
             "OPENGL32.lib"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "mingw" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
         Opus.Core.StringArray winMingwLibraries = new Opus.Core.StringArray(
             "-lgdi32",
             "-lopengl32"

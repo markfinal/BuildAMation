@@ -20,7 +20,7 @@ namespace OpenCLTest1
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(AMDAPPSDK.AMDAPPSDK));
 #endif
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib", "OpenCL.lib");
     }
 

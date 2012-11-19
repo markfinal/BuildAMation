@@ -160,10 +160,10 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new [] {typeof(VisualC.Toolset)})]
         Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[] { typeof(VisualC.Toolset)})]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
@@ -180,10 +180,10 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[] {typeof(VisualC.Toolset)})]
         Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
     
@@ -219,10 +219,10 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, Toolchains=new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.Array<System.Type> dependents = new Opus.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
@@ -248,7 +248,7 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
             );
@@ -258,7 +258,7 @@ namespace Test
             typeof(Win32Resources)
             );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Toolchains = new string[] { "visualc" })]
+        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }
