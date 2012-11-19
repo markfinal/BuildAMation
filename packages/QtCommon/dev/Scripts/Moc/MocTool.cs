@@ -5,10 +5,6 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-#if false
-    [Opus.Core.LocalAndExportTypes(typeof(LocalMocOptionsDelegateAttribute),
-                                   typeof(ExportMocOptionsDelegateAttribute))]
-#endif
     public sealed class MocTool : IMocTool
     {
         private Opus.Core.IToolset toolset;
