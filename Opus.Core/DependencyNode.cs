@@ -180,20 +180,20 @@ namespace Opus.Core
             Opus.Core.Log.DebugMessage("Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             if (!toolType.IsInterface)
             {
-                throw new Exception(System.String.Format("NEW STYLE: Tool '{0}' is NOT an interface", toolType.ToString()), false);
+                throw new Exception(System.String.Format("Tool '{0}' is NOT an interface", toolType.ToString()), false);
             }
 
             System.Type optionCollectionType = toolset.ToolOptionType(toolType);
             if (null == optionCollectionType)
             {
-                throw new Exception(System.String.Format("NEW STYLE: No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString()), false);
+                throw new Exception(System.String.Format("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString()), false);
             }
 
             var localAndExportTypes = toolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
 
             if (localAndExportTypes.Length == 0)
             {
-                throw new Exception(System.String.Format("NEW STYLE: Missing local and export types attribute on tool type '{0}'", toolType.ToString()), false);
+                throw new Exception(System.String.Format("Missing local and export types attribute on tool type '{0}'", toolType.ToString()), false);
             }
 
             System.Type exportType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
