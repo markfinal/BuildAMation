@@ -82,8 +82,10 @@ namespace Opus.Core
         {
             // NEW STYLE
 #if true
-            // TODO: this should never return null
             IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+#if true
+            Target targetUsed = Target.GetInstance(baseTarget, toolset);
+#else
             string toolchainImplementation;
             if (null == toolset)
             {
@@ -93,11 +95,12 @@ namespace Opus.Core
             {
                 toolchainImplementation = toolset.ToString();
             }
+            Target targetUsed = Target.GetInstance(baseTarget, toolchainImplementation, toolset);
+#endif
 #else
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
-#endif
-
             Target targetUsed = Target.GetInstance(baseTarget, toolchainImplementation, toolset);
+#endif
 
             ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)
@@ -214,11 +217,13 @@ namespace Opus.Core
 
         private DependencyNode FindOrCreateUnparentedNode(System.Type moduleType, string moduleName, Target target, int currentRank, System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove)
         {
-            Target targetUsed = target;
             // NEW STYLE
 #if true
-            // TODO: this should never return null
             IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+#if true
+            Target targetUsed = Target.GetInstance((BaseTarget)target, toolset);
+#else
+            Target targetUsed = target;
             string toolchainImplementation;
             if (null == toolset)
             {
@@ -233,6 +238,7 @@ namespace Opus.Core
                 toolchainImplementation = toolset.ToString();
                 targetUsed = Target.GetInstance((BaseTarget)target, toolchainImplementation, toolset);
             }
+#endif
 #else
             string toolchainImplementation = ModuleUtilities.GetToolchainImplementation(moduleType);
             if (!targetUsed.HasToolchain(toolchainImplementation))
@@ -352,10 +358,12 @@ namespace Opus.Core
                             else
                             {
                                 // NEW STYLE
-                                // TODO: this should never return null
                                 IToolset toolset = ModuleUtilities.GetToolsetForModule(nestedModule.GetType());
-                                string toolchainImplementation;
+#if true
+                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, toolset);
+#else
                                 Target childTarget = null;
+                                string toolchainImplementation;
                                 if (null == toolset)
                                 {
                                     toolchainImplementation = ModuleUtilities.GetToolchainForModule(nestedModule.GetType());
@@ -366,6 +374,7 @@ namespace Opus.Core
                                     toolchainImplementation = toolset.ToString();
                                     childTarget = Target.GetInstance((BaseTarget)node.Target, toolchainImplementation, toolset);
                                 }
+#endif
 
                                 newNode = new DependencyNode(nestedModule, node, childTarget, childIndex, true);
                                 // OLD STYLE

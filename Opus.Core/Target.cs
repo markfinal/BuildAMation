@@ -9,7 +9,13 @@ namespace Opus.Core
     // this allows extraction of the versioning information easily
     public sealed class Target //: System.ICloneable, System.IComparable
     {
+        // NEW STYLE
+#if true
+        private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>> map = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>>();
+        private static System.Collections.Generic.Dictionary<int, Target> mapNullToolset = new System.Collections.Generic.Dictionary<int, Target>();
+#else
         private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, Target>> map = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, Target>>();
+#endif
 
         public string Key
         {
@@ -36,6 +42,9 @@ namespace Opus.Core
             private set;
         }
 
+        // NEW STYLE
+#if true
+#else
         public static Target GetInstance(BaseTarget baseTarget, string toolchain)
         {
             Target target = null;
@@ -54,34 +63,53 @@ namespace Opus.Core
 
             return target;
         }
+#endif
 
-        public static Target GetInstance(BaseTarget baseTarget, string toolchain, IToolset toolset)
+        private static Target GetInstance(BaseTarget baseTarget)
         {
             Target target = null;
-            if (!map.ContainsKey(baseTarget.HashKey))
+            if (mapNullToolset.ContainsKey(baseTarget.HashKey))
             {
-                map[baseTarget.HashKey] = new System.Collections.Generic.Dictionary<string, Target>();
-            }
-            if (!map[baseTarget.HashKey].ContainsKey(toolchain))
-            {
-                // TODO: change this to an exception
-                if (null == toolset)
-                {
-                    target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolchain);
-                }
-                else
-                {
-                    target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolset);
-                }
+                target = mapNullToolset[baseTarget.HashKey];
             }
             else
             {
-                target = map[baseTarget.HashKey][toolchain];
+                target = mapNullToolset[baseTarget.HashKey] = new Target(baseTarget);
             }
 
             return target;
         }
 
+        public static Target GetInstance(BaseTarget baseTarget, IToolset toolset)
+        {
+            if (null == toolset)
+            {
+                return GetInstance(baseTarget);
+            }
+
+            Target target = null;
+            if (!map.ContainsKey(baseTarget.HashKey))
+            {
+                map[baseTarget.HashKey] = new System.Collections.Generic.Dictionary<IToolset, Target>();
+                target = map[baseTarget.HashKey][toolset] = new Target(baseTarget, toolset);
+                return target;
+            }
+
+            if (map[baseTarget.HashKey].ContainsKey(toolset))
+            {
+                target = map[baseTarget.HashKey][toolset];
+            }
+            else
+            {
+                target = map[baseTarget.HashKey][toolset] = new Target(baseTarget, toolset);
+            }
+
+            return target;
+        }
+
+        // NEW STYLE
+#if true
+#else
         private Target(BaseTarget baseTarget, string toolchain)
         {
             this.BaseTarget = baseTarget;
@@ -89,6 +117,15 @@ namespace Opus.Core
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, toolchain);
             this.Key = builder.ToString();
+        }
+#endif
+
+        private Target(BaseTarget baseTarget)
+        {
+            this.BaseTarget = baseTarget;
+            this.Toolchain = null;
+            this.Toolset = null;
+            this.Key = baseTarget.ToString();
         }
 
         private Target(BaseTarget baseTarget, IToolset toolset)

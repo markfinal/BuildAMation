@@ -59,6 +59,8 @@ namespace Opus.Core
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
         }
 
+        // NEW STYLE
+#if false
         // TODO: remove this function
         public static string GetToolchainForModule(System.Type moduleType)
         {
@@ -103,12 +105,16 @@ namespace Opus.Core
 
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
         }
+#endif
 
+        // NEW STYLE
+#if false
         // TODO: remove this function
         public static string GetToolchainImplementation(System.Type moduleType)
         {
             return null;
         }
+#endif
 
         private static TypeArray GetFieldsWithAttributeType<T>(IModule module, Target target) where T : class, ITargetFilters
         {
