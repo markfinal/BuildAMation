@@ -1,4 +1,4 @@
-﻿// <copyright file="BaseTargetFilteredAttribute.cs" company="Mark Final">
+// <copyright file="BaseTargetFilteredAttribute.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -52,9 +52,16 @@ namespace Opus.Core
             // NEW STYLE
 #if true
             string message = System.String.Format("Platform='{0}' Configuration='{1}' ToolsetTypes='", this.Platform.ToString(), this.Configuration.ToString());
-            foreach (System.Type type in this.ToolsetTypes)
+            if (null == this.ToolsetTypes)
             {
-                message += type.ToString() + " ";
+                message += "none";
+            }
+            else
+            {
+                foreach (System.Type type in this.ToolsetTypes)
+                {
+                    message += type.ToString() + " ";
+                }
             }
 #else
             string message = System.String.Format("Platform='{0}' Configuration='{1}' Toolchains='", this.Platform.ToString(), this.Configuration.ToString());
