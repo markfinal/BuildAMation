@@ -125,7 +125,8 @@ namespace Opus.Core
             return builder.ToString();
         }
 
-        private static string CapitalizeFirstLetter(string word)
+        // TODO: this could be in a more useful place, stringutilities?
+        public static string CapitalizeFirstLetter(string word)
         {
             if (System.String.IsNullOrEmpty(word))
             {
@@ -185,23 +186,6 @@ namespace Opus.Core
             else
             {
                 throw new Exception(System.String.Format("Unknown format specifier '%0'", formatter), false);
-            }
-        }
-
-        // TO REMOVE
-        public EPlatform PlatformTOREMOVE
-        {
-            get
-            {
-                return this.Platform;
-            }
-        }
-
-        public EConfiguration ConfigurationTOREMOVE
-        {
-            get
-            {
-                return this.Configuration;
             }
         }
     }

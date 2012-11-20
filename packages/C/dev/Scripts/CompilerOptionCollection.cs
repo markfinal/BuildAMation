@@ -59,7 +59,7 @@ namespace C
                 }
             }
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", ((Opus.Core.BaseTarget)target).ConfigurationName('u')));
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.Toolchain.ToUpper()));
+            compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.ToolsetName('u')));
 
             compilerOptions.IncludePaths = new Opus.Core.DirectoryCollection();
             compilerOptions.IncludePaths.AddAbsoluteDirectory(".", true); // explicitly add the one that is assumed

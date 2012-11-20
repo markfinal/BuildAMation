@@ -59,22 +59,11 @@ namespace Opus.Core
         /// <returns>The Target's directory name.</returns>
         public static string DirectoryName(Target target)
         {
-            string versionString = null;
-            // TODO: this should never be null
-            if (target.Toolset != null)
+            if (null == target.Toolset)
             {
-                versionString = target.Toolset.Version((BaseTarget)target);
+                throw new Exception("Getting the directory name for a null Toolset is not supported");
             }
-            else
-            {
-                if (!State.Has("Toolset", target.Toolchain))
-                {
-                    throw new Exception(System.String.Format("No tool set information registered for toolchain '{0}' in order to locate version information", target.Toolchain), false);
-                }
-
-                versionString = (State.Get("Toolset", target.Toolchain) as IToolset).Version((BaseTarget)target);
-            }
-
+            string versionString = target.Toolset.Version((BaseTarget)target);
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}", target.ToString(), versionString);
             return builder.ToString().ToLower();

@@ -49,10 +49,9 @@ namespace Test
 
             compilerOptions.WarningsAsErrors = false;
 
-            string toolchain = target.Toolchain;
-            if ("mingw" == toolchain)
+            if (target.HasToolsetType(typeof(Mingw.Toolset)))
             {
-                Opus.Core.Log.MessageAll("mingw is the toolchain");
+                Opus.Core.Log.MessageAll("Toolset for mingw in use");
 
                 if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
@@ -64,9 +63,9 @@ namespace Test
                 MingwCommon.ICCompilerOptions mingwCompilerOptions = compilerOptions as MingwCommon.ICCompilerOptions;
                 mingwCompilerOptions.InlineFunctions = true;
             }
-            else if ("visualc" == toolchain)
+            else if (target.HasToolsetType(typeof(VisualC.Toolset)))
             {
-                Opus.Core.Log.MessageAll("visualc is the toolchain");
+                Opus.Core.Log.MessageAll("Toolset for visualc in use");
 
                 compilerOptions.Optimization = C.EOptimization.Custom;
                 compilerOptions.CustomOptimization = "/Ox";
@@ -78,9 +77,10 @@ namespace Test
                 vcCompilerOptions.BasicRuntimeChecks = VisualCCommon.EBasicRuntimeChecks.None;
                 vcCompilerOptions.SmallerTypeConversionRuntimeCheck = false;
             }
-            else if ("gcc" == toolchain)
+            else if (target.HasToolsetType(typeof(Gcc.Toolset)))
             {
-                Opus.Core.Log.MessageAll("gcc is the toolchain");
+                Opus.Core.Log.MessageAll("Toolset for gcc in use");
+
                 compilerOptions.AdditionalOptions = "-Wall";
 
                 GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
@@ -88,7 +88,7 @@ namespace Test
             }
             else
             {
-                Opus.Core.Log.MessageAll("Unknown toolchain");
+                Opus.Core.Log.MessageAll("Unrecognized toolset");
             }
         }
     }

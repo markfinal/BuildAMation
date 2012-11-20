@@ -5,8 +5,6 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    // TODO: instead of storing the toolchain name, store the TYPE of the targetted tool
-    // this allows extraction of the versioning information easily
     public sealed class Target
     {
         private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>> map = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>>();
@@ -22,13 +20,6 @@ namespace Opus.Core
         {
             get;
             set;
-        }
-
-        // TODO: Make this completely private
-        public string Toolchain
-        {
-            get;
-            private set;
         }
 
         public IToolset Toolset
@@ -82,7 +73,6 @@ namespace Opus.Core
         private Target(BaseTarget baseTarget)
         {
             this.BaseTarget = baseTarget;
-            this.Toolchain = null;
             this.Toolset = null;
             this.Key = baseTarget.ToString();
         }
@@ -90,10 +80,9 @@ namespace Opus.Core
         private Target(BaseTarget baseTarget, IToolset toolset)
         {
             this.BaseTarget = baseTarget;
-            this.Toolchain = toolset.GetType().Namespace;
             this.Toolset = toolset;
             System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, this.Toolchain);
+            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, this.Toolset.GetType().Namespace);
             this.Key = builder.ToString();
         }
 
@@ -127,16 +116,35 @@ namespace Opus.Core
             return hasToolset;
         }
 
-        // TODO: remove this
-        public bool HasToolchain(string toolchain)
-        {
-            bool hasToolchain = System.Text.RegularExpressions.Regex.IsMatch(this.Toolchain.ToLower(), toolchain.ToLower());
-            return hasToolchain;
-        }
-
         public override string ToString()
         {
             return this.Key;
+        }
+
+        public string ToolsetName(char formatter)
+        {
+            string text = this.Toolset.GetType().Namespace;
+            if (formatter == 'u')
+            {
+                return text.ToUpper();
+            }
+            else if (formatter == 'l')
+            {
+                return text.ToLower();
+            }
+            else if (formatter == 'p')
+            {
+                // Pascal case
+                return BaseTarget.CapitalizeFirstLetter(text);
+            }
+            else if (formatter == '=')
+            {
+                return text;
+            }
+            else
+            {
+                throw new Exception(System.String.Format("Unknown format specifier '%0'", formatter), false);
+            }
         }
     }
 }
