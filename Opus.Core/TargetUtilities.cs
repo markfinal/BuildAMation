@@ -24,8 +24,6 @@ namespace Opus.Core
             {
                 return false;
             }
-            // NEW STYLE
-#if true
             if (null == filterInterface.ToolsetTypes)
             {
                 return true;
@@ -39,16 +37,6 @@ namespace Opus.Core
                     return true;
                 }
             }
-#else
-            foreach (string toolchain in filterInterface.Toolchains)
-            {
-                if (target.HasToolchain(toolchain))
-                {
-                    Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), target.ToString());
-                    return true;
-                }
-            }
-#endif
             return false;
         }
 
