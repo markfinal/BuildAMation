@@ -7,15 +7,10 @@ namespace Opus.Core
 {
     // TODO: instead of storing the toolchain name, store the TYPE of the targetted tool
     // this allows extraction of the versioning information easily
-    public sealed class Target //: System.ICloneable, System.IComparable
+    public sealed class Target
     {
-        // NEW STYLE
-#if true
         private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>> map = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>>();
         private static System.Collections.Generic.Dictionary<int, Target> mapNullToolset = new System.Collections.Generic.Dictionary<int, Target>();
-#else
-        private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, Target>> map = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, Target>>();
-#endif
 
         public string Key
         {
@@ -41,29 +36,6 @@ namespace Opus.Core
             get;
             private set;
         }
-
-        // NEW STYLE
-#if true
-#else
-        public static Target GetInstance(BaseTarget baseTarget, string toolchain)
-        {
-            Target target = null;
-            if (!map.ContainsKey(baseTarget.HashKey))
-            {
-                map[baseTarget.HashKey] = new System.Collections.Generic.Dictionary<string, Target>();
-            }
-            if (!map[baseTarget.HashKey].ContainsKey(toolchain))
-            {
-                target = map[baseTarget.HashKey][toolchain] = new Target(baseTarget, toolchain);
-            }
-            else
-            {
-                target = map[baseTarget.HashKey][toolchain];
-            }
-
-            return target;
-        }
-#endif
 
         private static Target GetInstance(BaseTarget baseTarget)
         {
@@ -107,19 +79,6 @@ namespace Opus.Core
             return target;
         }
 
-        // NEW STYLE
-#if true
-#else
-        private Target(BaseTarget baseTarget, string toolchain)
-        {
-            this.BaseTarget = baseTarget;
-            this.Toolchain = toolchain;
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, toolchain);
-            this.Key = builder.ToString();
-        }
-#endif
-
         private Target(BaseTarget baseTarget)
         {
             this.BaseTarget = baseTarget;
@@ -153,12 +112,14 @@ namespace Opus.Core
             return this.BaseTarget.HasConfiguration(configurations);
         }
 
-        // NEW STYLE
         public bool HasToolsetType(System.Type toolsetType)
         {
-            // TODO: investigate this for ThirdPartyModule types
             if (null == this.Toolset)
             {
+                if (null == toolsetType)
+                {
+                    return true;
+                }
                 return false;
             }
 

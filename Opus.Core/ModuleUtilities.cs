@@ -59,63 +59,6 @@ namespace Opus.Core
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
         }
 
-        // NEW STYLE
-#if false
-        // TODO: remove this function
-        public static string GetToolchainForModule(System.Type moduleType)
-        {
-            System.Type type = moduleType;
-            while (type != null)
-            {
-                // get the type of the tool associated with the module
-                var t = type.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), false);
-                if (0 == t.Length)
-                {
-                    type = type.BaseType;
-                    continue;
-                }
-
-                if (t.Length > 1)
-                {
-                    throw new Exception(System.String.Format("There are {0} tool assignments to the module type '{1}'. There should be only one.", t.Length, moduleType.ToString()), false);
-                }
-
-                ModuleToolAssignmentAttribute attr = t[0] as ModuleToolAssignmentAttribute;
-                System.Type toolType = attr.ToolchainType;
-                if (null == toolType)
-                {
-                    // module does not require a toolchain
-                    return "Undefined";
-                }
-
-                // now look up the toolchain associated with that tool
-#if true
-                throw new Exception(System.String.Format("The tool '{0}' has not been registered a toolchain (provider)", toolType.ToString()), false);
-#else
-                System.Collections.Generic.Dictionary<System.Type, string> map = Opus.Core.State.Get("Toolchains", "Map") as System.Collections.Generic.Dictionary<System.Type, string>;
-                if (!map.ContainsKey(toolType))
-                {
-                    throw new Exception(System.String.Format("The tool '{0}' has not been registered a toolchain (provider)", toolType.ToString()), false);
-                }
-
-                string toolchain = map[toolType];
-                return toolchain;
-#endif
-            }
-
-            throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
-        }
-#endif
-
-        // NEW STYLE
-#if false
-        // TODO: remove this function
-        public static string GetToolchainImplementation(System.Type moduleType)
-        {
-            return null;
-        }
-#endif
-
         private static TypeArray GetFieldsWithAttributeType<T>(IModule module, Target target) where T : class, ITargetFilters
         {
             System.Type type = module.GetType();
