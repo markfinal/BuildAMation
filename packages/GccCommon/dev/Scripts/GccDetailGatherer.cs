@@ -9,6 +9,8 @@ namespace GccCommon
     {
         private static System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetailData>();
 
+        // TODO: change this to BaseTarget and an IToolset as arguments
+        // requires Executable to be changed first
         public static GccDetailData GetGccDetails(Opus.Core.Target target)
         {
             Opus.Core.IToolset toolset = target.Toolset;
