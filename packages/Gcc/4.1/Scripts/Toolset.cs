@@ -208,7 +208,7 @@ namespace Gcc
 
             this.installPath = installPath;
 
-            GccDetails details = this.GetGccDetails(Opus.Core.Target.GetInstance(baseTarget, "TODO", this));
+            GccDetails details = this.GetGccDetails(Opus.Core.Target.GetInstance(baseTarget, this));
 
             // C include paths
             this.includePaths.Add("/usr/include");
@@ -247,7 +247,7 @@ namespace Gcc
 
         public override string GetMachineType(Opus.Core.BaseTarget baseTarget)
         {
-            Opus.Core.Target target = Opus.Core.Target.GetInstance(baseTarget, "TODO", this);
+            Opus.Core.Target target = Opus.Core.Target.GetInstance(baseTarget, this);
 
             if (!gccDetailsForTarget.ContainsKey(target))
             {
