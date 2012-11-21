@@ -40,7 +40,6 @@ namespace VisualCCommon
 
             Opus.Core.Target target = node.Target;
 
-            Opus.Core.IToolset toolset = target.Toolset;
             C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
 
             foreach (string libPath in linkerTool.LibPaths(target))

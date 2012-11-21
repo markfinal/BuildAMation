@@ -9,7 +9,6 @@ namespace GccCommon
     {
         protected string installPath;
         public Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
-        public string cxxIncludePath;
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
         protected GccCommon.GccDetailData gccDetail;
@@ -17,6 +16,14 @@ namespace GccCommon
         protected abstract void GetInstallPath(Opus.Core.BaseTarget baseTarget);
         protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
         public abstract string GetMachineType(Opus.Core.BaseTarget baseTarget);
+
+        public GccDetailData GccDetail
+        {
+            get
+            {
+                return this.gccDetail;
+            }
+        }
 
         #region IToolset implementation
         string Opus.Core.IToolset.Version (Opus.Core.BaseTarget baseTarget)

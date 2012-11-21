@@ -67,9 +67,6 @@ namespace Gcc
                 throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
             }
             this.includePaths.Add(gccIncludeFixedFolder);
-
-            // C++ include paths
-            this.cxxIncludePath = this.gccDetail.GxxIncludePath;
         }
 
         protected override string GetVersion (Opus.Core.BaseTarget baseTarget)
