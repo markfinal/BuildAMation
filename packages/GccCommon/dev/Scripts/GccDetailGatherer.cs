@@ -1,60 +1,18 @@
-// <copyright file="Toolset.cs" company="Mark Final">
+// <copyright file="GccDetailGatherer.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Gcc package</summary>
+// <summary>GccCommon package</summary>
 // <author>Mark Final</author>
-namespace Gcc
+namespace GccCommon
 {
-#if false
-    public class GccDetails
+    public class GccDetailGatherer
     {
-        public GccDetails(string version,
-                          string gxxIncludePath,
-                          string target)
+        private static System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetailData>();
+
+        public static GccDetailData GetGccDetails(Opus.Core.Target target)
         {
-            if (null == version)
-            {
-                throw new Opus.Core.Exception("Unable to determine Gcc version", false);
-            }
-            if (null == target)
-            {
-                throw new Opus.Core.Exception("Unable to determine Gcc target", false);
-            }
+            Opus.Core.IToolset toolset = target.Toolset;
 
-            this.Version = version;
-            this.GxxIncludePath = gxxIncludePath;
-            this.Target = target;
-        }
-
-        public string Version
-        {
-            get;
-            private set;
-        }
-
-        public string GxxIncludePath
-        {
-            get;
-            private set;
-        }
-
-        public string Target
-        {
-            get;
-            private set;
-        }
-    }
-#endif
-
-    public sealed class Toolset : GccCommon.Toolset
-    {
-#if true
-        private GccCommon.GccDetailData gccDetail;
-#else
-        private static System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetails> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetails>();
-
-        private GccDetails GetGccDetails(Opus.Core.Target target)
-        {
             string pathPrefix = null;
             string gxxIncludeDir = null;
             string gccTarget = null;
@@ -63,7 +21,7 @@ namespace Gcc
             // get version
             {
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                processStartInfo.FileName = this.toolMap[typeof(C.ICompilerTool)].Executable(target);
+                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(target);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
                 processStartInfo.RedirectStandardOutput = true;
@@ -92,7 +50,7 @@ namespace Gcc
             // get paths and targets
             {
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                processStartInfo.FileName = this.toolMap[typeof(C.ICompilerTool)].Executable(target);
+                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(target);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
                 processStartInfo.RedirectStandardError = true;
@@ -133,7 +91,7 @@ namespace Gcc
                         {
                             if (option.StartsWith(pathPrefixKey))
                             {
-                                pathPrefix = option.Substring(pathPrefixKey.Length).Trim();;
+                                pathPrefix = option.Substring(pathPrefixKey.Length).Trim(); ;
                             }
                             else if (option.StartsWith(gxxIncludeDirKey))
                             {
@@ -169,7 +127,7 @@ namespace Gcc
                 }
             }
 
-            GccDetails gccDetails = new GccDetails(gccVersion, gxxIncludeDir, gccTarget);
+            GccDetailData gccDetails = new GccDetailData(gccVersion, gxxIncludeDir, gccTarget);
             gccDetailsForTarget[target] = gccDetails;
 
             Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", target.ToString(), gccDetails.Version);
@@ -177,83 +135,6 @@ namespace Gcc
             Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", target.ToString(), gccDetails.GxxIncludePath);
 
             return gccDetails;
-        }
-#endif
-
-        public Toolset()
-        {
-            this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
-            this.toolMap[typeof(C.ICxxCompilerTool)] = new CxxCompiler(this);
-            this.toolMap[typeof(C.ILinkerTool)] = new Linker(this);
-            this.toolMap[typeof(C.IArchiverTool)] = new GccCommon.Archiver(this);
-
-            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Gcc.CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Gcc.CPlusPlusCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Gcc.LinkerOptionCollection);
-            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Gcc.ArchiverOptionCollection);
-        }
-
-        protected override void GetInstallPath(Opus.Core.BaseTarget baseTarget)
-        {
-            if (null != this.installPath)
-            {
-                return;
-            }
-
-            string installPath = null;
-            if (Opus.Core.State.HasCategory("Gcc") && Opus.Core.State.Has("Gcc", "InstallPath"))
-            {
-                installPath = Opus.Core.State.Get("Gcc", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("Gcc install path set from command line to '{0}'", installPath);
-            }
-
-            if (null == installPath)
-            {
-                installPath = "/usr/bin";
-            }
-
-            this.installPath = installPath;
-            this.gccDetail = GccCommon.GccDetailGatherer.GetGccDetails(Opus.Core.Target.GetInstance(baseTarget, this));
-
-            // C include paths
-            this.includePaths.Add("/usr/include");
-            {
-                // this is for some Linux distributions
-                string path = System.String.Format("/usr/include/{0}", this.gccDetail.Target);
-                if (System.IO.Directory.Exists(path))
-                {
-                    this.includePaths.Add(path);
-                }
-            }
-            string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", this.gccDetail.Target, this.gccDetail.Version);
-            string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
-            string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
-
-            if (!System.IO.Directory.Exists(gccIncludeFolder))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFolder), false);
-            }
-            this.includePaths.Add(gccIncludeFolder);
-            
-            if (!System.IO.Directory.Exists(gccIncludeFolder))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
-            }
-            this.includePaths.Add(gccIncludeFixedFolder);
-
-            // C++ include paths
-            this.cxxIncludePath = this.gccDetail.GxxIncludePath;
-        }
-
-        protected override string GetVersion (Opus.Core.BaseTarget baseTarget)
-        {
-            return "4.4";
-        }
-
-        public override string GetMachineType(Opus.Core.BaseTarget baseTarget)
-        {
-            this.GetInstallPath(baseTarget);
-            return this.gccDetail.Target;
         }
     }
 }
