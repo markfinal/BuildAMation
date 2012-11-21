@@ -67,5 +67,28 @@ namespace Opus.Core
             get;
             private set;
         }
+
+        public static bool DisplayException(System.Exception exception)
+        {
+            if (null == exception)
+            {
+                return false;
+            }
+
+            bool anyInnerExceptions = DisplayException(exception.InnerException);
+            Log.ErrorMessage("{0} ({1})", exception.Message, exception.GetType().ToString());
+            if (!anyInnerExceptions)
+            {
+                Log.ErrorMessage(exception.StackTrace.ToString());
+            }
+
+            return true;
+        }
+
+        public static void DisplayException(System.Exception exception, string prefix)
+        {
+            Log.ErrorMessage(prefix);
+            DisplayException(exception);
+        }
     }
 }

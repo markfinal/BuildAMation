@@ -67,11 +67,16 @@ namespace Opus.Core
             }
             catch (Core.Exception exception)
             {
+                Exception.DisplayException(exception, System.String.Format("Build function '{0}' threw an exception", buildFunction.ToString()));
+#if false
                 Log.MessageAll("Build function threw an exception for '{0}' in target '{1}': '{2}'\n{3}", node.UniqueModuleName, node.Target.ToString(), exception.Message, exception.StackTrace);
+#endif
                 arguments[1] = false;
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
+                Exception.DisplayException(exception, System.String.Format("Build function '{0}' error", buildFunction.ToString()));
+#if false
                 Core.Log.MessageAll("Build function threw an exception for '{0}' in target '{1}': '{2}'", node.UniqueModuleName, node.Target.ToString(), exception.Message);
                 System.Exception innerException = exception;
                 while (innerException.InnerException != null)
@@ -80,6 +85,7 @@ namespace Opus.Core
                     Core.Log.MessageAll("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
                 }
                 Core.Log.MessageAll(innerException.StackTrace);
+#endif
                 arguments[1] = false;
             }
             bool success = (bool)arguments[1];

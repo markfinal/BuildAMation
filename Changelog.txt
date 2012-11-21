@@ -1,3 +1,5 @@
+21-Nov-2012 Exception reporting has been inverted so that the innermost exception is now reported first, alongwith it's callstack. This ensures that the most relevant exception message appears first.
+
 19-Nov-2012 Opus.Core.ITargetFilters no longer accepts a Toolchains keyword attribute, but now a ToolsetTypes System.Type[] keyword attribute. Generally, use typeof(package.Toolset) to fill out this attribute.
 
 16-Nov-2012 CSharp package no longer has a -CSharp.toolchain action. This is due to changes to where the C# compiler is location (now the DotNetFramework package).
