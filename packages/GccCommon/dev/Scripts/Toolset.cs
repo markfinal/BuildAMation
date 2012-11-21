@@ -12,6 +12,7 @@ namespace GccCommon
         public string cxxIncludePath;
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+        protected GccCommon.GccDetailData gccDetail;
 
         protected abstract void GetInstallPath(Opus.Core.BaseTarget baseTarget);
         protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
