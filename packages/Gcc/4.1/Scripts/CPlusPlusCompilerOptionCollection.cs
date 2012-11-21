@@ -28,7 +28,7 @@ namespace Gcc
             Opus.Core.IToolset toolset = target.Toolset;
             GccCommon.Toolset gccToolset = toolset as GccCommon.Toolset;
             string machineType = gccToolset.GetMachineType((Opus.Core.BaseTarget)target);
-            string cxxIncludePath = gccToolset.cxxIncludePath;
+            string cxxIncludePath = (toolset as GccCommon.Toolset).GccDetail.GxxIncludePath;
 #else
             CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
 
