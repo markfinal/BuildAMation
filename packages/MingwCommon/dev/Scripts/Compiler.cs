@@ -5,8 +5,6 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    // NEW STYLE
-#if true
     public abstract class CCompiler : C.ICompilerTool, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.IToolset toolset;
@@ -102,18 +100,4 @@ namespace MingwCommon
 
         #endregion
     }
-#else
-    public abstract class CCompiler : C.Compiler, Opus.Core.ITool
-    {
-        public abstract string Executable(Opus.Core.Target target);
-
-        protected Opus.Core.StringArray CommonIncludePathCompilerSwitches
-        {
-            get
-            {
-                return new Opus.Core.StringArray("-isystem", "-I");
-            }
-        }
-    }
-#endif
 }

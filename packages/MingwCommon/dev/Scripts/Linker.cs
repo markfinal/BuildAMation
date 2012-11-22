@@ -5,8 +5,6 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    // NEW STYLE
-#if true
     public abstract class Linker : C.ILinkerTool, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.IToolset toolset;
@@ -144,26 +142,4 @@ namespace MingwCommon
 
         #endregion
     }
-#else
-    public abstract class Linker : C.Linker, Opus.Core.ITool
-    {
-        public abstract string Executable(Opus.Core.Target target);
-
-        protected override string StartLibraryList
-        {
-            get
-            {
-                return "-Wl,--start-group";
-            }
-        }
-
-        protected override string EndLibraryList
-        {
-            get
-            {
-                return "-Wl,--end-group";
-            }
-        }
-    }
-#endif
 }

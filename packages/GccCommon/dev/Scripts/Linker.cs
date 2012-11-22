@@ -5,8 +5,6 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    // NEW STYLE
-#if true
     public abstract class Linker : C.ILinkerTool, Opus.Core.IToolEnvironmentPaths
     {
         protected Opus.Core.IToolset toolset;
@@ -166,27 +164,5 @@ namespace GccCommon
         }
         #endregion
     }
-#else
-    public abstract class Linker : C.Linker, Opus.Core.ITool
-    {
-        public abstract string Executable(Opus.Core.Target target);
-
-        protected override string StartLibraryList
-        {
-            get
-            {
-                return "-Wl,--start-group";
-            }
-        }
-
-        protected override string EndLibraryList
-        {
-            get
-            {
-                return "-Wl,--end-group";
-            }
-        }
-    }
-#endif
 }
 

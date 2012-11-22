@@ -5,8 +5,6 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    // NEW STYLE
-#if true
     public sealed class CCompiler : GccCommon.CCompiler
     {
         public CCompiler(Opus.Core.IToolset toolset)
@@ -24,67 +22,4 @@ namespace Gcc
         }
         #endregion
     }
-#else
-    // Not sealed since the C++ compiler inherits from it
-    public class CCompiler : GccCommon.CCompiler, C.ICompiler
-    {
-        private Opus.Core.StringArray includeFolders = new Opus.Core.StringArray();
-        private string binPath;
-
-        public CCompiler(Opus.Core.Target target)
-        {
-            if (!Opus.Core.OSUtilities.IsOSX(target))
-            {
-                throw new Opus.Core.Exception("Gcc compiler is only supported under osx32 and osx64 platforms", false);
-            }
-
-            Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;
-            this.binPath = toolChainInstance.BinPath(target);
-
-            this.includeFolders.Add("/usr/include");
-            string gccLibFolder = System.String.Format("/usr/lib/gcc/{0}/{1}", this.MachineType(target), this.GccVersion(target));
-            string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
-            string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
-
-            if (!System.IO.Directory.Exists(gccIncludeFolder))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFolder), false);
-            }
-            this.includeFolders.Add(gccIncludeFolder);
-            
-            if (!System.IO.Directory.Exists(gccIncludeFolder))
-            {
-                throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
-            }
-            this.includeFolders.Add(gccIncludeFixedFolder);
-        }
-
-        public override string Executable(Opus.Core.Target target)
-        {
-            return System.IO.Path.Combine(this.binPath, "gcc-4.0");
-        }
-
-        // OLD STYLE
-#if false
-        public override string ExecutableCPlusPlus(Opus.Core.Target target)
-        {
-            return System.IO.Path.Combine(this.binPath, "g++-4.0");
-        }
-#endif
-
-        // NEW STYLE
-        Opus.Core.StringArray C.ICompiler.IncludeDirectoryPaths(Opus.Core.Target target)
-        {
-            return this.includeFolders;
-        }
-
-        Opus.Core.StringArray C.ICompiler.IncludePathCompilerSwitches
-        {
-            get
-            {
-                return base.CommonIncludePathCompilerSwitches;
-            }
-        }
-    }
-#endif
 }
