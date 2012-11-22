@@ -52,25 +52,7 @@ namespace Mingw
             this.binPath = System.IO.Path.Combine(this.installPath, "bin");
             this.environment.Add(this.binPath);
 
-#if true
             this.details = MingwCommon.MingwDetailGatherer.DetermineSpecs(Opus.Core.Target.GetInstance(baseTarget, this));
-#else
-            string gccIncludeFolder = System.IO.Path.Combine(installPath, "lib");
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "gcc");
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "mingw32");
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "3.4.5"); // TODO: this is the package version; look up in the package collection, or some other way
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "include");
-
-            this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
-            this.includePaths.Add(gccIncludeFolder);
-#endif
         }
-
-#if false
-        protected override string GetVersion(Opus.Core.BaseTarget baseTarget)
-        {
-            return "3.4.5";
-        }
-#endif
     }
 }
