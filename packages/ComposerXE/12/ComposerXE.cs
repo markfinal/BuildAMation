@@ -9,7 +9,7 @@
 
 namespace ComposerXE
 {
-    public class Toolset : Opus.Core.IToolset/*, C.ICompilerInfo*/
+    public class Toolset : Opus.Core.IToolset
     {
         #region IToolset Members
 

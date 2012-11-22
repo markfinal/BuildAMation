@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public abstract class Toolset : Opus.Core.IToolset/*, C.ICompilerInfo, C.ILinkerInfo, C.IWinResourceCompilerInfo, C.IArchiverInfo*/
+    public abstract class Toolset : Opus.Core.IToolset
     {
         protected string installPath;
         protected string binPath;
