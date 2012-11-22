@@ -1,4 +1,6 @@
-22-Nov-2012 Changed the namespace C.CPlusPlus to C.Cxx.
+22-Nov-2012 Renamed C.ETargetLanguage.CPlusPlus to C.ETargetLanguage.Cxx.
+
+22-Nov-2012 Renamed the namespace C.CPlusPlus to C.Cxx.
 
 22-Nov-2012 C.ICPlusPlusCompilerOptions has been renamed to C.ICxxCompilerOptions.
 

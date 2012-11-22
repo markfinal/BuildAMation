@@ -503,7 +503,7 @@ namespace VisualCCommon
                     commandLineBuilder.Add("/TC");
                     break;
 
-                case C.ETargetLanguage.CPlusPlus:
+                case C.ETargetLanguage.Cxx:
                     commandLineBuilder.Add("/TP");
                     break;
 
@@ -521,7 +521,7 @@ namespace VisualCCommon
                 {
                     case C.ETargetLanguage.Default:
                     case C.ETargetLanguage.C:
-                    case C.ETargetLanguage.CPlusPlus:
+                    case C.ETargetLanguage.Cxx:
                         {
                             VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
                             dictionary.Add("CompileAs", targetLanguageOption.Value.ToString("D"));
@@ -545,7 +545,7 @@ namespace VisualCCommon
                         dictionary.Add("CompileAs", "CompileAsC");
                         break;
 
-                    case C.ETargetLanguage.CPlusPlus:
+                    case C.ETargetLanguage.Cxx:
                         dictionary.Add("CompileAs", "CompileAsCpp");
                         break;
 

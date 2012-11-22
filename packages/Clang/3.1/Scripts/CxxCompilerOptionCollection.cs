@@ -21,7 +21,7 @@ namespace Clang
             base.InitializeDefaults(node);
 
             C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
-            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
+            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
 
             C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;

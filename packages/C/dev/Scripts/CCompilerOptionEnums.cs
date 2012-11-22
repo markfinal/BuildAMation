@@ -24,6 +24,6 @@ namespace C
     {
         Default = 0,
         C = 1,
-        CPlusPlus = 2
+        Cxx = 2
     }
 }

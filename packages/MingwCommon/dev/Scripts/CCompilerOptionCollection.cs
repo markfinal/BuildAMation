@@ -241,7 +241,7 @@ namespace MingwCommon
                 commandLineBuilder.Add("-nostdinc");
 
                 C.ICCompilerOptions options = sender as C.ICCompilerOptions;
-                if (options.TargetLanguage == C.ETargetLanguage.CPlusPlus)
+                if (options.TargetLanguage == C.ETargetLanguage.Cxx)
                 {
                     commandLineBuilder.Add("-nostdinc++");
                 }
@@ -261,7 +261,7 @@ namespace MingwCommon
                     commandLineBuilder.Add("-x c");
                     break;
 
-                case C.ETargetLanguage.CPlusPlus:
+                case C.ETargetLanguage.Cxx:
                     commandLineBuilder.Add("-x c++");
                     break;
 

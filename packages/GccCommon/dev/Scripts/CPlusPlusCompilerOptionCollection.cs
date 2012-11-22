@@ -19,7 +19,7 @@ namespace GccCommon
             C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
             C.ICxxCompilerOptions cxxInterfaceOptions = options as C.ICxxCompilerOptions;
 
-            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
+            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
