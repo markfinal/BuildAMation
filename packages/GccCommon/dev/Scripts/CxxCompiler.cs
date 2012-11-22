@@ -26,7 +26,7 @@ namespace GccCommon
         {
             // TODO: sort this out... it required a call to the InstallPath to get the right paths
             this.toolset.InstallPath((Opus.Core.BaseTarget)target);
-            return (this.toolset as Toolset).includePaths;
+            return (this.toolset as Toolset).GccDetail.IncludePaths;
         }
 
         string C.ICompilerTool.PreprocessedOutputSuffix

@@ -21,20 +21,12 @@ namespace Gcc
         {
             base.InitializeDefaults(node);
 
+            // TODO: think I can move this to GccCommon, but it misses out the C++ include paths for some reason (see Test9-dev)
             Opus.Core.Target target = node.Target;
+            GccCommon.Toolset gccToolset = target.Toolset as GccCommon.Toolset;
+            string machineType = gccToolset.GccDetail.Target;
+            string cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
 
-            // NEW STYLE
-#if true
-            Opus.Core.IToolset toolset = target.Toolset;
-            GccCommon.Toolset gccToolset = toolset as GccCommon.Toolset;
-            string machineType = gccToolset.GetMachineType((Opus.Core.BaseTarget)target);
-            string cxxIncludePath = (toolset as GccCommon.Toolset).GccDetail.GxxIncludePath;
-#else
-            CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-
-            string cxxIncludePath = compilerInstance.GxxIncludePath(target);
-            string machineType = compilerInstance.MachineType(target);
-#endif
             if (!System.IO.Directory.Exists(cxxIncludePath))
             {
                 throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath), false);

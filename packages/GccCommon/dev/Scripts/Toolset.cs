@@ -8,14 +8,32 @@ namespace GccCommon
     public abstract class Toolset : Opus.Core.IToolset
     {
         protected string installPath;
-        public Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
         protected GccCommon.GccDetailData gccDetail;
 
-        protected abstract void GetInstallPath(Opus.Core.BaseTarget baseTarget);
-        protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
-        public abstract string GetMachineType(Opus.Core.BaseTarget baseTarget);
+        private void GetInstallPath(Opus.Core.BaseTarget baseTarget)
+        {
+            if (null != this.installPath)
+            {
+                return;
+            }
+
+            string installPath = null;
+            if (Opus.Core.State.HasCategory("Gcc") && Opus.Core.State.Has("Gcc", "InstallPath"))
+            {
+                installPath = Opus.Core.State.Get("Gcc", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("Gcc install path set from command line to '{0}'", installPath);
+            }
+
+            if (null == installPath)
+            {
+                installPath = "/usr/bin";
+            }
+
+            this.installPath = installPath;
+            this.gccDetail = GccCommon.GccDetailGatherer.GetGccDetails(Opus.Core.Target.GetInstance(baseTarget, this));
+        }
 
         public GccDetailData GccDetail
         {
@@ -28,7 +46,8 @@ namespace GccCommon
         #region IToolset implementation
         string Opus.Core.IToolset.Version (Opus.Core.BaseTarget baseTarget)
         {
-            return this.GetVersion(baseTarget);
+            this.GetInstallPath(baseTarget);
+            return this.gccDetail.Version;
         }
 
         string Opus.Core.IToolset.InstallPath (Opus.Core.BaseTarget baseTarget)

@@ -8,8 +8,10 @@ namespace GccCommon
     public class GccDetailData
     {
         public GccDetailData(string version,
+                             Opus.Core.StringArray includePaths,
                              string gxxIncludePath,
-                             string target)
+                             string target,
+                             string libExecDir)
         {
             if (null == version)
             {
@@ -21,11 +23,19 @@ namespace GccCommon
             }
 
             this.Version = version;
+            this.IncludePaths = includePaths;
             this.GxxIncludePath = gxxIncludePath;
             this.Target = target;
+            this.LibExecDir = libExecDir;
         }
 
         public string Version
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.StringArray IncludePaths
         {
             get;
             private set;
@@ -38,6 +48,12 @@ namespace GccCommon
         }
 
         public string Target
+        {
+            get;
+            private set;
+        }
+
+        public string LibExecDir
         {
             get;
             private set;
