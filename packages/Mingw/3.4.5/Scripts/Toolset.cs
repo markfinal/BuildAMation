@@ -41,7 +41,7 @@ namespace Mingw
                 {
                     if (null == key)
                     {
-                        throw new Opus.Core.Exception("mingw was not installed");
+                        throw new Opus.Core.Exception("Mingw 3.4.5 was not installed");
                     }
 
                     this.installPath = key.GetValue("InstallLocation") as string;
@@ -50,7 +50,6 @@ namespace Mingw
             }
 
             this.binPath = System.IO.Path.Combine(this.installPath, "bin");
-
             this.environment.Add(this.binPath);
 
 #if true

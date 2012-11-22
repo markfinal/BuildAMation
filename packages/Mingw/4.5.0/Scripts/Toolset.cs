@@ -22,7 +22,7 @@ namespace Mingw
             this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
         }
 
-        protected override void GetInstallPath()
+        protected override void GetInstallPath(Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {
@@ -35,7 +35,7 @@ namespace Mingw
                 Opus.Core.Log.DebugMessage("Mingw install path set from command line to '{0}'", this.installPath);
             }
 
-            if (null == installPath)
+            if (null == this.installPath)
             {
                 using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\Windows\CurrentVersion\Uninstall\{AC2C1BDB-1E91-4F94-B99C-E716FE2E9C75}_is1"))
                 {
@@ -50,22 +50,9 @@ namespace Mingw
             }
 
             this.binPath = System.IO.Path.Combine(this.installPath, "bin");
-            this.environment = new Opus.Core.StringArray();
             this.environment.Add(this.binPath);
 
-            string gccIncludeFolder = System.IO.Path.Combine(installPath, "lib");
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "gcc");
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "mingw32");
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "4.5.0"); // TODO: this is the package version; look up in the package collection, or some other way
-            gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "include");
-
-            this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
-            this.includePaths.Add(gccIncludeFolder);
-        }
-
-        protected override string GetVersion(Opus.Core.BaseTarget baseTarget)
-        {
-            return "4.5.0";
+            this.details = MingwCommon.MingwDetailGatherer.DetermineSpecs(Opus.Core.Target.GetInstance(baseTarget, this));
         }
     }
 }
