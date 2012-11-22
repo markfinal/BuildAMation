@@ -53,7 +53,11 @@ namespace MingwCommon
         {
             // TODO: sort this out... it required a call to the InstallPath to get the right paths
             this.toolset.InstallPath((Opus.Core.BaseTarget)target);
+#if true
+            return (this.toolset as MingwCommon.Toolset).MingwDetail.IncludePaths;
+#else
             return (this.toolset as MingwCommon.Toolset).includePaths;
+#endif
         }
 
         Opus.Core.StringArray C.ICompilerTool.IncludePathCompilerSwitches

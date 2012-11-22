@@ -10,19 +10,29 @@ namespace MingwCommon
         protected string installPath;
         protected string binPath;
         protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
-        public Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+        //public Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
 
-        protected abstract void GetInstallPath();
-        protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
+        protected abstract void GetInstallPath(Opus.Core.BaseTarget baseTarget);
+        //protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+
+        protected MingwDetailData details;
+
+        public MingwDetailData MingwDetail
+        {
+            get
+            {
+                return this.details;
+            }
+        }
 
         #region IToolset Members
 
         string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
-            this.GetInstallPath();
+            this.GetInstallPath(baseTarget);
             return this.binPath;
         }
 
@@ -30,20 +40,22 @@ namespace MingwCommon
         {
             get
             {
-                this.GetInstallPath();
+                // TODO: is this needed?
+                //this.GetInstallPath();
                 return this.environment;
             }
         }
 
         string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
-            this.GetInstallPath();
+            this.GetInstallPath(baseTarget);
             return this.installPath;
         }
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
-            return this.GetVersion(baseTarget);
+            this.GetInstallPath(baseTarget);
+            return this.details.Version;
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)

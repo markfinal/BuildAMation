@@ -22,7 +22,7 @@ namespace Mingw
             this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
         }
 
-        protected override void GetInstallPath()
+        protected override void GetInstallPath(Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {
@@ -53,6 +53,9 @@ namespace Mingw
 
             this.environment.Add(this.binPath);
 
+#if true
+            this.details = MingwCommon.MingwDetailGatherer.DetermineSpecs(Opus.Core.Target.GetInstance(baseTarget, this));
+#else
             string gccIncludeFolder = System.IO.Path.Combine(installPath, "lib");
             gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "gcc");
             gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "mingw32");
@@ -61,11 +64,14 @@ namespace Mingw
 
             this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
             this.includePaths.Add(gccIncludeFolder);
+#endif
         }
 
+#if false
         protected override string GetVersion(Opus.Core.BaseTarget baseTarget)
         {
             return "3.4.5";
         }
+#endif
     }
 }
