@@ -1,4 +1,4 @@
-// <copyright file="CPlusPlusCompilerOptionEnums.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionEnums.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
