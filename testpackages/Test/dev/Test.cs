@@ -13,9 +13,9 @@ namespace Test
                 compilerOptions.Defines.Add("GLOBALOVERRIDE");
             }
 
-            if (optionCollection is C.ICPlusPlusCompilerOptions)
+            if (optionCollection is C.ICxxCompilerOptions)
             {
-                C.ICPlusPlusCompilerOptions compilerOptions = optionCollection as C.ICPlusPlusCompilerOptions;
+                C.ICxxCompilerOptions compilerOptions = optionCollection as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Asynchronous;
             }
 

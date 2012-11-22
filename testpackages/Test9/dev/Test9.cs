@@ -28,7 +28,7 @@ namespace Test9
 
         void CppFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
         }
     }
@@ -44,7 +44,7 @@ namespace Test9
 
         void CppFileCollection_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
         }
     }
@@ -101,7 +101,7 @@ namespace Test9
 
             void CPlusPlusSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+                C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
             }
         }
@@ -171,7 +171,7 @@ namespace Test9
 
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
         }
 
@@ -198,7 +198,7 @@ namespace Test9
 
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+                C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
             }
         }
@@ -275,7 +275,7 @@ namespace Test9
 
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
         }
 
@@ -308,7 +308,7 @@ namespace Test9
 
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+                C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
             }
         }

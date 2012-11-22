@@ -22,7 +22,7 @@ namespace RenderTextureAndProcessor
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 {
-                    C.ICPlusPlusCompilerOptions options = module.Options as C.ICPlusPlusCompilerOptions;
+                    C.ICxxCompilerOptions options = module.Options as C.ICxxCompilerOptions;
                     options.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
                 }
 
@@ -86,7 +86,7 @@ namespace RenderTextureAndProcessor
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 {
-                    C.ICPlusPlusCompilerOptions options = module.Options as C.ICPlusPlusCompilerOptions;
+                    C.ICxxCompilerOptions options = module.Options as C.ICxxCompilerOptions;
                     options.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
                 }
 

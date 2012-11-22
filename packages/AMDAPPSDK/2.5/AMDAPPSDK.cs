@@ -54,7 +54,7 @@ namespace AMDAPPSDK
         [C.ExportCompilerOptionsDelegate]
         void AMDAPPSDK_EnableExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICPlusPlusCompilerOptions compilerOptions = module.Options as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Asynchronous;
         }
 

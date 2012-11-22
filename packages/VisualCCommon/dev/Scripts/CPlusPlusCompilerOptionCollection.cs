@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+    public abstract partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -19,7 +19,7 @@ namespace VisualCCommon
             base.InitializeDefaults(node);
 
             C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
-            C.ICPlusPlusCompilerOptions cxxInterfaceOptions = this as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;
 
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
             cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;

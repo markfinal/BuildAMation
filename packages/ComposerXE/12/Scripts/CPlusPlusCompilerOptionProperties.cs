@@ -1,11 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICPlusPlusCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=ComposerXE -c=CPlusPlusCompilerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICxxCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=ComposerXE -c=CPlusPlusCompilerOptionCollection 
 namespace ComposerXE
 {
     public partial class CPlusPlusCompilerOptionCollection
     {
-        C.CPlusPlus.EExceptionHandler C.ICPlusPlusCompilerOptions.ExceptionHandler
+        C.CPlusPlus.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {
             get
             {

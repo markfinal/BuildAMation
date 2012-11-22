@@ -8,7 +8,7 @@ namespace Gcc
     // this implementation is here because the specific version of the Gcc compiler exposes a new interface
     // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
     // C option collection
-    public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+    public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {

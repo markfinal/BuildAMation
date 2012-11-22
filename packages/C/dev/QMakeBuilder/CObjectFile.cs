@@ -38,7 +38,7 @@ namespace QMakeBuilder
             NodeData nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(target);
             nodeData.AddVariable("SOURCES", sourceFilePath);
-            if (objectFileOptions is C.ICPlusPlusCompilerOptions)
+            if (objectFileOptions is C.ICxxCompilerOptions)
             {
                 Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool));
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);

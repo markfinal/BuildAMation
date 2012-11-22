@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+    public abstract partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -14,10 +14,10 @@ namespace GccCommon
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLine);
         }
 
-        public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+        public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICxxCompilerOptions
         {
             C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
-            C.ICPlusPlusCompilerOptions cxxInterfaceOptions = options as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions cxxInterfaceOptions = options as C.ICxxCompilerOptions;
 
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
             cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;

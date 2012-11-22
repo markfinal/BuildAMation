@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Clang
 {
-    public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICPlusPlusCompilerOptions
+    public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         public CxxCompilerOptionCollection()
         {
@@ -23,7 +23,7 @@ namespace Clang
             C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
 
-            C.ICPlusPlusCompilerOptions cxxInterfaceOptions = this as C.ICPlusPlusCompilerOptions;
+            C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;
             cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
         }
     }
