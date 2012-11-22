@@ -32,7 +32,7 @@ namespace GccCommon
             }
 
             this.installPath = installPath;
-            this.gccDetail = GccCommon.GccDetailGatherer.GetGccDetails(Opus.Core.Target.GetInstance(baseTarget, this));
+            this.gccDetail = GccCommon.GccDetailGatherer.DetermineSpecs(Opus.Core.Target.GetInstance(baseTarget, this));
         }
 
         public GccDetailData GccDetail
