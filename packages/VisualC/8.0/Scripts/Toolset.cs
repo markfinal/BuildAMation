@@ -29,7 +29,7 @@ namespace VisualC
             this.toolMap[typeof(C.IWinResourceCompilerTool)] = new VisualCCommon.Win32ResourceCompiler(this);
 
             this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(VisualC.CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(VisualC.CPlusPlusCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(VisualC.CxxCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(VisualC.LinkerOptionCollection);
             this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(VisualC.ArchiverOptionCollection);
             this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);

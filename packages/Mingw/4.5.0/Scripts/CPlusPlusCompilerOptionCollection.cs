@@ -1,4 +1,4 @@
-// <copyright file="CPlusPlusCompilerOptionCollection.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Mingw package</summary>
@@ -8,21 +8,21 @@ namespace Mingw
     // this implementation is here because the specific version of the Mingw compiler exposes a new interface
     // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
     // C option collection
-    public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
+    public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
 
-            this["ExceptionHandler"].PrivateData = new MingwCommon.PrivateData(MingwCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
+            this["ExceptionHandler"].PrivateData = new MingwCommon.PrivateData(MingwCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLine);
         }
 
-        public CPlusPlusCompilerOptionCollection()
+        public CxxCompilerOptionCollection()
             : base()
         {
         }
 
-        public CPlusPlusCompilerOptionCollection(Opus.Core.DependencyNode node)
+        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }
@@ -39,7 +39,7 @@ namespace Mingw
             // TODO: might be able to clean this up from the MingwDetailData
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(System.IO.Path.Combine(cppIncludePath, "mingw32"), false);
 
-            MingwCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
+            MingwCommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
     }
 }

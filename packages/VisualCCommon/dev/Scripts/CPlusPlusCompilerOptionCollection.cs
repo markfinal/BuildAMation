@@ -1,11 +1,11 @@
-// <copyright file="CPlusPlusCompilerOptionCollection.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VisualCCommon package</summary>
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
+    public abstract partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -25,12 +25,12 @@ namespace VisualCCommon
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
-        public CPlusPlusCompilerOptionCollection()
+        public CxxCompilerOptionCollection()
             : base()
         {
         }
 
-        public CPlusPlusCompilerOptionCollection(Opus.Core.DependencyNode node)
+        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }

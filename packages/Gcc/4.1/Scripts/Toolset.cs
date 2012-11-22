@@ -15,7 +15,7 @@ namespace Gcc
             this.toolMap[typeof(C.IArchiverTool)] = new GccCommon.Archiver(this);
 
             this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Gcc.CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Gcc.CPlusPlusCompilerOptionCollection);
+            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Gcc.CxxCompilerOptionCollection);
             this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Gcc.LinkerOptionCollection);
             this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Gcc.ArchiverOptionCollection);
         }

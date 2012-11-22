@@ -1,9 +1,9 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICxxCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=Gcc -c=CPlusPlusCompilerOptionCollection 
+// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICxxCompilerOptions.cs -o=CxxCompilerOptionProperties.cs -n=Gcc -c=CxxCompilerOptionCollection 
 namespace Gcc
 {
-    public partial class CPlusPlusCompilerOptionCollection
+    public partial class CxxCompilerOptionCollection
     {
         C.Cxx.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {

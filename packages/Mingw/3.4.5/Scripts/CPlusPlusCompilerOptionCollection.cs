@@ -1,18 +1,18 @@
-// <copyright file="CPlusPlusCompilerOptionCollection.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Mingw package</summary>
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed partial class CPlusPlusCompilerOptionCollection : MingwCommon.CPlusPlusCompilerOptionCollection
+    public sealed partial class CxxCompilerOptionCollection : MingwCommon.CxxCompilerOptionCollection
     {
-        public CPlusPlusCompilerOptionCollection()
+        public CxxCompilerOptionCollection()
             : base()
         {
         }
 
-        public CPlusPlusCompilerOptionCollection(Opus.Core.DependencyNode node)
+        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }

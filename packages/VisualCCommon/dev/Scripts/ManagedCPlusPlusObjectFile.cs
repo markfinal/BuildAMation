@@ -1,4 +1,4 @@
-// <copyright file="ManageCPlusPlusObjectFile.cs" company="Mark Final">
+// <copyright file="ManagedCxxObjectFile.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VisualCCommon package</summary>
@@ -8,7 +8,7 @@ namespace VisualCCommon
     /// <summary>
     /// Managed C++ object file
     /// </summary>
-    public class ManagedCPlusPlusObjectFile : C.Cxx.ObjectFile
+    public class ManagedCxxObjectFile : C.Cxx.ObjectFile
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -21,7 +21,7 @@ namespace VisualCCommon
     /// <summary>
     /// Pure Managed C++ object file
     /// </summary>
-    public class PureManagedCPlusPlusObjectFile : C.Cxx.ObjectFile
+    public class PureManagedCxxObjectFile : C.Cxx.ObjectFile
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -34,7 +34,7 @@ namespace VisualCCommon
     /// <summary>
     /// Safe Managed C++ object file
     /// </summary>
-    public class SafeManagedCPlusPlusObjectFile : C.Cxx.ObjectFile
+    public class SafeManagedCxxObjectFile : C.Cxx.ObjectFile
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -47,7 +47,7 @@ namespace VisualCCommon
     /// <summary>
     /// Old Syntax Managed C++ object file
     /// </summary>
-    public class OldSyntaxManagedCPlusPlusObjectFile : C.Cxx.ObjectFile
+    public class OldSyntaxManagedCxxObjectFile : C.Cxx.ObjectFile
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)

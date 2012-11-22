@@ -1,18 +1,18 @@
-// <copyright file="CPlusPlusCompilerOptionCollection.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed partial class CPlusPlusCompilerOptionCollection : VisualCCommon.CPlusPlusCompilerOptionCollection
+    public sealed partial class CxxCompilerOptionCollection : VisualCCommon.CxxCompilerOptionCollection
     {
-        public CPlusPlusCompilerOptionCollection()
+        public CxxCompilerOptionCollection()
             : base()
         {
         }
 
-        public CPlusPlusCompilerOptionCollection(Opus.Core.DependencyNode node)
+        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }

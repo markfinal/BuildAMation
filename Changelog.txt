@@ -1,3 +1,5 @@
+22-Nov-2012 Renamed compiler specific CPlusPlusXYZ classes to CxxXYZ.
+
 22-Nov-2012 Renamed C.ETargetLanguage.CPlusPlus to C.ETargetLanguage.Cxx.
 
 22-Nov-2012 Renamed the namespace C.CPlusPlus to C.Cxx.

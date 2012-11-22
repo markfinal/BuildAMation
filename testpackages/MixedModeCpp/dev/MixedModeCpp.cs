@@ -24,7 +24,7 @@ namespace MixedModeCpp
             }
         }
 
-        class ManagedSourceFiles : VisualCCommon.ManagedCPlusPlusObjectFileCollection
+        class ManagedSourceFiles : VisualCCommon.ManagedCxxObjectFileCollection
         {
             public ManagedSourceFiles()
             {

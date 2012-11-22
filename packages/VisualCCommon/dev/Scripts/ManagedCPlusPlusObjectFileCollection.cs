@@ -1,4 +1,4 @@
-// <copyright file="ManagedCPlusPlusObjectFileCollection.cs" company="Mark Final">
+// <copyright file="ManagedCxxObjectFileCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>VisualCCommon package</summary>
@@ -8,7 +8,7 @@ namespace VisualCCommon
     /// <summary>
     /// Managed C++ object file collection
     /// </summary>
-    public class ManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class ManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -21,7 +21,7 @@ namespace VisualCCommon
     /// <summary>
     /// Pure Managed C++ object file collection
     /// </summary>
-    public class PureManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class PureManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -34,7 +34,7 @@ namespace VisualCCommon
     /// <summary>
     /// Safe Managed C++ object file collection
     /// </summary>
-    public class SafeManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class SafeManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -47,7 +47,7 @@ namespace VisualCCommon
     /// <summary>
     /// Old Syntax Managed C++ object file collection
     /// </summary>
-    public class OldSyntaxManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class OldSyntaxManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)

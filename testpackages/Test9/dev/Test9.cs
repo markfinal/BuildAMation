@@ -83,13 +83,13 @@ namespace Test9
             }
         }
 
-        class CPlusPlusSourceFiles : C.Cxx.ObjectFileCollection
+        class CxxSourceFiles : C.Cxx.ObjectFileCollection
         {
-            public CPlusPlusSourceFiles()
+            public CxxSourceFiles()
             {
                 this.Include(this, "source", "library_cpp.c");
                 this.Include(this, "source", "appmain_cpp.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CPlusPlusSourceFiles_UpdateOptions);
+                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CxxSourceFiles_UpdateOptions);
                 this.UpdateOptions += IncludePaths;
             }
 
@@ -99,7 +99,7 @@ namespace Test9
                 compilerOptions.IncludePaths.Include(this, "include");
             }
 
-            void CPlusPlusSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void CxxSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -109,7 +109,7 @@ namespace Test9
         [Opus.Core.SourceFiles]
         CSourceFiles cSourceFiles = new CSourceFiles();
         [Opus.Core.SourceFiles]
-        CPlusPlusSourceFiles cppSourceFiles = new CPlusPlusSourceFiles();
+        CxxSourceFiles cppSourceFiles = new CxxSourceFiles();
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));

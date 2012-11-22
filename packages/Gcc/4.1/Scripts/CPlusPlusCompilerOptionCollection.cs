@@ -1,4 +1,4 @@
-// <copyright file="CPlusPlusCompilerOptionCollection.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Gcc package</summary>
@@ -8,13 +8,13 @@ namespace Gcc
     // this implementation is here because the specific version of the Gcc compiler exposes a new interface
     // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
     // C option collection
-    public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
+    public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
 
-            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
+            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLine);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -40,15 +40,15 @@ namespace Gcc
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath2, false);
 
-            GccCommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
+            GccCommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
 
-        public CPlusPlusCompilerOptionCollection()
+        public CxxCompilerOptionCollection()
             : base()
         {
         }
 
-        public CPlusPlusCompilerOptionCollection(Opus.Core.DependencyNode node)
+        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }
