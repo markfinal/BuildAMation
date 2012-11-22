@@ -10,7 +10,7 @@ namespace RenderTextureAndProcessor
             this.headerFiles.Include(this, "source", "rendertexture", "*.h");
         }
 
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
@@ -23,7 +23,7 @@ namespace RenderTextureAndProcessor
             {
                 {
                     C.ICxxCompilerOptions options = module.Options as C.ICxxCompilerOptions;
-                    options.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+                    options.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 }
 
                 {
@@ -74,7 +74,7 @@ namespace RenderTextureAndProcessor
             this.headerFiles.Include(this, "source", "textureprocessor", "*.h");
         }
 
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
@@ -87,7 +87,7 @@ namespace RenderTextureAndProcessor
             {
                 {
                     C.ICxxCompilerOptions options = module.Options as C.ICxxCompilerOptions;
-                    options.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+                    options.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 }
 
                 {

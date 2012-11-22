@@ -16,7 +16,7 @@ namespace MixedModeCpp
             options.DoNotAutoIncludeStandardLibraries = false;
         }
 
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {

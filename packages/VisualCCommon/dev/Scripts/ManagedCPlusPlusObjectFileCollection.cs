@@ -8,7 +8,7 @@ namespace VisualCCommon
     /// <summary>
     /// Managed C++ object file collection
     /// </summary>
-    public class ManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    public class ManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -21,7 +21,7 @@ namespace VisualCCommon
     /// <summary>
     /// Pure Managed C++ object file collection
     /// </summary>
-    public class PureManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    public class PureManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -34,7 +34,7 @@ namespace VisualCCommon
     /// <summary>
     /// Safe Managed C++ object file collection
     /// </summary>
-    public class SafeManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    public class SafeManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -47,7 +47,7 @@ namespace VisualCCommon
     /// <summary>
     /// Old Syntax Managed C++ object file collection
     /// </summary>
-    public class OldSyntaxManagedCPlusPlusObjectFileCollection : C.CPlusPlus.ObjectFileCollection
+    public class OldSyntaxManagedCPlusPlusObjectFileCollection : C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)

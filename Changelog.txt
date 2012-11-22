@@ -1,3 +1,5 @@
+22-Nov-2012 Changed the namespace C.CPlusPlus to C.Cxx.
+
 22-Nov-2012 C.ICPlusPlusCompilerOptions has been renamed to C.ICxxCompilerOptions.
 
 21-Nov-2012 Exception reporting has been inverted so that the innermost exception is now reported first, alongwith it's callstack. This ensures that the most relevant exception message appears first.

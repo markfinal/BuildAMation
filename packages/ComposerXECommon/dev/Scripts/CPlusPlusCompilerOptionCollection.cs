@@ -20,7 +20,7 @@ namespace ComposerXECommon
             C.ICxxCompilerOptions cxxInterfaceOptions = options as C.ICxxCompilerOptions;
 
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
-            cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
+            cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -41,15 +41,15 @@ namespace ComposerXECommon
 
         public static void ExceptionHandlerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.CPlusPlus.EExceptionHandler>;
+            Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
             {
-                case C.CPlusPlus.EExceptionHandler.Disabled:
+                case C.Cxx.EExceptionHandler.Disabled:
                     commandLineBuilder.Add("-fno-exceptions");
                     break;
 
-                case C.CPlusPlus.EExceptionHandler.Asynchronous:
-                case C.CPlusPlus.EExceptionHandler.Synchronous:
+                case C.Cxx.EExceptionHandler.Asynchronous:
+                case C.Cxx.EExceptionHandler.Synchronous:
                     commandLineBuilder.Add("-fexceptions");
                     break;
 

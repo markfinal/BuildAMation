@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
-namespace C.CPlusPlus
+namespace C.Cxx
 {
     /// <summary>
     /// C++ object file collection

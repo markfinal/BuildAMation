@@ -13,7 +13,7 @@ namespace Test13
             }
         }
 
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {

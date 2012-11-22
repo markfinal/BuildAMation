@@ -35,7 +35,7 @@ namespace MingwCommon
             // we use gcc as the linker - if there is C++ code included, link against libstdc++
             foreach (Opus.Core.DependencyNode child in node.Children)
             {
-                if (child.Module is C.CPlusPlus.ObjectFile || child.Module is C.CPlusPlus.ObjectFileCollection)
+                if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection)
                 {
                     (this as C.ILinkerOptions).Libraries.Add("-lstdc++");
                     break;

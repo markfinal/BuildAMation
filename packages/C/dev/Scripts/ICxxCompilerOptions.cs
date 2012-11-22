@@ -10,7 +10,7 @@ namespace C
         /// <summary>
         /// Specify the type of exception handling used by the compiler
         /// </summary>
-        C.CPlusPlus.EExceptionHandler ExceptionHandler
+        C.Cxx.EExceptionHandler ExceptionHandler
         {
             get;
             set;

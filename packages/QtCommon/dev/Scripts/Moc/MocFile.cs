@@ -84,7 +84,7 @@ namespace QtCommon
             Opus.Core.IModule module = this as Opus.Core.IModule;
             IMocOptions options = module.Options as IMocOptions;
             string outputPath = options.MocOutputPath;
-            C.CPlusPlus.ObjectFile injectedFile = new C.CPlusPlus.ObjectFile();
+            C.Cxx.ObjectFile injectedFile = new C.Cxx.ObjectFile();
             injectedFile.SetGuaranteedAbsolutePath(outputPath);
 
             Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();

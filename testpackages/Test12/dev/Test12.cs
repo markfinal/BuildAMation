@@ -4,7 +4,7 @@ namespace Test12
     // Define module classes here
     class MyOpenGLApplication : C.WindowsApplication
     {
-        class CommonSourceFiles : C.CPlusPlus.ObjectFileCollection
+        class CommonSourceFiles : C.Cxx.ObjectFileCollection
         {
             public CommonSourceFiles()
             {
@@ -12,7 +12,7 @@ namespace Test12
             }
         }
 
-        class WindowsSourceFiles : C.CPlusPlus.ObjectFileCollection
+        class WindowsSourceFiles : C.Cxx.ObjectFileCollection
         {
             public WindowsSourceFiles()
             {
@@ -20,7 +20,7 @@ namespace Test12
             }
         }
 
-        class UnixSourceFiles : C.CPlusPlus.ObjectFileCollection
+        class UnixSourceFiles : C.Cxx.ObjectFileCollection
         {
             public UnixSourceFiles()
             {
@@ -28,7 +28,7 @@ namespace Test12
             }
         }
 
-        class OSXSourceFiles : C.CPlusPlus.ObjectFileCollection
+        class OSXSourceFiles : C.Cxx.ObjectFileCollection
         {
             public OSXSourceFiles()
             {

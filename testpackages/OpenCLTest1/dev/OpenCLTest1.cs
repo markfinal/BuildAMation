@@ -4,7 +4,7 @@ namespace OpenCLTest1
     // Add modules here
     class OpenCLTest1 : C.Application
     {
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {

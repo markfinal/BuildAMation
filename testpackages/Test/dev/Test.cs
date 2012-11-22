@@ -16,7 +16,7 @@ namespace Test
             if (optionCollection is C.ICxxCompilerOptions)
             {
                 C.ICxxCompilerOptions compilerOptions = optionCollection as C.ICxxCompilerOptions;
-                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Asynchronous;
+                compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
             if (optionCollection is VisualCCommon.LinkerOptionCollection)
@@ -101,7 +101,7 @@ namespace Test
         }
     }
 
-    sealed class CompileSingleCppFile : C.CPlusPlus.ObjectFile
+    sealed class CompileSingleCppFile : C.Cxx.ObjectFile
     {
         public CompileSingleCppFile()
         {
@@ -109,7 +109,7 @@ namespace Test
         }
     }
 
-    sealed class CompileCppSourceCollection : C.CPlusPlus.ObjectFileCollection
+    sealed class CompileCppSourceCollection : C.Cxx.ObjectFileCollection
     {
         public CompileCppSourceCollection()
         {
@@ -169,7 +169,7 @@ namespace Test
 
     sealed class BuildTerminalApplicationFromCxx : C.Application
     {
-        sealed class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        sealed class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {

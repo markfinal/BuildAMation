@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
-namespace C.CPlusPlus
+namespace C.Cxx
 {
     // TOOD: rename enum as structured?
     public enum EExceptionHandler

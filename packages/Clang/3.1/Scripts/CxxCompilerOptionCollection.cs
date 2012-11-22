@@ -24,7 +24,7 @@ namespace Clang
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.CPlusPlus;
 
             C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;
-            cxxInterfaceOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Disabled;
+            cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
     }
 }

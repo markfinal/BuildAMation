@@ -18,7 +18,7 @@ namespace Test9
         }
     }
 
-    class CppFile : C.CPlusPlus.ObjectFile
+    class CppFile : C.Cxx.ObjectFile
     {
         public CppFile()
         {
@@ -29,11 +29,11 @@ namespace Test9
         void CppFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-            compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+            compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
     }
 
-    class CppFileCollection : C.CPlusPlus.ObjectFileCollection
+    class CppFileCollection : C.Cxx.ObjectFileCollection
     {
         public CppFileCollection()
         {
@@ -45,7 +45,7 @@ namespace Test9
         void CppFileCollection_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-            compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+            compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
     }
 
@@ -83,7 +83,7 @@ namespace Test9
             }
         }
 
-        class CPlusPlusSourceFiles : C.CPlusPlus.ObjectFileCollection
+        class CPlusPlusSourceFiles : C.Cxx.ObjectFileCollection
         {
             public CPlusPlusSourceFiles()
             {
@@ -102,7 +102,7 @@ namespace Test9
             void CPlusPlusSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+                compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
         }
 
@@ -172,16 +172,16 @@ namespace Test9
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-            compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+            compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
 
         [Opus.Core.SourceFiles]
-        C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile();
+        C.Cxx.ObjectFile sourceFile = new C.Cxx.ObjectFile();
     }
 
     class CppStaticLibaryFromCollection : C.StaticLibrary
     {
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
@@ -199,7 +199,7 @@ namespace Test9
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+                compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
         }
 
@@ -276,11 +276,11 @@ namespace Test9
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-            compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+            compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
 
         [Opus.Core.SourceFiles]
-        C.CPlusPlus.ObjectFile sourceFile = new C.CPlusPlus.ObjectFile();
+        C.Cxx.ObjectFile sourceFile = new C.Cxx.ObjectFile();
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
@@ -291,7 +291,7 @@ namespace Test9
 
     class CppDynamicLibaryFromCollection : C.DynamicLibrary
     {
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
@@ -309,7 +309,7 @@ namespace Test9
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Synchronous;
+                compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
         }
 

@@ -5,15 +5,15 @@ namespace Clang
 {
     public partial class CxxCompilerOptionCollection
     {
-        C.CPlusPlus.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {
             get
             {
-                return this.GetValueTypeOption<C.CPlusPlus.EExceptionHandler>("ExceptionHandler");
+                return this.GetValueTypeOption<C.Cxx.EExceptionHandler>("ExceptionHandler");
             }
             set
             {
-                this.SetValueTypeOption<C.CPlusPlus.EExceptionHandler>("ExceptionHandler", value);
+                this.SetValueTypeOption<C.Cxx.EExceptionHandler>("ExceptionHandler", value);
                 this.ProcessNamedSetHandler("ExceptionHandlerSetHandler", this["ExceptionHandler"]);
             }
         }

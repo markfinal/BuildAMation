@@ -9,7 +9,7 @@ namespace OpenGLUniformBufferTest
             this.headerFiles.Include(this, "source", "*.h");
         }
 
-        class SourceFiles : C.CPlusPlus.ObjectFileCollection
+        class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
@@ -22,7 +22,7 @@ namespace OpenGLUniformBufferTest
             void SourceFiles_EnableException(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
-                compilerOptions.ExceptionHandler = C.CPlusPlus.EExceptionHandler.Asynchronous;
+                compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
             void SourceFiles_VCDefines(Opus.Core.IModule module, Opus.Core.Target target)
