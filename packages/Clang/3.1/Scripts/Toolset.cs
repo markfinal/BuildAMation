@@ -7,6 +7,8 @@ namespace Clang
 {
     public class Toolset : Opus.Core.IToolset
     {
+        private string installPath;
+
         private System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
         private System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
 
@@ -32,16 +34,31 @@ namespace Clang
 
         string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
+            if (null != this.installPath)
+            {
+                return this.installPath;
+            }
+
+            string installPath = null;
+            if (Opus.Core.State.HasCategory("Clang") && Opus.Core.State.Has("Clang", "InstallPath"))
+            {
+                installPath = Opus.Core.State.Get("Clang", "InstallPath") as string;
+                Opus.Core.Log.DebugMessage("Clang install path set from command line to '{0}'", installPath);
+                this.installPath = installPath;
+                return installPath;
+            }
+
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                // TODO: add an action to locate the install directory
-                return @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
-                //return @"E:\Thirdparty\llvm\build\bin\Release";
+                installPath  = @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
             }
             else
             {
                 throw new System.NotSupportedException();
             }
+
+            this.installPath = installPath;
+            return installPath;
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
