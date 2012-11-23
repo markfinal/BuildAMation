@@ -49,7 +49,7 @@ namespace GccCommon
             string pathPrefix = null;
             string gxxIncludeDir = null;
             string gccTarget = null;
-            string libExecDir = null;
+            string libDir = null;
             Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
             {
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
@@ -91,6 +91,7 @@ namespace GccCommon
                         const string gxxIncludeDirKey = "--with-gxx-include-dir=";
                         const string targetKey = "--target=";
                         const string libexecKey = "--libexecdir=";
+                        const string slibDirKey = "--with-slibdir=";
                         foreach (string option in splitConfigureOptions)
                         {
                             if (option.StartsWith(pathPrefixKey))
@@ -107,7 +108,19 @@ namespace GccCommon
                             }
                             else if (option.StartsWith(libexecKey))
                             {
-                                libExecDir = option.Substring(libexecKey.Length).Trim();
+                                if (null != libDir)
+                                {
+                                    throw new Opus.Core.Exception("lib dir already defined");
+                                }
+                                libDir = option.Substring(libexecKey.Length).Trim();
+                            }
+                            else if (option.StartsWith(slibDirKey))
+                            {
+                                if (null != libDir)
+                                {
+                                    throw new Opus.Core.Exception("lib dir already defined");
+                                }
+                                libDir = option.Substring(slibDirKey.Length).Trim();
                             }
                         }
 
@@ -134,10 +147,14 @@ namespace GccCommon
                     gxxIncludeDir = System.IO.Path.Combine(pathPrefix, gxxIncludeDir);
                 }
 
-
                 // C include paths (http://gcc.gnu.org/onlinedocs/cpp/Search-Path.html)
+                if (null == libDir)
+                {
+                    throw new Opus.Core.Exception("Unable to locate lib dir for gcc");
+                }
+
                 includePaths.Add("/usr/local/include");
-                string gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libExecDir, gccTarget, gccVersion);
+                string gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libDir, gccTarget, gccVersion);
                 string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
                 string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
     
@@ -147,12 +164,16 @@ namespace GccCommon
                 }
                 includePaths.Add(gccIncludeFolder);
 
-                // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
-                if (!System.IO.Directory.Exists(gccIncludeFixedFolder))
+                // OSX does not have this path
+                if (!target.HasPlatform(Opus.Core.EPlatform.OSX))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+                    // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
+                    if (!System.IO.Directory.Exists(gccIncludeFixedFolder))
+                    {
+                        throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+                    }
+                    includePaths.Add(gccIncludeFixedFolder);
                 }
-                includePaths.Add(gccIncludeFixedFolder);
 
                 string targetIncludeFolder = System.String.Format("/usr/{0}/include", gccTarget);
                 if (System.IO.Directory.Exists(targetIncludeFolder))
@@ -172,7 +193,7 @@ namespace GccCommon
                 }
             }
 
-            GccDetailData gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libExecDir);
+            GccDetailData gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
             gccDetailsForTarget[target] = gccDetails;
 
             Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", target.ToString(), gccDetails.Version);
