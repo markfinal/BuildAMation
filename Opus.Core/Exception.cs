@@ -79,7 +79,7 @@ namespace Opus.Core
             Log.ErrorMessage("{0} ({1})", exception.Message, exception.GetType().ToString());
             if (!anyInnerExceptions)
             {
-                Log.ErrorMessage(exception.StackTrace.ToString());
+                Log.ErrorMessage("\n{0}", exception.StackTrace.ToString());
             }
 
             return true;
