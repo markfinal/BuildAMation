@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
-            Opus.Core.IModule mocFileModule = mocFile as Opus.Core.IModule;
+            Opus.Core.BaseModule mocFileModule = mocFile as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;

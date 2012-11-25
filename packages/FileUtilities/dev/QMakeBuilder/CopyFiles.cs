@@ -12,7 +12,7 @@ namespace QMakeBuilder
             System.Enum sourceOutputPaths = copyFiles.SourceOutputFlags;
             System.Collections.Generic.List<NodeData> sourceFileDataArray = new System.Collections.Generic.List<NodeData>();
             Opus.Core.StringArray sourceFiles = null;
-            foreach (Opus.Core.IModule sourceModule in copyFiles.SourceModules)
+            foreach (Opus.Core.BaseModule sourceModule in copyFiles.SourceModules)
             {
                 if (sourceModule.Options.OutputPaths.Has(sourceOutputPaths))
                 {
@@ -54,7 +54,7 @@ namespace QMakeBuilder
                 destinationDirectory = copyFiles.DestinationDirectory;
             }
 
-            Opus.Core.IModule copyFilesModule = copyFiles as Opus.Core.IModule;
+            Opus.Core.BaseModule copyFilesModule = copyFiles as Opus.Core.BaseModule;
             Opus.Core.BaseOptionCollection copyFilesOptions = copyFilesModule.Options;
             Opus.Core.Target target = copyFilesModule.OwningNode.Target;
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFilesTool));

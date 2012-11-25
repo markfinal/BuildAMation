@@ -9,17 +9,9 @@ namespace C
     /// C third party library (externally built libraries)
     /// </summary>
     [Opus.Core.ModuleToolAssignment(null)]
-    public abstract class ThirdPartyModule : Opus.Core.IModule
+    public abstract class ThirdPartyModule : Opus.Core.BaseModule
     {
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
+        public override Opus.Core.BaseOptionCollection Options
         {
             get
             {
@@ -31,20 +23,6 @@ namespace C
             }
         }
 
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
         public abstract Opus.Core.StringArray Libraries(Opus.Core.Target target);
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
     }
 }

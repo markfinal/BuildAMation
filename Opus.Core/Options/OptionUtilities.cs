@@ -51,20 +51,21 @@ namespace Opus.Core
         }
 
         // this version only applies the exported attribute type
-        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(IModule module, DependencyNode node, int depth)
+        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(BaseModule module, DependencyNode node, int depth)
         {
             System.Type nodeModuleType = node.Module.GetType();
             Target target = node.Target;
+            DependencyNode owningNode = module.OwningNode;
 
-            if (!module.OwningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
+            if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
             {
                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, depth + 1);
-                module.OwningNode.ExportedUpdatesAdded.Add(nodeModuleType);
+                owningNode.ExportedUpdatesAdded.Add(nodeModuleType);
             }
-            if (!module.OwningNode.ExportedUpdatesAdded.Contains(nodeModuleType.BaseType))
+            if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType.BaseType))
             {
                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
-                module.OwningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
+                owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
             if (null != node.ExternalDependents)
@@ -83,10 +84,10 @@ namespace Opus.Core
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
 
-                            if (!module.OwningNode.ExportedUpdatesAdded.Contains(childType))
+                            if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                             {
                                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
-                                module.OwningNode.ExportedUpdatesAdded.Add(childType);
+                                owningNode.ExportedUpdatesAdded.Add(childType);
                             }
                         }
                     }
@@ -95,32 +96,33 @@ namespace Opus.Core
         }
 
         // this applies both local and export, but not local to the external dependents
-        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(IModule module, DependencyNode node, int depth)
+        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(BaseModule module, DependencyNode node, int depth)
         {
             System.Type nodeModuleType = node.Module.GetType();
             Target target = node.Target;
+            DependencyNode owningNode = module.OwningNode;
 
             // only apply local here
-            if (!module.OwningNode.LocalUpdatesAdded.Contains(nodeModuleType))
+            if (!owningNode.LocalUpdatesAdded.Contains(nodeModuleType))
             {
                 AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType, target, depth + 1);
-                module.OwningNode.LocalUpdatesAdded.Add(nodeModuleType);
+                owningNode.LocalUpdatesAdded.Add(nodeModuleType);
             }
-            if (!module.OwningNode.LocalUpdatesAdded.Contains(nodeModuleType.BaseType))
+            if (!owningNode.LocalUpdatesAdded.Contains(nodeModuleType.BaseType))
             {
                 AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
-                module.OwningNode.LocalUpdatesAdded.Add(nodeModuleType.BaseType);
+                owningNode.LocalUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
-            if (!module.OwningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
+            if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
             {
                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, depth + 1);
-                module.OwningNode.ExportedUpdatesAdded.Add(nodeModuleType);
+                owningNode.ExportedUpdatesAdded.Add(nodeModuleType);
             }
-            if (!module.OwningNode.ExportedUpdatesAdded.Contains(nodeModuleType.BaseType))
+            if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType.BaseType))
             {
                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
-                module.OwningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
+                owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
             if (null != node.ExternalDependents)
@@ -138,10 +140,10 @@ namespace Opus.Core
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
 
-                            if (!module.OwningNode.ExportedUpdatesAdded.Contains(childType))
+                            if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                             {
                                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
-                                module.OwningNode.ExportedUpdatesAdded.Add(childType);
+                                owningNode.ExportedUpdatesAdded.Add(childType);
                             }
                         }
                     }
@@ -163,10 +165,10 @@ namespace Opus.Core
                             Core.IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
 
-                            if (!module.OwningNode.ExportedUpdatesAdded.Contains(childType))
+                            if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                             {
                                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
-                                module.OwningNode.ExportedUpdatesAdded.Add(childType);
+                                owningNode.ExportedUpdatesAdded.Add(childType);
                             }
                         }
                     }
@@ -196,7 +198,7 @@ namespace Opus.Core
 
         public static OptionCollectionType CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(Core.DependencyNode node) where OptionCollectionType : Core.BaseOptionCollection
         {
-            Core.IModule module = node.Module;
+            Core.BaseModule module = node.Module;
             Core.Target target = node.Target;
 
             ProcessFieldAttributes(module, target);

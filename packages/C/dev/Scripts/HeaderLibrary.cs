@@ -9,34 +9,7 @@ namespace C
     /// C/C++ header only library
     /// </summary>
     [Opus.Core.ModuleToolAssignment(null)]
-    public class HeaderLibrary : Opus.Core.IModule
+    public class HeaderLibrary : Opus.Core.BaseModule
     {
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (this.UpdateOptions != null)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
     }
 }

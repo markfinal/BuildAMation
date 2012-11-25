@@ -29,7 +29,7 @@ namespace NativeBuilder
                 return null;
             }
 
-            Opus.Core.IModule copyFilesModule = copyFiles as Opus.Core.IModule;
+            Opus.Core.BaseModule copyFilesModule = copyFiles as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = copyFilesModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

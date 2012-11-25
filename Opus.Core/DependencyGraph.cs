@@ -291,7 +291,7 @@ namespace Opus.Core
                         }
 
                         int childIndex = 0;
-                        foreach (IModule nestedModule in nestedDependentModules)
+                        foreach (BaseModule nestedModule in nestedDependentModules)
                         {
                             System.Type nestedModuleType = nestedModule.GetType();
                             // TODO: the child index here might be a problem
@@ -400,7 +400,7 @@ namespace Opus.Core
                     if (null != injectModules)
                     {
                         ModuleCollection injectedModules = injectModules.GetInjectedModules(node.Target);
-                        foreach (IModule module in injectedModules)
+                        foreach (BaseModule module in injectedModules)
                         {
                             DependencyNodeCollection externalDependencyForCollection = node.ExternalDependentFor;
                             if (null == externalDependencyForCollection)

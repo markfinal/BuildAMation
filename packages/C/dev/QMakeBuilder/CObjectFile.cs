@@ -19,7 +19,7 @@ namespace QMakeBuilder
                 return null;
             }
 
-            Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
+            Opus.Core.BaseModule objectFileModule = objectFile as Opus.Core.BaseModule;
             Opus.Core.Target target = objectFileModule.OwningNode.Target;
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
 

@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         public object Build(C.StaticLibrary staticLibrary, out bool success)
         {
-            Opus.Core.IModule staticLibraryModule = staticLibrary as Opus.Core.IModule;
+            Opus.Core.BaseModule staticLibraryModule = staticLibrary as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

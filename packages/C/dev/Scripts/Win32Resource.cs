@@ -9,39 +9,11 @@ namespace C
     /// C/C++ console application
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
-    public class Win32Resource : Opus.Core.IModule
+    public class Win32Resource : Opus.Core.BaseModule
     {
         public Win32Resource()
         {
             this.ResourceFile = new Opus.Core.File();
-        }
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (this.UpdateOptions != null)
-            {
-                this.UpdateOptions(this, target);
-            }
         }
 
         public Opus.Core.File ResourceFile

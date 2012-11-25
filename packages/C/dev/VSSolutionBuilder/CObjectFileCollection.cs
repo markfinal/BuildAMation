@@ -9,7 +9,7 @@ namespace VSSolutionBuilder
     {
         public object Build(C.ObjectFileCollectionBase objectFileCollection, out bool success)
         {
-            Opus.Core.IModule objectFileCollectionModule = objectFileCollection as Opus.Core.IModule;
+            Opus.Core.BaseModule objectFileCollectionModule = objectFileCollection as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
             if (null == node.Parent || (node.Parent.Module.GetType().BaseType.BaseType == typeof(C.ObjectFileCollection) && null == node.Parent.Parent))
             {
@@ -40,7 +40,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, objectFileCollection.ProxyPath }) as IProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, (objectFileCollection as Opus.Core.IModule).ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }

@@ -4,7 +4,7 @@ namespace MakeFileBuilder
     {
         public object Build(CodeGenTest.CodeGenModule codeGenModule, out System.Boolean success)
         {
-            Opus.Core.IModule codeGenModuleModule = codeGenModule as Opus.Core.IModule;
+            Opus.Core.BaseModule codeGenModuleModule = codeGenModule as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;

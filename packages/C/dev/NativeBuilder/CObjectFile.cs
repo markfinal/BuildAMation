@@ -19,7 +19,7 @@ namespace NativeBuilder
             DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(sourceFilePath);
 #endif
 
-            Opus.Core.IModule objectFileModule = objectFile as Opus.Core.IModule;
+            Opus.Core.BaseModule objectFileModule = objectFile as Opus.Core.BaseModule;
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
 

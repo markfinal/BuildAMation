@@ -9,7 +9,7 @@ namespace VSSolutionBuilder
     {
         public object Build(C.HeaderLibrary headerLibrary, out bool success)
         {
-            Opus.Core.IModule headerLibraryModule = headerLibrary as Opus.Core.IModule;
+            Opus.Core.BaseModule headerLibraryModule = headerLibrary as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = headerLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, headerLibrary.ProxyPath }) as IProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, (headerLibrary as Opus.Core.IModule).ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }

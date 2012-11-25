@@ -9,36 +9,8 @@ namespace C
     /// C object file
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
-    public class ObjectFile : Opus.Core.IModule
+    public class ObjectFile : Opus.Core.BaseModule
     {
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
-
         public Opus.Core.File SourceFile
         {
             get;

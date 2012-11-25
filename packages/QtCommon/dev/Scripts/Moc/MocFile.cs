@@ -17,7 +17,7 @@ namespace QtCommon
     /// Create meta data from a C++ header or source file
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
-    public class MocFile : Opus.Core.IModule, Opus.Core.IInjectModules
+    public class MocFile : Opus.Core.BaseModule, Opus.Core.IInjectModules
     {
         public static string Prefix
         {
@@ -50,34 +50,6 @@ namespace QtCommon
             get;
             private set;
         }
-
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {

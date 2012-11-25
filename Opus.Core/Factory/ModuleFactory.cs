@@ -16,20 +16,20 @@ namespace Opus.Core
             }
         }
 
-        public static IModule CreateModule(System.Type moduleType)
+        public static BaseModule CreateModule(System.Type moduleType)
         {
             CheckModuleTypeForInterface(moduleType);
 
-            IModule module = System.Activator.CreateInstance(moduleType) as IModule;
+            BaseModule module = System.Activator.CreateInstance(moduleType) as BaseModule;
 
             return module;
         }
 
-        public static IModule CreateModule(System.Type moduleType, Target target)
+        public static BaseModule CreateModule(System.Type moduleType, Target target)
         {
             CheckModuleTypeForInterface(moduleType);
 
-            IModule module = System.Activator.CreateInstance(moduleType, new object[] { target }) as IModule;
+            BaseModule module = System.Activator.CreateInstance(moduleType, new object[] { target }) as BaseModule;
             return module;
         }
     }

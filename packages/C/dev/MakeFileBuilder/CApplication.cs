@@ -9,7 +9,7 @@ namespace MakeFileBuilder
     {
         public object Build(C.Application application, out bool success)
         {
-            Opus.Core.IModule applicationModule = application as Opus.Core.IModule;
+            Opus.Core.BaseModule applicationModule = application as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = applicationModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

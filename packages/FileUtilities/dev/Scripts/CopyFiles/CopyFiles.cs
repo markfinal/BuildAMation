@@ -18,36 +18,8 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFilesTool))]
     // TODO: kind of need a different interface to nested dependents which allows
     // the system to inspect a module
-    public class CopyFiles : Opus.Core.IModule, Opus.Core.IIdentifyExternalDependencies
+    public class CopyFiles : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
         public Opus.Core.FileCollection SourceFiles
         {
             get;

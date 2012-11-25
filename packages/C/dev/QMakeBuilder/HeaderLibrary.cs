@@ -9,7 +9,7 @@ namespace QMakeBuilder
     {
         public object Build(C.HeaderLibrary headerLibrary, out bool success)
         {
-            Opus.Core.IModule headerLibraryModule = headerLibrary as Opus.Core.IModule;
+            Opus.Core.BaseModule headerLibraryModule = headerLibrary as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = headerLibraryModule.OwningNode;
 
             NodeData nodeData = new NodeData();

@@ -1,3 +1,5 @@
+25-Nov-2012 Opus.Core.IModule now only lists the required option and proxy path methods/properties. Opus.Core.BaseModule is a new abstract class (implementing IModule) that each module class must now derive from. This allows virtually all of the common methods to be implemented in the base class to simplify the derived module classes. Also, option updates are now performed through a clean interface in user written module instances.
+
 22-Nov-2012 Renamed compiler specific CPlusPlusXYZ classes to CxxXYZ.
 
 22-Nov-2012 Renamed C.ETargetLanguage.CPlusPlus to C.ETargetLanguage.Cxx.

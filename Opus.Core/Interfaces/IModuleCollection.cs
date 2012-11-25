@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public interface IModuleCollection : IModule, INestedDependents
+    public interface IModuleCollection : INestedDependents
     {
         IModule GetChildModule(object owner, params string[] pathSegments);
     }

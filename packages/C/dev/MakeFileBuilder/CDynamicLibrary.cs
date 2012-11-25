@@ -9,7 +9,7 @@ namespace MakeFileBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
         {
-            Opus.Core.IModule dynamicLibraryModule = dynamicLibrary as Opus.Core.IModule;
+            Opus.Core.BaseModule dynamicLibraryModule = dynamicLibrary as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

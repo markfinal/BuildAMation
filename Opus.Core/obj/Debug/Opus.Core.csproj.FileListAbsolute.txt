@@ -1,0 +1,8 @@
+D:\dev\Opus\git\bin\Debug\Schema\OpusPackageDependency.xsd
+D:\dev\Opus\git\bin\Debug\Schema\OpusPackageDependencyV2.xsd
+D:\dev\Opus\git\bin\Debug\Opus.Core.dll.config
+D:\dev\Opus\git\bin\Debug\Opus.Core.dll
+D:\dev\Opus\git\bin\Debug\Opus.Core.pdb
+D:\dev\Opus\git\Opus.Core\obj\Debug\ResolveAssemblyReference.cache
+D:\dev\Opus\git\Opus.Core\obj\Debug\Opus.Core.dll
+D:\dev\Opus\git\Opus.Core\obj\Debug\Opus.Core.pdb

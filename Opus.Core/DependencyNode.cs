@@ -91,6 +91,11 @@ namespace Opus.Core
         
         private void Initialize(System.Type moduleType, DependencyNode parent, Target target, int childIndex, bool nestedModule)
         {
+            if (!typeof(BaseModule).IsAssignableFrom(moduleType))
+            {
+                throw new Exception(System.String.Format("Module type '{0}' does not derive from the Opus.Core.BaseModule class", moduleType.ToString()));
+            }
+
             this.Rank = -1;
             this.Parent = parent;
             this.Target = target;
@@ -204,7 +209,7 @@ namespace Opus.Core
             this.Module.Options = genericMethod.Invoke(null, new object[] { this }) as BaseOptionCollection;
         }
 
-        public DependencyNode(IModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
+        public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
         {
             this.Initialize(module.GetType(), parent, target, childIndex, nestedModule);
             this.Module = module;
@@ -215,7 +220,7 @@ namespace Opus.Core
         {
             this.Initialize(moduleType, parent, target, childIndex, nestedModule);
 
-            IModule module = null;
+            BaseModule module = null;
             try
             {
                 if (null != moduleType.GetConstructor(new System.Type[] { typeof(Target) }))
@@ -290,7 +295,7 @@ namespace Opus.Core
             private set;
         }
 
-        public IModule Module
+        public BaseModule Module
         {
             get;
             private set;

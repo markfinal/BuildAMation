@@ -15,7 +15,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(System.String.Format("Resource file '{0}' does not exist", resourceFilePath));
             }
 
-            Opus.Core.IModule resourceFileModule = resourceFile as Opus.Core.IModule;
+            Opus.Core.BaseModule resourceFileModule = resourceFile as Opus.Core.BaseModule;
             Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
 
             C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;

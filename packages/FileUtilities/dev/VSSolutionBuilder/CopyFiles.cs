@@ -20,7 +20,7 @@ namespace VSSolutionBuilder
 
         private void PostBuildEventCopyFiles(Opus.Core.IModule moduleForPostEvents, string destinationDirectory, Opus.Core.StringArray filesToCopy)
         {
-            Opus.Core.DependencyNode sourceModuleNode = moduleForPostEvents.OwningNode;
+            Opus.Core.DependencyNode sourceModuleNode = (moduleForPostEvents as Opus.Core.BaseModule).OwningNode;
             IProject nodeProjectData = sourceModuleNode.Data as IProject;
 
             ProjectConfigurationCollection configCollection = nodeProjectData.Configurations;

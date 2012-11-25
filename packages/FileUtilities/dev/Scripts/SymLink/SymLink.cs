@@ -6,34 +6,7 @@
 namespace FileUtilities
 {
     [Opus.Core.ModuleToolAssignment(typeof(ISymLinkTool))]
-    public class SymLink : Opus.Core.IModule
+    public class SymLink : Opus.Core.BaseModule
     {
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
     }
 }

@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         public object Build(FileUtilities.SymLink symLink, out bool success)
         {
-            Opus.Core.IModule symLinkModule = symLink as Opus.Core.IModule;
+            Opus.Core.BaseModule symLinkModule = symLink as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = symLinkModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

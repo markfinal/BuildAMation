@@ -119,36 +119,8 @@ namespace CodeGenTest2
     /// Code generation of C++ source
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
-    public abstract class CodeGenModule : Opus.Core.IModule, Opus.Core.IInjectModules
+    public abstract class CodeGenModule : Opus.Core.BaseModule, Opus.Core.IInjectModules
     {
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
-
         [Opus.Core.RequiredModules]
         protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CodeGeneratorTool));
 

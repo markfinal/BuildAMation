@@ -18,7 +18,7 @@ namespace MakeFileBuilder
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(resourceFilePath);
 
-            Opus.Core.IModule resourceFileModule = resourceFile as Opus.Core.IModule;
+            Opus.Core.BaseModule resourceFileModule = resourceFile as Opus.Core.BaseModule;
             Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
 
             C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;

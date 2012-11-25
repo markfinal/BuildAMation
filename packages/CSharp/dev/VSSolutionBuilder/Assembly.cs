@@ -9,7 +9,7 @@ namespace VSSolutionBuilder
     {
         public object Build(CSharp.Assembly assembly, out System.Boolean success)
         {
-            Opus.Core.IModule assemblyModule = assembly as Opus.Core.IModule;
+            Opus.Core.BaseModule assemblyModule = assembly as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
             CSharp.OptionCollection options = assemblyModule.Options as CSharp.OptionCollection;
@@ -55,7 +55,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, assembly.ProxyPath }) as ICSProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, (assembly as Opus.Core.IModule).ProxyPath }) as ICSProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }

@@ -9,7 +9,7 @@ namespace MakeFileBuilder
     {
         public object Build(QtCommon.MocFileCollection mocFileCollection, out bool success)
         {
-            Opus.Core.IModule mocFileCollectionModule = mocFileCollection as Opus.Core.IModule;
+            Opus.Core.BaseModule mocFileCollectionModule = mocFileCollection as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = mocFileCollectionModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

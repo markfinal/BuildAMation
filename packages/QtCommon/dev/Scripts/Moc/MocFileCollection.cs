@@ -9,17 +9,9 @@ namespace QtCommon
     /// Create meta data from a collection of C++ header or source files
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
-    public abstract class MocFileCollection : Opus.Core.IModuleCollection
+    public abstract class MocFileCollection : Opus.Core.BaseModule, Opus.Core.IModuleCollection
     {
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();
-
-        void Opus.Core.IModule.ExecuteOptionUpdate(Opus.Core.Target target)
-        {
-            if (null != this.UpdateOptions)
-            {
-                this.UpdateOptions(this, target);
-            }
-        }
 
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
@@ -32,26 +24,6 @@ namespace QtCommon
 
             return collection;
         }
-
-        Opus.Core.BaseOptionCollection Opus.Core.IModule.Options
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.DependencyNode Opus.Core.IModule.OwningNode
-        {
-            get;
-            set;
-        }
-
-        public Opus.Core.ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
-
-        public event Opus.Core.UpdateOptionCollectionDelegate UpdateOptions;
 
         [System.Obsolete("Please use the Include method")]
         public void AddRelativePaths(object owner, params string[] pathSegments)
@@ -78,7 +50,7 @@ namespace QtCommon
             foreach (string path in filePaths)
             {
                 MocFile mocFile = new MocFile();
-                mocFile.ProxyPath = this.ProxyPath;
+                (mocFile as Opus.Core.IModule).ProxyPath = (this as Opus.Core.IModule).ProxyPath;
                 mocFile.SetAbsolutePath(path);
                 this.list.Add(mocFile);
             }

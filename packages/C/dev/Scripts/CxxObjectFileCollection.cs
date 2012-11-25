@@ -41,7 +41,7 @@ namespace C.Cxx
             foreach (string path in filePaths)
             {
                 ObjectFile objectFile = new ObjectFile();
-                objectFile.ProxyPath = this.ProxyPath;
+                (objectFile as Opus.Core.IModule).ProxyPath = (this as Opus.Core.IModule).ProxyPath;
                 objectFile.SourceFile.SetAbsolutePath(path);
                 this.list.Add(objectFile);
             }

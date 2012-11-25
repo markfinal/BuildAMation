@@ -9,7 +9,7 @@ namespace QMakeBuilder
     {
         public object Build(C.ObjectFileCollectionBase objectFileCollection, out bool success)
         {
-            Opus.Core.IModule objectFileCollectionModule = objectFileCollection as Opus.Core.IModule;
+            Opus.Core.BaseModule objectFileCollectionModule = objectFileCollection as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
 
             if ((null == node.Children) || (0 == node.Children.Count))

@@ -9,7 +9,7 @@ namespace MakeFileBuilder
     {
         public object Build(CSharp.Assembly assembly, out System.Boolean success)
         {
-            Opus.Core.IModule assemblyModule = assembly as Opus.Core.IModule;
+            Opus.Core.BaseModule assemblyModule = assembly as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;

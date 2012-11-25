@@ -5,27 +5,19 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public delegate void UpdateOptionCollectionDelegate(IModule module, Core.Target target);
+    public delegate void UpdateOptionCollectionDelegate(IModule module, Target target);
 
     public interface IModule
     {
-        event Core.UpdateOptionCollectionDelegate UpdateOptions;
+        event UpdateOptionCollectionDelegate UpdateOptions;
 
         BaseOptionCollection Options
         {
             get;
             set;
         }
-       
-        void ExecuteOptionUpdate(Core.Target target);
 
-        DependencyNode OwningNode
-        {
-            get;
-            set;
-        }
-
-        Opus.Core.ProxyModulePath ProxyPath
+        ProxyModulePath ProxyPath
         {
             get;
             set;
