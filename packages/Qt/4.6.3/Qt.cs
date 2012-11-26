@@ -3,63 +3,21 @@
 // </copyright>
 // <summary>Qt package</summary>
 // <author>Mark Final</author>
+
+[assembly:Opus.Core.RegisterToolset("Qt", typeof(Qt.Toolset))]
+
 namespace Qt
 {
     public sealed class Qt : QtCommon.QtCommon
     {
-        public static string VersionString
-        {
-            get
-            {
-                return "4.6.3";
-            }
-        }
-
-        static Qt()
-        {
-            if (Opus.Core.State.HasCategory("Qt") && Opus.Core.State.Has("Qt", "InstallPath"))
-            {
-                installPath = Opus.Core.State.Get("Qt", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("Qt install path set from command line to '{0}'", installPath);
-            }
-
-            if (null == installPath)
-            {
-                if (Opus.Core.OSUtilities.IsWindowsHosting)
-                {
-                    using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Trolltech\Versions\4.6.3"))
-                    {
-                        if (null == key)
-                        {
-                            throw new Opus.Core.Exception("Qt libraries for 4.6.3 were not installed");
-                        }
-
-                        installPath = key.GetValue("InstallDir") as string;
-                        if (null == installPath)
-                        {
-                            throw new Opus.Core.Exception("Unable to locate InstallDir registry key for Qt 4.6.3");
-                        }
-                        Opus.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
-                    }
-                }
-                else if (Opus.Core.OSUtilities.IsUnixHosting)
-                {
-                    installPath = @"/usr/local/Trolltech/Qt-4.6.3"; // default installation directory
-                }
-                else if (Opus.Core.OSUtilities.IsOSXHosting)
-                {
-                    // Qt headers and libs are installed in /Library/Frameworks/ ...
-                    installPath = @"/Developer/Tools/Qt";
-                }
-                else
-                {
-                    throw new Opus.Core.Exception("Qt identification has not been implemented on the current platform");
-                }
-            }
-        }
-
         public Qt(Opus.Core.Target target)
         {
+            // The target here will have a null IToolset because this module is a Thirdparty
+            // module, which has no need for a tool, so no toolset is configured
+            // However, we do need to know where Qt was installed, which is in the Toolset
+            // so just grab the instance
+            Opus.Core.IToolset toolset = Opus.Core.ToolsetFactory.GetInstance(typeof(Toolset));
+            string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
             if (Opus.Core.OSUtilities.IsOSXHosting)
             {
                 this.BinPath = installPath;
