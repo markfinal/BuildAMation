@@ -22,12 +22,31 @@ namespace QtCommon
             protected set;
         }
 
-        public QtCommon()
+        protected QtCommon(System.Type toolsetType, Opus.Core.Target target)
         {
+            // TODO: not sure if this is valid any more?
             if (Opus.Core.OSUtilities.IsOSXHosting)
             {
                 return;
             }
+
+            // The target here will have a null IToolset because this module is a Thirdparty
+            // module, which has no need for a tool, so no toolset is configured
+            // However, we do need to know where Qt was installed, which is in the Toolset
+            // so just grab the instance
+            Opus.Core.IToolset toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType);
+            string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                this.BinPath = installPath;
+            }
+            else
+            {
+                this.BinPath = System.IO.Path.Combine(installPath, "bin");
+            }
+
+            this.LibPath = System.IO.Path.Combine(installPath, "lib");
+            this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCommon_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCommon_LibraryPaths);
