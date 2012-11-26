@@ -37,53 +37,17 @@ namespace Opus
             catch (Core.Exception exception)
             {
                 Core.Exception.DisplayException(exception);
-#if false
-                Core.Log.ErrorMessage("Opus Exception: " + exception.Message);
-                System.Exception innerException = exception;
-                while (innerException.InnerException != null)
-                {
-                    innerException = innerException.InnerException;
-                    Core.Log.ErrorMessage("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
-                }
-                if (exception.RequiresStackTrace)
-                {
-                    Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
-                }
-#endif
                 System.Environment.ExitCode = -1;
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
                 Core.Exception.DisplayException(exception);
-
-#if false
-                Core.Log.ErrorMessage("*** Reflection Exception (type {0}) ***", exception.GetType().ToString());
-                Core.Log.ErrorMessage(exception.Message);
-                System.Exception innerException = exception;
-                while (innerException.InnerException != null)
-                {
-                    innerException = innerException.InnerException;
-                    Core.Log.ErrorMessage("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
-                }
-                Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
-#endif
                 System.Environment.ExitCode = -2;
             }
             catch (System.Exception exception)
             {
                 Core.Exception.DisplayException(exception);
-#if false
-                Core.Log.ErrorMessage("*** System Exception (type {0}) ***", exception.GetType().ToString());
-                Core.Log.ErrorMessage(exception.Message);
-                System.Exception innerException = exception;
-                while (innerException.InnerException != null)
-                {
-                    innerException = innerException.InnerException;
-                    Core.Log.ErrorMessage("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
-                }
-                Core.Log.ErrorMessage("\n" + innerException.StackTrace.ToString());
-#endif
-                System.Environment.ExitCode = -2;
+                System.Environment.ExitCode = -3;
             }
             finally
             {

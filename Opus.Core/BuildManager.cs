@@ -142,16 +142,6 @@ namespace Opus.Core
             catch (System.Reflection.TargetInvocationException exception)
             {
                 Exception.DisplayException(exception, "PreExecute function error");
-#if false
-                Core.Log.MessageAll("PreExecute function threw an exception: " + exception.Message);
-                System.Exception innerException = exception;
-                while (innerException.InnerException != null)
-                {
-                    innerException = innerException.InnerException;
-                    Core.Log.MessageAll("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
-                }
-                Core.Log.MessageAll(innerException.StackTrace);
-#endif
                 return false;
             }
 
@@ -209,16 +199,6 @@ namespace Opus.Core
                 catch (System.Reflection.TargetInvocationException exception)
                 {
                     Exception.DisplayException(exception, "PostExecute function error");
-#if false
-                    Core.Log.MessageAll("PostExecute function threw an exception: " + exception.Message);
-                    System.Exception innerException = exception;
-                    while (innerException.InnerException != null)
-                    {
-                        innerException = innerException.InnerException;
-                        Core.Log.MessageAll("Inner exception: {0}, {1}", innerException.GetType().ToString(), innerException.Message);
-                    }
-                    Core.Log.MessageAll(innerException.StackTrace);
-#endif
                     return false;
                 }
 
