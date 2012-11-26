@@ -7,11 +7,11 @@ namespace Opus.Core
 {
     public static class TypeUtilities
     {
-        public static void CheckTypeImplementsInterface(System.Type type)
+        public static void CheckTypeImplementsInterface(System.Type type, System.Type interfaceType)
         {
-            if (!typeof(IModule).IsAssignableFrom(type))
+            if (!interfaceType.IsAssignableFrom(type))
             {
-                throw new Exception("Type '{0}' does not implement the interface {1}", type.ToString(), typeof(IModule).ToString());
+                throw new Exception("Type '{0}' does not implement the interface {1}", type.ToString(), interfaceType.ToString());
             }
         }
 
