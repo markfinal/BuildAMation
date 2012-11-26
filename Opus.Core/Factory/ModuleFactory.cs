@@ -14,6 +14,11 @@ namespace Opus.Core
             {
                 throw new Exception(System.String.Format("Type '{0}' does not implement the interface {1}", moduleType.ToString(), typeof(IModule).ToString()), false);
             }
+
+            if (moduleType.IsAbstract)
+            {
+                throw new Exception(System.String.Format("Type '{0}' is abstract", moduleType.ToString()), false);
+            }
         }
 
         public static BaseModule CreateModule(System.Type moduleType)

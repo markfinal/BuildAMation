@@ -21,6 +21,11 @@ namespace Opus.Core
                 throw new Exception(System.String.Format("Type '{0}' does not implement the interface {1}", type.ToString(), typeof(IToolset).ToString()), false);
             }
 
+            if (type.IsAbstract)
+            {
+                throw new Exception(System.String.Format("Type '{0}' is abstract", type.ToString()), false);
+            }
+
             IToolset created = System.Activator.CreateInstance(type) as IToolset;
             map[type] = created;
             return created;
