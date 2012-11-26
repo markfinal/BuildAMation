@@ -16,7 +16,6 @@ namespace Opus.Core
         /// </summary>
         public Exception()
         {
-            this.RequiresStackTrace = true;
         }
 
         /// <summary>
@@ -26,7 +25,6 @@ namespace Opus.Core
         public Exception(string message)
             : base(message)
         {
-            this.RequiresStackTrace = true;
         }
 
         /// <summary>
@@ -37,7 +35,6 @@ namespace Opus.Core
         public Exception(string format, params object[] args)
             : base(System.String.Format(format, args))
         {
-            this.RequiresStackTrace = true;
         }
 
         /// <summary>
@@ -48,7 +45,6 @@ namespace Opus.Core
         public Exception(string message, bool requiresStackTrace)
             : base(message)
         {
-            this.RequiresStackTrace = requiresStackTrace;
         }
  
         /// <summary>
@@ -59,7 +55,6 @@ namespace Opus.Core
         public Exception(string message, System.Exception innerException)
             : base(message, innerException)
         {
-            this.RequiresStackTrace = true;
         }
         
         /// <summary>
@@ -70,13 +65,6 @@ namespace Opus.Core
         protected Exception(System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
-            this.RequiresStackTrace = true;
-        }
-
-        public bool RequiresStackTrace
-        {
-            get;
-            private set;
         }
 
         public static bool DisplayException(System.Exception exception)
