@@ -128,6 +128,7 @@
     <Compile Include="RelativePathUtilities.cs" />
     <Compile Include="State.cs" />
     <Compile Include="StringArray.cs" />
+    <Compile Include="StringUtilities.cs" />
     <Compile Include="Target.cs" />
     <Compile Include="TargetUtilities.cs" />
     <Compile Include="TimeProfile.cs" />

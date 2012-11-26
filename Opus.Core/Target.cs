@@ -134,8 +134,7 @@ namespace Opus.Core
             }
             else if (formatter == 'p')
             {
-                // Pascal case
-                return BaseTarget.CapitalizeFirstLetter(text);
+                return StringUtilities.CapitalizeFirstLetter(text);
             }
             else if (formatter == '=')
             {

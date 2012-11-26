@@ -125,18 +125,6 @@ namespace Opus.Core
             return builder.ToString();
         }
 
-        // TODO: this could be in a more useful place, stringutilities?
-        public static string CapitalizeFirstLetter(string word)
-        {
-            if (System.String.IsNullOrEmpty(word))
-            {
-                return System.String.Empty;
-            }
-            char[] a = word.ToCharArray();
-            a[0] = char.ToUpper(a[0]);
-            return new string(a);
-        }
-
         public string PlatformName(char formatter)
         {
             string text = this.Platform.ToString();
@@ -150,8 +138,7 @@ namespace Opus.Core
             }
             else if (formatter == 'p')
             {
-                // Pascal case
-                return CapitalizeFirstLetter(text);
+                return StringUtilities.CapitalizeFirstLetter(text);
             }
             else if (formatter == '=')
             {
@@ -176,8 +163,7 @@ namespace Opus.Core
             }
             else if (formatter == 'p')
             {
-                // Pascal case
-                return CapitalizeFirstLetter(text);
+                return StringUtilities.CapitalizeFirstLetter(text);
             }
             else if (formatter == '=')
             {
