@@ -30,6 +30,17 @@ namespace Opus.Core
         }
 
         /// <summary>
+        /// Initialize a new instance of the Exception class.
+        /// </summary>
+        /// <param name="format">Format string.</param>
+        /// <param name="args">Variable number of arguments to satisfy the format string.</param>
+        public Exception(string format, params object[] args)
+            : base(System.String.Format(format, args))
+        {
+            this.RequiresStackTrace = true;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the Exception class.
         /// </summary>
         /// <param name="message">Exception message.</param>
