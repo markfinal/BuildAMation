@@ -42,18 +42,14 @@ namespace Opus.Core
                 }
 
                 string toolsetName = (providers[0] as AssignToolsetProviderAttribute).ToolsetName(toolType);
-                if (Opus.Core.State.Has("Toolset", toolsetName))
+                if (!Opus.Core.State.Has("Toolset", toolsetName))
                 {
-                    IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
-                    Opus.Core.Log.DebugMessage("\tfound '{0}'", toolset);
-                    return toolset;
+                    throw new Exception("Toolset '{0}' not registered", toolsetName);
                 }
-                else
-                {
-                    Opus.Core.Log.DebugMessage("\tnot found");
-                    // TODO: always throw an exception if not found
-                    return null;
-                }
+
+                IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
+                Opus.Core.Log.DebugMessage("\tfound '{0}'", toolset);
+                return toolset;
             }
 
             throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
