@@ -16,7 +16,7 @@ namespace Qt
 #if true
             // TODO: investigate this - Qt is a ThirdpartyModule, with no toolset
             // what is the best course of action?
-            string installPath = Opus.Core.ToolsetFactory.CreateToolset(typeof(Toolset)).InstallPath((Opus.Core.BaseTarget)target);
+            string installPath = Opus.Core.ToolsetFactory.GetInstance(typeof(Toolset)).InstallPath((Opus.Core.BaseTarget)target);
             //string installPath = target.Toolset.InstallPath((Opus.Core.BaseTarget)target);
             if (Opus.Core.OSUtilities.IsOSXHosting)
             {

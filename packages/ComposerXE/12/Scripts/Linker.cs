@@ -22,7 +22,7 @@ namespace ComposerXE
 
             // NEW STYLE
 #if true
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(ComposerXE.Toolset));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.GetInstance(typeof(ComposerXE.Toolset));
             this.binPath = info.BinPath((Opus.Core.BaseTarget)target);
 #else
             Toolchain toolChainInstance = C.ToolchainFactory.GetTargetInstance(target) as Toolchain;

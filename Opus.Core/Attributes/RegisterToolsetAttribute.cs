@@ -18,7 +18,7 @@ namespace Opus.Core
             this.name = name;
 #endif
 
-            Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.CreateToolset(toolsetType));
+            Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.GetInstance(toolsetType));
         }
 
         public class ToolAndOptions

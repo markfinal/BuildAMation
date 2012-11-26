@@ -31,7 +31,7 @@ namespace Mingw
         {
             base.InitializeDefaults(node);
 
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.CreateToolset(typeof(Mingw.Toolset));
+            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.GetInstance(typeof(Mingw.Toolset));
 
             C.ICompilerTool compilerTool = info.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string cppIncludePath = System.IO.Path.Combine(compilerTool.IncludePaths(node.Target)[0], "c++");
