@@ -12,12 +12,12 @@ namespace Qt
     {
         public Qt(Opus.Core.Target target)
         {
-            // NEW STYLE
-#if true
-            // TODO: investigate this - Qt is a ThirdpartyModule, with no toolset
-            // what is the best course of action?
-            string installPath = Opus.Core.ToolsetFactory.GetInstance(typeof(Toolset)).InstallPath((Opus.Core.BaseTarget)target);
-            //string installPath = target.Toolset.InstallPath((Opus.Core.BaseTarget)target);
+            // The target here will have a null IToolset because this module is a Thirdparty
+            // module, which has no need for a tool, so no toolset is configured
+            // However, we do need to know where Qt was installed, which is in the Toolset
+            // so just grab the instance
+            Opus.Core.IToolset toolset = Opus.Core.ToolsetFactory.GetInstance(typeof(Toolset));
+            string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
             if (Opus.Core.OSUtilities.IsOSXHosting)
             {
                 this.BinPath = installPath;
@@ -26,16 +26,6 @@ namespace Qt
             {
                 this.BinPath = System.IO.Path.Combine(installPath, "bin");
             }
-#else
-            if (Opus.Core.OSUtilities.IsOSXHosting)
-            {
-                this.BinPath = installPath;
-            }
-            else
-            {
-                this.BinPath = System.IO.Path.Combine(installPath, "bin");
-            }
-#endif
 
             this.LibPath = System.IO.Path.Combine(installPath, "lib");
             this.includePaths.Add(System.IO.Path.Combine(installPath, "include"));
