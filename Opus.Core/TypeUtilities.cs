@@ -9,6 +9,11 @@ namespace Opus.Core
     {
         public static void CheckTypeImplementsInterface(System.Type type, System.Type interfaceType)
         {
+            if (!interfaceType.IsInterface)
+            {
+                throw new Exception("Type '{0}' is not an interface", interfaceType.ToString());
+            }
+
             if (!interfaceType.IsAssignableFrom(type))
             {
                 throw new Exception("Type '{0}' does not implement the interface {1}", type.ToString(), interfaceType.ToString());

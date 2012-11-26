@@ -47,10 +47,7 @@ namespace Opus.Core
                     throw new Exception(System.String.Format("Scheduler type '{0}' not found in the Opus.Core assembly, nor the script assembly", State.SchedulerType), false);
                 }
             }
-            if (!typeof(Core.IBuildScheduler).IsAssignableFrom(schedulerType))
-            {
-                throw new Exception(System.String.Format("Scheduler type '{0}' does not implement the Opus.Core.IBuildScheduler interface", State.SchedulerType), false);
-            }
+            TypeUtilities.CheckTypeImplementsInterface(schedulerType, typeof(Core.IBuildScheduler));
 
             this.scheduler = System.Activator.CreateInstance(schedulerType, new object[] { graph }) as IBuildScheduler;
             // attach updates

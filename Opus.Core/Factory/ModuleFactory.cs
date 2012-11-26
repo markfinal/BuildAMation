@@ -7,23 +7,10 @@ namespace Opus.Core
 {
     public static class ModuleFactory
     {
-        // TODO: Make this generic in a typeutilities module
-        private static void CheckModuleTypeForInterface(System.Type moduleType)
-        {
-            if (!typeof(IModule).IsAssignableFrom(moduleType))
-            {
-                throw new Exception(System.String.Format("Type '{0}' does not implement the interface {1}", moduleType.ToString(), typeof(IModule).ToString()), false);
-            }
-
-            if (moduleType.IsAbstract)
-            {
-                throw new Exception(System.String.Format("Type '{0}' is abstract", moduleType.ToString()), false);
-            }
-        }
-
         public static BaseModule CreateModule(System.Type moduleType)
         {
-            CheckModuleTypeForInterface(moduleType);
+            TypeUtilities.CheckTypeImplementsInterface(moduleType, typeof(IModule));
+            TypeUtilities.CheckTypeIsNotAbstract(moduleType);
 
             BaseModule module = System.Activator.CreateInstance(moduleType) as BaseModule;
 
@@ -32,7 +19,8 @@ namespace Opus.Core
 
         public static BaseModule CreateModule(System.Type moduleType, Target target)
         {
-            CheckModuleTypeForInterface(moduleType);
+            TypeUtilities.CheckTypeImplementsInterface(moduleType, typeof(IModule));
+            TypeUtilities.CheckTypeIsNotAbstract(moduleType);
 
             BaseModule module = System.Activator.CreateInstance(moduleType, new object[] { target }) as BaseModule;
             return module;
