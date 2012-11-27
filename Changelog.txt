@@ -1,3 +1,5 @@
+27-Nov-2012 Adding in C.ICCompilerOptions.CharacterSet to select the target character set for the compiled code. Support may vary between compilers.
+
 27-Nov-2012 Adding C.IWinImportLibrary interface, that classes implementing C.ILinkerTool also need to implement if they support generating a Windows import library for dynamic libraries.
 
 26-Nov-2012 Adding Opus.Core.Exception constructor that accepts a format string and a variable number of arguments.

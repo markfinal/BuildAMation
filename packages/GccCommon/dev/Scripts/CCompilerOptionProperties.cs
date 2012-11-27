@@ -173,6 +173,18 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DisableWarningsSetHandler", this["DisableWarnings"]);
             }
         }
+        C.ECharacterSet C.ICCompilerOptions.CharacterSet
+        {
+            get
+            {
+                return this.GetValueTypeOption<C.ECharacterSet>("CharacterSet");
+            }
+            set
+            {
+                this.SetValueTypeOption<C.ECharacterSet>("CharacterSet", value);
+                this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
+            }
+        }
         bool ICCompilerOptions.AllWarnings
         {
             get

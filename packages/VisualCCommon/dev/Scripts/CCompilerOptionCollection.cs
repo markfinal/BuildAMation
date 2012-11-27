@@ -26,6 +26,7 @@ namespace VisualCCommon
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLine, AdditionalOptionsVisualStudio);
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLine, OmitFramePointerVisualStudio);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLine, DisableWarningsVisualStudio);
+            this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLine, CharacterSetVisualStudio);
 
             // compiler specific options
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLine, NoLogoVisualStudio);
@@ -1222,6 +1223,40 @@ namespace VisualCCommon
                 disableWarnings.AppendFormat("{0};", warning);
             }
             dictionary.Add("DisableSpecificWarnings", disableWarnings.ToString());
+            return dictionary;
+        }
+
+        private static void CharacterSetCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            switch (enumOption.Value)
+            {
+                case C.ECharacterSet.NotSet:
+                    break;
+
+                case C.ECharacterSet.Unicode:
+                    break;
+
+                case C.ECharacterSet.MultiByte:
+                    break;
+            }
+        }
+
+        private static VisualStudioProcessor.ToolAttributeDictionary CharacterSetVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            VisualStudioProcessor.ToolAttributeDictionary dictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            switch (enumOption.Value)
+            {
+                case C.ECharacterSet.NotSet:
+                    break;
+
+                case C.ECharacterSet.Unicode:
+                    break;
+
+                case C.ECharacterSet.MultiByte:
+                    break;
+            }
             return dictionary;
         }
 

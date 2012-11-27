@@ -133,5 +133,14 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// The target character set in use by the compiled code
+        /// </summary>
+        ECharacterSet CharacterSet
+        {
+            get;
+            set;
+        }
     }
 }

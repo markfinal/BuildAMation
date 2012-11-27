@@ -26,4 +26,11 @@ namespace C
         C = 1,
         Cxx = 2
     }
+
+    public enum ECharacterSet
+    {
+        NotSet = 0,
+        Unicode = 1,
+        MultiByte = 2
+    }
 }

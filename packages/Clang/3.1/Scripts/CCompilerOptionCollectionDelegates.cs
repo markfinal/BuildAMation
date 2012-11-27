@@ -58,6 +58,9 @@ namespace Clang
         private static void DisableWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
+        private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLineProcessor);
@@ -74,6 +77,7 @@ namespace Clang
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLineProcessor);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor);
+            this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor);
         }
     }
 }
