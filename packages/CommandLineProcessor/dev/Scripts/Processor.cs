@@ -9,10 +9,24 @@ namespace CommandLineProcessor
     {
         public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder)
         {
+            return Execute (node, tool, commandLineBuilder, null);
+        }
+
+        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder, string hostApplication)
+        {
             Opus.Core.Target target = node.Target;
             string executablePath = tool.Executable(target);
 
             System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            if (null != hostApplication)
+            {
+                processStartInfo.Arguments = executablePath + " ";
+                executablePath = hostApplication;
+            }
+            else
+            {
+                processStartInfo.Arguments = string.Empty;
+            }
             processStartInfo.FileName = executablePath;
             processStartInfo.ErrorDialog = true;
 
@@ -81,11 +95,11 @@ namespace CommandLineProcessor
                     writer.WriteLine(commandLineBuilder.ToString('\n'));
                 }
 
-                processStartInfo.Arguments = System.String.Format("{0}{1}", responseFileOption, responseFile);
+                processStartInfo.Arguments += System.String.Format("{0}{1}", responseFileOption, responseFile);
             }
             else
             {
-                processStartInfo.Arguments = commandLineBuilder.ToString(' ');
+                processStartInfo.Arguments += commandLineBuilder.ToString(' ');
             }
 
             Opus.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
