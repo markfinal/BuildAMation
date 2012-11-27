@@ -16,15 +16,8 @@ namespace Opus.Core
                 return map[type];
             }
 
-            if (!typeof(IToolset).IsAssignableFrom(type))
-            {
-                throw new Exception(System.String.Format("Type '{0}' does not implement the interface {1}", type.ToString(), typeof(IToolset).ToString()), false);
-            }
-
-            if (type.IsAbstract)
-            {
-                throw new Exception(System.String.Format("Type '{0}' is abstract", type.ToString()), false);
-            }
+            TypeUtilities.CheckTypeImplementsInterface(type, typeof(IToolset));
+            TypeUtilities.CheckTypeIsNotAbstract(type);
 
             IToolset created = System.Activator.CreateInstance(type) as IToolset;
             map[type] = created;

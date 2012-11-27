@@ -16,15 +16,8 @@ namespace Opus.Core
                 return builders[builderType];
             }
 
-            if (!typeof(IBuilder).IsAssignableFrom(builderType))
-            {
-                throw new Exception(System.String.Format("Type '{0}' does not implement the interface {1}", builderType.ToString(), typeof(IBuilder).ToString()), false);
-            }
-
-            if (builderType.IsAbstract)
-            {
-                throw new Exception(System.String.Format("Type '{0}' is abstract", builderType.ToString()), false);
-            }
+            TypeUtilities.CheckTypeImplementsInterface(builderType, typeof(IBuilder));
+            TypeUtilities.CheckTypeIsNotAbstract(builderType);
 
             IBuilder builder = System.Activator.CreateInstance(builderType) as IBuilder;
             builders[builderType] = builder;
