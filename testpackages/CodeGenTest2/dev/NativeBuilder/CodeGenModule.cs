@@ -41,7 +41,12 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("CodeGen options does not support command line translation");
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
+            string hostApplication = null;
+            if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                hostApplication = "mono";
+            }
+            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder, hostApplication);
             success = (0 == exitCode);
 
             return null;

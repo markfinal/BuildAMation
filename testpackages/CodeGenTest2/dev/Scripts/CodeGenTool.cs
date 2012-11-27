@@ -4,11 +4,13 @@ namespace CodeGenTest2
 {
     public class CodeGenTool : ICodeGenTool
     {
-        private Opus.Core.IToolset toolset;
+        //private Opus.Core.IToolset toolset;
 
         public CodeGenTool(Opus.Core.IToolset toolset)
         {
+#if false
             this.toolset = toolset;
+#endif
         }
 
         #region ITool Members
@@ -29,13 +31,7 @@ namespace CodeGenTest2
                 throw new Opus.Core.Exception("CodeGeneratorTool options are not derived from CSharp.OptionCollection", false);
             }
 
-            string exe = options.OutputFilePath;
-            // OSX insists on running C# assemblies through mono
-            if (target.HasPlatform(Opus.Core.EPlatform.OSX))
-            {
-                exe = "mono " + exe;
-            }
-            return exe;
+            return options.OutputFilePath;
         }
 
         #endregion

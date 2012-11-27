@@ -6,13 +6,15 @@ namespace CodeGenTest2
     {
         public TestAppGeneratedSource()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestAppGeneratedSource_UpdateOptions);
+            //this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestAppGeneratedSource_UpdateOptions);
         }
 
+#if false
         void TestAppGeneratedSource_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             CodeGenOptions options = module.Options as CodeGenOptions;
         }
+#endif
     }
 
     class TestApp : C.Application
