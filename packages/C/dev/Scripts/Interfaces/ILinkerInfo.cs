@@ -5,7 +5,6 @@
 // <author>Mark Final</author>
 namespace C
 {
-    // TODO: want to split this out into regular linker stuff, and Windows import library interface
     [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalLinkerOptionsDelegateAttribute),
                                             typeof(ExportLinkerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetLinkerToolset")]
@@ -31,27 +30,12 @@ namespace C
             get;
         }
 
-        string ImportLibraryPrefix
-        {
-            get;
-        }
-
-        string ImportLibrarySuffix
-        {
-            get;
-        }
-
         string DynamicLibraryPrefix
         {
             get;
         }
 
         string DynamicLibrarySuffix
-        {
-            get;
-        }
-
-        string ImportLibrarySubDirectory
         {
             get;
         }

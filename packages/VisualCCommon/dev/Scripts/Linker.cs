@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class Linker : C.ILinkerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolEnvironmentVariables
+    public sealed class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -51,22 +51,6 @@ namespace VisualCCommon
             }
         }
 
-        string C.ILinkerTool.ImportLibraryPrefix
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        string C.ILinkerTool.ImportLibrarySuffix
-        {
-            get
-            {
-                return ".lib";
-            }
-        }
-
         string C.ILinkerTool.DynamicLibraryPrefix
         {
             get
@@ -80,14 +64,6 @@ namespace VisualCCommon
             get
             {
                 return ".dll";
-            }
-        }
-
-        string C.ILinkerTool.ImportLibrarySubDirectory
-        {
-            get
-            {
-                return "lib";
             }
         }
 
@@ -108,6 +84,34 @@ namespace VisualCCommon
             else
             {
                 return (this.toolset as VisualCCommon.Toolset).lib32Folder;
+            }
+        }
+
+        #endregion
+
+        #region C.IWinImportLibrary Members
+
+        string C.IWinImportLibrary.ImportLibraryPrefix
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        string C.IWinImportLibrary.ImportLibrarySuffix
+        {
+            get
+            {
+                return ".lib";
+            }
+        }
+
+        string C.IWinImportLibrary.ImportLibrarySubDirectory
+        {
+            get
+            {
+                return "lib";
             }
         }
 

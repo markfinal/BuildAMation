@@ -22,7 +22,14 @@ namespace C
 
             ILinkerTool linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.BinaryOutputSubDirectory);
-            this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.ImportLibrarySubDirectory);
+            if (linkerTool is IWinImportLibrary)
+            {
+                this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
+            }
+            else
+            {
+                this.LibraryDirectoryPath = this.OutputDirectoryPath;
+            }
 
             ILinkerOptions linkerOptions = this as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.Executable;
@@ -133,19 +140,17 @@ namespace C
                 this.OutputFilePath = outputPathName;
             }
 
-            if (options.DynamicLibrary && null == this.StaticImportLibraryFilePath)
+            if (linkerTool is IWinImportLibrary)
             {
-                if (target.HasPlatform(Opus.Core.EPlatform.Windows))
-                {
-                    // explicit import library
-                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, linkerTool.ImportLibraryPrefix + this.OutputName) + linkerTool.ImportLibrarySuffix;
-                    this.StaticImportLibraryFilePath = importLibraryPathName;
-                }
-                else
-                {
-                    // shared objects
-                    this.StaticImportLibraryFilePath = this.OutputFilePath;
-                }
+                // explicit import library
+                IWinImportLibrary importLibrary = linkerTool as IWinImportLibrary;
+                string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, importLibrary.ImportLibraryPrefix + this.OutputName) + importLibrary.ImportLibrarySuffix;
+                this.StaticImportLibraryFilePath = importLibraryPathName;
+            }
+            else
+            {
+                // shared objects
+                this.StaticImportLibraryFilePath = this.OutputFilePath;
             }
 
             if (options.GenerateMapFile && null == this.MapFilePath)

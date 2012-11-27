@@ -69,33 +69,6 @@ namespace GccCommon
             }
         }
 
-        string C.ILinkerTool.ImportLibraryPrefix
-        {
-            get
-            {
-                return "lib";
-            }
-        }
-
-        string C.ILinkerTool.ImportLibrarySuffix
-        {
-            get
-            {
-                if (Opus.Core.OSUtilities.IsUnixHosting)
-                {
-                    return ".so";
-                }
-                else if (Opus.Core.OSUtilities.IsOSXHosting)
-                {
-                    return ".dylib";
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
-
         string C.ILinkerTool.DynamicLibraryPrefix
         {
             get
@@ -120,14 +93,6 @@ namespace GccCommon
                 {
                     return null;
                 }
-            }
-        }
-
-        string C.ILinkerTool.ImportLibrarySubDirectory
-        {
-            get
-            {
-                return "lib";
             }
         }
 

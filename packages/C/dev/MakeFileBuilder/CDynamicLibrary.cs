@@ -85,13 +85,15 @@ namespace MakeFileBuilder
 
                 // TODO: don't want to access the archiver tool here really, as creating
                 // an application does not require one
+                // although we do need to know where static libraries are written
+                // perhaps the ILinkerTool can have a duplicate of the static library suffix?
                 C.IArchiverTool archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
 
                 Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
-                if (archiverTool.StaticLibrarySuffix != linkerTool.ImportLibrarySuffix)
+                if (linkerTool is C.IWinImportLibrary)
                 {
-                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.ImportLibrarySuffix));
+                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", (linkerTool as C.IWinImportLibrary).ImportLibrarySuffix));
                 }
                 C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, dynamicLibraryOptions as C.ILinkerOptions, dependentLibraries);
             }

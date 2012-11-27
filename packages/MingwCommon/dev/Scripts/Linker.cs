@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public abstract class Linker : C.ILinkerTool, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
+    public abstract class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -55,22 +55,6 @@ namespace MingwCommon
             }
         }
 
-        string C.ILinkerTool.ImportLibraryPrefix
-        {
-            get
-            {
-                return "lib";
-            }
-        }
-
-        string C.ILinkerTool.ImportLibrarySuffix
-        {
-            get
-            {
-                return ".a";
-            }
-        }
-
         string C.ILinkerTool.DynamicLibraryPrefix
         {
             get
@@ -87,14 +71,6 @@ namespace MingwCommon
             }
         }
 
-        string C.ILinkerTool.ImportLibrarySubDirectory
-        {
-            get
-            {
-                return "lib";
-            }
-        }
-
         string C.ILinkerTool.BinaryOutputSubDirectory
         {
             get
@@ -106,6 +82,34 @@ namespace MingwCommon
         Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
+        }
+
+        #endregion
+
+        #region C.IWinImportLibrary Members
+
+        string C.IWinImportLibrary.ImportLibraryPrefix
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
+        string C.IWinImportLibrary.ImportLibrarySuffix
+        {
+            get
+            {
+                return ".a";
+            }
+        }
+
+        string C.IWinImportLibrary.ImportLibrarySubDirectory
+        {
+            get
+            {
+                return "lib";
+            }
         }
 
         #endregion
