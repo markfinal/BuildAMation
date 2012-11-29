@@ -841,7 +841,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     if (!writeToDisk && !parameters.forceWrite)
                     {
-                        System.Console.WriteLine("File '{0}' already up-to-date", parameters.outputPropertiesPathName);
+                        System.Console.WriteLine("File '{0}' already up-to-date", parameters.outputDelegatesPathName);
                     }
                     else
                     {
@@ -852,7 +852,7 @@ namespace OpusOptionInterfacePropertyGenerator
                             memStream.WriteTo(finalWriter.BaseStream);
                         }
 
-                        System.Console.WriteLine("Wrote file '{0}'", parameters.outputPropertiesPathName);
+                        System.Console.WriteLine("Wrote file '{0}'", parameters.outputDelegatesPathName);
                     }
                 }
             }
