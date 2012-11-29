@@ -5,5 +5,5 @@
 // <author>Mark Final</author>
 namespace VisualStudioProcessor
 {
-    public delegate ToolAttributeDictionary Delegate(object sender, Opus.Core.Option option, Opus.Core.Target target, EVisualStudioTarget vsTarget);
+    public delegate ToolAttributeDictionary Delegate(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget);
 }
