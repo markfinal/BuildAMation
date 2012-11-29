@@ -76,6 +76,12 @@ namespace OpusOptionInterfacePropertyGenerator
             get;
             set;
         }
+
+        public System.Collections.Specialized.StringCollection Body
+        {
+            get;
+            set;
+        }
     }
 
     class Parameters
@@ -333,6 +339,16 @@ namespace OpusOptionInterfacePropertyGenerator
                 signature.InNamespace = namespaceName;
                 signature.ReturnType = returnType;
                 signature.ArgumentString = argumentsWithParentheses;
+                if (signature.ReturnType == "void")
+                {
+                    signature.Body = null;
+                }
+                else
+                {
+                    signature.Body = new System.Collections.Specialized.StringCollection();
+                    signature.Body.Add(System.String.Format("{0} returnVal = new {0}();", returnType));
+                    signature.Body.Add("return returnVal;");
+                }
             }
 
             return signature;
@@ -810,6 +826,13 @@ namespace OpusOptionInterfacePropertyGenerator
                         {
                             System.Console.WriteLine("Function '{0}' generating code for", propertyDelegate.ToString());
                             WriteLine(writer, 2, "{");
+                            if (null != delegateSig.Body)
+                            {
+                                foreach (string line in delegateSig.Body)
+                                {
+                                    WriteLine(writer, 3, line);
+                                }
+                            }
                             WriteLine(writer, 2, "}");
                             writeToDisk = true;
                         }
