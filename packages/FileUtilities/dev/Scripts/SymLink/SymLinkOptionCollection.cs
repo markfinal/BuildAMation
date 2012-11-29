@@ -23,13 +23,6 @@ namespace FileUtilities
             options.LinkDirectory = linkDirectory;
         }
 
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            this["LinkName"].PrivateData = new SymLinkPrivateData(null);
-            this["LinkDirectory"].PrivateData = new SymLinkPrivateData(null);
-            this["Type"].PrivateData = new SymLinkPrivateData(TypeCL);
-        }
-
         public override void FinalizeOptions(Opus.Core.Target target)
         {
             if (null == this.OutputPaths[SymLinkOutputFileFlags.Link])
@@ -39,18 +32,6 @@ namespace FileUtilities
             }
 
             base.FinalizeOptions(target);
-        }
-
-        private static void TypeCL(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
-            {
-                Opus.Core.ValueTypeOption<EType> enumOption = option as Opus.Core.ValueTypeOption<EType>;
-                if (enumOption.Value == EType.Directory)
-                {
-                    commandLineBuilder.Add("/D");
-                }
-            }
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
