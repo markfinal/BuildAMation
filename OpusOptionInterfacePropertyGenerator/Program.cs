@@ -199,7 +199,7 @@ namespace OpusOptionInterfacePropertyGenerator
             parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
         }
 
-        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces)
+        static string ReadLine(System.IO.TextReader reader, bool skipComments, out int prefixSpaces)
         {
             int numPrefixSpaces = 0;
             string line = null;
@@ -215,6 +215,12 @@ namespace OpusOptionInterfacePropertyGenerator
                 line = line.TrimStart();
                 numPrefixSpaces = originalLineLength - line.Length;
                 line = line.TrimEnd();
+
+                if (skipComments && line.StartsWith("//"))
+                {
+                    line = ""; // just to get through the while test
+                    continue;
+                }
             }
             while (0 == line.Length);
             prefixSpaces = numPrefixSpaces;
@@ -224,7 +230,18 @@ namespace OpusOptionInterfacePropertyGenerator
         static string ReadLine(System.IO.TextReader reader)
         {
             int prefixSpaces = 0;
-            return ReadLine(reader, out prefixSpaces);
+            return ReadLine(reader, false, out prefixSpaces);
+        }
+
+        static string ReadLine(System.IO.TextReader reader, bool skipComments)
+        {
+            int prefixSpaces = 0;
+            return ReadLine(reader, skipComments, out prefixSpaces);
+        }
+
+        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces)
+        {
+            return ReadLine(reader, false, out prefixSpaces);
         }
 
         static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
@@ -275,15 +292,10 @@ namespace OpusOptionInterfacePropertyGenerator
             {
                 string line;
 
-                line = ReadLine(reader);
+                line = ReadLine(reader, true);
                 if (null == line)
                 {
                     throw new Exception("Interface file is empty");
-                }
-                // ignore comments
-                while (line.StartsWith("//"))
-                {
-                    line = ReadLine(reader);
                 }
                 // namespace
                 string[] namespaceStrings = line.Split(new char[] { ' ' });
@@ -360,7 +372,6 @@ namespace OpusOptionInterfacePropertyGenerator
 
             // TODO:
             // handle anything before an interface, e.g. enum
-            // handle comments
             foreach (string inputPath in parameters.inputPathNames)
             {
                 if (!System.IO.File.Exists(inputPath))
@@ -373,16 +384,12 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     string line;
 
-                    line = ReadLine(reader);
+                    line = ReadLine(reader, true);
                     if (null == line)
                     {
                         throw new Exception("Interface file is empty");
                     }
-                    // ignore comments
-                    while (line.StartsWith("//"))
-                    {
-                        line = ReadLine(reader);
-                    }
+
                     // namespace
                     string[] namespaceStrings = line.Split(new char[] { ' ' });
                     if (!namespaceStrings[0].Equals("namespace"))
@@ -400,11 +407,11 @@ namespace OpusOptionInterfacePropertyGenerator
                     }
 
                     // interface
-                    line = ReadLine(reader);
+                    line = ReadLine(reader, true);
                     string[] interfaceStrings = line.Split(new char[] { ' ' });
                     if ("public" != interfaceStrings[0] || "interface" != interfaceStrings[1])
                     {
-                        throw new Exception("No public interface found");
+                        throw new Exception("No public interface found: '{0}'", line);
                     }
                     string interfaceName = interfaceStrings[2];
                     System.Console.WriteLine("Interface found is '{0}'", interfaceName);
@@ -418,7 +425,7 @@ namespace OpusOptionInterfacePropertyGenerator
 
                     do
                     {
-                        line = ReadLine(reader);
+                        line = ReadLine(reader, true);
                         if (line.StartsWith("}"))
                         {
                             break;
