@@ -20,12 +20,13 @@ get_opus_dir_command = [
 ]
 (stdout,stderr) = ExecuteProcess(get_opus_dir_command)
 opusBinDir = string.strip(stdout, os.linesep)
+generatorPath = os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe")
 opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
 
+# Qt Moc options
 moc_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
-    "-i=IMocOptions.cs",
-    #"-o=MocOptionProperties.cs",
+    generatorPath,
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "QtCommon", "dev", "Scripts", "Moc", "IMocOptions.cs")),
     "-n=QtCommon",
     "-c=MocOptionCollection",
     "-p", # generate properties

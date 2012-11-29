@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=IMocOptions.cs -o=MocOptionProperties.cs -n=QtCommon -c=MocOptionCollection 
+// -i=IMocOptions.cs -n=QtCommon -c=MocOptionCollection -p -d -dd=..\..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=MocPrivateData
 namespace QtCommon
 {
     public partial class MocOptionCollection

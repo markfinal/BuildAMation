@@ -55,16 +55,6 @@ namespace QtCommon
             (this as IMocOptions).MocOutputPath = mocPath;
         }
 
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            this["MocOutputPath"].PrivateData = new MocPrivateData(MocOutputPathCommandLine);
-            this["IncludePaths"].PrivateData = new MocPrivateData(IncludePathsCommandLine);
-            this["Defines"].PrivateData = new MocPrivateData(DefinesCommandLine);
-            this["DoNotGenerateIncludeStatement"].PrivateData = new MocPrivateData(DoNotGenerateIncludeStatementCommandLine);
-            this["DoNotDisplayWarnings"].PrivateData = new MocPrivateData(DoNotDisplayWarningsCommandLine);
-            this["PathPrefix"].PrivateData = new MocPrivateData(PathPrefixCommandLine);
-        }
-
         public override void FinalizeOptions(Opus.Core.Target target)
         {
             if (null == this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile])
@@ -73,71 +63,6 @@ namespace QtCommon
             }
 
             base.FinalizeOptions(target);
-        }
-
-        private static void MocOutputPathCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            if (stringOption.Value.Contains(" "))
-            {
-                commandLineBuilder.Add(System.String.Format("-o\"{0}\"", stringOption.Value));
-            }
-            else
-            {
-                commandLineBuilder.Add(System.String.Format("-o{0}", stringOption.Value));
-            }
-        }
-
-        private static void IncludePathsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> directoryCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
-            foreach (string directory in directoryCollectionOption.Value)
-            {
-                if (directory.Contains(" "))
-                {
-                    commandLineBuilder.Add(System.String.Format("-I\"{0}\"", directory));
-                }
-                else
-                {
-                    commandLineBuilder.Add(System.String.Format("-I{0}", directory));
-                }
-            }
-        }
-
-        private static void DefinesCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<C.DefineCollection> definesCollectionOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
-            foreach (string directory in definesCollectionOption.Value)
-            {
-                commandLineBuilder.Add(System.String.Format("-D{0}", directory));
-            }
-        }
-
-        private static void DoNotGenerateIncludeStatementCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (boolOption.Value)
-            {
-                commandLineBuilder.Add("-i");
-            }
-        }
-
-        private static void DoNotDisplayWarningsCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (boolOption.Value)
-            {
-                commandLineBuilder.Add("-nw");
-            }
-        }
-
-        private static void PathPrefixCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            if (stringOption.Value != null)
-            {
-                commandLineBuilder.Add(System.String.Format("-p {0}", stringOption.Value));
-            }
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
