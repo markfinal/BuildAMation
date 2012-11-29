@@ -304,12 +304,35 @@ namespace OpusOptionInterfacePropertyGenerator
                 }
                 System.Console.WriteLine("Delegate found is '{0}'", line);
                 string returnType = delegateStrings[2];
+                if ("void" != returnType)
+                {
+                    returnType = namespaceName + "." + returnType;
+                }
                 int firstParenthesis = line.IndexOf('(', 0);
-                string arguments = line.Substring(firstParenthesis, line.Length - firstParenthesis - 1);
+                string argumentsWithoutParentheses = line.Substring(firstParenthesis + 1, line.Length - firstParenthesis - 3);
+                string[] argumentList = argumentsWithoutParentheses.Split(',');
+                for (int i = 0; i < argumentList.Length; ++i)
+                {
+                    argumentList[i] = argumentList[i].Trim();
+                    string[] argumentSplit = argumentList[i].Split(' ');
+                    if (argumentSplit[0] == "object")
+                    {
+                        // nothing needed doing
+                    }
+                    else if (argumentSplit[0].Contains("."))
+                    {
+                        // fully specified namespace
+                    }
+                    else
+                    {
+                        argumentList[i] = namespaceName + "." + argumentSplit[0] + " " + argumentSplit[1];
+                    }
+                }
+                string argumentsWithParentheses = "(" + string.Join(", ", argumentList) + ")";
 
                 signature.InNamespace = namespaceName;
                 signature.ReturnType = returnType;
-                signature.ArgumentString = arguments;
+                signature.ArgumentString = argumentsWithParentheses;
             }
 
             return signature;
