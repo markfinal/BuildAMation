@@ -793,7 +793,7 @@ namespace OpusOptionInterfacePropertyGenerator
                     }
                 }
 
-                if (null != layout && (propertyList.Count + 1) != layout.functions.Count)
+                if (null != layout && (propertyList.Count * delegateSignatures.Count + 1) != layout.functions.Count)
                 {
                     writeToDisk = true;
                 }
