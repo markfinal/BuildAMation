@@ -820,8 +820,9 @@ namespace OpusOptionInterfacePropertyGenerator
                         registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
                         foreach (string delegateToRegister in delegatesToRegister[propertyName])
                         {
-                            registration.Append(delegateToRegister);
+                            registration.AppendFormat("{0},", delegateToRegister);
                         }
+                        registration.Remove(registration.Length - 1, 1); // last comma
                         registration.Append(");");
                         WriteLine(writer, 3, registration.ToString());
                     }
