@@ -137,7 +137,7 @@ namespace C
         /// <summary>
         /// The target character set in use by the compiled code
         /// </summary>
-        ECharacterSet CharacterSet
+        C.ECharacterSet CharacterSet
         {
             get;
             set;
