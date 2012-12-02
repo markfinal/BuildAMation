@@ -104,6 +104,7 @@ namespace OpusOptionInterfacePropertyGenerator
         public Mode mode;
         public bool toStdOut;
         public bool forceWrite;
+        public bool extendedDelegates;
     }
 
     class Program
@@ -168,6 +169,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 else if (arg.StartsWith("-f"))
                 {
                     parameters.forceWrite = true;
+                }
+                else if (arg.StartsWith("-e"))
+                {
+                    parameters.extendedDelegates = true;
                 }
                 else
                 {
@@ -867,6 +872,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 {
                     System.Console.WriteLine("Function '{0}' generating code for", setDelegatesFunctionSignature);
                     WriteLine(writer, 2, "{");
+                    if (parameters.extendedDelegates)
+                    {
+                        WriteLine(writer, 3, "base.SetDelegates(node);");
+                    }
                     foreach (string propertyName in delegatesToRegister.Keys)
                     {
                         System.Text.StringBuilder registration = new System.Text.StringBuilder();
