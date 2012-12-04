@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\VisualCCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=VisualCCommon -c=CCompilerOptionCollection 
+// -i=..\..\..\C\dev\Scripts\ICCompilerOptions.cs;ICCompilerOptions.cs -n=VisualCCommon -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs;..\..\..\VisualStudioProcessor\dev\Scripts\VisualStudioDelegate.cs -pv=PrivateData
 namespace VisualCCommon
 {
     public partial class CCompilerOptionCollection

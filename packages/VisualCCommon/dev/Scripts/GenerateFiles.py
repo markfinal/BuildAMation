@@ -40,7 +40,7 @@ print stdout
 cxxCompiler_options = [
     os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICxxCompilerOptions.cs")),
-    "-n=Clang",
+    "-n=VisualCCommon",
     "-c=CxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
