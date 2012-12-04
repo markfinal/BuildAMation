@@ -6,6 +6,7 @@ namespace FileUtilities
 {
     public partial class SymLinkOptionCollection
     {
+        #region ISymLinkOptions Option delegates
         private static void LinkDirectoryCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             // empty
@@ -20,13 +21,13 @@ namespace FileUtilities
             {
                 return;
             }
-
             Opus.Core.ValueTypeOption<EType> enumOption = option as Opus.Core.ValueTypeOption<EType>;
             if (enumOption.Value == EType.Directory)
             {
                 commandLineBuilder.Add("/D");
             }
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["LinkDirectory"].PrivateData = new SymLinkPrivateData(LinkDirectoryCommandLineProcessor);

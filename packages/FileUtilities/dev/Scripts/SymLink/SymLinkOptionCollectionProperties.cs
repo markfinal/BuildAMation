@@ -5,6 +5,7 @@ namespace FileUtilities
 {
     public partial class SymLinkOptionCollection
     {
+        #region ISymLinkOptions Option properties
         string ISymLinkOptions.LinkDirectory
         {
             get
@@ -41,5 +42,6 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("TypeSetHandler", this["Type"]);
             }
         }
+        #endregion
     }
 }
