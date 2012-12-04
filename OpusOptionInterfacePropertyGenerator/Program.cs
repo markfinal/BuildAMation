@@ -38,12 +38,6 @@ namespace OpusOptionInterfacePropertyGenerator
             set;
         }
 
-        public string Interface
-        {
-            get;
-            set;
-        }
-
         public bool HasGet
         {
             get;
@@ -55,6 +49,19 @@ namespace OpusOptionInterfacePropertyGenerator
             get;
             set;
         }
+    }
+
+    class PropertySignatureList : System.Collections.Generic.List<PropertySignature>
+    {
+        public string InterfaceName
+        {
+            get;
+            set;
+        }
+    }
+
+    class PropertySignatureMap : System.Collections.Generic.Dictionary<string, PropertySignatureList>
+    {
     }
 
     class DelegateSignature
@@ -373,11 +380,10 @@ namespace OpusOptionInterfacePropertyGenerator
 
         static void Execute(Parameters parameters)
         {
-            System.Collections.Generic.List<PropertySignature> propertyList = new System.Collections.Generic.List<PropertySignature>();
+            PropertySignatureMap propertyMap = new PropertySignatureMap();
 
             // TODO:
             // * handle anything before an interface, e.g. enum
-            // * write out delegates in regions per interface
             foreach (string inputPath in parameters.inputPathNames)
             {
                 if (!System.IO.File.Exists(inputPath))
@@ -429,6 +435,15 @@ namespace OpusOptionInterfacePropertyGenerator
                         throw new Exception("No scope opened after interface");
                     }
 
+                    PropertySignatureList propertyList = propertyMap[inputPath] = new PropertySignatureList();
+                    if (parameters.outputNamespace != namespaceName)
+                    {
+                        propertyList.InterfaceName = namespaceName + "." + interfaceName;
+                    }
+                    else
+                    {
+                        propertyList.InterfaceName = interfaceName;
+                    }
                     do
                     {
                         line = ReadLine(reader, true);
@@ -443,14 +458,6 @@ namespace OpusOptionInterfacePropertyGenerator
                         PropertySignature property = new PropertySignature();
                         property.Name = propertyStrings[1];
                         property.Type = propertyStrings[0];
-                        if (parameters.outputNamespace != namespaceName)
-                        {
-                            property.Interface = namespaceName + "." + interfaceName;
-                        }
-                        else
-                        {
-                            property.Interface = interfaceName;
-                        }
 
                         // determine if the type is value or reference
                         string[] typeSplit = property.Type.Split(new char[] { '.' });
@@ -532,16 +539,16 @@ namespace OpusOptionInterfacePropertyGenerator
             if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
             {
                 System.Console.WriteLine("Generating properties...");
-                WritePropertiesFile(parameters, propertyList);
+                WritePropertiesFile(parameters, propertyMap);
             }
             if (Parameters.Mode.GenerateDelegates == (parameters.mode & Parameters.Mode.GenerateDelegates))
             {
                 System.Console.WriteLine ("Generating delegates...");
-                WriteDelegatesFile(parameters, propertyList, delegateSignatures);
+                WriteDelegatesFile(parameters, propertyMap, delegateSignatures);
             }
         }
 
-        private static void WritePropertiesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList)
+        private static void WritePropertiesFile(Parameters parameters, PropertySignatureMap propertyMap)
         {
             // write out C# file containing the properties
             if (parameters.toStdOut)
@@ -563,26 +570,32 @@ namespace OpusOptionInterfacePropertyGenerator
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
                 WriteLine(writer, 1, "{");
 
-                foreach (PropertySignature property in propertyList)
+                foreach (string interfacePath in propertyMap.Keys)
                 {
-                    WriteLine(writer, 2, "{0} {1}.{2}", property.Type, property.Interface, property.Name);
-                    WriteLine(writer, 2, "{");
-                    if (property.HasGet)
+                    PropertySignatureList propertyList = propertyMap[interfacePath];
+                    WriteLine(writer, 2, "#region {0} Option properties", propertyList.InterfaceName);
+                    foreach (PropertySignature property in propertyList)
                     {
-                        WriteLine(writer, 3, "get");
-                        WriteLine(writer, 3, "{");
-                        WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
-                        WriteLine(writer, 3, "}");
+                        WriteLine(writer, 2, "{0} {1}.{2}", property.Type, propertyList.InterfaceName, property.Name);
+                        WriteLine(writer, 2, "{");
+                        if (property.HasGet)
+                        {
+                            WriteLine(writer, 3, "get");
+                            WriteLine(writer, 3, "{");
+                            WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                            WriteLine(writer, 3, "}");
+                        }
+                        if (property.HasSet)
+                        {
+                            WriteLine(writer, 3, "set");
+                            WriteLine(writer, 3, "{");
+                            WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                            WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
+                            WriteLine(writer, 3, "}");
+                        }
+                        WriteLine(writer, 2, "}");
                     }
-                    if (property.HasSet)
-                    {
-                        WriteLine(writer, 3, "set");
-                        WriteLine(writer, 3, "{");
-                        WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
-                        WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
-                        WriteLine(writer, 3, "}");
-                    }
-                    WriteLine(writer, 2, "}");
+                    WriteLine(writer, 2, "#endregion");
                 }
 
                 WriteLine(writer, 1, "}");
@@ -744,7 +757,7 @@ namespace OpusOptionInterfacePropertyGenerator
             return layout;
         }
 
-        private static void WriteDelegatesFile(Parameters parameters, System.Collections.Generic.List<PropertySignature> propertyList, System.Collections.Generic.List<DelegateSignature> delegateSignatures)
+        private static void WriteDelegatesFile(Parameters parameters, PropertySignatureMap propertyMap, System.Collections.Generic.List<DelegateSignature> delegateSignatures)
         {
             // write out C# file containing the delegates
             if (parameters.toStdOut)
@@ -814,45 +827,50 @@ namespace OpusOptionInterfacePropertyGenerator
                 System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> delegatesToRegister = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
 
                 // write delegates for each property of the interface
-                foreach (PropertySignature property in propertyList)
+                foreach (string interfacePath in propertyMap.Keys)
                 {
-                    delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
-
-                    foreach (DelegateSignature delegateSig in delegateSignatures)
+                    WriteLine(writer, 2, "#region {0} Option delegates", propertyMap[interfacePath].InterfaceName);
+                    foreach (PropertySignature property in propertyMap[interfacePath])
                     {
-                        string delegateName = property.Name + delegateSig.InNamespace;
-                        delegatesToRegister[property.Name].Add(delegateName);
+                        delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
 
-                        System.Text.StringBuilder propertyDelegate = new System.Text.StringBuilder();
-                        propertyDelegate.AppendFormat("private static {0} {1}{2}", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
-                        WriteLine(writer, 2, propertyDelegate.ToString());
-                        if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
+                        foreach (DelegateSignature delegateSig in delegateSignatures)
                         {
-                            System.Console.WriteLine("Function '{0}' reusing from file", propertyDelegate.ToString());
-                            foreach (IndentedString line in layout.functions[propertyDelegate.ToString()])
+                            string delegateName = property.Name + delegateSig.InNamespace;
+                            delegatesToRegister[property.Name].Add(delegateName);
+
+                            System.Text.StringBuilder propertyDelegate = new System.Text.StringBuilder();
+                            propertyDelegate.AppendFormat("private static {0} {1}{2}", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
+                            WriteLine(writer, 2, propertyDelegate.ToString());
+                            if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
                             {
-                                // TODO: magic number
-                                WriteLine(writer, 2 + line.NumSpaces / 4, line.Line);
-                            }
-                        }
-                        else
-                        {
-                            System.Console.WriteLine("Function '{0}' generating code for", propertyDelegate.ToString());
-                            WriteLine(writer, 2, "{");
-                            if (null != delegateSig.Body)
-                            {
-                                foreach (string line in delegateSig.Body)
+                                System.Console.WriteLine("Function '{0}' reusing from file", propertyDelegate.ToString());
+                                foreach (IndentedString line in layout.functions[propertyDelegate.ToString()])
                                 {
-                                    WriteLine(writer, 3, line);
+                                    // TODO: magic number
+                                    WriteLine(writer, 2 + line.NumSpaces / 4, line.Line);
                                 }
                             }
-                            WriteLine(writer, 2, "}");
-                            writeToDisk = true;
+                            else
+                            {
+                                System.Console.WriteLine("Function '{0}' generating code for", propertyDelegate.ToString());
+                                WriteLine(writer, 2, "{");
+                                if (null != delegateSig.Body)
+                                {
+                                    foreach (string line in delegateSig.Body)
+                                    {
+                                        WriteLine(writer, 3, line);
+                                    }
+                                }
+                                WriteLine(writer, 2, "}");
+                                writeToDisk = true;
+                            }
                         }
                     }
+                    WriteLine(writer, 2, "#endregion");
                 }
 
-                if (null != layout && (propertyList.Count * delegateSignatures.Count + 1) != layout.functions.Count)
+                if (null != layout && (propertyMap.Count * delegateSignatures.Count + 1) != layout.functions.Count)
                 {
                     writeToDisk = true;
                 }
