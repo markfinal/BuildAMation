@@ -105,7 +105,6 @@ namespace OpusOptionInterfacePropertyGenerator
         public bool toStdOut;
         public bool forceWrite;
         public bool extendedDelegates;
-        public bool isBaseClass;
     }
 
     class Program
@@ -174,10 +173,6 @@ namespace OpusOptionInterfacePropertyGenerator
                 else if (arg.StartsWith("-e"))
                 {
                     parameters.extendedDelegates = true;
-                }
-                else if (arg.StartsWith("-b"))
-                {
-                    parameters.isBaseClass = true;
                 }
                 else
                 {
@@ -862,16 +857,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 }
 
                 // write the SetDelegates function that assigns the accumulated delegates above to their named properties
-                string setDelegatesFunctionSignature;
-                if (parameters.isBaseClass)
-                {
-                    setDelegatesFunctionSignature = "protected ";
-                }
-                else
-                {
-                    setDelegatesFunctionSignature = "private ";
-                }
-                setDelegatesFunctionSignature += "override void SetDelegates(Opus.Core.DependencyNode node)";
+                string setDelegatesFunctionSignature = "protected override void SetDelegates(Opus.Core.DependencyNode node)";
                 WriteLine(writer, 2, setDelegatesFunctionSignature);
                 if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
                 {
