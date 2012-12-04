@@ -5,6 +5,7 @@ namespace QtCommon
 {
     public partial class MocOptionCollection
     {
+        #region IMocOptions Option properties
         string IMocOptions.MocOutputPath
         {
             get
@@ -77,5 +78,6 @@ namespace QtCommon
                 this.ProcessNamedSetHandler("PathPrefixSetHandler", this["PathPrefix"]);
             }
         }
+        #endregion
     }
 }

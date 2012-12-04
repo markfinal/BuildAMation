@@ -6,6 +6,7 @@ namespace QtCommon
 {
     public partial class MocOptionCollection
     {
+        #region IMocOptions Option delegates
         private static void MocOutputPathCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
@@ -65,6 +66,7 @@ namespace QtCommon
                 commandLineBuilder.Add(System.String.Format("-p {0}", stringOption.Value));
             }
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["MocOutputPath"].PrivateData = new MocPrivateData(MocOutputPathCommandLineProcessor);
