@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class ArchiverOptionCollection
     {
+        #region C.IArchiverOptions Option properties
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get
@@ -29,6 +30,8 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        #endregion
+        #region IArchiverOptions Option properties
         bool IArchiverOptions.NoLogo
         {
             get
@@ -41,5 +44,6 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("NoLogoSetHandler", this["NoLogo"]);
             }
         }
+        #endregion
     }
 }

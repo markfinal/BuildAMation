@@ -6,6 +6,7 @@ namespace VisualCCommon
 {
     public partial class LinkerOptionCollection
     {
+        #region C.ILinkerOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
@@ -24,7 +25,6 @@ namespace VisualCCommon
                         commandLineBuilder.Add(System.String.Format("/OUT:{0}", outputPathName));
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
@@ -42,7 +42,6 @@ namespace VisualCCommon
                         returnVal.Add("OutputFile", options.OutputFilePath);
                         return returnVal;
                     }
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
@@ -68,7 +67,6 @@ namespace VisualCCommon
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("/DEBUG");
-
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 string pdbPathName = options.ProgramDatabaseFilePath;
                 if (pdbPathName.Contains(" "))
@@ -101,15 +99,12 @@ namespace VisualCCommon
                 case C.ESubsystem.NotSet:
                     // do nothing
                     break;
-
                 case C.ESubsystem.Console:
                     commandLineBuilder.Add("/SUBSYSTEM:CONSOLE");
                     break;
-
                 case C.ESubsystem.Windows:
                     commandLineBuilder.Add("/SUBSYSTEM:WINDOWS");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized subsystem option");
             }
@@ -134,7 +129,6 @@ namespace VisualCCommon
                         }
                         return returnVal;
                     }
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized subsystem option");
             }
@@ -329,6 +323,8 @@ namespace VisualCCommon
             returnVal.Add("AdditionalOptions", stringOption.Value);
             return returnVal;
         }
+        #endregion
+        #region ILinkerOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -394,6 +390,7 @@ namespace VisualCCommon
             }
             return returnVal;
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeVisualStudioProcessor);

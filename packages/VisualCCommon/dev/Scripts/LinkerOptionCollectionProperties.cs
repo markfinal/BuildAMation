@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class LinkerOptionCollection
     {
+        #region C.ILinkerOptions Option properties
         C.ELinkerOutput C.ILinkerOptions.OutputType
         {
             get
@@ -125,6 +126,8 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        #endregion
+        #region ILinkerOptions Option properties
         bool ILinkerOptions.NoLogo
         {
             get
@@ -161,5 +164,6 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("IgnoredLibrariesSetHandler", this["IgnoredLibraries"]);
             }
         }
+        #endregion
     }
 }

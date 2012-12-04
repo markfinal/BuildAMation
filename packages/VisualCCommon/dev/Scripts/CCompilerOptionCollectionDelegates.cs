@@ -6,6 +6,7 @@ namespace VisualCCommon
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option delegates
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
@@ -30,7 +31,6 @@ namespace VisualCCommon
         {
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
-
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
@@ -71,10 +71,8 @@ namespace VisualCCommon
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
                 return;
             }
-
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
-
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
@@ -91,14 +89,12 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary SystemIncludePathsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-
             C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
             if (!optionCollection.IgnoreStandardIncludePaths)
             {
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
                 return returnVal;
             }
-
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             System.Text.StringBuilder includePaths = new System.Text.StringBuilder();
             foreach (string includePath in includePathsOption.Value)
@@ -122,7 +118,6 @@ namespace VisualCCommon
             {
                 return;
             }
-
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -140,7 +135,6 @@ namespace VisualCCommon
                         }
                     }
                     break;
-
                 case C.ECompilerOutput.Preprocess: // with line numbers
                     {
                         commandLineBuilder.Add("/P");
@@ -155,7 +149,6 @@ namespace VisualCCommon
                         }
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
             }
@@ -168,7 +161,6 @@ namespace VisualCCommon
             {
                 return null;
             }
-
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 switch (processOption.Value)
@@ -181,7 +173,6 @@ namespace VisualCCommon
                             returnVal.Add("ObjectFile", options.ObjectFilePath);
                             return returnVal;
                         }
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
                 }
@@ -197,14 +188,12 @@ namespace VisualCCommon
                             returnVal.Add("ObjectFileName", options.ObjectFilePath);
                         }
                         break;
-
                     case C.ECompilerOutput.Preprocess:
                         {
                             returnVal.Add("PreprocessToFile", "true");
                             returnVal.Add("ObjectFileName", options.ObjectFilePath);
                         }
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
                 }
@@ -267,23 +256,18 @@ namespace VisualCCommon
                 case C.EOptimization.Off:
                     commandLineBuilder.Add("/Od");
                     break;
-
                 case C.EOptimization.Size:
                     commandLineBuilder.Add("/Os");
                     break;
-
                 case C.EOptimization.Speed:
                     commandLineBuilder.Add("/O1");
                     break;
-
                 case C.EOptimization.Full:
                     commandLineBuilder.Add("/Ox");
                     break;
-
                 case C.EOptimization.Custom:
                     // do nothing
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized optimization option");
             }
@@ -305,7 +289,6 @@ namespace VisualCCommon
                             returnVal.Add("Optimization", optimizationOption.Value.ToString("D"));
                             return returnVal;
                         }
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized optimization option");
                 }
@@ -318,23 +301,18 @@ namespace VisualCCommon
                     case C.EOptimization.Off:
                         returnVal.Add("Optimization", "Disabled");
                         break;
-
                     case C.EOptimization.Size:
                         returnVal.Add("Optimization", "MinSpace");
                         break;
-
                     case C.EOptimization.Speed:
                         returnVal.Add("Optimization", "MaxSpeed");
                         break;
-
                     case C.EOptimization.Full:
                         returnVal.Add("Optimization", "Full");
                         break;
-
                     case C.EOptimization.Custom:
                         // TODO: does this need something?
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized optimization option");
                 }
@@ -364,15 +342,12 @@ namespace VisualCCommon
                 case C.ETargetLanguage.Default:
                     // do nothing
                     break;
-
                 case C.ETargetLanguage.C:
                     commandLineBuilder.Add("/TC");
                     break;
-
                 case C.ETargetLanguage.Cxx:
                     commandLineBuilder.Add("/TP");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized target language option");
             }
@@ -392,7 +367,6 @@ namespace VisualCCommon
                             returnVal.Add("CompileAs", targetLanguageOption.Value.ToString("D"));
                             return returnVal;
                         }
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized target language option");
                 }
@@ -405,15 +379,12 @@ namespace VisualCCommon
                     case C.ETargetLanguage.Default:
                         returnVal.Add("CompileAs", "Default");
                         break;
-
                     case C.ETargetLanguage.C:
                         returnVal.Add("CompileAs", "CompileAsC");
                         break;
-
                     case C.ETargetLanguage.Cxx:
                         returnVal.Add("CompileAs", "CompileAsCpp");
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized target language option");
                 }
@@ -508,10 +479,8 @@ namespace VisualCCommon
             {
                 case C.ECharacterSet.NotSet:
                     break;
-
                 case C.ECharacterSet.Unicode:
                     break;
-
                 case C.ECharacterSet.MultiByte:
                     break;
             }
@@ -524,15 +493,15 @@ namespace VisualCCommon
             {
                 case C.ECharacterSet.NotSet:
                     break;
-
                 case C.ECharacterSet.Unicode:
                     break;
-
                 case C.ECharacterSet.MultiByte:
                     break;
             }
             return returnVal;
         }
+        #endregion
+        #region ICCompilerOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -610,11 +579,9 @@ namespace VisualCCommon
                     case EDebugType.Embedded:
                         commandLineBuilder.Add("/Z7");
                         break;
-
                     case EDebugType.ProgramDatabase:
                         {
                             commandLineBuilder.Add("/Zi");
-
                             string pdbPathName = options.ProgramDatabaseFilePath;
                             if (null == pdbPathName)
                             {
@@ -630,11 +597,9 @@ namespace VisualCCommon
                             }
                         }
                         break;
-
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
                             commandLineBuilder.Add("/ZI");
-
                             string pdbPathName = options.ProgramDatabaseFilePath;
                             if (null == pdbPathName)
                             {
@@ -650,7 +615,6 @@ namespace VisualCCommon
                             }
                         }
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                 }
@@ -670,13 +634,11 @@ namespace VisualCCommon
                         case EDebugType.Embedded:
                             returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
                             break;
-
                         case EDebugType.ProgramDatabase:
                         case EDebugType.ProgramDatabaseEditAndContinue:
                             returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
                             returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
                             break;
-
                         default:
                             throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                     }
@@ -688,17 +650,14 @@ namespace VisualCCommon
                         case EDebugType.Embedded:
                             returnVal.Add("DebugInformationFormat", "OldStyle");
                             break;
-
                         case EDebugType.ProgramDatabase:
                             returnVal.Add("DebugInformationFormat", "ProgramDatabase");
                             returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
                             break;
-
                         case EDebugType.ProgramDatabaseEditAndContinue:
                             returnVal.Add("DebugInformationFormat", "EditAndContinue");
                             returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
                             break;
-
                         default:
                             throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                     }
@@ -720,7 +679,6 @@ namespace VisualCCommon
                 case EBrowseInformation.None:
                     // do nothing
                     break;
-
                 case EBrowseInformation.Full:
                     if (browseDir.Contains(" "))
                     {
@@ -731,7 +689,6 @@ namespace VisualCCommon
                         commandLineBuilder.Add(System.String.Format("/FR{0}", browseDir));
                     }
                     break;
-
                 case EBrowseInformation.NoLocalSymbols:
                     if (browseDir.Contains(" "))
                     {
@@ -742,7 +699,6 @@ namespace VisualCCommon
                         commandLineBuilder.Add(System.String.Format("/Fr{0}", browseDir));
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized EBrowseInformation option");
             }
@@ -765,13 +721,11 @@ namespace VisualCCommon
                     case EBrowseInformation.None:
                         returnVal.Add("BrowseInformation", "false");
                         break;
-
                     // TODO: there does not appear to be a different set of values in MSBUILD
                     case EBrowseInformation.Full:
                     case EBrowseInformation.NoLocalSymbols:
                         returnVal.Add("BrowseInformation", "true");
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized EBrowseInformation option");
                 }
@@ -850,23 +804,18 @@ namespace VisualCCommon
             {
                 case EManagedCompilation.NoCLR:
                     break;
-
                 case EManagedCompilation.CLR:
                     commandLineBuilder.Add("/clr");
                     break;
-
                 case EManagedCompilation.PureCLR:
                     commandLineBuilder.Add("/clr:pure");
                     break;
-
                 case EManagedCompilation.SafeCLR:
                     commandLineBuilder.Add("/clr:safe");
                     break;
-
                 case EManagedCompilation.OldSyntaxCLR:
                     commandLineBuilder.Add("/clr:oldsyntax");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized EManagedCompilation option");
             }
@@ -886,23 +835,18 @@ namespace VisualCCommon
                     case EManagedCompilation.NoCLR:
                         returnVal.Add("CompileAsManaged", "false");
                         break;
-
                     case EManagedCompilation.CLR:
                         returnVal.Add("CompileAsManaged", "true");
                         break;
-
                     case EManagedCompilation.PureCLR:
                         returnVal.Add("CompileAsManaged", "Pure");
                         break;
-
                     case EManagedCompilation.SafeCLR:
                         returnVal.Add("CompileAsManaged", "Safe");
                         break;
-
                     case EManagedCompilation.OldSyntaxCLR:
                         returnVal.Add("CompileAsManaged", "OldSyntax");
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized EManagedCompilation option");
                 }
@@ -916,25 +860,20 @@ namespace VisualCCommon
             {
                 return;
             }
-
             Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
             switch (enumOption.Value)
             {
                 case EBasicRuntimeChecks.None:
                     break;
-
                 case EBasicRuntimeChecks.StackFrame:
                     commandLineBuilder.Add("/RTCs");
                     break;
-
                 case EBasicRuntimeChecks.UninitializedVariables:
                     commandLineBuilder.Add("/RTCu");
                     break;
-
                 case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
                     commandLineBuilder.Add("/RTC1");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
             }
@@ -942,13 +881,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary BasicRuntimeChecksVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-
             ICCompilerOptions optionCollection = sender as ICCompilerOptions;
             if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
                 return returnVal;
             }
-
             Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
@@ -960,7 +897,6 @@ namespace VisualCCommon
                     case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
                         returnVal.Add("BasicRuntimeChecks", enumOption.Value.ToString("D"));
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
                 }
@@ -972,19 +908,15 @@ namespace VisualCCommon
                     case EBasicRuntimeChecks.None:
                         returnVal.Add("BasicRuntimeChecks", "Default");
                         break;
-
                     case EBasicRuntimeChecks.StackFrame:
                         returnVal.Add("BasicRuntimeChecks", "StackFrameRuntimeCheck");
                         break;
-
                     case EBasicRuntimeChecks.UninitializedVariables:
                         returnVal.Add("BasicRuntimeChecks", "UninitializedLocalUsageCheck");
                         break;
-
                     case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
                         returnVal.Add("BasicRuntimeChecks", "EnableFastChecks");
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
                 }
@@ -998,7 +930,6 @@ namespace VisualCCommon
             {
                 return;
             }
-
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
@@ -1008,13 +939,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary SmallerTypeConversionRuntimeCheckVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-
             ICCompilerOptions optionCollection = sender as ICCompilerOptions;
             if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
                 return returnVal;
             }
-
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
@@ -1034,15 +963,12 @@ namespace VisualCCommon
                 case EInlineFunctionExpansion.None:
                     commandLineBuilder.Add("/Ob0");
                     break;
-
                 case EInlineFunctionExpansion.OnlyInline:
                     commandLineBuilder.Add("/Ob1");
                     break;
-
                 case EInlineFunctionExpansion.AnySuitable:
                     commandLineBuilder.Add("/Ob2");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
             }
@@ -1060,7 +986,6 @@ namespace VisualCCommon
                     case EInlineFunctionExpansion.AnySuitable:
                         returnVal.Add("InlineFunctionExpansion", enumOption.Value.ToString("D"));
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
                 }
@@ -1072,15 +997,12 @@ namespace VisualCCommon
                     case EInlineFunctionExpansion.None:
                         returnVal.Add("InlineFunctionExpansion", "Disabled");
                         break;
-
                     case EInlineFunctionExpansion.OnlyInline:
                         returnVal.Add("InlineFunctionExpansion", "OnlyExplicitInline");
                         break;
-
                     case EInlineFunctionExpansion.AnySuitable:
                         returnVal.Add("InlineFunctionExpansion", "AnySuitable");
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
                 }
@@ -1121,19 +1043,15 @@ namespace VisualCCommon
                 case ERuntimeLibrary.MultiThreaded:
                     commandLineBuilder.Add("/MT");
                     break;
-
                 case ERuntimeLibrary.MultiThreadedDebug:
                     commandLineBuilder.Add("/MTd");
                     break;
-
                 case ERuntimeLibrary.MultiThreadedDLL:
                     commandLineBuilder.Add("/MD");
                     break;
-
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
                     commandLineBuilder.Add("/MDd");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized runtime library option");
             }
@@ -1159,11 +1077,11 @@ namespace VisualCCommon
                         }
                         return returnVal;
                     }
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized runtime library option");
             }
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLineProcessor,DefinesVisualStudioProcessor);

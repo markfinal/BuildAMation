@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class CxxCompilerOptionCollection
     {
+        #region C.ICxxCompilerOptions Option properties
         C.Cxx.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {
             get
@@ -17,5 +18,6 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("ExceptionHandlerSetHandler", this["ExceptionHandler"]);
             }
         }
+        #endregion
     }
 }

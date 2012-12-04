@@ -5,6 +5,7 @@ namespace VisualCCommon
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option properties
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
@@ -185,6 +186,8 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+        #endregion
+        #region ICCompilerOptions Option properties
         bool ICCompilerOptions.NoLogo
         {
             get
@@ -365,5 +368,6 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("RuntimeLibrarySetHandler", this["RuntimeLibrary"]);
             }
         }
+        #endregion
     }
 }
