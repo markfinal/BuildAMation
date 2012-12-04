@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\IArchiverOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\GccCommon\dev\Scripts\IArchiverOptions.cs -o=ArchiverOptionProperties.cs -n=GccCommon -c=ArchiverOptionCollection 
+// -i=..\..\..\C\dev\Scripts\IArchiverOptions.cs;IArchiverOptions.cs -n=GccCommon -c=ArchiverOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
 namespace GccCommon
 {
     public partial class ArchiverOptionCollection
     {
+        #region C.IArchiverOptions Option properties
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get
@@ -29,6 +30,8 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        #endregion
+        #region IArchiverOptions Option properties
         GccCommon.EArchiverCommand IArchiverOptions.Command
         {
             get
@@ -53,5 +56,6 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DoNotWarnIfLibraryCreatedSetHandler", this["DoNotWarnIfLibraryCreated"]);
             }
         }
+        #endregion
     }
 }

@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\GccCommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=GccCommon -c=CCompilerOptionCollection 
+// -i=..\..\..\C\dev\Scripts\ICCompilerOptions.cs;ICCompilerOptions.cs -n=GccCommon -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
 namespace GccCommon
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option properties
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
@@ -185,6 +186,8 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+        #endregion
+        #region ICCompilerOptions Option properties
         bool ICCompilerOptions.AllWarnings
         {
             get
@@ -257,5 +260,6 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("PedanticSetHandler", this["Pedantic"]);
             }
         }
+        #endregion
     }
 }

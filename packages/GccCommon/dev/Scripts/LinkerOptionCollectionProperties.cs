@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ILinkerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\GccCommon\dev\Scripts\ILinkerOptions.cs -o=LinkerOptionProperties.cs -n=GccCommon -c=LinkerOptionCollection 
+// -i=..\..\..\C\dev\Scripts\ILinkerOptions.cs;ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
 namespace GccCommon
 {
     public partial class LinkerOptionCollection
     {
+        #region C.ILinkerOptions Option properties
         C.ELinkerOutput C.ILinkerOptions.OutputType
         {
             get
@@ -125,6 +126,8 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        #endregion
+        #region ILinkerOptions Option properties
         bool ILinkerOptions.CanUseOrigin
         {
             get
@@ -161,5 +164,6 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("RPathSetHandler", this["RPath"]);
             }
         }
+        #endregion
     }
 }
