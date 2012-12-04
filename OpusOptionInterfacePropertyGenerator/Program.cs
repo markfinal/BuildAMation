@@ -376,7 +376,8 @@ namespace OpusOptionInterfacePropertyGenerator
             System.Collections.Generic.List<PropertySignature> propertyList = new System.Collections.Generic.List<PropertySignature>();
 
             // TODO:
-            // handle anything before an interface, e.g. enum
+            // * handle anything before an interface, e.g. enum
+            // * write out delegates in regions per interface
             foreach (string inputPath in parameters.inputPathNames)
             {
                 if (!System.IO.File.Exists(inputPath))
