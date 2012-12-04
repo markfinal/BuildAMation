@@ -751,6 +751,11 @@ namespace OpusOptionInterfacePropertyGenerator
 
                         line = ReadLine(reader);
                     }
+                    else if (line.StartsWith("#region") || line.StartsWith("#endregion"))
+                    {
+                        System.Console.WriteLine("Ignored preprocessor");
+                        line = ReadLine(reader);
+                    }
                 }
             }
 
