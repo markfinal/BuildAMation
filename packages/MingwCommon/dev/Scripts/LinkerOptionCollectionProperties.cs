@@ -5,6 +5,7 @@ namespace MingwCommon
 {
     public partial class LinkerOptionCollection
     {
+        #region C.ILinkerOptions Option properties
         C.ELinkerOutput C.ILinkerOptions.OutputType
         {
             get
@@ -125,6 +126,8 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        #endregion
+        #region ILinkerOptions Option properties
         bool ILinkerOptions.EnableAutoImport
         {
             get
@@ -137,5 +140,6 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("EnableAutoImportSetHandler", this["EnableAutoImport"]);
             }
         }
+        #endregion
     }
 }

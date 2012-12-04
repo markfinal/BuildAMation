@@ -5,6 +5,7 @@ namespace MingwCommon
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option properties
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
@@ -185,6 +186,8 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+        #endregion
+        #region ICCompilerOptions Option properties
         bool ICCompilerOptions.AllWarnings
         {
             get
@@ -245,5 +248,6 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("PedanticSetHandler", this["Pedantic"]);
             }
         }
+        #endregion
     }
 }

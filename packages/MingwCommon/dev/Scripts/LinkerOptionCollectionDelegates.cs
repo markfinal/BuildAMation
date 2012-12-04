@@ -6,6 +6,7 @@ namespace MingwCommon
 {
     public partial class LinkerOptionCollection
     {
+        #region C.ILinkerOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
@@ -24,7 +25,6 @@ namespace MingwCommon
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
@@ -53,15 +53,12 @@ namespace MingwCommon
                 case C.ESubsystem.NotSet:
                     // do nothing
                     break;
-
                 case C.ESubsystem.Console:
                     commandLineBuilder.Add("-Wl,--subsystem,console");
                     break;
-
                 case C.ESubsystem.Windows:
                     commandLineBuilder.Add("-Wl,--subsystem,windows");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized subsystem option");
             }
@@ -134,6 +131,8 @@ namespace MingwCommon
                 commandLineBuilder.Add(argument);
             }
         }
+        #endregion
+        #region ILinkerOptions Option delegates
         private static void EnableAutoImportCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -142,6 +141,7 @@ namespace MingwCommon
                 commandLineBuilder.Add("-Wl,--enable-auto-import");
             }
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor);

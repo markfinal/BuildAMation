@@ -6,6 +6,7 @@ namespace MingwCommon
 {
     public partial class ArchiverOptionCollection
     {
+        #region C.IArchiverOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
@@ -22,7 +23,6 @@ namespace MingwCommon
                         commandLineBuilder.Add(options.LibraryFilePath);
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
@@ -36,6 +36,8 @@ namespace MingwCommon
                 commandLineBuilder.Add(argument);
             }
         }
+        #endregion
+        #region IArchiverOptions Option delegates
         private static void CommandCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EArchiverCommand> commandOption = option as Opus.Core.ValueTypeOption<EArchiverCommand>;
@@ -44,7 +46,6 @@ namespace MingwCommon
                 case EArchiverCommand.Replace:
                     commandLineBuilder.Add("-r");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized command option");
             }
@@ -57,6 +58,7 @@ namespace MingwCommon
                 commandLineBuilder.Add("-c");
             }
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor);

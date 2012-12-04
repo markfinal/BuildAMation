@@ -5,6 +5,7 @@ namespace MingwCommon
 {
     public partial class ArchiverOptionCollection
     {
+        #region C.IArchiverOptions Option properties
         C.EArchiverOutput C.IArchiverOptions.OutputType
         {
             get
@@ -29,6 +30,8 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        #endregion
+        #region IArchiverOptions Option properties
         MingwCommon.EArchiverCommand IArchiverOptions.Command
         {
             get
@@ -53,5 +56,6 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("DoNotWarnIfLibraryCreatedSetHandler", this["DoNotWarnIfLibraryCreated"]);
             }
         }
+        #endregion
     }
 }
