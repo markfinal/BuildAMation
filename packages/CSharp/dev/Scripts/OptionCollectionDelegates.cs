@@ -6,6 +6,7 @@ namespace CSharp
 {
     public partial class OptionCollection
     {
+        #region IOptions Option delegates
         private static void TargetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             OptionCollection options = sender as OptionCollection;
@@ -15,23 +16,18 @@ namespace CSharp
                 case ETarget.Executable:
                     commandLineBuilder.Add("/target:exe");
                     break;
-
                 case ETarget.Library:
                     commandLineBuilder.Add("/target:library");
                     break;
-
                 case ETarget.Module:
                     commandLineBuilder.Add("/target:module");
                     break;
-
                 case ETarget.WindowsExecutable:
                     commandLineBuilder.Add("/target:winexe");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
-
             string outputPathName = options.OutputFilePath;
             if (outputPathName.Contains(" "))
             {
@@ -51,19 +47,15 @@ namespace CSharp
                 case ETarget.Executable:
                     returnVal.Add("OutputType", "Exe");
                     break;
-
                 case ETarget.Library:
                     returnVal.Add("OutputType", "Library");
                     break;
-
                 case ETarget.Module:
                     returnVal.Add("OutputType", "Module");
                     break;
-
                 case ETarget.WindowsExecutable:
                     returnVal.Add("OutputType", "WinExe");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
@@ -92,19 +84,15 @@ namespace CSharp
                 case EPlatform.X86:
                     commandLineBuilder.Add("/platform:x86");
                     break;
-
                 case EPlatform.X64:
                     commandLineBuilder.Add("/platform:x64");
                     break;
-
                 case EPlatform.Itanium:
                     commandLineBuilder.Add("/platform:Itanium");
                     break;
-
                 case EPlatform.AnyCpu:
                     commandLineBuilder.Add("/platform:AnyCpu");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.EPlatform value");
             }
@@ -118,19 +106,15 @@ namespace CSharp
                 case EPlatform.X86:
                     returnVal.Add("PlatformTarget", "x86");
                     break;
-
                 case EPlatform.X64:
                     returnVal.Add("PlatformTarget", "x64");
                     break;
-
                 case EPlatform.Itanium:
                     returnVal.Add("PlatformTarget", "Itanium");
                     break;
-
                 case EPlatform.AnyCpu:
                     returnVal.Add("PlatformTarget", "AnyCPU");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.EPlatform value");
             }
@@ -145,7 +129,6 @@ namespace CSharp
                 case EDebugInformation.Disabled:
                     commandLineBuilder.Add("/debug-");
                     break;
-
                 case EDebugInformation.ProgramDatabaseOnly:
                     {
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -168,7 +151,6 @@ namespace CSharp
                         }
                     }
                     break;
-
                 case EDebugInformation.Full:
                     {
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -191,7 +173,6 @@ namespace CSharp
                         }
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.EDebugInformation value");
             }
@@ -205,7 +186,6 @@ namespace CSharp
                 case EDebugInformation.Disabled:
                     returnVal.Add("DebugSymbols", "false");
                     break;
-
                 case EDebugInformation.ProgramDatabaseOnly:
                     {
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -221,7 +201,6 @@ namespace CSharp
                         }
                     }
                     break;
-
                 case EDebugInformation.Full:
                     {
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -237,7 +216,6 @@ namespace CSharp
                         }
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.EDebugInformation value");
             }
@@ -293,7 +271,6 @@ namespace CSharp
                 case EWarningLevel.Level4:
                     commandLineBuilder.Add(System.String.Format("/warn:{0}", enumOption.Value.ToString("d")));
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.EWarningLevel value");
             }
@@ -311,7 +288,6 @@ namespace CSharp
                 case EWarningLevel.Level4:
                     returnVal.Add("WarningLevel", enumOption.Value.ToString("d"));
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.EWarningLevel value");
             }
@@ -443,6 +419,7 @@ namespace CSharp
             returnVal.Add("DefineConstants", definesList.ToString().TrimEnd(new char[] { ';' }));
             return returnVal;
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["Target"].PrivateData = new PrivateData(TargetCommandLineProcessor,TargetVisualStudioProcessor);

@@ -5,6 +5,7 @@ namespace CSharp
 {
     public partial class OptionCollection
     {
+        #region IOptions Option properties
         CSharp.ETarget IOptions.Target
         {
             get
@@ -149,5 +150,6 @@ namespace CSharp
                 this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }
+        #endregion
     }
 }
