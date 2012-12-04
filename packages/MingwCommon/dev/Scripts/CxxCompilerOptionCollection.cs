@@ -7,13 +7,6 @@ namespace MingwCommon
 {
     public abstract partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            base.SetDelegates(node);
-
-            this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLine);
-        }
-
         public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICxxCompilerOptions
         {
             C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
@@ -37,25 +30,6 @@ namespace MingwCommon
         public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
-        }
-
-        public static void ExceptionHandlerCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
-            switch (exceptionHandlerOption.Value)
-            {
-                case C.Cxx.EExceptionHandler.Disabled:
-                    commandLineBuilder.Add("-fno-exceptions");
-                    break;
-
-                case C.Cxx.EExceptionHandler.Asynchronous:
-                case C.Cxx.EExceptionHandler.Synchronous:
-                    commandLineBuilder.Add("-fexceptions");
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized exception handler option");
-            }
         }
     }
 }
