@@ -1,4 +1,4 @@
-// <copyright file="CPlusPlusCompilerOptionCollection.cs" company="Mark Final">
+// <copyright file="CxxCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>ComposerXE package</summary>
@@ -8,13 +8,13 @@ namespace ComposerXE
     // this implementation is here because the specific version of the ComposerXE compiler exposes a new interface
     // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
     // C option collection
-    public sealed partial class CPlusPlusCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
+    public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
 
-            this["ExceptionHandler"].PrivateData = new ComposerXECommon.PrivateData(ComposerXECommon.CPlusPlusCompilerOptionCollection.ExceptionHandlerCommandLine);
+            this["ExceptionHandler"].PrivateData = new ComposerXECommon.PrivateData(ComposerXECommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLineProcessor);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -41,15 +41,15 @@ namespace ComposerXE
             this.SystemIncludePaths.Add(null, cppIncludePath2);
 #endif
 
-            ComposerXECommon.CPlusPlusCompilerOptionCollection.ExportedDefaults(this, node);
+            ComposerXECommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
 
-        public CPlusPlusCompilerOptionCollection()
+        public CxxCompilerOptionCollection()
             : base()
         {
         }
 
-        public CPlusPlusCompilerOptionCollection(Opus.Core.DependencyNode node)
+        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }
