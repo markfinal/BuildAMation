@@ -79,7 +79,7 @@ namespace CSharp
         private static void PlatformCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             // no such option for mono-csc
-            if (!target.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (Opus.Core.State.RunningMono)
             {
                 return;
             }
