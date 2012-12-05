@@ -10,13 +10,6 @@ namespace Gcc
     // C option collection
     public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            base.SetDelegates(node);
-
-            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLineProcessor);
-        }
-
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             base.InitializeDefaults(node);
