@@ -78,6 +78,12 @@ namespace CSharp
         }
         private static void PlatformCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // no such option for mono-csc
+            if (!target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                return;
+            }
+
             Opus.Core.ValueTypeOption<EPlatform> enumOption = option as Opus.Core.ValueTypeOption<EPlatform>;
             switch (enumOption.Value)
             {

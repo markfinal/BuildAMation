@@ -14,11 +14,7 @@ namespace CSharp
             IOptions options = this as IOptions;
             options.Target = ETarget.Executable;
             options.NoLogo = true;
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
-            {
-                // this does not exist on mono
-                options.Platform = EPlatform.AnyCpu;
-            }
+            options.Platform = EPlatform.AnyCpu;
             options.Checked = true;
             options.Unsafe = false;
             options.WarningLevel = EWarningLevel.Level4;
