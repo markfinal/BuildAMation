@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICCompilerOptions.cs;D:\dev\Opus\trunk\bin\Debug\..\..\packages\ComposerXECommon\dev\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=ComposerXECommon -c=CCompilerOptionCollection 
+// -i=..\..\..\C\dev\Scripts\ICCompilerOptions.cs;ICCompilerOptions.cs -n=ComposerXECommon -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
 namespace ComposerXECommon
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option properties
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
@@ -185,6 +186,8 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+        #endregion
+        #region ICCompilerOptions Option properties
         bool ICCompilerOptions.AllWarnings
         {
             get
@@ -245,5 +248,6 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("InlineFunctionsSetHandler", this["InlineFunctions"]);
             }
         }
+        #endregion
     }
 }
