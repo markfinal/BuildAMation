@@ -14,7 +14,7 @@ namespace Gcc
         {
             base.SetDelegates(node);
 
-            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLine);
+            this["ExceptionHandler"].PrivateData = new GccCommon.PrivateData(GccCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLineProcessor);
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
