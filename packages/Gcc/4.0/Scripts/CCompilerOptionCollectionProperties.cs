@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\Gcc\4.1\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Gcc -c=CCompilerOptionCollection 
+// -i=ICCompilerOptions.cs -n=Gcc -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=GccCommon.PrivateData -e
 namespace Gcc
 {
     public partial class CCompilerOptionCollection
     {
+        #region ICCompilerOptions Option properties
         Gcc.EVisibility ICCompilerOptions.Visibility
         {
             get
@@ -17,5 +18,6 @@ namespace Gcc
                 this.ProcessNamedSetHandler("VisibilitySetHandler", this["Visibility"]);
             }
         }
+        #endregion
     }
 }
