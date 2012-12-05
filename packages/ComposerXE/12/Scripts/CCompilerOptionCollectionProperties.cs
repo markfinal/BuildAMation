@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\ComposerXE\12\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=ComposerXE -c=CCompilerOptionCollection 
+// -i=ICCompilerOptions.cs -n=ComposerXE -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=ComposerXECommon.PrivateData -e
 namespace ComposerXE
 {
     public partial class CCompilerOptionCollection
     {
+        #region ICCompilerOptions Option properties
         ComposerXE.EVisibility ICCompilerOptions.Visibility
         {
             get
@@ -17,5 +18,6 @@ namespace ComposerXE
                 this.ProcessNamedSetHandler("VisibilitySetHandler", this["Visibility"]);
             }
         }
+        #endregion
     }
 }

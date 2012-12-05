@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICxxCompilerOptions.cs -o=CPlusPlusCompilerOptionProperties.cs -n=ComposerXE -c=CxxCompilerOptionCollection 
+// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=ComposerXE -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=ComposerXECommon.PrivateData -e
 namespace ComposerXE
 {
     public partial class CxxCompilerOptionCollection
     {
+        #region C.ICxxCompilerOptions Option properties
         C.Cxx.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {
             get
@@ -17,5 +18,6 @@ namespace ComposerXE
                 this.ProcessNamedSetHandler("ExceptionHandlerSetHandler", this["ExceptionHandler"]);
             }
         }
+        #endregion
     }
 }
