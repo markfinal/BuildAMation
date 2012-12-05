@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\C\dev\Scripts\ICxxCompilerOptions.cs -o=CxxCompilerOptionProperties.cs -n=Gcc -c=CxxCompilerOptionCollection 
+// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=Gcc -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=GccCommon.PrivateData -e
 namespace Gcc
 {
     public partial class CxxCompilerOptionCollection
     {
+        #region C.ICxxCompilerOptions Option properties
         C.Cxx.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {
             get
@@ -17,5 +18,6 @@ namespace Gcc
                 this.ProcessNamedSetHandler("ExceptionHandlerSetHandler", this["ExceptionHandler"]);
             }
         }
+        #endregion
     }
 }
