@@ -1,15 +1,15 @@
-// <copyright file="Compiler.cs" company="Mark Final">
+// <copyright file="CxxCompiler.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>ComposerXECommon package</summary>
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
-    public class CCompiler : C.ICompilerTool
+    public class CxxCompiler : C.ICxxCompilerTool
     {
         private Opus.Core.IToolset toolset;
 
-        public CCompiler(Opus.Core.IToolset toolset)
+        public CxxCompiler(Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -26,7 +26,7 @@ namespace ComposerXECommon
         {
             get
             {
-                return ".i";
+                return ".ii";
             }
         }
 
@@ -59,7 +59,7 @@ namespace ComposerXECommon
         string Opus.Core.ITool.Executable (Opus.Core.Target target)
         {
             string installPath = target.Toolset.BinPath((Opus.Core.BaseTarget)target);
-            string executablePath = System.IO.Path.Combine(installPath, "icc");
+            string executablePath = System.IO.Path.Combine(installPath, "icpc");
             return executablePath;
         }
         #endregion

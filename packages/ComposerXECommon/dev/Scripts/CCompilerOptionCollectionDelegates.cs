@@ -18,7 +18,7 @@ namespace ComposerXECommon
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            string switchPrefix = compilerTool.IncludePathCompilerSwitches[0];
+            string switchPrefix = compilerTool.IncludePathCompilerSwitches[1];
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
