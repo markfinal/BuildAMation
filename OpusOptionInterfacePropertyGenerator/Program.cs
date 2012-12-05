@@ -734,7 +734,7 @@ namespace OpusOptionInterfacePropertyGenerator
                             }
                             int openBraces = line.Split('{').Length - 1;
                             int closeBraces = line.Split('}').Length - 1;
-                            System.Console.WriteLine("Found {0} open braces and {1} close braces", openBraces, closeBraces);
+                            //System.Console.WriteLine("Found {0} open braces and {1} close braces", openBraces, closeBraces);
 
                             braceCount += openBraces;
                             if (braceCount > 0)
