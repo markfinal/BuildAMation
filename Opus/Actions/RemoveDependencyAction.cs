@@ -41,19 +41,19 @@ namespace Opus
 
         public bool Execute()
         {
-            bool isComplete;
-            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isComplete);
+            bool isWellDefined;
+            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
                 throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a package", Core.State.WorkingDirectory), false);
             }
-            if (!isComplete)
+            if (!isWellDefined)
             {
                 throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory), false);
             }
 
             Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
-            if (isComplete)
+            if (isWellDefined)
             {
                 definitionFile.Read(true);
             }

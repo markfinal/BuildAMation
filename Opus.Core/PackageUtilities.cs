@@ -28,9 +28,9 @@ namespace Opus.Core
         }
 
         public static PackageIdentifier IsPackageDirectory(string path,
-                                                           out bool isComplete)
+                                                           out bool isWellDefined)
         {
-            isComplete = false;
+            isWellDefined = false;
             if (!System.IO.Directory.Exists(path))
             {
                 Log.DebugMessage("Package path '{0}' does not exist", path);
@@ -66,7 +66,7 @@ namespace Opus.Core
                 System.IO.File.Exists(xmlFilename))
             {
                 Core.Log.DebugMessage("Path '{0}' refers to a valid package; root is '{1}'", path, packageRoot);
-                isComplete = true;
+                isWellDefined = true;
             }
             else
             {

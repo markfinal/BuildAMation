@@ -40,10 +40,10 @@ namespace Opus
 
         public bool Execute()
         {
-            bool isComplete;
+            bool isWellDefined;
             Core.PackageIdentifier id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath,
-                                                                                 out isComplete);
-            if ((null != id) || isComplete)
+                                                                                 out isWellDefined);
+            if ((null != id) || isWellDefined)
             {
                 throw new Core.Exception(System.String.Format("Package already present at '{0}'", this.PackagePath), false);
             }
@@ -59,7 +59,7 @@ namespace Opus
                 System.IO.Directory.CreateDirectory(PackageDirectory);
             }
 
-            id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath, out isComplete);
+            id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath, out isWellDefined);
 
             // Xml file for dependencies
             Core.PackageDefinitionFile packageDefinition = new Core.PackageDefinitionFile(id.DefinitionPathName, true);
