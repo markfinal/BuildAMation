@@ -32,5 +32,10 @@ namespace Opus.Core
             int compare = thisAs.Action.CommandLineSwitch.CompareTo(objAs.Action.CommandLineSwitch);
             return compare;
         }
+
+        public override string ToString()
+        {
+            return this.Action.CommandLineSwitch + " (" + this.Action.Description + ")";
+        }
     }
 }
