@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class RequiredModulesAttribute : BaseTargetFilteredAttribute//System.Attribute, ITargetFilters
+    public sealed class RequiredModulesAttribute : BaseTargetFilteredAttribute
     {
     }
 }
