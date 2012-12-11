@@ -93,16 +93,16 @@ namespace Opus.Core
         public static void IdentifyMainPackageOnly()
         {
             // find the working directory package
-            bool isWorkingPackageComplete;
-            PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
+            bool isWorkingPackageWellDefined;
+            PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
             if (null == id)
             {
                 throw new Exception("No valid package found in the working directory", false);
             }
 
-            if (!isWorkingPackageComplete)
+            if (!isWorkingPackageWellDefined)
             {
-                throw new Exception("Working directory package is not complete", false);
+                throw new Exception("Working directory package is not well defined", false);
             }
 
             string definitionPathName = PackageDefinitionPathName(id);
@@ -130,16 +130,16 @@ namespace Opus.Core
         {
             // find the working directory package
             {
-                bool isWorkingPackageComplete;
-                PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageComplete);
+                bool isWorkingPackageWellDefined;
+                PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
                 if (null == id)
                 {
                     throw new Exception("No valid package found in the working directory", false);
                 }
 
-                if (!isWorkingPackageComplete)
+                if (!isWorkingPackageWellDefined)
                 {
-                    throw new Exception("Working directory package is not complete", false);
+                    throw new Exception("Working directory package is not well define", false);
                 }
 
                 State.DependentPackageList.Add(id);
