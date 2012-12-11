@@ -152,7 +152,7 @@ namespace Opus.Core
             int i = 0;
             while (i < State.DependentPackageList.Count)
             {
-                PackageIdentifier id = State.DependentPackageList[i++] as PackageIdentifier;
+                PackageIdentifier id = State.DependentPackageList[i++];
                 string definitionPathName = PackageDefinitionPathName(id);
                 PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
                 definitionFile.Read(1 == i); // i == 1 for the main package
