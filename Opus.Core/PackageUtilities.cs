@@ -876,7 +876,7 @@ namespace Opus.Core
                             isThisCommand = (iaction.CommandLineSwitch == command);
                         }
 
-                        if (iaction.CommandLineSwitch == command)
+                        if (isThisCommand)
                         {
                             if (iaction is IActionWithArguments)
                             {
