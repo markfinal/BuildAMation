@@ -135,7 +135,9 @@ namespace Opus.Core
         int System.IComparable.CompareTo(object obj)
         {
             PackageIdentifier objAs = obj as PackageIdentifier;
-            int compared = this.ToString("-").CompareTo(objAs.ToString(" "));
+            string left = this.ToString("-");
+            string right = objAs.ToString("-");
+            int compared = left.CompareTo(right);
             return compared;
         }
 
