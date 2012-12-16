@@ -929,5 +929,10 @@ namespace Opus.Core
             get;
             set;
         }
+
+        public override string ToString()
+        {
+            return this.xmlFilename;
+        }
     }
 }
