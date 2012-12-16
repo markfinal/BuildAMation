@@ -1,3 +1,7 @@
+16-Dec-2012 Adding support for a package with multiple versions to be valid for a given build (to indicate supported builds). A build must narrow down to a single version though, so a new command Action, <packagename>.version, has been introduced, which can be used to select the version required.
+
+16-Dec-2012 Adding Opus.Core.IActionCommandComparison, for an action that requires a custom command comparison.
+
 27-Nov-2012 Adding in C.ICCompilerOptions.CharacterSet to select the target character set for the compiled code. Support may vary between compilers.
 
 27-Nov-2012 Adding C.IWinImportLibrary interface, that classes implementing C.ILinkerTool also need to implement if they support generating a Windows import library for dynamic libraries.

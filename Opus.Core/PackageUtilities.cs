@@ -128,6 +128,8 @@ namespace Opus.Core
 
         public static void IdentifyMainAndDependentPackages()
         {
+            PackageBuildList buildList = new PackageBuildList();
+
             // find the working directory package
             {
                 bool isWorkingPackageWellDefined;
@@ -143,6 +145,7 @@ namespace Opus.Core
                 }
 
                 State.DependentPackageList.Add(id);
+                buildList.Add(new PackageBuild(id));
             }
 
             // TODO: check for inconsistent circular dependencies
@@ -178,6 +181,20 @@ namespace Opus.Core
                         continue;
                     }
 
+                    PackageBuild build = buildList.GetPackage(id2.Name);
+                    if (null == build)
+                    {
+                        build = new PackageBuild(id2);
+                        buildList.Add(build);
+                    }
+                    else
+                    {
+                        build.Versions.Add(id2);
+                    }
+
+#if true
+                    State.DependentPackageList.Add(id2);
+#else
                     bool toAdd = true;
                     bool toRemoveDuplicate = false;
                     foreach (PackageIdentifier id3 in State.DependentPackageList)
@@ -234,9 +251,54 @@ namespace Opus.Core
 
                         State.DependentPackageList.Add(id2);
                     }
+#endif
                 }
             }
 
+#if false
+            Log.MessageAll("Packages to build");
+            foreach (PackageBuild build in buildList)
+            {
+                Log.MessageAll(build.Name);
+                foreach (PackageIdentifier version in build.Versions)
+                {
+                    Log.MessageAll("\t{0}", version.Version);
+                }
+            }
+#endif
+
+#if true
+            // can we resolve down to a single package?
+            foreach (PackageBuild build in buildList)
+            {
+                if (build.Versions.Count > 1)
+                {
+                    if (!State.Has("PackageDefaultVersions", build.Name.ToLower()))
+                    {
+                        throw new Exception("Package '{0}' has multiple versions. Please specify which one to use:\n{1}", build.Name, build.Versions);
+                    }
+
+                    string defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
+                    bool found = false;
+                    foreach (PackageIdentifier version in build.Versions)
+                    {
+                        if (version.Version == defaultVersion)
+                        {
+                            build.SelectedVersion = version;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        throw new Exception("Specified version for package '{0}' is '{1}' but the available package versions are {2}", build.Name, defaultVersion, build.Versions.ToString());
+                    }
+                }
+
+                PackageInformation info = new PackageInformation(build.SelectedVersion);
+                State.PackageInfo.Add(info);
+            }
+#else
             // now that we have resolved all the dependent packages, instantiate Packages
             // that are used for the build process
             foreach (PackageIdentifier id in State.DependentPackageList)
@@ -260,6 +322,7 @@ namespace Opus.Core
 
                 State.PackageInfo.Add(info);
             }
+#endif
 
             if (0 == State.PackageInfo.Count)
             {
@@ -803,6 +866,16 @@ namespace Opus.Core
                     foreach (var action in actions)
                     {
                         Core.IAction iaction = action.Action;
+                        bool isThisCommand = false;
+                        if (iaction is IActionCommandComparison)
+                        {
+                            isThisCommand = (iaction as IActionCommandComparison).Compare(iaction.CommandLineSwitch, command);
+                        }
+                        else
+                        {
+                            isThisCommand = (iaction.CommandLineSwitch == command);
+                        }
+
                         if (iaction.CommandLineSwitch == command)
                         {
                             if (iaction is IActionWithArguments)

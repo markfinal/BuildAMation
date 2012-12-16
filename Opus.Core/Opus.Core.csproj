@@ -88,6 +88,7 @@
     <Compile Include="File.cs" />
     <Compile Include="FileCollection.cs" />
     <Compile Include="Interfaces\IAction.cs" />
+    <Compile Include="Interfaces\IActionCommandComparison.cs" />
     <Compile Include="Interfaces\IActionWithArguments.cs" />
     <Compile Include="Interfaces\IBuilder.cs" />
     <Compile Include="Interfaces\IBuildScheduler.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Options\ReferenceTypeOption.cs" />
     <Compile Include="Options\ValueTypeOption.cs" />
     <Compile Include="OSUtilities.cs" />
+    <Compile Include="PackageBuildList.cs" />
     <Compile Include="PackageDefinitionFile.cs" />
     <Compile Include="PackageIdentifier.cs" />
     <Compile Include="PackageIdentifierCollection.cs" />

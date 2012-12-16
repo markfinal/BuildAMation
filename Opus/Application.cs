@@ -115,7 +115,17 @@ namespace Opus
                 foreach (Core.RegisterActionAttribute actionAttribute in Core.ActionManager.Actions)
                 {
                     Core.IAction action = actionAttribute.Action;
-                    if (action.CommandLineSwitch == commandName)
+                    bool isThisAction = false;
+                    if (action is Core.IActionCommandComparison)
+                    {
+                        isThisAction = (action as Core.IActionCommandComparison).Compare(action.CommandLineSwitch, commandName);
+                    }
+                    else
+                    {
+                        isThisAction = (action.CommandLineSwitch == commandName);
+                    }
+
+                    if (isThisAction)
                     {
                         if (action is Core.IActionWithArguments)
                         {

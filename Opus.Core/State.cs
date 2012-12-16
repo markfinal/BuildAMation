@@ -59,8 +59,8 @@ namespace Opus.Core
             PackageInformationCollection packageInfoCollection = new PackageInformationCollection();
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
 
-            Array<PackageIdentifier> dependentPackageList = new Array<PackageIdentifier>();
-            Add<Array<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
+            UniqueList<PackageIdentifier> dependentPackageList = new UniqueList<PackageIdentifier>();
+            Add<UniqueList<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
@@ -286,7 +286,7 @@ namespace Opus.Core
            }
         }
 
-        public static Array<PackageIdentifier> DependentPackageList
+        public static UniqueList<PackageIdentifier> DependentPackageList
         {
             set
             {
@@ -294,7 +294,7 @@ namespace Opus.Core
             }
             get
             {
-                return Get("System", "DependentPackageList") as Array<PackageIdentifier>;
+                return Get("System", "DependentPackageList") as UniqueList<PackageIdentifier>;
             }
         }
         
