@@ -9,10 +9,44 @@ namespace Opus.Core
     {
         public new void Add(T obj)
         {
-            if (!this.Contains(obj))
+            if (0 == this.Count)
             {
                 base.Add(obj);
+                return;
             }
+
+            System.IComparable comparable = obj as System.IComparable;
+            if (null != comparable)
+            {
+                foreach (T item in this)
+                {
+                    Log.MessageAll(item.ToString());
+                    if (0 == comparable.CompareTo(item))
+                    {
+                        return;
+                    }
+                }
+
+                base.Add(obj);
+                return;
+            }
+            else
+            {
+                if (!this.Contains(obj))
+                {
+                    base.Add(obj);
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            System.Text.StringBuilder text = new System.Text.StringBuilder();
+            foreach (T item in this)
+            {
+                text.AppendFormat("{0} ", item.ToString());
+            }
+            return text.ToString();
         }
     }
 }
