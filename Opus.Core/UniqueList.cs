@@ -20,7 +20,6 @@ namespace Opus.Core
             {
                 foreach (T item in this)
                 {
-                    Log.MessageAll(item.ToString());
                     if (0 == comparable.CompareTo(item))
                     {
                         return;
