@@ -41,6 +41,7 @@ namespace MingwCommon
             private set;
         }
 
+        // TODO: currently unused
         public string GxxIncludePath
         {
             get;

@@ -24,13 +24,16 @@ namespace Mingw
         {
             base.InitializeDefaults(node);
 
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.GetInstance(typeof(Mingw.Toolset));
+            // TODO: can this be moved to MingwCommon? (difference in root C folders)
+            Opus.Core.Target target = node.Target;
+            MingwCommon.Toolset mingwToolset = target.Toolset as MingwCommon.Toolset;
 
-            C.ICompilerTool compilerTool = info.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            string cppIncludePath = System.IO.Path.Combine(compilerTool.IncludePaths(node.Target)[0], "c++");
+            // using [1] as we want the one in the lib folder
+            string cppIncludePath = System.IO.Path.Combine(mingwToolset.MingwDetail.IncludePaths[1], "c++");
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
-            // TODO: might be able to clean this up from the MingwDetailData
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(System.IO.Path.Combine(cppIncludePath, "mingw32"), false);
+
+            string cppIncludePath2 = System.IO.Path.Combine(cppIncludePath, mingwToolset.MingwDetail.Target);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
 
             MingwCommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
         }

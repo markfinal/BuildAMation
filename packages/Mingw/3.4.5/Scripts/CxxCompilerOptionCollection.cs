@@ -21,15 +21,16 @@ namespace Mingw
         {
             base.InitializeDefaults(node);
 
-            Opus.Core.IToolset info = Opus.Core.ToolsetFactory.GetInstance(typeof(Mingw.Toolset));
+            // TODO: can this be moved to MingwCommon? (difference in root C folders)
+            Opus.Core.Target target = node.Target;
+            MingwCommon.Toolset mingwToolset = target.Toolset as MingwCommon.Toolset;
 
-            C.ICompilerTool compilerTool = info.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            string cppIncludePath = System.IO.Path.Combine(compilerTool.IncludePaths(node.Target)[0], "c++");
-
-            // TODO: these should be simplified by the use of the MingwDetailData
-            cppIncludePath = System.IO.Path.Combine(cppIncludePath, "3.4.5");
+            // using [0] as we want the one in the root include folder
+            string cppIncludePath = System.IO.Path.Combine(mingwToolset.MingwDetail.IncludePaths[0], "c++");
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(System.IO.Path.Combine(cppIncludePath, "mingw32"), false);
+
+            string cppIncludePath2 = System.IO.Path.Combine(cppIncludePath, mingwToolset.MingwDetail.Target);
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
         }
     }
 }
