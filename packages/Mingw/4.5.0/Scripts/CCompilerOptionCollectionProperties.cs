@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=D:\dev\Opus\trunk\bin\Debug\..\..\packages\Mingw\4.5.0\Scripts\ICCompilerOptions.cs -o=CCompilerOptionProperties.cs -n=Mingw -c=CCompilerOptionCollection 
+// -i=ICCompilerOptions.cs -n=Mingw -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
 namespace Mingw
 {
     public partial class CCompilerOptionCollection
     {
+        #region ICCompilerOptions Option properties
         Mingw.EVisibility ICCompilerOptions.Visibility
         {
             get
@@ -17,5 +18,6 @@ namespace Mingw
                 this.ProcessNamedSetHandler("VisibilitySetHandler", this["Visibility"]);
             }
         }
+        #endregion
     }
 }

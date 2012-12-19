@@ -10,13 +10,6 @@ namespace Mingw
     // C option collection
     public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            base.SetDelegates(node);
-
-            this["ExceptionHandler"].PrivateData = new MingwCommon.PrivateData(MingwCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLine);
-        }
-
         public CxxCompilerOptionCollection()
             : base()
         {
