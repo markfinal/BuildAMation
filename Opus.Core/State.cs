@@ -43,6 +43,9 @@ namespace Opus.Core
                     throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory), false);
                 }
                 Add<string>("Opus", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
+
+                // relative path for definition files
+                Add<string>("Opus", "PackageDependencySchemaRelativePathNameV2", "./Schema/OpusPackageDependencyV2.xsd");
             }
 
             AddCategory("System");
@@ -236,6 +239,14 @@ namespace Opus.Core
             get
             {
                 return Get("Opus", "PackageDependencySchemaPathNameV2") as string;
+            }
+        }
+
+        public static string OpusPackageDependencySchemaRelativePathNameV2
+        {
+            get
+            {
+                return Get("Opus", "PackageDependencySchemaRelativePathNameV2") as string;
             }
         }
 

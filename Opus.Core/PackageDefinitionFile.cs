@@ -5,9 +5,9 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    internal class MyXmlResolver : System.Xml.XmlResolver
+    internal class OpusXmlResolver : System.Xml.XmlResolver
     {
-        internal MyXmlResolver()
+        internal OpusXmlResolver()
             : base()
         {
         }
@@ -15,6 +15,40 @@ namespace Opus.Core
         public override System.Net.ICredentials Credentials
         {
             set { throw new System.NotImplementedException(); }
+        }
+
+        public override System.Uri ResolveUri(System.Uri baseUri, string relativeUri)
+        {
+            if (baseUri == null)
+            {
+                return base.ResolveUri(baseUri, relativeUri);
+            }
+
+            if (!relativeUri.EndsWith(".xsd"))
+            {
+                throw new System.Xml.XmlException(System.String.Format("Don't know how to resolve URIs such as '{0}'", relativeUri));
+            }
+
+            // NEW style definition files (0.50 onward)
+            if (relativeUri == State.OpusPackageDependencySchemaRelativePathNameV2)
+            {
+                // we've got a local match, so use the version of the Schema that is next to the Opus binary
+                return new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
+            }
+            else
+            {
+                // OLD style definition files (pre 0.50)
+                if (System.IO.File.Exists(relativeUri))
+                {
+                    // absolute pathname to a schema that exists on disk!
+                    return base.ResolveUri(baseUri, relativeUri);
+                }
+                else
+                {
+                    // absolute pathname to a schema that doesn't exist on disk!
+                    throw new System.Xml.Schema.XmlSchemaException(System.String.Format("Schema '{0}' cannot be located. Please re-run the Opus command and force a definition file update", relativeUri));
+                }
+            }
         }
 
         public override object GetEntity(System.Uri absoluteUri, string role, System.Type ofObjectToReturn)
@@ -71,6 +105,13 @@ namespace Opus.Core
             }
             else
             {
+                // NEW style definition files
+                if (args.Exception is System.Xml.Schema.XmlSchemaException)
+                {
+                    throw new Exception("From {0} (line {1}, position {2}):\n{3}", args.Exception.SourceUri, args.Exception.LineNumber, args.Exception.LinePosition, args.Exception.Message);
+                }
+
+                // OLD style definition files
                 if (args.Exception.SourceUri.Contains(".xsd"))
                 {
                     System.Uri schemaUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
@@ -95,9 +136,8 @@ namespace Opus.Core
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
             settings.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(ValidationCallBack);
-            settings.XmlResolver = new MyXmlResolver();
-            settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
-    
+            settings.XmlResolver = new OpusXmlResolver();
+
             // Create the XmlReader object.
             System.Xml.XmlReader reader = System.Xml.XmlReader.Create(this.xmlFilename, settings);
     
@@ -136,8 +176,7 @@ namespace Opus.Core
             {
                 string xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 System.Xml.XmlAttribute schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                var schemaPathUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
-                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, schemaPathUri.AbsoluteUri);
+                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, State.OpusPackageDependencySchemaRelativePathNameV2);
                 packageDefinition.Attributes.Append(schemaAttribute);
             }
             document.AppendChild(packageDefinition);
@@ -302,8 +341,8 @@ namespace Opus.Core
             {
                 xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
             }
-            xmlReaderSettings.Schemas = new System.Xml.Schema.XmlSchemaSet();
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
+            xmlReaderSettings.XmlResolver = new OpusXmlResolver();
 
             // try reading the current schema version first
             if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation))
@@ -690,7 +729,6 @@ namespace Opus.Core
             try
             {
                 System.Xml.XmlReaderSettings settings = readerSettings.Clone();
-                settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathNameV2);
                 if (this.validate)
                 {
                     if (validateSchemaLocation)

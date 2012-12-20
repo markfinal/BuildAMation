@@ -1,3 +1,5 @@
+20-Dec-2012 Package definition files now accept a relative path to the schema. This avoids problems in earlier versions of Opus that could reference multiple copies of the schema. An exception is now thrown with old style definition files. Running commands again with -forcedefinitionupdate resolves that.
+
 20-Dec-2012 Adding action '-forcedefinitionupdate' which will immediate write out package definition files after they have been read. This can be used to force any updates required in future Opus versions.
 
 16-Dec-2012 Adding support for a package with multiple versions to be valid for a given build (to indicate supported builds). A build must narrow down to a single version though, so a new command Action, <packagename>.version, has been introduced, which can be used to select the version required.

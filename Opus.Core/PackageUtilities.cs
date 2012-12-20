@@ -106,7 +106,7 @@ namespace Opus.Core
             }
 
             string definitionPathName = PackageDefinitionPathName(id);
-            PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
+            PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
             definitionFile.Read(true);
             id.Definition = definitionFile;
 
@@ -157,7 +157,7 @@ namespace Opus.Core
             {
                 PackageIdentifier id = State.DependentPackageList[i++];
                 string definitionPathName = PackageDefinitionPathName(id);
-                PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, true);
+                PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
                 definitionFile.Read(1 == i); // i == 1 for the main package
                 id.Definition = definitionFile;
 
