@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus file:///home/mark/dev/Opus/branches/intel/bin/Release/Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
+<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
   <Opus:RequiredPackages>
+    <Opus:Package Name="ComposerXE">
+      <Opus:Version Id="12" />
+    </Opus:Package>
     <Opus:Package Name="FileUtilities">
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="Gcc">
-      <Opus:Version Id="4.4" />
       <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
-    </Opus:Package>
-    <Opus:Package Name="ComposerXE">
-      <Opus:Version Id="12" />
+      <Opus:Version Id="4.4" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
@@ -23,11 +23,11 @@
     <Opus:Package Name="VisualC">
       <Opus:Version Id="9.0" />
     </Opus:Package>
-    <Opus:Package Name="WindowsSDK">
-      <Opus:Version Id="6.0A" />
-    </Opus:Package>
     <Opus:Package Name="VSSolutionBuilder">
       <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="WindowsSDK">
+      <Opus:Version Id="6.0A" />
     </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
