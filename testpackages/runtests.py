@@ -82,7 +82,9 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         if options.verbose:
             argList.append("-verbosity=2")
         else:
-            argList.append("-verbosity=0")        
+            argList.append("-verbosity=0")
+        if options.forceDefinitionUpdate:
+            argList.append("-forcedefinitionupdate")
         print "\tExecuting: %s" % " ".join(argList)
         currentDir = os.getcwd()
         try:
@@ -141,6 +143,7 @@ if __name__ == "__main__":
     optParser.add_option("--verbose", "-v", dest="verbose", action="store_true", default=False, help="Verbose output")
     optParser.add_option("--debug", "-d", dest="debugSymbols", action="store_true", default=False, help="Build Opus packages with debug information")
     optParser.add_option("--noinitialclean", "-i", dest="noInitialClean", action="store_true", default=False, help="Disable cleaning packages before running tests")
+    optParser.add_option("--forcedefinitionupdate", "-f", dest="forceDefinitionUpdate", action="store_true", default=False, help="Force definition file updates")
     (options,args) = optParser.parse_args()
     
     if options.verbose:
