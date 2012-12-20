@@ -308,6 +308,12 @@ namespace Opus.Core
             // try reading the current schema version first
             if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation))
             {
+                if (State.ForceDefinitionFileUpdate)
+                {
+                    Log.DebugMessage("Forced writing of package definition file '{0}'", this.xmlFilename);
+                    this.Write();
+                }
+
                 return;
             }
 

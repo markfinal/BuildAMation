@@ -89,6 +89,7 @@ namespace Opus.Core
             Add<StringArray>("Build", "Platforms", null);
             Add<Array<EConfiguration>>("Build", "Configurations", null);
             Add<StringArray>("Build", "Modules", null);
+            Add<bool>("Build", "ForceDefinitionFileUpdate", false);
 
             AddCategory("Toolset");
         }
@@ -586,6 +587,19 @@ namespace Opus.Core
             get
             {
                 return Get("System", "SchedulerProgressDelegates") as Array<BuildSchedulerProgressUpdatedDelegate>;
+            }
+        }
+
+        public static bool ForceDefinitionFileUpdate
+        {
+            set
+            {
+                Set("Build", "ForceDefinitionFileUpdate", value);
+            }
+
+            get
+            {
+                return (bool)Get("Build", "ForceDefinitionFileUpdate");
             }
         }
     }
