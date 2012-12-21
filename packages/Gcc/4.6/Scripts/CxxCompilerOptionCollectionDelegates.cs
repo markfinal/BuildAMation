@@ -9,7 +9,7 @@ namespace Gcc
         #region C.ICxxCompilerOptions Option delegates
         private static void ExceptionHandlerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            GccCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLine(sender, commandLineBuilder, option, target);
+            GccCommon.CxxCompilerOptionCollection.ExceptionHandlerCommandLineProcessor(sender, commandLineBuilder, option, target);
         }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
