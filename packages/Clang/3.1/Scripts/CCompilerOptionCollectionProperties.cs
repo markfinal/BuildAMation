@@ -5,6 +5,7 @@ namespace Clang
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option properties
         C.DefineCollection C.ICCompilerOptions.Defines
         {
             get
@@ -185,5 +186,6 @@ namespace Clang
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+        #endregion
     }
 }

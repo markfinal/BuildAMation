@@ -6,6 +6,7 @@ namespace Clang
 {
     public partial class CCompilerOptionCollection
     {
+        #region C.ICCompilerOptions Option delegates
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
@@ -23,7 +24,6 @@ namespace Clang
                 options.ObjectFilePath = null;
                 return;
             }
-
             commandLineBuilder.Add("-c");
             commandLineBuilder.Add("-o");
             commandLineBuilder.Add(options.ObjectFilePath);
@@ -61,6 +61,7 @@ namespace Clang
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLineProcessor);

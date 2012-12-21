@@ -1,10 +1,11 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=Clang -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
+// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=Clang -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData -e
 namespace Clang
 {
     public partial class CxxCompilerOptionCollection
     {
+        #region C.ICxxCompilerOptions Option properties
         C.Cxx.EExceptionHandler C.ICxxCompilerOptions.ExceptionHandler
         {
             get
@@ -17,5 +18,6 @@ namespace Clang
                 this.ProcessNamedSetHandler("ExceptionHandlerSetHandler", this["ExceptionHandler"]);
             }
         }
+        #endregion
     }
 }
