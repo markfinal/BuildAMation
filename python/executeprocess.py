@@ -10,6 +10,7 @@ def ExecuteProcess(args, verbose=False, isCSharp=False):
         newArgs = ["mono"]
         newArgs.extend(args)
         args = newArgs
+    #args.append("-f")
     if verbose:
         print "Executing: '%s'" % " ".join(args)
     process = subprocess.Popen(args, stdout=subprocess.PIPE)

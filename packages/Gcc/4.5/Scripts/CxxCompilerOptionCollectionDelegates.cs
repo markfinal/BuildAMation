@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=Gcc -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=GccCommon.PrivateData -e
+// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=Gcc -c=CxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=GccCommon.PrivateData -e
 
 namespace Gcc
 {

@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\IArchiverOptions.cs;IArchiverOptions.cs -n=VisualCCommon -c=ArchiverOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs;..\..\..\VisualStudioProcessor\dev\Scripts\VisualStudioDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/IArchiverOptions.cs;IArchiverOptions.cs -n=VisualCCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs;../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs -pv=PrivateData
 
 namespace VisualCCommon
 {

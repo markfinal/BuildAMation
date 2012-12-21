@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=ComposerXE -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=ComposerXECommon.PrivateData -e
+// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=ComposerXE -c=CxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=ComposerXECommon.PrivateData -e
 namespace ComposerXE
 {
     public partial class CxxCompilerOptionCollection

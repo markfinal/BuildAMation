@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=Clang -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData -e
+// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=Clang -c=CxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData -e
 
 namespace Clang
 {

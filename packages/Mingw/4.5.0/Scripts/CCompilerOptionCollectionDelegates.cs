@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=ICCompilerOptions.cs -n=Mingw -c=CCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
+// -i=ICCompilerOptions.cs -n=Mingw -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
 
 namespace Mingw
 {
@@ -15,19 +15,15 @@ namespace Mingw
                 case EVisibility.Default:
                     commandLineBuilder.Add("-fvisibility=default");
                     break;
-
                 case EVisibility.Hidden:
                     commandLineBuilder.Add("-fvisibility=hidden");
                     break;
-
                 case EVisibility.Internal:
                     commandLineBuilder.Add("-fvisibility=internal");
                     break;
-
                 case EVisibility.Protected:
                     commandLineBuilder.Add("-fvisibility=protected");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized visibility option");
             }

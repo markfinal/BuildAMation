@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=ISymLinkOptions.cs -n=FileUtilities -c=SymLinkOptionCollection -p -d -dd=..\..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=SymLinkPrivateData
+// -i=ISymLinkOptions.cs -n=FileUtilities -c=SymLinkOptionCollection -p -d -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=SymLinkPrivateData
 
 namespace FileUtilities
 {

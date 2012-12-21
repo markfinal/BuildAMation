@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ILinkerOptions.cs;ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ILinkerOptions.cs;ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 namespace GccCommon
 {
     public partial class LinkerOptionCollection

@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\IArchiverOptions.cs;IArchiverOptions.cs -n=MingwCommon -c=ArchiverOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/IArchiverOptions.cs;IArchiverOptions.cs -n=MingwCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 
 namespace MingwCommon
 {

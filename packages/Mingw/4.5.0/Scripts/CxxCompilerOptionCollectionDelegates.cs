@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=Mingw -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
+// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=Mingw -c=CxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
 
 namespace Mingw
 {
