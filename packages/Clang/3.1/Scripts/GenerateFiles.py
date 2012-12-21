@@ -3,8 +3,13 @@
 import os
 import string
 import subprocess
+import sys
 
-def ExecuteProcess(args, verbose=False):
+def ExecuteProcess(args, verbose=False, isCSharp=False):
+    if isCSharp and sys.platform.startswith("darwin"):
+      newArgs = ["mono"]
+      newArgs.extend(args)
+      args = newArgs
     if verbose:
         print "Executing: '%s'" % " ".join(args)
     process = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -33,7 +38,7 @@ cCompiler_options = [
     "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=PrivateData"
 ]
-(stdout,stderr) = ExecuteProcess(cCompiler_options, True)
+(stdout,stderr) = ExecuteProcess(cCompiler_options, True, True)
 print stdout
 
 # C++ compiler options
@@ -48,5 +53,5 @@ cxxCompiler_options = [
     "-pv=PrivateData",
     "-e" # this option set derives from the C option set
 ]
-(stdout,stderr) = ExecuteProcess(cxxCompiler_options, True)
+(stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
 print stdout
