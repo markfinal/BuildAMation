@@ -2,16 +2,10 @@
 
 import os
 import string
-import subprocess
+import sys
 
-def ExecuteProcess(args, verbose=False):
-    if verbose:
-        print "Executing: '%s'" % " ".join(args)
-    process = subprocess.Popen(args, stdout=subprocess.PIPE)
-    output = process.communicate()
-    if process.returncode != 0:
-        raise RuntimeError("Command '%s' failed" % (" ".join(args)))
-    return output
+sys.path.append("../../../../python")
+from executeprocess import ExecuteProcess
 
 get_opus_dir_command = [
     "Opus",
@@ -33,7 +27,7 @@ cCompiler_options = [
     "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=PrivateData"
 ]
-(stdout,stderr) = ExecuteProcess(cCompiler_options, True)
+(stdout,stderr) = ExecuteProcess(cCompiler_options, True, True)
 print stdout
 
 # C++ compiler options
@@ -49,5 +43,5 @@ cxxCompiler_options = [
     "-e",
     "-b" # forms a base class
 ]
-(stdout,stderr) = ExecuteProcess(cxxCompiler_options, True)
+(stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
 print stdout
