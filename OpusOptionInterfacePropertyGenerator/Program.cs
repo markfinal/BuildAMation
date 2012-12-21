@@ -112,6 +112,7 @@ namespace OpusOptionInterfacePropertyGenerator
         public bool toStdOut;
         public bool forceWrite;
         public bool extendedDelegates;
+        public bool isBaseClass;
     }
 
     class Program
@@ -180,6 +181,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 else if (arg.StartsWith("-e"))
                 {
                     parameters.extendedDelegates = true;
+                }
+                else if (arg.StartsWith("-b"))
+                {
+                    parameters.isBaseClass = true;
                 }
                 else
                 {
@@ -867,7 +872,7 @@ namespace OpusOptionInterfacePropertyGenerator
                             delegatesToRegister[property.Name].Add(delegateName);
 
                             System.Text.StringBuilder propertyDelegate = new System.Text.StringBuilder();
-                            propertyDelegate.AppendFormat("private static {0} {1}{2}", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
+                            propertyDelegate.AppendFormat("{0} static {1} {2}{3}", parameters.isBaseClass ? "public" : "private", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
                             WriteLine(writer, 2, propertyDelegate.ToString());
                             if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
                             {
