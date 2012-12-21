@@ -6,7 +6,7 @@
     </Opus:Package>
     <Opus:Package Name="Gcc">
       <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
-      <Opus:Version Id="4.4" />
+      <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
