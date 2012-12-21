@@ -23,9 +23,9 @@ namespace Opus.Core
             }
         }
 
-        public void Add(PackageInformation item)
+        public void Add(PackageInformation item, bool allowMultipleVersions)
         {
-            if (this.Contains(item))
+            if (!allowMultipleVersions && this.Contains(item))
             {
                 throw new Exception("Package '{0}' already present in the collection. Could not add '{1}'", this[item.Name].FullName, item.FullName);
             }
@@ -37,6 +37,11 @@ namespace Opus.Core
             {
                 State.PackageRoots.Add(root);
             }
+        }
+
+        public void Add(PackageInformation item)
+        {
+            this.Add(item, false);
         }
 
         public void Clear()
