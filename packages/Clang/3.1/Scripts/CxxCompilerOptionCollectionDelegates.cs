@@ -11,6 +11,7 @@ namespace Clang
         }
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
+            base.SetDelegates(node);
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLineProcessor);
         }
     }
