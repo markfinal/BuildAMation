@@ -36,5 +36,11 @@ namespace ComposerXECommon
             get;
             set;
         }
+
+        bool SixtyFourBit
+        {
+            get;
+            set;
+        }
     }
 }

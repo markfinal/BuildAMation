@@ -248,6 +248,18 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("InlineFunctionsSetHandler", this["InlineFunctions"]);
             }
         }
+        bool ICCompilerOptions.SixtyFourBit
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("SixtyFourBit");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("SixtyFourBit", value);
+                this.ProcessNamedSetHandler("SixtyFourBitSetHandler", this["SixtyFourBit"]);
+            }
+        }
         #endregion
     }
 }
