@@ -54,7 +54,7 @@ namespace Clang
             }
             else
             {
-                throw new System.NotSupportedException();
+                installPath  = @"/usr/bin";
             }
 
             this.installPath = installPath;
