@@ -158,7 +158,7 @@ namespace Opus.Core
                 PackageIdentifier id = State.DependentPackageList[i++];
                 string definitionPathName = PackageDefinitionPathName(id);
                 PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
-                definitionFile.Read(1 == i); // i == 1 for the main package
+                definitionFile.Read(true);
                 id.Definition = definitionFile;
 
                 if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
