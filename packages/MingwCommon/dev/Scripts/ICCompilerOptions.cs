@@ -36,5 +36,11 @@ namespace MingwCommon
             get;
             set;
         }
+
+        bool SixtyFourBit
+        {
+            get;
+            set;
+        }
     }
 }
