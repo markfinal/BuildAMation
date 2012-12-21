@@ -126,7 +126,7 @@ namespace Opus.Core
             State.PackageInfo.Add(info);
         }
 
-        public static void IdentifyMainAndDependentPackages()
+        public static void IdentifyMainAndDependentPackages(bool resolveToSinglePackageVersion)
         {
             PackageBuildList buildList = new PackageBuildList();
 
@@ -268,35 +268,49 @@ namespace Opus.Core
 #endif
 
 #if true
-            // can we resolve down to a single package?
-            foreach (PackageBuild build in buildList)
+            if (resolveToSinglePackageVersion)
             {
-                if (build.Versions.Count > 1)
+                // can we resolve down to a single package?
+                foreach (PackageBuild build in buildList)
                 {
-                    if (!State.Has("PackageDefaultVersions", build.Name.ToLower()))
+                    if (build.Versions.Count > 1)
                     {
-                        throw new Exception("Package '{0}' has multiple versions. Please specify which one to use:\n{1}", build.Name, build.Versions);
-                    }
-
-                    string defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
-                    bool found = false;
-                    foreach (PackageIdentifier version in build.Versions)
-                    {
-                        if (version.Version == defaultVersion)
+                        if (!State.Has("PackageDefaultVersions", build.Name.ToLower()))
                         {
-                            build.SelectedVersion = version;
-                            found = true;
-                            break;
+                            throw new Exception("Package '{0}' has multiple versions. Please specify which one to use:\n{1}", build.Name, build.Versions);
+                        }
+
+                        string defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
+                        bool found = false;
+                        foreach (PackageIdentifier version in build.Versions)
+                        {
+                            if (version.Version == defaultVersion)
+                            {
+                                build.SelectedVersion = version;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            throw new Exception("Specified version for package '{0}' is '{1}' but the available package versions are {2}", build.Name, defaultVersion, build.Versions.ToString());
                         }
                     }
-                    if (!found)
+
+                    PackageInformation info = new PackageInformation(build.SelectedVersion);
+                    State.PackageInfo.Add(info);
+                }
+            }
+            else
+            {
+                foreach (PackageBuild build in buildList)
+                {
+                    foreach (PackageIdentifier id in build.Versions)
                     {
-                        throw new Exception("Specified version for package '{0}' is '{1}' but the available package versions are {2}", build.Name, defaultVersion, build.Versions.ToString());
+                        PackageInformation info = new PackageInformation(id);
+                        State.PackageInfo.Add(info, true);
                     }
                 }
-
-                PackageInformation info = new PackageInformation(build.SelectedVersion);
-                State.PackageInfo.Add(info);
             }
 #else
             // now that we have resolved all the dependent packages, instantiate Packages
@@ -354,7 +368,7 @@ namespace Opus.Core
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyMainAndDependentPackages();
+            IdentifyMainAndDependentPackages(true);
 
             PackageInformation mainPackage = State.PackageInfo.MainPackage;
 
@@ -585,7 +599,7 @@ namespace Opus.Core
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyMainAndDependentPackages();
+            IdentifyMainAndDependentPackages(true);
 
             PackageInformation mainPackage = State.PackageInfo.MainPackage;
 

@@ -35,7 +35,8 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.PackageUtilities.IdentifyMainAndDependentPackages();
+            // TODO: should be false but other work has to happen first
+            Core.PackageUtilities.IdentifyMainAndDependentPackages(true);
 
             if (0 == Core.State.PackageInfo.Count)
             {

@@ -44,7 +44,9 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.PackageUtilities.IdentifyMainAndDependentPackages();
+            // there may be multiple versions of packages - so show them all
+            Core.PackageUtilities.IdentifyMainAndDependentPackages(false);
+
             Core.PackageIdentifier mainPackageId = Core.State.PackageInfo[0].Identifier;
             Core.PackageDefinitionFile definitionFile = mainPackageId.Definition;
 
