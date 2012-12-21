@@ -557,6 +557,8 @@ namespace OpusOptionInterfacePropertyGenerator
             }
             using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
             {
+                writer.NewLine = "\n";
+
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
                 Write(writer, 0, "//");
@@ -775,6 +777,8 @@ namespace OpusOptionInterfacePropertyGenerator
             System.IO.MemoryStream memStream = new System.IO.MemoryStream();
             using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(memStream) : System.Console.Out)
             {
+                writer.NewLine = "\n";
+
                 System.Text.StringBuilder builder = new System.Text.StringBuilder();
                 builder.Length = 0;
                 bool writeToDisk = (null == layout);
