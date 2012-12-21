@@ -32,6 +32,13 @@ namespace Opus.Core
             get;
             set;
         }
+
+        public override string ToString()
+        {
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            builder.AppendFormat("{0}: Package '{1}' with {2} versions", base.ToString(), this.Name, this.Versions.Count);
+            return builder.ToString();
+        }
     }
 
     public class PackageBuildList : UniqueList<PackageBuild>
