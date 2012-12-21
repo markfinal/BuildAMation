@@ -316,6 +316,7 @@ namespace Opus.Core
             xmlWriterSettings.CloseOutput = true;
             xmlWriterSettings.OmitXmlDeclaration = false;
             xmlWriterSettings.NewLineOnAttributes = false;
+            xmlWriterSettings.NewLineChars = "\n";
             xmlWriterSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
 
             using (System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(this.xmlFilename, xmlWriterSettings))
