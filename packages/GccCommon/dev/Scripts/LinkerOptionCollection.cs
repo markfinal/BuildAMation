@@ -13,13 +13,14 @@ namespace GccCommon
 
             Opus.Core.Target target = node.Target;
 
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target));
+            ILinkerOptions linkerOptions = this as ILinkerOptions;
+            linkerOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
 
             (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
-            (this as ILinkerOptions).CanUseOrigin = false;
-            (this as ILinkerOptions).AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
-            (this as ILinkerOptions).RPath = new Opus.Core.StringArray();
+            linkerOptions.CanUseOrigin = false;
+            linkerOptions.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
+            linkerOptions.RPath = new Opus.Core.StringArray();
 
             // we use gcc as the linker - if there is C++ code included, link against libstdc++
             foreach (Opus.Core.DependencyNode child in node.Children)
@@ -41,19 +42,6 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
-        }
-
-        private static void SixtyFourBitCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (sixtyFourBitOption.Value)
-            {
-                commandLineBuilder.Add("-m64");
-            }
-            else
-            {
-                commandLineBuilder.Add("-m32");
-            }
         }
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()

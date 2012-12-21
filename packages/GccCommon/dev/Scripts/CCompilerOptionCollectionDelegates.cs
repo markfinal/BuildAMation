@@ -301,6 +301,18 @@ namespace GccCommon
                 commandLineBuilder.Add("-pedantic");
             }
         }
+        private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (sixtyFourBitOption.Value)
+            {
+                commandLineBuilder.Add("-m64");
+            }
+            else
+            {
+                commandLineBuilder.Add("-m32");
+            }
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -325,9 +337,7 @@ namespace GccCommon
             this["PositionIndependentCode"].PrivateData = new PrivateData(PositionIndependentCodeCommandLineProcessor);
             this["InlineFunctions"].PrivateData = new PrivateData(InlineFunctionsCommandLineProcessor);
             this["Pedantic"].PrivateData = new PrivateData(PedanticCommandLineProcessor);
-
-            // TODO: address this
-            this["64bit"].PrivateData = new PrivateData(SixtyFourBitCommandLine);
+            this["SixtyFourBit"].PrivateData = new PrivateData(SixtyFourBitCommandLineProcessor);
         }
     }
 }

@@ -42,5 +42,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        bool SixtyFourBit
+        {
+            get;
+            set;
+        }
     }
 }

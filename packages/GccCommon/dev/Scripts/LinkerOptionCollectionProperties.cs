@@ -164,6 +164,18 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("RPathSetHandler", this["RPath"]);
             }
         }
+        bool ILinkerOptions.SixtyFourBit
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("SixtyFourBit");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("SixtyFourBit", value);
+                this.ProcessNamedSetHandler("SixtyFourBitSetHandler", this["SixtyFourBit"]);
+            }
+        }
         #endregion
     }
 }

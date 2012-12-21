@@ -17,7 +17,7 @@ namespace GccCommon
             base.InitializeDefaults(node);
 
             Opus.Core.Target target = node.Target;
-            this["64bit"] = new Opus.Core.ValueTypeOption<bool>(Opus.Core.OSUtilities.Is64Bit(target));
+            compilerInterface.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
 
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
@@ -49,19 +49,6 @@ namespace GccCommon
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
-        }
-
-        private static void SixtyFourBitCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (sixtyFourBitOption.Value)
-            {
-                commandLineBuilder.Add("-m64");
-            }
-            else
-            {
-                commandLineBuilder.Add("-m32");
-            }
         }
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
