@@ -59,13 +59,13 @@ namespace Clang
 
         string Opus.Core.ITool.Executable(Opus.Core.Target target)
         {
-            string clangPathname = System.IO.Path.Combine(this.toolset.InstallPath((Opus.Core.BaseTarget)target), "clang");
+            string executablePath = System.IO.Path.Combine(this.toolset.InstallPath((Opus.Core.BaseTarget)target), "clang");
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 // TODO: can we have this file extension somewhere central?
-                clangPathname += ".exe";
+                executablePath += ".exe";
             }
-            return clangPathname;
+            return executablePath;
         }
 
         #endregion
