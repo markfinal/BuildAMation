@@ -20,7 +20,6 @@ namespace GccCommon
             Opus.Core.IToolset toolset = target.Toolset;
             C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string switchPrefix = compiler.IncludePathCompilerSwitches[1];
-
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
@@ -42,11 +41,9 @@ namespace GccCommon
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
                 return;
             }
-
             Opus.Core.IToolset toolset = target.Toolset;
             C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             string switchPrefix = compiler.IncludePathCompilerSwitches[0];
-
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             foreach (string includePath in includePathsOption.Value)
             {
@@ -68,7 +65,6 @@ namespace GccCommon
                 options.ObjectFilePath = null;
                 return;
             }
-
             Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -86,7 +82,6 @@ namespace GccCommon
                         }
                     }
                     break;
-
                 case C.ECompilerOutput.Preprocess:
                     {
                         commandLineBuilder.Add("-E");
@@ -101,7 +96,6 @@ namespace GccCommon
                         }
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
             }
@@ -128,7 +122,6 @@ namespace GccCommon
             if (ignoreStandardIncludePathsOption.Value)
             {
                 commandLineBuilder.Add("-nostdinc");
-
                 C.ICCompilerOptions options = sender as C.ICCompilerOptions;
                 if (options.TargetLanguage == C.ETargetLanguage.Cxx)
                 {
@@ -144,23 +137,18 @@ namespace GccCommon
                 case C.EOptimization.Off:
                     commandLineBuilder.Add("-O0");
                     break;
-
                 case C.EOptimization.Size:
                     commandLineBuilder.Add("-Os");
                     break;
-
                 case C.EOptimization.Speed:
                     commandLineBuilder.Add("-O1");
                     break;
-
                 case C.EOptimization.Full:
                     commandLineBuilder.Add("-O3");
                     break;
-
                 case C.EOptimization.Custom:
                     // do nothing
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized optimization option");
             }
@@ -178,15 +166,12 @@ namespace GccCommon
                 case C.ETargetLanguage.Default:
                     // do nothing
                     break;
-
                 case C.ETargetLanguage.C:
                     commandLineBuilder.Add("-x c");
                     break;
-
                 case C.ETargetLanguage.Cxx:
                     commandLineBuilder.Add("-x c++");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized target language option");
             }
@@ -235,10 +220,8 @@ namespace GccCommon
             {
                 case C.ECharacterSet.NotSet:
                     break;
-
                 case C.ECharacterSet.Unicode:
                     break;
-
                 case C.ECharacterSet.MultiByte:
                     break;
             }

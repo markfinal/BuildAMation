@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=ComposerXECommon -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData -e
+// -i=..\..\..\C\dev\Scripts\ICxxCompilerOptions.cs -n=ComposerXECommon -c=CxxCompilerOptionCollection -p -d -dd=..\..\..\CommandLineProcessor\dev\Scripts\CommandLineDelegate.cs -pv=PrivateData -e -b
 
 namespace ComposerXECommon
 {
@@ -15,12 +15,10 @@ namespace ComposerXECommon
                 case C.Cxx.EExceptionHandler.Disabled:
                     commandLineBuilder.Add("-fno-exceptions");
                     break;
-
                 case C.Cxx.EExceptionHandler.Asynchronous:
                 case C.Cxx.EExceptionHandler.Synchronous:
                     commandLineBuilder.Add("-fexceptions");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized exception handler option");
             }

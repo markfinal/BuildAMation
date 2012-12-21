@@ -23,7 +23,6 @@ namespace GccCommon
                         commandLineBuilder.Add(options.LibraryFilePath);
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
@@ -47,7 +46,6 @@ namespace GccCommon
                 case EArchiverCommand.Replace:
                     commandLineBuilder.Add("-r");
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized command option");
             }

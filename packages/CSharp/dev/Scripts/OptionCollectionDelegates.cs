@@ -83,7 +83,6 @@ namespace CSharp
             {
                 return;
             }
-
             Opus.Core.ValueTypeOption<EPlatform> enumOption = option as Opus.Core.ValueTypeOption<EPlatform>;
             switch (enumOption.Value)
             {

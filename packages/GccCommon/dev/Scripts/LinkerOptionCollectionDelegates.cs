@@ -26,7 +26,6 @@ namespace GccCommon
                         }
                     }
                     break;
-
                 case C.ELinkerOutput.DynamicLibrary:
                     {
                         string outputPathName = options.OutputFilePath;
@@ -66,7 +65,6 @@ namespace GccCommon
                         }
                     }
                     break;
-
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }

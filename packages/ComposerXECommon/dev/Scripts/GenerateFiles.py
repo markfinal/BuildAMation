@@ -46,7 +46,8 @@ cxxCompiler_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=PrivateData",
-    "-e"
+    "-e",
+    "-b" # forms a base class
 ]
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True)
 print stdout
