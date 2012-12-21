@@ -287,7 +287,7 @@ namespace OpusOptionInterfacePropertyGenerator
         static void WriteLine(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
         {
             Write(builder, tabCount, format, args);
-            builder.Append(System.Environment.NewLine);
+            builder.Append("\n");
         }
 
         static DelegateSignature ReadDelegate(string filename)
@@ -564,6 +564,11 @@ namespace OpusOptionInterfacePropertyGenerator
                 Write(writer, 0, "//");
                 foreach (string arg in parameters.args)
                 {
+                    // never write force into the string
+                    if (arg == "-f")
+                    {
+                        continue;
+                    }
                     Write(writer, 0, " {0}", arg);
                 }
                 Write(writer, 0, writer.NewLine);
@@ -661,7 +666,7 @@ namespace OpusOptionInterfacePropertyGenerator
                     if (line.StartsWith("//"))
                     {
                         line.Trim('\n', '\r');
-                        line = line + System.Environment.NewLine;
+                        line = line + "\n";
                         layout.header.Append(line);
                     }
                     else
@@ -789,9 +794,14 @@ namespace OpusOptionInterfacePropertyGenerator
                 Write(builder, 0, "//");
                 foreach (string arg in parameters.args)
                 {
+                    // never write force into the string
+                    if (arg == "-f")
+                    {
+                        continue;
+                    }
                     Write(builder, 0, " {0}", arg);
                 }
-                Write(builder, 0, System.Environment.NewLine);
+                Write(builder, 0, "\n");
                 if (null != layout && layout.header.Length != 0 && !builder.ToString().Equals(layout.header.ToString()))
                 {
                     System.Text.StringBuilder message = new System.Text.StringBuilder();
@@ -813,7 +823,15 @@ namespace OpusOptionInterfacePropertyGenerator
                         message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
                     }
 
-                    throw new Exception(message.ToString());
+                    if (parameters.forceWrite)
+                    {
+                        System.Console.Write(message);
+                        System.Console.Write("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
+                    }
+                    else
+                    {
+                        throw new Exception(message.ToString());
+                    }
                 }
                 WriteLine(writer, 0, builder.ToString());
 
