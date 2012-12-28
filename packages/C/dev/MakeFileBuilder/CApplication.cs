@@ -77,10 +77,15 @@ namespace MakeFileBuilder
 
                 recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
 
-                C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-                if (null != winResourceCompilerTool)
+                // TODO: is there a better way of doing this? the toolset.Tool function will throw an exception
+                // if the required tool is not present
+                if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                 {
-                    recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
+                    C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+                    if (null != winResourceCompilerTool)
+                    {
+                        recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
+                    }
                 }
 
                 // TODO: don't want to access the archiver tool here really, as creating
