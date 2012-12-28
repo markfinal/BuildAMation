@@ -9,12 +9,33 @@ namespace Clang
         #region C.ICCompilerOptions Option delegates
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            foreach (string define in definesOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-D{0}", define));
+            }
         }
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.IToolset toolset = target.Toolset;
+            C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            string switchPrefix = compiler.IncludePathCompilerSwitches[0];
+            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            foreach (string includePath in includePathsOption.Value)
+            {
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", switchPrefix, includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("{0}{1}", switchPrefix, includePath));
+                }
+            }
         }
         private static void SystemIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            IncludePathsCommandLineProcessor(sender, commandLineBuilder, option, target);
         }
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -30,9 +51,19 @@ namespace Clang
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (debugSymbolsOption.Value)
+            {
+                commandLineBuilder.Add("-g");
+            }
         }
         private static void WarningsAsErrorsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<bool> warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (warningsAsErrorsOption.Value)
+            {
+                commandLineBuilder.Add("-Werror");
+            }
         }
         private static void IgnoreStandardIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -45,12 +76,33 @@ namespace Clang
         }
         private static void TargetLanguageCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<C.ETargetLanguage> targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
+            switch (targetLanguageOption.Value)
+            {
+            case C.ETargetLanguage.Default:
+                // do nothing
+                break;
+            case C.ETargetLanguage.C:
+                commandLineBuilder.Add("-x c");
+                break;
+            case C.ETargetLanguage.Cxx:
+                commandLineBuilder.Add("-x c++");
+                break;
+            default:
+                throw new Opus.Core.Exception("Unrecognized target language option");
+            }
         }
         private static void ShowIncludesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            string[] arguments = stringOption.Value.Split(' ');
+            foreach (string argument in arguments)
+            {
+                commandLineBuilder.Add(argument);
+            }
         }
         private static void OmitFramePointerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
