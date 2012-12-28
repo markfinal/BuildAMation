@@ -23,9 +23,9 @@ namespace CodeGenTest
         }
     }
 
-    public sealed partial class CodeGenOptions : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
+    public sealed partial class CodeGenOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
     {
-        public CodeGenOptions(Opus.Core.DependencyNode node)
+        public CodeGenOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
         }
@@ -47,34 +47,16 @@ namespace CodeGenTest
             options.OutputName = "function";
         }
 
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            this["OutputSourceDirectory"].PrivateData = new PrivateData(OutputSourceDirectoryCommandLine);
-            this["OutputName"].PrivateData = new PrivateData(OutputNameCommandLine);
-        }
-
         private static void OutputSourceDirectorySetHandler(object sender, Opus.Core.Option option)
         {
-            CodeGenOptions options = sender as CodeGenOptions;
+            CodeGenOptionCollection options = sender as CodeGenOptionCollection;
             options.SetGeneratedFilePath();
-        }
-
-        private static void OutputSourceDirectoryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.Add(stringOption.Value);
         }
 
         private static void OutputNameSetHandler(object sender, Opus.Core.Option option)
         {
-            CodeGenOptions options = sender as CodeGenOptions;
+            CodeGenOptionCollection options = sender as CodeGenOptionCollection;
             options.SetGeneratedFilePath();
-        }
-
-        private static void OutputNameCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            commandLineBuilder.Add(stringOption.Value);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineStringBuilder, Opus.Core.Target target)

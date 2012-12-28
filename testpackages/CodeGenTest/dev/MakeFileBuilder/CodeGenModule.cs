@@ -8,7 +8,7 @@ namespace MakeFileBuilder
             Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
-            CodeGenTest.CodeGenOptions toolOptions = codeGenModuleOptions as CodeGenTest.CodeGenOptions;
+            CodeGenTest.CodeGenOptionCollection toolOptions = codeGenModuleOptions as CodeGenTest.CodeGenOptionCollection;
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(CodeGenTest.ICodeGenTool));
             string toolExePath = tool.Executable(target);
 

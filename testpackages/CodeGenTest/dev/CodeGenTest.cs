@@ -11,7 +11,7 @@ namespace CodeGenTest
 
         void TestAppGeneratedSource_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            CodeGenOptions options = module.Options as CodeGenOptions;
+            CodeGenOptionCollection options = module.Options as CodeGenOptionCollection;
         }
     }
 
