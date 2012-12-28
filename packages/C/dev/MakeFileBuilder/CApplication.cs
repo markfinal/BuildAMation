@@ -109,12 +109,27 @@ namespace MakeFileBuilder
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
             recipe = recipe.Replace(applicationOptions.OutputPaths[primaryOutput], "$@");
             string instanceName = MakeFile.InstanceName(node);
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in applicationOptions.OutputPaths)
+            if (Opus.Core.State.RunningMono)
             {
-                if (!outputPath.Key.Equals(primaryOutput))
+                // TODO: workaround for an invalid cast exception
+                foreach (System.Enum type in applicationOptions.OutputPaths.Types)
                 {
-                    string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                    recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                    if (!type.Equals(primaryOutput))
+                    {
+                        string variableName = System.String.Format("{0}_{1}_Variable", instanceName, type.ToString());
+                        recipe = recipe.Replace(applicationOptions.OutputPaths[type], System.String.Format("$({0})", variableName));
+                    }
+                }
+            }
+            else
+            {
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in applicationOptions.OutputPaths)
+                {
+                    if (!outputPath.Key.Equals(primaryOutput))
+                    {
+                        string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
+                        recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                    }
                 }
             }
 
