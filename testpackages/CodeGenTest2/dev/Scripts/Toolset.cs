@@ -8,7 +8,7 @@ namespace CodeGenTest2
         public Toolset()
         {
             this.toolMap[typeof(ICodeGenTool)] = new CodeGenTool(this);
-            this.toolOptionsMap[typeof(ICodeGenTool)] = typeof(CodeGenOptions);
+            this.toolOptionsMap[typeof(ICodeGenTool)] = typeof(CodeGenOptionCollection);
         }
 
         #region IToolset Members
