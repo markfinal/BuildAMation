@@ -56,6 +56,10 @@ namespace Clang
             {
                 commandLineBuilder.Add("-g");
             }
+            else
+            {
+                commandLineBuilder.Add("-g0");
+            }
         }
         private static void WarningsAsErrorsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -67,12 +71,45 @@ namespace Clang
         }
         private static void IgnoreStandardIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<bool> ignoreStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (ignoreStandardIncludePathsOption.Value)
+            {
+                commandLineBuilder.Add("-nostdinc");
+                C.ICCompilerOptions options = sender as C.ICCompilerOptions;
+                if (options.TargetLanguage == C.ETargetLanguage.Cxx)
+                {
+                    commandLineBuilder.Add("-nostdinc++");
+                }
+            }
         }
         private static void OptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<C.EOptimization> optimizationOption = option as Opus.Core.ValueTypeOption<C.EOptimization>;
+            switch (optimizationOption.Value)
+            {
+                case C.EOptimization.Off:
+                    commandLineBuilder.Add("-O0");
+                    break;
+                case C.EOptimization.Size:
+                    commandLineBuilder.Add("-Os");
+                    break;
+                case C.EOptimization.Speed:
+                    commandLineBuilder.Add("-O1");
+                    break;
+                case C.EOptimization.Full:
+                    commandLineBuilder.Add("-O3");
+                    break;
+                case C.EOptimization.Custom:
+                    // do nothing
+                    break;
+                default:
+                    throw new Opus.Core.Exception("Unrecognized optimization option");
+            }
         }
         private static void CustomOptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ReferenceTypeOption<string> customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
+            commandLineBuilder.Add(customOptimizationOption.Value);
         }
         private static void TargetLanguageCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -94,6 +131,11 @@ namespace Clang
         }
         private static void ShowIncludesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-H");
+            }
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -106,12 +148,36 @@ namespace Clang
         }
         private static void OmitFramePointerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-fomit-frame-pointer");
+            }
+            else
+            {
+                commandLineBuilder.Add("-fno-omit-frame-pointer");
+            }
         }
         private static void DisableWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (string warning in disableWarningsOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-Wno-{0}", warning));
+            }
         }
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            switch (enumOption.Value)
+            {
+                case C.ECharacterSet.NotSet:
+                    break;
+                case C.ECharacterSet.Unicode:
+                    break;
+                case C.ECharacterSet.MultiByte:
+                    break;
+            }
         }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
