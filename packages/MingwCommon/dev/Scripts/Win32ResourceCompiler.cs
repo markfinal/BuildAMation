@@ -46,9 +46,9 @@ namespace MingwCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string platformBinFolder = this.toolset.BinPath((Opus.Core.BaseTarget)target);
+            string platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "windres.exe");
         }
 

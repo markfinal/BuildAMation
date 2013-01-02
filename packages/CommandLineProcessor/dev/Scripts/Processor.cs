@@ -15,7 +15,7 @@ namespace CommandLineProcessor
         public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder, string hostApplication)
         {
             Opus.Core.Target target = node.Target;
-            string executablePath = tool.Executable(target);
+            string executablePath = tool.Executable((Opus.Core.BaseTarget)target);
 
             System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
             if (null != hostApplication)

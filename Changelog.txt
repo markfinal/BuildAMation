@@ -1,3 +1,5 @@
+02-Jan-2013 Opus.Core.ITool.Executable now takes an Opus.Core.BaseTarget instead of a Target.
+
 20-Dec-2012 Package definition files now accept a relative path to the schema. This avoids problems in earlier versions of Opus that could reference multiple copies of the schema. An exception is now thrown with old style definition files. Running commands again with -forcedefinitionupdate resolves that.
 
 20-Dec-2012 Adding action '-forcedefinitionupdate' which will immediate write out package definition files after they have been read. This can be used to force any updates required in future Opus versions.

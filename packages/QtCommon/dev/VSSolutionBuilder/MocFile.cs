@@ -106,7 +106,7 @@ namespace VSSolutionBuilder
             }
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            string toolExePath = tool.Executable(target);
+            string toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (toolExePath.Contains(" "))

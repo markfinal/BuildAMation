@@ -59,7 +59,7 @@ namespace MakeFileBuilder
             Opus.Core.DependencyNode node = copyFilesModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFilesTool));
-            string toolExecutablePath = tool.Executable(target);
+            string toolExecutablePath = tool.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (copyFilesOptions is CommandLineProcessor.ICommandLineSupport)

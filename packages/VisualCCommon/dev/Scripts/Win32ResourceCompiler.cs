@@ -44,10 +44,10 @@ namespace VisualCCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
             // TODO: would like a better way of doing this
-            string platformBinFolder = WindowsSDK.WindowsSDK.BinPath(target);
+            string platformBinFolder = WindowsSDK.WindowsSDK.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "rc.exe");
         }
 

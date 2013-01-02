@@ -14,12 +14,13 @@ namespace MingwCommon
         public static MingwDetailData DetermineSpecs(Opus.Core.Target target)
         {
             Opus.Core.IToolset toolset = target.Toolset;
+            Opus.Core.BaseTarget baseTarget = (Opus.Core.BaseTarget)target;
 
             // get version
             string gccVersion = null;
             {
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(target);
+                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
                 processStartInfo.RedirectStandardOutput = true;
@@ -53,7 +54,7 @@ namespace MingwCommon
             Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
             {
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(target);
+                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
                 processStartInfo.RedirectStandardError = true;

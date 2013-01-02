@@ -27,7 +27,7 @@ namespace QMakeBuilder
 
             {
                 Opus.Core.ITool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool));
-                nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable(target).Replace("\\", "/")));
+                nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable((Opus.Core.BaseTarget)target).Replace("\\", "/")));
             }
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

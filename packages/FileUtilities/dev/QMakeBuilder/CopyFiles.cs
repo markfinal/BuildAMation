@@ -58,7 +58,7 @@ namespace QMakeBuilder
             Opus.Core.BaseOptionCollection copyFilesOptions = copyFilesModule.Options;
             Opus.Core.Target target = copyFilesModule.OwningNode.Target;
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFilesTool));
-            string toolExecutablePath = tool.Executable(target);
+            string toolExecutablePath = tool.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (copyFilesOptions is CommandLineProcessor.ICommandLineSupport)

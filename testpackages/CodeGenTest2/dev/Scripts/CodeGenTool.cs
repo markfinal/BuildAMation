@@ -15,14 +15,12 @@ namespace CodeGenTest2
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            Opus.Core.BaseTarget baseTargetToUse = (Opus.Core.BaseTarget)target;
-
-            Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest2.CodeGeneratorTool), baseTargetToUse);
+            Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest2.CodeGeneratorTool), baseTarget);
             if (null == module)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTargetToUse.ToString()), false);
+                throw new Opus.Core.Exception(System.String.Format("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString()), false);
             }
 
             CSharp.OptionCollection options = module.Options as CSharp.OptionCollection;

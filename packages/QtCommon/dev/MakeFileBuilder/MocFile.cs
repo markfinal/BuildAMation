@@ -51,7 +51,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            string toolExePath = tool.Executable(target);
+            string toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             if (toolExePath.Contains(" "))

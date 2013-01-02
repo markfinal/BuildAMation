@@ -45,7 +45,7 @@ namespace MakeFileBuilder
 
             Opus.Core.IToolset toolset = target.Toolset;
             Opus.Core.ITool archiverTool = toolset.Tool(typeof(C.IArchiverTool));
-            string executable = archiverTool.Executable(target);
+            string executable = archiverTool.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;

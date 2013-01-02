@@ -16,11 +16,11 @@ namespace DotNetFramework
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
             string CscPath = null;
 
-            string installPath = this.toolset.InstallPath((Opus.Core.BaseTarget)target);
+            string installPath = this.toolset.InstallPath(baseTarget);
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 CscPath = System.IO.Path.Combine(installPath, "Csc.exe");

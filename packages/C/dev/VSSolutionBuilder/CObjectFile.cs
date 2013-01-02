@@ -133,7 +133,7 @@ namespace VSSolutionBuilder
                 // this must be a utility configuration
                 configuration.Type = EProjectConfigurationType.Utility;
 
-                string executable = toolInterface.Executable(target);
+                string executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
                 // TODO: pdb if it exists?
 
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();

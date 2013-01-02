@@ -45,7 +45,7 @@ namespace MakeFileBuilder
 
             Opus.Core.IToolset toolset = target.Toolset;
             Opus.Core.ITool compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool));
-            string executablePath = compilerTool.Executable(target);
+            string executablePath = compilerTool.Executable((Opus.Core.BaseTarget)target);
 
             string recipe = null;
             if (executablePath.Contains(" "))

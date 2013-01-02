@@ -234,7 +234,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.ITool compilerInstance = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
-            string executablePath = compilerInstance.Executable(target);
+            string executablePath = compilerInstance.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             if (executablePath.Contains(" "))

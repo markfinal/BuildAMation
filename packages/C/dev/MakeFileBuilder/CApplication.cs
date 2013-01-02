@@ -59,7 +59,7 @@ namespace MakeFileBuilder
 
             Opus.Core.IToolset toolset = target.Toolset;
             C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
-            string executable = linkerTool.Executable(target);
+            string executable = linkerTool.Executable((Opus.Core.BaseTarget)target);
 
             System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
             if (executable.Contains(" "))

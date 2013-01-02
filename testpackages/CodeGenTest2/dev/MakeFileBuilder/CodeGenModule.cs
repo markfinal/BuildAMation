@@ -10,7 +10,7 @@ namespace MakeFileBuilder
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
             CodeGenTest2.CodeGenOptionCollection toolOptions = codeGenModuleOptions as CodeGenTest2.CodeGenOptionCollection;
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(CodeGenTest2.ICodeGenTool));
-            string toolExePath = tool.Executable(target);
+            string toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(toolExePath);

@@ -14,7 +14,7 @@ namespace NativeBuilder
             // dependency checking
             {
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-                inputFiles.Add(tool.Executable(target));
+                inputFiles.Add(tool.Executable((Opus.Core.BaseTarget)target));
                 Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {

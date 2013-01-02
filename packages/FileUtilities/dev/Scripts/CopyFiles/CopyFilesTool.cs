@@ -9,7 +9,7 @@ namespace FileUtilities
     {
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
             string executable = null;
             if (Opus.Core.OSUtilities.IsWindowsHosting)

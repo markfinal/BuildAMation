@@ -16,10 +16,10 @@ namespace QtCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string mocExePath = System.IO.Path.Combine(this.toolset.BinPath((Opus.Core.BaseTarget)target), "moc");
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            string mocExePath = System.IO.Path.Combine(this.toolset.BinPath(baseTarget), "moc");
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 mocExePath += ".exe";
             }

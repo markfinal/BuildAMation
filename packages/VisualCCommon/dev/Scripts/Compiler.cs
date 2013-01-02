@@ -62,9 +62,9 @@ namespace VisualCCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string binPath = this.toolset.BinPath((Opus.Core.BaseTarget)target);
+            string binPath = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(binPath, "cl.exe");
         }
 

@@ -7,7 +7,6 @@ namespace Opus.Core
 {
     public interface ITool
     {
-        // TODO: change this to BaseTarget
-        string Executable(Target target);
+        string Executable(BaseTarget baseTarget);
     }
 }

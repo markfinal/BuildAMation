@@ -37,7 +37,7 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            string executable = toolInterface.Executable(target);
+            string executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
 
             string recipe = null;
             if (executable.Contains(" "))
