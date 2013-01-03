@@ -262,17 +262,12 @@ namespace MakeFileBuilder
 
             success = true;
             Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
-            Opus.Core.StringArray environmentPaths = null;
-            if (compilerTool is Opus.Core.IToolEnvironmentPaths)
-            {
-                environmentPaths = (compilerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
-            }
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (compilerTool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths, environment);
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             return returnData;
         }
     }

@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public sealed class Win32ResourceCompiler : C.IWinResourceCompilerTool, Opus.Core.IToolEnvironmentPaths
+    public sealed class Win32ResourceCompiler : C.IWinResourceCompilerTool, Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray pathEnvironment = new Opus.Core.StringArray();
@@ -54,14 +54,16 @@ namespace MingwCommon
 
         #endregion
 
-        #region IToolEnvironmentPaths Members
+        #region IToolEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
         {
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             Opus.Core.StringArray paths = new Opus.Core.StringArray();
             paths.AddRange(this.pathEnvironment);
             paths.AddRange(this.toolset.Environment);
-            return paths;
+            dictionary["PATH"] = paths;
+            return dictionary;
         }
 
         #endregion

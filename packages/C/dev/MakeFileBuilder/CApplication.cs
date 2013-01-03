@@ -151,17 +151,12 @@ namespace MakeFileBuilder
 
             MakeFileTargetDictionary exportedTargets = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariables = makeFile.ExportedVariables;
-            Opus.Core.StringArray environmentPaths = null;
-            if (linkerTool is Opus.Core.IToolEnvironmentPaths)
-            {
-                environmentPaths = (linkerTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
-            }
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (linkerTool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environmentPaths, environment);
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environment);
             success = true;
             return returnData;
         }

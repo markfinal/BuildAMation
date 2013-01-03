@@ -51,33 +51,14 @@ namespace CommandLineProcessor
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
-            if (tool is Opus.Core.IToolEnvironmentPaths)
-            {
-                System.Text.StringBuilder path = new System.Text.StringBuilder();
-
-                foreach (string env in (tool as Opus.Core.IToolEnvironmentPaths).Paths(target))
-                {
-                    path.AppendFormat("{0}{1}", env, System.IO.Path.PathSeparator);
-                }
-
-                string pathEnv = path.ToString().TrimEnd(new char[] { System.IO.Path.PathSeparator });
-                processStartInfo.EnvironmentVariables["PATH"] = pathEnv;
-                //Opus.Core.Log.DebugMessage("Path is '{0}'", pathEnv);
-            }
 
             if (tool is Opus.Core.IToolEnvironmentVariables)
             {
                 System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables(target);
                 foreach (string key in variables.Keys)
                 {
-                    System.Text.StringBuilder paths = new System.Text.StringBuilder();
-                    foreach (string path in variables[key])
-                    {
-                        paths.AppendFormat("{0}{1}", path, System.IO.Path.PathSeparator);
-                    }
-
-                    string pathEnv = paths.ToString().TrimEnd(new char[] { System.IO.Path.PathSeparator });
-                    processStartInfo.EnvironmentVariables[key] = pathEnv;
+                    // values - assume when there are multiple values that they are paths
+                    processStartInfo.EnvironmentVariables[key] = variables[key].ToString(System.IO.Path.PathSeparator);
                 }
             }
 

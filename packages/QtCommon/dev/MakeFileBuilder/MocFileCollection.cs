@@ -43,7 +43,7 @@ namespace MakeFileBuilder
 
             success = true;
 
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null, null);
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             return returnData;
         }
     }

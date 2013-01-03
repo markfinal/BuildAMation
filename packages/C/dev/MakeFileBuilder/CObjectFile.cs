@@ -70,17 +70,12 @@ namespace MakeFileBuilder
 
             MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
-            Opus.Core.StringArray environmentPaths = null;
-            if (toolInterface is Opus.Core.IToolEnvironmentPaths)
-            {
-                environmentPaths = (toolInterface as Opus.Core.IToolEnvironmentPaths).Paths(target);
-            }
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (toolInterface is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (toolInterface as Opus.Core.IToolEnvironmentVariables).Variables(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environmentPaths, environment);
+            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environment);
             success = true;
             return returnData;
         }

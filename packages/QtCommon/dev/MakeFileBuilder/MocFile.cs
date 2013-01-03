@@ -77,17 +77,12 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
-            Opus.Core.StringArray environmentPaths = null;
-            if (tool is Opus.Core.IToolEnvironmentPaths)
-            {
-                environmentPaths = (tool as Opus.Core.IToolEnvironmentPaths).Paths(target);
-            }
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (tool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (tool as Opus.Core.IToolEnvironmentVariables).Variables(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environmentPaths, environment);
+            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             success = true;
             return returnData;
         }

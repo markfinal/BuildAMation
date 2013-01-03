@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract class Linker : C.ILinkerTool, Opus.Core.IToolEnvironmentPaths
+    public abstract class Linker : C.ILinkerTool, Opus.Core.IToolEnvironmentVariables
     {
         protected Opus.Core.IToolset toolset;
         private Opus.Core.StringArray environment;
@@ -122,10 +122,12 @@ namespace GccCommon
 
         #endregion
 
-        #region IToolEnvironmentPaths implementation
-        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths (Opus.Core.Target target)
+        #region IToolEnvironmentVariables implementation
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
         {
-            return this.environment;
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            dictionary["PATH"] = this.environment;
+            return dictionary;
         }
         #endregion
     }

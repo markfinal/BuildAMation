@@ -64,14 +64,6 @@ namespace MakeFileBuilder
                         }
                     }
 
-                    if (data.EnvironmentPaths != null)
-                    {
-                        foreach (string environmentPath in data.EnvironmentPaths)
-                        {
-                            environmentPaths.Add(environmentPath);
-                        }
-                    }
-
                     if (data.Environment != null)
                     {
                         foreach (string key in data.Environment.Keys)

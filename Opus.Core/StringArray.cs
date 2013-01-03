@@ -62,12 +62,13 @@ namespace Opus.Core
 
         public string ToString(char separator)
         {
-            string output = "";
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
             foreach (string item in this.list)
             {
-                output += item.ToString() + separator;
+                builder.AppendFormat("{0}{1}", item.ToString(), separator);
             }
-            output = output.TrimEnd(separator);
+            // remove the trailing separator
+            string output = builder.ToString().TrimEnd(separator);
             return output;
         }
 

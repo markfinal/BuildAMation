@@ -100,17 +100,12 @@ namespace MakeFileBuilder
 
             MakeFileTargetDictionary exportedTargetDictionary = makeFile.ExportedTargets;
             MakeFileVariableDictionary exportedVariableDictionary = makeFile.ExportedVariables;
-            Opus.Core.StringArray environmentPaths = null;
-            if (archiverTool is Opus.Core.IToolEnvironmentPaths)
-            {
-                environmentPaths = (archiverTool as Opus.Core.IToolEnvironmentPaths).Paths(target);
-            }
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (archiverTool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (archiverTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environmentPaths, environment);
+            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environment);
             success = true;
             return returnData;
         }

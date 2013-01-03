@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolEnvironmentVariables
+    public sealed class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -151,21 +151,13 @@ namespace VisualCCommon
 
         #endregion
 
-        #region IToolEnvironmentPaths Members
-
-        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
-        {
-            return this.toolset.Environment;
-        }
-
-        #endregion
-
         #region IToolEnvironmentVariables Members
 
         System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
         {
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-            environmentVariables.Add("LIB", (this as C.ILinkerTool).LibPaths(target));
+            environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(target);
+            environmentVariables["PATH"] = this.toolset.Environment;
             return environmentVariables;
         }
 

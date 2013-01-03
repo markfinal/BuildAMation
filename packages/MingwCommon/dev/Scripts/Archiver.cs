@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public sealed class Archiver : C.IArchiverTool, Opus.Core.IToolEnvironmentPaths, Opus.Core.IToolForwardedEnvironmentVariables
+    public sealed class Archiver : C.IArchiverTool, Opus.Core.IToolEnvironmentVariables, Opus.Core.IToolForwardedEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -54,11 +54,13 @@ namespace MingwCommon
 
         #endregion
 
-        #region IToolEnvironmentPaths Members
+        #region IToolEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolEnvironmentPaths.Paths(Opus.Core.Target target)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
         {
-            return this.toolset.Environment;
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            dictionary["PATH"] = this.toolset.Environment;
+            return dictionary;
         }
 
         #endregion
