@@ -77,10 +77,10 @@ namespace WindowsSDK
             throw new System.NotImplementedException();
         }
 
-        public static string BinPath(Opus.Core.Target target)
+        public static string BinPath(Opus.Core.BaseTarget baseTarget)
         {
             string binPath;
-            if (Opus.Core.OSUtilities.Is64Bit(target.Platform))
+            if (Opus.Core.OSUtilities.Is64Bit(baseTarget))
             {
                 binPath = bin64Path;
             }
