@@ -95,7 +95,7 @@ namespace FileUtilities
                 var sourceFilesAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
                 if (1 == sourceFilesAttributes.Length)
                 {
-                    Opus.Core.SourceFilesAttribute sourceFilesAttribute = sourceFilesAttributes[0] as Opus.Core.SourceFilesAttribute;
+                    //Opus.Core.SourceFilesAttribute sourceFilesAttribute = sourceFilesAttributes[0] as Opus.Core.SourceFilesAttribute;
 
                     Opus.Core.FileCollection sourceFileCollection = field.GetValue(this) as Opus.Core.FileCollection;
                     foreach (string file in sourceFileCollection)
