@@ -136,7 +136,7 @@ namespace FileUtilities
                 var destinationDirectoryAttributes = field.GetCustomAttributes(typeof(DestinationDirectoryPathAttribute), false);
                 if (1 == destinationDirectoryAttributes.Length)
                 {
-                    DestinationDirectoryPathAttribute destinationDirectoryAttribute = destinationDirectoryAttributes[0] as DestinationDirectoryPathAttribute;
+                    //DestinationDirectoryPathAttribute destinationDirectoryAttribute = destinationDirectoryAttributes[0] as DestinationDirectoryPathAttribute;
 
                     Opus.Core.DirectoryCollection destinationDirectoryPaths = field.GetValue(this) as Opus.Core.DirectoryCollection;
                     this.DestinationDirectory = destinationDirectoryPaths[0];
