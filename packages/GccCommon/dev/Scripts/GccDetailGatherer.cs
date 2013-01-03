@@ -169,11 +169,10 @@ namespace GccCommon
                 if (!target.HasPlatform(Opus.Core.EPlatform.OSX))
                 {
                     // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
-                    if (!System.IO.Directory.Exists(gccIncludeFixedFolder))
+                    if (System.IO.Directory.Exists(gccIncludeFixedFolder))
                     {
-                        throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+                        includePaths.Add(gccIncludeFixedFolder);
                     }
-                    includePaths.Add(gccIncludeFixedFolder);
                 }
 
                 string targetIncludeFolder = System.String.Format("/usr/{0}/include", gccTarget);
