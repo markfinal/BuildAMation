@@ -111,6 +111,10 @@ namespace Opus.Core
                 }
                 return false;
             }
+            else if (null == toolsetType)
+            {
+                return false;
+            }
 
             bool hasToolset = toolsetType.IsAssignableFrom(this.Toolset.GetType());
             return hasToolset;
