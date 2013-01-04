@@ -74,6 +74,12 @@ namespace DotNetFramework
         {
             if (!this.toolOptionsMap.ContainsKey(toolType))
             {
+                // if there is no tool then there will be no optionset
+                if (!this.toolMap.ContainsKey(toolType))
+                {
+                    return null;
+                }
+
                 throw new Opus.Core.Exception(System.String.Format("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
             }
 
