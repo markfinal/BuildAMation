@@ -134,7 +134,7 @@ namespace MakeFileBuilder
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (linkerTool is Opus.Core.IToolEnvironmentVariables)
             {
-                environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+                environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
             MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environment);
             success = true;

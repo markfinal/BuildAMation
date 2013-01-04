@@ -153,10 +153,10 @@ namespace VisualCCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
         {
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-            environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths((Opus.Core.BaseTarget)target);
+            environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(baseTarget);
             environmentVariables["PATH"] = this.toolset.Environment;
             return environmentVariables;
         }

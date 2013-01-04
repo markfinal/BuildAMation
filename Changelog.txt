@@ -1,3 +1,5 @@
+04-Jan-2013 Opus.Core.IToolEnvironmentVariables.Variables now takes a BaseTarget rather than a Target.
+
 04-Jan-2013 C.ThirdpartyModules now have a C.INullOpTool assigned to them, in order for Targets to be fully qualified with a toolset. This is useful because Thirdparty libraries must have been built with a toolset, so should be identifiable.
             Fetching an instance of a Target now requires a non-null Opus.Core.IToolset instance.
 

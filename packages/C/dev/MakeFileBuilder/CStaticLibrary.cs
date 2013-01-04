@@ -103,7 +103,7 @@ namespace MakeFileBuilder
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (archiverTool is Opus.Core.IToolEnvironmentVariables)
             {
-                environment = (archiverTool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+                environment = (archiverTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
             MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environment);
             success = true;

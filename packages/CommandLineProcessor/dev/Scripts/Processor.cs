@@ -54,7 +54,7 @@ namespace CommandLineProcessor
 
             if (tool is Opus.Core.IToolEnvironmentVariables)
             {
-                System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+                System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
                 foreach (string key in variables.Keys)
                 {
                     // values - assume when there are multiple values that they are paths

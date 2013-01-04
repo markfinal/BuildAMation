@@ -57,7 +57,7 @@ namespace MakeFileBuilder
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (tool is Opus.Core.IToolEnvironmentVariables)
             {
-                environment = (tool as Opus.Core.IToolEnvironmentVariables).Variables(target);
+                environment = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
             MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             success = true;
