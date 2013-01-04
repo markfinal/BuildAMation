@@ -5,73 +5,47 @@
 // <author>Mark Final</author>
 namespace C
 {
-    // TODO: refactor these are they are mostly the same
     public static class ToolsetProvider
     {
-        static string GetCCompilerToolset(System.Type toolType)
+        static string GenericGetToolset(System.Type toolType, string typeName, string option)
         {
             if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
-                throw new Opus.Core.Exception("C compiler toolset has not been specified. Use C.CC=<toolset>", false);
+                throw new Opus.Core.Exception("{0} toolset has not been specified. {1}", typeName, option);
             }
 
             var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[typeof(ICompilerTool)];
+            return map[toolType];
+        }
+
+        static string GetCCompilerToolset(System.Type toolType)
+        {
+            return GenericGetToolset(toolType, "C compiler", "Use C.CC=<toolset>");
         }
 
         static string GetCxxCompilerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
-            {
-                throw new Opus.Core.Exception("C++ compiler toolset has not been specified. Use C.CXX=<toolset>", false);
-            }
-
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[typeof(ICxxCompilerTool)];
+            return GenericGetToolset(toolType, "C++ compiler", "Use C.CXX=<toolset>");
         }
 
         static string GetLinkerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
-            {
-                throw new Opus.Core.Exception("C linker toolset has not been specified. Use C.LINK=<toolset>", false);
-            }
-
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[typeof(ILinkerTool)];
+            return GenericGetToolset(toolType, "C linker", "Use C.LINK=<toolset>");
         }
 
         static string GetArchiverToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
-            {
-                throw new Opus.Core.Exception("C archiver toolset has not been specified. Use C.AR=<toolset>", false);
-            }
-
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[typeof(IArchiverTool)];
+            return GenericGetToolset(toolType, "C archiver", "Use C.AR=<toolset>");
         }
 
         static string GetWinResourceompilerToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
-            {
-                throw new Opus.Core.Exception("C windows resource compiler toolset has not been specified. Use C.RC=<toolset>", false);
-            }
-
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[typeof(IWinResourceCompilerTool)];
+            return GenericGetToolset(toolType, "Windows resource compiler", "Use C.RC=<toolset>");
         }
 
         static string GetNullOpToolset(System.Type toolType)
         {
-            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
-            {
-                throw new Opus.Core.Exception("C toolset has not been specified. Use C.toolset=<toolset>", false);
-            }
-
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[typeof(INullOpTool)];
+            return GenericGetToolset(toolType, "C", "Use C.toolset=<toolset>");
         }
     }
 }
