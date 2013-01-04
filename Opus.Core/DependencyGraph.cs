@@ -136,6 +136,7 @@ namespace Opus.Core
             {
                 foreach (DependencyNode node in nodeCollection)
                 {
+                    // empty build functions do not equate to no option collection
                     node.CreateOptionCollection();
                 }
             }
