@@ -85,7 +85,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             argList.append("-verbosity=0")
         if options.forceDefinitionUpdate:
             argList.append("-forcedefinitionupdate")
-        print "\tExecuting: %s" % " ".join(argList)
+        print " ".join(argList)
         currentDir = os.getcwd()
         try:
             p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
