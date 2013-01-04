@@ -5,8 +5,8 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalArchiverOptionsDelegateAttribute),
-                                            typeof(ExportArchiverOptionsDelegateAttribute))]
+    [Opus.Core.LocalAndExportTypes(typeof(LocalArchiverOptionsDelegateAttribute),
+                                   typeof(ExportArchiverOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetArchiverToolset")]
     public interface IArchiverTool : Opus.Core.ITool
     {

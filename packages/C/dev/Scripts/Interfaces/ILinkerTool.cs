@@ -5,8 +5,8 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalLinkerOptionsDelegateAttribute),
-                                            typeof(ExportLinkerOptionsDelegateAttribute))]
+    [Opus.Core.LocalAndExportTypes(typeof(LocalLinkerOptionsDelegateAttribute),
+                                   typeof(ExportLinkerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetLinkerToolset")]
     public interface ILinkerTool : Opus.Core.ITool
     {

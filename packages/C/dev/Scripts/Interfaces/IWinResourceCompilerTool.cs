@@ -5,8 +5,8 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypesAttribute(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
-                                            typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute))]
+    [Opus.Core.LocalAndExportTypes(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
+                                   typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetWinResourceompilerToolset")]
     public interface IWinResourceCompilerTool : Opus.Core.ITool
     {
