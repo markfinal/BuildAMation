@@ -47,7 +47,7 @@ namespace Opus.Core
         {
             if (null == toolset)
             {
-                return GetInstance(baseTarget);
+                throw new Exception("Toolset interface must not be null");
             }
 
             Target target = null;

@@ -8,7 +8,7 @@ namespace C
     /// <summary>
     /// C third party library (externally built libraries)
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(null)]
+    [Opus.Core.ModuleToolAssignment(typeof(INullOpTool))]
     public abstract class ThirdPartyModule : Opus.Core.BaseModule
     {
         public override Opus.Core.BaseOptionCollection Options

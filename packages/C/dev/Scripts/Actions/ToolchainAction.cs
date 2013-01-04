@@ -62,6 +62,7 @@ namespace C
             map[typeof(ILinkerTool)]      = this.Toolchain;
             map[typeof(IArchiverTool)]    = this.Toolchain;
             map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
+            map[typeof(INullOpTool)] = this.Toolchain;
 
             return true;
         }

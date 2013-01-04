@@ -178,6 +178,7 @@ namespace Opus.Core
             System.Type toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
             if (null == toolset)
             {
+                Opus.Core.Log.DebugMessage("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
                 return;
                 //throw new Exception(System.String.Format("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString()));
             }
@@ -191,7 +192,9 @@ namespace Opus.Core
             System.Type optionCollectionType = toolset.ToolOptionType(toolType);
             if (null == optionCollectionType)
             {
-                throw new Exception(System.String.Format("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString()), false);
+                Opus.Core.Log.DebugMessage("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
+                return;
+                //throw new Exception(System.String.Format("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString()), false);
             }
 
             var localAndExportTypes = toolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
