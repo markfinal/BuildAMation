@@ -75,9 +75,9 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.Target target)
+        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.BaseTarget baseTarget)
         {
-            if (target.HasPlatform(Opus.Core.EPlatform.Win64))
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
             {
                 return (this.toolset as VisualCCommon.Toolset).lib64Folder;
             }
@@ -156,7 +156,7 @@ namespace VisualCCommon
         System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.Target target)
         {
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-            environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(target);
+            environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths((Opus.Core.BaseTarget)target);
             environmentVariables["PATH"] = this.toolset.Environment;
             return environmentVariables;
         }

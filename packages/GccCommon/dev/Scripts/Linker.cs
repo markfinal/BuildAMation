@@ -104,7 +104,7 @@ namespace GccCommon
             }
         }
 
-        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.Target target)
+        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }

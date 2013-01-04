@@ -22,7 +22,7 @@ namespace VisualCCommon
 
             C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
 
-            foreach (string libPath in linkerTool.LibPaths(target))
+            foreach (string libPath in linkerTool.LibPaths((Opus.Core.BaseTarget)target))
             {
                 (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(libPath, true);
             }

@@ -45,6 +45,6 @@ namespace C
             get;
         }
 
-        Opus.Core.StringArray LibPaths(Opus.Core.Target target);
+        Opus.Core.StringArray LibPaths(Opus.Core.BaseTarget baseTarget);
     }
 }
