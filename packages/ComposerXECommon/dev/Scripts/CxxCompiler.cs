@@ -15,10 +15,10 @@ namespace ComposerXECommon
         }
 
         #region ICompilerTool implementation
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths (Opus.Core.Target target)
+        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
         {
             // TODO: sort this out... it required a call to the InstallPath to get the right paths
-            this.toolset.InstallPath((Opus.Core.BaseTarget)target);
+            this.toolset.InstallPath(baseTarget);
             return (this.toolset as Toolset).GccDetail.IncludePaths;
         }
 

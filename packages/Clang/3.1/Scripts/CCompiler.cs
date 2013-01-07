@@ -40,7 +40,7 @@ namespace Clang
             }
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.Target target)
+        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
         {
             return new Opus.Core.StringArray();
         }

@@ -34,7 +34,7 @@ namespace MingwCommon
 
             Opus.Core.IToolset toolset = target.Toolset;
             C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths(node.Target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)node.Target));
 
             compilerInterface.Pedantic = true;
         }

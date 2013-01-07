@@ -35,7 +35,7 @@ namespace VisualCCommon
             }
 
             C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths(target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)target));
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 

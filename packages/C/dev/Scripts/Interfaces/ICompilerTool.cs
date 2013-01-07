@@ -25,8 +25,7 @@ namespace C
             get;
         }
 
-        // TODO: change this to BaseTarget
-        Opus.Core.StringArray IncludePaths(Opus.Core.Target target);
+        Opus.Core.StringArray IncludePaths(Opus.Core.BaseTarget baseTarget);
 
         Opus.Core.StringArray IncludePathCompilerSwitches
         {

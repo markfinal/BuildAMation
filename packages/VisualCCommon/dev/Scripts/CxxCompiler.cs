@@ -42,9 +42,9 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.Target target)
+        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.toolset.InstallPath((Opus.Core.BaseTarget)target);
+            string installPath = this.toolset.InstallPath(baseTarget);
             Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
             includePaths.Add(System.IO.Path.Combine(installPath, "include"));
             return includePaths;
