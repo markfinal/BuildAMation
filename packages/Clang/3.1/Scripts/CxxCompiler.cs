@@ -57,10 +57,10 @@ namespace Clang
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.Target target)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string executablePath = System.IO.Path.Combine(this.toolset.InstallPath((Opus.Core.BaseTarget)target), "clang++");
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            string executablePath = System.IO.Path.Combine(this.toolset.InstallPath(baseTarget), "clang++");
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 // TODO: can we have this file extension somewhere central?
                 executablePath += ".exe";
