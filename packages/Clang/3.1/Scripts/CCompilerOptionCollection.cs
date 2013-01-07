@@ -16,6 +16,14 @@ namespace Clang
         {
         }
 
+        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        {
+            base.InitializeDefaults(node);
+
+            // preferrable for Clang to find the include paths
+            (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
+        }
+
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
