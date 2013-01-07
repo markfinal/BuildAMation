@@ -7,15 +7,10 @@ namespace MingwCommon
 {
     public class MingwDetailGatherer
     {
-        private static System.Collections.Generic.Dictionary<Opus.Core.Target, MingwDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, MingwDetailData>();
+        private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, MingwDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, MingwDetailData>();
 
-        // TODO: change this to BaseTarget and an IToolset as arguments
-        // requires Executable to be changed first
-        public static MingwDetailData DetermineSpecs(Opus.Core.Target target)
+        public static MingwDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
         {
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.BaseTarget baseTarget = (Opus.Core.BaseTarget)target;
-
             // get version
             string gccVersion = null;
             {
@@ -136,7 +131,7 @@ namespace MingwCommon
                 }
 
                 // C include paths
-                string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
+                string installPath = toolset.InstallPath(baseTarget);
                 string gccIncludeFolder = System.IO.Path.Combine(installPath, "lib");
                 gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "gcc");
                 gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, gccTarget);
@@ -148,11 +143,11 @@ namespace MingwCommon
             }
 
             MingwDetailData gccDetails = new MingwDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libExecDir);
-            gccDetailsForTarget[target] = gccDetails;
+            gccDetailsForTarget[baseTarget] = gccDetails;
 
-            Opus.Core.Log.DebugMessage("Mingw version for target '{0}' is '{1}'", target.ToString(), gccDetails.Version);
-            Opus.Core.Log.DebugMessage("Mingw machine type for target '{0}' is '{1}'", target.ToString(), gccDetails.Target);
-            Opus.Core.Log.DebugMessage("Mingw include path for target '{0}' is '{1}'", target.ToString(), gccDetails.GxxIncludePath);
+            Opus.Core.Log.DebugMessage("Mingw version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
+            Opus.Core.Log.DebugMessage("Mingw machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
+            Opus.Core.Log.DebugMessage("Mingw include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
 
             return gccDetails;
         }

@@ -7,15 +7,10 @@ namespace GccCommon
 {
     public class GccDetailGatherer
     {
-        private static System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.Target, GccDetailData>();
+        private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData>();
 
-        // TODO: change this to BaseTarget and an IToolset as arguments
-        // requires Executable to be changed first
-        public static GccDetailData DetermineSpecs(Opus.Core.Target target)
+        public static GccDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
         {
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.BaseTarget baseTarget = (Opus.Core.BaseTarget)target;
-
             // get version
             string gccVersion = null;
             {
@@ -166,7 +161,7 @@ namespace GccCommon
                 includePaths.Add(gccIncludeFolder);
 
                 // OSX does not have this path
-                if (!target.HasPlatform(Opus.Core.EPlatform.OSX))
+                if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
                 {
                     // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
                     if (System.IO.Directory.Exists(gccIncludeFixedFolder))
@@ -194,11 +189,11 @@ namespace GccCommon
             }
 
             GccDetailData gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
-            gccDetailsForTarget[target] = gccDetails;
+            gccDetailsForTarget[baseTarget] = gccDetails;
 
-            Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", target.ToString(), gccDetails.Version);
-            Opus.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", target.ToString(), gccDetails.Target);
-            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", target.ToString(), gccDetails.GxxIncludePath);
+            Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
+            Opus.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
+            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
 
             return gccDetails;
         }

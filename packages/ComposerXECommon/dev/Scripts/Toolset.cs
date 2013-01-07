@@ -37,7 +37,7 @@ namespace ComposerXECommon
             }
 
             this.installPath = installPath;
-            this.gccDetail = ComposerXECommon.GccDetailGatherer.DetermineSpecs(Opus.Core.Target.GetInstance(baseTarget, this));
+            this.gccDetail = ComposerXECommon.GccDetailGatherer.DetermineSpecs(baseTarget, this);
         }
 
         public GccDetailData GccDetail
