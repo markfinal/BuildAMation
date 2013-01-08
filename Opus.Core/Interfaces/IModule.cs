@@ -16,11 +16,5 @@ namespace Opus.Core
             get;
             set;
         }
-
-        ProxyModulePath ProxyPath
-        {
-            get;
-            set;
-        }
     }
 }

@@ -47,7 +47,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, (resourceFile as Opus.Core.IModule).ProxyPath }) as IProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, resourceFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }

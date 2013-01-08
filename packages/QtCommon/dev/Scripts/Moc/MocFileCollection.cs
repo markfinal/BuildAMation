@@ -40,7 +40,7 @@ namespace QtCommon
             }
 
             string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
@@ -50,7 +50,7 @@ namespace QtCommon
             foreach (string path in filePaths)
             {
                 MocFile mocFile = new MocFile();
-                (mocFile as Opus.Core.IModule).ProxyPath = (this as Opus.Core.IModule).ProxyPath;
+                (mocFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
                 mocFile.SetAbsolutePath(path);
                 this.list.Add(mocFile);
             }
@@ -65,7 +65,7 @@ namespace QtCommon
             }
 
             string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
@@ -99,7 +99,7 @@ namespace QtCommon
             }
 
             string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);

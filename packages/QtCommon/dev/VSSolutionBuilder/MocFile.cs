@@ -46,7 +46,7 @@ namespace VSSolutionBuilder
                     projectPathName += projectExtension;
 
                     System.Type projectType = VSSolutionBuilder.GetProjectClassType();
-                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, (mocFile as Opus.Core.IModule).ProxyPath }) as IProject;
+                    projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, mocFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
                 }

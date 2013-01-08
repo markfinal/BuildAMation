@@ -30,7 +30,7 @@ namespace C
             }
 
             string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);

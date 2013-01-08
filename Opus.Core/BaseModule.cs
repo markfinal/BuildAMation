@@ -15,7 +15,7 @@ namespace Opus.Core
             set;
         }
 
-        ProxyModulePath IModule.ProxyPath
+        public ProxyModulePath ProxyPath
         {
             get;
             set;

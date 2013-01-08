@@ -99,7 +99,7 @@ namespace Opus.Core
             }
 
             string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (owner as IModule).ProxyPath;
+            ProxyModulePath proxyPath = (owner as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);

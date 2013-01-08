@@ -31,7 +31,7 @@ namespace C.Cxx
             }
 
             string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
@@ -41,7 +41,7 @@ namespace C.Cxx
             foreach (string path in filePaths)
             {
                 ObjectFile objectFile = new ObjectFile();
-                (objectFile as Opus.Core.IModule).ProxyPath = (this as Opus.Core.IModule).ProxyPath;
+                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
                 objectFile.SourceFile.SetAbsolutePath(path);
                 this.list.Add(objectFile);
             }
@@ -56,7 +56,7 @@ namespace C.Cxx
             }
 
             string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.IModule).ProxyPath;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
