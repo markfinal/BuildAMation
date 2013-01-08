@@ -88,7 +88,7 @@ namespace Test
             }
             else
             {
-                Opus.Core.Log.MessageAll("Unrecognized toolset");
+                Opus.Core.Log.MessageAll("Unrecognized toolset, '{0}'", target.ToolsetName('='));
             }
         }
     }
@@ -234,6 +234,17 @@ namespace Test
             public SourceFiles()
             {
                 this.Include(this, "source", "main.c");
+                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Clang_CompilerOptions);
+            }
+
+            void Clang_CompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                if (target.HasToolsetType(typeof(Clang.Toolset)))
+                {
+                    var cOptions = module.Options as C.ICCompilerOptions;
+                    // Microsoft headers do not compile warning free with Clang
+                    cOptions.WarningsAsErrors = false;
+                }
             }
         }
 
