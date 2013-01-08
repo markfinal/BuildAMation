@@ -47,7 +47,7 @@ namespace Test
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
 
-            compilerOptions.WarningsAsErrors = false;
+            compilerOptions.ShowIncludes = true;
 
             if (target.HasToolsetType(typeof(Mingw.Toolset)))
             {
@@ -142,7 +142,7 @@ namespace Test
         public void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
         {
             C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.WarningsAsErrors = false;
+            compilerOptions.ShowIncludes = true;
             compilerOptions.Defines.Add("DEFINE_FOR_ALL_SOURCE");
         }
     }
@@ -201,8 +201,8 @@ namespace Test
             private static void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.WarningsAsErrors = false;
-                //options.CharacterSet = C.Compiler.ECharacterSet.NotSet;
+                compilerOptions.ShowIncludes = true;
+                compilerOptions.CharacterSet = C.ECharacterSet.NotSet;
 
                 VisualC.CCompilerOptionCollection vcOptions = compilerOptions as VisualC.CCompilerOptionCollection;
                 if (null != vcOptions)
