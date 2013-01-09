@@ -1,4 +1,4 @@
-﻿// <copyright file="Target.cs" company="Mark Final">
+// <copyright file="Target.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
@@ -8,7 +8,6 @@ namespace Opus.Core
     public sealed class Target
     {
         private static System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>> map = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<IToolset, Target>>();
-        private static System.Collections.Generic.Dictionary<int, Target> mapNullToolset = new System.Collections.Generic.Dictionary<int, Target>();
 
         public string Key
         {
@@ -26,21 +25,6 @@ namespace Opus.Core
         {
             get;
             private set;
-        }
-
-        private static Target GetInstance(BaseTarget baseTarget)
-        {
-            Target target = null;
-            if (mapNullToolset.ContainsKey(baseTarget.HashKey))
-            {
-                target = mapNullToolset[baseTarget.HashKey];
-            }
-            else
-            {
-                target = mapNullToolset[baseTarget.HashKey] = new Target(baseTarget);
-            }
-
-            return target;
         }
 
         public static Target GetInstance(BaseTarget baseTarget, IToolset toolset)
