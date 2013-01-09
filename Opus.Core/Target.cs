@@ -54,13 +54,6 @@ namespace Opus.Core
             return target;
         }
 
-        private Target(BaseTarget baseTarget)
-        {
-            this.BaseTarget = baseTarget;
-            this.Toolset = null;
-            this.Key = baseTarget.ToString();
-        }
-
         private Target(BaseTarget baseTarget, IToolset toolset)
         {
             this.BaseTarget = baseTarget;
