@@ -66,5 +66,14 @@ namespace C
 
             return true;
         }
+
+        #region ICloneable Members
+
+        object System.ICloneable.Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
     }
 }

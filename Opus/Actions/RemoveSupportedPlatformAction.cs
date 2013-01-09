@@ -87,5 +87,14 @@ namespace Opus
                 return false;
             }
         }
+
+        #region ICloneable Members
+
+        object System.ICloneable.Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
     }
 }

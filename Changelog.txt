@@ -1,3 +1,5 @@
+09-Jan-2013 Opus.Core.IAction now also inherits from System.ICloneable.
+
 04-Jan-2013 Opus.Core.IToolEnvironmentVariables.Variables now takes a BaseTarget rather than a Target.
 
 04-Jan-2013 C.ThirdpartyModules now have a C.INullOpTool assigned to them, in order for Targets to be fully qualified with a toolset. This is useful because Thirdparty libraries must have been built with a toolset, so should be identifiable.

@@ -127,29 +127,31 @@ namespace Opus
 
                     if (isThisAction)
                     {
-                        if (action is Core.IActionWithArguments)
+                        Core.IAction clone = action.Clone() as Core.IAction;
+
+                        if (clone is Core.IActionWithArguments)
                         {
-                            (action as Core.IActionWithArguments).AssignArguments(commandValue);
+                            (clone as Core.IActionWithArguments).AssignArguments(commandValue);
                         }
 
-                        var actionType = action.GetType().GetCustomAttributes(false);
+                        var actionType = clone.GetType().GetCustomAttributes(false);
                         if (0 == actionType.Length)
                         {
-                            throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", action.GetType().ToString()));
+                            throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", clone.GetType().ToString()));
                         }
 
                         if (actionType[0].GetType() == typeof(Core.PreambleActionAttribute))
                         {
-                            this.preambleActions.Add(action);
+                            this.preambleActions.Add(clone);
                         }
                         else if (actionType[0].GetType() == typeof(Core.TriggerActionAttribute))
                         {
                             if (null != this.triggerAction)
                             {
-                                throw new Core.Exception(System.String.Format("Trigger action already set to '{0}'; cannot also set '{1}'", this.triggerAction.GetType().ToString(), action.GetType().ToString()));
+                                throw new Core.Exception(System.String.Format("Trigger action already set to '{0}'; cannot also set '{1}'", this.triggerAction.GetType().ToString(), clone.GetType().ToString()));
                             }
 
-                            this.triggerAction = action;
+                            this.triggerAction = clone;
                         }
 
                         foundAction = true;

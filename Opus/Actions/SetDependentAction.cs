@@ -43,5 +43,14 @@ namespace Opus
             // TODO: might want to figure out the PackageIdentifier here
             return true;
         }
+
+        #region ICloneable Members
+
+        object System.ICloneable.Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
     }
 }

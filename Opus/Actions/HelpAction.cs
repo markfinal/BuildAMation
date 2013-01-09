@@ -77,5 +77,14 @@ namespace Opus
                 Core.Log.MessageAll("\t{0}{1}{2}", commandSwitch, new string(' ', spaces), description);
             }
         }
+
+        #region ICloneable Members
+
+        object System.ICloneable.Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        #endregion
     }
 }

@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public interface IAction
+    public interface IAction : System.ICloneable
     {
         string CommandLineSwitch
         {
