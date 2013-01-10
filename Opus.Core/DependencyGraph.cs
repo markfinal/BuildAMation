@@ -307,7 +307,7 @@ namespace Opus.Core
 
                                 if (newNode.Parent != node)
                                 {
-                                    throw new Exception(System.String.Format("Node '{0}' that already existed in the graph currently has parent '{1}' but should be '{2}'", newNode.UniqueModuleName, newNode.Parent.UniqueModuleName, node.UniqueModuleName), false);
+                                    throw new Exception("Node '{0}' (target {1}) that already existed in the graph currently has parent '{2}' (target {3}) but should be '{4}' (target {5})", newNode.UniqueModuleName, newNode.Target.ToString(), newNode.Parent.UniqueModuleName, newNode.Parent.Target.ToString(), node.UniqueModuleName, node.Target.ToString());
                                 }
                             }
                             else
