@@ -140,17 +140,20 @@ namespace C
                 this.OutputFilePath = outputPathName;
             }
 
-            if (linkerTool is IWinImportLibrary)
+            if (options.OutputType == ELinkerOutput.DynamicLibrary)
             {
-                // explicit import library
-                IWinImportLibrary importLibrary = linkerTool as IWinImportLibrary;
-                string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, importLibrary.ImportLibraryPrefix + this.OutputName) + importLibrary.ImportLibrarySuffix;
-                this.StaticImportLibraryFilePath = importLibraryPathName;
-            }
-            else
-            {
-                // shared objects
-                this.StaticImportLibraryFilePath = this.OutputFilePath;
+                if (linkerTool is IWinImportLibrary)
+                {
+                    // explicit import library
+                    IWinImportLibrary importLibrary = linkerTool as IWinImportLibrary;
+                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, importLibrary.ImportLibraryPrefix + this.OutputName) + importLibrary.ImportLibrarySuffix;
+                    this.StaticImportLibraryFilePath = importLibraryPathName;
+                }
+                else
+                {
+                    // shared objects
+                    this.StaticImportLibraryFilePath = this.OutputFilePath;
+                }
             }
 
             if (options.GenerateMapFile && null == this.MapFilePath)
