@@ -107,7 +107,7 @@ namespace WindowsSDK
             }
             else
             {
-                throw new Opus.Core.Exception(System.String.Format("Windows SDK is not supported for the target '{0}'; only platforms win32 or win64", target.ToString()));
+                throw new Opus.Core.Exception("Windows SDK is not supported for the target '{0}'; only platforms win32 or win64", target.ToString());
             }
         }
 

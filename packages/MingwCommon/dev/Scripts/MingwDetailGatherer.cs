@@ -28,12 +28,12 @@ namespace MingwCommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 gccVersion = process.StandardOutput.ReadToEnd();
@@ -62,12 +62,12 @@ namespace MingwCommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 string details = process.StandardError.ReadToEnd();

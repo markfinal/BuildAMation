@@ -21,7 +21,7 @@ namespace CommandLineProcessor
                     ICommandLineDelegate data = option.PrivateData as ICommandLineDelegate;
                     if (null == data)
                     {
-                        throw new Opus.Core.Exception(System.String.Format("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(ICommandLineDelegate).ToString(), sender.GetType().ToString()));
+                        throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(ICommandLineDelegate).ToString(), sender.GetType().ToString());
                     }
 
                     Delegate commandLineDelegate = data.CommandLineDelegate;
@@ -30,14 +30,14 @@ namespace CommandLineProcessor
                         if (null != commandLineDelegate.Target)
                         {
                             // Not a requirement, but just a check
-                            throw new Opus.Core.Exception(System.String.Format("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString());
                         }
                         commandLineDelegate(sender, commandLineBuilder, option, target);
                     }
                 }
                 else
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Option '{0}' is not configured for command line translation in '{1}'", optionName, sender.GetType().ToString()), false);
+                    throw new Opus.Core.Exception("Option '{0}' is not configured for command line translation in '{1}'", optionName, sender.GetType().ToString());
                 }
             }
         }

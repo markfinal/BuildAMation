@@ -62,7 +62,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                throw new Opus.Core.Exception(System.String.Format("There is no ProjectConfiguration called '{0}'", configurationName));
+                throw new Opus.Core.Exception("There is no ProjectConfiguration called '{0}'", configurationName);
             }
         }
 

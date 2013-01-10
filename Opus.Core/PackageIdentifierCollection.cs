@@ -11,7 +11,7 @@ namespace Opus.Core
         {
             if (this.Contains(item))
             {
-                throw new Exception(System.String.Format("Package '{0}' already present in the collection", item.ToString()), false);
+                throw new Exception("Package '{0}' already present in the collection", item.ToString());
             }
 
             base.Add(item);

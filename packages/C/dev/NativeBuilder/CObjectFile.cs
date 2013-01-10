@@ -12,7 +12,7 @@ namespace NativeBuilder
             string sourceFilePath = objectFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", sourceFilePath));
+                throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
 #if OPUS_ENABLE_FILE_HASHING

@@ -27,7 +27,7 @@ namespace C
             }
             else
             {
-                throw new Opus.Core.Exception(System.String.Format("RequiredLibrary field in {0} must be of type string[], Opus.Core.StringArray or Opus.Core.Array<string>", module.ToString()), false);
+                throw new Opus.Core.Exception("RequiredLibrary field in {0} must be of type string[], Opus.Core.StringArray or Opus.Core.Array<string>", module.ToString());
             }
 
             module.UpdateOptions += delegate(Opus.Core.IModule dlgModule, Opus.Core.Target dlgTarget)

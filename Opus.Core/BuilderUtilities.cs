@@ -25,7 +25,7 @@ namespace Opus.Core
                 }
             }
 
-            throw new Exception(System.String.Format("Builder package '{0}' was not specified as a dependency", builderPackageName), false);
+            throw new Exception("Builder package '{0}' was not specified as a dependency", builderPackageName);
         }
 
         public static void CreateBuilderInstance()
@@ -52,7 +52,7 @@ namespace Opus.Core
             }
             if (null == builderInstance)
             {
-                throw new Exception(System.String.Format("Unsupported builder '{0}'. Please double check the spelling as the name is case sensitive", State.BuilderName));
+                throw new Exception("Unsupported builder '{0}'. Please double check the spelling as the name is case sensitive", State.BuilderName);
             }
 
             State.BuilderInstance = builderInstance;

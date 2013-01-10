@@ -30,14 +30,14 @@ namespace Opus.Core
             System.ICloneable cloneable = this.Value as System.ICloneable;
             if (null == cloneable)
             {
-                throw new Exception(System.String.Format("ReferenceTypeOption type, '{0}', is not cloneable", typeof(T).ToString()), false);
+                throw new Exception("ReferenceTypeOption type, '{0}', is not cloneable", typeof(T).ToString());
             }
 
             object untypedClonedValue = cloneable.Clone();
             T clonedValue = untypedClonedValue as T;
             if (null == clonedValue)
             {
-                throw new Exception(System.String.Format("Casting type '{0}' as '{1}' is not a defined type conversion", untypedClonedValue.GetType().ToString(), typeof(T).ToString()), false);
+                throw new Exception("Casting type '{0}' as '{1}' is not a defined type conversion", untypedClonedValue.GetType().ToString(), typeof(T).ToString());
             }
             ReferenceTypeOption<T> clonedOption = new ReferenceTypeOption<T>(clonedValue);
 

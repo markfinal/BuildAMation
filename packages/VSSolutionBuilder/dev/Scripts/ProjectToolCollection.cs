@@ -53,7 +53,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                throw new Opus.Core.Exception(System.String.Format("There is no ProjectTool called '{0}'", toolName));
+                throw new Opus.Core.Exception("There is no ProjectTool called '{0}'", toolName);
             }
         }
 

@@ -86,7 +86,7 @@ namespace VSSolutionBuilder
                 }
                 else if (this.type != value)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Project configuration type already set to '{0}'; cannot change to '{1}'", this.type.ToString(), value.ToString()));
+                    throw new Opus.Core.Exception("Project configuration type already set to '{0}'; cannot change to '{1}'", this.type.ToString(), value.ToString());
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace VSSolutionBuilder
                 }
                 else if (this.characterSet != value)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Project configuration character set already set to '{0}'; cannot change to '{1}'", this.characterSet.ToString(), value.ToString()));
+                    throw new Opus.Core.Exception("Project configuration character set already set to '{0}'; cannot change to '{1}'", this.characterSet.ToString(), value.ToString());
                 }
             }
         }

@@ -20,7 +20,7 @@ namespace CodeGenTest2
             Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest2.CodeGeneratorTool), baseTarget);
             if (null == module)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString()), false);
+                throw new Opus.Core.Exception("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString());
             }
 
             CSharp.OptionCollection options = module.Options as CSharp.OptionCollection;

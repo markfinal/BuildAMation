@@ -18,7 +18,7 @@ namespace NativeBuilder
             string sourceFilePath = mocFile.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("Moc source file '{0}' does not exist", sourceFilePath));
+                throw new Opus.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);
             }
 
 #if OPUS_ENABLE_FILE_HASHING

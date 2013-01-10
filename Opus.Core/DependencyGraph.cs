@@ -288,7 +288,7 @@ namespace Opus.Core
                         ModuleCollection nestedDependentModules = nestedDependentsInterface.GetNestedDependents(node.Target);
                         if (null == nestedDependentModules)
                         {
-                            throw new Exception(System.String.Format("Module '{0}' implements Opus.Core.INestedDependents but returns null"));
+                            throw new Exception("Module '{0}' implements Opus.Core.INestedDependents but returns null");
                         }
 
                         int childIndex = 0;
@@ -416,11 +416,11 @@ namespace Opus.Core
                             {
                                 if (null != node.Parent)
                                 {
-                                    throw new Exception(System.String.Format("Node '{0}' nor its parent '{1}' are dependees", node.UniqueModuleName, node.Parent.UniqueModuleName), false);
+                                    throw new Exception("Node '{0}' nor its parent '{1}' are dependees", node.UniqueModuleName, node.Parent.UniqueModuleName);
                                 }
                                 else
                                 {
-                                    throw new Exception(System.String.Format("Node '{0}' is not a dependee", node.UniqueModuleName), false);
+                                    throw new Exception("Node '{0}' is not a dependee", node.UniqueModuleName);
                                 }
                             }
 
@@ -443,7 +443,7 @@ namespace Opus.Core
                             }
                             if (null == sourceOfDependency)
                             {
-                                throw new Exception(System.String.Format("Unable to locate the dependency of '{0}'", module.GetType().ToString()), false);
+                                throw new Exception("Unable to locate the dependency of '{0}'", module.GetType().ToString());
                             }
 
                             int childIndex;

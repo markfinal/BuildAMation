@@ -32,7 +32,7 @@ namespace Opus
             int level = System.Convert.ToInt32(arguments);
             if (!System.Enum.IsDefined(typeof(Core.EVerboseLevel), level))
             {
-                throw new Core.Exception(System.String.Format("Verbosity level {0} is not defined", level), false);
+                throw new Core.Exception("Verbosity level {0} is not defined", level);
             }
 
             Core.State.VerbosityLevel = (Core.EVerboseLevel)level;

@@ -52,7 +52,7 @@ namespace Opus.Core
                     var actionType = action.Action.GetType().GetCustomAttributes(false);
                     if (0 == actionType.Length)
                     {
-                        throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", action.GetType().ToString()));
+                        throw new Core.Exception("Action '{0}' does not have a type attribute", action.GetType().ToString());
                     }
 
                     if (actionType[0].GetType() == typeof(Core.PreambleActionAttribute))
@@ -78,7 +78,7 @@ namespace Opus.Core
                     var actionType = action.Action.GetType().GetCustomAttributes(false);
                     if (0 == actionType.Length)
                     {
-                        throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", action.GetType().ToString()));
+                        throw new Core.Exception("Action '{0}' does not have a type attribute", action.GetType().ToString());
                     }
 
                     if (actionType[0].GetType() == typeof(Core.TriggerActionAttribute))
@@ -104,7 +104,7 @@ namespace Opus.Core
                     var actionType = action.Action.GetType().GetCustomAttributes(false);
                     if (0 == actionType.Length)
                     {
-                        throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", action.GetType().ToString()));
+                        throw new Core.Exception("Action '{0}' does not have a type attribute", action.GetType().ToString());
                     }
 
                     if (actionType[0].GetType() == typeof(Core.ImmediateActionAttribute))

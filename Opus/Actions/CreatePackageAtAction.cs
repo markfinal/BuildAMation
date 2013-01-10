@@ -45,7 +45,7 @@ namespace Opus
                                                                                  out isWellDefined);
             if ((null != id) || isWellDefined)
             {
-                throw new Core.Exception(System.String.Format("Package already present at '{0}'", this.PackagePath), false);
+                throw new Core.Exception("Package already present at '{0}'", this.PackagePath);
             }
 
             string PackageDirectory = this.PackagePath;
@@ -65,7 +65,7 @@ namespace Opus
             Core.PackageDefinitionFile packageDefinition = new Core.PackageDefinitionFile(id.DefinitionPathName, true);
             if (null == packageDefinition)
             {
-                throw new Core.Exception(System.String.Format("Package definition file '%s' could not be created", packageDefinition), false);
+                throw new Core.Exception("Package definition file '%s' could not be created", packageDefinition);
             }
 
             if (Core.State.PackageCreationDependents != null)
@@ -77,7 +77,7 @@ namespace Opus
                     string[] packageNameAndVersion = dependentPackage.Split('-');
                     if (packageNameAndVersion.Length != 2)
                     {
-                        throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageNameAndVersion), false);
+                        throw new Core.Exception("Ill-formed package name-version pair, '{0}'", packageNameAndVersion);
                     }
 
                     Core.PackageIdentifier idToAdd = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);

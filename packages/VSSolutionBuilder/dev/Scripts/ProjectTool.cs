@@ -178,7 +178,7 @@ namespace VSSolutionBuilder
                     break;
 
                 default:
-                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
+                    throw new Opus.Core.Exception("Unsupported VisualStudio tool name, '{0}'", this.Name);
             }
 
             MSBuildItem toolItem = itemDefGroup.CreateItem(toolElementName);
@@ -234,7 +234,7 @@ namespace VSSolutionBuilder
                     break;
 
                 default:
-                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio tool name, '{0}'", this.Name), false);
+                    throw new Opus.Core.Exception("Unsupported VisualStudio tool name, '{0}'", this.Name);
             }
 
             MSBuildItem toolItem = itemGroup.FindItem(toolElementName, relativePath);

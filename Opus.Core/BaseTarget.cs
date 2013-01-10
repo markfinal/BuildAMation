@@ -146,7 +146,7 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Unknown format specifier '%0'", formatter), false);
+                throw new Exception("Unknown format specifier '%0'", formatter);
             }
         }
 
@@ -171,7 +171,7 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Unknown format specifier '%0'", formatter), false);
+                throw new Exception("Unknown format specifier '%0'", formatter);
             }
         }
     }

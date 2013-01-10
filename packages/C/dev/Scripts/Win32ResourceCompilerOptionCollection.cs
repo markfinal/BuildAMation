@@ -101,7 +101,7 @@ namespace C
                     break;
 
                 default:
-                    throw new Opus.Core.Exception(System.String.Format("Unsupported VisualStudio target, '{0}'", vsTarget));
+                    throw new Opus.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
             }
             VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;

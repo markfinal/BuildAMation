@@ -39,7 +39,7 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Configuration name '{0}' not recognized", configurationName));
+                throw new Exception("Configuration name '{0}' not recognized", configurationName);
             }
             return configuration;
         }

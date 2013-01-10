@@ -56,7 +56,7 @@ namespace Opus
             string[] nameAndVersion = setDependentAction.DependentPackageAndVersion.Split('-');
             if (nameAndVersion.Length != 2)
             {
-                throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", nameAndVersion), false);
+                throw new Core.Exception("Ill-formed package name-version pair, '{0}'", nameAndVersion);
             }
 
             Core.PackageUtilities.IdentifyMainPackageOnly();
@@ -83,13 +83,13 @@ namespace Opus
                 Core.EPlatform requestedFilter = Core.Platform.FromString(platformFilter);
                 if (Core.EPlatform.Invalid == requestedFilter)
                 {
-                    throw new Core.Exception(System.String.Format("Platform filter specified, '{0}', is not recognized", platformFilter), false);
+                    throw new Core.Exception("Platform filter specified, '{0}', is not recognized", platformFilter);
                 }
 
                 Core.EPlatform oldFilter = foundId.PlatformFilter;
                 if (!Core.Platform.Contains(oldFilter, requestedFilter))
                 {
-                    throw new Core.Exception(System.String.Format("Package '{0}' with dependent '{1}' does not have a platform filter for '{2}'", nameAndVersion[0], setDependentAction.DependentPackageAndVersion, platformFilter), false);
+                    throw new Core.Exception("Package '{0}' with dependent '{1}' does not have a platform filter for '{2}'", nameAndVersion[0], setDependentAction.DependentPackageAndVersion, platformFilter);
                 }
 
                 Core.EPlatform newFilter = oldFilter & ~requestedFilter;

@@ -22,12 +22,12 @@ namespace Gcc
 
             if (!System.IO.Directory.Exists(cxxIncludePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath), false);
+                throw new Opus.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath);
             }
             string cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
             if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
-                throw new Opus.Core.Exception(System.String.Format("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2), false);
+                throw new Opus.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2);
             }
 
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);

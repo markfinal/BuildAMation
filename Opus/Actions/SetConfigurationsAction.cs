@@ -47,7 +47,7 @@ namespace Opus
                 Core.EConfiguration c = Core.Configuration.FromString(configuration);
                 if (buildConfigurations.Contains(c))
                 {
-                    throw new Core.Exception(System.String.Format("Configuration '{0}' already specified", configuration), false);
+                    throw new Core.Exception("Configuration '{0}' already specified", configuration);
                 }
                 else
                 {

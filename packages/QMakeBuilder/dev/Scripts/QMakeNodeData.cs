@@ -47,7 +47,7 @@ namespace QMakeBuilder
             {
                 if (!this.Dictionary.ContainsKey(VariableName) && !this.SingleValueDictionary.ContainsKey(VariableName))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to locate variable '{0}'", VariableName));
+                    throw new Opus.Core.Exception("Unable to locate variable '{0}'", VariableName);
                 }
 
                 if (this.Dictionary.ContainsKey(VariableName))
@@ -104,7 +104,7 @@ namespace QMakeBuilder
             {
                 if (this.SingleValueDictionary.ContainsKey(entry.Key))
                 {
-                    //throw new Opus.Core.Exception(System.String.Format("Repeated entry for '{0}':\nwas '{1}'\nwanted '{2}'", entry.Key, this.SingleValueDictionary[entry.Key], entry.Value));
+                    //throw new Opus.Core.Exception("Repeated entry for '{0}':\nwas '{1}'\nwanted '{2}'", entry.Key, this.SingleValueDictionary[entry.Key], entry.Value);
 
                     // TODO: this isn't particularly great, as there may be conflicting arguments
                     foreach (string item in entry.Value)

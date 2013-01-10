@@ -55,7 +55,7 @@ namespace Opus
             string[] nameAndVersion = setDependentAction.DependentPackageAndVersion.Split('-');
             if (nameAndVersion.Length != 2)
             {
-                throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", nameAndVersion), false);
+                throw new Core.Exception("Ill-formed package name-version pair, '{0}'", nameAndVersion);
             }
 
             Core.PackageUtilities.IdentifyMainPackageOnly();
@@ -77,7 +77,7 @@ namespace Opus
 
                 if (mainPackageId.Definition.PackageIdentifiers.Contains(newId))
                 {
-                    throw new Core.Exception(System.String.Format("Package '{0}' already exists as a dependency. Cannot change the version of package '{1}' to '{2}'", newId.ToString(), foundId.ToString(), this.NewVersion), false);
+                    throw new Core.Exception("Package '{0}' already exists as a dependency. Cannot change the version of package '{1}' to '{2}'", newId.ToString(), foundId.ToString(), this.NewVersion);
                 }
 
                 mainPackageId.Definition.PackageIdentifiers.Remove(foundId);

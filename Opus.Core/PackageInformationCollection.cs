@@ -83,7 +83,7 @@ namespace Opus.Core
                             }
                             else
                             {
-                                throw new Exception(System.String.Format("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Identifier.Root, item.Identifier.Root));
+                                throw new Exception("Package '{0}-{1}' found in roots '{2}' and '{3}'", package.Name, package.Version, package.Identifier.Root, item.Identifier.Root);
                             }
                         }
                         else
@@ -97,7 +97,7 @@ namespace Opus.Core
                             }
                             else
                             {
-                                throw new Exception(System.String.Format("Package '{0}' with version '{1}' already specified; version '{2}' is older", package.Name, package.Version, item.Version));
+                                throw new Exception("Package '{0}' with version '{1}' already specified; version '{2}' is older", package.Name, package.Version, item.Version);
                             }
                         }
                     }
@@ -133,7 +133,7 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Package '{0}' was not present in the collection", item.FullName));
+                throw new Exception("Package '{0}' was not present in the collection", item.FullName);
             }
         }
 

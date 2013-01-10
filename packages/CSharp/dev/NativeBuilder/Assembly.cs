@@ -45,7 +45,7 @@ namespace NativeBuilder
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
+                                throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
                             }
 
                             sourceFiles.Add(absolutePath);
@@ -57,7 +57,7 @@ namespace NativeBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
+                                    throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
                                 }
 
                                 sourceFiles.Add(absolutePath);
@@ -65,7 +65,7 @@ namespace NativeBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -88,13 +88,13 @@ namespace NativeBuilder
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Application definition file '{0}' does not exist", absolutePath), false);
+                                throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
                             string csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
+                                throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                             }
 
                             sourceFiles.Add(csPath);
@@ -111,13 +111,13 @@ namespace NativeBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Application definition file '{0}' does not exist", absolutePath), false);
+                                    throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
                                 string csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
+                                    throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 sourceFiles.Add(csPath);
@@ -125,7 +125,7 @@ namespace NativeBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -148,13 +148,13 @@ namespace NativeBuilder
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                                throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
                             string csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                                throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                             }
 
                             sourceFiles.Add(csPath);
@@ -171,13 +171,13 @@ namespace NativeBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                                    throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
                                 string csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                                    throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 sourceFiles.Add(csPath);
@@ -185,7 +185,7 @@ namespace NativeBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -193,7 +193,7 @@ namespace NativeBuilder
 
             if (0 == sourceFiles.Count)
             {
-                throw new Opus.Core.Exception(System.String.Format("There were no source files specified for the module '{0}'", node.ModuleName), false);
+                throw new Opus.Core.Exception("There were no source files specified for the module '{0}'", node.ModuleName);
             }
 
             // dependency checking

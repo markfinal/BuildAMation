@@ -20,7 +20,7 @@ namespace Opus.Core
         {
             if (checkForExistence && !System.IO.Directory.Exists(absoluteDirectoryPath))
             {
-                throw new Exception(System.String.Format("The directory '{0}' does not exist", absoluteDirectoryPath), false);
+                throw new Exception("The directory '{0}' does not exist", absoluteDirectoryPath);
             }
 
             if (!this.directoryPaths.Contains(absoluteDirectoryPath))
@@ -80,7 +80,7 @@ namespace Opus.Core
 
                 if (i != pathSegments.Length - 1)
                 {
-                    throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]));
+                    throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
                 }
 
                 combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
@@ -153,7 +153,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -178,7 +178,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -245,7 +245,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             this.AddRange(package, relativePaths);
@@ -256,7 +256,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             this.AddRange(package, relativePaths);

@@ -20,7 +20,7 @@ namespace MakeFileBuilder
                 MakeFileData data = childNode.Data as MakeFileData;
                 if (!data.VariableDictionary.ContainsKey(C.OutputFileFlags.ObjectFile))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName), false);
+                    throw new Opus.Core.Exception("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName);
                 }
 
                 childDataArray.Add(data);

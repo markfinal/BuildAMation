@@ -93,7 +93,7 @@ namespace Opus.Core
         {
             if (!typeof(BaseModule).IsAssignableFrom(moduleType))
             {
-                throw new Exception(System.String.Format("Module type '{0}' does not derive from the Opus.Core.BaseModule class", moduleType.ToString()));
+                throw new Exception("Module type '{0}' does not derive from the Opus.Core.BaseModule class", moduleType.ToString());
             }
 
             this.Rank = -1;
@@ -110,7 +110,7 @@ namespace Opus.Core
                 PackageInformation package = packages[packageName];
                 if (null == package)
                 {
-                    throw new Exception(System.String.Format("No package found for '{0}'", packageName));
+                    throw new Exception("No package found for '{0}'", packageName);
                 }
                 this.Package = package;
                 this.ModuleName = moduleType.Name;
@@ -131,11 +131,11 @@ namespace Opus.Core
             System.Reflection.MethodInfo buildFunction = builderInstance.GetType().GetMethod("Build", new System.Type[] { moduleType, System.Type.GetType("System.Boolean&") });
             if (null == buildFunction)
             {
-                throw new Exception(System.String.Format("Could not find method 'object {0}.Build({1}, {2})' for module '{3}'",
-                                                         builderInstance.GetType().ToString(),
-                                                         moduleType.BaseType.ToString(),
-                                                         System.Type.GetType("System.Boolean&").ToString(),
-                                                         moduleType.ToString()), false);
+                throw new Exception("Could not find method 'object {0}.Build({1}, {2})' for module '{3}'",
+                                    builderInstance.GetType().ToString(),
+                                    moduleType.BaseType.ToString(),
+                                    System.Type.GetType("System.Boolean&").ToString(),
+                                    moduleType.ToString());
             }
             object[] emptyBuildFunctions = buildFunction.GetCustomAttributes(typeof(EmptyBuildFunctionAttribute), false);
             if (null == emptyBuildFunctions || 0 == emptyBuildFunctions.Length)
@@ -167,12 +167,12 @@ namespace Opus.Core
             var moduleTools = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
             if (null == moduleTools || 0 == moduleTools.Length)
             {
-                throw new Exception(System.String.Format("Module type '{0}' (base type '{1}') does not have any assigned tools", moduleType.ToString(), moduleType.BaseType.ToString()), false);
+                throw new Exception("Module type '{0}' (base type '{1}') does not have any assigned tools", moduleType.ToString(), moduleType.BaseType.ToString());
             }
 
             if (moduleTools.Length > 1)
             {
-                throw new Exception(System.String.Format("There is more than one tool associated with this module '{0}'", moduleType.ToString()), false);
+                throw new Exception("There is more than one tool associated with this module '{0}'", moduleType.ToString());
             }
 
             System.Type toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
@@ -180,13 +180,13 @@ namespace Opus.Core
             {
                 Opus.Core.Log.DebugMessage("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
                 return;
-                //throw new Exception(System.String.Format("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString()));
+                //throw new Exception("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             }
 
             Opus.Core.Log.DebugMessage("Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             if (!toolType.IsInterface)
             {
-                throw new Exception(System.String.Format("Tool '{0}' is NOT an interface", toolType.ToString()), false);
+                throw new Exception("Tool '{0}' is NOT an interface", toolType.ToString());
             }
 
             System.Type optionCollectionType = toolset.ToolOptionType(toolType);
@@ -194,14 +194,14 @@ namespace Opus.Core
             {
                 Opus.Core.Log.DebugMessage("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
                 return;
-                //throw new Exception(System.String.Format("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString()), false);
+                //throw new Exception("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
             }
 
             var localAndExportTypes = toolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
 
             if (localAndExportTypes.Length == 0)
             {
-                throw new Exception(System.String.Format("Missing local and export types attribute on tool type '{0}'", toolType.ToString()), false);
+                throw new Exception("Missing local and export types attribute on tool type '{0}'", toolType.ToString());
             }
 
             System.Type exportType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
@@ -237,7 +237,7 @@ namespace Opus.Core
             }
             catch (System.MissingMethodException)
             {
-                throw new Exception(System.String.Format("Cannot construct object of type '{0}'. Missing public constructor?", moduleType.ToString()));
+                throw new Exception("Cannot construct object of type '{0}'. Missing public constructor?", moduleType.ToString());
             }
 
             this.Module = module;
@@ -313,7 +313,7 @@ namespace Opus.Core
 
             if (dependent == this)
             {
-                throw new Exception(System.String.Format("Circular dependency detected in external dependents for node '{0}'", this), false);
+                throw new Exception("Circular dependency detected in external dependents for node '{0}'", this);
             }
 
             if (null == this.ExternalDependents)
@@ -338,7 +338,7 @@ namespace Opus.Core
 
             if (required == this)
             {
-                throw new Exception(System.String.Format("Circular dependency detected in required dependents for node '{0}'", this), false);
+                throw new Exception("Circular dependency detected in required dependents for node '{0}'", this);
             }
 
             if (null == this.RequiredDependents)

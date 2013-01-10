@@ -54,7 +54,7 @@ namespace NativeBuilder
             {
                 if (!System.IO.Directory.Exists(symlinkTarget))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Symlink target directory '{0}' does not exist", symlinkTarget), false);
+                    throw new Opus.Core.Exception("Symlink target directory '{0}' does not exist", symlinkTarget);
                 }
 
                 requiresBuilding = NativeBuilder.DirectoryUpToDate(link, symlinkTarget);
@@ -63,7 +63,7 @@ namespace NativeBuilder
             {
                 if (!System.IO.File.Exists(symlinkTarget))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Symlink target file '{0}' does not exist", symlinkTarget), false);
+                    throw new Opus.Core.Exception("Symlink target file '{0}' does not exist", symlinkTarget);
                 }
 
                 requiresBuilding = NativeBuilder.RequiresBuilding(link, symlinkTarget);

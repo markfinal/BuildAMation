@@ -39,7 +39,7 @@ namespace VisualC
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("VisualStudio C++ {0} 2010 was not installed", vsEdition));
+                    throw new Opus.Core.Exception("VisualStudio C++ {0} 2010 was not installed", vsEdition);
                 }
 
                 string[] subKeyNames = key.GetSubKeyNames();
@@ -70,7 +70,7 @@ namespace VisualC
 
             if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate VisualC project GUID for VisualStudio 2010 {0}", vsEdition));
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010 {0}", vsEdition);
             }
 
 #if false

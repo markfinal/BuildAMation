@@ -19,7 +19,7 @@ namespace CodeGenTest
 
             if (null == module)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString()), false);
+                throw new Opus.Core.Exception("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString());
             }
 
             C.LinkerOptionCollection options = module.Options as C.LinkerOptionCollection;

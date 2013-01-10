@@ -40,7 +40,7 @@ namespace Opus.Core
             string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
             if (directories.Length < 2)
             {
-                throw new Exception(System.String.Format("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar), false);
+                throw new Exception("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar);
             }
 
             string packageName = directories[directories.Length - 2];
@@ -321,7 +321,7 @@ namespace Opus.Core
 
                 if (null == id.Definition)
                 {
-                    throw new Exception(System.String.Format("Package '{0}-{1}' has no definition loaded. This is an unexpected error.", id.Name, id.Version), false);
+                    throw new Exception("Package '{0}-{1}' has no definition loaded. This is an unexpected error.", id.Name, id.Version);
                 }
 
                 if (!OSUtilities.IsCurrentPlatformSupported(id.Definition.SupportedPlatforms))
@@ -899,7 +899,7 @@ namespace Opus.Core
 
                             if (!iaction.Execute())
                             {
-                                throw new Exception(System.String.Format("Action '{0}' failed", command), false);
+                                throw new Exception("Action '{0}' failed", command);
                             }
 
                             lazyCommandsProcessed.Add(command);
@@ -1011,7 +1011,7 @@ namespace Opus.Core
 
             if (0 == topLevelTypes.Count)
             {
-                throw new Exception(System.String.Format("Unable to locate any objects in namespace '{0}'", topLevelNamespace), false);
+                throw new Exception("Unable to locate any objects in namespace '{0}'", topLevelNamespace);
             }
 
             // now find the intersection of the specified build modules and the top-level modules found
@@ -1035,7 +1035,7 @@ namespace Opus.Core
 
                     if (!found)
                     {
-                        throw new Exception(System.String.Format("Unable to locate specified module '{0}' in the list of module types for this package:\n{1}", buildModule, topLevelTypeNames.ToString('\n')), false);
+                        throw new Exception("Unable to locate specified module '{0}' in the list of module types for this package:\n{1}", buildModule, topLevelTypeNames.ToString('\n'));
                     }
                 }
 

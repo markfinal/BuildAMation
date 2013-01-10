@@ -38,7 +38,7 @@ namespace QtCommon
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             this.SourceFile = new Opus.Core.File();

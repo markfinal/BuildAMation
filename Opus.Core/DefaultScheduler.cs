@@ -26,7 +26,7 @@ namespace Opus.Core
                 DependencyNodeCollection rankCollection = this.graph[rank];
                 if (0 == rankCollection.Count)
                 {
-                    throw new Exception(System.String.Format("Dependency node collection for rank {0} is empty", rank), false);
+                    throw new Exception("Dependency node collection for rank {0} is empty", rank);
                 }
             }
         }

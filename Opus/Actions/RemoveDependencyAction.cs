@@ -45,11 +45,11 @@ namespace Opus
             Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a package", Core.State.WorkingDirectory), false);
+                throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
             }
             if (!isWellDefined)
             {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory), false);
+                throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
             Core.PackageDefinitionFile definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
@@ -64,7 +64,7 @@ namespace Opus
                 string[] packageNameAndVersion = packageAndVersion.Split('-');
                 if (packageNameAndVersion.Length != 2)
                 {
-                    throw new Core.Exception(System.String.Format("Ill-formed package name-version pair, '{0}'", packageAndVersion), false);
+                    throw new Core.Exception("Ill-formed package name-version pair, '{0}'", packageAndVersion);
                 }
 
                 Core.PackageIdentifier id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);

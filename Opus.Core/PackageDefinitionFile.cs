@@ -100,8 +100,7 @@ namespace Opus.Core
         {
             if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
             {
-                string message = System.String.Format("Warning: Matching schema not found (" + args.Exception.GetType().ToString() + "). " + args.Message);
-                Log.DebugMessage(message);
+                Log.DebugMessage("Warning: Matching schema not found (" + args.Exception.GetType().ToString() + "). " + args.Message);
             }
             else
             {
@@ -117,7 +116,7 @@ namespace Opus.Core
                     System.Uri schemaUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
                     if (schemaUri.AbsolutePath != args.Exception.SourceUri)
                     {
-                        throw new Exception(System.String.Format("Duplicate schemas exist! From package definition file '{0}', and from the Opus build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath), false);
+                        throw new Exception("Duplicate schemas exist! From package definition file '{0}', and from the Opus build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath);
                     }
                 }
 
@@ -163,7 +162,7 @@ namespace Opus.Core
                 System.IO.FileAttributes attributes = System.IO.File.GetAttributes(this.xmlFilename);
                 if (0 != (attributes & System.IO.FileAttributes.ReadOnly))
                 {
-                    throw new Exception(System.String.Format("File '{0}' cannot be written to as it is read only", this.xmlFilename), false);
+                    throw new Exception("File '{0}' cannot be written to as it is read only", this.xmlFilename);
                 }
             }
 
@@ -217,7 +216,7 @@ namespace Opus.Core
                         EPlatform platformFilter = package.PlatformFilter;
                         if (platformFilter == EPlatform.Invalid)
                         {
-                            throw new Exception(System.String.Format("Dependent '{0}' requires at least one platform filter", package.ToString()), false);
+                            throw new Exception("Dependent '{0}' requires at least one platform filter", package.ToString());
                         }
 
                         if (platformFilter != EPlatform.All)
@@ -368,7 +367,7 @@ namespace Opus.Core
                 return;
             }
 
-            throw new Exception(System.String.Format("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename));
+            throw new Exception("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename);
         }
 
         protected EPlatform InterpretConditionValue(string condition)
@@ -422,24 +421,24 @@ namespace Opus.Core
                         {
                             if (match.Groups.Count != 5)
                             {
-                                throw new Exception(System.String.Format("Expected format to be '$(Platform) == '...''. Instead found '{0}'", match.Value), false);
+                                throw new Exception("Expected format to be '$(Platform) == '...''. Instead found '{0}'", match.Value);
                             }
 
                             if (match.Groups[2].Value != "Platform")
                             {
-                                throw new Exception(System.String.Format("Expected 'Platform/ in '{0}'", match.Value), false);
+                                throw new Exception("Expected 'Platform/ in '{0}'", match.Value);
                             }
 
                             if (match.Groups[3].Value != "==")
                             {
-                                throw new Exception(System.String.Format("Only supporting equivalence == in '{0}'", match.Value), false);
+                                throw new Exception("Only supporting equivalence == in '{0}'", match.Value);
                             }
 
                             string platform = match.Groups[4].Value;
                             EPlatform ePlatform = Platform.FromString(platform);
                             if (ePlatform == EPlatform.Invalid)
                             {
-                                throw new Exception(System.String.Format("Unrecognize platform '{0}'", platform), false);
+                                throw new Exception("Unrecognize platform '{0}'", platform);
                             }
 
                             supportedPlatforms |= ePlatform;
@@ -448,12 +447,12 @@ namespace Opus.Core
                         {
                             if (match.Groups.Count != 2)
                             {
-                                throw new Exception(System.String.Format("Expected format to be '... || ...'. Instead found '{0}'", match.Value), false);
+                                throw new Exception("Expected format to be '... || ...'. Instead found '{0}'", match.Value);
                             }
 
                             if (match.Groups[1].Value != "||")
                             {
-                                throw new Exception(System.String.Format("Only supporting Boolean OR || in '{0}'", match.Value), false);
+                                throw new Exception("Only supporting Boolean OR || in '{0}'", match.Value);
                             }
                         }
 
@@ -537,7 +536,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredPackagesElementName), false);
+                    throw new Exception("Unexpected child element of '{0}'", requiredPackagesElementName);
                 }
             }
 
@@ -577,7 +576,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredOpusAssembliesElementName), false);
+                    throw new Exception("Unexpected child element of '{0}'", requiredOpusAssembliesElementName);
                 }
             }
 
@@ -625,7 +624,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", requiredDotNetAssembliesElementName), false);
+                    throw new Exception("Unexpected child element of '{0}'", requiredDotNetAssembliesElementName);
                 }
             }
 
@@ -677,7 +676,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", supportedPlatformsElementName), false);
+                    throw new Exception("Unexpected child element of '{0}'", supportedPlatformsElementName);
                 }
             }
 
@@ -718,7 +717,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Unexpected child element of '{0}'", definitionsElementName), false);
+                    throw new Exception("Unexpected child element of '{0}'", definitionsElementName);
                 }
             }
 
@@ -776,12 +775,12 @@ namespace Opus.Core
                             // should be the end element
                             if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                             {
-                                throw new Exception(System.String.Format("Expected end of root element but found '{0}'", xmlReader.Name), false);
+                                throw new Exception("Expected end of root element but found '{0}'", xmlReader.Name);
                             }
                         }
                         else
                         {
-                            throw new Exception(System.String.Format("Package definition reading code failed to recognize element with name '{0}'", xmlReader.Name), false);
+                            throw new Exception("Package definition reading code failed to recognize element with name '{0}'", xmlReader.Name);
                         }
                     }
 
@@ -912,7 +911,7 @@ namespace Opus.Core
             {
                 if (id.Match(idToAdd, false))
                 {
-                    throw new Exception(System.String.Format("Package '{0}' is already included in the dependency file", id.ToString()), false);
+                    throw new Exception("Package '{0}' is already included in the dependency file", id.ToString());
                 }
             }
 

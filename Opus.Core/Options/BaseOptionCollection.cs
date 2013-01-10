@@ -78,7 +78,7 @@ namespace Opus.Core
             {
                 if (2 != setHandler.GetParameters().Length)
                 {
-                    throw new Exception(System.String.Format("SetHandler requires the signature 'void {0}(BaseOptionCollection, Option)', not '{1}'", setHandler.Name, setHandler.ToString()));
+                    throw new Exception("SetHandler requires the signature 'void {0}(BaseOptionCollection, Option)', not '{1}'", setHandler.Name, setHandler.ToString());
                 }
 
                 setHandler.Invoke(null, new object[] { this, option });

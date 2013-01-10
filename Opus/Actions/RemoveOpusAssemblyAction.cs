@@ -45,11 +45,11 @@ namespace Opus
             Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a package", Core.State.WorkingDirectory), false);
+                throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
             }
             if (!isWellDefined)
             {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory), false);
+                throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);

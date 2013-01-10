@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             string resourceFilePath = resourceFile.ResourceFile.AbsolutePath;
             if (!System.IO.File.Exists(resourceFilePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("Resource file '{0}' does not exist", resourceFilePath));
+                throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();

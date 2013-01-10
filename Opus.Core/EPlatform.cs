@@ -66,7 +66,7 @@ namespace Opus.Core
             }
             else
             {
-                throw new Exception(System.String.Format("Platform name '{0}' not recognized", platformName), false);
+                throw new Exception("Platform name '{0}' not recognized", platformName);
             }
             return platform;
         }

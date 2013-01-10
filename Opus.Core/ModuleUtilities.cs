@@ -22,7 +22,7 @@ namespace Opus.Core
 
                 if (t.Length > 1)
                 {
-                    throw new Exception(System.String.Format("There are {0} tool assignments to the module type '{1}'. There should be only one.", t.Length, moduleType.ToString()), false);
+                    throw new Exception("There are {0} tool assignments to the module type '{1}'. There should be only one.", t.Length, moduleType.ToString());
                 }
 
                 ModuleToolAssignmentAttribute attr = t[0] as ModuleToolAssignmentAttribute;
@@ -52,7 +52,7 @@ namespace Opus.Core
                 return toolset;
             }
 
-            throw new Exception(System.String.Format("Unable to locate toolchain for module '{0}'", moduleType.ToString()), false);
+            throw new Exception("Unable to locate toolchain for module '{0}'", moduleType.ToString());
         }
 
         private static TypeArray GetFieldsWithAttributeType<T>(IModule module, Target target) where T : class, ITargetFilters
@@ -70,7 +70,7 @@ namespace Opus.Core
                 {
                     if (attributes.Length > 1)
                     {
-                        throw new Exception(System.String.Format("More than one attribute not supported on field '{0}'", fieldInfo.Name));
+                        throw new Exception("More than one attribute not supported on field '{0}'", fieldInfo.Name);
                     }
 
                     bool targetFiltersMatch = TargetUtilities.MatchFilters(target, attributes[0]);
@@ -88,7 +88,7 @@ namespace Opus.Core
                         }
                         else
                         {
-                            throw new Exception(System.String.Format("{0} field in {1} is of type {2} but must be of type System.Type[], Opus.Core.TypeArray or Opus.Core.Array<System.Type>", typeof(T).ToString(), module.ToString(), fieldValue.GetType()), false);
+                            throw new Exception("{0} field in {1} is of type {2} but must be of type System.Type[], Opus.Core.TypeArray or Opus.Core.Array<System.Type>", typeof(T).ToString(), module.ToString(), fieldValue.GetType());
                         }
 
                         dependentsList.AddRange(values);

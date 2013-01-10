@@ -66,7 +66,7 @@ namespace GccCommon
         {
             if (!this.toolMap.ContainsKey(toolType))
             {
-                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+                throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolMap[toolType];
@@ -82,7 +82,7 @@ namespace GccCommon
                     return null;
                 }
 
-                throw new Opus.Core.Exception(System.String.Format("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString()), false);
+                throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolOptionsMap[toolType];

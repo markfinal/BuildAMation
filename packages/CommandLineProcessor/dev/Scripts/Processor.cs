@@ -92,7 +92,7 @@ namespace CommandLineProcessor
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
-                throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName));
+                throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
             }
             if (null != process)
             {

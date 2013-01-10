@@ -58,7 +58,7 @@ namespace MakeFileBuilder
 
             if (0 == filtered.Count)
             {
-                throw new Opus.Core.Exception(System.String.Format("No matching variable types were found for '{0}'", filterKeys.ToString()), false);
+                throw new Opus.Core.Exception("No matching variable types were found for '{0}'", filterKeys.ToString());
             }
 
             return filtered;

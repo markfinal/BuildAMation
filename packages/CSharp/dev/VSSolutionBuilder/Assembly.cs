@@ -142,7 +142,7 @@ namespace VSSolutionBuilder
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
+                                throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
                             }
 
                             ProjectFile sourceFile;
@@ -167,7 +167,7 @@ namespace VSSolutionBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Source file '{0}' does not exist", absolutePath), false);
+                                    throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
                                 }
 
                                 ProjectFile sourceFile;
@@ -188,7 +188,7 @@ namespace VSSolutionBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -211,7 +211,7 @@ namespace VSSolutionBuilder
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Application definition file '{0}' does not exist", absolutePath), false);
+                                throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
 #if false
@@ -219,7 +219,7 @@ namespace VSSolutionBuilder
                             string csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
+                                throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                             }
 #endif
 
@@ -237,7 +237,7 @@ namespace VSSolutionBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Application definition file '{0}' does not exist", absolutePath), false);
+                                    throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
 #if false
@@ -245,7 +245,7 @@ namespace VSSolutionBuilder
                                 string csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath), false);
+                                    throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath));
                                 }
 #endif
 
@@ -254,7 +254,7 @@ namespace VSSolutionBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -277,7 +277,7 @@ namespace VSSolutionBuilder
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                                throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
                             lock (projectData.Pages)
@@ -295,13 +295,13 @@ namespace VSSolutionBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Page file '{0}' does not exist", absolutePath), false);
+                                    throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
                                 string csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception(System.String.Format("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath), false);
+                                    throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 lock (projectData.Pages)
@@ -315,7 +315,7 @@ namespace VSSolutionBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString()), false);
+                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }

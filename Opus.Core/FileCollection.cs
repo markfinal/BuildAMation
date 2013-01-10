@@ -76,7 +76,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -98,7 +98,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", module.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -119,7 +119,7 @@ namespace Opus.Core
         {
             if (!System.IO.Directory.Exists(baseDirectory))
             {
-                throw new Exception(System.String.Format("Base directory '{0}' does not exist", baseDirectory), false);
+                throw new Exception("Base directory '{0}' does not exist", baseDirectory);
             }
 
             StringArray paths = File.GetFiles(baseDirectory, relativePath);

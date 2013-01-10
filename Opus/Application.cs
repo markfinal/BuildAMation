@@ -80,7 +80,7 @@ namespace Opus
                     string responseFile = responseFileArgument.Substring(1);
                     if (!System.IO.File.Exists(responseFile))
                     {
-                        throw new Core.Exception(System.String.Format("Response file '{0}' does not exist", responseFile));
+                        throw new Core.Exception("Response file '{0}' does not exist", responseFile);
                     }
 
                     using (System.IO.TextReader responseFileReader = new System.IO.StreamReader(responseFile))
@@ -137,7 +137,7 @@ namespace Opus
                         var actionType = clone.GetType().GetCustomAttributes(false);
                         if (0 == actionType.Length)
                         {
-                            throw new Core.Exception(System.String.Format("Action '{0}' does not have a type attribute", clone.GetType().ToString()));
+                            throw new Core.Exception("Action '{0}' does not have a type attribute", clone.GetType().ToString());
                         }
 
                         if (actionType[0].GetType() == typeof(Core.PreambleActionAttribute))
@@ -148,7 +148,7 @@ namespace Opus
                         {
                             if (null != this.triggerAction)
                             {
-                                throw new Core.Exception(System.String.Format("Trigger action already set to '{0}'; cannot also set '{1}'", this.triggerAction.GetType().ToString(), clone.GetType().ToString()));
+                                throw new Core.Exception("Trigger action already set to '{0}'; cannot also set '{1}'", this.triggerAction.GetType().ToString(), clone.GetType().ToString());
                             }
 
                             this.triggerAction = clone;

@@ -83,7 +83,7 @@ namespace FileUtilities
                         Opus.Core.IModule sourceModule = Opus.Core.ModuleUtilities.GetModule(sourceModuleType, baseTarget);
                         if (null == sourceModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Can't find source module of type '{0}' in module '{1}' for base target '{2}'", sourceModuleType.FullName, this.GetType().FullName, baseTarget.ToString()), false);
+                            throw new Opus.Core.Exception("Can't find source module of type '{0}' in module '{1}' for base target '{2}'", sourceModuleType.FullName, this.GetType().FullName, baseTarget.ToString());
                         }
 
                         this.SourceOutputFlags = sourceModuleAttribute.OutputFlags;
@@ -102,7 +102,7 @@ namespace FileUtilities
                     {
                         if (!System.IO.File.Exists(file))
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Source file '{0}' for module '{1}' does not exist", file, this.GetType().FullName), false);
+                            throw new Opus.Core.Exception("Source file '{0}' for module '{1}' does not exist", file, this.GetType().FullName);
                         }
                     }
 
@@ -120,13 +120,13 @@ namespace FileUtilities
                     {
                         if (null != destinationModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Only one destination module may be provided for module '{0}'", this.GetType().FullName), false);
+                            throw new Opus.Core.Exception("Only one destination module may be provided for module '{0}'", this.GetType().FullName);
                         }
 
                         destinationModule = Opus.Core.ModuleUtilities.GetModule(destinationModuleType, baseTarget);
                         if (null == destinationModule)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("Can't find destination module of type '{0}' in module '{1}' for basetarget '{2}'", destinationModuleType.FullName, this.GetType().FullName, baseTarget.ToString()), false);
+                            throw new Opus.Core.Exception("Can't find destination module of type '{0}' in module '{1}' for basetarget '{2}'", destinationModuleType.FullName, this.GetType().FullName, baseTarget.ToString());
                         }
 
                         this.DirectoryOutputFlags = destinationModuleAttribute.OutputFlags;

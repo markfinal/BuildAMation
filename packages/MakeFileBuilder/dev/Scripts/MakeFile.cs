@@ -114,7 +114,7 @@ namespace MakeFileBuilder
         {
             if (0 == this.RuleArray.Count)
             {
-                throw new Opus.Core.Exception(System.String.Format("MakeFile '{0}' has no rules", this.ModulePrefixName), false);
+                throw new Opus.Core.Exception("MakeFile '{0}' has no rules", this.ModulePrefixName);
             }
 
             int ruleCount = this.RuleArray.Count;

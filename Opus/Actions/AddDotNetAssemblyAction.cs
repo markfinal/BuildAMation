@@ -45,11 +45,11 @@ namespace Opus
             Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a package", Core.State.WorkingDirectory), false);
+                throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
             }
             if (!isWellDefined)
             {
-                throw new Core.Exception(System.String.Format("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory), false);
+                throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
             Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
@@ -67,7 +67,7 @@ namespace Opus
                     string[] split = dotNetAssemblyName.Split('-');
                     if (split.Length != 2)
                     {
-                        throw new Core.Exception(System.String.Format("DotNet assembly name and version is ill-formed: '{0}'", dotNetAssemblyName), false);
+                        throw new Core.Exception("DotNet assembly name and version is ill-formed: '{0}'", dotNetAssemblyName);
                     }
 
                     assemblyName = split[0];
@@ -82,7 +82,7 @@ namespace Opus
                 {
                     if (desc.Name == assemblyName)
                     {
-                        throw new Core.Exception(System.String.Format("DotNet assembly '{0}' already referenced by the package", assemblyName), false);
+                        throw new Core.Exception("DotNet assembly '{0}' already referenced by the package", assemblyName);
                     }
                 }
 

@@ -84,9 +84,9 @@ namespace Opus.Core
             return true;
         }
 
-        public static void DisplayException(System.Exception exception, string prefix)
+        public static void DisplayException(System.Exception exception, string prefix, params object[] args)
         {
-            Log.ErrorMessage(prefix);
+            Log.ErrorMessage(prefix, args);
             DisplayException(exception);
         }
     }

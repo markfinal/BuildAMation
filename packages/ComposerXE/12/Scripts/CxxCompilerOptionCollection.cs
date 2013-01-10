@@ -22,12 +22,12 @@ namespace ComposerXE
             string cppIncludePath = compilerInstance.GxxIncludePath(target);
             if (!System.IO.Directory.Exists(cppIncludePath))
             {
-                throw new Opus.Core.Exception(System.String.Format("ComposerXE C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath), false);
+                throw new Opus.Core.Exception("ComposerXE C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath);
             }
             string cppIncludePath2 = System.String.Format("{0}/{1}", cppIncludePath, compilerInstance.MachineType(target));
             if (!System.IO.Directory.Exists(cppIncludePath2))
             {
-                throw new Opus.Core.Exception(System.String.Format("ComposerXE C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath2), false);
+                throw new Opus.Core.Exception("ComposerXE C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath2);
             }
 
             this.SystemIncludePaths.Add(null, cppIncludePath);

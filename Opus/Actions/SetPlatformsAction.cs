@@ -47,7 +47,7 @@ namespace Opus
                 Core.EPlatform p = Core.Platform.FromString(platform);
                 if (buildPlatforms.Contains(p))
                 {
-                    throw new Core.Exception(System.String.Format("Platform '{0}' already specified", platform), false);
+                    throw new Core.Exception("Platform '{0}' already specified", platform);
                 }
                 else
                 {

@@ -27,7 +27,7 @@ namespace C
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -52,7 +52,7 @@ namespace C
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;

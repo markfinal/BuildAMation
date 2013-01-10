@@ -32,7 +32,7 @@ namespace Opus.Core
                         IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
                         if (null == moduleContainingMethod)
                         {
-                            throw new Opus.Core.Exception(System.String.Format("While adding option update delegate '{0}', cannot find source module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString()), false);
+                            throw new Opus.Core.Exception("While adding option update delegate '{0}', cannot find source module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString());
                         }
                         module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), moduleContainingMethod, method, true) as UpdateOptionCollectionDelegate;
                     }

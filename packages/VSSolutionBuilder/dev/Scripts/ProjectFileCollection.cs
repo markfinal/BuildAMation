@@ -52,7 +52,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                throw new Opus.Core.Exception(System.String.Format("There is no ProjectFile for source path '{0}'", sourcePathName));
+                throw new Opus.Core.Exception("There is no ProjectFile for source path '{0}'", sourcePathName);
             }
         }
 

@@ -13,12 +13,12 @@ namespace Opus.Core
         {
             if (!requiredOptionCollectionType.IsSubclassOf(optionCollectionType))
             {
-                throw new Exception(System.String.Format("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString()),false);
+                throw new Exception("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString());
             }
 
             if (null == requiredOptionCollectionType.GetConstructor(System.Type.EmptyTypes))
             {
-                throw new Exception(System.String.Format("Default constructor for type '{0}' does not exist", requiredOptionCollectionType.ToString()), false);
+                throw new Exception("Default constructor for type '{0}' does not exist", requiredOptionCollectionType.ToString());
             }
 
             BaseOptionCollection optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType) as BaseOptionCollection;
@@ -30,12 +30,12 @@ namespace Opus.Core
             System.Type requiredOptionCollectionType = typeof(DerivedType);
             if (!requiredOptionCollectionType.IsSubclassOf(optionCollectionType))
             {
-                throw new Exception(System.String.Format("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString()), false);
+                throw new Exception("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString());
             }
 
             if (null == requiredOptionCollectionType.GetConstructor(new System.Type[] { typeof(DependencyNode) }))
             {
-                throw new Exception(System.String.Format("Missing constructor: '{0}(DependencyNode)'", requiredOptionCollectionType.ToString()), false);
+                throw new Exception("Missing constructor: '{0}(DependencyNode)'", requiredOptionCollectionType.ToString());
             }
 
             BaseOptionCollection optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType, new object[] { owningNode }) as BaseOptionCollection;

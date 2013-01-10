@@ -22,7 +22,7 @@ namespace Opus.Core
         {
             if (ContainsDirectorySeparators(pathSegment))
             {
-                throw new Exception(System.String.Format("Individual file parts cannot contain directory separators; '{0}'", pathSegment), false);
+                throw new Exception("Individual file parts cannot contain directory separators; '{0}'", pathSegment);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Opus.Core
             {
                 if (checkExists && !System.IO.File.Exists(basePath))
                 {
-                    throw new Exception(System.String.Format("File '{0}' does not exist", basePath));
+                    throw new Exception("File '{0}' does not exist", basePath);
                 }
 
                 absolutePath = basePath;
@@ -81,7 +81,7 @@ namespace Opus.Core
             {
                 if (checkExists && !System.IO.Directory.Exists(basePath))
                 {
-                    throw new Exception(System.String.Format("Base directory '{0}' does not exist", basePath));
+                    throw new Exception("Base directory '{0}' does not exist", basePath);
                 }
 
                 absolutePath = CombinePaths(ref basePath, pathSegments);
@@ -95,7 +95,7 @@ namespace Opus.Core
             PackageInformation package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -147,7 +147,7 @@ namespace Opus.Core
 
                 if (i != pathSegments.Length - 1)
                 {
-                    throw new Exception(System.String.Format("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]));
+                    throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
                 }
 
                 combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);

@@ -12,7 +12,7 @@ namespace Opus.Core
         {
             if (!typeof(IAction).IsAssignableFrom(classType))
             {
-                throw new Exception(System.String.Format("Class '{0}' does not implement the IAction interface", classType.ToString()));
+                throw new Exception("Class '{0}' does not implement the IAction interface", classType.ToString());
             }
 
             this.Action = System.Activator.CreateInstance(classType) as IAction;

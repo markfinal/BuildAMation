@@ -32,7 +32,7 @@ namespace Opus.Core
                 string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
                 if (!System.IO.File.Exists(opusSchemaPathname))
                 {
-                    throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory), false);
+                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory);
                 }
                 Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
             }
@@ -40,7 +40,7 @@ namespace Opus.Core
                 string v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
                 if (!System.IO.File.Exists(v2SchemaPathName))
                 {
-                    throw new Exception(System.String.Format("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory), false);
+                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory);
                 }
                 Add<string>("Opus", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
 
@@ -166,7 +166,7 @@ namespace Opus.Core
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                throw new Exception(System.String.Format("Category '{0}' with key '{1}' not found", category, key));
+                throw new Exception("Category '{0}' with key '{1}' not found", category, key);
             }
             return value;
         }

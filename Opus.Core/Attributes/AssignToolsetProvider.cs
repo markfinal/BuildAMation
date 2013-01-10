@@ -26,12 +26,12 @@ namespace Opus.Core
             System.Reflection.MethodInfo method = providerClass.GetMethod(methodName, flags);
             if (null == method)
             {
-                throw new Exception(System.String.Format("Unable to locate a static method called '{0}' in class '{1}'", methodName, providerClass.ToString()), false);
+                throw new Exception("Unable to locate a static method called '{0}' in class '{1}'", methodName, providerClass.ToString());
             }
             System.Delegate dlg = System.Delegate.CreateDelegate(typeof(ProviderDelegate), method, false);
             if (null == dlg)
             {
-                throw new Exception(System.String.Format("Unable to match method '{0}' in class '{1}' to the delegate 'string fn(System.Type)'", method, providerClass.ToString()), false);
+                throw new Exception("Unable to match method '{0}' in class '{1}' to the delegate 'string fn(System.Type)'", method, providerClass.ToString());
             }
             this.providerFn = dlg as ProviderDelegate;
         }

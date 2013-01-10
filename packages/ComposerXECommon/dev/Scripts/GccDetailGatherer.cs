@@ -28,12 +28,12 @@ namespace ComposerXECommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 gccVersion = process.StandardOutput.ReadToEnd();
@@ -62,12 +62,12 @@ namespace ComposerXECommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to execute '{0}'", processStartInfo.FileName), false);
+                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 string details = process.StandardError.ReadToEnd();
@@ -156,7 +156,7 @@ namespace ComposerXECommon
     
                 if (!System.IO.Directory.Exists(gccIncludeFolder))
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFolder), false);
+                    throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
                 }
                 includePaths.Add(gccIncludeFolder);
 
@@ -166,7 +166,7 @@ namespace ComposerXECommon
                     // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
                     if (!System.IO.Directory.Exists(gccIncludeFixedFolder))
                     {
-                        throw new Opus.Core.Exception(System.String.Format("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder), false);
+                        throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder);
                     }
                     includePaths.Add(gccIncludeFixedFolder);
                 }

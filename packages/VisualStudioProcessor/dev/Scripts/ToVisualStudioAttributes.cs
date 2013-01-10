@@ -23,7 +23,7 @@ namespace VisualStudioProcessor
                     IVisualStudioDelegate data = option.PrivateData as IVisualStudioDelegate;
                     if (null == data)
                     {
-                        throw new Opus.Core.Exception(System.String.Format("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString()));
+                        throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString());
                     }
 
                     Delegate visualStudioDelegate = data.VisualStudioProjectDelegate;
@@ -32,7 +32,7 @@ namespace VisualStudioProcessor
                         if (null != visualStudioDelegate.Target)
                         {
                             // Not a requirement, but just a check
-                            throw new Opus.Core.Exception(System.String.Format("Delegate for '{0}' should be static", optionName));
+                            throw new Opus.Core.Exception("Delegate for '{0}' should be static", optionName);
                         }
 
                         VisualStudioProcessor.ToolAttributeDictionary dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);
@@ -44,7 +44,7 @@ namespace VisualStudioProcessor
                 }
                 else
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Archiver option '{0}' is not set up for VisualStudio project translation", optionName));
+                    throw new Opus.Core.Exception("Archiver option '{0}' is not set up for VisualStudio project translation", optionName);
                 }
             }
 

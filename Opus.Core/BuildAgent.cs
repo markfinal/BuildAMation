@@ -56,8 +56,7 @@ namespace Opus.Core
 
             if (owningNode != node)
             {
-                throw new Exception(System.String.Format("Node '{0}' has a module with different node ownership '{1}'. That should not be possible",
-                                    node.UniqueModuleName, owningNode.UniqueModuleName), false);
+                throw new Exception("Node '{0}' has a module with different node ownership '{1}'. That should not be possible", node.UniqueModuleName, owningNode.UniqueModuleName);
             }
 
             System.Reflection.MethodInfo buildFunction = node.BuildFunction;
@@ -68,12 +67,12 @@ namespace Opus.Core
             }
             catch (Core.Exception exception)
             {
-                Exception.DisplayException(exception, System.String.Format("Build function '{0}' threw an exception", buildFunction.ToString()));
+                Exception.DisplayException(exception, "Build function '{0}' threw an exception", buildFunction.ToString());
                 arguments[1] = false;
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                Exception.DisplayException(exception, System.String.Format("Build function '{0}' error", buildFunction.ToString()));
+                Exception.DisplayException(exception, "Build function '{0}' error", buildFunction.ToString());
                 arguments[1] = false;
             }
             bool success = (bool)arguments[1];

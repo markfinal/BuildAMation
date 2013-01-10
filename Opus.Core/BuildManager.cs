@@ -44,7 +44,7 @@ namespace Opus.Core
                 schedulerType = State.ScriptAssembly.GetType(State.SchedulerType);
                 if (null == schedulerType)
                 {
-                    throw new Exception(System.String.Format("Scheduler type '{0}' not found in the Opus.Core assembly, nor the script assembly", State.SchedulerType), false);
+                    throw new Exception("Scheduler type '{0}' not found in the Opus.Core assembly, nor the script assembly", State.SchedulerType);
                 }
             }
             TypeUtilities.CheckTypeImplementsInterface(schedulerType, typeof(Core.IBuildScheduler));
@@ -282,7 +282,7 @@ namespace Opus.Core
                     }
                     if (null == outputOutputQueueData)
                     {
-                        throw new Exception(System.String.Format("Output Queue contained a null reference; there was {0} items before the last dequeue", outputQueue.Count + 1), false);
+                        throw new Exception("Output Queue contained a null reference; there was {0} items before the last dequeue", outputQueue.Count + 1);
                     }
 
                     bool preamble = false;

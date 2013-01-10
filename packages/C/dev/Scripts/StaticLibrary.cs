@@ -34,7 +34,7 @@ namespace C
                     Opus.Core.IModule module = fieldInfo.GetValue(this) as Opus.Core.IModule;
                     if (null == module)
                     {
-                        throw new Opus.Core.Exception(System.String.Format("Field '{0}', marked with Opus.Core.SourceFiles attribute, must be derived from type Core.IModule", fieldInfo.Name));
+                        throw new Opus.Core.Exception("Field '{0}', marked with Opus.Core.SourceFiles attribute, must be derived from type Core.IModule", fieldInfo.Name);
                     }
                     collection.Add(module);
                 }

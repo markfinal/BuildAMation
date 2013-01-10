@@ -36,7 +36,7 @@ namespace QtCommon
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -61,7 +61,7 @@ namespace QtCommon
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -95,7 +95,7 @@ namespace QtCommon
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
-                throw new Opus.Core.Exception(System.String.Format("Unable to locate package '{0}'", owner.GetType().Namespace), false);
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
             string packagePath = package.Identifier.Path;
@@ -108,7 +108,7 @@ namespace QtCommon
             Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             if (filePaths.Count != 1)
             {
-                throw new Opus.Core.Exception(System.String.Format("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n')), false);
+                throw new Opus.Core.Exception("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n'));
             }
 
             string pathToFind = filePaths[0];
