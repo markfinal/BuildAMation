@@ -188,7 +188,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 }
                 else
                 {
-                    throw new Exception(System.String.Format("Unrecognized argument '{0}'", arg));
+                    throw new Exception("Unrecognized argument '{0}'", arg);
                 }
             }
 
@@ -299,7 +299,7 @@ namespace OpusOptionInterfacePropertyGenerator
         {
             if (!System.IO.File.Exists(filename))
             {
-                throw new Exception(System.String.Format("File '{0}' does not exist", filename));
+                throw new Exception("File '{0}' does not exist", filename);
             }
             System.Console.WriteLine("\nDelegate to read: '{0}'", filename);
 
@@ -318,7 +318,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 string[] namespaceStrings = line.Split(new char[] { ' ' });
                 if (!namespaceStrings[0].Equals("namespace"))
                 {
-                    throw new Exception(System.String.Format("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]));
+                    throw new Exception("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]);
                 }
                 string namespaceName = namespaceStrings[1];
                 System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
@@ -393,7 +393,7 @@ namespace OpusOptionInterfacePropertyGenerator
             {
                 if (!System.IO.File.Exists(inputPath))
                 {
-                    throw new Exception(System.String.Format("Input file '{0}' does not exist", inputPath));
+                    throw new Exception("Input file '{0}' does not exist", inputPath);
                 }
                 System.Console.WriteLine("\nInterface to read: '{0}'", inputPath);
 
@@ -411,7 +411,7 @@ namespace OpusOptionInterfacePropertyGenerator
                     string[] namespaceStrings = line.Split(new char[] { ' ' });
                     if (!namespaceStrings[0].Equals("namespace"))
                     {
-                        throw new Exception(System.String.Format("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]));
+                        throw new Exception("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]);
                     }
                     string namespaceName = namespaceStrings[1];
                     System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
@@ -498,7 +498,7 @@ namespace OpusOptionInterfacePropertyGenerator
                         }
                         else
                         {
-                            throw new Exception(System.String.Format("Unexpected string '{0}'", line));
+                            throw new Exception("Unexpected string '{0}'", line);
                         }
 
                         line = ReadLine(reader);
@@ -514,7 +514,7 @@ namespace OpusOptionInterfacePropertyGenerator
                         }
                         else
                         {
-                            throw new Exception(System.String.Format("Unexpected string '{0}'", line));
+                            throw new Exception("Unexpected string '{0}'", line);
                         }
 
                         // closing property scope
