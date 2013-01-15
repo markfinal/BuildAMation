@@ -13,7 +13,7 @@ namespace MakeFileBuilder
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
             Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             C.ICCompilerOptions compilerOptions = objectFileOptions as C.ICCompilerOptions;

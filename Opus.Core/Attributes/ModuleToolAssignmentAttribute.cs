@@ -8,12 +8,12 @@ namespace Opus.Core
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public sealed class ModuleToolAssignmentAttribute : System.Attribute
     {
-        public ModuleToolAssignmentAttribute(System.Type toolchainType)
+        public ModuleToolAssignmentAttribute(System.Type toolType)
         {
-            this.ToolchainType = toolchainType;
+            this.ToolType = toolType;
         }
 
-        public System.Type ToolchainType
+        public System.Type ToolType
         {
             get;
             private set;

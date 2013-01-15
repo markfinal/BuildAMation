@@ -14,7 +14,7 @@ namespace VSSolutionBuilder
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
             var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolchainType;
+            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
             Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 
             IProject projectData = null;

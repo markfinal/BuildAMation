@@ -175,7 +175,7 @@ namespace Opus.Core
                 throw new Exception("There is more than one tool associated with this module '{0}'", moduleType.ToString());
             }
 
-            System.Type toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolchainType;
+            System.Type toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolType;
             if (null == toolset)
             {
                 Opus.Core.Log.DebugMessage("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
