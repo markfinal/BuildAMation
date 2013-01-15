@@ -871,7 +871,13 @@ namespace Opus.Core
                 var actions = ActionManager.ScriptActions;
                 if ((null == actions) || (0 == actions.Count))
                 {
-                    throw new Exception("There are unprocessed arguments, but no actions to associate with them", false);
+                    System.Text.StringBuilder message = new System.Text.StringBuilder();
+                    message.AppendLine("There are unprocessed arguments, but no actions to associate with them:");
+                    foreach (var arg in State.LazyArguments.Keys)
+                    {
+                        message.AppendLine(arg);
+                    }
+                    throw new Exception(message.ToString());
                 }
 
                 StringArray lazyCommandsProcessed = new StringArray();
