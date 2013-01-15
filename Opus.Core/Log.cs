@@ -36,6 +36,18 @@ namespace Opus.Core
         }
 
         /// <summary>
+        /// Escapes invalid characters to use as a string format.
+        /// </summary>
+        /// <param name="incoming">Original string</param>
+        /// <returns>Escaped string</returns>
+        private static string EscapeString(string incoming)
+        {
+            string escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([^[0-9]]*)|{$", @"{{$1");
+            escapedText = System.Text.RegularExpressions.Regex.Replace(escapedText, @"^}|([^[0-9]]*)}", @"$1}}");
+            return escapedText;
+        }
+
+        /// <summary>
         /// Log a message, either to the debugger output window or the console.
         /// </summary>
         /// <param name="level">Verbose level to use</param>
@@ -46,7 +58,7 @@ namespace Opus.Core
             if (State.VerbosityLevel >= level)
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(format, args);
+                formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
         }
@@ -54,7 +66,7 @@ namespace Opus.Core
         public static void MessageAll(string format, params object[] args)
         {
             System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-            formattedMessage.AppendFormat(format, args);
+            formattedMessage.AppendFormat(EscapeString(format), args);
             Message(formattedMessage.ToString(), false);
         }
 
@@ -63,7 +75,7 @@ namespace Opus.Core
             if (State.VerbosityLevel >= EVerboseLevel.Info)
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(format, args);
+                formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
         }
@@ -73,7 +85,7 @@ namespace Opus.Core
             if (State.VerbosityLevel >= EVerboseLevel.Detail)
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(format, args);
+                formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
         }
@@ -83,7 +95,7 @@ namespace Opus.Core
             if (EVerboseLevel.Full == State.VerbosityLevel)
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(format, args);
+                formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
         }
@@ -91,7 +103,7 @@ namespace Opus.Core
         public static void ErrorMessage(string format, params object[] args)
         {
             System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-            formattedMessage.AppendFormat("ERROR: " + format, args);
+            formattedMessage.AppendFormat(EscapeString("ERROR: " + format), args);
             Message(formattedMessage.ToString(), true);
         }
 
@@ -101,7 +113,7 @@ namespace Opus.Core
             if (State.VerbosityLevel > EVerboseLevel.Detail)
             {
                 System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(format, args);
+                formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
         }

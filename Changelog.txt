@@ -1,3 +1,5 @@
+15-Jan-2013 Opus.Core.Log now copes with unescaped braces in the format string passed. Previously this would result in an exception thrown, but could be caused by C code output from compiler warnings/errors.
+
 09-Jan-2013 Opus.Core.IAction now also inherits from System.ICloneable.
 
 04-Jan-2013 Opus.Core.IToolEnvironmentVariables.Variables now takes a BaseTarget rather than a Target.
