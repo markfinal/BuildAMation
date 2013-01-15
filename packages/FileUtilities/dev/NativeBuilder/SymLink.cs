@@ -26,13 +26,13 @@ namespace NativeBuilder
                 {
                     if (null != symlinkTarget)
                     {
-                        throw new Opus.Core.Exception("Can only specify one target for a symlink", false);
+                        throw new Opus.Core.Exception("Can only specify one target for a symlink");
                     }
 
                     Opus.Core.File file = field.GetValue(symLink) as Opus.Core.File;
                     if (null == file)
                     {
-                        throw new Opus.Core.Exception("Target can only be of type Opus.Core.File", false);
+                        throw new Opus.Core.Exception("Target can only be of type Opus.Core.File");
                     }
 
                     symlinkTarget = file.AbsolutePath;
@@ -41,7 +41,7 @@ namespace NativeBuilder
 
             if (null == symlinkTarget)
             {
-                throw new Opus.Core.Exception("No symlink target specified", false);
+                throw new Opus.Core.Exception("No symlink target specified");
             }
 
             Opus.Core.BaseOptionCollection symLinkOptions = symLinkModule.Options;

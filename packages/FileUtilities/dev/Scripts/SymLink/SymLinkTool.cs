@@ -20,7 +20,7 @@ namespace FileUtilities
                 return "ln";
             }
 
-            throw new Opus.Core.Exception("Unsupported platform for sym links", false);
+            throw new Opus.Core.Exception("Unsupported platform for sym links");
         }
 
         #endregion

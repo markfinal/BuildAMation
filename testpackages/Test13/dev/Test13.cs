@@ -132,7 +132,7 @@ namespace Test13
                 Opus.Core.ModuleUtilities.GetModuleNoToolchain(typeof(Qt.Qt), target) as Qt.Qt;
             if (null == thirdPartyModule)
             {
-                throw new Opus.Core.Exception("Cannot locate Qt module instance", false);
+                throw new Opus.Core.Exception("Cannot locate Qt module instance");
             }
 
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))

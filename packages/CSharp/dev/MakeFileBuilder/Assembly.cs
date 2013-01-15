@@ -115,7 +115,7 @@ namespace MakeFileBuilder
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one application definition", false);
+                                throw new Opus.Core.Exception("There can be only one application definition");
                             }
 
                             foreach (string absolutePath in sourceCollection)
@@ -175,7 +175,7 @@ namespace MakeFileBuilder
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one page file", false);
+                                throw new Opus.Core.Exception("There can be only one page file");
                             }
 
                             foreach (string absolutePath in sourceCollection)

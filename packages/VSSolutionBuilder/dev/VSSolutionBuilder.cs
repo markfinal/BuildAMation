@@ -72,7 +72,7 @@ namespace VSSolutionBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Only Win32 and Win64 are supported platforms for VisualStudio projects", false);
+                throw new Opus.Core.Exception("Only Win32 and Win64 are supported platforms for VisualStudio projects");
             }
 
             return platform;

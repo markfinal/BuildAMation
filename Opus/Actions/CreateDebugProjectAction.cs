@@ -40,7 +40,7 @@ namespace Opus
 
             if (0 == Core.State.PackageInfo.Count)
             {
-                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
+                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
             Core.PackageUtilities.ProcessLazyArguments();

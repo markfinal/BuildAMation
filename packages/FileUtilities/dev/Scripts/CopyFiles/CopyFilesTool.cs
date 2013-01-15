@@ -22,7 +22,7 @@ namespace FileUtilities
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported platform for CopyFiles", false);
+                throw new Opus.Core.Exception("Unsupported platform for CopyFiles");
             }
             return executable;
         }

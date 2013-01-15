@@ -192,7 +192,7 @@ namespace Opus.Core
             {
                 if (null == this.absolutePath)
                 {
-                    throw new Exception("File path has not been set", false);
+                    throw new Exception("File path has not been set");
                 }
 
                 return this.absolutePath;

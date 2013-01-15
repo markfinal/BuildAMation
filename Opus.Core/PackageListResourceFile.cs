@@ -11,7 +11,7 @@ namespace Opus.Core
         {
             if (0 == Core.State.PackageInfo.Count)
             {
-                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
+                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
@@ -39,7 +39,7 @@ namespace Opus.Core
         {
             if (0 == Core.State.PackageInfo.Count)
             {
-                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.", false);
+                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
             Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;

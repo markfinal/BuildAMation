@@ -172,7 +172,7 @@ namespace Opus.Core
                 {
                     if (key.GetType() != filterType)
                     {
-                        throw new Exception("Incompatible enum type comparison", false);
+                        throw new Exception("Incompatible enum type comparison");
                     }
 
                     int keyValue = System.Convert.ToInt32(key);
@@ -193,7 +193,7 @@ namespace Opus.Core
                 {
                     if (o.Key.GetType() != filterType)
                     {
-                        throw new Exception("Incompatible enum type comparison", false);
+                        throw new Exception("Incompatible enum type comparison");
                     }
 
                     int keyValue = System.Convert.ToInt32(o.Key);

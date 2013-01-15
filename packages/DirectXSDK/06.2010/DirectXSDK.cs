@@ -16,7 +16,7 @@ namespace DirectXSDK
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                throw new Opus.Core.Exception("DirectX package only valid on Windows", false);
+                throw new Opus.Core.Exception("DirectX package only valid on Windows");
             }
 
             const string registryPath = @"Microsoft\DirectX\Microsoft DirectX SDK (June 2010)";
@@ -24,7 +24,7 @@ namespace DirectXSDK
             {
                 if (null == dxInstallLocation)
                 {
-                    throw new Opus.Core.Exception("DirectX SDK has not been installed on this machine", false);
+                    throw new Opus.Core.Exception("DirectX SDK has not been installed on this machine");
                 }
 
                 installLocation = dxInstallLocation.GetValue("InstallPath") as string;

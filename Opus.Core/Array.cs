@@ -37,7 +37,7 @@ namespace Opus.Core
         {
             if (this == array)
             {
-                throw new Exception("Cannot add an array to itself", false);
+                throw new Exception("Cannot add an array to itself");
             }
 
             foreach (T item in array)

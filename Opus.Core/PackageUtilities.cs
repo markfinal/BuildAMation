@@ -97,12 +97,12 @@ namespace Opus.Core
             PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
             if (null == id)
             {
-                throw new Exception("No valid package found in the working directory", false);
+                throw new Exception("No valid package found in the working directory");
             }
 
             if (!isWorkingPackageWellDefined)
             {
-                throw new Exception("Working directory package is not well defined", false);
+                throw new Exception("Working directory package is not well defined");
             }
 
             string definitionPathName = PackageDefinitionPathName(id);
@@ -136,12 +136,12 @@ namespace Opus.Core
                 PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
                 if (null == id)
                 {
-                    throw new Exception("No valid package found in the working directory", false);
+                    throw new Exception("No valid package found in the working directory");
                 }
 
                 if (!isWorkingPackageWellDefined)
                 {
-                    throw new Exception("Working directory package is not well define", false);
+                    throw new Exception("Working directory package is not well define");
                 }
 
                 State.DependentPackageList.Add(id);
@@ -340,7 +340,7 @@ namespace Opus.Core
 
             if (0 == State.PackageInfo.Count)
             {
-                throw new Exception("No packages were identified to build", false);
+                throw new Exception("No packages were identified to build");
             }
 
             Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
@@ -362,7 +362,7 @@ namespace Opus.Core
             // validate build root
             if (null == State.BuildRoot)
             {
-                throw new Exception("Build root has not been specified", false);
+                throw new Exception("Build root has not been specified");
             }
 
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
@@ -554,7 +554,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("C# compiler does not support Resources", false);
+                    throw new Exception("C# compiler does not support Resources");
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
@@ -743,7 +743,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("C# compiler does not support Resources", false);
+                    throw new Exception("C# compiler does not support Resources");
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
@@ -785,11 +785,11 @@ namespace Opus.Core
 
             if (null == State.BuildPlatforms)
             {
-                throw new Exception("No build platforms were specified", false);
+                throw new Exception("No build platforms were specified");
             }
             if (null == State.BuildConfigurations)
             {
-                throw new Exception("No build configurations were specified", false);
+                throw new Exception("No build configurations were specified");
             }
 
             DependencyGraph dependencyGraph = new DependencyGraph();

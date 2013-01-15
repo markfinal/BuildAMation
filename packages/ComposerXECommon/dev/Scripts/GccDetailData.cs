@@ -15,11 +15,11 @@ namespace ComposerXECommon
         {
             if (null == version)
             {
-                throw new Opus.Core.Exception("Unable to determine Gcc version", false);
+                throw new Opus.Core.Exception("Unable to determine Gcc version");
             }
             if (null == target)
             {
-                throw new Opus.Core.Exception("Unable to determine Gcc target", false);
+                throw new Opus.Core.Exception("Unable to determine Gcc target");
             }
 
             this.Version = version;

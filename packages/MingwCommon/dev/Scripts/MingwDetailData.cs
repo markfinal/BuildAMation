@@ -15,11 +15,11 @@ namespace MingwCommon
         {
             if (null == version)
             {
-                throw new Opus.Core.Exception("Unable to determine Mingw version", false);
+                throw new Opus.Core.Exception("Unable to determine Mingw version");
             }
             if (null == target)
             {
-                throw new Opus.Core.Exception("Unable to determine Mingw target", false);
+                throw new Opus.Core.Exception("Unable to determine Mingw target");
             }
 
             this.Version = version;

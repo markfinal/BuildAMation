@@ -491,7 +491,7 @@ namespace Opus.Core
                     string packageNameAttribute = "Name";
                     if (!xmlReader.MoveToAttribute(packageNameAttribute))
                     {
-                        throw new Exception("Required attribute 'Name' of 'Package' node missing", false);
+                        throw new Exception("Required attribute 'Name' of 'Package' node missing");
                     }
                     string packageName = xmlReader.Value;
 
@@ -511,7 +511,7 @@ namespace Opus.Core
                                 string packageVersionIdAttribute = "Id";
                                 if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
                                 {
-                                    throw new Exception("Required 'Id' attribute of 'Version' node missing", false);
+                                    throw new Exception("Required 'Id' attribute of 'Version' node missing");
                                 }
                                 string packageVersion = xmlReader.Value;
 
@@ -530,7 +530,7 @@ namespace Opus.Core
                         }
                         else
                         {
-                            throw new Exception("Unexpected element", false);
+                            throw new Exception("Unexpected element");
                         }
                     }
                 }
@@ -567,7 +567,7 @@ namespace Opus.Core
                         string assemblyNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:OpusAssembly' node missing", false);
+                            throw new Exception("Required 'Name' attribute of 'Opus:OpusAssembly' node missing");
                         }
                         string assemblyName = xmlReader.Value;
 
@@ -607,7 +607,7 @@ namespace Opus.Core
                         string assemblyNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing", false);
+                            throw new Exception("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing");
                         }
                         string assemblyName = xmlReader.Value;
 
@@ -656,7 +656,7 @@ namespace Opus.Core
                         string platformNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(platformNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:Platform' node missing", false);
+                            throw new Exception("Required 'Name' attribute of 'Opus:Platform' node missing");
                         }
 
                         string platformName = xmlReader.Value;
@@ -707,7 +707,7 @@ namespace Opus.Core
                         string defineNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(defineNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing", false);
+                            throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing");
                         }
 
                         string definition = xmlReader.Value;
@@ -786,7 +786,7 @@ namespace Opus.Core
 
                     if (!xmlReader.EOF)
                     {
-                        throw new Exception("Failed to read all of file", false);
+                        throw new Exception("Failed to read all of file");
                     }
                 }
             }

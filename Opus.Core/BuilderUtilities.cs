@@ -32,12 +32,12 @@ namespace Opus.Core
         {
             if (null == State.BuilderName)
             {
-                throw new Exception("Name of the Builder has not been specified", false);
+                throw new Exception("Name of the Builder has not been specified");
             }
 
             if (null == State.ScriptAssembly)
             {
-                throw new Exception("Script assembly has not been set", false);
+                throw new Exception("Script assembly has not been set");
             }
 
             IBuilder builderInstance = null;

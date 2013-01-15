@@ -230,7 +230,7 @@ namespace VSSolutionBuilder
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one application definition", false);
+                                throw new Opus.Core.Exception("There can be only one application definition");
                             }
 
                             foreach (string absolutePath in sourceCollection)

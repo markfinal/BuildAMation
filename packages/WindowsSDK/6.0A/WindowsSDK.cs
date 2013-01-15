@@ -31,7 +31,7 @@ namespace WindowsSDK
                     Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", "visualc") as Opus.Core.IToolset;
                     if (null == toolset)
                     {
-                        throw new Opus.Core.Exception("Toolset information for 'visualc' is missing", false);
+                        throw new Opus.Core.Exception("Toolset information for 'visualc' is missing");
                     }
 
                     string platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");

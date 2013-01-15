@@ -72,7 +72,7 @@ namespace Opus
                 {
                     if (null != responseFileArgument)
                     {
-                        throw new Core.Exception("Only one response file can be specified", false);
+                        throw new Core.Exception("Only one response file can be specified");
                     }
 
                     responseFileArgument = arg;

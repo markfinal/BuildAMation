@@ -25,7 +25,7 @@ namespace CodeGenTest
             C.LinkerOptionCollection options = module.Options as C.LinkerOptionCollection;
             if (null == options)
             {
-                throw new Opus.Core.Exception("CodeGeneratorTool options are not derived from C.LinkerOptionCollection", false);
+                throw new Opus.Core.Exception("CodeGeneratorTool options are not derived from C.LinkerOptionCollection");
             }
 
             string exe = options.OutputFilePath;

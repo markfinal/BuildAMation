@@ -49,7 +49,7 @@ namespace Opus.Core
 true);
             if (null == array || 0 == array.Length)
             {
-                throw new Exception("No toolchains were registered", false);
+                throw new Exception("No toolchains were registered");
             }
 
 #if DEBUG

@@ -26,7 +26,7 @@ namespace CodeGenTest2
             CSharp.OptionCollection options = module.Options as CSharp.OptionCollection;
             if (null == options)
             {
-                throw new Opus.Core.Exception("CodeGeneratorTool options are not derived from CSharp.OptionCollection", false);
+                throw new Opus.Core.Exception("CodeGeneratorTool options are not derived from CSharp.OptionCollection");
             }
 
             return options.OutputFilePath;

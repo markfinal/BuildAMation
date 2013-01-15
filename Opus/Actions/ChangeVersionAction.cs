@@ -43,11 +43,11 @@ namespace Opus
             SetDependentAction setDependentAction = Core.ActionManager.FindByType(typeof(SetDependentAction)) as SetDependentAction;
             if (null == setDependentAction)
             {
-                throw new Core.Exception("Unable to locate SetDependent action", false);
+                throw new Core.Exception("Unable to locate SetDependent action");
             }
             if (null == setDependentAction.DependentPackageAndVersion)
             {
-                throw new Core.Exception("Dependent package has not been set", false);
+                throw new Core.Exception("Dependent package has not been set");
             }
 
             Core.Log.DebugMessage("Dependent package is '{0}'", setDependentAction.DependentPackageAndVersion);
