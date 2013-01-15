@@ -10,6 +10,11 @@ namespace Opus.Core
     {
         public ModuleToolAssignmentAttribute(System.Type toolType)
         {
+            if (null == toolType)
+            {
+                throw new Exception("Tool type for module cannot be null");
+            }
+
             this.ToolType = toolType;
         }
 
