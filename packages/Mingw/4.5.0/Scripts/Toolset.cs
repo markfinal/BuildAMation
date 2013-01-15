@@ -52,7 +52,7 @@ namespace Mingw
             this.binPath = System.IO.Path.Combine(this.installPath, "bin");
             this.environment.Add(this.binPath);
 
-            this.details = MingwCommon.MingwDetailGatherer.DetermineSpecs(Opus.Core.Target.GetInstance(baseTarget, this));
+            this.details = MingwCommon.MingwDetailGatherer.DetermineSpecs(baseTarget, this);
         }
     }
 }
