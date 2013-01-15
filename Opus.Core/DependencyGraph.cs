@@ -297,7 +297,12 @@ namespace Opus.Core
                             System.Type nestedModuleType = nestedModule.GetType();
                             // TODO: the child index here might be a problem
                             string nestedModuleUniqueName = node.GetChildModuleName(nestedModuleType, childIndex);
-                            DependencyNode newNode = this.FindNodeForTargettedModule(nestedModuleUniqueName, node.Target);
+
+                            IToolset nestedToolset = ModuleUtilities.GetToolsetForModule(nestedModuleType);
+                            Target nestedTargetUsed = Target.GetInstance((BaseTarget)node.Target, nestedToolset);
+
+                            DependencyNode newNode = this.FindNodeForTargettedModule
+(nestedModuleUniqueName, nestedTargetUsed);
                             if (null != newNode)
                             {
                                 if (newNode.Rank < currentRank + 1)
@@ -312,9 +317,7 @@ namespace Opus.Core
                             }
                             else
                             {
-                                IToolset toolset = ModuleUtilities.GetToolsetForModule(nestedModule.GetType());
-                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, toolset);
-                                newNode = new DependencyNode(nestedModule, node, childTarget, childIndex, true);
+                                newNode = new DependencyNode(nestedModule, node, nestedTargetUsed, childIndex, true);
                                 this.AddDependencyNodeToCollection(newNode, currentRank + 1);
                             }
 

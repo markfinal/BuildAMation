@@ -142,7 +142,9 @@ namespace Opus.Core
 
                             if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                             {
-                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
+                                IToolset childToolset = ModuleUtilities.GetToolsetForModule(childType);
+                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
+                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, childTarget, depth + 1);
                                 owningNode.ExportedUpdatesAdded.Add(childType);
                             }
                         }
@@ -167,7 +169,9 @@ namespace Opus.Core
 
                             if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                             {
-                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
+                                IToolset childToolset = ModuleUtilities.GetToolsetForModule(childType);
+                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
+                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, childTarget, depth + 1);
                                 owningNode.ExportedUpdatesAdded.Add(childType);
                             }
                         }
