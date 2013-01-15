@@ -4,6 +4,9 @@
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Clang">
+      <Opus:Version Id="3.1" />
+    </Opus:Package>
     <Opus:Package Name="ComposerXE">
       <Opus:Version Id="12" />
     </Opus:Package>
