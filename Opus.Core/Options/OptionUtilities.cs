@@ -32,7 +32,7 @@ namespace Opus.Core
                         IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
                         if (null == moduleContainingMethod)
                         {
-                            throw new Opus.Core.Exception("While adding option update delegate '{0}', cannot find source module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString());
+                            throw new Exception("While adding option update delegate '{0}', cannot find module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString());
                         }
                         module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), moduleContainingMethod, method, true) as UpdateOptionCollectionDelegate;
                     }
@@ -70,18 +70,18 @@ namespace Opus.Core
 
             if (null != node.ExternalDependents)
             {
-                foreach (Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (DependencyNode dependentNode in node.ExternalDependents)
                 {
-                    Core.Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
+                    Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
 
                     AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
 
                     if (null != dependentNode.Children)
                     {
-                        //Core.IModule dependentModule = dependentNode.Module;
-                        foreach (Core.DependencyNode childOfDependent in dependentNode.Children)
+                        //IModule dependentModule = dependentNode.Module;
+                        foreach (DependencyNode childOfDependent in dependentNode.Children)
                         {
-                            Core.IModule childModule = childOfDependent.Module;
+                            IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
 
                             if (!owningNode.ExportedUpdatesAdded.Contains(childType))
@@ -127,17 +127,17 @@ namespace Opus.Core
 
             if (null != node.ExternalDependents)
             {
-                foreach (Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (DependencyNode dependentNode in node.ExternalDependents)
                 {
-                    Core.Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
+                    Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
 
                     AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
 
                     if (null != dependentNode.Children)
                     {
-                        foreach (Core.DependencyNode childOfDependent in dependentNode.Children)
+                        foreach (DependencyNode childOfDependent in dependentNode.Children)
                         {
-                            Core.IModule childModule = childOfDependent.Module;
+                            IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
 
                             if (!owningNode.ExportedUpdatesAdded.Contains(childType))
@@ -152,17 +152,17 @@ namespace Opus.Core
 
             if (null != node.RequiredDependents)
             {
-                foreach (Core.DependencyNode requiredNode in node.RequiredDependents)
+                foreach (DependencyNode requiredNode in node.RequiredDependents)
                 {
-                    Core.Log.DebugMessage("Required dependent '{0}' of '{1}'", requiredNode.UniqueModuleName, node.UniqueModuleName);
+                    Log.DebugMessage("Required dependent '{0}' of '{1}'", requiredNode.UniqueModuleName, node.UniqueModuleName);
 
                     AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, requiredNode, depth + 1);
 
                     if (null != requiredNode.Children)
                     {
-                        foreach (Core.DependencyNode childOfDependent in requiredNode.Children)
+                        foreach (DependencyNode childOfDependent in requiredNode.Children)
                         {
-                            Core.IModule childModule = childOfDependent.Module;
+                            IModule childModule = childOfDependent.Module;
                             System.Type childType = childModule.GetType();
 
                             if (!owningNode.ExportedUpdatesAdded.Contains(childType))
@@ -176,7 +176,7 @@ namespace Opus.Core
             }
         }
 
-        private static void ProcessFieldAttributes(Core.IModule module, Core.Target target)
+        private static void ProcessFieldAttributes(IModule module, Target target)
         {
             System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.NonPublic |
                                                           System.Reflection.BindingFlags.Public |
@@ -196,10 +196,10 @@ namespace Opus.Core
             }
         }
 
-        public static OptionCollectionType CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(Core.DependencyNode node) where OptionCollectionType : Core.BaseOptionCollection
+        public static OptionCollectionType CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(DependencyNode node) where OptionCollectionType : BaseOptionCollection
         {
-            Core.BaseModule module = node.Module;
-            Core.Target target = node.Target;
+            BaseModule module = node.Module;
+            Target target = node.Target;
 
             ProcessFieldAttributes(module, target);
 
@@ -215,13 +215,13 @@ namespace Opus.Core
             {
                 Log.DebugMessage("Creating option collection for node '{0}'", node.UniqueModuleName);
 
-                options = Core.OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
+                options = OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
 
                 // apply export and local
                 AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, node, 0);
 
                 // update option collections for the current "node group" (i.e. the top-most node of this type, and it's nested objects)
-                Core.DependencyNode parentNode = node.Parent;
+                DependencyNode parentNode = node.Parent;
                 while (parentNode != null)
                 {
                     // TODO: I don't know if this is needed or not
