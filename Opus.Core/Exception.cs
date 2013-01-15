@@ -41,16 +41,6 @@ namespace Opus.Core
         /// Initializes a new instance of the Exception class.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        /// <param name="requiresStackTrace">True if a stack trace is required.</param>
-        public Exception(string message, bool requiresStackTrace)
-            : base(message)
-        {
-        }
- 
-        /// <summary>
-        /// Initializes a new instance of the Exception class.
-        /// </summary>
-        /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
         public Exception(string message, System.Exception innerException)
             : base(message, innerException)
