@@ -346,12 +346,16 @@ namespace Opus.Core
             Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
         }
 
-        private static string GetPackageHash(StringArray sourceCode)
+        private static string GetPackageHash(StringArray sourceCode, StringArray definitions)
         {
             int hashCode = 0;
             foreach (string source in sourceCode)
             {
                 hashCode ^= source.GetHashCode();
+            }
+            foreach (string define in definitions)
+            {
+                hashCode ^= define.GetHashCode();
             }
             string hash = hashCode.ToString();
             return hash;
@@ -430,6 +434,13 @@ namespace Opus.Core
             }
 
             //sourceCode.Sort();
+
+            // add/remove other definitions
+            definitions.Add(OpusVersionDefineForCompiler);
+            definitions.Add(OpusHostPlatformForCompiler);
+            // command line definitions
+            definitions.AddRange(State.PackageCompilationDefines);
+            definitions.RemoveAll(State.PackageCompilationUndefines);
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();
@@ -443,7 +454,7 @@ namespace Opus.Core
 
             // can an existing assembly be reused?
             string hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
-            string thisHashCode = GetPackageHash(sourceCode);
+            string thisHashCode = GetPackageHash(sourceCode, definitions);
             if (State.CacheAssembly)
             {
                 if (System.IO.File.Exists(hashPathName))
@@ -518,19 +529,7 @@ namespace Opus.Core
                 }
 
                 // define strings
-                {
-                    StringArray allDefines = new StringArray();
-                    allDefines.Add(OpusVersionDefineForCompiler);
-                    allDefines.Add(OpusHostPlatformForCompiler);
-                    // custom definitions from all the packages in the compilation
-                    allDefines.AddRange(definitions);
-                    // command line definitions
-                    allDefines.AddRange(State.PackageCompilationDefines);
-                    allDefines.Sort();
-                    allDefines.RemoveAll(State.PackageCompilationUndefines);
-
-                    compilerOptions += " /define:" + allDefines.ToString(';');
-                }
+                compilerOptions += " /define:" + definitions.ToString(';');
 
                 compilerParameters.CompilerOptions = compilerOptions;
                 compilerParameters.EmbeddedResources.Add(resourceFilePathName);
