@@ -864,7 +864,7 @@ namespace Opus.Core
             assemblyLoadProfile.StopProfile();
         }
 
-        public static void ProcessLazyArguments()
+        public static void ProcessLazyArguments(bool fatal)
         {
             if (State.LazyArguments.Count > 0)
             {
@@ -877,7 +877,16 @@ namespace Opus.Core
                     {
                         message.AppendLine(arg);
                     }
-                    throw new Exception(message.ToString());
+
+                    if (fatal)
+                    {
+                        throw new Exception(message.ToString());
+                    }
+                    else
+                    {
+                        Log.Info(message.ToString());
+                        return;
+                    }
                 }
 
                 StringArray lazyCommandsProcessed = new StringArray();
@@ -923,7 +932,7 @@ namespace Opus.Core
             }
         }
 
-        public static void HandleUnprocessedArguments()
+        public static void HandleUnprocessedArguments(bool fatal)
         {
             if (State.LazyArguments.Count > 0)
             {
@@ -932,7 +941,14 @@ namespace Opus.Core
                 {
                     message += "\t'" + command + "'\n";
                 }
-                throw new Exception(message, false);
+                if (fatal)
+                {
+                    throw new Exception(message, false);
+                }
+                else
+                {
+                    Log.Info(message);
+                }
             }
         }
 

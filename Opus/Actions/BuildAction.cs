@@ -50,11 +50,11 @@ namespace Opus
 
                 Core.TimeProfile additionalArgumentProfile = new Core.TimeProfile(Core.ETimingProfiles.AdditionalArgumentProcessing);
                 additionalArgumentProfile.StartProfile();
-                Core.PackageUtilities.ProcessLazyArguments();
-                Core.PackageUtilities.HandleUnprocessedArguments();
+                bool fatal = true;
+                Core.PackageUtilities.ProcessLazyArguments(fatal);
+                Core.PackageUtilities.HandleUnprocessedArguments(fatal);
                 Core.State.ShowTimingStatistics = true;
                 additionalArgumentProfile.StopProfile();
-
 
                 if (!Core.PackageUtilities.ExecutePackageAssembly())
                 {
