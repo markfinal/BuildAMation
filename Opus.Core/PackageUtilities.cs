@@ -650,6 +650,12 @@ namespace Opus.Core
                 ++packageIndex;
             }
 
+            // add/remove other definitions
+            definitions.Add(OpusVersionDefineForCompiler);
+            definitions.Add(OpusHostPlatformForCompiler);
+            // command line definitions
+            definitions.AddRange(State.PackageCompilationDefines);
+            definitions.RemoveAll(State.PackageCompilationUndefines);
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();
@@ -706,19 +712,7 @@ namespace Opus.Core
                 }
 
                 // define strings
-                {
-                    StringArray allDefines = new StringArray();
-                    allDefines.Add(OpusVersionDefineForCompiler);
-                    allDefines.Add(OpusHostPlatformForCompiler);
-                    // custom definitions from all the packages in the compilation
-                    allDefines.AddRange(definitions);
-                    // command line definitions
-                    allDefines.AddRange(State.PackageCompilationDefines);
-                    allDefines.Sort();
-                    allDefines.RemoveAll(State.PackageCompilationUndefines);
-
-                    compilerOptions += " /define:" + allDefines.ToString(';');
-                }
+                compilerOptions += " /define:" + definitions.ToString(';');
 
                 compilerParameters.CompilerOptions = compilerOptions;
                 compilerParameters.EmbeddedResources.Add(resourceFilePathName);
