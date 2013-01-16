@@ -943,7 +943,7 @@ namespace Opus.Core
                 }
                 if (fatal)
                 {
-                    throw new Exception(message, false);
+                    throw new Exception(message);
                 }
                 else
                 {

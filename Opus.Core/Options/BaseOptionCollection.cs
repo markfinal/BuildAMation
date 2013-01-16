@@ -48,7 +48,7 @@ namespace Opus.Core
                     {
                         message += System.String.Format("\t'{0}'\n", keyName);
                     }
-                    throw new Exception(message, false);
+                    throw new Exception(message);
                 }
 
                 return this.table[key];
