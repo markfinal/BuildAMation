@@ -33,8 +33,6 @@ namespace Opus.Core
                     return null;
                 }
 
-                Opus.Core.Log.DebugMessage("Looking for toolset for tooltype '{0}'", toolType.ToString());
-
                 var providers = toolType.GetCustomAttributes(typeof(AssignToolsetProviderAttribute), false);
                 if (0 == providers.Length)
                 {
@@ -48,7 +46,7 @@ namespace Opus.Core
                 }
 
                 IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
-                Opus.Core.Log.DebugMessage("\tfound '{0}'", toolset);
+                Opus.Core.Log.DebugMessage("Toolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
                 return toolset;
             }
 
