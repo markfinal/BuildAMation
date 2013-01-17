@@ -1,3 +1,5 @@
+17-Jan-2013 Show definition file action identifies default package versions with an asterisk.
+
 17-Jan-2013 Added -setdefaultversion=<true|false> command line action, which requires -dependent=<package> to be defined too.
 
 17-Jan-2013 Changed the Opus definition file schema so that package <version> elements can contain an optional Boolean 'Default' attribute, which indicates a default version of that package. If there are multiple versions of that package, this is chosen. Only one default version may be set per package. The default version in definition files can be overridden on the command line with the -<packagename>.version=<versionnumber> action.
