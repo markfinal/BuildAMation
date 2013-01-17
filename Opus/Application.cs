@@ -155,6 +155,7 @@ namespace Opus
                         }
 
                         foundAction = true;
+                        Core.State.InvokedActions.Add(clone);
                         break;
                     }
                 }

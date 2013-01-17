@@ -89,6 +89,7 @@ namespace Opus.Core
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
             Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
+            Add<System.Collections.Generic.List<IAction>>("Build", "InvokedActions", new System.Collections.Generic.List<IAction>());
             Add<StringArray>("Build", "Platforms", null);
             Add<Array<EConfiguration>>("Build", "Configurations", null);
             Add<StringArray>("Build", "Modules", null);
@@ -455,6 +456,19 @@ namespace Opus.Core
             get
             {
                 return Get("Build", "LazyArguments") as System.Collections.Generic.Dictionary<string, string>;
+            }
+        }
+
+        public static System.Collections.Generic.List<IAction> InvokedActions
+        {
+            set
+            {
+                Set("Build", "InvokedActions", value);
+            }
+            
+            get
+            {
+                return Get("Build", "InvokedActions") as System.Collections.Generic.List<IAction>;
             }
         }
 

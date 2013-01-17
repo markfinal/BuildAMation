@@ -119,17 +119,17 @@ namespace Opus.Core
             }
         }
 
-        public static IAction FindByType(System.Type actionType)
+        public static Array<IAction> FindInvokedActionsByType(System.Type actionType)
         {
-            foreach (RegisterActionAttribute action in actions)
+            Array<IAction> array = new Array<IAction>();
+            foreach (IAction action in State.InvokedActions)
             {
-                if (action.Action.GetType() == actionType)
+                if (action.GetType() == actionType)
                 {
-                    return action.Action;
+                    array.Add(action);
                 }
             }
-
-            return null;
+            return array;
         }
     }
 }

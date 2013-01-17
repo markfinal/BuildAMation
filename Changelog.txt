@@ -1,3 +1,5 @@
+17-Jan-2013 Added Opus.Core.State.InvokedActions returning an array of IActions that were invoked (can be multiple instances). Added Opus.Core.ActionManager.FindInvokedActionsByType to identify invoked actions of a specific type.
+
 16-Jan-2013 Package hashing now includes the #defines passed to the compiler.
 
 15-Jan-2013 A null tool type cannot be passed to the constructor of Opus.Core.ModuleToolAssignmentAttribute.
