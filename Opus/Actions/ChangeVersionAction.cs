@@ -40,11 +40,16 @@ namespace Opus
 
         public bool Execute()
         {
-            SetDependentAction setDependentAction = Core.ActionManager.FindByType(typeof(SetDependentAction)) as SetDependentAction;
-            if (null == setDependentAction)
+            var setDependentActionArray = Core.ActionManager.FindInvokedActionsByType(typeof(SetDependentAction));
+            if (0 == setDependentActionArray.Count)
             {
                 throw new Core.Exception("Unable to locate SetDependent action");
             }
+            if (setDependentActionArray.Count > 1)
+            {
+                throw new Core.Exception("Multiple SetDependent actions were specified");
+            }
+            SetDependentAction setDependentAction = setDependentActionArray[0] as SetDependentAction;
             if (null == setDependentAction.DependentPackageAndVersion)
             {
                 throw new Core.Exception("Dependent package has not been set");
