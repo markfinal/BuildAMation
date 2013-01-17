@@ -8,5 +8,6 @@ int MyClass::CppLibraryFunction()
     }
     catch (...)
     {
+        return -1;
     }
 }
