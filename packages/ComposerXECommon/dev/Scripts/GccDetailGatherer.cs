@@ -41,10 +41,39 @@ namespace ComposerXECommon
                 gccVersion = gccVersion.Trim();
             }
 
+            // get target
+            string gccTarget = null;
+            {
+                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
+                processStartInfo.ErrorDialog = true;
+                processStartInfo.UseShellExecute = false;
+                processStartInfo.RedirectStandardOutput = true;
+                processStartInfo.Arguments = "-dumpmachine";
+
+                System.Diagnostics.Process process = null;
+                try
+                {
+                    process = System.Diagnostics.Process.Start(processStartInfo);
+                }
+                catch (System.ComponentModel.Win32Exception ex)
+                {
+                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                }
+
+                if (null == process)
+                {
+                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                }
+
+                gccTarget = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                gccTarget = gccTarget.Trim();
+            }
+
             // get paths and targets
             string pathPrefix = null;
             string gxxIncludeDir = null;
-            string gccTarget = null;
             string libDir = null;
             Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
             {
@@ -52,7 +81,7 @@ namespace ComposerXECommon
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
-                processStartInfo.RedirectStandardError = true;
+                processStartInfo.RedirectStandardOutput = true;
                 processStartInfo.Arguments = "-v";
 
                 System.Diagnostics.Process process = null;
@@ -70,7 +99,7 @@ namespace ComposerXECommon
                     throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
-                string details = process.StandardError.ReadToEnd();
+                string details = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
                 string[] splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
@@ -136,7 +165,7 @@ namespace ComposerXECommon
                     }
                 }
 
-                if (!gxxIncludeDir.StartsWith(pathPrefix))
+                if ((null != gxxIncludeDir) && !gxxIncludeDir.StartsWith(pathPrefix))
                 {
                     // remove any prefix directory separator so that Combine works
                     gxxIncludeDir = gxxIncludeDir.TrimStart(System.IO.Path.DirectorySeparatorChar);
@@ -144,12 +173,15 @@ namespace ComposerXECommon
                 }
 
                 // C include paths (http://gcc.gnu.org/onlinedocs/cpp/Search-Path.html)
+#if false
                 if (null == libDir)
                 {
                     throw new Opus.Core.Exception("Unable to locate lib dir for gcc");
                 }
+#endif
 
                 includePaths.Add("/usr/local/include");
+#if false
                 string gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libDir, gccTarget, gccVersion);
                 string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
                 string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
@@ -176,6 +208,7 @@ namespace ComposerXECommon
                 {
                     includePaths.Add(targetIncludeFolder);
                 }
+#endif
                 includePaths.Add("/usr/include");
 
                 // TODO: this looks like the targetIncludeFolder, and has been necessary

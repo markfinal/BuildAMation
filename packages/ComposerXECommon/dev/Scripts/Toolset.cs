@@ -63,7 +63,7 @@ namespace ComposerXECommon
         string Opus.Core.IToolset.BinPath (Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath(baseTarget);
-            return this.installPath;
+            return System.IO.Path.Combine(this.installPath, "bin");
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool (System.Type toolType)
