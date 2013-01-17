@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator.
 // Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptions.cs;ICCompilerOptions.cs -n=ComposerXECommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ICCompilerOptions.cs:ICCompilerOptions.cs -n=ComposerXECommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 
 namespace ComposerXECommon
 {
@@ -234,12 +234,20 @@ namespace ComposerXECommon
                 commandLineBuilder.Add("-Wall");
             }
         }
-        private static void ExtraWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void StrictDiagnosticsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("-Wextra");
+                commandLineBuilder.Add("-Wcheck");
+            }
+        }
+        private static void EnableRemarksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("-Wremarks");
             }
         }
         private static void StrictAliasingCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -305,7 +313,8 @@ namespace ComposerXECommon
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLineProcessor);
-            this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLineProcessor);
+            this["StrictDiagnostics"].PrivateData = new PrivateData(StrictDiagnosticsCommandLineProcessor);
+            this["EnableRemarks"].PrivateData = new PrivateData(EnableRemarksCommandLineProcessor);
             this["StrictAliasing"].PrivateData = new PrivateData(StrictAliasingCommandLineProcessor);
             this["PositionIndependentCode"].PrivateData = new PrivateData(PositionIndependentCodeCommandLineProcessor);
             this["InlineFunctions"].PrivateData = new PrivateData(InlineFunctionsCommandLineProcessor);

@@ -13,7 +13,13 @@ namespace ComposerXECommon
             set;
         }
 
-        bool ExtraWarnings
+        bool StrictDiagnostics
+        {
+            get;
+            set;
+        }
+
+        bool EnableRemarks
         {
             get;
             set;

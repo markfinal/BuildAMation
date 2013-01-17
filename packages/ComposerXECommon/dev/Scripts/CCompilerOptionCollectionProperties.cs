@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
 // Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptions.cs;ICCompilerOptions.cs -n=ComposerXECommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ICCompilerOptions.cs:ICCompilerOptions.cs -n=ComposerXECommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 namespace ComposerXECommon
 {
     public partial class CCompilerOptionCollection
@@ -200,16 +200,28 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("AllWarningsSetHandler", this["AllWarnings"]);
             }
         }
-        bool ICCompilerOptions.ExtraWarnings
+        bool ICCompilerOptions.StrictDiagnostics
         {
             get
             {
-                return this.GetValueTypeOption<bool>("ExtraWarnings");
+                return this.GetValueTypeOption<bool>("StrictDiagnostics");
             }
             set
             {
-                this.SetValueTypeOption<bool>("ExtraWarnings", value);
-                this.ProcessNamedSetHandler("ExtraWarningsSetHandler", this["ExtraWarnings"]);
+                this.SetValueTypeOption<bool>("StrictDiagnostics", value);
+                this.ProcessNamedSetHandler("StrictDiagnosticsSetHandler", this["StrictDiagnostics"]);
+            }
+        }
+        bool ICCompilerOptions.EnableRemarks
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("EnableRemarks");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("EnableRemarks", value);
+                this.ProcessNamedSetHandler("EnableRemarksSetHandler", this["EnableRemarks"]);
             }
         }
         bool ICCompilerOptions.StrictAliasing

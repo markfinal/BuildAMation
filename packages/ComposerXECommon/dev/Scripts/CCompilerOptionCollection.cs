@@ -12,7 +12,8 @@ namespace ComposerXECommon
         {
             ICCompilerOptions compilerInterface = this as ICCompilerOptions;
             compilerInterface.AllWarnings = true;
-            compilerInterface.ExtraWarnings = true;
+            compilerInterface.StrictDiagnostics = true;
+            compilerInterface.EnableRemarks = true;
 
             base.InitializeDefaults(node);
 
