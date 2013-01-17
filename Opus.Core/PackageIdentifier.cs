@@ -155,5 +155,11 @@ namespace Opus.Core
 
             throw new Exception("Unable to locate package '{0}' in any registered package roots:\n{1}", this.ToString("-"), State.PackageRoots.ToString('\n'));
         }
+
+        public bool IsDefaultVersion
+        {
+            set;
+            get;
+        }
     }
 }

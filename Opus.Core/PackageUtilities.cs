@@ -275,12 +275,33 @@ namespace Opus.Core
                 {
                     if (build.Versions.Count > 1)
                     {
+                        string defaultVersion;
                         if (!State.Has("PackageDefaultVersions", build.Name.ToLower()))
                         {
-                            throw new Exception("Package '{0}' has multiple versions. Please specify which one to use:\n{1}", build.Name, build.Versions);
-                        }
+                            StringArray defaultVersions = new StringArray();
+                            foreach (PackageIdentifier id in build.Versions)
+                            {
+                                if (id.IsDefaultVersion)
+                                {
+                                    defaultVersions.Add(id.Version);
+                                }
+                            }
 
-                        string defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
+                            if (0 == defaultVersions.Count)
+                            {
+                                throw new Exception("Package '{0}' has multiple versions. Please specify which one to use:\n{1}", build.Name, build.Versions);
+                            }
+                            else if (defaultVersions.Count > 1)
+                            {
+                                throw new Exception("Package '{0}' has multiple versions and multiple default versions from definition files. Please reduce this to a single version by changing the definition files or using an override on the command line. Defaults set from the definition files are:\n{1}", build.Name, defaultVersions.ToString('\n'));
+                            }
+
+                            defaultVersion = defaultVersions[0];
+                        }
+                        else
+                        {
+                            defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
+                        }
                         bool found = false;
                         foreach (PackageIdentifier version in build.Versions)
                         {

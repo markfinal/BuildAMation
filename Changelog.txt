@@ -1,3 +1,5 @@
+17-Jan-2013 Changed the Opus definition file schema so that package <version> elements can contain an optional Boolean 'Default' attribute, which indicates a default version of that package. If there are multiple versions of that package, this is chosen. Only one default version may be set per package. The default version in definition files can be overridden on the command line with the -<packagename>.version=<versionnumber> action.
+
 17-Jan-2013 Added Opus.Core.State.InvokedActions returning an array of IActions that were invoked (can be multiple instances). Added Opus.Core.ActionManager.FindInvokedActionsByType to identify invoked actions of a specific type.
 
 16-Jan-2013 Package hashing now includes the #defines passed to the compiler.

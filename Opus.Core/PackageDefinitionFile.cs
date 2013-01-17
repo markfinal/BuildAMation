@@ -235,6 +235,12 @@ namespace Opus.Core
                             
                             packageVersionElement.SetAttribute("Condition", conditionText);
                         }
+
+                        if (package.IsDefaultVersion)
+                        {
+                            packageVersionElement.SetAttribute("Default", "true");
+                        }
+
                         packageElement.AppendChild(packageVersionElement);
                     }
                 }
@@ -523,8 +529,17 @@ namespace Opus.Core
                                     platformFilter = this.InterpretConditionValue(conditionValue);
                                 }
 
+                                bool isDefaultVersion = false;
+                                string packageVersionDefaultAttribute = "Default";
+                                if (xmlReader.MoveToAttribute(packageVersionDefaultAttribute))
+                                {
+                                    bool isDefault = System.Xml.XmlConvert.ToBoolean(xmlReader.Value);
+                                    isDefaultVersion = isDefault;
+                                }
+
                                 PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
                                 id.PlatformFilter = platformFilter;
+                                id.IsDefaultVersion = isDefaultVersion;
                                 this.PackageIdentifiers.Add(id);
                             }
                         }
