@@ -82,6 +82,7 @@ namespace ComposerXECommon
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
                 processStartInfo.RedirectStandardOutput = true;
+                processStartInfo.RedirectStandardError = true;
                 processStartInfo.Arguments = "-v";
 
                 System.Diagnostics.Process process = null;
