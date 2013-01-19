@@ -1,6 +1,6 @@
-// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
+// Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
-// -i=IOptions.cs -n=CSharp -c=OptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs;../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs -pv=PrivateData
+// -i=IOptions.cs -n=CSharp -c=OptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs -pv=PrivateData
 namespace CSharp
 {
     public partial class OptionCollection
