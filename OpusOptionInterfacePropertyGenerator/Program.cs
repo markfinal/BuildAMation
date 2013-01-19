@@ -100,6 +100,14 @@ namespace OpusOptionInterfacePropertyGenerator
             GenerateDelegates  = (1<<1)
         }
 
+        static public System.Collections.Specialized.StringCollection excludedFlagsFromHeaders = new System.Collections.Specialized.StringCollection();
+
+        static Parameters()
+        {
+            excludedFlagsFromHeaders.Add("-f");
+            excludedFlagsFromHeaders.Add("-uh");
+        }
+
         public string[] args;
         public string outputPropertiesPathName;
         public string outputDelegatesPathName;
@@ -113,6 +121,7 @@ namespace OpusOptionInterfacePropertyGenerator
         public bool forceWrite;
         public bool extendedDelegates;
         public bool isBaseClass;
+        public bool updateHeader;
     }
 
     class Program
@@ -185,6 +194,10 @@ namespace OpusOptionInterfacePropertyGenerator
                 else if (arg.StartsWith("-b"))
                 {
                     parameters.isBaseClass = true;
+                }
+                else if (arg.StartsWith("-uh"))
+                {
+                    parameters.updateHeader = true;
                 }
                 else
                 {
@@ -569,8 +582,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 Write(writer, 0, "//");
                 foreach (string arg in parameters.args)
                 {
-                    // never write force into the string
-                    if (arg == "-f")
+                    if (Parameters.excludedFlagsFromHeaders.Contains(arg))
                     {
                         continue;
                     }
@@ -799,8 +811,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 Write(builder, 0, "//");
                 foreach (string arg in parameters.args)
                 {
-                    // never write force into the string
-                    if (arg == "-f")
+                    if (Parameters.excludedFlagsFromHeaders.Contains(arg))
                     {
                         continue;
                     }
@@ -828,7 +839,7 @@ namespace OpusOptionInterfacePropertyGenerator
                         message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
                     }
 
-                    if (parameters.forceWrite)
+                    if (parameters.forceWrite || parameters.updateHeader)
                     {
                         System.Console.Write(message);
                         System.Console.Write("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
