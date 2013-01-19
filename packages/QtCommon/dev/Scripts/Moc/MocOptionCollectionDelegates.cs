@@ -1,4 +1,4 @@
-// Automatically generated file from OpusOptionInterfacePropertyGenerator.
+// Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
 // -i=IMocOptions.cs -n=QtCommon -c=MocOptionCollection -p -d -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MocPrivateData
 
