@@ -1,6 +1,6 @@
-// Automatically generated file from OpusOptionInterfacePropertyGenerator.
+// Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
-// -i=../../../C/dev/Scripts/IArchiverOptions.cs;IArchiverOptions.cs -n=GccCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/IArchiverOptions.cs:IArchiverOptions.cs -n=GccCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 
 namespace GccCommon
 {
