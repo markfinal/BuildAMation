@@ -1,9 +1,9 @@
 ﻿// <copyright file="Program.cs" company="Mark Final">
 //  Opus
 // </copyright>
-// <summary>Opus Option Interface Property Generator</summary>
+// <summary>Opus Option Code Generator</summary>
 // <author>Mark Final</author>
-namespace OpusOptionInterfacePropertyGenerator
+namespace OpusOptionCodeGenerator
 {
     class Exception : System.Exception
     {
@@ -577,7 +577,7 @@ namespace OpusOptionInterfacePropertyGenerator
             {
                 writer.NewLine = "\n";
 
-                WriteLine(writer, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.");
+                WriteLine(writer, 0, "// Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line:");
                 Write(writer, 0, "//");
                 foreach (string arg in parameters.args)
@@ -806,7 +806,7 @@ namespace OpusOptionInterfacePropertyGenerator
                 bool writeToDisk = (null == layout);
 
                 // write header
-                WriteLine(builder, 0, "// Automatically generated file from OpusOptionInterfacePropertyGenerator.");
+                WriteLine(builder, 0, "// Automatically generated file from OpusOptionCodeGenerator.");
                 WriteLine(builder, 0, "// Command line:");
                 Write(builder, 0, "//");
                 foreach (string arg in parameters.args)

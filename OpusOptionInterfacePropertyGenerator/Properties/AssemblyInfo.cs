@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OpusOptionInterfacePropertyGenerator")]
-[assembly: AssemblyDescription("Opus property generator for option interfaces")]
+[assembly: AssemblyTitle("OpusOptionCodeGenerator")]
+[assembly: AssemblyDescription("Opus code generator for option interfaces")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OpusOptionInterfacePropertyGenerator")]
+[assembly: AssemblyProduct("OpusOptionCodeGenerator")]
 [assembly: AssemblyCopyright("Copyright 2011-12")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

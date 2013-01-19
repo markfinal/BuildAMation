@@ -8,8 +8,8 @@
     <ProjectGuid>{EF379EAD-80F7-4741-8A24-6BD3F393F41B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpusOptionInterfacePropertyGenerator</RootNamespace>
-    <AssemblyName>OpusOptionInterfacePropertyGenerator</AssemblyName>
+    <RootNamespace>OpusOptionCodeGenerator</RootNamespace>
+    <AssemblyName>OpusOptionCodeGenerator</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
