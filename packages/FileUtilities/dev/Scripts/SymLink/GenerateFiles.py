@@ -6,20 +6,13 @@ import sys
 
 sys.path.append("../../../../../python")
 from executeprocess import ExecuteProcess
+from getpaths import GetOpusPaths
 
-get_opus_dir_command = [
-    "Opus",
-    "-verbosity=0",
-    "-showdirectory"
-]
-(stdout,stderr) = ExecuteProcess(get_opus_dir_command)
-opusBinDir = string.strip(stdout, os.linesep)
-generatorPath = os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe")
-opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
+opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe = GetOpusPaths()
 
 # FileUtilities symlink options
 symlink_options = [
-    generatorPath,
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "FileUtilities", "dev", "Scripts", "SymLink", "ISymLinkOptions.cs")),
     "-n=FileUtilities",
     "-c=SymLinkOptionCollection",

@@ -6,20 +6,13 @@ import sys
 
 sys.path.append("../../../../python")
 from executeprocess import ExecuteProcess
+from getpaths import GetOpusPaths
 
-get_opus_dir_command = [
-    "Opus",
-    "-verbosity=0",
-    "-showdirectory"
-]
-(stdout,stderr) = ExecuteProcess(get_opus_dir_command)
-opusBinDir = string.strip(stdout, os.linesep)
-generatorPath = os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe")
-opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
+opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe = GetOpusPaths()
 
 # C# compiler options
 csCompiler_options = [
-    generatorPath,
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "CSharp", "dev", "Scripts", "IOptions.cs")),
     "-n=CSharp",
     "-c=OptionCollection",

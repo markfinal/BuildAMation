@@ -6,19 +6,13 @@ import sys
 
 sys.path.append("../../../../python")
 from executeprocess import ExecuteProcess
+from getpaths import GetOpusPaths
 
-get_opus_dir_command = [
-    "Opus",
-    "-verbosity=0",
-    "-showdirectory"
-]
-(stdout,stderr) = ExecuteProcess(get_opus_dir_command)
-opusBinDir = string.strip(stdout, os.linesep)
-opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
+opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe = GetOpusPaths()
 
 # C compiler options
 cCompiler_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICCompilerOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "MingwCommon", "dev", "Scripts", "ICCompilerOptions.cs")),
     "-n=MingwCommon",
     "-c=CCompilerOptionCollection",
@@ -32,7 +26,7 @@ print stdout
 
 # C++ compiler options
 cxxCompiler_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICxxCompilerOptions.cs")),
     "-n=MingwCommon",
     "-c=CxxCompilerOptionCollection",
@@ -48,7 +42,7 @@ print stdout
 
 # Linker options
 linker_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ILinkerOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "MingwCommon", "dev", "Scripts", "ILinkerOptions.cs")),
     "-n=MingwCommon",
     "-c=LinkerOptionCollection",
@@ -62,7 +56,7 @@ print stdout
 
 # Archiver options
 archiver_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "IArchiverOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "MingwCommon", "dev", "Scripts", "IArchiverOptions.cs")),
     "-n=MingwCommon",
     "-c=ArchiverOptionCollection",
