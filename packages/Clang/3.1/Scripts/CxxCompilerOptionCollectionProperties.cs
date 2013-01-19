@@ -1,4 +1,4 @@
-// Automatically generated file from OpusOptionInterfacePropertyGenerator. DO NOT EDIT.
+// Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
 // -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=Clang -c=CxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData -e
 namespace Clang
