@@ -843,6 +843,7 @@ namespace OpusOptionCodeGenerator
                     {
                         System.Console.Write(message);
                         System.Console.Write("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
+                        writeToDisk = true;
                     }
                     else
                     {
