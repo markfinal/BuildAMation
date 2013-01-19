@@ -1,4 +1,4 @@
-// Automatically generated file from OpusOptionInterfacePropertyGenerator.
+// Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
 // -i=ICodeGenOptions.cs -n=CodeGenTest -c=CodeGenOptionCollection -p -d -dd=../../../../packages/CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 
