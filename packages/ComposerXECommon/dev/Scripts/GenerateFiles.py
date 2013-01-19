@@ -1,24 +1,17 @@
 #!/usr/bin/python
 
 import os
-import string
 import sys
 
 sys.path.append("../../../../python")
 from executeprocess import ExecuteProcess
+from getpaths import GetOpusPaths
 
-get_opus_dir_command = [
-    "Opus",
-    "-verbosity=0",
-    "-showdirectory"
-]
-(stdout,stderr) = ExecuteProcess(get_opus_dir_command)
-opusBinDir = string.strip(stdout, os.linesep)
-opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
+opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe = GetOpusPaths()
 
 # C compiler options
 cCompiler_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICCompilerOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "ComposerXECommon", "dev", "Scripts", "ICCompilerOptions.cs")),
     "-n=ComposerXECommon",
     "-c=CCompilerOptionCollection",
@@ -32,7 +25,7 @@ print stdout
 
 # C++ compiler options
 cxxCompiler_options = [
-    os.path.join(opusBinDir, "OpusOptionInterfacePropertyGenerator.exe"),
+    opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICxxCompilerOptions.cs")),
     "-n=ComposerXECommon",
     "-c=CxxCompilerOptionCollection",
