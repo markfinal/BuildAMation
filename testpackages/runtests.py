@@ -52,6 +52,32 @@ def FindAllPackagesToTest(root, options):
                     tests.append(package)
     return tests
 
+def _runOpus(options, package, responseFile):
+    argList = []
+    argList.append("Opus")
+    argList.append("@" + os.path.join(os.getcwd(), responseFile))
+    argList.append("-buildroot=" + options.buildRoot)
+    argList.append("-builder=" + options.builder)
+    if sys.platform.startswith("win"):
+        argList.append("-platforms=" + ";".join(options.platforms))
+        argList.append("-configurations=" + ";".join(options.configurations))
+    else:
+        argList.append("-platforms=" + ":".join(options.platforms))
+        argList.append("-configurations=" + ":".join(options.configurations))
+    argList.append("-j=" + str(options.numJobs))
+    if options.debugSymbols:
+        argList.append("-debugsymbols")
+    if options.verbose:
+        argList.append("-verbosity=2")
+    else:
+        argList.append("-verbosity=0")
+    if options.forceDefinitionUpdate:
+        argList.append("-forcedefinitionupdate")
+    print " ".join(argList)
+    p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
+    (outputStream, errorStream) = p.communicate() # this should WAIT
+    return (outputStream, errorStream, p.returncode)
+   
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
     if options.verbose:
@@ -68,37 +94,15 @@ def ExecuteTests(package, configuration, options, outputBuffer):
     exitCode = 0
     for responseName in configuration.GetResponseNames(options.builder, options.excludeResponseFiles):
         responseFile = GetResponsePath(responseName)
-        argList = []
-        argList.append("Opus")
-        argList.append("@" + os.path.join(os.getcwd(), responseFile))
-        argList.append("-buildroot=" + options.buildRoot)
-        argList.append("-builder=" + options.builder)
-        if sys.platform.startswith("win"):
-            argList.append("-platforms=" + ";".join(options.platforms))
-            argList.append("-configurations=" + ";".join(options.configurations))
-        else:
-            argList.append("-platforms=" + ":".join(options.platforms))
-            argList.append("-configurations=" + ":".join(options.configurations))
-        argList.append("-j=" + str(options.numJobs))
-        if options.debugSymbols:
-            argList.append("-debugsymbols")
-        if options.verbose:
-            argList.append("-verbosity=2")
-        else:
-            argList.append("-verbosity=0")
-        if options.forceDefinitionUpdate:
-            argList.append("-forcedefinitionupdate")
-        print " ".join(argList)
         currentDir = os.getcwd()
         try:
-            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
-            (outputStream, errorStream) = p.communicate() # this should WAIT
+          outputStream, errorStream, returncode = _runOpus(options, package, responseFile)
         except Exception, e:
             print "Popen exception: '%s'" % str(e)
             raise
         finally:
             os.chdir(currentDir)
-            if not p.returncode:
+            if not returncode:
                 outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
                 if options.verbose:
                     if outputStream and len(outputStream) > 0:
