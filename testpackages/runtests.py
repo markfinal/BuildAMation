@@ -55,7 +55,8 @@ def FindAllPackagesToTest(root, options):
 def _runOpus(options, package, responseFile, extraArgs):
     argList = []
     argList.append("Opus")
-    argList.append("@" + os.path.join(os.getcwd(), responseFile))
+    if responseFile:
+        argList.append("@" + os.path.join(os.getcwd(), responseFile))
     argList.append("-buildroot=" + options.buildRoot)
     argList.append("-builder=" + options.builder)
     if sys.platform.startswith("win"):
@@ -95,15 +96,19 @@ def ExecuteTests(package, configuration, options, outputBuffer):
           print " (excluding", options.excludeResponseFiles, ")"
     exitCode = 0
     for responseName in configuration.GetResponseNames(options.builder, options.excludeResponseFiles):
-        responseFile = GetResponsePath(responseName)
         currentDir = os.getcwd()
-        versionName = "%s.version" % responseName
-        versionArgs = None
-        if hasattr(options, versionName):
-          versionArgs = getattr(options, versionName)
         iterations = 1
-        if versionArgs:
-          iterations = len(versionArgs)
+        if responseName:
+            responseFile = GetResponsePath(responseName)
+            versionName = "%s.version" % responseName
+            versionArgs = None
+            if hasattr(options, versionName):
+              versionArgs = getattr(options, versionName)
+            if versionArgs:
+              iterations = len(versionArgs)
+        else:
+            responseFile = None
+            versionArgs = None
 
         for it in range(0,iterations):
             extraArgs = None

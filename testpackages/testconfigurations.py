@@ -28,14 +28,20 @@ class TestSetup:
         # TODO: can we do this with a lambda expression?
         if platform.startswith("win"):
             for i in self._win.values():
+                if not i:
+                    continue
                 for j in i:
                     uniqueResponseFiles.add(j)
         elif platform.startswith("linux"):
             for i in self._linux.values():
+                if not i:
+                    continue
                 for j in i:
                     uniqueResponseFiles.add(j)
         elif platform.startswith("darwin"):
             for i in self._osx.values():
+                if not i:
+                    continue
                 for j in i:
                     uniqueResponseFiles.add(j)
         else:
@@ -47,14 +53,23 @@ class TestSetup:
         responseNames = []
         # TODO: can we do this with a lambda expression?
         if platform.startswith("win"):
-            for i in self._win[builder]:
-                responseNames.append(i)
+            if self._win[builder]:
+                for i in self._win[builder]:
+                    responseNames.append(i)
+            else:
+                responseNames.append(None);
         elif platform.startswith("linux"):
-            for i in self._linux[builder]:
-                responseNames.append(i)
+            if self._linux[builder]:
+                for i in self._linux[builder]:
+                    responseNames.append(i)
+            else:
+                responseNames.append(None);
         elif platform.startswith("darwin"):
-            for i in self._osx[builder]:
-                responseNames.append(i)
+            if self._osx[builder]:
+                for i in self._osx[builder]:
+                    responseNames.append(i)
+            else:
+                responseNames.append(None);
         else:
             raise RuntimeError("Unknown platform " + platform)
         return responseNames
@@ -63,8 +78,11 @@ class TestSetup:
         platform = sys.platform
         responseFiles = []
         for i in self._GetListOfResponseNames(builder):
-            if not excludedResponseFiles or i not in excludedResponseFiles:
+            if not i:
                 responseFiles.append(i)
+            else:
+                if not excludedResponseFiles or i not in excludedResponseFiles:
+                    responseFiles.append(i)
         return responseFiles
 
 def GetResponsePath(responseName):
@@ -139,16 +157,16 @@ configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFi
 configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]},
                                         linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                         osx={"Native":["gcc"],"MakeFile":["gcc"]})
-configs["CSharpTest1-dev"] = TestSetup(win={"Native":["notoolchain"],"MakeFile":["notoolchain"],"VSSolution":["notoolchain"]},
-                                       linux={"Native":["notoolchain"],"MakeFile":["notoolchain"]},
-                                       osx={"Native":["notoolchain"],"MakeFile":["notoolchain"]})
+configs["CSharpTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None,"VSSolution":None},
+                                       linux={"Native":None,"MakeFile":None},
+                                       osx={"Native":None,"MakeFile":None})
 configs["Direct3DTriangle-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["MixedModeCpp-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]})
 configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["Symlinks-dev"] = TestSetup(win={"Native":["notoolchain"]},
-                                    linux={"Native":["notoolchain"]},
-                                    osx={"Native":["notoolchain"]})
-configs["WPFTest-dev"] = TestSetup(win={"VSSolution":["notoolchain"]})
+configs["Symlinks-dev"] = TestSetup(win={"Native":None},
+                                    linux={"Native":None},
+                                    osx={"Native":None})
+configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
