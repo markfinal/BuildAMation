@@ -116,8 +116,11 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 raise
             finally:
                 os.chdir(currentDir)
+                message = "Package '%s' with response file '%s'" % (package.GetDescription(), responseFile)
+                if extraArgs:
+                  message += " with extra arguments '%s'" % " ".join(extraArgs)
                 if not returncode:
-                    outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
+                    outputBuffer.write("SUCCESS: %s\n" % message)
                     if options.verbose:
                         if outputStream and len(outputStream) > 0:
                             outputBuffer.write("Messages:\n")
@@ -126,7 +129,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                             outputBuffer.write("Errors:\n")
                             outputBuffer.write(errorStream)
                 else:
-                    outputBuffer.write("* FAILURE *: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
+                    outputBuffer.write("* FAILURE *: %s\n" % message)
                     outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
                     if outputStream and len(outputStream) > 0:
                         outputBuffer.write("Messages:\n")
