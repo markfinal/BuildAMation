@@ -1,3 +1,5 @@
+23-Jan-2013 AssemblyVersion is now auto-incrementing. AssemblyInformationVersion is set to the current version.
+
 23-Jan-2013 Removed notoolchain.rsp from the testpackages directory, and removed references to it in the test harness.
 
 23-Jan-2013 Unit test Python scripts now accept an option to exclude some response files. E.g. if you don't have Mingw installed on your Windows box, then tests specifically for that toolchain can be excluded.
