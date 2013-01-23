@@ -90,12 +90,17 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         outputBuffer.write("IGNORED: Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
         print "\tIgnored"
         return 0
+    responseNames = configuration.GetResponseNames(options.builder, options.excludeResponseFiles)
+    if len(responseNames) == 0:
+        outputBuffer.write("IGNORED: Package '%s' has no response file with the current options\n" % package.GetDescription())
+        print "\tIgnored"
+        return 0
     if options.verbose:
-        print "Response filenames: ", configuration.GetResponseNames(options.builder, options.excludeResponseFiles)
+        print "Response filenames: ", responseNames
         if options.excludeResponseFiles:
           print " (excluding", options.excludeResponseFiles, ")"
     exitCode = 0
-    for responseName in configuration.GetResponseNames(options.builder, options.excludeResponseFiles):
+    for responseName in responseNames:
         currentDir = os.getcwd()
         iterations = 1
         if responseName:
