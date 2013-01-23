@@ -19,12 +19,13 @@ namespace Opus.Core
 
             System.Reflection.Assembly coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
             System.Version version = coreAssembly.GetName().Version;
+            string productVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location).ProductVersion;
 
             AddCategory("Opus");
             string opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Add<string>("Opus", "Directory", opusDirectory);
             Add<System.Version>("Opus", "Version", version);
-            Add<string>("Opus", "VersionString", System.String.Format("{0}.{1}", version.Major, version.Minor));
+            Add<string>("Opus", "VersionString", productVersion);
             Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
             string opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
