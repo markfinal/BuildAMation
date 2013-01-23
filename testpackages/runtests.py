@@ -36,7 +36,9 @@ def FindAllPackagesToTest(root, options):
     if options.verbose:
         print "Locating packages under '%s'" % root
     tests = []
-    for packageName in os.listdir(root):
+    dirs = os.listdir(root)
+    dirs.sort()
+    for packageName in dirs:
         if packageName.startswith("."):
             continue
         packageDir = os.path.join(root, packageName)
