@@ -78,7 +78,7 @@ def _runOpus(options, package, responseFile, extraArgs):
     print " ".join(argList)
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
     (outputStream, errorStream) = p.communicate() # this should WAIT
-    return (outputStream, errorStream, p.returncode)
+    return (outputStream, errorStream, p.returncode, argList)
    
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
@@ -110,7 +110,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
             try:
-              outputStream, errorStream, returncode = _runOpus(options, package, responseFile, extraArgs)
+              outputStream, errorStream, returncode, argList = _runOpus(options, package, responseFile, extraArgs)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise
