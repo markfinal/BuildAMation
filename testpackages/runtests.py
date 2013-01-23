@@ -62,9 +62,11 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "\tIgnored"
         return 0
     if options.verbose:
-        print "Response files    : ", configuration.GetResponseFiles(options.builder)
+        print "Response files    : ", configuration.GetResponseFiles(options.builder, options.excludeResponseFiles)
+        if options.excludeResponseFiles:
+          print " (excluding", options.excludeResponseFiles, ")"
     exitCode = 0
-    for responseFile in configuration.GetResponseFiles(options.builder):
+    for responseFile in configuration.GetResponseFiles(options.builder, options.excludeResponseFiles):
         argList = []
         argList.append("Opus")
         argList.append("@" + os.path.join(os.getcwd(), responseFile))
@@ -144,6 +146,7 @@ if __name__ == "__main__":
     optParser.add_option("--debug", "-d", dest="debugSymbols", action="store_true", default=False, help="Build Opus packages with debug information")
     optParser.add_option("--noinitialclean", "-i", dest="noInitialClean", action="store_true", default=False, help="Disable cleaning packages before running tests")
     optParser.add_option("--forcedefinitionupdate", "-f", dest="forceDefinitionUpdate", action="store_true", default=False, help="Force definition file updates")
+    optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude builders")
     (options,args) = optParser.parse_args()
     
     if options.verbose:

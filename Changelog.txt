@@ -1,3 +1,5 @@
+23-Jan-2013 Unit test Python scripts now accept an option to exclude some response files. E.g. if you don't have Mingw installed on your Windows box, then tests specifically for that toolchain can be excluded.
+
 19-Jan-2013 Renamed OpusOptionInterfacePropertyGenerator to OpusOptionCodeGenerator
 
 17-Jan-2013 Show definition file action identifies default package versions with an asterisk.

@@ -22,19 +22,22 @@ class TestSetup:
         else:
             raise RuntimeError("Unknown platform " + platform)
      
-    def GetResponseFiles(self, builder):
+    def GetResponseFiles(self, builder, excludedResponseFiles):
         platform = sys.platform
         responseFiles = []
         # TODO: can we do this with a lambda expression?
         if platform.startswith("win"):
             for i in self._win[builder]:
-                responseFiles.append(i+".rsp")
+                if i not in excludedResponseFiles:
+                    responseFiles.append(i+".rsp")
         elif platform.startswith("linux"):
             for i in self._linux[builder]:
-                responseFiles.append(i+".rsp")
+                if i not in excludedResponseFiles:
+                    responseFiles.append(i+".rsp")
         elif platform.startswith("darwin"):
             for i in self._osx[builder]:
-                responseFiles.append(i+".rsp")
+                if i not in excludedResponseFiles:
+                    responseFiles.append(i+".rsp")
         else:
             raise RuntimeError("Unknown platform " + platform)
         return responseFiles
