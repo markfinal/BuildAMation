@@ -13,6 +13,8 @@ directory=opus-$1
 svn export http://opus.googlecode.com/svn/trunk $directory
 tar -czf opus-$1-source.tgz $directory
 
+find $directory -name "AssemblyInfo.cs" | xargs sed 's/AssemblyInformationalVersion("[0-9.]*")/AssemblyInformationalVersion("'$1'")/g' -i
+
 pushd $directory
 mdtool build --target:Build --configuration:Release Opus.sln
 popd
