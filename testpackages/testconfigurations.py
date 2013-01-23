@@ -63,7 +63,7 @@ class TestSetup:
         platform = sys.platform
         responseFiles = []
         for i in self._GetListOfResponseNames(builder):
-            if i not in excludedResponseFiles:
+            if not excludedResponseFiles or i not in excludedResponseFiles:
                 responseFiles.append(i)
         return responseFiles
 
