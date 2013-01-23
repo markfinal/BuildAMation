@@ -8,6 +8,8 @@ int MyClass::CppLibraryFunction()
     }
     catch (...)
     {
+#ifndef _MSC_VER
         return -1;
+#endif
     }
 }
