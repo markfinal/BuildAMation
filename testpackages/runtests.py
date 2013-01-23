@@ -5,7 +5,7 @@ import os
 import subprocess
 import StringIO
 import time
-from testconfigurations import TestSetup, GetTestConfig
+from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
 from optparse import OptionParser
 
 # ----------
@@ -62,11 +62,12 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "\tIgnored"
         return 0
     if options.verbose:
-        print "Response files    : ", configuration.GetResponseFiles(options.builder, options.excludeResponseFiles)
+        print "Response filenames: ", configuration.GetResponseNames(options.builder, options.excludeResponseFiles)
         if options.excludeResponseFiles:
           print " (excluding", options.excludeResponseFiles, ")"
     exitCode = 0
-    for responseFile in configuration.GetResponseFiles(options.builder, options.excludeResponseFiles):
+    for responseName in configuration.GetResponseNames(options.builder, options.excludeResponseFiles):
+        responseFile = GetResponsePath(responseName)
         argList = []
         argList.append("Opus")
         argList.append("@" + os.path.join(os.getcwd(), responseFile))
@@ -146,7 +147,8 @@ if __name__ == "__main__":
     optParser.add_option("--debug", "-d", dest="debugSymbols", action="store_true", default=False, help="Build Opus packages with debug information")
     optParser.add_option("--noinitialclean", "-i", dest="noInitialClean", action="store_true", default=False, help="Disable cleaning packages before running tests")
     optParser.add_option("--forcedefinitionupdate", "-f", dest="forceDefinitionUpdate", action="store_true", default=False, help="Force definition file updates")
-    optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude builders")
+    optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
+    TestOptionSetup(optParser)
     (options,args) = optParser.parse_args()
     
     if options.verbose:

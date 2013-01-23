@@ -21,27 +21,55 @@ class TestSetup:
             return self._osx.keys()
         else:
             raise RuntimeError("Unknown platform " + platform)
-     
-    def GetResponseFiles(self, builder, excludedResponseFiles):
+
+    def _GetSetOfAllResponseNames(self):
         platform = sys.platform
-        responseFiles = []
+        uniqueResponseFiles = set()
+        # TODO: can we do this with a lambda expression?
+        if platform.startswith("win"):
+            for i in self._win.values():
+                for j in i:
+                    uniqueResponseFiles.add(j)
+        elif platform.startswith("linux"):
+            for i in self._linux.values():
+                for j in i:
+                    uniqueResponseFiles.add(j)
+        elif platform.startswith("darwin"):
+            for i in self._osx.values():
+                for j in i:
+                    uniqueResponseFiles.add(j)
+        else:
+            raise RuntimeError("Unknown platform " + platform)
+        return uniqueResponseFiles
+
+    def _GetListOfResponseNames(self, builder):
+        platform = sys.platform
+        responseNames = []
         # TODO: can we do this with a lambda expression?
         if platform.startswith("win"):
             for i in self._win[builder]:
-                if i not in excludedResponseFiles:
-                    responseFiles.append(i+".rsp")
+                responseNames.append(i)
         elif platform.startswith("linux"):
             for i in self._linux[builder]:
-                if i not in excludedResponseFiles:
-                    responseFiles.append(i+".rsp")
+                responseNames.append(i)
         elif platform.startswith("darwin"):
             for i in self._osx[builder]:
-                if i not in excludedResponseFiles:
-                    responseFiles.append(i+".rsp")
+                responseNames.append(i)
         else:
             raise RuntimeError("Unknown platform " + platform)
+        return responseNames
+
+    def GetResponseNames(self, builder, excludedResponseFiles):
+        platform = sys.platform
+        responseFiles = []
+        for i in self._GetListOfResponseNames(builder):
+            if i not in excludedResponseFiles:
+                responseFiles.append(i)
         return responseFiles
-            
+
+def GetResponsePath(responseName):
+  return "%s.rsp" % responseName
+
 def GetTestConfig(packageName, options):
     try:
         config = configs[packageName]
@@ -50,6 +78,16 @@ def GetTestConfig(packageName, options):
             print "No configuration for package: '%s'" % str(e)
         return None
     return config
+
+def TestOptionSetup(optParser):
+    allResponseNames = set()
+    for config in configs.values():
+        results = config._GetSetOfAllResponseNames()
+        allResponseNames.update(results)
+    for response in allResponseNames:
+      longName = "--%s.version" % response
+      dest = "%s.version" % response
+      optParser.add_option(longName, dest=dest, action="append", default=None, help="Versions to test for '%s'" % response)
 
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of an Opus command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
 configs = {}
