@@ -52,7 +52,7 @@ def FindAllPackagesToTest(root, options):
                     tests.append(package)
     return tests
 
-def _runOpus(options, package, responseFile):
+def _runOpus(options, package, responseFile, extraArgs):
     argList = []
     argList.append("Opus")
     argList.append("@" + os.path.join(os.getcwd(), responseFile))
@@ -73,6 +73,8 @@ def _runOpus(options, package, responseFile):
         argList.append("-verbosity=0")
     if options.forceDefinitionUpdate:
         argList.append("-forcedefinitionupdate")
+    if extraArgs:
+        argList.extend(extraArgs)
     print " ".join(argList)
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
     (outputStream, errorStream) = p.communicate() # this should WAIT
@@ -95,33 +97,45 @@ def ExecuteTests(package, configuration, options, outputBuffer):
     for responseName in configuration.GetResponseNames(options.builder, options.excludeResponseFiles):
         responseFile = GetResponsePath(responseName)
         currentDir = os.getcwd()
-        try:
-          outputStream, errorStream, returncode = _runOpus(options, package, responseFile)
-        except Exception, e:
-            print "Popen exception: '%s'" % str(e)
-            raise
-        finally:
-            os.chdir(currentDir)
-            if not returncode:
-                outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
-                if options.verbose:
+        versionName = "%s.version" % responseName
+        versionArgs = None
+        if hasattr(options, versionName):
+          versionArgs = getattr(options, versionName)
+        iterations = 1
+        if versionArgs:
+          iterations = len(versionArgs)
+
+        for it in range(0,iterations):
+            extraArgs = None
+            if versionArgs:
+                extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
+            try:
+              outputStream, errorStream, returncode = _runOpus(options, package, responseFile, extraArgs)
+            except Exception, e:
+                print "Popen exception: '%s'" % str(e)
+                raise
+            finally:
+                os.chdir(currentDir)
+                if not returncode:
+                    outputBuffer.write("SUCCESS: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
+                    if options.verbose:
+                        if outputStream and len(outputStream) > 0:
+                            outputBuffer.write("Messages:\n")
+                            outputBuffer.write(outputStream)
+                        if errorStream and len(errorStream) > 0:
+                            outputBuffer.write("Errors:\n")
+                            outputBuffer.write(errorStream)
+                else:
+                    outputBuffer.write("* FAILURE *: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
+                    outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
                     if outputStream and len(outputStream) > 0:
                         outputBuffer.write("Messages:\n")
                         outputBuffer.write(outputStream)
                     if errorStream and len(errorStream) > 0:
                         outputBuffer.write("Errors:\n")
                         outputBuffer.write(errorStream)
-            else:
-                outputBuffer.write("* FAILURE *: Package '%s' with response file '%s'\n" % (package.GetDescription(), responseFile))
-                outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
-                if outputStream and len(outputStream) > 0:
-                    outputBuffer.write("Messages:\n")
-                    outputBuffer.write(outputStream)
-                if errorStream and len(errorStream) > 0:
-                    outputBuffer.write("Errors:\n")
-                    outputBuffer.write(errorStream)
-                outputBuffer.write("\n")
-                exitCode = exitCode - 1
+                    outputBuffer.write("\n")
+                    exitCode = exitCode - 1
     return exitCode
 
 def CleanUp(options):
