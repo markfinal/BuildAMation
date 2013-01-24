@@ -38,19 +38,6 @@ namespace Opus.Core
             this.Add(absoluteDirectoryPath, checkForExistence);
         }
 
-        [System.Obsolete("Please use the Include method")]
-        public void Add(object owner, string relativePath)
-        {
-            if (null == owner)
-            {
-                this.AddAbsoluteDirectory(relativePath, false);
-                return;
-            }
-
-            string[] pathSegments = relativePath.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-            this.Include(owner, pathSegments);
-        }
-
         private static StringArray GetDirectories(string baseDirectory, params string[] pathSegments)
         {
             if (0 == pathSegments.Length)

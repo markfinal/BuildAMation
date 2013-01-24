@@ -1,3 +1,10 @@
+24-Jan-2013 Removing obsolete API
+ - Opus.Core.DirectoryCollection.Add
+ - Opus.Core.FileCollection.AddRelativePaths
+ - C.CxxObjectFileCollection.AddRelativePaths
+ - C.ObjectFileCollection.AddRelativePaths
+ - QtCommon.MocFileCollection.AddRelativePaths
+
 23-Jan-2013 AssemblyVersion is now auto-incrementing. AssemblyInformationVersion is set to the current version.
 
 23-Jan-2013 Removed notoolchain.rsp from the testpackages directory, and removed references to it in the test harness.

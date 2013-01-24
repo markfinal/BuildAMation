@@ -65,12 +65,6 @@ namespace Opus.Core
             return this.filePaths.GetEnumerator();
         }
 
-        [System.Obsolete("Please use the Include method")]
-        public void AddRelativePaths(object owner, params string[] pathSegments)
-        {
-            this.Include(owner, pathSegments);
-        }
-
         public void Include(object module, params string[] pathSegments)
         {
             PackageInformation package = PackageUtilities.GetOwningPackage(module);

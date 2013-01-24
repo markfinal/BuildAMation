@@ -16,12 +16,6 @@ namespace C
             this.list.Add(objectFile);
         }
 
-        [System.Obsolete("Please use the Include method")]
-        public void AddRelativePaths(object owner, params string[] pathSegments)
-        {
-            this.Include(owner, pathSegments);
-        }
-
         public void Include(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
