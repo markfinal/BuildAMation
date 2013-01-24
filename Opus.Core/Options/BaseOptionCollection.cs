@@ -94,23 +94,6 @@ namespace Opus.Core
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
-#if false
-        // this is private as I don't think it's needed anywhere now that we have the FinalizeOptions method
-        // but it's kept around just in case
-        private void ProcessAllSetHandlers()
-        {
-            System.Type type = this.GetType();
-            System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.Static |           // don't need an instance
-                                                          System.Reflection.BindingFlags.NonPublic |        // generally hidden - should be protected
-                                                          System.Reflection.BindingFlags.FlattenHierarchy;  // bring in protected static functions
-            foreach (System.Collections.Generic.KeyValuePair<string, Option> option in this.table)
-            {
-                string setHandlerName = System.String.Format("{0}SetHandler", option.Key);
-                InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option.Value);
-            }
-        }
-#endif
-
         public virtual void FinalizeOptions(Opus.Core.Target target)
         {
             // do nothing
