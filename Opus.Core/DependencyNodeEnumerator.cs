@@ -36,7 +36,6 @@ namespace Opus.Core
             this.currentNodeIndex++;
             if (this.currentNodeIndex >= this.currentRankCollection.Count)
             {
-#if true
                 for (;;)
                 {
                     this.currentRank++;
@@ -46,23 +45,13 @@ namespace Opus.Core
                     }
                     
                     this.currentRankCollection = this.graph[this.currentRank];
-                    if (0 == this.currentRankCollection.Count)
-                    {
-                        Log.DebugMessage("Rank {0} collection is empty", this.currentRank);
-                    }
-                    else
+                    if (0 != this.currentRankCollection.Count)
                     {
                         break;
                     }
+
+                    Log.DebugMessage("Rank {0} collection is empty", this.currentRank);
                 }
-#else
-                this.currentRank++;
-                if (this.currentRank >= this.graph.RankCount)
-                {
-                    return false;
-                }
-                this.currentRankCollection = this.graph[this.currentRank];
-#endif
                 this.currentNodeIndex = 0;
             }
             
