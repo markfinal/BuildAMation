@@ -106,8 +106,8 @@ namespace NativeBuilder
                 DependencyGenerator.IncludeDependencyGeneration.Data dependencyData = new DependencyGenerator.IncludeDependencyGeneration.Data();
                 dependencyData.sourcePath = sourceFilePath;
                 dependencyData.depFilePath = depFilePath;
-#if true
-                C.ICCompilerOptions cOptions = objectFileOptions as C.ICCompilerOptions;
+
+                var cOptions = objectFileOptions as C.ICCompilerOptions;
                 Opus.Core.StringArray includePaths = cOptions.IncludePaths.ToStringArray();
                 dependencyData.includePaths = new Opus.Core.StringArray();
                 foreach (string path in includePaths)
@@ -121,38 +121,6 @@ namespace NativeBuilder
                         dependencyData.includePaths.Add(path);
                     }
                 }
-#else
-                Opus.Core.StringArray includeSwitches = (toolInterface as C.ICompiler).IncludePathCompilerSwitches;
-                Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
-                // TODO: this can be simplified to just use the optioncollection
-                foreach (string option in commandLineBuilder)
-                {
-                    string foundSwitch = null;
-                    foreach (string includeSwitch in includeSwitches)
-                    {
-                        if (option.StartsWith(includeSwitch))
-                        {
-                            foundSwitch = includeSwitch;
-                            break;
-                        }
-                    }
-
-                    if (foundSwitch != null)
-                    {
-                        string path = option.Substring(foundSwitch.Length); // strip the option switch prefix
-                        if ("." == path)
-                        {
-                            path = System.IO.Path.GetDirectoryName(sourceFilePath);
-                        }
-                        else if (path.StartsWith("\""))
-                        {
-                            path = path.Substring(1, path.Length - 2); // strip quotes
-                        }
-                        includePaths.Add(path);
-                    }
-                }
-                dependencyData.includePaths = includePaths;
-#endif
 
                 DependencyGenerator.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
             }
