@@ -1,3 +1,5 @@
+24-Jan-2013 Released 0.50 Alpha 1
+
 24-Jan-2013 Removing obsolete API
  - Opus.Core.DirectoryCollection.Add
  - Opus.Core.FileCollection.AddRelativePaths
