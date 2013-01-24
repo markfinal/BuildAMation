@@ -131,6 +131,8 @@
 
 03-Oct-2012 If a debugger is attached, but Mono is detected, output is written to the Console, rather than the Diagnostics.Debug stream, as there is no obvious pane in MonoDevelop to capture the latter.
 
+
+
 29-Sep-2012 Property generation for interfaces is now an explicit implementation for the OptionCollections rather than public functions. Interfaces must be used rather than the option collection types to access the properties.
 
 06-Sep-2012 Fixing Gcc linker option AllowUndefinedSymbols for OSX. For OSX this is -Wl,-undefined,dynamic_lookup and -Wl,-undefined,error, while on other Gcc variations, it is -Wl,-z,nodefs and -Wl,-z,defs.
