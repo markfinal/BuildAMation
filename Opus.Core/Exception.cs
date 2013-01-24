@@ -65,7 +65,7 @@ namespace Opus.Core
             }
 
             bool anyInnerExceptions = DisplayException(exception.InnerException);
-            Log.ErrorMessage("({1}) {0}", exception.Message, exception.GetType().ToString());
+            Log.ErrorMessage("({0}) {1}", exception.GetType().ToString(), exception.Message);
             if (!anyInnerExceptions)
             {
                 Log.ErrorMessage("{0}{1}", System.Environment.NewLine, exception.StackTrace.ToString());
