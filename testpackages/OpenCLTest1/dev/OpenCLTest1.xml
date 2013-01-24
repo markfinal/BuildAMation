@@ -7,6 +7,9 @@
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Clang">
+      <Opus:Version Id="3.1" />
+    </Opus:Package>
     <Opus:Package Name="FileUtilities">
       <Opus:Version Id="dev" />
     </Opus:Package>
@@ -17,10 +20,16 @@
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="VisualC">
-      <Opus:Version Id="9.0" />
+      <Opus:Version Id="10.0" />
+      <Opus:Version Id="8.0" />
+      <Opus:Version Id="9.0" Default="true" />
     </Opus:Package>
     <Opus:Package Name="VSSolutionBuilder">
       <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="WindowsSDK">
+      <Opus:Version Id="6.0A" Default="true" />
+      <Opus:Version Id="7.1" />
     </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>

@@ -5,7 +5,7 @@
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="DotNetFramework">
-      <Opus:Version Id="4.0" />
+      <Opus:Version Id="4.0" Default="true" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />

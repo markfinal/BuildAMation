@@ -2,7 +2,9 @@
 <Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
   <Opus:RequiredPackages>
     <Opus:Package Name="DotNetFramework">
-      <Opus:Version Id="3.5" />
+      <Opus:Version Id="2.0.50727" />
+      <Opus:Version Id="3.5" Default="true" />
+      <Opus:Version Id="4.0" />
     </Opus:Package>
     <Opus:Package Name="FileUtilities">
       <Opus:Version Id="dev" />
