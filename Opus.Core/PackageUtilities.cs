@@ -192,82 +192,10 @@ namespace Opus.Core
                         build.Versions.Add(id2);
                     }
 
-#if true
                     State.DependentPackageList.Add(id2);
-#else
-                    bool toAdd = true;
-                    bool toRemoveDuplicate = false;
-                    foreach (PackageIdentifier id3 in State.DependentPackageList)
-                    {
-                        if (id2.MatchName(id3.Name, true))
-                        {
-                            int versionMatch = id2.MatchVersion(id3, true);
-                            if (0 == versionMatch)
-                            {
-                                Log.DebugMessage("Ignoring matching package version '{0}'", id2.ToString());
-                                toAdd = false;
-                            }
-                            else if (versionMatch > 0)
-                            {
-                                Log.DebugMessage("Package '{0}' is newer than '{1}'. Replacing.", id2.ToString(), id3.ToString());
-                                State.DependentPackageList.Remove(id3); // safe to remove since we don't iterate the list anymore here
-                                toAdd = true;
-                            }
-                            else
-                            {
-                                if (id2.PlatformFilter != id3.PlatformFilter)
-                                {
-                                    Log.DebugMessage("Package '{0}' is older than '{1}' but has different platform filters. Adding.", id2.ToString(), id3.ToString());
-                                    toAdd = true;
-                                    toRemoveDuplicate = true;
-                                }
-                                else
-                                {
-                                    Log.DebugMessage("Package '{0}' is older than '{1}' and has identical platform filters. Ignoring.", id2.ToString(), id3.ToString());
-                                    toAdd = false;
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-
-                    if (toAdd)
-                    {
-                        if (toRemoveDuplicate)
-                        {
-                            PackageIdentifier dupToRemove = null;
-                            foreach (PackageIdentifier dup in State.DependentPackageList)
-                            {
-                                if (dup.Name == id2.Name)
-                                {
-                                    dupToRemove = dup;
-                                    break;
-                                }
-                            }
-
-                            State.DependentPackageList.Remove(dupToRemove);
-                        }
-
-                        State.DependentPackageList.Add(id2);
-                    }
-#endif
                 }
             }
 
-#if false
-            Log.MessageAll("Packages to build");
-            foreach (PackageBuild build in buildList)
-            {
-                Log.MessageAll(build.Name);
-                foreach (PackageIdentifier version in build.Versions)
-                {
-                    Log.MessageAll("\t{0}", version.Version);
-                }
-            }
-#endif
-
-#if true
             if (resolveToSinglePackageVersion)
             {
                 // can we resolve down to a single package?
@@ -333,31 +261,6 @@ namespace Opus.Core
                     }
                 }
             }
-#else
-            // now that we have resolved all the dependent packages, instantiate Packages
-            // that are used for the build process
-            foreach (PackageIdentifier id in State.DependentPackageList)
-            {
-                PackageInformation info = new PackageInformation(id);
-
-                if (null == id.Definition)
-                {
-                    throw new Exception("Package '{0}-{1}' has no definition loaded. This is an unexpected error.", id.Name, id.Version);
-                }
-
-                if (!OSUtilities.IsCurrentPlatformSupported(id.Definition.SupportedPlatforms))
-                {
-                    continue;
-                }
-
-                if (!OSUtilities.IsCurrentPlatformSupported(id.PlatformFilter))
-                {
-                    continue;
-                }
-
-                State.PackageInfo.Add(info);
-            }
-#endif
 
             if (0 == State.PackageInfo.Count)
             {
