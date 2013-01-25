@@ -7,6 +7,8 @@ namespace CommandLineProcessor
 {
     public static class Processor
     {
+        static bool disableResponseFiles = Opus.Core.State.Get<bool>("Build", "DisableResponseFiles", false);
+
         public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder)
         {
             return Execute (node, tool, commandLineBuilder, null);
@@ -62,7 +64,7 @@ namespace CommandLineProcessor
                 }
             }
 
-            if (tool is Opus.Core.IToolSupportsResponseFile)
+            if ((tool is Opus.Core.IToolSupportsResponseFile) && !disableResponseFiles)
             {
                 string responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;
 
