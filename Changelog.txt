@@ -1,3 +1,5 @@
+25-Jan-2013 Implemented C.ICharacterSet options. These just set #defines (_UNICODE,UNICODE) and _MBCS on the compiler options.
+
 25-Jan-2013 Adding option '-noresponsefiles' when using command line builds to exclude the use of response files (assuming the tools used support them).
 
 24-Jan-2013 Released 0.50 Alpha 1

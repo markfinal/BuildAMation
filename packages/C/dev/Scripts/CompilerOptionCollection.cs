@@ -9,9 +9,12 @@ namespace C
     {
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
-            ICCompilerOptions compilerOptions = this as ICCompilerOptions;
+            var compilerOptions = this as ICCompilerOptions;
 
             Opus.Core.Target target = node.Target;
+
+            // process character set early, as it sets #defines
+            compilerOptions.CharacterSet = ECharacterSet.NotSet;
 
             compilerOptions.OutputType = ECompilerOutput.CompileOnly;
             compilerOptions.WarningsAsErrors = true;
@@ -67,7 +70,6 @@ namespace C
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
 
             compilerOptions.DisableWarnings = new Opus.Core.StringArray();
-            compilerOptions.CharacterSet = ECharacterSet.NotSet;
             compilerOptions.AdditionalOptions = "";
         }
 

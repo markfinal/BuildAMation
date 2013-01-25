@@ -169,13 +169,17 @@ namespace Clang
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            var cOptions = sender as C.ICCompilerOptions;
             switch (enumOption.Value)
             {
                 case C.ECharacterSet.NotSet:
                     break;
                 case C.ECharacterSet.Unicode:
+                    cOptions.Defines.Add("_UNICODE");
+                    cOptions.Defines.Add("UNICODE");
                     break;
                 case C.ECharacterSet.MultiByte:
+                    cOptions.Defines.Add("_MBCS");
                     break;
             }
         }
