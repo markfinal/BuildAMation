@@ -134,6 +134,7 @@ namespace Opus.Core
         }
 
         // TODO: is this the same as set?
+        // Not quite. This will throw an exception if the entry already exists
         public static void Add<Type>(string category, string key, Type value)
         {
             if (ReadOnly)
