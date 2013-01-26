@@ -11,15 +11,34 @@ namespace VisualC
     {
         private static System.Guid ProjectTypeGuid;
         private static System.Guid SolutionFolderTypeGuid;
+        private static string vsEdition;
 
         static Solution()
         {
-            // TODO: this path is for VCExpress - what about the professional version?
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VisualStudio\8.0\Projects"))
+            // try the VS Express version first, since it's free
+            string registryKey = @"Microsoft\VCExpress\8.0\Projects";
+            if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
+            {
+                vsEdition = "Express";
+            }
+            else
+            {
+                registryKey = @"Microsoft\VisualStudio\8.0\Projects";
+                if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
+                {
+                    vsEdition = "Professional";
+                }
+                else
+                {
+                    throw new Opus.Core.Exception("VisualStudio C++ 2010 (Express or Professional) was not installed");
+                }
+            }
+
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(registryKey))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("VisualStudio C++ Express 2005 was not installed");
+                    throw new Opus.Core.Exception("VisualStudio C++ {0} 2005 was not installed", vsEdition);
                 }
 
                 string[] subKeyNames = key.GetSubKeyNames();
@@ -49,7 +68,7 @@ namespace VisualC
 
             if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
             {
-                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010");
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2005 {0}", vsEdition);
             }
 
 #if false
