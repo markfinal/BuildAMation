@@ -136,6 +136,7 @@
     <Compile Include="TargetUtilities.cs" />
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />
+    <Compile Include="ToolAndOptionType.cs" />
     <Compile Include="TypeArray.cs" />
     <Compile Include="TypeUtilities.cs" />
     <Compile Include="UniqueList.cs" />

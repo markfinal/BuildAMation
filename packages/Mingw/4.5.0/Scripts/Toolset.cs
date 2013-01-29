@@ -9,17 +9,12 @@ namespace Mingw
     {
         public Toolset()
         {
-            this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
-            this.toolMap[typeof(C.ICxxCompilerTool)] = new CxxCompiler(this);
-            this.toolMap[typeof(C.ILinkerTool)] = new Linker(this);
-            this.toolMap[typeof(C.IArchiverTool)] = new MingwCommon.Archiver(this);
-            this.toolMap[typeof(C.IWinResourceCompilerTool)] = new MingwCommon.Win32ResourceCompiler(this);
-
-            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Mingw.CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Mingw.CxxCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Mingw.LinkerOptionCollection);
-            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Mingw.ArchiverOptionCollection);
-            this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
+            this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
+            this.toolConfig[typeof(C.ILinkerTool)] = new Opus.Core.ToolAndOptionType(new Linker(this), typeof(LinkerOptionCollection));
+            this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new MingwCommon.Archiver(this), typeof(ArchiverOptionCollection));
+            this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Opus.Core.ToolAndOptionType(new MingwCommon.Win32ResourceCompiler(this), typeof(C.Win32ResourceCompilerOptionCollection));
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
         }
 
         protected override void GetInstallPath(Opus.Core.BaseTarget baseTarget)

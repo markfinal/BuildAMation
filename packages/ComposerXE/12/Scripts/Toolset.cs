@@ -9,11 +9,8 @@ namespace ComposerXE
     {
         public Toolset()
         {
-            this.toolMap[typeof(C.ICompilerTool)] = new ComposerXECommon.CCompiler(this);
-            this.toolMap[typeof(C.ICxxCompilerTool)] = new ComposerXECommon.CxxCompiler(this);
-
-            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(CxxCompilerOptionCollection);
+            this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new ComposerXECommon.CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new ComposerXECommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
         }
 
         protected override string Version

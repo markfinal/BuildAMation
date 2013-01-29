@@ -9,15 +9,12 @@ namespace Clang
     {
         private string installPath;
 
-        private System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
-        private System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 
         public Toolset()
         {
-            this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
-            this.toolMap[typeof(C.ICxxCompilerTool)] = new CxxCompiler(this);
-            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(CxxCompilerOptionCollection);
+            this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
         }
 
         #region IToolset Members
@@ -63,28 +60,22 @@ namespace Clang
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
         {
-            if (!this.toolMap.ContainsKey(toolType))
+            if (!this.toolConfig.ContainsKey(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
-            return this.toolMap[toolType];
+            return this.toolConfig[toolType].Tool;
         }
 
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            if (!this.toolOptionsMap.ContainsKey(toolType))
+            if (!this.toolConfig.ContainsKey(toolType))
             {
-                // if there is no tool then there will be no optionset
-                if (!this.toolMap.ContainsKey(toolType))
-                {
-                    return null;
-                }
-
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
-            return this.toolOptionsMap[toolType];
+            return this.toolConfig[toolType].OptionsType;
         }
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)

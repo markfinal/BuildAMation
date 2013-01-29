@@ -1,3 +1,5 @@
+29-Jan-2013 Adding Opus.Core.ToolAndOptionType class, as a helper for constructing IToolsets. Updated Clang, ComposerXE, Mingw and VisualC toolsets to use the new class.
+
 26-Jan-2013 Fixing VisualStudio 2005 and 2008 selection of Express or Professional versions for VSSolution builds.
 
 25-Jan-2013 Implemented C.ICharacterSet options. These just set #defines (_UNICODE,UNICODE) and _MBCS on the compiler options.

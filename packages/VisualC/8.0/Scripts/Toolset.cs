@@ -22,17 +22,12 @@ namespace VisualC
 
         public Toolset()
         {
-            this.toolMap[typeof(C.ICompilerTool)] = new VisualCCommon.CCompiler(this);
-            this.toolMap[typeof(C.ICxxCompilerTool)] = new VisualCCommon.CxxCompiler(this);
-            this.toolMap[typeof(C.ILinkerTool)] = new VisualCCommon.Linker(this);
-            this.toolMap[typeof(C.IArchiverTool)] = new VisualCCommon.Archiver(this);
-            this.toolMap[typeof(C.IWinResourceCompilerTool)] = new VisualCCommon.Win32ResourceCompiler(this);
-
-            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(CxxCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(LinkerOptionCollection);
-            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(ArchiverOptionCollection);
-            this.toolOptionsMap[typeof(C.IWinResourceCompilerTool)] = typeof(C.Win32ResourceCompilerOptionCollection);
+            this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
+            this.toolConfig[typeof(C.ILinkerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Linker(this), typeof(LinkerOptionCollection));
+            this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Archiver(this), typeof(ArchiverOptionCollection));
+            this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ResourceCompiler(this), typeof(C.Win32ResourceCompilerOptionCollection));
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
         }
         
         protected override void GetInstallPath()
