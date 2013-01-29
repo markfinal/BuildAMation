@@ -8,8 +8,7 @@ namespace GccCommon
     public abstract class Toolset : Opus.Core.IToolset
     {
         protected string installPath;
-        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
-        protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
         protected GccCommon.GccDetailData gccDetail;
 
         private void GetInstallPath(Opus.Core.BaseTarget baseTarget)
@@ -64,28 +63,22 @@ namespace GccCommon
 
         Opus.Core.ITool Opus.Core.IToolset.Tool (System.Type toolType)
         {
-            if (!this.toolMap.ContainsKey(toolType))
+            if (!this.toolConfig.ContainsKey(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
-            return this.toolMap[toolType];
+            return this.toolConfig[toolType].Tool;
         }
 
         System.Type Opus.Core.IToolset.ToolOptionType (System.Type toolType)
         {
-            if (!this.toolOptionsMap.ContainsKey(toolType))
+            if (!this.toolConfig.ContainsKey(toolType))
             {
-                // if there is no tool then there will be no optionset
-                if (!this.toolMap.ContainsKey(toolType))
-                {
-                    return null;
-                }
-
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
-            return this.toolOptionsMap[toolType];
+            return this.toolConfig[toolType].OptionsType;
         }
 
         Opus.Core.StringArray Opus.Core.IToolset.Environment

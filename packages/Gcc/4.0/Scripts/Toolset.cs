@@ -9,15 +9,11 @@ namespace Gcc
     {
         public Toolset()
         {
-            this.toolMap[typeof(C.ICompilerTool)] = new CCompiler(this);
-            this.toolMap[typeof(C.ICxxCompilerTool)] = new CxxCompiler(this);
-            this.toolMap[typeof(C.ILinkerTool)] = new Linker(this);
-            this.toolMap[typeof(C.IArchiverTool)] = new GccCommon.Archiver(this);
-
-            this.toolOptionsMap[typeof(C.ICompilerTool)] = typeof(Gcc.CCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ICxxCompilerTool)] = typeof(Gcc.CxxCompilerOptionCollection);
-            this.toolOptionsMap[typeof(C.ILinkerTool)] = typeof(Gcc.LinkerOptionCollection);
-            this.toolOptionsMap[typeof(C.IArchiverTool)] = typeof(Gcc.ArchiverOptionCollection);
+            this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
+            this.toolConfig[typeof(C.ILinkerTool)] = new Opus.Core.ToolAndOptionType(new Linker(this), typeof(LinkerOptionCollection));
+            this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new GccCommon.Archiver(this), typeof(ArchiverOptionCollection));
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
         }
     }
 }
