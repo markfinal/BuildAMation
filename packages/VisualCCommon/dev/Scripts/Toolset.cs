@@ -20,6 +20,11 @@ namespace VisualCCommon
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 
+        protected Toolset()
+        {
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+        }
+
         #region IToolset Members
 
         string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)

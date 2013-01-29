@@ -19,6 +19,11 @@ namespace MingwCommon
 
         protected MingwDetailData details;
 
+        protected Toolset()
+        {
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+        }
+
         public MingwDetailData MingwDetail
         {
             get

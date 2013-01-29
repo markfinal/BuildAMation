@@ -11,6 +11,11 @@ namespace GccCommon
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
         protected GccCommon.GccDetailData gccDetail;
 
+        protected Toolset()
+        {
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+        }
+
         private void GetInstallPath(Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
