@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class CxxCompiler : GccCommon.CxxCompiler
+    public sealed class CxxCompiler : GccCommon.CxxCompiler, Opus.Core.IToolSupportsResponseFile
     {
         public CxxCompiler(Opus.Core.IToolset toolset)
             : base(toolset)
@@ -20,6 +20,18 @@ namespace Gcc
                 return "g++-4.6";
             }
         }
+        #endregion
+
+        #region IToolSupportsResponseFile Members
+
+        string Opus.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
         #endregion
     }
 }
