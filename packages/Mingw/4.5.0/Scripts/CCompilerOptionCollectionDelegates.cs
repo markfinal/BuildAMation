@@ -1,4 +1,4 @@
-// Automatically generated file from OpusOptionInterfacePropertyGenerator.
+// Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
 // -i=ICCompilerOptions.cs -n=Mingw -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
 
@@ -32,8 +32,7 @@ namespace Mingw
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
-            // TODO: only works on ELF executables
-            //this["Visibility"].PrivateData = new MingwCommon.PrivateData(VisibilityCommandLineProcessor);
+            this["Visibility"].PrivateData = new MingwCommon.PrivateData(VisibilityCommandLineProcessor);
         }
     }
 }
