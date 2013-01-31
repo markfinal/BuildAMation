@@ -1,3 +1,5 @@
+31-Jan-2013 Adding IncrementalLink boolean option to VisualCCommon.ILinkerOptions.
+
 29-Jan-2013 Restoring response file support for valid Gcc versions.
 
 29-Jan-2013 Adding Opus.Core.ToolAndOptionType class, as a helper for constructing IToolsets. Updated Clang, ComposerXE, Mingw and VisualC toolsets to use the new class.

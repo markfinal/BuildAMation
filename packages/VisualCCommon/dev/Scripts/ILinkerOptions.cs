@@ -24,5 +24,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        bool IncrementalLink
+        {
+            get;
+            set;
+        }
     }
 }

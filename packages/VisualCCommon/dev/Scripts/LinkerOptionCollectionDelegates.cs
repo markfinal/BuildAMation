@@ -390,6 +390,41 @@ namespace VisualCCommon
             }
             return returnVal;
         }
+        private static void IncrementalLinkCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                commandLineBuilder.Add("/INCREMENTAL");
+            }
+            else
+            {
+                commandLineBuilder.Add("/INCREMENTAL:NO");
+            }
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary IncrementalLinkVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+
+            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (vsTarget == VisualStudioProcessor.EVisualStudioTarget.VCPROJ)
+            {
+                if (boolOption.Value)
+                {
+                    returnVal.Add("LinkIncremental", "2");
+                }
+                else
+                {
+                    returnVal.Add("LinkIncremental", "0");
+                }
+            }
+            else
+            {
+                // TODO
+            }
+
+            return returnVal;
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -406,6 +441,7 @@ namespace VisualCCommon
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLineProcessor,NoLogoVisualStudioProcessor);
             this["StackReserveAndCommit"].PrivateData = new PrivateData(StackReserveAndCommitCommandLineProcessor,StackReserveAndCommitVisualStudioProcessor);
             this["IgnoredLibraries"].PrivateData = new PrivateData(IgnoredLibrariesCommandLineProcessor,IgnoredLibrariesVisualStudioProcessor);
+            this["IncrementalLink"].PrivateData = new PrivateData(IncrementalLinkCommandLineProcessor,IncrementalLinkVisualStudioProcessor);
         }
     }
 }

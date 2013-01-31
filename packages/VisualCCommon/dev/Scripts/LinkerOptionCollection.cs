@@ -19,6 +19,7 @@ namespace VisualCCommon
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
 
             Opus.Core.Target target = node.Target;
+            linkerInterface.IncrementalLink = target.HasConfiguration(Opus.Core.EConfiguration.Debug);
 
             C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
 

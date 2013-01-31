@@ -164,6 +164,18 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("IgnoredLibrariesSetHandler", this["IgnoredLibraries"]);
             }
         }
+        bool ILinkerOptions.IncrementalLink
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("IncrementalLink");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("IncrementalLink", value);
+                this.ProcessNamedSetHandler("IncrementalLinkSetHandler", this["IncrementalLink"]);
+            }
+        }
         #endregion
     }
 }
