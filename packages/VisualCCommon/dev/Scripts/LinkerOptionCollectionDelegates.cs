@@ -420,7 +420,8 @@ namespace VisualCCommon
             }
             else
             {
-                // TODO
+                // TODO: this is wrong - it needs to be on the PropertyGroup, not the ItemDefinitionGroup
+                returnVal.Add("LinkIncremental", boolOption.Value.ToString().ToLower());
             }
 
             return returnVal;
