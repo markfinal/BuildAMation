@@ -52,6 +52,41 @@ namespace Opus.Core
             }
         }
 
+        private static void RecursivelyAttachExportUpdates<ExportAttributeType>(DependencyNode node, DependencyNode owningNode, BaseModule module, int depth, DependencyNodeCollection collection, string collectionType)
+        {
+            if (null == collection)
+            {
+                return;
+            }
+
+            foreach (DependencyNode dependentNode in collection)
+            {
+                Log.DebugMessage("{0} dependent '{1}' of '{2}'", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
+
+                int newDepth = depth + 1;
+                AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth);
+
+                if (null == dependentNode.Children)
+                {
+                    continue;
+                }
+
+                foreach (DependencyNode childOfDependent in dependentNode.Children)
+                {
+                    IModule childModule = childOfDependent.Module;
+                    System.Type childType = childModule.GetType();
+
+                    if (!owningNode.ExportedUpdatesAdded.Contains(childType))
+                    {
+                        IToolset childToolset = ModuleUtilities.GetToolsetForModule(childType);
+                        Target childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
+                        AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, childTarget, newDepth);
+                        owningNode.ExportedUpdatesAdded.Add(childType);
+                    }
+                }
+            }
+        }
+
         // this version only applies the exported attribute type
         private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(BaseModule module, DependencyNode node, int depth)
         {
@@ -70,35 +105,7 @@ namespace Opus.Core
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
-            if (null == node.ExternalDependents)
-            {
-                return;
-            }
-
-            foreach (DependencyNode dependentNode in node.ExternalDependents)
-            {
-                Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
-
-                AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
-
-                if (null == dependentNode.Children)
-                {
-                    continue;
-                }
-
-                //IModule dependentModule = dependentNode.Module;
-                foreach (DependencyNode childOfDependent in dependentNode.Children)
-                {
-                    IModule childModule = childOfDependent.Module;
-                    System.Type childType = childModule.GetType();
-
-                    if (!owningNode.ExportedUpdatesAdded.Contains(childType))
-                    {
-                        AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
-                        owningNode.ExportedUpdatesAdded.Add(childType);
-                    }
-                }
-            }
+            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, depth, node.ExternalDependents, "External");
         }
 
         // this applies both local and export, but not local to the external dependents
@@ -131,59 +138,9 @@ namespace Opus.Core
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
-            if (null != node.ExternalDependents)
-            {
-                foreach (DependencyNode dependentNode in node.ExternalDependents)
-                {
-                    Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
+            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, depth, node.ExternalDependents, "External");
 
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
-
-                    if (null != dependentNode.Children)
-                    {
-                        foreach (DependencyNode childOfDependent in dependentNode.Children)
-                        {
-                            IModule childModule = childOfDependent.Module;
-                            System.Type childType = childModule.GetType();
-
-                            if (!owningNode.ExportedUpdatesAdded.Contains(childType))
-                            {
-                                IToolset childToolset = ModuleUtilities.GetToolsetForModule(childType);
-                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
-                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, childTarget, depth + 1);
-                                owningNode.ExportedUpdatesAdded.Add(childType);
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (null != node.RequiredDependents)
-            {
-                foreach (DependencyNode requiredNode in node.RequiredDependents)
-                {
-                    Log.DebugMessage("Required dependent '{0}' of '{1}'", requiredNode.UniqueModuleName, node.UniqueModuleName);
-
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, requiredNode, depth + 1);
-
-                    if (null != requiredNode.Children)
-                    {
-                        foreach (DependencyNode childOfDependent in requiredNode.Children)
-                        {
-                            IModule childModule = childOfDependent.Module;
-                            System.Type childType = childModule.GetType();
-
-                            if (!owningNode.ExportedUpdatesAdded.Contains(childType))
-                            {
-                                IToolset childToolset = ModuleUtilities.GetToolsetForModule(childType);
-                                Target childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
-                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, childTarget, depth + 1);
-                                owningNode.ExportedUpdatesAdded.Add(childType);
-                            }
-                        }
-                    }
-                }
-            }
+            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, depth, node.RequiredDependents, "Required");
         }
 
         private static void ProcessFieldAttributes(IModule module, Target target)
