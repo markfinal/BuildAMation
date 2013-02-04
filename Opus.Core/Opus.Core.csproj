@@ -95,6 +95,7 @@
     <Compile Include="Interfaces\IBuilder.cs" />
     <Compile Include="Interfaces\IBuildScheduler.cs" />
     <Compile Include="Interfaces\IFieldAttributeProcessor.cs" />
+    <Compile Include="Interfaces\IForwardDependenciesOn.cs" />
     <Compile Include="Interfaces\IGlobalOptionCollectionOverride.cs" />
     <Compile Include="Interfaces\IIdentifyExternalDependencies.cs" />
     <Compile Include="Interfaces\IInjectModules.cs" />

@@ -9,7 +9,7 @@ namespace C
     /// C/C++ static library
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IArchiverTool))]
-    public class StaticLibrary : Opus.Core.BaseModule, Opus.Core.INestedDependents
+    public class StaticLibrary : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.IForwardDependenciesOn
     {
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {

@@ -221,6 +221,8 @@ namespace Opus.Core
 
         private void AddChildAndExternalDependents()
         {
+            DependencyNodeCollection nodesWithForwardedDependencies = new DependencyNodeCollection();
+
             int currentRank = 0;
             while (currentRank < this.RankCount)
             {
@@ -246,6 +248,7 @@ namespace Opus.Core
                     }
                     if (externalDependentModuleTypes != null)
                     {
+                        bool hasForwardedDeps = (node.Module is IForwardDependenciesOn);
                         foreach (System.Type dependentModuleType in externalDependentModuleTypes)
                         {
                             DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove);
@@ -264,6 +267,15 @@ namespace Opus.Core
                             }
 
                             node.AddExternalDependent(newNode);
+
+                            //cache these for the end of the populate operation
+                            if (hasForwardedDeps)
+                            {
+                                if (!nodesWithForwardedDependencies.Contains(node))
+                                {
+                                    nodesWithForwardedDependencies.Add(node);
+                                }
+                            }
                         }
                     }
 
@@ -350,6 +362,23 @@ namespace Opus.Core
                 }
 
                 ++currentRank;
+            }
+
+            // now, at the very end, link up forwarded dependencies
+            // performed at the end because the existing dependencies are already in place
+            // and they will automatically satisfy the new links
+            foreach (DependencyNode nodeWith in nodesWithForwardedDependencies)
+            {
+                if (nodeWith.ExternalDependentFor != null)
+                {
+                    foreach (DependencyNode forNode in nodeWith.ExternalDependentFor)
+                    {
+                        foreach (DependencyNode forwardedDependency in nodeWith.ExternalDependents)
+                        {
+                            forNode.AddExternalDependent(forwardedDependency);
+                        }
+                    }
+                }
             }
         }
 

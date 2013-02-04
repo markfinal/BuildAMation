@@ -1,3 +1,5 @@
+04-Feb-2013 Added Opus.Core.IForwardDependenciesOn, which if used on a module type, will forward all of it's dependencies onto parent nodes. For example, if a C.StaticLibrary is dependent upon another StaticLibrary, that dependency is not used until an application links the first library. Then both are required to satisfy symbol requirements.
+
 04-Feb-2013 Simplified the logic in creating an Opus.Core.DependencyNode from a module type, by moving that logic to the ModuleFactory.
 
 31-Jan-2013 Adding IncrementalLink boolean option to VisualCCommon.ILinkerOptions.
