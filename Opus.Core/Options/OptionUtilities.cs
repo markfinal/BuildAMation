@@ -18,34 +18,36 @@ namespace Opus.Core
             foreach (System.Reflection.MethodInfo method in methods)
             {
                 var attributes = method.GetCustomAttributes(typeof(AttributeType), false);
-                if (attributes.Length > 0)
+                if (0 == attributes.Length)
                 {
-                    if (!method.IsStatic)
-                    {
-                        Log.DebugMessage("{4}{2} += {1}'s instance update '{0}' (type {3})",
-                                         method.Name,
-                                         type.FullName,
-                                         module.ToString(),
-                                         typeof(AttributeType).ToString(),
-                                         new string('\t', depth));
+                    continue;
+                }
 
-                        IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
-                        if (null == moduleContainingMethod)
-                        {
-                            throw new Exception("While adding option update delegate '{0}', cannot find module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString());
-                        }
-                        module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), moduleContainingMethod, method, true) as UpdateOptionCollectionDelegate;
-                    }
-                    else
+                if (!method.IsStatic)
+                {
+                    Log.DebugMessage("{4}{2} += {1}'s instance update '{0}' (type {3})",
+                                     method.Name,
+                                     type.FullName,
+                                     module.ToString(),
+                                     typeof(AttributeType).ToString(),
+                                     new string('\t', depth));
+
+                    IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
+                    if (null == moduleContainingMethod)
                     {
-                        Log.DebugMessage("{4}{2} += {1}'s static update '{0}' (type {3})",
-                                         method.Name,
-                                         type.FullName,
-                                         module.ToString(),
-                                         typeof(AttributeType).ToString(),
-                                         new string('\t', depth));
-                        module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), method) as UpdateOptionCollectionDelegate;
+                        throw new Exception("While adding option update delegate '{0}', cannot find module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString());
                     }
+                    module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), moduleContainingMethod, method, true) as UpdateOptionCollectionDelegate;
+                }
+                else
+                {
+                    Log.DebugMessage("{4}{2} += {1}'s static update '{0}' (type {3})",
+                                     method.Name,
+                                     type.FullName,
+                                     module.ToString(),
+                                     typeof(AttributeType).ToString(),
+                                     new string('\t', depth));
+                    module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), method) as UpdateOptionCollectionDelegate;
                 }
             }
         }
@@ -68,28 +70,32 @@ namespace Opus.Core
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
-            if (null != node.ExternalDependents)
+            if (null == node.ExternalDependents)
             {
-                foreach (DependencyNode dependentNode in node.ExternalDependents)
+                return;
+            }
+
+            foreach (DependencyNode dependentNode in node.ExternalDependents)
+            {
+                Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
+
+                AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
+
+                if (null == dependentNode.Children)
                 {
-                    Log.DebugMessage("External dependent '{0}' of '{1}'", dependentNode.UniqueModuleName, node.UniqueModuleName);
+                    continue;
+                }
 
-                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, depth + 1);
+                //IModule dependentModule = dependentNode.Module;
+                foreach (DependencyNode childOfDependent in dependentNode.Children)
+                {
+                    IModule childModule = childOfDependent.Module;
+                    System.Type childType = childModule.GetType();
 
-                    if (null != dependentNode.Children)
+                    if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                     {
-                        //IModule dependentModule = dependentNode.Module;
-                        foreach (DependencyNode childOfDependent in dependentNode.Children)
-                        {
-                            IModule childModule = childOfDependent.Module;
-                            System.Type childType = childModule.GetType();
-
-                            if (!owningNode.ExportedUpdatesAdded.Contains(childType))
-                            {
-                                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
-                                owningNode.ExportedUpdatesAdded.Add(childType);
-                            }
-                        }
+                        AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, target, depth + 1);
+                        owningNode.ExportedUpdatesAdded.Add(childType);
                     }
                 }
             }
