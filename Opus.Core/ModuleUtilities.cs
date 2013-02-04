@@ -104,6 +104,8 @@ namespace Opus.Core
             }
         }
 
+        // TODO: should be able to roll the following functions into one
+        // This will improve performance as we only have to use reflection on the fields once
         public static TypeArray GetExternalDependents(IModule module, Target target)
         {
             return GetFieldsWithAttributeType<Core.DependentModulesAttribute>(module, target);
