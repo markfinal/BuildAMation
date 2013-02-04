@@ -1,3 +1,5 @@
+04-Feb-2013 Simplified the logic in creating an Opus.Core.DependencyNode from a module type, by moving that logic to the ModuleFactory.
+
 31-Jan-2013 Adding IncrementalLink boolean option to VisualCCommon.ILinkerOptions.
 
 29-Jan-2013 Restoring response file support for valid Gcc versions.

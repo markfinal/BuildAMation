@@ -215,6 +215,7 @@ namespace Opus.Core
         public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
         {
             this.Initialize(module.GetType(), parent, target, childIndex, nestedModule);
+
             this.Module = module;
             module.OwningNode = this;
         }
@@ -223,23 +224,7 @@ namespace Opus.Core
         {
             this.Initialize(moduleType, parent, target, childIndex, nestedModule);
 
-            BaseModule module = null;
-            try
-            {
-                if (null != moduleType.GetConstructor(new System.Type[] { typeof(Target) }))
-                {
-                    module = ModuleFactory.CreateModule(moduleType, target);
-                }
-                else
-                {
-                    module = ModuleFactory.CreateModule(moduleType);
-                }
-            }
-            catch (System.MissingMethodException)
-            {
-                throw new Exception("Cannot construct object of type '{0}'. Missing public constructor?", moduleType.ToString());
-            }
-
+            BaseModule module = ModuleFactory.CreateModule(moduleType, target);
             this.Module = module;
             module.OwningNode = this;
         }
