@@ -4,6 +4,9 @@
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Gcc">
+      <Opus:Version Id="4.4" Default="true" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
