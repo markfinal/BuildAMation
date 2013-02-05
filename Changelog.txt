@@ -1,3 +1,5 @@
+05-Feb-2013 DependencyNodes can now be excluded from build scheduling. This allows nodes to persist within the graph, and benefit from graph manipulations, but be quickly passed over if they are not actually needed. For example, in the case of a simple C/C++ setup, with two dependent static libraries. Building just one does not require the other to be built to satisfy the build. Using Opus.Core.IForwardDependenciesOn will re-enable nodes for build scheduling if future dependencies require them.
+
 04-Feb-2013 Added Opus.Core.IForwardDependenciesOn, which if used on a module type, will forward all of it's dependencies onto parent nodes. For example, if a C.StaticLibrary is dependent upon another StaticLibrary, that dependency is not used until an application links the first library. Then both are required to satisfy symbol requirements.
 
 04-Feb-2013 Simplified the logic in creating an Opus.Core.DependencyNode from a module type, by moving that logic to the ModuleFactory.

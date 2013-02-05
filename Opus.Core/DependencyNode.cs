@@ -31,6 +31,7 @@ namespace Opus.Core
             {
                 output.AppendFormat(" Rank {0}", this.Rank);
             }
+            output.AppendFormat(" {0}", this.ConsiderForBuild ? "Buildable" : "Ignored");
             if (null != this.Children)
             {
                 output.Append(" Children { ");
@@ -96,6 +97,7 @@ namespace Opus.Core
                 throw new Exception("Module type '{0}' does not derive from the Opus.Core.BaseModule class", moduleType.ToString());
             }
 
+            this.ConsiderForBuild = true;
             this.Rank = -1;
             this.Parent = parent;
             this.Target = target;
@@ -488,6 +490,12 @@ namespace Opus.Core
             }
 
             return true;
+        }
+
+        public bool ConsiderForBuild
+        {
+            get;
+            set;
         }
     }
 }

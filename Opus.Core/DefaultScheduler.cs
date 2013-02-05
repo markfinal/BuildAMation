@@ -94,8 +94,10 @@ namespace Opus.Core
                     if (node.IsReadyToBuild())
                     {
                         ++this.ScheduledNodeCount;
-                        // is the build function empty? if so, just mark as succeeded
-                        if (null == node.BuildFunction)
+                        // is the build function empty?
+                        // is the node not under consideration for build?
+                        // if so, just mark as succeeded
+                        if ((null == node.BuildFunction) || !node.ConsiderForBuild)
                         {
                             node.BuildState = EBuildState.Succeeded;
                         }

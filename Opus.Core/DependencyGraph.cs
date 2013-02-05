@@ -274,6 +274,7 @@ namespace Opus.Core
                                 if (!nodesWithForwardedDependencies.Contains(node))
                                 {
                                     nodesWithForwardedDependencies.Add(node);
+                                    newNode.ConsiderForBuild = false;
                                 }
                             }
                         }
@@ -376,9 +377,35 @@ namespace Opus.Core
                         foreach (DependencyNode forwardedDependency in nodeWith.ExternalDependents)
                         {
                             forNode.AddExternalDependent(forwardedDependency);
+                            if (!forwardedDependency.ConsiderForBuild)
+                            {
+                                Log.DebugMessage("Node '{0}' was being ignored, but is needed by a forwarded dependent", forwardedDependency.UniqueModuleName);
+                                forwardedDependency.ConsiderForBuild = true;
+                            }
                         }
                     }
                 }
+            }
+
+            // ensure nodes not under consideration for build do not build their children either
+            currentRank = 0;
+            while (currentRank < this.RankCount)
+            {
+                DependencyNodeCollection rankNodes = this[currentRank];
+                foreach (DependencyNode node in rankNodes)
+                {
+                    if (!node.ConsiderForBuild && (null != node.Children))
+                    {
+                        Log.DebugMessage("Node '{0}' is not under consideration", node.UniqueModuleName);
+                        foreach (DependencyNode child in node.Children)
+                        {
+                            Log.DebugMessage("\tMarking '{0}' as also not under consideration", child.UniqueModuleName);
+                            child.ConsiderForBuild = false;
+                        }
+                    }
+                }
+
+                ++currentRank;
             }
         }
 
