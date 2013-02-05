@@ -52,7 +52,7 @@ namespace Opus.Core
             }
         }
 
-        private static void RecursivelyAttachExportUpdates<ExportAttributeType>(DependencyNode node, DependencyNode owningNode, BaseModule module, int depth, DependencyNodeCollection collection, string collectionType)
+        private static void RecursivelyAttachExportUpdates<ExportAttributeType>(DependencyNode node, DependencyNode owningNode, BaseModule module, int newDepth, DependencyNodeCollection collection, string collectionType)
         {
             if (null == collection)
             {
@@ -63,7 +63,6 @@ namespace Opus.Core
             {
                 Log.DebugMessage("{0} dependent '{1}' of '{2}'", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
 
-                int newDepth = depth + 1;
                 AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth);
 
                 if (null == dependentNode.Children)
@@ -93,19 +92,20 @@ namespace Opus.Core
             System.Type nodeModuleType = node.Module.GetType();
             Target target = node.Target;
             DependencyNode owningNode = module.OwningNode;
+            int newDepth = depth + 1;
 
             if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
             {
-                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, depth + 1);
+                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, newDepth);
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType);
             }
             if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType.BaseType))
             {
-                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
+                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, newDepth);
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
-            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, depth, node.ExternalDependents, "External");
+            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.ExternalDependents, "External");
         }
 
         // this applies both local and export, but not local to the external dependents
@@ -114,33 +114,34 @@ namespace Opus.Core
             System.Type nodeModuleType = node.Module.GetType();
             Target target = node.Target;
             DependencyNode owningNode = module.OwningNode;
+            int newDepth = depth + 1;
 
             // only apply local here
             if (!owningNode.LocalUpdatesAdded.Contains(nodeModuleType))
             {
-                AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType, target, depth + 1);
+                AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType, target, newDepth);
                 owningNode.LocalUpdatesAdded.Add(nodeModuleType);
             }
             if (!owningNode.LocalUpdatesAdded.Contains(nodeModuleType.BaseType))
             {
-                AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
+                AttachModuleOptionUpdatesFromType<LocalAttributeType>(module, nodeModuleType.BaseType, target, newDepth);
                 owningNode.LocalUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
             if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
             {
-                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, depth + 1);
+                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType, target, newDepth);
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType);
             }
             if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType.BaseType))
             {
-                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, depth + 1);
+                AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, newDepth);
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
             }
 
-            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, depth, node.ExternalDependents, "External");
+            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.ExternalDependents, "External");
 
-            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, depth, node.RequiredDependents, "Required");
+            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.RequiredDependents, "Required");
         }
 
         private static void ProcessFieldAttributes(IModule module, Target target)
