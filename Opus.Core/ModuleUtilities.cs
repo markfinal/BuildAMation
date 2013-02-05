@@ -279,5 +279,25 @@ namespace Opus.Core
 
             return null;
         }
+
+        public static Array<System.Reflection.FieldInfo> GetSourceFilesFromModuleType(System.Type moduleType)
+        {
+            Array<System.Reflection.FieldInfo> sourceFilesFields = new Array<System.Reflection.FieldInfo>();
+
+            System.Reflection.FieldInfo[] fieldInfoArray =
+                moduleType.GetFields(System.Reflection.BindingFlags.NonPublic |
+                                     System.Reflection.BindingFlags.Public |
+                                     System.Reflection.BindingFlags.Instance);
+            foreach (System.Reflection.FieldInfo fieldInfo in fieldInfoArray)
+            {
+                var attributes = fieldInfo.GetCustomAttributes(typeof(SourceFilesAttribute), false);
+                if (attributes.Length > 0)
+                {
+                    sourceFilesFields.Add(fieldInfo);
+                }
+            }
+
+            return sourceFilesFields;
+        }
     }
 }
