@@ -1,3 +1,5 @@
+06-Feb-2013 Released 0.50 Alpha 2
+
 05-Feb-2013 DependencyNodes can now be excluded from build scheduling. This allows nodes to persist within the graph, and benefit from graph manipulations, but be quickly passed over if they are not actually needed. For example, in the case of a simple C/C++ setup, with two dependent static libraries. Building just one does not require the other to be built to satisfy the build. Using Opus.Core.IForwardDependenciesOn will re-enable nodes for build scheduling if future dependencies require them.
 
 04-Feb-2013 Added Opus.Core.IForwardDependenciesOn, which if used on a module type, will forward all of it's dependencies onto parent nodes. For example, if a C.StaticLibrary is dependent upon another StaticLibrary, that dependency is not used until an application links the first library. Then both are required to satisfy symbol requirements.
@@ -335,6 +337,7 @@ v0.40
 22-Jan-2012 Opus.Core.BaseOptionCollection now has a virtual function SetDelegates(), which is required to be implemented by derived classes in order to assign delegates to handling each option.
 
 22-Jan-2012 Removing 'Commandline: ' prefix from all verbose native build output. It does not improve the readability of the output.
+
 
 22-Jan-2012 Adding DisableWarnings C options, which takes an Opus.Core.StringArray value. For VisualC, this is a list of compiler warning numbers to disable. For Gcc-like compilers, this is the name of the warning to disable, e.g. for -Wno-used-parameters pass "used-parameters". No warnings are disabled by default.
 
