@@ -143,9 +143,15 @@ namespace Opus.Core
 
         private string LocateRoot()
         {
+            bool rootContainingPackage = false;
             foreach (string root in State.PackageRoots)
             {
                 string packageDirectory = System.IO.Path.Combine(root, this.Name);
+                if (System.IO.Directory.Exists(packageDirectory))
+                {
+                    rootContainingPackage = true;
+                }
+
                 string versionDirectory = System.IO.Path.Combine(packageDirectory, this.Version);
                 if (System.IO.Directory.Exists(versionDirectory))
                 {
@@ -153,7 +159,14 @@ namespace Opus.Core
                 }
             }
 
-            throw new Exception("Unable to locate package '{0}' in any registered package roots:\n{1}", this.ToString("-"), State.PackageRoots.ToString('\n'));
+            if (!rootContainingPackage)
+            {
+                throw new Exception("Unable to locate package '{0}' in any registered package roots:\n{1}", this.ToString("-"), State.PackageRoots.ToString('\n'));
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public bool IsDefaultVersion

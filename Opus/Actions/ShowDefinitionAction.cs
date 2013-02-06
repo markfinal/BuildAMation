@@ -33,14 +33,7 @@ namespace Opus
             {
                 string platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
 
-                if (id.IsDefaultVersion)
-                {
-                    Core.Log.MessageAll("{0}{1}* (filter: {2}) (root: '{3}')", new string('\t', depth), id.ToString("-"), platformFilter, id.Root);
-                }
-                else
-                {
-                    Core.Log.MessageAll("{0}{1} (filter: {2}) (root: '{3}')", new string('\t', depth), id.ToString("-"), platformFilter, id.Root);
-                }
+                Core.Log.MessageAll("{0}{1}{2} (filter: {3}) (root: '{4}')", new string('\t', depth), (null != id.Root) ? id.ToString("-") : id.ToString("-").ToUpper(), id.IsDefaultVersion ? "*" : System.String.Empty, platformFilter, (null != id.Root) ? id.Root : "UNKNOWN");
 
                 if ((null != id.Definition) && (id.Definition.PackageIdentifiers.Count > 0))
                 {
@@ -52,7 +45,7 @@ namespace Opus
         public bool Execute()
         {
             // there may be multiple versions of packages - so show them all
-            Core.PackageUtilities.IdentifyMainAndDependentPackages(false);
+            Core.PackageUtilities.IdentifyMainAndDependentPackages(false, true);
 
             Core.PackageIdentifier mainPackageId = Core.State.PackageInfo[0].Identifier;
             Core.PackageDefinitionFile definitionFile = mainPackageId.Definition;

@@ -84,10 +84,17 @@ namespace Opus.Core
 
         public static string PackageDefinitionPathName(PackageIdentifier id)
         {
-            string packageDirectory = id.Path;
-            string definitionFileName = id.Name + ".xml";
-            string definitionPathName = System.IO.Path.Combine(packageDirectory, definitionFileName);
-            return definitionPathName;
+            if (id.Root != null)
+            {
+                string packageDirectory = id.Path;
+                string definitionFileName = id.Name + ".xml";
+                string definitionPathName = System.IO.Path.Combine(packageDirectory, definitionFileName);
+                return definitionPathName;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public static void IdentifyMainPackageOnly()
@@ -126,7 +133,7 @@ namespace Opus.Core
             State.PackageInfo.Add(info);
         }
 
-        public static void IdentifyMainAndDependentPackages(bool resolveToSinglePackageVersion)
+        public static void IdentifyMainAndDependentPackages(bool resolveToSinglePackageVersion, bool allowUndefinedPackages)
         {
             PackageBuildList buildList = new PackageBuildList();
 
@@ -157,6 +164,11 @@ namespace Opus.Core
             {
                 PackageIdentifier id = State.DependentPackageList[i++];
                 string definitionPathName = PackageDefinitionPathName(id);
+                if ((null == definitionPathName) && allowUndefinedPackages)
+                {
+                    continue;
+                }
+
                 PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
                 definitionFile.Read(true);
                 id.Definition = definitionFile;
@@ -296,7 +308,7 @@ namespace Opus.Core
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyMainAndDependentPackages(true);
+            IdentifyMainAndDependentPackages(true, false);
 
             PackageInformation mainPackage = State.PackageInfo.MainPackage;
 
@@ -522,7 +534,7 @@ namespace Opus.Core
             TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyMainAndDependentPackages(true);
+            IdentifyMainAndDependentPackages(true, false);
 
             PackageInformation mainPackage = State.PackageInfo.MainPackage;
 

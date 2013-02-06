@@ -1,3 +1,5 @@
+06-Feb-2013 Loosened requirements for -showdefinition to locate packages in package roots. If versions of a package are available, but does not match one desired, this will not throw an exception, but will indicate a missing package in the results.
+
 06-Feb-2013 Released 0.50 Alpha 2
 
 05-Feb-2013 DependencyNodes can now be excluded from build scheduling. This allows nodes to persist within the graph, and benefit from graph manipulations, but be quickly passed over if they are not actually needed. For example, in the case of a simple C/C++ setup, with two dependent static libraries. Building just one does not require the other to be built to satisfy the build. Using Opus.Core.IForwardDependenciesOn will re-enable nodes for build scheduling if future dependencies require them.
