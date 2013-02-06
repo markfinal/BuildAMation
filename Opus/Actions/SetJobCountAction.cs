@@ -23,13 +23,17 @@ namespace Opus
         {
             get
             {
-                return "Specify the number of concurrent jobs in the build";
+                return "Specify the number of concurrent jobs in the build (0 for all hardware threads)";
             }
         }
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
             this.JobCount = System.Convert.ToInt32(arguments);
+            if (0 == this.JobCount)
+            {
+                this.JobCount = System.Environment.ProcessorCount;
+            }
         }
 
         private int JobCount
