@@ -21,8 +21,8 @@ namespace Mingw
         {
             base.InitializeDefaults(node);
 
-            // requires gcc 4.0, and only works on ELFs
-            //(this as ICCompilerOptions).Visibility = EVisibility.Hidden;
+            // requires gcc 4.0, and only works on ELFs, but doesn't seem to do any harm
+            (this as ICCompilerOptions).Visibility = EVisibility.Hidden;
         }
     }
 }
