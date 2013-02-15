@@ -290,7 +290,30 @@ namespace Opus.Core
             get;
             private set;
         }
-        
+
+        private DependencyNodeCollection Ancestors()
+        {
+            DependencyNodeCollection collection = this.ExternalDependentFor;
+            if (collection != null)
+            {
+                DependencyNodeCollection ancestors = new DependencyNodeCollection();
+                ancestors.AddRange(collection);
+                foreach (DependencyNode node in collection)
+                {
+                    DependencyNodeCollection more = node.Ancestors();
+                    if (null != more)
+                    {
+                        ancestors.AddRange(more);
+                    }
+                }
+                return ancestors;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public void AddExternalDependent(DependencyNode dependent)
         {
             if (null == dependent)
@@ -301,6 +324,19 @@ namespace Opus.Core
             if (dependent == this)
             {
                 throw new Exception("Circular dependency detected in external dependents for node '{0}'", this);
+            }
+            DependencyNodeCollection ancestors = this.Ancestors();
+            if (null != ancestors)
+            {
+                if (ancestors.Contains(dependent))
+                {
+                    System.Text.StringBuilder text = new System.Text.StringBuilder();
+                    foreach (DependencyNode ancestor in ancestors)
+                    {
+                        text.AppendFormat("\t{0}\n", ancestor.UniqueModuleName);
+                    }
+                    throw new Exception("Circular dependency detected in external dependents for node '{0}', '{1}' already exists in the dependency hiearchy:\n{2}", this.UniqueModuleName, dependent.UniqueModuleName, text.ToString());
+                }
             }
 
             if (null == this.ExternalDependents)
