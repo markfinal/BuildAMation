@@ -172,9 +172,16 @@ namespace Opus.Core
             {
                 PackageIdentifier id = State.DependentPackageList[i++];
                 string definitionPathName = PackageDefinitionPathName(id);
-                if ((null == definitionPathName) && allowUndefinedPackages)
+                if (null == definitionPathName)
                 {
-                    continue;
+                    if (allowUndefinedPackages)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        throw new Exception("Package '{0}' definition file not found. Are you missing a package root?", id.ToString("-"));
+                    }
                 }
 
                 PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
