@@ -1,5 +1,7 @@
 15-Feb-2012 Adding more circular dependency analysis to avoid issues generating graphs.
 
+07-Feb-2012 Fixing -createpackageat such that an invalidly specified pathname does not result in the creation of any directories.
+
 06-Feb-2012 Setting the number of jobs to zero, will now set the job count to be equal to the number of processors available.
 
 06-Feb-2013 Loosened requirements for -showdefinition to locate packages in package roots. If versions of a package are available, but does not match one desired, this will not throw an exception, but will indicate a missing package in the results.

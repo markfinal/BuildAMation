@@ -27,9 +27,25 @@ namespace Opus.Core
             }
         }
 
+        private static void GetPackageDetailsFromPath(string path, out string name, out string version)
+        {
+            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
+            if (directories.Length < 2)
+            {
+                throw new Exception("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar);
+            }
+
+            name = directories[directories.Length - 2];
+            version = directories[directories.Length - 1];
+        }
+
         public static PackageIdentifier IsPackageDirectory(string path,
                                                            out bool isWellDefined)
         {
+            string packageName;
+            string packageVersion;
+            GetPackageDetailsFromPath(path, out packageName, out packageVersion);
+
             isWellDefined = false;
             if (!System.IO.Directory.Exists(path))
             {
@@ -37,14 +53,6 @@ namespace Opus.Core
                 return null;
             }
 
-            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-            if (directories.Length < 2)
-            {
-                throw new Exception("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar);
-            }
-
-            string packageName = directories[directories.Length - 2];
-            string packageVersion = directories[directories.Length - 1];
             System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
             if (null == parentDir)
             {
