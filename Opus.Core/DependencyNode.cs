@@ -335,7 +335,7 @@ namespace Opus.Core
                     {
                         text.AppendFormat("\t{0}\n", ancestor.UniqueModuleName);
                     }
-                    throw new Exception("Circular dependency detected in external dependents for node '{0}', '{1}' already exists in the dependency hiearchy:\n{2}", this.UniqueModuleName, dependent.UniqueModuleName, text.ToString());
+                    throw new Exception("Circular dependency detected in external dependents for node '{0}', '{1}' already exists in the dependency hierarchy:\n{2}", this.UniqueModuleName, dependent.UniqueModuleName, text.ToString());
                 }
             }
 
