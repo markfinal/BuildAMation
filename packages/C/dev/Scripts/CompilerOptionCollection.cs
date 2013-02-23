@@ -44,7 +44,23 @@ namespace C
             compilerOptions.ShowIncludes = false;
 
             compilerOptions.Defines = new DefineCollection();
+
+            // TODO: deprecate this in 0.60
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Opus.Core.BaseTarget)target).PlatformName('u')));
+
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_WIN"));
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_UNIX"));
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_OSX"));
+            }
+
             {
                 bool is64bit = Opus.Core.OSUtilities.Is64Bit(target);
                 int bits = (is64bit) ? 64 : 32;

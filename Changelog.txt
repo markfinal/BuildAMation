@@ -1,3 +1,5 @@
+23-Feb-2013 From the C package, deprecating the addition of the #define D_OPUS_PLATFORM_<specific EPlatform>. Now D_OPUS_PLATFORM_WINDOWS, D_OPUS_PLATFORM_LINUX, D_OPUS_PLATFORM_OSX are set. Use D_OPUS_PLATFORM_BITS to distinguish between 32 and 64 bit builds.
+
 15-Feb-2012 Adding more circular dependency analysis to avoid issues generating graphs.
 
 07-Feb-2012 Fixing -createpackageat such that an invalidly specified pathname does not result in the creation of any directories.
