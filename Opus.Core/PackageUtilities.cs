@@ -272,6 +272,14 @@ namespace Opus.Core
                             throw new Exception("Specified version for package '{0}' is '{1}' but the available package versions are {2}", build.Name, defaultVersion, build.Versions.ToString());
                         }
                     }
+                    else if (State.Has("PackageDefaultVersions", build.Name.ToLower()))
+                    {
+                        string defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
+                        if (build.SelectedVersion.Version != defaultVersion)
+                        {
+                            throw new Exception("{0} version selected on command line was {1}, but only {2} exists in the definition file", build.Name, defaultVersion, build.SelectedVersion.Version);
+                        }
+                    }
 
                     PackageInformation info = new PackageInformation(build.SelectedVersion);
                     State.PackageInfo.Add(info);
