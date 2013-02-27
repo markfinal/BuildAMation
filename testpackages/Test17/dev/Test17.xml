@@ -2,7 +2,8 @@
 <Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
   <Opus:RequiredPackages>
     <Opus:Package Name="Gcc">
-      <Opus:Version Id="4.4" Default="true" />
+      <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
+      <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
     </Opus:Package>
     <Opus:Package Name="Test16">
       <Opus:Version Id="dev" />

@@ -153,13 +153,13 @@ configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution"
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test15-dev"] = TestSetup(win={"Native":["visualc"]},
                                   linux={"Native":["gcc"]},
-                                  osx={"Native":None,})
+                                  osx={"Native":["gcc"]})
 configs["Test16-dev"] = TestSetup(win={"Native":["visualc"]},
                                   linux={"Native":["gcc"]},
-                                  osx={"Native":None,})
+                                  osx={"Native":["gcc"]})
 configs["Test17-dev"] = TestSetup(win={"Native":["visualc"]},
                                   linux={"Native":["gcc"]},
-                                  osx={"Native":None,})
+                                  osx={"Native":["gcc"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                        osx={"Native":["gcc"],"MakeFile":["gcc"]})
