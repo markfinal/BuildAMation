@@ -50,7 +50,7 @@ namespace C
 
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_WIN"));
+                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_WINDOWS"));
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
