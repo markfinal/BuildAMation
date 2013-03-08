@@ -6,7 +6,7 @@
 namespace C
 {
     // TODO: this does not implement any options interface
-    public sealed class Win32ResourceCompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
+    public class Win32ResourceCompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
