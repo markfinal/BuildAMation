@@ -1,3 +1,5 @@
+08-Mar-2013 Moved Win32 Resource Compiler dependency from the C package to the VisualCCommon package.
+
 23-Feb-2013 Throw an exception if the package version specified on the command line does not match the *single* version in the package definition file.
 
 23-Feb-2013 From the C package, deprecating the addition of the #define D_OPUS_PLATFORM_<specific EPlatform>. Now D_OPUS_PLATFORM_WINDOWS, D_OPUS_PLATFORM_LINUX, D_OPUS_PLATFORM_OSX are set. Use D_OPUS_PLATFORM_BITS to distinguish between 32 and 64 bit builds.

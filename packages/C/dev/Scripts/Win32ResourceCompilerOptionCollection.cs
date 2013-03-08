@@ -6,7 +6,7 @@
 namespace C
 {
     // TODO: this does not implement any options interface
-    public sealed partial class Win32ResourceCompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, VisualStudioProcessor.IVisualStudioSupport
+    public sealed class Win32ResourceCompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -89,22 +89,6 @@ namespace C
             Opus.Core.DirectoryCollection directories = new Opus.Core.DirectoryCollection();
             directories.Add(System.IO.Path.GetDirectoryName(this.CompiledResourceFilePath), false);
             return directories;
-        }
-
-        VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
-        {
-            VisualStudioProcessor.EVisualStudioTarget vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
-            switch (vsTarget)
-            {
-                case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
-                case VisualStudioProcessor.EVisualStudioTarget.MSBUILD:
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
-            }
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
-            return dictionary;
         }
     }
 }
