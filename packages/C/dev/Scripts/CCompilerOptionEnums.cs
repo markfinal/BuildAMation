@@ -24,7 +24,9 @@ namespace C
     {
         Default = 0,
         C = 1,
-        Cxx = 2
+        Cxx = 2,
+        ObjectiveC = 3,
+        ObjectiveCxx = 4
     }
 
     public enum ECharacterSet

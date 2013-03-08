@@ -1,17 +1,17 @@
-// <copyright file="ToolchainAction.cs" company="Mark Final">
+// <copyright file="ObjCxxCompilerAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(C.ToolchainAction))]
+[assembly: Opus.Core.RegisterAction(typeof(C.ObjCxxCompilerAction))]
 
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class ToolchainAction : Opus.Core.IActionWithArguments
+    public sealed class ObjCxxCompilerAction : Opus.Core.IActionWithArguments
     {
-        public ToolchainAction()
+        public ObjCxxCompilerAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -25,7 +25,7 @@ namespace C
             }
         }
 
-        private string Toolchain
+        private string Compiler
         {
             get;
             set;
@@ -33,14 +33,14 @@ namespace C
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Toolchain = arguments;
+            this.Compiler = arguments;
         }
 
         string Opus.Core.IAction.CommandLineSwitch
         {
             get
             {
-                return "-C.toolchain";
+                return "-C.OBJCCXX";
             }
         }
 
@@ -48,23 +48,16 @@ namespace C
         {
             get
             {
-                return "Assign the toolchain used for building C code";
+                return "Assign the compiler used for building ObjectiveC++ code";
             }
         }
 
         bool Opus.Core.IAction.Execute()
         {
-            Opus.Core.Log.DebugMessage("C toolchain is '{0}'", this.Toolchain);
+            Opus.Core.Log.DebugMessage("ObjectiveC++ compiler is '{0}'", this.Compiler);
 
             var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            map[typeof(ICompilerTool)]            = this.Toolchain;
-            map[typeof(ICxxCompilerTool)]         = this.Toolchain;
-            map[typeof(IObjCCompilerTool)]        = this.Toolchain;
-            map[typeof(IObjCxxCompilerTool)]      = this.Toolchain;
-            map[typeof(ILinkerTool)]              = this.Toolchain;
-            map[typeof(IArchiverTool)]            = this.Toolchain;
-            map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
-            map[typeof(INullOpTool)]              = this.Toolchain;
+            map[typeof(IObjCCompilerTool)] = this.Compiler;
 
             return true;
         }

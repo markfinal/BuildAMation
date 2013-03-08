@@ -39,6 +39,17 @@ namespace GccCommon
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
             compilerInterface.Pedantic = true;
+
+            // we use gcc as the link - if there is ObjectiveC code included, disable ignoring standard include paths as it gets complicated otherwise
+            foreach (Opus.Core.DependencyNode child in node.Children)
+            {
+                if (child.Module is C.ObjC.ObjectFile || child.Module is C.ObjC.ObjectFileCollection ||
+                    child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
+                {
+                    (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
+                    break;
+                }
+            }
         }
 
         public CCompilerOptionCollection()

@@ -25,9 +25,21 @@ namespace GccCommon
             // we use gcc as the linker - if there is C++ code included, link against libstdc++
             foreach (Opus.Core.DependencyNode child in node.Children)
             {
-                if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection)
+                if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection |
+                    child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
                 {
                     (this as C.ILinkerOptions).Libraries.Add("-lstdc++");
+                    break;
+                }
+            }
+
+            // we use gcc as the link - if there is ObjectiveC code included, link against -lobjc
+            foreach (Opus.Core.DependencyNode child in node.Children)
+            {
+                if (child.Module is C.ObjC.ObjectFile || child.Module is C.ObjC.ObjectFileCollection |
+                    child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
+                {
+                    (this as C.ILinkerOptions).Libraries.Add("-lobjc");
                     break;
                 }
             }

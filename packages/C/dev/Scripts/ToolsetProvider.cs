@@ -28,6 +28,16 @@ namespace C
             return GenericGetToolset(toolType, "C++ compiler", "Use C.CXX=<toolset>");
         }
 
+        static string GetObjCCompilerToolset(System.Type toolType)
+        {
+            return GenericGetToolset(toolType, "ObjectiveC compiler", "Use C.OBJCC=<toolset>");
+        }
+
+        static string GetObjCxxCompilerToolset(System.Type toolType)
+        {
+            return GenericGetToolset(toolType, "ObjectiveC++ compiler", "Use C.OBJCCXX=<toolset>");
+        }
+
         static string GetLinkerToolset(System.Type toolType)
         {
             return GenericGetToolset(toolType, "C linker", "Use C.LINK=<toolset>");
