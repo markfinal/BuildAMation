@@ -179,3 +179,5 @@ configs["Symlinks-dev"] = TestSetup(win={"Native":None},
                                     linux={"Native":None},
                                     osx={"Native":None})
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
+configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["gcc"]})
+configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["gcc"]})
