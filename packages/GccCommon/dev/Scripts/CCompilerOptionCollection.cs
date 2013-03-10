@@ -40,14 +40,17 @@ namespace GccCommon
 
             compilerInterface.Pedantic = true;
 
-            // we use gcc as the link - if there is ObjectiveC code included, disable ignoring standard include paths as it gets complicated otherwise
-            foreach (Opus.Core.DependencyNode child in node.Children)
+            if (null != node.Children)
             {
-                if (child.Module is C.ObjC.ObjectFile || child.Module is C.ObjC.ObjectFileCollection ||
-                    child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
+                // we use gcc as the compile - if there is ObjectiveC code included, disable ignoring standard include paths as it gets complicated otherwise
+                foreach (Opus.Core.DependencyNode child in node.Children)
                 {
-                    (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
-                    break;
+                    if (child.Module is C.ObjC.ObjectFile || child.Module is C.ObjC.ObjectFileCollection ||
+                        child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
+                    {
+                        (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
+                        break;
+                    }
                 }
             }
         }
