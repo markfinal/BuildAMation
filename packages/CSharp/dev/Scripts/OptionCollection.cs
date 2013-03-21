@@ -92,7 +92,7 @@ namespace CSharp
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory("bin");
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             IOptions options = this as IOptions;
             if (null == this.OutputFilePath)
@@ -130,7 +130,7 @@ namespace CSharp
                 }
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

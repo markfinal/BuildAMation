@@ -155,10 +155,11 @@ namespace C
             }
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             if (null != this.OutputName)
             {
+                Opus.Core.Target target = node.Target;
                 ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                 ICCompilerOptions options = this as ICCompilerOptions;
                 if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
@@ -173,7 +174,7 @@ namespace C
                 }
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

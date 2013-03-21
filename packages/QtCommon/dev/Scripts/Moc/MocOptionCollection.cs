@@ -55,14 +55,14 @@ namespace QtCommon
             (this as IMocOptions).MocOutputPath = mocPath;
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             if (null == this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile])
             {
                 this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

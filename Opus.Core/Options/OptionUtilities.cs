@@ -230,7 +230,7 @@ namespace Opus.Core
             }
 
             module.ExecuteOptionUpdate(target);
-            options.FinalizeOptions(target);
+            options.FinalizeOptions(node);
 
             return options;
         }

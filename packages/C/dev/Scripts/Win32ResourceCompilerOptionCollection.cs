@@ -42,16 +42,17 @@ namespace C
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             if (null == this.CompiledResourceFilePath)
             {
+                Opus.Core.Target target = node.Target;
                 IWinResourceCompilerTool resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
                 string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
                 this.CompiledResourceFilePath = objectPathname;
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
         public string OutputName

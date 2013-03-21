@@ -94,7 +94,7 @@ namespace Opus.Core
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
-        public virtual void FinalizeOptions(Opus.Core.Target target)
+        public virtual void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             // do nothing
         }

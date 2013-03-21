@@ -53,7 +53,7 @@ namespace VisualCCommon
             }
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             C.ILinkerOptions options = this as C.ILinkerOptions;
 
@@ -63,7 +63,7 @@ namespace VisualCCommon
                 this.ProgramDatabaseFilePath = pdbPathName;
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
 #if false

@@ -23,7 +23,7 @@ namespace FileUtilities
             options.LinkDirectory = linkDirectory;
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             if (null == this.OutputPaths[SymLinkOutputFileFlags.Link])
             {
@@ -31,7 +31,7 @@ namespace FileUtilities
                 this.OutputPaths[SymLinkOutputFileFlags.Link] = System.IO.Path.Combine(options.LinkDirectory, options.LinkName);
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

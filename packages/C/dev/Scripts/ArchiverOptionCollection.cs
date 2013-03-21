@@ -49,16 +49,17 @@ namespace C
             }
         }
 
-        public override void FinalizeOptions(Opus.Core.Target target)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             if (null == this.LibraryFilePath)
             {
+                Opus.Core.Target target = node.Target;
                 IArchiverTool archiverTool = target.Toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
                 string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverTool.StaticLibraryPrefix + this.OutputName + archiverTool.StaticLibrarySuffix);
                 this.LibraryFilePath = libraryPathname;
             }
 
-            base.FinalizeOptions(target);
+            base.FinalizeOptions(node);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)

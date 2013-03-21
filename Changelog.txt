@@ -1,3 +1,5 @@
+21-Mar-2013 Changed Opus.Core.BaseOptionCollection.FinalizeOptions to take a DependencyNode rather than a Target.
+
 08-Mar-2013 Adding ObjectiveCTest1 and CocoaTest1 test packages.
 
 08-Mar-2013 Introduced ObjectiveC and ObjectiveC++ support into C-dev, and Gcc-4.0 for OSX.
