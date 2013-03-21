@@ -5,13 +5,6 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public enum ESubsystem
-    {
-        NotSet = 0,
-        Console = 1,
-        Windows = 2
-    }
-
     public abstract class LinkerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
     {
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
@@ -137,7 +130,15 @@ namespace C
                     outputSuffix = linkerTool.DynamicLibrarySuffix;
                 }
 
-                string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, outputPrefix + this.OutputName) + outputSuffix;
+                string baseOutputPath = this.OutputDirectoryPath;
+                if (target.HasPlatform(Opus.Core.EPlatform.OSX) && (node.Module is OSXAppBundle))
+                {
+                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
+                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");
+                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOSX");
+                }
+
+                string outputPathName = System.IO.Path.Combine(baseOutputPath, outputPrefix + this.OutputName) + outputSuffix;
                 this.OutputFilePath = outputPathName;
             }
 

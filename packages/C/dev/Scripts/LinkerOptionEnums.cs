@@ -10,4 +10,11 @@ namespace C
         Executable,
         DynamicLibrary
     }
+
+    public enum ESubsystem
+    {
+        NotSet = 0,
+        Console = 1,
+        Windows = 2
+    }
 }
