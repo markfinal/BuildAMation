@@ -7,6 +7,13 @@ namespace ObjectiveCTest1
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 C.ILinkerOptions link = module.Options as C.ILinkerOptions;
+                if (null != link)
+                {
+                    if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                    {
+                        link.AdditionalOptions = "-framework Cocoa";
+                    }
+                }
             };
         }
 
