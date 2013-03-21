@@ -173,10 +173,10 @@ namespace GccCommon
                     commandLineBuilder.Add("-x c++");
                     break;
                 case C.ETargetLanguage.ObjectiveC:
-                    commandLineBuilder.Add("-ObjC");
+                    commandLineBuilder.Add("-x objective-c");
                     break;
                 case C.ETargetLanguage.ObjectiveCxx:
-                    commandLineBuilder.Add("-ObjC++");
+                    commandLineBuilder.Add("-x objective-c++");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized target language option");
