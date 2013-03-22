@@ -135,7 +135,7 @@ namespace C
                 {
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");
-                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOSX");
+                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOS");
                 }
 
                 string outputPathName = System.IO.Path.Combine(baseOutputPath, outputPrefix + this.OutputName) + outputSuffix;
