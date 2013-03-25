@@ -132,26 +132,12 @@ namespace Opus.Core
 
         private void CreateOptionCollections()
         {
-            // in increasing rank, generate option collections, so that child inherit their parent options
-            // if so desired
             foreach (DependencyNodeCollection nodeCollection in this.rankList)
             {
                 foreach (DependencyNode node in nodeCollection)
                 {
                     // empty build functions do not equate to no option collection
                     node.CreateOptionCollection();
-                }
-            }
-            // in decreasing rank, finalize option collections, so that dependent options can get their data
-            for (int rank = this.RankCount - 1; rank >= 0; --rank)
-            {
-                DependencyNodeCollection nodeCollection = this.rankList[rank];
-                foreach (DependencyNode node in nodeCollection)
-                {
-                    if (null != node.Module.Options)
-                    {
-                        node.Module.Options.FinalizeOptions(node);
-                    }
                 }
             }
         }
