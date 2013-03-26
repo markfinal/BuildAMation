@@ -1,3 +1,5 @@
+26-Mar-2013 OptionCollection finalization now occurs as a separate run from option creation. Creation occurs from top most parent module to lower most child, so that children inherit their parents options. Finalization now occurs in the reverse order, so that modules can query their dependents' options for state.
+
 21-Mar-2013 Added C.OSXAppBundle module type, for creating the directory structure for an OSX application bundle, i.e. <name>.app/Contents/MacOS.
 
 21-Mar-2013 Changed Opus.Core.BaseOptionCollection.FinalizeOptions to take a DependencyNode rather than a Target.

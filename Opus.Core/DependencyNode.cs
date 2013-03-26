@@ -211,7 +211,7 @@ namespace Opus.Core
 
             System.Reflection.MethodInfo method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
             System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
-            this.Module.Options = genericMethod.Invoke(null, new object[] { this }) as BaseOptionCollection;
+            genericMethod.Invoke(null, new object[] { this });
         }
 
         public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)

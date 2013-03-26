@@ -164,7 +164,7 @@ namespace Opus.Core
             }
         }
 
-        public static OptionCollectionType CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(DependencyNode node) where OptionCollectionType : BaseOptionCollection
+        public static void CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(DependencyNode node) where OptionCollectionType : BaseOptionCollection
         {
             BaseModule module = node.Module;
             Target target = node.Target;
@@ -219,6 +219,7 @@ namespace Opus.Core
                 }
             }
 
+            // assign options so that they can have their updates executed
             module.Options = options;
 
             // execute the global override before any other, so that local delegates can do overrides
@@ -230,9 +231,6 @@ namespace Opus.Core
             }
 
             module.ExecuteOptionUpdate(target);
-            options.FinalizeOptions(node);
-
-            return options;
         }
     }
 }
