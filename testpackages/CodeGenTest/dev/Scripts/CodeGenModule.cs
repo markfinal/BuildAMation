@@ -30,33 +30,23 @@ namespace CodeGenTest
         {
         }
 
-        private void SetGeneratedFilePath()
-        {
-            if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
-            {
-                ICodeGenOptions options = this as ICodeGenOptions;
-                string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-                this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
-            }
-        }
-
         protected override void InitializeDefaults(Opus.Core.DependencyNode owningNode)
         {
-            ICodeGenOptions options = this as ICodeGenOptions;
+            var options = this as ICodeGenOptions;
             options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectory("src");
             options.OutputName = "function";
         }
 
-        private static void OutputSourceDirectorySetHandler(object sender, Opus.Core.Option option)
+        public override void FinalizeOptions (Opus.Core.DependencyNode node)
         {
-            CodeGenOptionCollection options = sender as CodeGenOptionCollection;
-            options.SetGeneratedFilePath();
-        }
+            if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
+            {
+                var options = node.Module.Options as ICodeGenOptions;
+                string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
+                this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
+            }
 
-        private static void OutputNameSetHandler(object sender, Opus.Core.Option option)
-        {
-            CodeGenOptionCollection options = sender as CodeGenOptionCollection;
-            options.SetGeneratedFilePath();
+            base.FinalizeOptions (node);
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineStringBuilder, Opus.Core.Target target)
