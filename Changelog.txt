@@ -1,3 +1,5 @@
+27-Mar-2013 Added package XmlUtilities-dev with basic NativeBuilder XML serialization. Also added an OSX Plist module.
+
 27-Mar-2013 Updated test packages CodeGenTest-dev and CodeGenTest2-dev to use FinalizeOptions rather than individual set handlers, since they have the same side-effect.
 
 26-Mar-2013 OptionCollection finalization now occurs as a separate run from option creation. Creation occurs from top most parent module to lower most child, so that children inherit their parents options. Finalization now occurs in the reverse order, so that modules can query their dependents' options for state.
