@@ -1,4 +1,4 @@
-// <copyright file="OSXPlistWriter.cs" company="Mark Final">
+// <copyright file="XmlWriter.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>XmlUtilities package</summary>
@@ -11,12 +11,12 @@ namespace NativeBuilder
         {
             Opus.Core.DependencyNode node = xmlModule.OwningNode;
 
-            string plistPath = xmlModule.Options.OutputPaths[XmlUtilities.OutputFileFlags.XmlFile];
+            string xmlPath = xmlModule.Options.OutputPaths[XmlUtilities.OutputFileFlags.XmlFile];
 
             // dependency checking
             {
                 Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
-                outputFiles.Add(plistPath);
+                outputFiles.Add(xmlPath);
                 if (!RequiresBuilding(outputFiles, new Opus.Core.StringArray()))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -24,6 +24,8 @@ namespace NativeBuilder
                     return null;
                 }
             }
+
+            Opus.Core.Log.Info("Writing XML file '{0}'", xmlPath);
 
             // serialize the XML to disk
             System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
@@ -37,7 +39,7 @@ namespace NativeBuilder
             settings.NewLineOnAttributes = false;
             settings.OmitXmlDeclaration = false;
 
-            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(plistPath, settings))
+            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(xmlPath, settings))
             {
                 xmlModule.Document.WriteTo(writer);
             }
