@@ -31,6 +31,12 @@ namespace XmlUtilities
             set;
         }
 
+        string CFBundleSignature
+        {
+            get;
+            set;
+        }
+
         string NSPrincipalClass
         {
             get;

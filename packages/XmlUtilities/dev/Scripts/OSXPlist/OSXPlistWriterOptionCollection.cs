@@ -20,6 +20,7 @@ namespace XmlUtilities
             options.CFBundleDisplayName = null;
             options.CFBundleIdentifier = null;
             options.CFBundleVersion = null;
+            options.CFBundleSignature = "????";
             options.NSPrincipalClass = null;
         }
         protected override void SetDelegates (Opus.Core.DependencyNode owningNode)
@@ -73,7 +74,6 @@ namespace XmlUtilities
             var xmlModule = node.Module as XmlModule;
             System.Xml.XmlElement dictEl = (xmlModule as XmlUtilities.OSXPlistModule).DictElement;
             
-            // TODO: get this data from the options
             AddKeyToDict(xmlModule.Document, dictEl, "CFBundleDisplayName");
             AddStringToDict(xmlModule.Document, dictEl, options.CFBundleDisplayName);
             
@@ -93,14 +93,14 @@ namespace XmlUtilities
             AddStringToDict(xmlModule.Document, dictEl, "APPL");
             
             AddKeyToDict(xmlModule.Document, dictEl, "CFBundleSignature");
-            AddStringToDict(xmlModule.Document, dictEl, options.CFBundleDisplayName);
+            AddStringToDict(xmlModule.Document, dictEl, options.CFBundleSignature);
             
             if (null != options.CFBundleVersion)
             {
                 AddKeyToDict(xmlModule.Document, dictEl, "CFBundleVersion");
                 AddStringToDict(xmlModule.Document, dictEl, options.CFBundleVersion);
             }
-            
+
             if (null != options.NSPrincipalClass)
             {
                 AddKeyToDict(xmlModule.Document, dictEl, "NSPrincipalClass");
@@ -156,6 +156,18 @@ namespace XmlUtilities
             {
                 this.SetReferenceTypeOption<string>("CFBundleVersion", value);
                 this.ProcessNamedSetHandler("CFBundleVersionClassSetHandler", this["CFBundleVersion"]);
+            }
+        }
+        string IOSXPlistOptions.CFBundleSignature
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("CFBundleSignature");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("CFBundleSignature", value);
+                this.ProcessNamedSetHandler("CFBundleSignatureClassSetHandler", this["CFBundleSignature"]);
             }
         }
         string IOSXPlistOptions.NSPrincipalClass 
