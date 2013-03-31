@@ -16,11 +16,12 @@ namespace XmlUtilities
         protected override void InitializeDefaults (Opus.Core.DependencyNode owningNode)
         {
             var options = this as IOSXPlistOptions;
-            options.CFBundleExecutable = null;
+            options.CFBundleName = null;
             options.CFBundleDisplayName = null;
             options.CFBundleIdentifier = null;
             options.CFBundleVersion = null;
             options.CFBundleSignature = "????";
+            options.CFBundleExecutable = null;
             options.NSPrincipalClass = null;
         }
         protected override void SetDelegates (Opus.Core.DependencyNode owningNode)
@@ -68,6 +69,11 @@ namespace XmlUtilities
                 primaryOutputPath = "Undefined";
             }
 
+            if (null == options.CFBundleName)
+            {
+                options.CFBundleName = node.UniqueModuleName;
+            }
+
             if (null == options.CFBundleExecutable)
             {
                 options.CFBundleExecutable = System.IO.Path.GetFileNameWithoutExtension(primaryOutputPath);
@@ -80,32 +86,44 @@ namespace XmlUtilities
 
             var xmlModule = node.Module as XmlModule;
             System.Xml.XmlElement dictEl = (xmlModule as XmlUtilities.OSXPlistModule).DictElement;
-            
-            AddKeyToDict(xmlModule.Document, dictEl, "CFBundleDisplayName");
-            AddStringToDict(xmlModule.Document, dictEl, options.CFBundleDisplayName);
-            
-            AddKeyToDict(xmlModule.Document, dictEl, "CFBundleExecutable");
-            AddStringToDict(xmlModule.Document, dictEl, options.CFBundleExecutable);
-            
+
+            if (null != options.CFBundleName)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "CFBundleName");
+                AddStringToDict(xmlModule.Document, dictEl, options.CFBundleName);
+            }
+
+            if (null != options.CFBundleDisplayName)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "CFBundleDisplayName");
+                AddStringToDict(xmlModule.Document, dictEl, options.CFBundleDisplayName);
+            }
+
             if (null != options.CFBundleIdentifier)
             {
                 AddKeyToDict(xmlModule.Document, dictEl, "CFBundleIdentifier");
                 AddStringToDict(xmlModule.Document, dictEl, options.CFBundleIdentifier);
             }
-            
-            AddKeyToDict(xmlModule.Document, dictEl, "CFBundleName");
-            AddStringToDict(xmlModule.Document, dictEl, options.CFBundleDisplayName);
-            
-            AddKeyToDict(xmlModule.Document, dictEl, "CFBundlePackageType");
-            AddStringToDict(xmlModule.Document, dictEl, "APPL");
-            
-            AddKeyToDict(xmlModule.Document, dictEl, "CFBundleSignature");
-            AddStringToDict(xmlModule.Document, dictEl, options.CFBundleSignature);
-            
+
             if (null != options.CFBundleVersion)
             {
                 AddKeyToDict(xmlModule.Document, dictEl, "CFBundleVersion");
                 AddStringToDict(xmlModule.Document, dictEl, options.CFBundleVersion);
+            }
+
+            AddKeyToDict(xmlModule.Document, dictEl, "CFBundlePackageType");
+            AddStringToDict(xmlModule.Document, dictEl, "APPL");
+
+            if (null != options.CFBundleSignature)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "CFBundleSignature");
+                AddStringToDict(xmlModule.Document, dictEl, options.CFBundleSignature);
+            }
+
+            if (null != options.CFBundleExecutable)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "CFBundleExecutable");
+                AddStringToDict(xmlModule.Document, dictEl, options.CFBundleExecutable);
             }
 
             if (null != options.NSPrincipalClass)
@@ -117,16 +135,16 @@ namespace XmlUtilities
 
         // TODO: move this to the partial class
         #region IOSXPlistOptions implementation
-        string IOSXPlistOptions.CFBundleExecutable 
+        string IOSXPlistOptions.CFBundleName
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleExecutable");
+                return this.GetReferenceTypeOption<string>("CFBundleName");
             }
             set
             {
-                this.SetReferenceTypeOption<string>("CFBundleExecutable", value);
-                this.ProcessNamedSetHandler("CFBundleExecutableSetHandler", this["CFBundleExecutable"]);
+                this.SetReferenceTypeOption<string>("CFBundleName", value);
+                this.ProcessNamedSetHandler("CFBundleNameSetHandler", this["CFBundleName"]);
             }
         }
         string IOSXPlistOptions.CFBundleDisplayName 
@@ -175,6 +193,18 @@ namespace XmlUtilities
             {
                 this.SetReferenceTypeOption<string>("CFBundleSignature", value);
                 this.ProcessNamedSetHandler("CFBundleSignatureClassSetHandler", this["CFBundleSignature"]);
+            }
+        }
+        string IOSXPlistOptions.CFBundleExecutable
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("CFBundleExecutable");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("CFBundleExecutable", value);
+                this.ProcessNamedSetHandler("CFBundleExecutableSetHandler", this["CFBundleExecutable"]);
             }
         }
         string IOSXPlistOptions.NSPrincipalClass 

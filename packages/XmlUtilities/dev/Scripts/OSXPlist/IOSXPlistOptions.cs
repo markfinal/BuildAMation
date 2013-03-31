@@ -7,7 +7,7 @@ namespace XmlUtilities
 {
     public interface IOSXPlistOptions
     {
-        string CFBundleExecutable
+        string CFBundleName
         {
             get;
             set;
@@ -32,6 +32,12 @@ namespace XmlUtilities
         }
 
         string CFBundleSignature
+        {
+            get;
+            set;
+        }
+
+        string CFBundleExecutable
         {
             get;
             set;
