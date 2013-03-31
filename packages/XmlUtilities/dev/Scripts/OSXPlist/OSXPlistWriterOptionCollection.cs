@@ -47,18 +47,25 @@ namespace XmlUtilities
         public override void FinalizeOptions (Opus.Core.DependencyNode node)
         {
             var options = node.Module.Options as IOSXPlistOptions;
-            var dependentNode = node.ExternalDependents[0];
             string primaryOutputPath = null;
-            foreach (string outputPath in dependentNode.Module.Options.OutputPaths.Paths)
+            if (null != node.ExternalDependents)
             {
-                primaryOutputPath = outputPath;
-                break;
-            }
+                var dependentNode = node.ExternalDependents[0];
+                foreach (string outputPath in dependentNode.Module.Options.OutputPaths.Paths)
+                {
+                    primaryOutputPath = outputPath;
+                    break;
+                }
 
-            if (null == this.OutputPaths[OutputFileFlags.XmlFile])
+                if (null == this.OutputPaths[OutputFileFlags.XmlFile])
+                {
+                    string contentsDir = System.IO.Directory.GetParent(primaryOutputPath).Parent.FullName;
+                    this.OutputPaths[OutputFileFlags.XmlFile] = System.IO.Path.Combine(contentsDir, "Info.plist");
+                }
+            }
+            else
             {
-                string contentsDir = System.IO.Directory.GetParent(primaryOutputPath).Parent.FullName;
-                this.OutputPaths[OutputFileFlags.XmlFile] = System.IO.Path.Combine(contentsDir, "Info.plist");
+                primaryOutputPath = "Undefined";
             }
 
             if (null == options.CFBundleExecutable)

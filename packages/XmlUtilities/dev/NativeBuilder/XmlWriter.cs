@@ -12,6 +12,10 @@ namespace NativeBuilder
             Opus.Core.DependencyNode node = xmlModule.OwningNode;
 
             string xmlPath = xmlModule.Options.OutputPaths[XmlUtilities.OutputFileFlags.XmlFile];
+            if (null == xmlPath)
+            {
+                throw new Opus.Core.Exception("XML output path was not set");
+            }
 
             // dependency checking
             {
