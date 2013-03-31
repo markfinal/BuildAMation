@@ -43,6 +43,30 @@ namespace XmlUtilities
             set;
         }
 
+        string CFBundleShortVersionString
+        {
+            get;
+            set;
+        }
+
+        string LSMinimumSystemVersion
+        {
+            get;
+            set;
+        }
+
+        string NSHumanReadableCopyright
+        {
+            get;
+            set;
+        }
+
+        string NSMainNibFile
+        {
+            get;
+            set;
+        }
+
         string NSPrincipalClass
         {
             get;

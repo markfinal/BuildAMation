@@ -22,6 +22,11 @@ namespace XmlUtilities
             options.CFBundleVersion = null;
             options.CFBundleSignature = "????";
             options.CFBundleExecutable = null;
+            // TODO: CFBundleDocumentTypes
+            options.CFBundleShortVersionString = null;
+            options.LSMinimumSystemVersion = null;
+            options.NSHumanReadableCopyright = null;
+            options.NSMainNibFile = null;
             options.NSPrincipalClass = null;
         }
         protected override void SetDelegates (Opus.Core.DependencyNode owningNode)
@@ -49,6 +54,7 @@ namespace XmlUtilities
         {
             var options = node.Module.Options as IOSXPlistOptions;
             string primaryOutputPath = null;
+            // the plist file is relative to the main executable
             if (null != node.ExternalDependents)
             {
                 var dependentNode = node.ExternalDependents[0];
@@ -69,6 +75,7 @@ namespace XmlUtilities
                 primaryOutputPath = "Undefined";
             }
 
+            // some other defaults
             if (null == options.CFBundleName)
             {
                 options.CFBundleName = node.UniqueModuleName;
@@ -84,6 +91,7 @@ namespace XmlUtilities
                 options.CFBundleDisplayName = node.UniqueModuleName;
             }
 
+            // now generate the XML document
             var xmlModule = node.Module as XmlModule;
             System.Xml.XmlElement dictEl = (xmlModule as XmlUtilities.OSXPlistModule).DictElement;
 
@@ -124,6 +132,30 @@ namespace XmlUtilities
             {
                 AddKeyToDict(xmlModule.Document, dictEl, "CFBundleExecutable");
                 AddStringToDict(xmlModule.Document, dictEl, options.CFBundleExecutable);
+            }
+
+            if (null != options.CFBundleShortVersionString)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "CFBundleShortVersionString");
+                AddStringToDict(xmlModule.Document, dictEl, options.CFBundleShortVersionString);
+            }
+
+            if (null != options.LSMinimumSystemVersion)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "LSMinimumSystemVersion");
+                AddStringToDict(xmlModule.Document, dictEl, options.LSMinimumSystemVersion);
+            }
+
+            if (null != options.NSHumanReadableCopyright)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "NSHumanReadableCopyright");
+                AddStringToDict(xmlModule.Document, dictEl, options.NSHumanReadableCopyright);
+            }
+
+            if (null != options.NSMainNibFile)
+            {
+                AddKeyToDict(xmlModule.Document, dictEl, "NSMainNibFile");
+                AddStringToDict(xmlModule.Document, dictEl, options.NSMainNibFile);
             }
 
             if (null != options.NSPrincipalClass)
@@ -205,6 +237,54 @@ namespace XmlUtilities
             {
                 this.SetReferenceTypeOption<string>("CFBundleExecutable", value);
                 this.ProcessNamedSetHandler("CFBundleExecutableSetHandler", this["CFBundleExecutable"]);
+            }
+        }
+        string IOSXPlistOptions.CFBundleShortVersionString
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("CFBundleShortVersionString");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("CFBundleShortVersionString", value);
+                this.ProcessNamedSetHandler("CFBundleShortVersionStringSetHandler", this["CFBundleShortVersionString"]);
+            }
+        }
+        string IOSXPlistOptions.LSMinimumSystemVersion
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("LSMinimumSystemVersion");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("LSMinimumSystemVersion", value);
+                this.ProcessNamedSetHandler("LSMinimumSystemVersionSetHandler", this["LSMinimumSystemVersion"]);
+            }
+        }
+        string IOSXPlistOptions.NSHumanReadableCopyright
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("NSHumanReadableCopyright");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("NSHumanReadableCopyright", value);
+                this.ProcessNamedSetHandler("NSHumanReadableCopyrightSetHandler", this["NSHumanReadableCopyright"]);
+            }
+        }
+        string IOSXPlistOptions.NSMainNibFile
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("NSMainNibFile");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("NSMainNibFile", value);
+                this.ProcessNamedSetHandler("NSMainNibFileSetHandler", this["NSMainNibFile"]);
             }
         }
         string IOSXPlistOptions.NSPrincipalClass 
