@@ -1,3 +1,5 @@
+02-Apr-2013 VisualCCommon-dev is now dependent upon WindowsSDK-6.0A.
+
 02-Apr-2013 Released 0.50 Alpha 3
 
 02-Apr-2013 Gcc Objective-C disables strict aliasing as it causes type punning warnings with the use of 'super'.

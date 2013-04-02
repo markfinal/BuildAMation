@@ -7,6 +7,9 @@
     <Opus:Package Name="VisualStudioProcessor">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="WindowsSDK">
+      <Opus:Version Id="6.0A" />
+    </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
     <Opus:OpusAssembly Name="Opus.Core" />
