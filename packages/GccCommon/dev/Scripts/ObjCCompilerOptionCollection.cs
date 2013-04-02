@@ -12,6 +12,9 @@ namespace GccCommon
             C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
 
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.ObjectiveC;
+
+            ICCompilerOptions gccInterfaceOptions = options as ICCompilerOptions;
+            gccInterfaceOptions.StrictAliasing = false; // causes type-punning warnings with 'super' in 4.0
         }
 
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)

@@ -1,3 +1,5 @@
+02-Apr-2013 Gcc Objective-C disables strict aliasing as it causes type punning warnings with the use of 'super'.
+
 27-Mar-2013 Added package XmlUtilities-dev with basic NativeBuilder XML serialization. Also added an OSX Plist module.
 
 27-Mar-2013 Updated test packages CodeGenTest-dev and CodeGenTest2-dev to use FinalizeOptions rather than individual set handlers, since they have the same side-effect.
