@@ -1,3 +1,5 @@
+02-Apr-2013 Released 0.50 Alpha 3
+
 02-Apr-2013 Gcc Objective-C disables strict aliasing as it causes type punning warnings with the use of 'super'.
 
 27-Mar-2013 Added package XmlUtilities-dev with basic NativeBuilder XML serialization. Also added an OSX Plist module.
