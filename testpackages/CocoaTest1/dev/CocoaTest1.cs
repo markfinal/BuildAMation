@@ -31,6 +31,7 @@ namespace CocoaTest1
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as XmlUtilities.IOSXPlistOptions;
+                options.CFBundleName = "CocoaTest1";
                 options.CFBundleDisplayName = "CocoaTest1";
                 options.CFBundleIdentifier = "CocoaTest1";
                 options.CFBundleVersion = "1.0.0";

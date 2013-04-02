@@ -12,6 +12,13 @@
     if (self == [super init])
     {
         NSRect frame = NSMakeRect(0, 0, 200, 200);
+        id menubar = [[NSMenu new] autorelease];
+        id appMenuItem = [[NSMenuItem new] autorelease];
+        id appMenu = [[NSMenu new] autorelease];
+        id appName = [[NSProcessInfo processInfo] processName];
+        id quitTitle = [@"Quit " stringByAppendingString:appName];
+        id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
+
         window  = [[[NSWindow alloc] initWithContentRect:frame
                                      styleMask:(NSTitledWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask|NSResizableWindowMask)
                                      backing:NSBackingStoreBuffered /* supports GPU acceleration */
@@ -19,6 +26,11 @@
         [window setBackgroundColor:[NSColor blueColor]];
         [window setTitle:@"Hello world"];
         [window center];
+
+        [menubar addItem:appMenuItem];
+        [NSApp setMainMenu:menubar];
+        [appMenu addItem:quitMenuItem];
+        [appMenuItem setSubmenu:appMenu];
     }
     return self;
 }
@@ -31,7 +43,6 @@
 
 - (void)dealloc
 {
-    [window release];
     [super dealloc];
 }
 
