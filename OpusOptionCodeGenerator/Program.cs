@@ -456,9 +456,12 @@ namespace OpusOptionCodeGenerator
             }
 
             System.Collections.Generic.List<DelegateSignature> delegateSignatures = new System.Collections.Generic.List<DelegateSignature>();
-            foreach (string path in parameters.inputDelegates)
+            if (null != parameters.inputDelegates)
             {
-                delegateSignatures.Add(ReadDelegate(path));
+                foreach (string path in parameters.inputDelegates)
+                {
+                    delegateSignatures.Add(ReadDelegate(path));
+                }
             }
 
             if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
