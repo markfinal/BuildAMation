@@ -43,6 +43,12 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Exception.cs" />
+    <Compile Include="PropertySignature.cs" />
+    <Compile Include="PropertySignatureList.cs" />
+    <Compile Include="PropertySignatureMap.cs" />
+    <Compile Include="DelegateSignature.cs" />
+    <Compile Include="Parameters.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
