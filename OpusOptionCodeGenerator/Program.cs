@@ -7,11 +7,37 @@ namespace OpusOptionCodeGenerator
 {
     class Program
     {
+        static void Log(string format, params string[] args)
+        {
+            System.Console.WriteLine(format, args);
+        }
+
+        static void PrintHelp()
+        {
+            Log("OpusOptionCodeGenerator [options]");
+            Log("Options:");
+            Log("-i=<interface filename>");
+            Log("-n=<namespace>");
+            Log("-c=<generated class name>");
+            Log("-pv=<delegate private data class name>");
+            Log("-p [generate properties file]");
+            Log("-dd=<input delegates file>");
+            Log("-d [generate delegates file]");
+            Log("-s [only write to stdout]");
+            Log("-f [force write to file]");
+            Log("-e [delegates extend an existing implementation]");
+            Log("-b [generated delegates class is a base class]");
+            Log("-uh [updated header of generated files if needed]");
+            Log("--- Obsolete options ---");
+            Log("-o=<output properties filename> [use -p]");
+        }
+
         static Parameters ProcessArgs(string[] args)
         {
             if (0 == args.Length)
             {
-                throw new Exception("Arguments required");
+                PrintHelp();
+                throw new Exception("No arguments were passed");
             }
 
             Parameters parameters = new Parameters();
@@ -195,7 +221,7 @@ namespace OpusOptionCodeGenerator
             {
                 throw new Exception("File '{0}' does not exist", filename);
             }
-            System.Console.WriteLine("\nDelegate to read: '{0}'", filename);
+            Log("\nDelegate to read: '{0}'", filename);
 
             DelegateSignature signature = new DelegateSignature();
 
@@ -215,7 +241,7 @@ namespace OpusOptionCodeGenerator
                     throw new Exception("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]);
                 }
                 string namespaceName = namespaceStrings[1];
-                System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
+                Log("Namespace found is '{0}'", namespaceName);
 
                 // opening namespace scope
                 line = ReadLine(reader);
@@ -231,7 +257,7 @@ namespace OpusOptionCodeGenerator
                 {
                     throw new Exception("No public delegate found");
                 }
-                System.Console.WriteLine("Delegate found is '{0}'", line);
+                Log("Delegate found is '{0}'", line);
                 string returnType = delegateStrings[2];
                 if ("void" != returnType)
                 {
@@ -289,7 +315,7 @@ namespace OpusOptionCodeGenerator
                 {
                     throw new Exception("Input file '{0}' does not exist", inputPath);
                 }
-                System.Console.WriteLine("\nInterface to read: '{0}'", inputPath);
+                Log("\nInterface to read: '{0}'", inputPath);
 
                 using (System.IO.TextReader reader = new System.IO.StreamReader(inputPath))
                 {
@@ -308,7 +334,7 @@ namespace OpusOptionCodeGenerator
                         throw new Exception("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]);
                     }
                     string namespaceName = namespaceStrings[1];
-                    System.Console.WriteLine("Namespace found is '{0}'", namespaceName);
+                    Log("Namespace found is '{0}'", namespaceName);
 
                     // opening namespace scope
                     line = ReadLine(reader);
@@ -325,7 +351,7 @@ namespace OpusOptionCodeGenerator
                         throw new Exception("No public interface found: '{0}'", line);
                     }
                     string interfaceName = interfaceStrings[2];
-                    System.Console.WriteLine("Interface found is '{0}'", interfaceName);
+                    Log("Interface found is '{0}'", interfaceName);
 
                     // opening interface scope
                     line = ReadLine(reader);
@@ -352,7 +378,7 @@ namespace OpusOptionCodeGenerator
                         }
 
                         string[] propertyStrings = line.Split(new char[] { ' ' });
-                        System.Console.WriteLine("PropertySignature found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
+                        Log("PropertySignature found: type '{0}', name '{1}'", propertyStrings[0], propertyStrings[1]);
 
                         PropertySignature property = new PropertySignature();
                         property.Name = propertyStrings[1];
@@ -364,12 +390,12 @@ namespace OpusOptionCodeGenerator
                         if (property.Type == "bool" || property.Type == "int" || (trueType.StartsWith("E") && System.Char.IsUpper(trueType[1])))
                         {
                             property.IsValueType = true;
-                            System.Console.WriteLine("\tIs ValueType");
+                            Log("\tIs ValueType");
                         }
                         else
                         {
                             property.IsValueType = false;
-                            System.Console.WriteLine("\tIs ReferenceType");
+                            Log("\tIs ReferenceType");
                         }
 
                         // opening property scope
@@ -382,12 +408,12 @@ namespace OpusOptionCodeGenerator
                         line = ReadLine(reader);
                         if (line.Equals("get;"))
                         {
-                            System.Console.WriteLine("\twith get");
+                            Log("\twith get");
                             property.HasGet = true;
                         }
                         else if (line.Equals("set;"))
                         {
-                            System.Console.WriteLine("\twith set");
+                            Log("\twith set");
                             property.HasSet = true;
                         }
                         else
@@ -398,12 +424,12 @@ namespace OpusOptionCodeGenerator
                         line = ReadLine(reader);
                         if (line.Equals("get;"))
                         {
-                            System.Console.WriteLine("\twith get");
+                            Log("\twith get");
                             property.HasGet = true;
                         }
                         else if (line.Equals("set;"))
                         {
-                            System.Console.WriteLine("\twith set");
+                            Log("\twith set");
                             property.HasSet = true;
                         }
                         else
@@ -437,12 +463,12 @@ namespace OpusOptionCodeGenerator
 
             if (Parameters.Mode.GenerateProperties == (parameters.mode & Parameters.Mode.GenerateProperties))
             {
-                System.Console.WriteLine("Generating properties...");
+                Log("Generating properties...");
                 WritePropertiesFile(parameters, propertyMap);
             }
             if (Parameters.Mode.GenerateDelegates == (parameters.mode & Parameters.Mode.GenerateDelegates))
             {
-                System.Console.WriteLine ("Generating delegates...");
+                Log("Generating delegates...");
                 WriteDelegatesFile(parameters, propertyMap, delegateSignatures);
             }
         }
@@ -452,7 +478,7 @@ namespace OpusOptionCodeGenerator
             // write out C# file containing the properties
             if (parameters.toStdOut)
             {
-                System.Console.WriteLine ("Would have written file '{0}'", parameters.outputPropertiesPathName);
+                Log("Would have written file '{0}'", parameters.outputPropertiesPathName);
             }
             using (System.IO.TextWriter writer = !parameters.toStdOut ? new System.IO.StreamWriter(parameters.outputPropertiesPathName) : System.Console.Out)
             {
@@ -508,7 +534,7 @@ namespace OpusOptionCodeGenerator
             }
             if (null != parameters.outputPropertiesPathName)
             {
-                System.Console.WriteLine("Wrote file '{0}'", parameters.outputPropertiesPathName);
+                Log("Wrote file '{0}'", parameters.outputPropertiesPathName);
             }
         }
 
@@ -614,7 +640,7 @@ namespace OpusOptionCodeGenerator
                 // find functions
                 for (;;)
                 {
-                    System.Console.WriteLine("C: '{0}'", line);
+                    Log("C: '{0}'", line);
                     // done reading - it's the end of the class
                     if (line.StartsWith("}"))
                     {
@@ -624,7 +650,7 @@ namespace OpusOptionCodeGenerator
                     // look for function signatures
                     if (line.EndsWith(")"))
                     {
-                        System.Console.WriteLine("Found function '{0}'", line);
+                        Log("Found function '{0}'", line);
                         layout.functions[line] = new System.Collections.Generic.List<IndentedString>();
                         System.Collections.Generic.List<IndentedString> body = layout.functions[line];
                         int braceCount = 0;
@@ -639,7 +665,7 @@ namespace OpusOptionCodeGenerator
                             }
                             int openBraces = line.Split('{').Length - 1;
                             int closeBraces = line.Split('}').Length - 1;
-                            //System.Console.WriteLine("Found {0} open braces and {1} close braces", openBraces, closeBraces);
+                            //Log("Found {0} open braces and {1} close braces", openBraces, closeBraces);
 
                             braceCount += openBraces;
                             if (braceCount > 0)
@@ -658,7 +684,7 @@ namespace OpusOptionCodeGenerator
                     }
                     else if (line.StartsWith("#region") || line.StartsWith("#endregion"))
                     {
-                        System.Console.WriteLine("Ignored preprocessor");
+                        Log("Ignored preprocessor");
                         line = ReadLine(reader);
                     }
                 }
@@ -672,7 +698,7 @@ namespace OpusOptionCodeGenerator
             // write out C# file containing the delegates
             if (parameters.toStdOut)
             {
-                System.Console.WriteLine ("Would have written file '{0}'", parameters.outputDelegatesPathName);
+                Log("Would have written file '{0}'", parameters.outputDelegatesPathName);
             }
 
             DelegateFileLayout layout = ReadAndParseDelegatesFile(parameters);
@@ -722,8 +748,8 @@ namespace OpusOptionCodeGenerator
 
                     if (parameters.forceWrite || parameters.updateHeader)
                     {
-                        System.Console.Write(message);
-                        System.Console.Write("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
+                        Log(message.ToString());
+                        Log("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
                         writeToDisk = true;
                     }
                     else
@@ -769,7 +795,7 @@ namespace OpusOptionCodeGenerator
                             WriteLine(writer, 2, propertyDelegate.ToString());
                             if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
                             {
-                                System.Console.WriteLine("Function '{0}' reusing from file", propertyDelegate.ToString());
+                                Log("Function '{0}' reusing from file", propertyDelegate.ToString());
                                 foreach (IndentedString line in layout.functions[propertyDelegate.ToString()])
                                 {
                                     // TODO: magic number
@@ -778,7 +804,7 @@ namespace OpusOptionCodeGenerator
                             }
                             else
                             {
-                                System.Console.WriteLine("Function '{0}' generating code for", propertyDelegate.ToString());
+                                Log("Function '{0}' generating code for", propertyDelegate.ToString());
                                 WriteLine(writer, 2, "{");
                                 if (null != delegateSig.Body)
                                 {
@@ -805,7 +831,7 @@ namespace OpusOptionCodeGenerator
                 WriteLine(writer, 2, setDelegatesFunctionSignature);
                 if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
                 {
-                    System.Console.WriteLine("Function '{0}' reusing from file", setDelegatesFunctionSignature);
+                    Log("Function '{0}' reusing from file", setDelegatesFunctionSignature);
                     foreach (IndentedString line in layout.functions[setDelegatesFunctionSignature])
                     {
                         // TOOD: magic number
@@ -814,7 +840,7 @@ namespace OpusOptionCodeGenerator
                 }
                 else
                 {
-                    System.Console.WriteLine("Function '{0}' generating code for", setDelegatesFunctionSignature);
+                    Log("Function '{0}' generating code for", setDelegatesFunctionSignature);
                     WriteLine(writer, 2, "{");
                     if (parameters.extendedDelegates)
                     {
@@ -847,7 +873,7 @@ namespace OpusOptionCodeGenerator
                 {
                     if (!writeToDisk && !parameters.forceWrite)
                     {
-                        System.Console.WriteLine("File '{0}' already up-to-date", parameters.outputDelegatesPathName);
+                        Log("File '{0}' already up-to-date", parameters.outputDelegatesPathName);
                     }
                     else
                     {
@@ -858,7 +884,7 @@ namespace OpusOptionCodeGenerator
                             memStream.WriteTo(finalWriter.BaseStream);
                         }
 
-                        System.Console.WriteLine("Wrote file '{0}'", parameters.outputDelegatesPathName);
+                        Log("Wrote file '{0}'", parameters.outputDelegatesPathName);
                     }
                 }
             }
