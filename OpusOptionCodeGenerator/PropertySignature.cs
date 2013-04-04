@@ -36,5 +36,11 @@ namespace OpusOptionCodeGenerator
             get;
             set;
         }
+
+        public bool StateOnly
+        {
+            get;
+            set;
+        }
     }
 }
