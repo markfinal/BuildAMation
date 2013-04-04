@@ -535,9 +535,13 @@ namespace OpusOptionCodeGenerator
                 WriteLine(writer, 1, "}");
                 WriteLine(writer, 0, "}");
             }
-            if (null != parameters.outputPropertiesPathName)
+            // flush to disk
+            if (!parameters.toStdOut)
             {
-                Log("Wrote file '{0}'", parameters.outputPropertiesPathName);
+                if (null != parameters.outputPropertiesPathName)
+                {
+                    Log("Wrote file '{0}'", parameters.outputPropertiesPathName);
+                }
             }
         }
 
