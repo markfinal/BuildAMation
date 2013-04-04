@@ -882,6 +882,11 @@ namespace OpusOptionCodeGenerator
                 }
                 else
                 {
+                    if (null == parameters.privateDataClassName)
+                    {
+                        throw new Exception("Private data class name was not provided");
+                    }
+
                     Log("Function '{0}' generating code for", setDelegatesFunctionSignature);
                     WriteLine(writer, 2, "{");
                     if (parameters.extendedDelegates)
@@ -892,11 +897,14 @@ namespace OpusOptionCodeGenerator
                     {
                         System.Text.StringBuilder registration = new System.Text.StringBuilder();
                         registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
-                        foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                        if (delegatesToRegister[propertyName].Count > 0)
                         {
-                            registration.AppendFormat("{0},", delegateToRegister);
+                            foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                            {
+                                registration.AppendFormat("{0},", delegateToRegister);
+                            }
+                            registration.Remove(registration.Length - 1, 1); // last comma
                         }
-                        registration.Remove(registration.Length - 1, 1); // last comma
                         registration.Append(");");
                         WriteLine(writer, 3, registration.ToString());
                     }
