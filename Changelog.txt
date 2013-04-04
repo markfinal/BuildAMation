@@ -1,3 +1,5 @@
+04-Apr-2013 Marked XmlUtilities' plist options properties as state only, and auto-generated support files
+
 04-Apr-2013 OpusOptionCodeGenerator now recognizes a comment // StateOnly above a property in an interface file to indicate that the property has no delegates to register.
 
 03-Apr-2013 Added help to OpusOptionCodeGenerator if no arguments are passed.
