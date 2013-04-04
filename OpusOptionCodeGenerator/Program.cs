@@ -136,9 +136,10 @@ namespace OpusOptionCodeGenerator
             parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
         }
 
-        static string ReadLine(System.IO.TextReader reader, bool skipComments, out int prefixSpaces)
+        static string ReadLine(System.IO.TextReader reader, bool skipComments, out int prefixSpaces, out bool noDelegate)
         {
             int numPrefixSpaces = 0;
+            bool noDelegateProxy = false;
             string line = null;
             do
             {
@@ -153,32 +154,60 @@ namespace OpusOptionCodeGenerator
                 numPrefixSpaces = originalLineLength - line.Length;
                 line = line.TrimEnd();
 
-                if (skipComments && line.StartsWith("//"))
+                if (skipComments)
                 {
-                    line = ""; // just to get through the while test
-                    continue;
+                    // doxygen style comment
+                    if (line.StartsWith("///"))
+                    {
+                        line = ""; // just to get through the while test
+                        continue;
+                    }
+                    else if (line.StartsWith("// "))
+                    {
+                        if (line.EndsWith("NoDelegate"))
+                        {
+                            noDelegateProxy = true;
+                        }
+                        line = "";
+                        continue;
+                    }
                 }
             }
             while (0 == line.Length);
             prefixSpaces = numPrefixSpaces;
+            noDelegate = noDelegateProxy;
             return line;
         }
 
         static string ReadLine(System.IO.TextReader reader)
         {
             int prefixSpaces = 0;
-            return ReadLine(reader, false, out prefixSpaces);
+            bool noDelegate = false;
+            return ReadLine(reader, false, out prefixSpaces, out noDelegate);
         }
 
         static string ReadLine(System.IO.TextReader reader, bool skipComments)
         {
             int prefixSpaces = 0;
-            return ReadLine(reader, skipComments, out prefixSpaces);
+            bool noDelegate = false;
+            return ReadLine(reader, skipComments, out prefixSpaces, out noDelegate);
         }
 
         static string ReadLine(System.IO.TextReader reader, out int prefixSpaces)
         {
-            return ReadLine(reader, false, out prefixSpaces);
+            bool noDelegate = false;
+            return ReadLine(reader, false, out prefixSpaces, out noDelegate);
+        }
+
+        static string ReadLine(System.IO.TextReader reader, bool skipComments, out bool noDelegate)
+        {
+            int prefixSpaces = 0;
+            return ReadLine(reader, skipComments, out prefixSpaces, out noDelegate);
+        }
+
+        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces, out bool noDelegate)
+        {
+            return ReadLine(reader, false, out prefixSpaces, out noDelegate);
         }
 
         static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
@@ -371,7 +400,8 @@ namespace OpusOptionCodeGenerator
                     }
                     do
                     {
-                        line = ReadLine(reader, true);
+                        bool noDelegate = false;
+                        line = ReadLine(reader, true, out noDelegate);
                         if (line.StartsWith("}"))
                         {
                             break;
@@ -396,6 +426,11 @@ namespace OpusOptionCodeGenerator
                         {
                             property.IsValueType = false;
                             Log("\tIs ReferenceType");
+                        }
+
+                        if (noDelegate)
+                        {
+                            Log("\tNo delegate - state only");
                         }
 
                         // opening property scope
