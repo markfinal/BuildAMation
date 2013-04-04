@@ -873,7 +873,7 @@ namespace OpusOptionCodeGenerator
                 WriteLine(writer, 2, setDelegatesFunctionSignature);
                 if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
                 {
-                    Log("Function '{0}' reusing from file", setDelegatesFunctionSignature);
+                    Log("Reusing existing code for function: '{0}'", setDelegatesFunctionSignature);
                     foreach (IndentedString line in layout.functions[setDelegatesFunctionSignature])
                     {
                         // TOOD: magic number
@@ -887,7 +887,7 @@ namespace OpusOptionCodeGenerator
                         throw new Exception("Private data class name was not provided");
                     }
 
-                    Log("Function '{0}' generating code for", setDelegatesFunctionSignature);
+                    Log("Generating new code for the function: '{0}'", setDelegatesFunctionSignature);
                     WriteLine(writer, 2, "{");
                     if (parameters.extendedDelegates)
                     {
