@@ -834,10 +834,13 @@ namespace OpusOptionCodeGenerator
                     {
                         if (property.StateOnly)
                         {
+                            delegatesToRegister[property.Name] = null;
                             continue;
                         }
-
-                        delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
+                        else
+                        {
+                            delegatesToRegister[property.Name] = new System.Collections.Generic.List<string>();
+                        }
 
                         foreach (DelegateSignature delegateSig in delegateSignatures)
                         {
@@ -908,16 +911,23 @@ namespace OpusOptionCodeGenerator
                     foreach (string propertyName in delegatesToRegister.Keys)
                     {
                         System.Text.StringBuilder registration = new System.Text.StringBuilder();
-                        registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
-                        if (delegatesToRegister[propertyName].Count > 0)
+                        if (null != delegatesToRegister[propertyName])
                         {
-                            foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                            registration.AppendFormat("this[\"{0}\"].PrivateData = new {1}(", propertyName, parameters.privateDataClassName);
+                            if (delegatesToRegister[propertyName].Count > 0)
                             {
-                                registration.AppendFormat("{0},", delegateToRegister);
+                                foreach (string delegateToRegister in delegatesToRegister[propertyName])
+                                {
+                                    registration.AppendFormat("{0},", delegateToRegister);
+                                }
+                                registration.Remove(registration.Length - 1, 1); // last comma
                             }
-                            registration.Remove(registration.Length - 1, 1); // last comma
+                            registration.Append(");");
                         }
-                        registration.Append(");");
+                        else
+                        {
+                            registration.AppendFormat("// Property '{0}' is state only", propertyName);
+                        }
                         WriteLine(writer, 3, registration.ToString());
                     }
                     WriteLine(writer, 2, "}");
