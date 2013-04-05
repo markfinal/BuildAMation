@@ -18,33 +18,32 @@ namespace VisualStudioProcessor
                 string optionName = optionKeyValue.Key;
                 Opus.Core.Option option = optionKeyValue.Value;
 
-                if (null != option.PrivateData)
+                if (null == option.PrivateData)
                 {
-                    IVisualStudioDelegate data = option.PrivateData as IVisualStudioDelegate;
-                    if (null == data)
-                    {
-                        throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString());
-                    }
-
-                    Delegate visualStudioDelegate = data.VisualStudioProjectDelegate;
-                    if (null != visualStudioDelegate)
-                    {
-                        if (null != visualStudioDelegate.Target)
-                        {
-                            // Not a requirement, but just a check
-                            throw new Opus.Core.Exception("Delegate for '{0}' should be static", optionName);
-                        }
-
-                        VisualStudioProcessor.ToolAttributeDictionary dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);
-                        if (null != dictionary)
-                        {
-                            optionsDictionary.Merge(dictionary);
-                        }
-                    }
+                    // state only
+                    continue;
                 }
-                else
+
+                IVisualStudioDelegate data = option.PrivateData as IVisualStudioDelegate;
+                if (null == data)
                 {
-                    throw new Opus.Core.Exception("Archiver option '{0}' is not set up for VisualStudio project translation", optionName);
+                    throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString());
+                }
+
+                Delegate visualStudioDelegate = data.VisualStudioProjectDelegate;
+                if (null != visualStudioDelegate)
+                {
+                    if (null != visualStudioDelegate.Target)
+                    {
+                        // Not a requirement, but just a check
+                        throw new Opus.Core.Exception("Delegate for '{0}' should be static", optionName);
+                    }
+
+                    VisualStudioProcessor.ToolAttributeDictionary dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);
+                    if (null != dictionary)
+                    {
+                        optionsDictionary.Merge(dictionary);
+                    }
                 }
             }
 

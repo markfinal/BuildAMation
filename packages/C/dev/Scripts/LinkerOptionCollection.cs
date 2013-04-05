@@ -131,7 +131,7 @@ namespace C
                 }
 
                 string baseOutputPath = this.OutputDirectoryPath;
-                if (target.HasPlatform(Opus.Core.EPlatform.OSX) && (node.Module is OSXAppBundle))
+                if (target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
                 {
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");

@@ -236,6 +236,7 @@ namespace GccCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
+            // Property 'OSXApplicationBundle' is state only
             this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCommandLineProcessor);
             this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCommandLineProcessor);
             this["RPath"].PrivateData = new PrivateData(RPathCommandLineProcessor);

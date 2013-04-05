@@ -96,5 +96,16 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Whether to create an OSX application bundle containing the executable. Default is false.
+        /// </summary>
+        /// <value><c>true</c> if OSX application bundle; otherwise, <c>false</c>.</value>
+        // StateOnly
+        bool OSXApplicationBundle
+        {
+            get;
+            set;
+        }
     }
 }

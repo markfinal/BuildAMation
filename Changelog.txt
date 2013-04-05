@@ -1,3 +1,5 @@
+05-Apr-2013 Replaced C.OSXAppBundle module type, with a Boolean option on C.ILinkerOptions, called OSXApplicationBundle (defaults to false). Module type for bundles should now just be C.Application or C.WindowsApplication, which merges better with non-OSX platforms.
+
 04-Apr-2013 Marked XmlUtilities' plist options properties as state only, and auto-generated support files
 
 04-Apr-2013 OpusOptionCodeGenerator now recognizes a comment // StateOnly above a property in an interface file to indicate that the property has no delegates to register.

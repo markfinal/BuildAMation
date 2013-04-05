@@ -16,28 +16,26 @@ namespace CommandLineProcessor
                 string optionName = optionKeyValue.Key;
                 Opus.Core.Option option = optionKeyValue.Value;
 
-                if (null != option.PrivateData)
+                if (null == option.PrivateData)
                 {
-                    ICommandLineDelegate data = option.PrivateData as ICommandLineDelegate;
-                    if (null == data)
-                    {
-                        throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(ICommandLineDelegate).ToString(), sender.GetType().ToString());
-                    }
-
-                    Delegate commandLineDelegate = data.CommandLineDelegate;
-                    if (null != commandLineDelegate)
-                    {
-                        if (null != commandLineDelegate.Target)
-                        {
-                            // Not a requirement, but just a check
-                            throw new Opus.Core.Exception("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString());
-                        }
-                        commandLineDelegate(sender, commandLineBuilder, option, target);
-                    }
+                    continue;
                 }
-                else
+
+                ICommandLineDelegate data = option.PrivateData as ICommandLineDelegate;
+                if (null == data)
                 {
-                    throw new Opus.Core.Exception("Option '{0}' is not configured for command line translation in '{1}'", optionName, sender.GetType().ToString());
+                    throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(ICommandLineDelegate).ToString(), sender.GetType().ToString());
+                }
+
+                Delegate commandLineDelegate = data.CommandLineDelegate;
+                if (null != commandLineDelegate)
+                {
+                    if (null != commandLineDelegate.Target)
+                    {
+                        // Not a requirement, but just a check
+                        throw new Opus.Core.Exception("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString());
+                    }
+                    commandLineDelegate(sender, commandLineBuilder, option, target);
                 }
             }
         }

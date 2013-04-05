@@ -2,12 +2,13 @@
 namespace CocoaTest1
 {
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
-    class CocoaTest : C.OSXAppBundle
+    class CocoaTest : C.WindowsApplication
     {
         public CocoaTest()
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var link = module.Options as C.ILinkerOptions;
+                link.OSXApplicationBundle = true;
                 link.AdditionalOptions = "-framework cocoa";
             };
         }
