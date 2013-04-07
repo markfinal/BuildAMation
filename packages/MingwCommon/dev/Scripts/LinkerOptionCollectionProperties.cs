@@ -126,6 +126,18 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        bool C.ILinkerOptions.OSXApplicationBundle
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("OSXApplicationBundle");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("OSXApplicationBundle", value);
+                this.ProcessNamedSetHandler("OSXApplicationBundleSetHandler", this["OSXApplicationBundle"]);
+            }
+        }
         #endregion
         #region ILinkerOptions Option properties
         bool ILinkerOptions.EnableAutoImport

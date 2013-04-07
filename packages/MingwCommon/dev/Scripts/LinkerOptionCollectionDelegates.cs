@@ -154,6 +154,7 @@ namespace MingwCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
+            // Property 'OSXApplicationBundle' is state only
             this["EnableAutoImport"].PrivateData = new PrivateData(EnableAutoImportCommandLineProcessor);
         }
     }

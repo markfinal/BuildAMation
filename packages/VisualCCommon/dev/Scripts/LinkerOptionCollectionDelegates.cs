@@ -405,7 +405,6 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary IncrementalLinkVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (vsTarget == VisualStudioProcessor.EVisualStudioTarget.VCPROJ)
             {
@@ -423,7 +422,6 @@ namespace VisualCCommon
                 // TODO: this is wrong - it needs to be on the PropertyGroup, not the ItemDefinitionGroup
                 returnVal.Add("LinkIncremental", boolOption.Value.ToString().ToLower());
             }
-
             return returnVal;
         }
         #endregion
@@ -439,6 +437,7 @@ namespace VisualCCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesVisualStudioProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor,GenerateMapFileVisualStudioProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsVisualStudioProcessor);
+            // Property 'OSXApplicationBundle' is state only
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLineProcessor,NoLogoVisualStudioProcessor);
             this["StackReserveAndCommit"].PrivateData = new PrivateData(StackReserveAndCommitCommandLineProcessor,StackReserveAndCommitVisualStudioProcessor);
             this["IgnoredLibraries"].PrivateData = new PrivateData(IgnoredLibrariesCommandLineProcessor,IgnoredLibrariesVisualStudioProcessor);
