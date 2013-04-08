@@ -131,6 +131,9 @@ namespace MingwCommon
                 commandLineBuilder.Add(argument);
             }
         }
+        private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         #region ILinkerOptions Option delegates
         private static void EnableAutoImportCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -155,6 +158,7 @@ namespace MingwCommon
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
             // Property 'OSXApplicationBundle' is state only
+            this["OSXFrameworks"].PrivateData = new PrivateData(OSXFrameworksCommandLineProcessor);
             this["EnableAutoImport"].PrivateData = new PrivateData(EnableAutoImportCommandLineProcessor);
         }
     }

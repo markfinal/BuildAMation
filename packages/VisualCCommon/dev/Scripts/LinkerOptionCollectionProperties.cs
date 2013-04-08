@@ -138,6 +138,18 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OSXApplicationBundleSetHandler", this["OSXApplicationBundle"]);
             }
         }
+        Opus.Core.StringArray C.ILinkerOptions.OSXFrameworks
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("OSXFrameworks");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("OSXFrameworks", value);
+                this.ProcessNamedSetHandler("OSXFrameworksSetHandler", this["OSXFrameworks"]);
+            }
+        }
         #endregion
         #region ILinkerOptions Option properties
         bool ILinkerOptions.NoLogo
