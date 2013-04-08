@@ -166,6 +166,19 @@ namespace GccCommon
                 commandLineBuilder.Add(argument);
             }
         }
+        private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            if (!Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+
+            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (string framework in stringArrayOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-framework {0}", framework));
+            }
+        }
         #endregion
         #region ILinkerOptions Option delegates
         private static void CanUseOriginCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -237,6 +250,7 @@ namespace GccCommon
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
             // Property 'OSXApplicationBundle' is state only
+            this["OSXFrameworks"].PrivateData = new PrivateData(OSXFrameworksCommandLineProcessor);
             this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCommandLineProcessor);
             this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCommandLineProcessor);
             this["RPath"].PrivateData = new PrivateData(RPathCommandLineProcessor);

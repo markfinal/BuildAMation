@@ -107,5 +107,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// List of names of OSX frameworks to include in the link step
+        /// </summary>
+        /// <value>The OSX frameworks.</value>
+        Opus.Core.StringArray OSXFrameworks
+        {
+            get;
+            set;
+        }
     }
 }

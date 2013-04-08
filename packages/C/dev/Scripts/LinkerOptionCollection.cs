@@ -48,6 +48,7 @@ namespace C
             linkerOptions.GenerateMapFile = true;
             linkerOptions.Libraries = new Opus.Core.FileCollection();
             linkerOptions.StandardLibraries = new Opus.Core.FileCollection();
+            linkerOptions.OSXFrameworks = new Opus.Core.StringArray();
             linkerOptions.AdditionalOptions = "";
         }
 
