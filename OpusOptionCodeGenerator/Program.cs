@@ -28,6 +28,7 @@ namespace OpusOptionCodeGenerator
             Log("-e [delegates extend an existing implementation]");
             Log("-b [generated delegates class is a base class]");
             Log("-uh [updated header of generated files if needed]");
+            Log("-ih [ignore any updates to updates of generated files]");
             Log("--- Obsolete options ---");
             Log("-o=<output properties filename> [use -p]");
         }
@@ -105,6 +106,10 @@ namespace OpusOptionCodeGenerator
                 else if (arg.StartsWith("-uh"))
                 {
                     parameters.updateHeader = true;
+                }
+                else if (arg.StartsWith("-ih"))
+                {
+                    parameters.ignoreHeaderUpdates = true;
                 }
                 else
                 {
@@ -795,15 +800,22 @@ namespace OpusOptionCodeGenerator
                         message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
                     }
 
-                    if (parameters.forceWrite || parameters.updateHeader)
+                    if (parameters.ignoreHeaderUpdates)
                     {
-                        Log(message.ToString());
-                        Log("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
-                        writeToDisk = true;
+                        builder = layout.header;
                     }
                     else
                     {
-                        throw new Exception(message.ToString());
+                        if (parameters.forceWrite || parameters.updateHeader)
+                        {
+                            Log(message.ToString());
+                            Log("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
+                            writeToDisk = true;
+                        }
+                        else
+                        {
+                            throw new Exception(message.ToString());
+                        }
                     }
                 }
                 WriteLine(writer, 0, builder.ToString());

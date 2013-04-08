@@ -20,6 +20,7 @@ namespace OpusOptionCodeGenerator
         {
             excludedFlagsFromHeaders.Add("-f");
             excludedFlagsFromHeaders.Add("-uh");
+            excludedFlagsFromHeaders.Add("-ih");
         }
 
         public string[] args;
@@ -36,5 +37,6 @@ namespace OpusOptionCodeGenerator
         public bool extendedDelegates;
         public bool isBaseClass;
         public bool updateHeader;
+        public bool ignoreHeaderUpdates;
     }
 }
