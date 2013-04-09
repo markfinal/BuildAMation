@@ -1,4 +1,4 @@
-﻿// <copyright file="Program.cs" company="Mark Final">
+// <copyright file="Program.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Option Code Generator</summary>
@@ -211,10 +211,12 @@ namespace OpusOptionCodeGenerator
             return ReadLine(reader, skipComments, out prefixSpaces, out stateOnly);
         }
 
+        /* NOT USED
         static string ReadLine(System.IO.TextReader reader, out int prefixSpaces, out bool stateOnly)
         {
             return ReadLine(reader, false, out prefixSpaces, out stateOnly);
         }
+        */
 
         static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
         {
