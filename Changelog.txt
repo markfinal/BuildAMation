@@ -1,3 +1,5 @@
+09-Apr-2013 Release 0.50 Alpha 4
+
 08-Apr-2013 Added -ih option to OpusOptionCodeGenerator to ignore header updates to the delegates file. This allows updating option files on different platforms.
 
 08-Apr-2013 Added C.ILinkerOptions.OSXFrameworks Opus.Core.StringArray option, to list the names of frameworks to link against.
