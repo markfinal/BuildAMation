@@ -1,30 +1,30 @@
-// <copyright file="ForceBuildAction.cs" company="Mark Final">
+// <copyright file="ExplainAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>NativeBuilder package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(NativeBuilder.ForceBuildAction))]
+[assembly: Opus.Core.RegisterAction(typeof(NativeBuilder.ExplainAction))]
 
 namespace NativeBuilder
 {
     [Opus.Core.PreambleAction]
-    public sealed class ForceBuildAction : Opus.Core.IAction
+    public sealed class ExplainAction : Opus.Core.IAction
     {
-        public ForceBuildAction()
+        public ExplainAction()
         {
             if (!Opus.Core.State.HasCategory("NativeBuilder"))
             {
                 Opus.Core.State.AddCategory("NativeBuilder");
             }
-            Opus.Core.State.Add<bool>("NativeBuilder", "ForceBuild", false);
+            Opus.Core.State.Add<bool>("NativeBuilder", "Explain", false);
         }
 
         string Opus.Core.IAction.CommandLineSwitch
         {
             get
             {
-                return "-forcebuild";
+                return "-explain";
             }
         }
 
@@ -32,15 +32,15 @@ namespace NativeBuilder
         {
             get
             {
-                return "Force a build by not performing any dependency checks";
+                return "Explain why builds occur due to dependency checking";
             }
         }
 
         bool Opus.Core.IAction.Execute()
         {
-            Opus.Core.State.Set("NativeBuilder", "ForceBuild", true);
+            Opus.Core.State.Set("NativeBuilder", "Explain", true);
 
-            Opus.Core.Log.DebugMessage("Native builds are now forced");
+            Opus.Core.Log.DebugMessage("Explained builds are enabled");
 
             return true;
         }
