@@ -1,3 +1,5 @@
+15-Apr-2013 Package assembly re-use now includes a hash of the Opus assemblies.
+
 09-Apr-2013 Added -explain action to the NativeBuilder, which will output an explaination of why files are built, at the current verbosity level.
 
 09-Apr-2013 Release 0.50 Alpha 4
