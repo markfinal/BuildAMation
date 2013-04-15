@@ -319,7 +319,8 @@ namespace Opus.Core
             foreach (string assemblyPath in opusAssemblies)
             {
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(assemblyPath);
-                hashCode ^= assembly.GetHashCode();
+                string version = assembly.GetName().Version.ToString();
+                hashCode ^= version.GetHashCode();
             }
             string hash = hashCode.ToString();
             return hash;
@@ -438,7 +439,7 @@ namespace Opus.Core
                         }
                         else
                         {
-                            Log.DebugMessage("Hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
+                            Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
                         }
                     }
                 }
