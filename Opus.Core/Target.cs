@@ -31,7 +31,7 @@ namespace Opus.Core
         {
             if (null == toolset)
             {
-                throw new Exception("Toolset interface must not be null");
+                throw new Exception("Toolset interface must not be null with the base target '{0}'", baseTarget.ToString());
             }
 
             Target target = null;
