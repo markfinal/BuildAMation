@@ -17,7 +17,7 @@ namespace FileUtilities
         #endregion
     }
 
-    [Opus.Core.ModuleToolAssignment(typeof(CopyFileTool))]
+    [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
     class CopyFile : Opus.Core.BaseModule
     {
     }
