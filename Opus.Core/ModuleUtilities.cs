@@ -22,21 +22,25 @@ namespace Opus.Core
 
                 if (t.Length > 1)
                 {
-                    throw new Exception("There are {0} tool assignments to the module type '{1}'. There should be only one.", t.Length, moduleType.ToString());
+                    throw new Exception("There are {0} ModuleToolAssignments to the module type '{1}'. There should be only one.", t.Length, moduleType.ToString());
                 }
 
                 ModuleToolAssignmentAttribute attr = t[0] as ModuleToolAssignmentAttribute;
                 System.Type toolType = attr.ToolType;
                 if (null == toolType)
                 {
-                    // module does not require a toolchain
-                    return null;
+                    throw new Exception("The tool type in the ModuleToolAssignment for module type '{0}' cannot be null", moduleType.ToString());
+                }
+
+                if (!toolType.IsInterface)
+                {
+                    throw new Exception("The tool type '{0}' in the ModuleToolAssignment for module type '{1}' must be an interface", toolType.ToString(), moduleType.ToString());
                 }
 
                 var providers = toolType.GetCustomAttributes(typeof(AssignToolsetProviderAttribute), false);
                 if (0 == providers.Length)
                 {
-                    return null;
+                    throw new Exception("The tool interface '{0}' the ModuleToolAssignment for module type '{1}' has no toolsets assigned to it", toolType.ToString(), moduleType.ToString());
                 }
 
                 string toolsetName = (providers[0] as AssignToolsetProviderAttribute).ToolsetName(toolType);

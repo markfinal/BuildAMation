@@ -81,15 +81,7 @@ namespace Opus.Core
         private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, BaseTarget baseTarget)
         {
             IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
-            Target targetUsed = null;
-            try
-            {
-                targetUsed = Target.GetInstance(baseTarget, toolset);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("For module '{0}', {1}", moduleType.ToString(), ex.Message);
-            }
+            Target targetUsed = Target.GetInstance(baseTarget, toolset);
 
             ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)
