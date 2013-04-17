@@ -11,7 +11,7 @@
       <Opus:Version Id="12" />
     </Opus:Package>
     <Opus:Package Name="FileUtilities">
-      <Opus:Version Id="dev" />
+      <Opus:Version Id="1.0" />
     </Opus:Package>
     <Opus:Package Name="Mingw">
       <Opus:Version Id="3.4.5" Default="true" />
