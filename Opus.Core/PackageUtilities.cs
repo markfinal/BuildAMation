@@ -305,7 +305,7 @@ namespace Opus.Core
             Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
         }
 
-        private static string GetPackageHash(StringArray sourceCode, StringArray definitions)
+        private static string GetPackageHash(StringArray sourceCode, StringArray definitions, StringArray opusAssemblies)
         {
             int hashCode = 0;
             foreach (string source in sourceCode)
@@ -315,6 +315,12 @@ namespace Opus.Core
             foreach (string define in definitions)
             {
                 hashCode ^= define.GetHashCode();
+            }
+            foreach (string assemblyPath in opusAssemblies)
+            {
+                System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(assemblyPath);
+                string version = assembly.GetName().Version.ToString();
+                hashCode ^= version.GetHashCode();
             }
             string hash = hashCode.ToString();
             return hash;
@@ -413,7 +419,7 @@ namespace Opus.Core
 
             // can an existing assembly be reused?
             string hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
-            string thisHashCode = GetPackageHash(sourceCode, definitions);
+            string thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.OpusAssemblies);
             if (State.CacheAssembly)
             {
                 if (System.IO.File.Exists(hashPathName))
@@ -433,7 +439,7 @@ namespace Opus.Core
                         }
                         else
                         {
-                            Log.DebugMessage("Hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
+                            Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
                         }
                     }
                 }
