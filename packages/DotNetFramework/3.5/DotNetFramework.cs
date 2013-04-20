@@ -15,7 +15,7 @@ namespace DotNetFramework
         static Solution()
         {
             // TODO: this path is for VCSExpress - what about the professional version?
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\VCSExpress\9.0\Projects"))
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VCSExpress\9.0\Projects"))
             {
                 if (null == key)
                 {
@@ -119,7 +119,7 @@ namespace DotNetFramework
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {
                     string toolsPath = null;
-                    using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
+                    using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
                     {
                         toolsPath = key.GetValue("MSBuildToolsPath") as string;
                     }

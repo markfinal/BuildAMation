@@ -35,7 +35,7 @@ namespace VisualC
                 }
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(registryKey))
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKey))
             {
                 if (null == key)
                 {
