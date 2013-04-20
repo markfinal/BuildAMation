@@ -17,29 +17,29 @@ namespace VisualC
         static Solution()
         {
             // try the VS Express version first, since it's free
-            string registryKey = @"Microsoft\VCExpress\10.0\Projects";
-            if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
+            string registryKey = @"Microsoft\WDExpress\11.0_Config\Projects";
+            if (Opus.Core.Win32RegistryUtilities.DoesCUSoftwareKeyExist(registryKey))
             {
                 vsEdition = "Express";
             }
             else
             {
-                registryKey = @"Microsoft\VisualStudio\10.0\Projects";
-                if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
+                registryKey = @"Microsoft\WDStudio\11.0\Projects";
+                if (Opus.Core.Win32RegistryUtilities.DoesCUSoftwareKeyExist(registryKey))
                 {
                     vsEdition = "Professional";
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("VisualStudio C++ 2010 (Express or Professional) was not installed");
+                    throw new Opus.Core.Exception("VisualStudio C++ 2012 (Express or Professional) was not installed or not yet run for the current user");
                 }
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKey))
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenCUSoftwareKey(registryKey))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("VisualStudio C++ {0} 2010 was not installed", vsEdition);
+                    throw new Opus.Core.Exception("VisualStudio C++ {0} 2012 was not installed", vsEdition);
                 }
 
                 string[] subKeyNames = key.GetSubKeyNames();
@@ -50,7 +50,7 @@ namespace VisualC
                         string projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
                         if (null != projectExtension)
                         {
-                            if (projectExtension == "vcproj")
+                            if (projectExtension == "vcxproj")
                             {
                                 ProjectTypeGuid = new System.Guid(subKeyName);
                                 break;
@@ -70,7 +70,7 @@ namespace VisualC
 
             if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
             {
-                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010 {0}", vsEdition);
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2012 {0}", vsEdition);
             }
 
 #if false
@@ -78,7 +78,7 @@ namespace VisualC
             // see CS0472, and something about struct comparisons
             if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
             {
-                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010");
+                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2012");
             }
 #endif
         }
@@ -88,8 +88,8 @@ namespace VisualC
             get
             {
                 System.Text.StringBuilder header = new System.Text.StringBuilder();
-                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 11.00");
-                header.AppendFormat("# Visual C++ {0} 2010\n", vsEdition);
+                header.AppendLine("Microsoft Visual Studio Solution File, Format Version 12.00");
+                header.AppendFormat("# Visual C++ {0} 2012 for Windows Desktop\n", vsEdition);
                 return header.ToString();
             }
         }
@@ -114,7 +114,7 @@ namespace VisualC
         {
             get
             {
-                return "10.00";
+                return "11.00";
             }
         }
 

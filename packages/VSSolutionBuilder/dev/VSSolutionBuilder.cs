@@ -23,8 +23,12 @@ namespace VSSolutionBuilder
                         break;
 
                     case "10.0":
+                    case "11.0":
                         projectClassTypeName = "VSSolutionBuilder.VCXBuildProject";
                         break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized VisualStudio version: '{0}'", toolchainPackage.Version);
                 }
 
                 System.Type projectClassType = System.Type.GetType(projectClassTypeName);
