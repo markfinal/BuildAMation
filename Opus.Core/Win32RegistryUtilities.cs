@@ -93,7 +93,7 @@ namespace Opus.Core
 
         public static Microsoft.Win32.RegistryKey OpenCUSoftwareKey(string path)
         {
-            return OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, true);
+            return OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, false);
         }
 
         public static bool DoesLMSoftwareKeyExist(string path)
