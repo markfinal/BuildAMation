@@ -7,7 +7,7 @@ namespace Opus.Core
 {
     public static class Win32RegistryUtilities
     {
-        private static string Wow6432NodeString = @"SOFTWARE\Wow6432Node";
+        private static string Wow6432NodeString = @"Wow6432Node";
 
         static Win32RegistryUtilities()
         {
@@ -17,112 +17,94 @@ namespace Opus.Core
             }
         }
 
-        public static bool Does32BitLMSoftwareKeyExist(string path)
+        private static string SoftwareKeyPath(string path, bool query32Bit)
+        {
+            System.Text.StringBuilder keyPath = new System.Text.StringBuilder();
+            if (OSUtilities.Is64BitHosting)
+            {
+                if (query32Bit)
+                {
+                    keyPath.AppendFormat(@"Software\{0}\{1}", Wow6432NodeString, path);
+                }
+                else
+                {
+                    keyPath.AppendFormat(@"Software\{0}", path);
+                }
+            }
+            else
+            {
+                keyPath.AppendFormat(@"Software\{0}", path);
+            }
+
+            return keyPath.ToString();
+        }
+
+        private static bool DoesSoftwareKeyExist(string path, Microsoft.Win32.RegistryKey registryArea, bool query32Bit)
         {
             if (!OSUtilities.IsWindowsHosting)
             {
                 return false;
             }
 
-            string keyPath;
-            if (OSUtilities.Is64BitHosting)
-            {
-                keyPath = System.String.Format(@"{0}\{1}", Wow6432NodeString, path);
-            }
-            else
-            {
-                keyPath = System.String.Format(@"SOFTWARE\{0}", path);
-            }
-
             bool exists = true;
-            Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath);
-            if (null == key)
+            using(Microsoft.Win32.RegistryKey key = registryArea.OpenSubKey(SoftwareKeyPath(path, query32Bit)))
             {
-                exists = false;
-            }
-            else
-            {
-                key.Close();
+                if (null == key)
+                {
+                    exists = false;
+                }
             }
 
             return exists;
         }
 
-        public static Microsoft.Win32.RegistryKey Open32BitLMSoftwareKey(string path)
+        public static bool DoesCUSoftwareKeyExist(string path)
+        {
+            bool exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.CurrentUser, false);
+            return exists;
+        }
+
+        public static bool Does32BitLMSoftwareKeyExist(string path)
+        {
+            bool exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, true);
+            return exists;
+        }
+
+        private static Microsoft.Win32.RegistryKey OpenSoftwareKey(string path, Microsoft.Win32.RegistryKey registryArea, bool query32Bit)
         {
             if (!OSUtilities.IsWindowsHosting)
             {
                 return null;
             }
 
-            string keyPath;
-            if (OSUtilities.Is64BitHosting)
-            {
-                keyPath = System.String.Format(@"{0}\{1}", Wow6432NodeString, path);
-            }
-            else
-            {
-                keyPath = System.String.Format(@"SOFTWARE\{0}", path);
-            }
-            Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath);
+            string keyPath = SoftwareKeyPath(path, query32Bit);
+            Microsoft.Win32.RegistryKey key = registryArea.OpenSubKey(keyPath);
             if (null == key)
             {
-                Log.DebugMessage("Registry key '{0}' on LocalMachine not found", keyPath);
+                Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
             }
             return key;
         }
 
+        public static Microsoft.Win32.RegistryKey Open32BitLMSoftwareKey(string path)
+        {
+            return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, true);
+        }
+
+        public static Microsoft.Win32.RegistryKey OpenCUSoftwareKey(string path)
+        {
+            return OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, true);
+        }
+
         public static bool DoesLMSoftwareKeyExist(string path)
         {
-            if (!OSUtilities.IsWindowsHosting)
-            {
-                return false;
-            }
-
-            if (!OSUtilities.Is64BitHosting)
-            {
-                return false;
-            }
-
-            string keyPath = System.String.Format(@"SOFTWARE\{0}", path);
-
-            bool exists = true;
-            Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath);
-            if (null == key)
-            {
-                exists = false;
-            }
-            else
-            {
-                key.Close();
-            }
-
+            bool exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, false);
             return exists;
         }
 
         public static Microsoft.Win32.RegistryKey OpenLMSoftwareKey(string path)
         {
-            if (!OSUtilities.IsWindowsHosting)
-            {
-                return null;
-            }
-
-            string keyPath = System.String.Format(@"SOFTWARE\{0}", path);
-            Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath);
-            if (null == key)
-            {
-                Log.DebugMessage("Registry key '{0}' on LocalMachine not found", keyPath);
-                if (OSUtilities.Is64BitHosting)
-                {
-                    keyPath = System.String.Format(@"{0}\{1}", Wow6432NodeString, path);
-                    key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(keyPath);
-                    if (null == key)
-                    {
-                        Log.DebugMessage("On a 64-bit OS, registry key '{0}' on LocalMachine also not found", keyPath);
-                    }
-                }
-            }
-            return key;
+            return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, false);
         }
     }
 }
