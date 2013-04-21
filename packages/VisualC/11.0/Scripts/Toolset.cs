@@ -93,5 +93,20 @@ namespace VisualC
         }
 
         #endregion
+
+        protected override string GetBinPath(Opus.Core.BaseTarget baseTarget)
+        {
+            this.GetInstallPath();
+
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            {
+                // VS2012 does not have a pure 64-bit compiler
+                return this.bin6432Folder;
+            }
+            else
+            {
+                return this.bin32Folder;
+            }
+        }
     }
 }
