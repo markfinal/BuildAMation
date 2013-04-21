@@ -25,9 +25,7 @@ namespace VisualCCommon
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
         }
 
-        #region IToolset Members
-
-        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
+        protected virtual string GetBinPath(Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
 
@@ -46,6 +44,13 @@ namespace VisualCCommon
             {
                 return this.bin32Folder;
             }
+        }
+
+        #region IToolset Members
+
+        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
+        {
+            return this.GetBinPath(baseTarget);
         }
 
         Opus.Core.StringArray Opus.Core.IToolset.Environment

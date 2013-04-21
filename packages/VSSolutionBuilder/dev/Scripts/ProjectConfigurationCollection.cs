@@ -87,6 +87,17 @@ namespace VSSolutionBuilder
                 configurationGroup.Label = "Configuration";
                 configurationGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 configurationGroup.CreateProperty("ConfigurationType", configuration.Type.ToString());
+
+                {
+                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    System.Reflection.PropertyInfo PlatformToolsetProperty = solutionType.GetProperty("PlatformToolset");
+                    if (null != PlatformToolsetProperty)
+                    {
+                        configurationGroup.CreateProperty("PlatformToolset", PlatformToolsetProperty.GetGetMethod().Invoke(SolutionInstance, null) as string);
+                    }
+                }
+
 #if false
                 configurationGroup.CreateProperty("CharacterSet", configuration.CharacterSet.ToString());
 #endif

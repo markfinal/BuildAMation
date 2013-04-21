@@ -1,6 +1,6 @@
 20-Apr-2013 Adding support for VisualStudio 2012, package VisualC-11.0
 
-20-Apr-2013 Generalizing Opus.Core.Win32RegistryUtilities access and adding accessors to the current user area.
+20-Apr-2013 Generalizing Opus.Core.Win32RegistryUtilities access and adding accessors to the current user area. If you used any functions from this before, finding 32-bit registry keys is now more explicit.
 
 15-Apr-2013 Package assembly re-use now includes a hash of the Opus assemblies.
 

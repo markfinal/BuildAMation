@@ -21,7 +21,7 @@ namespace WindowsSDK
                 return;
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v6.0A"))
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v6.0A"))
             {
                 if (null == key)
                 {
