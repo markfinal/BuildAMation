@@ -118,6 +118,14 @@ namespace VisualC
             }
         }
 
+        public string PlatformToolset
+        {
+            get
+            {
+                return "v100";
+            }
+        }
+
         public string ProjectExtension
         {
             get
