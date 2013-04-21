@@ -20,7 +20,7 @@ namespace DirectXSDK
             }
 
             const string registryPath = @"Microsoft\DirectX\Microsoft DirectX SDK (June 2010)";
-            using (Microsoft.Win32.RegistryKey dxInstallLocation = Opus.Core.Win32RegistryUtilities.OpenLMSoftwareKey(registryPath))
+            using (Microsoft.Win32.RegistryKey dxInstallLocation = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryPath))
             {
                 if (null == dxInstallLocation)
                 {
