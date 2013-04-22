@@ -9,6 +9,12 @@ namespace NativeBuilder
     {
         public object Build(FileUtilities.CopyFile copyFile, out bool success)
         {
+            string sourceFilePath = copyFile.SourceFile.AbsolutePath;
+            if (!System.IO.File.Exists(sourceFilePath))
+            {
+                throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
+            }
+
             success = false;
             return null;
         }
