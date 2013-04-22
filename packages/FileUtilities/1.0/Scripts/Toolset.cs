@@ -36,7 +36,7 @@ namespace FileUtilities
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
-            return "dev";
+            return "1.0";
         }
 
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
