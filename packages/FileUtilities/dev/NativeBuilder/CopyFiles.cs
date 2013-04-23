@@ -15,10 +15,24 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.Log.MessageAll("Source file is '{0}'", sourceFilePath);
-
             Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
-            Opus.Core.Log.MessageAll(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile]);
+            string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+
+            Opus.Core.DependencyNode node = copyFile.OwningNode;
+
+            // dependency checking
+            {
+                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray(
+                    sourceFilePath
+                );
+                Opus.Core.StringArray outputFiles = baseOptions.OutputPaths.Paths;
+                if (!RequiresBuilding(outputFiles, inputFiles))
+                {
+                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    success = true;
+                    return null;
+                }
+            }
 
             success = false;
             return null;
