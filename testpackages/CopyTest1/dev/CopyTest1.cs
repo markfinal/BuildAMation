@@ -26,4 +26,12 @@ namespace CopyTest1
            };
         }
     }
+
+    class CopyMultipleFileTest : FileUtilities.CopyFileCollection
+    {
+        public CopyMultipleFileTest()
+        {
+            this.Include(this, "data", "*");
+        }
+    }
 }
