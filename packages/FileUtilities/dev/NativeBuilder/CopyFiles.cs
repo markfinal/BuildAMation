@@ -34,7 +34,11 @@ namespace NativeBuilder
                 }
             }
 
-            success = false;
+            // TODO: can this ever throw an exception?
+            bool allowOverwrite = true;
+            System.IO.File.Copy(sourceFilePath, copiedFilePath, allowOverwrite);
+
+            success = true;
             return null;
         }
     }
