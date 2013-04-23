@@ -15,6 +15,11 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
+            Opus.Core.Log.MessageAll("Source file is '{0}'", sourceFilePath);
+
+            Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
+            Opus.Core.Log.MessageAll(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile]);
+
             success = false;
             return null;
         }
