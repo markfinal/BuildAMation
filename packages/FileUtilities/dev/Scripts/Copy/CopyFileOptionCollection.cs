@@ -29,7 +29,7 @@ namespace FileUtilities
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            if (node.Module.GetType() == typeof(CopyFile))
+            if (typeof(CopyFile).IsInstanceOfType(node.Module))
             {
                 string sourceFileName = System.IO.Path.GetFileName((node.Module as CopyFile).SourceFile.AbsolutePath);
                 ICopyFileOptions options = this as ICopyFileOptions;
