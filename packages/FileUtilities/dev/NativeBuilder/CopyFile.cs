@@ -34,9 +34,6 @@ namespace NativeBuilder
                 }
             }
 
-            Opus.Core.Target target = node.Target;
-
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (baseOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = baseOptions as CommandLineProcessor.ICommandLineSupport;
