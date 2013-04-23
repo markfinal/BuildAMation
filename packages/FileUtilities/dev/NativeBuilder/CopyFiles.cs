@@ -34,9 +34,32 @@ namespace NativeBuilder
                 }
             }
 
-            // TODO: can this ever throw an exception?
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            if (baseOptions is CommandLineProcessor.ICommandLineSupport)
+            {
+                CommandLineProcessor.ICommandLineSupport commandLineOption = baseOptions as CommandLineProcessor.ICommandLineSupport;
+                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                foreach (string directoryPath in directoriesToCreate)
+                {
+                    NativeBuilder.MakeDirectory(directoryPath);
+                }
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+            }
+
             bool allowOverwrite = true;
-            System.IO.File.Copy(sourceFilePath, copiedFilePath, allowOverwrite);
+            try
+            {
+                System.IO.File.Copy(sourceFilePath, copiedFilePath, allowOverwrite);
+            }
+            catch (System.IO.IOException ex)
+            {
+                throw new Opus.Core.Exception(ex.Message);
+            }
 
             success = true;
             return null;

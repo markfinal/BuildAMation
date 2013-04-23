@@ -7,6 +7,11 @@ namespace FileUtilities
 {
     public partial class CopyFileOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICopyFileOptions
     {
+        public CopyFileOptionCollection()
+            : base()
+        {
+        }
+
         public CopyFileOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
@@ -20,31 +25,41 @@ namespace FileUtilities
         }
         #endregion
 
-        public override void FinalizeOptions (Opus.Core.DependencyNode node)
+        private Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
+
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            string sourceFileName = System.IO.Path.GetFileName((node.Module as CopyFile).SourceFile.AbsolutePath);
-            ICopyFileOptions options = this as ICopyFileOptions;
-            if (options.DestinationDirectory != null)
+            if (node.Module.GetType() == typeof(CopyFile))
             {
-                this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(options.DestinationDirectory, sourceFileName);
-            }
-            else
-            {
-                this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(node.GetModuleBuildDirectory(), sourceFileName);
+                string sourceFileName = System.IO.Path.GetFileName((node.Module as CopyFile).SourceFile.AbsolutePath);
+                ICopyFileOptions options = this as ICopyFileOptions;
+
+                string destinationDirectory;
+                if (options.DestinationDirectory != null)
+                {
+                    destinationDirectory = options.DestinationDirectory;
+                }
+                else
+                {
+                    destinationDirectory = node.GetModuleBuildDirectory();
+                }
+
+                this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(destinationDirectory, sourceFileName);
+                directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
             }
             base.FinalizeOptions (node);
         }
 
         #region ICommandLineSupport implementation
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments (Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
             throw new System.NotImplementedException ();
         }
 
-        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate ()
+        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
         {
-            throw new System.NotImplementedException ();
+            return this.directoriesToCreate;
         }
 
         #endregion
