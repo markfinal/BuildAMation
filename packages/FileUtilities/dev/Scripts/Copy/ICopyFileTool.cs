@@ -1,3 +1,8 @@
+// <copyright file="ICopyFileTool.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>FileUtilities package</summary>
+// <author>Mark Final</author>
 namespace FileUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
