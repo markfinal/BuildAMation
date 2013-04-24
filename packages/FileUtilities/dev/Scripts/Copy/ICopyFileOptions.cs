@@ -17,5 +17,12 @@ namespace FileUtilities
             get;
             set;
         }
+
+        // StateOnly
+        string CommonBaseDirectory
+        {
+            get;
+            set;
+        }
     }
 }

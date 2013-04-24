@@ -9,7 +9,16 @@ namespace FileUtilities
     public class CopyDirectory : Opus.Core.BaseModule, Opus.Core.IModuleCollection
     {
         private System.Collections.Generic.List<CopyFile> copyFiles = new System.Collections.Generic.List<CopyFile>();
-        
+        private string commonBaseDirectory;
+
+        public string CommonBaseDirectory
+        {
+            get
+            {
+                return this.commonBaseDirectory;
+            }
+        }
+
         public void Include(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -25,7 +34,7 @@ namespace FileUtilities
                 packagePath = proxyPath.Combine(package.Identifier);
             }
             
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out this.commonBaseDirectory, packagePath, pathSegments);
             foreach (string path in filePaths)
             {
                 CopyFile file = new CopyFile();

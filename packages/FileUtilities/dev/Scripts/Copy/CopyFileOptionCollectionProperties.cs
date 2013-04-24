@@ -18,6 +18,18 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("DestinationDirectorySetHandler", this["DestinationDirectory"]);
             }
         }
+        string ICopyFileOptions.CommonBaseDirectory
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("CommonBaseDirectory");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("CommonBaseDirectory", value);
+                this.ProcessNamedSetHandler("CommonBaseDirectorySetHandler", this["CommonBaseDirectory"]);
+            }
+        }
         #endregion
     }
 }

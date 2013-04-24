@@ -18,10 +18,18 @@ namespace FileUtilities
         }
 
         #region implemented abstract members of BaseOptionCollection
-        protected override void InitializeDefaults (Opus.Core.DependencyNode owningNode)
+        protected override void InitializeDefaults(Opus.Core.DependencyNode owningNode)
         {
             ICopyFileOptions options = this as ICopyFileOptions;
             options.DestinationDirectory = null;
+            if (typeof(CopyDirectory).IsInstanceOfType(owningNode.Module))
+            {
+                options.CommonBaseDirectory = (owningNode.Module as CopyDirectory).CommonBaseDirectory;
+            }
+            else
+            {
+                options.CommonBaseDirectory = null;
+            }
         }
         #endregion
 
@@ -31,7 +39,7 @@ namespace FileUtilities
         {
             if (typeof(CopyFile).IsInstanceOfType(node.Module))
             {
-                string sourceFileName = System.IO.Path.GetFileName((node.Module as CopyFile).SourceFile.AbsolutePath);
+                string sourcePath = (node.Module as CopyFile).SourceFile.AbsolutePath;
                 ICopyFileOptions options = this as ICopyFileOptions;
 
                 string destinationDirectory;
@@ -44,8 +52,19 @@ namespace FileUtilities
                     destinationDirectory = node.GetModuleBuildDirectory();
                 }
 
-                this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(destinationDirectory, sourceFileName);
-                directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
+                if (null != options.CommonBaseDirectory)
+                {
+                    string relPath = Opus.Core.RelativePathUtilities.GetPath(sourcePath, options.CommonBaseDirectory);
+                    this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(destinationDirectory, relPath);
+                }
+                else
+                {
+                    string sourceFileName = System.IO.Path.GetFileName(sourcePath);
+                    this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(destinationDirectory, sourceFileName);
+                }
+
+                string parentDir = System.IO.Path.GetDirectoryName(this.OutputPaths[OutputFileFlags.CopiedFile]);
+                directoriesToCreate.AddAbsoluteDirectory(parentDir, false);
             }
             base.FinalizeOptions (node);
         }

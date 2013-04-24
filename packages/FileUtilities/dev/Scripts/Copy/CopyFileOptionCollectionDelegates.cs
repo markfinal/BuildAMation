@@ -11,6 +11,7 @@ namespace FileUtilities
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             // Property 'DestinationDirectory' is state only
+            // Property 'CommonBaseDirectory' is state only
         }
     }
 }
