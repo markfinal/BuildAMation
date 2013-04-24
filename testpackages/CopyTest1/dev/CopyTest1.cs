@@ -34,4 +34,12 @@ namespace CopyTest1
             this.Include(this, "data", "*");
         }
     }
+
+    class CopyDirectoryTest : FileUtilities.CopyDirectory
+    {
+        public CopyDirectoryTest()
+        {
+            this.Include(this, "data");
+        }
+    }
 }
