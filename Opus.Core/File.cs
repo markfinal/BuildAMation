@@ -145,9 +145,13 @@ namespace Opus.Core
                     }
                 }
 
-                if (i != pathSegments.Length - 1)
+                if (i < pathSegments.Length - 1)
                 {
                     throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
+                }
+                else if (i == pathSegments.Length)
+                {
+                    throw new Exception("Path segments indicate a directory: '{0}'", combinedBaseDirectory);
                 }
 
                 combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
