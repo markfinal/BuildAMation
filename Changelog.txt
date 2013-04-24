@@ -1,3 +1,5 @@
+24-Apr-2013 Opus.Core.File.GetFiles() can now search through directories (last path segment is a directory) and also returns the common directory for all files found.
+
 20-Apr-2013 Adding support for VisualStudio 2012, package VisualC-11.0
 
 20-Apr-2013 Generalizing Opus.Core.Win32RegistryUtilities access and adding accessors to the current user area. If you used any functions from this before, finding 32-bit registry keys is now more explicit.

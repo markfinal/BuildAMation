@@ -123,14 +123,14 @@ namespace Opus.Core
             this.Initialize(absolutePath, false);
         }
 
-        public static StringArray GetFiles(string baseDirectory, params string[] pathSegments)
+        public static StringArray GetFiles(out string combinedBaseDirectory, string baseDirectory, params string[] pathSegments)
         {
             if (State.RunningMono)
             {
                 // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
                 // cannot use GetFiles with a pattern containing directories
 
-                string combinedBaseDirectory = baseDirectory;
+                combinedBaseDirectory = baseDirectory;
                 int i = 0;
                 for (; i < pathSegments.Length; ++i)
                 {
@@ -156,7 +156,6 @@ namespace Opus.Core
                 }
 
                 combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
-
                 if (isDirectory)
                 {
                     string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, "*", System.IO.SearchOption.AllDirectories);
@@ -177,6 +176,7 @@ namespace Opus.Core
                     baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
                     baseDirectory = System.IO.Path.GetFullPath(baseDirectory);
                 }
+                combinedBaseDirectory = baseDirectory;
                 // TODO: handle the case where the last path segment refers to a directory, not a file or wildcard
                 try
                 {
@@ -189,6 +189,12 @@ namespace Opus.Core
                     return new StringArray();
                 }
             }
+        }
+
+        public static StringArray GetFiles(string baseDirectory, params string[] pathSegments)
+        {
+            string commonBaseDirectory;
+            return GetFiles(out commonBaseDirectory, baseDirectory, pathSegments);
         }
 
         public bool IsValid
