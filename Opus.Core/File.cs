@@ -22,7 +22,7 @@ namespace Opus.Core
         {
             if (ContainsDirectorySeparators(pathSegment))
             {
-                throw new Exception("Individual file parts cannot contain directory separators; '{0}'", pathSegment);
+                throw new Exception("Any file part cannot contain a directory separators; '{0}'", pathSegment);
             }
         }
 
@@ -145,19 +145,28 @@ namespace Opus.Core
                     }
                 }
 
+                bool isDirectory = false;
                 if (i < pathSegments.Length - 1)
                 {
                     throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
                 }
                 else if (i == pathSegments.Length)
                 {
-                    throw new Exception("Path segments indicate a directory: '{0}'", combinedBaseDirectory);
+                    isDirectory = true;
                 }
 
                 combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
 
-                string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
-                return new StringArray(files);
+                if (isDirectory)
+                {
+                    string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, "*", System.IO.SearchOption.AllDirectories);
+                    return new StringArray(files);
+                }
+                else
+                {
+                    string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                    return new StringArray(files);
+                }
             }
             else
             {
@@ -168,6 +177,7 @@ namespace Opus.Core
                     baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
                     baseDirectory = System.IO.Path.GetFullPath(baseDirectory);
                 }
+                // TODO: handle the case where the last path segment refers to a directory, not a file or wildcard
                 try
                 {
                     string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
