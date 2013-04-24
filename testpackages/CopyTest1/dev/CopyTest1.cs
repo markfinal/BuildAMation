@@ -10,18 +10,7 @@ namespace CopyTest1
                 FileUtilities.ICopyFileOptions options = module.Options as FileUtilities.ICopyFileOptions;
                 if (null != options)
                 {
-                    if (target.HasPlatform(Opus.Core.EPlatform.OSX))
-                    {
-                        options.DestinationDirectory = "/tmp";
-                    }
-                    else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
-                    {
-                        options.DestinationDirectory = "/tmp";
-                    }
-                    else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
-                    {
-                        options.DestinationDirectory = @"c:/temp";
-                    }
+                    options.DestinationDirectory = System.IO.Path.GetTempPath();
                 }
            };
         }
