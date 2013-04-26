@@ -58,6 +58,8 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception(ex.Message);
             }
 
+            Opus.Core.Log.Info("Copied '{0}' to '{1}'", sourceFilePath, copiedFilePath);
+
             success = true;
             return null;
         }

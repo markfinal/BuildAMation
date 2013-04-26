@@ -24,5 +24,33 @@ namespace FileUtilities
             get;
             set;
         }
+
+        // StateOnly
+        System.Type DestinationModuleType
+        {
+            get;
+            set;
+        }
+
+        // StateOnly
+        System.Enum DestinationModuleOutputEnum
+        {
+            get;
+            set;
+        }
+
+        // StateOnly
+        System.Type SourceModuleType
+        {
+            get;
+            set;
+        }
+
+        // StateOnly
+        System.Enum SourceModuleOutputEnum
+        {
+            get;
+            set;
+        }
     }
 }

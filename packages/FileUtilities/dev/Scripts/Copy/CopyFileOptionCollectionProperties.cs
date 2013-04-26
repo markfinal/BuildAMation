@@ -30,6 +30,54 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("CommonBaseDirectorySetHandler", this["CommonBaseDirectory"]);
             }
         }
+        System.Type ICopyFileOptions.DestinationModuleType
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<System.Type>("DestinationModuleType");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<System.Type>("DestinationModuleType", value);
+                this.ProcessNamedSetHandler("DestinationModuleTypeSetHandler", this["DestinationModuleType"]);
+            }
+        }
+        System.Enum ICopyFileOptions.DestinationModuleOutputEnum
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<System.Enum>("DestinationModuleOutputEnum");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<System.Enum>("DestinationModuleOutputEnum", value);
+                this.ProcessNamedSetHandler("DestinationModuleOutputEnumSetHandler", this["DestinationModuleOutputEnum"]);
+            }
+        }
+        System.Type ICopyFileOptions.SourceModuleType
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<System.Type>("SourceModuleType");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<System.Type>("SourceModuleType", value);
+                this.ProcessNamedSetHandler("SourceModuleTypeSetHandler", this["SourceModuleType"]);
+            }
+        }
+        System.Enum ICopyFileOptions.SourceModuleOutputEnum
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<System.Enum>("SourceModuleOutputEnum");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<System.Enum>("SourceModuleOutputEnum", value);
+                this.ProcessNamedSetHandler("SourceModuleOutputEnumSetHandler", this["SourceModuleOutputEnum"]);
+            }
+        }
         #endregion
     }
 }

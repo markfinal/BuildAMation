@@ -30,6 +30,10 @@ namespace FileUtilities
             {
                 options.CommonBaseDirectory = null;
             }
+            options.DestinationModuleType = null;
+            options.DestinationModuleOutputEnum = null;
+            options.SourceModuleType = null;
+            options.SourceModuleOutputEnum = null;
         }
         #endregion
 
@@ -39,13 +43,26 @@ namespace FileUtilities
         {
             if (typeof(CopyFile).IsInstanceOfType(node.Module))
             {
-                string sourcePath = (node.Module as CopyFile).SourceFile.AbsolutePath;
                 ICopyFileOptions options = this as ICopyFileOptions;
+
+                if (options.SourceModuleType != null)
+                {
+                    var sourceModule = Opus.Core.ModuleUtilities.GetModule(options.SourceModuleType, (Opus.Core.BaseTarget)node.Target);
+                    string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
+                    (node.Module as CopyFile).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
+                }
+
+                string sourcePath = (node.Module as CopyFile).SourceFile.AbsolutePath;
 
                 string destinationDirectory;
                 if (options.DestinationDirectory != null)
                 {
                     destinationDirectory = options.DestinationDirectory;
+                }
+                else if (options.DestinationModuleType != null)
+                {
+                    var destinationModule = Opus.Core.ModuleUtilities.GetModule(options.DestinationModuleType, (Opus.Core.BaseTarget)node.Target);
+                    destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum]);
                 }
                 else
                 {
