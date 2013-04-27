@@ -125,67 +125,59 @@ namespace Opus.Core
 
         public static StringArray GetFiles(out string combinedBaseDirectory, string baseDirectory, params string[] pathSegments)
         {
-            if (State.RunningMono)
+            // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
+            // cannot use GetFiles with a pattern containing directories
+            // this is also useful for getting wildcarded recursive file searches from a directory
+
+            combinedBaseDirectory = baseDirectory;
+            int i = 0;
+            for (; i < pathSegments.Length; ++i)
             {
-                // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
-                // cannot use GetFiles with a pattern containing directories
-
-                combinedBaseDirectory = baseDirectory;
-                int i = 0;
-                for (; i < pathSegments.Length; ++i)
+                string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
+                if (System.IO.Directory.Exists(baseDirTest))
                 {
-                    string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
-                    if (System.IO.Directory.Exists(baseDirTest))
-                    {
-                        combinedBaseDirectory = baseDirTest;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    combinedBaseDirectory = baseDirTest;
                 }
-
-                bool isDirectory = false;
-                if (i < pathSegments.Length - 1)
+                else
                 {
-                    throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
+                    break;
                 }
-                else if (i == pathSegments.Length)
-                {
-                    isDirectory = true;
-                }
+            }
 
-                combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
-                if (isDirectory)
+            bool isDirectory = false;
+            if (i < pathSegments.Length - 1)
+            {
+                throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
+            }
+            else if (i == pathSegments.Length)
+            {
+                isDirectory = true;
+            }
+
+            combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
+            if (isDirectory)
+            {
+                try
                 {
                     string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, "*", System.IO.SearchOption.AllDirectories);
                     return new StringArray(files);
                 }
-                else
+                catch (System.IO.DirectoryNotFoundException)
                 {
-                    string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
-                    return new StringArray(files);
+                    Log.Detail("Warning: No files match the pattern {0}{1}{2} for all subdirectory", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, "*");
+                    return new StringArray();
                 }
             }
             else
             {
-                string baseDirChanges = System.String.Empty;
-                string relativePath = CombinePaths(ref baseDirChanges, pathSegments);
-                if (baseDirChanges != System.String.Empty)
-                {
-                    baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
-                    baseDirectory = System.IO.Path.GetFullPath(baseDirectory);
-                }
-                combinedBaseDirectory = baseDirectory;
-                // TODO: handle the case where the last path segment refers to a directory, not a file or wildcard
                 try
                 {
-                    string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
+                    string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
                     return new StringArray(files);
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
-                    Log.Detail("Warning: No files match the pattern {0}{1}{2}", baseDirectory, System.IO.Path.DirectorySeparatorChar, relativePath);
+                    Log.Detail("Warning: No files match the pattern {0}{1}{2} for the top directory only", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
                     return new StringArray();
                 }
             }
