@@ -395,6 +395,9 @@ namespace Opus.Core
                     }
                 }
 
+                definitions.Add(package.Identifier.CompilationDefinition);
+                Log.DebugMessage("Package define: {0}", package.Identifier.CompilationDefinition);
+
                 ++packageIndex;
             }
 
@@ -611,6 +614,9 @@ namespace Opus.Core
                         definitions.Add(define);
                     }
                 }
+
+                definitions.Add(package.Identifier.CompilationDefinition);
+                Log.DebugMessage("Package define: {0}", package.Identifier.CompilationDefinition);
 
                 ++packageIndex;
             }

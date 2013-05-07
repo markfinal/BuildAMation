@@ -72,6 +72,15 @@ namespace Opus.Core
             }
         }
 
+        public string CompilationDefinition
+        {
+            get
+            {
+                string compilationDefine = System.String.Format("OPUSPACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_')).ToUpper();
+                return compilationDefine;
+            }
+        }
+
         public bool MatchName(PackageIdentifier identifier, bool ignoreCase)
         {
             return this.MatchName(identifier.Name, ignoreCase);

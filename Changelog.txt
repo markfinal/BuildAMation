@@ -1,3 +1,5 @@
+07-May-2013 Each package included into a build now adds a preprocessor definition of OPUSPACKAGE_<name>_<version>. Name and version are converted to upper case. Periods are replaced with underscores.
+
 24-Apr-2013 Opus.Core.File.GetFiles() can now search through directories (last path segment is a directory) and also returns the common directory for all files found.
 
 20-Apr-2013 Adding support for VisualStudio 2012, package VisualC-11.0

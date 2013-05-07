@@ -163,6 +163,7 @@ namespace Opus
                             foreach (Core.PackageInformation info in Core.State.PackageInfo)
                             {
                                 allDefines.AddRange(info.Identifier.Definition.Definitions);
+                                allDefines.Add(info.Identifier.CompilationDefinition);
                             }
                             // command line definitions
                             allDefines.AddRange(Core.State.PackageCompilationDefines);
