@@ -60,8 +60,7 @@ namespace CSharpTest1
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SimpleLibrary));
     }
 
-    // TODO: There needs to be a better predication test here
-#if true
+#if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishAssembliesForExecutable2 : FileUtilities.CopyFile
     {
         public PublishAssembliesForExecutable2()
@@ -72,7 +71,7 @@ namespace CSharpTest1
         [FileUtilities.BesideModule(CSharp.OutputFileFlags.AssemblyFile)]
         System.Type nextTo = typeof(Executable2);
     }
-#else
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class PublishAssembliesForExecutable2 : FileUtilities.CopyFiles
     {
         [FileUtilities.SourceModules(CSharp.OutputFileFlags.AssemblyFile)]
@@ -81,6 +80,8 @@ namespace CSharpTest1
         [FileUtilities.DestinationModuleDirectory(CSharp.OutputFileFlags.AssemblyFile)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(Executable2));
     }
+#else
+#error No such FileUtilities package
 #endif
 
     class ExecutableReferences : CSharp.Executable
