@@ -119,6 +119,15 @@ namespace Test13
             );
     }
 
+#if OPUSPACKAGE_FILEUTILITIES_DEV
+    class PublishDynamicLibraries : FileUtilities.CopyFileCollection
+    {
+        // TODO: need to extract binaries from where Qt says it's installed
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(QtApplication);
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         public PublishDynamicLibraries(Opus.Core.Target target)
@@ -161,5 +170,8 @@ namespace Test13
         [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(QtApplication));
     }
+#else
+#error Unknown FileUtilities package version
+#endif
 }
  
