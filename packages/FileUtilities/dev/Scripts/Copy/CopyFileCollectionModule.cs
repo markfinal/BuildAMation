@@ -10,6 +10,16 @@ namespace FileUtilities
     {
         private System.Collections.Generic.List<CopyFile> copyFiles = new System.Collections.Generic.List<CopyFile>();
 
+        public void Include(object outputFileEnum, params System.Type[] moduleTypes)
+        {
+            foreach (var moduleType in moduleTypes)
+            {
+                CopyFile file = new CopyFile();
+                file.Set(moduleType, outputFileEnum);
+                this.copyFiles.Add(file);
+            }
+        }
+
         public void Include(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
