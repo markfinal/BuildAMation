@@ -69,6 +69,18 @@ namespace Test10
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
+#if OPUSPACKAGE_FILEUTILITIES_DEV
+    class PublishDynamicLibraries : FileUtilities.CopyFile
+    {
+        public PublishDynamicLibraries()
+        {
+            this.Set(typeof(MyDynamicLibrary), C.OutputFileFlags.Executable);
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(DllDependentApp);
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
@@ -77,4 +89,7 @@ namespace Test10
         [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(DllDependentApp));
     }
+#else
+#error Unknown FileUtilities package version
+#endif
 }
