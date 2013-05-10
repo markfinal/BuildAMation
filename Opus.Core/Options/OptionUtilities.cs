@@ -61,7 +61,7 @@ namespace Opus.Core
 
             foreach (DependencyNode dependentNode in collection)
             {
-                Log.DebugMessage("{0} dependent '{1}' of '{2}'", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
+                Log.DebugMessage("\tAttaching {0} dependent '{1}' of '{2}' to option updates", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
 
                 AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth);
 
@@ -174,6 +174,8 @@ namespace Opus.Core
             OptionCollectionType options;
             if (null != node.Parent && node.Parent.Module.Options is OptionCollectionType)
             {
+                Log.DebugMessage("\tCloning option collection for node '{0}' from '{1}'", node.UniqueModuleName, node.Parent.UniqueModuleName);
+
                 options = (node.Parent.Module.Options as OptionCollectionType).Clone() as OptionCollectionType;
 
                 // claim ownership
@@ -181,7 +183,7 @@ namespace Opus.Core
             }
             else
             {
-                Log.DebugMessage("Creating option collection for node '{0}'", node.UniqueModuleName);
+                Log.DebugMessage("\tCreating new collection", node.UniqueModuleName);
 
                 options = OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
 

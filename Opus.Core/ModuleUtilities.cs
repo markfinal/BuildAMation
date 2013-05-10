@@ -50,7 +50,7 @@ namespace Opus.Core
                 }
 
                 IToolset toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
-                Opus.Core.Log.DebugMessage("Toolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
+                Opus.Core.Log.DebugMessage("\tToolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
                 return toolset;
             }
 

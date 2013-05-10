@@ -164,6 +164,7 @@ namespace Opus.Core
             IToolset toolset = this.Target.Toolset;
 
             System.Type moduleType = this.Module.GetType();
+            Opus.Core.Log.DebugMessage("Constructing option collection for node '{0}'", this.UniqueModuleName);
 
             // requires inheritence because the attribute is usually on the base class
             var moduleTools = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
@@ -180,12 +181,12 @@ namespace Opus.Core
             System.Type toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolType;
             if (null == toolset)
             {
-                Opus.Core.Log.DebugMessage("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+                Opus.Core.Log.DebugMessage("\tNo toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
                 return;
                 //throw new Exception("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             }
 
-            Opus.Core.Log.DebugMessage("Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+            Opus.Core.Log.DebugMessage("\tUsing toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             if (!toolType.IsInterface)
             {
                 throw new Exception("Tool '{0}' is NOT an interface", toolType.ToString());
@@ -194,7 +195,7 @@ namespace Opus.Core
             System.Type optionCollectionType = toolset.ToolOptionType(toolType);
             if (null == optionCollectionType)
             {
-                Opus.Core.Log.DebugMessage("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
+                Opus.Core.Log.DebugMessage("\tNo option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
                 return;
                 //throw new Exception("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
             }

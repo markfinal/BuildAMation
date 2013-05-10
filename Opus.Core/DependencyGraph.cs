@@ -122,16 +122,20 @@ namespace Opus.Core
         {
             foreach (DependencyNodeCollection nodeCollection in this.rankList)
             {
-                Core.Log.DebugMessage("Rank {0}", nodeCollection.Rank);
+                Log.DebugMessage("Rank {0}", nodeCollection.Rank);
                 foreach (DependencyNode node in nodeCollection)
                 {
-                    Core.Log.DebugMessage("\t{0}", node.ToString());
+                    Log.DebugMessage("\t{0}", node.ToString());
                 }
             }
         }
 
         private void CreateOptionCollections()
         {
+            Log.DebugMessage("--------------------------------");
+            Log.DebugMessage("Create option collections: START");
+            Log.DebugMessage("--------------------------------");
+
             // in increasing rank, generate option collections, so that child inherit their parent options
             // if so desired
             foreach (DependencyNodeCollection nodeCollection in this.rankList)
@@ -142,6 +146,11 @@ namespace Opus.Core
                     node.CreateOptionCollection();
                 }
             }
+
+            Log.DebugMessage("-----------------------------");
+            Log.DebugMessage("Finalizing option collections");
+            Log.DebugMessage("-----------------------------");
+
             // in decreasing rank, finalize option collections, so that dependent options can get their data
             for (int rank = this.RankCount - 1; rank >= 0; --rank)
             {
@@ -154,6 +163,10 @@ namespace Opus.Core
                     }
                 }
             }
+
+            Log.DebugMessage("------------------------------");
+            Log.DebugMessage("Create option collections: END");
+            Log.DebugMessage("------------------------------");
         }
 
         public void PopulateGraph()
