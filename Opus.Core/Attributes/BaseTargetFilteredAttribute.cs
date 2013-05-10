@@ -42,12 +42,13 @@ namespace Opus.Core
             }
             else
             {
+                Opus.Core.StringArray toolsetTypes = new StringArray();
                 foreach (System.Type type in this.ToolsetTypes)
                 {
-                    message += type.ToString() + " ";
+                    toolsetTypes.Add(type.ToString());
                 }
+                message += toolsetTypes.ToString(' ');
             }
-            message.TrimEnd();
             message += "'";
             return message;
         }
