@@ -1,4 +1,4 @@
-// <copyright file="CopyFileModule.cs" company="Mark Final">
+// <copyright file="CopyFileCollectionModule.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>FileUtilities package</summary>

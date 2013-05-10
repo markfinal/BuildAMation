@@ -14,6 +14,12 @@ namespace FileUtilities
             private set;
         }
 
+        private System.Type SourceModuleType
+        {
+            get;
+            set;
+        }
+
         public CopyFile()
         {
             this.SourceFile = new Opus.Core.File();
@@ -41,6 +47,7 @@ namespace FileUtilities
 
         public void Set(System.Type moduleType, object outputFileEnum)
         {
+            this.SourceModuleType = moduleType;
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as ICopyFileOptions;
                 options.SourceModuleType = moduleType;
@@ -82,9 +89,7 @@ namespace FileUtilities
             }
         }
 
-        #region IIdentifyExternalDependencies implementation
-
-        Opus.Core.TypeArray Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(Opus.Core.Target target)
+        private Opus.Core.TypeArray GetDestinationDependents(Opus.Core.Target target)
         {
             BesideModuleAttribute besideModule;
             System.Type dependentModule;
@@ -106,6 +111,26 @@ namespace FileUtilities
             };
 
             return new Opus.Core.TypeArray(dependentModule);
+        }
+
+        #region IIdentifyExternalDependencies implementation
+
+        Opus.Core.TypeArray Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(Opus.Core.Target target)
+        {
+            Opus.Core.TypeArray deps = new Opus.Core.TypeArray();
+
+            Opus.Core.TypeArray destinationDeps = this.GetDestinationDependents(target);
+            if (null != destinationDeps)
+            {
+                deps.AddRange(destinationDeps);
+            }
+
+            if (null != this.SourceModuleType)
+            {
+                deps.Add(this.SourceModuleType);
+            }
+
+            return deps;
         }
 
         #endregion
