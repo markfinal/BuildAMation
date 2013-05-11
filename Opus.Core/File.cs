@@ -123,6 +123,27 @@ namespace Opus.Core
             this.Initialize(absolutePath, false);
         }
 
+        private static bool IsFileInHiddenHierarchy(System.IO.FileInfo file, string rootDir)
+        {
+            if (System.IO.FileAttributes.Hidden == (file.Attributes & System.IO.FileAttributes.Hidden))
+            {
+                return true;
+            }
+
+            System.IO.DirectoryInfo dirInfo = file.Directory;
+            while (dirInfo.FullName != rootDir)
+            {
+                if (System.IO.FileAttributes.Hidden == (dirInfo.Attributes & System.IO.FileAttributes.Hidden))
+                {
+                    return true;
+                }
+
+                dirInfo = dirInfo.Parent;
+            }
+
+            return false;
+        }
+
         public static StringArray GetFiles(out string combinedBaseDirectory, string baseDirectory, params string[] pathSegments)
         {
             // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
@@ -164,7 +185,7 @@ namespace Opus.Core
                     Opus.Core.StringArray nonHiddenFiles = new StringArray();
                     foreach (var file in files)
                     {
-                        if (0 == (file.Attributes & System.IO.FileAttributes.Hidden))
+                        if (!IsFileInHiddenHierarchy(file, combinedBaseDirectory))
                         {
                             nonHiddenFiles.Add(file.FullName);
                         }
