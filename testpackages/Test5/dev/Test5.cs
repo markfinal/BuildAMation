@@ -43,12 +43,13 @@ namespace Test5
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
     class PublishPDBs : FileUtilities.CopyFileCollection
     {
-        public PublishPDBs()
+        public PublishPDBs(Opus.Core.Target target)
         {
-            this.Include(C.OutputFileFlags.LinkerProgramDatabase,
+            this.Include(target,
+                         C.OutputFileFlags.LinkerProgramDatabase,
                          typeof(Test4.MyStaticLib),
                          typeof(MyDynamicLibTestApp));
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
                 FileUtilities.ICopyFileOptions options = module.Options as FileUtilities.ICopyFileOptions;
                 if (null != options)
                 {
