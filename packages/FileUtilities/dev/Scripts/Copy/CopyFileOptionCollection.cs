@@ -48,6 +48,10 @@ namespace FileUtilities
                 if (options.SourceModuleType != null)
                 {
                     var sourceModule = Opus.Core.ModuleUtilities.GetModule(options.SourceModuleType, (Opus.Core.BaseTarget)node.Target);
+                    if (null == sourceModule)
+                    {
+                        throw new Opus.Core.Exception("Source module to copy from '{0}' has not been created", options.SourceModuleType.ToString());
+                    }
                     string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
                     (node.Module as CopyFile).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
                 }
@@ -62,6 +66,10 @@ namespace FileUtilities
                 else if (options.DestinationModuleType != null)
                 {
                     var destinationModule = Opus.Core.ModuleUtilities.GetModule(options.DestinationModuleType, (Opus.Core.BaseTarget)node.Target);
+                    if (null == destinationModule)
+                    {
+                        throw new Opus.Core.Exception("Module to copy next to '{0}' has not been created", options.DestinationModuleType.ToString());
+                    }
                     destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum]);
                 }
                 else
