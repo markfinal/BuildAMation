@@ -32,6 +32,7 @@ namespace Test8
     }
 
 #if OPUSPACKAGE_FILEUTILITIES_DEV
+    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows)]
     class PublishDynamicLibraries : FileUtilities.CopyFile
     {
         public PublishDynamicLibraries()
