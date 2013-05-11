@@ -120,6 +120,7 @@ namespace Opus.Core
         [System.Diagnostics.Conditional("DEBUG")]
         public void Dump()
         {
+            Log.DebugMessage("-------------GRAPH--------------");
             foreach (DependencyNodeCollection nodeCollection in this.rankList)
             {
                 Log.DebugMessage("Rank {0}", nodeCollection.Rank);
@@ -128,6 +129,7 @@ namespace Opus.Core
                     Log.DebugMessage("\t{0}", node.ToString());
                 }
             }
+            Log.DebugMessage("------------/GRAPH--------------");
         }
 
         private void CreateOptionCollections()
