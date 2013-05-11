@@ -159,8 +159,17 @@ namespace Opus.Core
             {
                 try
                 {
-                    string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, "*", System.IO.SearchOption.AllDirectories);
-                    return new StringArray(files);
+                    System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
+                    System.IO.FileInfo[] files = dirInfo.GetFiles("*", System.IO.SearchOption.AllDirectories);
+                    Opus.Core.StringArray nonHiddenFiles = new StringArray();
+                    foreach (var file in files)
+                    {
+                        if (0 == (file.Attributes & System.IO.FileAttributes.Hidden))
+                        {
+                            nonHiddenFiles.Add(file.FullName);
+                        }
+                    }
+                    return nonHiddenFiles;
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
@@ -172,8 +181,17 @@ namespace Opus.Core
             {
                 try
                 {
-                    string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
-                    return new StringArray(files);
+                    System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
+                    System.IO.FileInfo[] files = dirInfo.GetFiles(pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                    Opus.Core.StringArray nonHiddenFiles = new StringArray();
+                    foreach (var file in files)
+                    {
+                        if (0 == (file.Attributes & System.IO.FileAttributes.Hidden))
+                        {
+                            nonHiddenFiles.Add(file.FullName);
+                        }
+                    }
+                    return nonHiddenFiles;
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
