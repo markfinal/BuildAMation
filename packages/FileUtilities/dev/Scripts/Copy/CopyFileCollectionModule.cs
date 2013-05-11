@@ -6,16 +6,26 @@
 namespace FileUtilities
 {
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
-    public class CopyFileCollection : Opus.Core.BaseModule, Opus.Core.IModuleCollection
+    public class CopyFileCollection : Opus.Core.BaseModule, Opus.Core.IModuleCollection, Opus.Core.IIdentifyExternalDependencies
     {
         private System.Collections.Generic.List<CopyFile> copyFiles = new System.Collections.Generic.List<CopyFile>();
 
-        public void Include(object outputFileEnum, params System.Type[] moduleTypes)
+        public void Include(Opus.Core.Target target, object outputFileEnum, params System.Type[] moduleTypes)
         {
+            // each file to copy needs to know where the parent was set to copy next to
+            BesideModuleAttribute besideModule;
+            System.Type dependentModule;
+            CopyFileUtilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+
             foreach (var moduleType in moduleTypes)
             {
                 CopyFile file = new CopyFile();
                 file.Set(moduleType, outputFileEnum);
+
+                if (null != dependentModule)
+                {
+                    file.AdditionalDependentModules.Add(dependentModule);
+                }
                 this.copyFiles.Add(file);
             }
         }
@@ -122,6 +132,33 @@ namespace FileUtilities
                 collection.Add(file as Opus.Core.IModule);
             }
             return collection;
+        }
+
+        #endregion
+
+        #region IIdentifyExternalDependencies implementation
+
+        Opus.Core.TypeArray Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(Opus.Core.Target target)
+        {
+            BesideModuleAttribute besideModule;
+            System.Type dependentModule;
+            CopyFileUtilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+            if (null == besideModule)
+            {
+                return null;
+            }
+
+            // each nested file needs to know where it is being copied to
+            foreach (CopyFile file in this.copyFiles)
+            {
+                file.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
+                    var options = module.Options as ICopyFileOptions;
+                    options.DestinationModuleType = dependentModule;
+                    options.DestinationModuleOutputEnum = besideModule.OutputFileFlag;
+                };
+            }
+
+            return new Opus.Core.TypeArray(dependentModule);
         }
 
         #endregion

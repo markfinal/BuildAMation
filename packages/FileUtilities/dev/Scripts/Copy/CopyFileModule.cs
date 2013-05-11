@@ -14,15 +14,16 @@ namespace FileUtilities
             private set;
         }
 
-        private System.Type SourceModuleType
+        public Opus.Core.TypeArray AdditionalDependentModules
         {
             get;
-            set;
+            private set;
         }
 
         public CopyFile()
         {
             this.SourceFile = new Opus.Core.File();
+            this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 
         public void SetRelativePath(object owner, params string[] pathSegments)
@@ -47,7 +48,7 @@ namespace FileUtilities
 
         public void Set(System.Type moduleType, object outputFileEnum)
         {
-            this.SourceModuleType = moduleType;
+            this.AdditionalDependentModules.Add(moduleType);
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as ICopyFileOptions;
                 options.SourceModuleType = moduleType;
@@ -55,51 +56,12 @@ namespace FileUtilities
             };
         }
 
-        private void GetBesideModule(out BesideModuleAttribute attribute, out System.Type dependentModule)
-        {
-            attribute = null;
-            dependentModule = null;
-
-            System.Reflection.BindingFlags bindingFlags =
-                System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Public |
-                System.Reflection.BindingFlags.Instance;
-            System.Reflection.FieldInfo[] fields = this.GetType().GetFields(bindingFlags);
-            foreach (System.Reflection.FieldInfo field in fields)
-            {
-                var attributes = field.GetCustomAttributes(typeof(BesideModuleAttribute), false);
-                if (1 == attributes.Length)
-                {
-                    if (null != attribute)
-                    {
-                        throw new Opus.Core.Exception("Cannot set more than one BesideModule");
-                    }
-
-                    attribute = attributes[0] as BesideModuleAttribute;
-                    var value = field.GetValue(this);
-                    if (value is System.Type)
-                    {
-                        dependentModule = field.GetValue(this) as System.Type;
-                    }
-                    else
-                    {
-                        throw new Opus.Core.Exception("Expected BesideModule field '{0}' to be of type System.Type", field.Name);
-                    }
-                }
-            }
-        }
-
         private Opus.Core.TypeArray GetDestinationDependents(Opus.Core.Target target)
         {
             BesideModuleAttribute besideModule;
             System.Type dependentModule;
-            this.GetBesideModule(out besideModule, out dependentModule);
+            CopyFileUtilities.GetBesideModule(this, target, out besideModule, out dependentModule);
             if (null == besideModule)
-            {
-                return null;
-            }
-
-            if (!Opus.Core.TargetUtilities.MatchFilters(target, besideModule))
             {
                 return null;
             }
@@ -125,9 +87,9 @@ namespace FileUtilities
                 deps.AddRange(destinationDeps);
             }
 
-            if (null != this.SourceModuleType)
+            if (null != this.AdditionalDependentModules)
             {
-                deps.Add(this.SourceModuleType);
+                deps.AddRange(this.AdditionalDependentModules);
             }
 
             return deps;
