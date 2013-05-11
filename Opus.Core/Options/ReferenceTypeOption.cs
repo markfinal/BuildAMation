@@ -27,6 +27,21 @@ namespace Opus.Core
                 return defaultClone;
             }
 
+            // TODO: might be necessary if we ever have to clone certain option collections
+#if false
+            // handle System.Type and System.Enum values as reference types with value semantics
+            if (typeof(System.Type).IsInstanceOfType(this.Value) ||
+                typeof(System.Enum).IsInstanceOfType(this.Value))
+            {
+                ReferenceTypeOption<T> specialClone = new ReferenceTypeOption<T>(this.Value);
+
+                // we can share the private data
+                specialClone.PrivateData = this.PrivateData;
+
+                return specialClone;
+            }
+#endif
+
             System.ICloneable cloneable = this.Value as System.ICloneable;
             if (null == cloneable)
             {
