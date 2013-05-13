@@ -496,11 +496,6 @@ namespace OpusOptionCodeGenerator
                         propertyList.Add(property);
                     }
                     while (true);
-
-                    if (0 == propertyList.Count)
-                    {
-                        throw new Exception("No properties were found in the interface");
-                    }
                 }
             }
 
