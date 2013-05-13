@@ -11,7 +11,7 @@
       <Opus:Version Id="3.1" />
     </Opus:Package>
     <Opus:Package Name="FileUtilities">
-      <Opus:Version Id="1.0" />
+      <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
