@@ -76,7 +76,7 @@ namespace Opus.Core
         {
             get
             {
-                string compilationDefine = System.String.Format("OPUSPACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_')).ToUpper();
+                string compilationDefine = System.String.Format("OPUSPACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
                 return compilationDefine;
             }
         }
