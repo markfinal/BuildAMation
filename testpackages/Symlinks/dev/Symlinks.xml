@@ -5,7 +5,7 @@
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="FileUtilities">
-      <Opus:Version Id="1.0" />
+      <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
