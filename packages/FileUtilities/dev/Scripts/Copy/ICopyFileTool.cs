@@ -6,16 +6,16 @@
 namespace FileUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportOptionsDelegateAttribute : System.Attribute
+    public class ExportCopyFileOptionsDelegateAttribute : System.Attribute
     {
     }
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalOptionsDelegateAttribute : System.Attribute
+    public class LocalCopyFileOptionsDelegateAttribute : System.Attribute
     {
     }
 
-    [Opus.Core.LocalAndExportTypes(typeof(LocalOptionsDelegateAttribute), typeof(ExportOptionsDelegateAttribute))]
+    [Opus.Core.LocalAndExportTypes(typeof(LocalCopyFileOptionsDelegateAttribute), typeof(ExportCopyFileOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider("FileUtilities")]
     public interface ICopyFileTool : Opus.Core.ITool
     {
