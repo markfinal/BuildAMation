@@ -98,7 +98,12 @@ namespace FileUtilities
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
         {
-            throw new System.NotImplementedException ();
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                commandLineBuilder.Add("/c");
+                commandLineBuilder.Add("COPY");
+            }
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()

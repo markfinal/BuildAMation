@@ -34,9 +34,14 @@ namespace NativeBuilder
                 }
             }
 
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
             if (baseOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 CommandLineProcessor.ICommandLineSupport commandLineOption = baseOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
                 {
@@ -48,19 +53,13 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            bool allowOverwrite = true;
-            try
-            {
-                System.IO.File.Copy(sourceFilePath, copiedFilePath, allowOverwrite);
-            }
-            catch (System.IO.IOException ex)
-            {
-                throw new Opus.Core.Exception(ex.Message);
-            }
+            commandLineBuilder.Add(sourceFilePath);
+            commandLineBuilder.Add(copiedFilePath);
 
-            Opus.Core.Log.Info("Copied '{0}' to '{1}'", sourceFilePath, copiedFilePath);
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFileTool));
+            int returnValue = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
+            success = (0 == returnValue);
 
-            success = true;
             return null;
         }
     }
