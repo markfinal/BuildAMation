@@ -60,7 +60,7 @@ namespace FileUtilities
         {
             BesideModuleAttribute besideModule;
             System.Type dependentModule;
-            CopyFileUtilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+            Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
             if (null == besideModule)
             {
                 return null;

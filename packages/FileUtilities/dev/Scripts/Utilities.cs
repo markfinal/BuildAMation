@@ -1,11 +1,11 @@
-// <copyright file="CopyFileUtilities.cs" company="Mark Final">
+// <copyright file="Utilities.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>FileUtilities package</summary>
 // <author>Mark Final</author>
 namespace FileUtilities
 {
-    public static class CopyFileUtilities
+    public static class Utilities
     {
         public static void GetBesideModule(object module,
                                            Opus.Core.Target target,

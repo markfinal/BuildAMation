@@ -15,7 +15,7 @@ namespace FileUtilities
             // each file to copy needs to know where the parent was set to copy next to
             BesideModuleAttribute besideModule;
             System.Type dependentModule;
-            CopyFileUtilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+            Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
 
             foreach (var moduleType in moduleTypes)
             {
@@ -142,7 +142,7 @@ namespace FileUtilities
         {
             BesideModuleAttribute besideModule;
             System.Type dependentModule;
-            CopyFileUtilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+            Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
             if (null == besideModule)
             {
                 return null;
