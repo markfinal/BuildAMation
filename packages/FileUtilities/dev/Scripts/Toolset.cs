@@ -14,6 +14,7 @@ namespace FileUtilities
         public Toolset()
         {
             this.toolConfig[typeof(ICopyFileTool)] = new Opus.Core.ToolAndOptionType(new CopyFileTool(), typeof(CopyFileOptionCollection));
+            this.toolConfig[typeof(ISymlinkTool)] = new Opus.Core.ToolAndOptionType(new SymlinkTool(), typeof(SymlinkOptionCollection));
         }
 
         #region IToolset Members
