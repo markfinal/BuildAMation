@@ -40,6 +40,14 @@ namespace Symlinks
             };
         }
     }
+
+    class SymlinkToDirectory : FileUtilities.SymlinkDirectory
+    {
+        public SymlinkToDirectory()
+        {
+            this.SetRelativePath(this, "data", "TestDir");
+        }
+    }
 #elif OPUSPACKAGE_FILEUTILITIES_1_0
     class SymLinkToFile : FileUtilities.SymLink
     {
