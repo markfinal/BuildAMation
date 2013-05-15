@@ -1,4 +1,4 @@
-// <copyright file="SymlinkFile.cs" company="Mark Final">
+// <copyright file="SymlinkDirectory.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>FileUtilities package</summary>
@@ -7,16 +7,16 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(FileUtilities.SymlinkDirectory symlinkFile, out bool success)
+        public object Build(FileUtilities.SymlinkDirectory symlinkDirectory, out bool success)
         {
-            string sourceFilePath = symlinkFile.SourceFile.AbsolutePath;
+            string sourceFilePath = symlinkDirectory.SourceFile.AbsolutePath;
             if (!System.IO.Directory.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source directory '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = symlinkFile.Options;
-            Opus.Core.DependencyNode node = symlinkFile.OwningNode;
+            Opus.Core.BaseOptionCollection baseOptions = symlinkDirectory.Options;
+            Opus.Core.DependencyNode node = symlinkDirectory.OwningNode;
 
             // dependency checking
             if (DirectoryUpToDate(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.SymlinkFile], sourceFilePath))
