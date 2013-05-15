@@ -39,7 +39,7 @@ namespace FileUtilities
                     throw new Opus.Core.Exception("Source module to symlink from '{0}' has not been created", options.SourceModuleType.ToString());
                 }
                 string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
-                (node.Module as SymlinkFile).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
+                (node.Module as SymlinkBase).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
             }
 
             if (null == this.OutputPaths[OutputFileFlags.Symlink])
