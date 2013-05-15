@@ -47,7 +47,7 @@ namespace C
             if (null == this.CompiledResourceFilePath)
             {
                 Opus.Core.Target target = node.Target;
-                IWinResourceCompilerTool resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
+                var resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
                 string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
                 this.CompiledResourceFilePath = objectPathname;
             }

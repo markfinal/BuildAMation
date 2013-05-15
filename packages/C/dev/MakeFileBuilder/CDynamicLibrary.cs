@@ -77,9 +77,9 @@ namespace MakeFileBuilder
 
                 recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
 
-                C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-                if (null != winResourceCompilerTool)
+                if (toolset.HasTool(typeof(C.IWinResourceCompilerTool)))
                 {
+                    var winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
                     recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
                 }
 
@@ -104,12 +104,28 @@ namespace MakeFileBuilder
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
             recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[primaryOutput], "$@");
             string instanceName = MakeFile.InstanceName(node);
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibraryOptions.OutputPaths)
+            // TODO: due to the foreach causing this exception in Mono
+            // '(System.InvalidCastException) Cannot cast from source type to destination type.'
+            if (Opus.Core.State.RunningMono)
             {
-                if (!outputPath.Key.Equals(primaryOutput))
+                foreach (System.Enum key in dynamicLibraryOptions.OutputPaths.Types)
                 {
-                    string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                    recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                    if (!key.Equals(primaryOutput))
+                    {
+                        string variableName = System.String.Format("{0}_{1}_Variable", instanceName, key.ToString());
+                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[key], System.String.Format("$({0})", variableName));
+                    }
+                }
+            }
+            else
+            {
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibraryOptions.OutputPaths)
+                {
+                    if (!outputPath.Key.Equals(primaryOutput))
+                    {
+                        string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
+                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                    }
                 }
             }
 
