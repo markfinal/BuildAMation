@@ -39,9 +39,14 @@ namespace FileUtilities
             return "1.0";
         }
 
+        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        {
+            return this.toolConfig.ContainsKey(toolType);
+        }
+
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
         {
-            if (!this.toolConfig.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
@@ -51,7 +56,7 @@ namespace FileUtilities
 
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            if (!this.toolConfig.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }

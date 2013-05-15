@@ -18,6 +18,8 @@ namespace Opus.Core
             get;
         }
 
+        bool HasTool(System.Type toolType);
+
         ITool Tool(System.Type toolType);
 
         System.Type ToolOptionType(System.Type toolType);

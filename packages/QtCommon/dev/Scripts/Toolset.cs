@@ -16,13 +16,11 @@ namespace QtCommon
             return binPath;
         }
 
-        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool> toolMap = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ITool>();
-        protected System.Collections.Generic.Dictionary<System.Type, System.Type> toolOptionsMap = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 
         public Toolset()
         {
-            this.toolMap[typeof(IMocTool)] = new MocTool(this);
-            this.toolOptionsMap[typeof(IMocTool)] = typeof(MocOptionCollection);
+            this.toolConfig[typeof(IMocTool)] = new Opus.Core.ToolAndOptionType(new MocTool(this), typeof(MocOptionCollection));
         }
 
         #region IToolset Members
@@ -48,30 +46,29 @@ namespace QtCommon
             return this.GetVersionNumber();
         }
 
+        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        {
+            return this.toolConfig.ContainsKey(toolType);
+        }
+
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
         {
-            if (!this.toolMap.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
-            return this.toolMap[toolType];
+            return this.toolConfig[toolType].Tool;
         }
 
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            if (!this.toolOptionsMap.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
-                // if there is no tool then there will be no optionset
-                if (!this.toolMap.ContainsKey(toolType))
-                {
-                    return null;
-                }
-
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
-            return this.toolOptionsMap[toolType];
+            return this.toolConfig[toolType].OptionsType;
         }
 
         #endregion
