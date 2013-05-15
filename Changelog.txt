@@ -1,3 +1,5 @@
+15-May-2013 Corrected the logic in NativeBuilder.DirectoryUpToDate
+
 13-May-2013 OpusOptionCodeGenerator no longer throws an exception when an interface with no properties is used.
 
 07-May-2013 Each package included into a build now adds a preprocessor definition of OPUSPACKAGE_<name>_<version>. Name and version are converted to upper case. Periods and dashes are replaced with underscores.

@@ -70,7 +70,7 @@ namespace NativeBuilder
             {
                 if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
-                    return true;
+                    return false;
                 }
             }
 
@@ -81,16 +81,16 @@ namespace NativeBuilder
                 if (inputDirDate.CompareTo(outputDirDate) > 0)
                 {
                     Opus.Core.Log.Message(Verbosity, "Building directory '{1}' since source directory '{0}' is newer.", sourceDir, destinationDir);
-                    return true;
+                    return false;
                 }
             }
             else
             {
                 Opus.Core.Log.Message(Verbosity, "Building directory '{0}' since it does not exist.", destinationDir);
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         public enum FileRebuildStatus
