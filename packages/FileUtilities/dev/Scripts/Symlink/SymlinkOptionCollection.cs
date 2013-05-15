@@ -68,8 +68,17 @@ namespace FileUtilities
                 else
                 {
                     var module = node.Module as SymlinkFile;
-                    string filename = System.IO.Path.GetFileName(module.SourceFile.AbsolutePath);
-                    targetName = filename;
+                    if (null != module)
+                    {
+                        string filename = System.IO.Path.GetFileName(module.SourceFile.AbsolutePath);
+                        targetName = filename;
+                    }
+                    else
+                    {
+                        var dirModule = node.Module as SymlinkDirectory;
+                        string filename = System.IO.Path.GetFileName(dirModule.SourceFile.AbsolutePath);
+                        targetName = filename;
+                    }
                 }
 
                 this.OutputPaths[OutputFileFlags.SymlinkFile] = System.IO.Path.Combine(destinationDirectory, targetName);
