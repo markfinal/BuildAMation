@@ -53,13 +53,13 @@ namespace NativeBuilder
 
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.SymlinkFile]);
+                commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink]);
                 commandLineBuilder.Add(sourceFilePath);
             }
             else
             {
                 commandLineBuilder.Add(sourceFilePath);
-                commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.SymlinkFile]);
+                commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink]);
             }
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ISymlinkTool));

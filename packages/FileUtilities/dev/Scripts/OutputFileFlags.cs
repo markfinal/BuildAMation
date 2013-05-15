@@ -8,6 +8,6 @@ namespace FileUtilities
     public enum OutputFileFlags
     {
         CopiedFile = (1 << 0),
-        SymlinkFile = (1 << 1)
+        Symlink = (1 << 1)
     }
 }

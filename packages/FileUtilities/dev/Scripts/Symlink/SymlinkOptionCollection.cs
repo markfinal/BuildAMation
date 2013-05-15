@@ -42,7 +42,7 @@ namespace FileUtilities
                 (node.Module as SymlinkFile).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
             }
 
-            if (null == this.OutputPaths[OutputFileFlags.SymlinkFile])
+            if (null == this.OutputPaths[OutputFileFlags.Symlink])
             {
                 string destinationDirectory;
                 if (null != options.DestinationModuleType)
@@ -72,7 +72,7 @@ namespace FileUtilities
                     targetName = filename;
                 }
 
-                this.OutputPaths[OutputFileFlags.SymlinkFile] = System.IO.Path.Combine(destinationDirectory, targetName);
+                this.OutputPaths[OutputFileFlags.Symlink] = System.IO.Path.Combine(destinationDirectory, targetName);
             }
 
             base.FinalizeOptions (node);

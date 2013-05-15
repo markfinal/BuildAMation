@@ -25,7 +25,7 @@ namespace Symlinks
             };
         }
 
-        [FileUtilities.BesideModule(FileUtilities.OutputFileFlags.SymlinkFile)]
+        [FileUtilities.BesideModule(FileUtilities.OutputFileFlags.Symlink)]
         System.Type nextTo = typeof(SymLinkToFile);
     }
 
@@ -33,7 +33,7 @@ namespace Symlinks
     {
         public SymLinkToBuiltFile()
         {
-            this.Set(typeof(SymLinkToFile), FileUtilities.OutputFileFlags.SymlinkFile);
+            this.Set(typeof(SymLinkToFile), FileUtilities.OutputFileFlags.Symlink);
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "LinkedBuiltFile.txt";
