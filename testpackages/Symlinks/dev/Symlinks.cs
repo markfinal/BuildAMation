@@ -7,6 +7,14 @@ namespace Symlinks
         public SymLinkToFile()
         {
             this.SetRelativePath(this, "data", "TestFile.txt");
+        }
+    }
+
+    class SymLinkToFileRenamed : FileUtilities.SymlinkFile
+    {
+        public SymLinkToFileRenamed()
+        {
+            this.SetRelativePath(this, "data", "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "LinkedTestFile.txt";
