@@ -83,6 +83,19 @@ namespace Symlinks
         [FileUtilities.BesideModule(FileUtilities.OutputFileFlags.Symlink)]
         System.Type nextTo = typeof(SymlinkToDirectory);
     }
+
+    // this one is a bit unusual
+    class SymlinkToBuiltDir : FileUtilities.SymlinkDirectory
+    {
+        public SymlinkToBuiltDir()
+        {
+            this.Set(typeof(SymlinkToDirectory), FileUtilities.OutputFileFlags.Symlink);
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+                var options = module.Options as FileUtilities.ISymlinkOptions;
+                options.TargetName = "LinkedBuiltDir";
+            };
+        }
+    }
 #elif OPUSPACKAGE_FILEUTILITIES_1_0
     class SymLinkToFile : FileUtilities.SymLink
     {
