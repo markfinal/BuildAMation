@@ -47,6 +47,7 @@ namespace NativeBuilder
 
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
+                // TODO: add the option for a directory
                 commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.SymlinkFile]);
                 commandLineBuilder.Add(sourceFilePath);
             }
