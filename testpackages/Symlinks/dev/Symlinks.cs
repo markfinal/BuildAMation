@@ -17,7 +17,7 @@ namespace Symlinks
             this.SetRelativePath(this, "data", "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
-                options.TargetName = "LinkedTestFile.txt";
+                options.TargetName = "RenamedLinkedFile.txt";
             };
         }
     }
@@ -29,7 +29,7 @@ namespace Symlinks
             this.SetRelativePath(this, "data", "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
-                options.TargetName = "AnotherLinkedTestFile.txt";
+                options.TargetName = "NextToLinkedFile.txt";
             };
         }
 
@@ -64,9 +64,24 @@ namespace Symlinks
             this.SetRelativePath(this, "data", "TestDir");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
-                options.TargetName = "RenamedSymlinkDir";
+                options.TargetName = "RenamedLinkedDir";
             };
         }
+    }
+
+    class SymlinkToDirectoryNextTo : FileUtilities.SymlinkDirectory
+    {
+        public SymlinkToDirectoryNextTo()
+        {
+            this.SetRelativePath(this, "data", "TestDir");
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+                var options = module.Options as FileUtilities.ISymlinkOptions;
+                options.TargetName = "NextToLinkedDir";
+            };
+        }
+
+        [FileUtilities.BesideModule(FileUtilities.OutputFileFlags.Symlink)]
+        System.Type nextTo = typeof(SymlinkToDirectory);
     }
 #elif OPUSPACKAGE_FILEUTILITIES_1_0
     class SymLinkToFile : FileUtilities.SymLink
