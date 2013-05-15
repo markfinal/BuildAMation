@@ -39,6 +39,12 @@ namespace FileUtilities
                     throw new Opus.Core.Exception("Source module to symlink from '{0}' has not been created", options.SourceModuleType.ToString());
                 }
                 string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
+                if (null == sourceModuleOutputPath)
+                {
+                    throw new Opus.Core.Exception("Source module '{0}' has no output path of type '{1}'",
+                                                  options.SourceModuleType.ToString(),
+                                                  options.SourceModuleOutputEnum.ToString());
+                }
                 (node.Module as SymlinkBase).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
             }
 
