@@ -47,7 +47,7 @@ namespace Test5
         {
             this.Include(target,
                          C.OutputFileFlags.LinkerProgramDatabase,
-                         typeof(Test4.MyStaticLib),
+                         typeof(Test4.MyDynamicLib),
                          typeof(MyDynamicLibTestApp));
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
                 FileUtilities.ICopyFileOptions options = module.Options as FileUtilities.ICopyFileOptions;
