@@ -56,6 +56,18 @@ namespace Symlinks
             this.SetRelativePath(this, "data", "TestDir");
         }
     }
+
+    class SymlinkToDirectoryRenamed : FileUtilities.SymlinkDirectory
+    {
+        public SymlinkToDirectoryRenamed()
+        {
+            this.SetRelativePath(this, "data", "TestDir");
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+                var options = module.Options as FileUtilities.ISymlinkOptions;
+                options.TargetName = "RenamedSymlinkDir";
+            };
+        }
+    }
 #elif OPUSPACKAGE_FILEUTILITIES_1_0
     class SymLinkToFile : FileUtilities.SymLink
     {
