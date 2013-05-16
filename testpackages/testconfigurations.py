@@ -111,7 +111,7 @@ def TestOptionSetup(optParser):
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                osx={"Native":["gcc"]})
+                                osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
