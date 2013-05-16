@@ -10,7 +10,7 @@ namespace CopyTest1
                 FileUtilities.ICopyFileOptions options = module.Options as FileUtilities.ICopyFileOptions;
                 if (null != options)
                 {
-                    options.DestinationDirectory = System.IO.Path.GetTempPath();
+                    options.DestinationDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "CopyTest");
                 }
            };
         }
