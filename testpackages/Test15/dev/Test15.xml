@@ -8,6 +8,9 @@
       <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
       <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
     </Opus:Package>
+    <Opus:Package Name="MakeFileBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
