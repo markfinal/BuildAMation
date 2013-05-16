@@ -151,15 +151,15 @@ configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visua
 configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
-configs["Test15-dev"] = TestSetup(win={"Native":["visualc"]},
-                                  linux={"Native":["gcc"]},
-                                  osx={"Native":["gcc"]})
-configs["Test16-dev"] = TestSetup(win={"Native":["visualc"]},
-                                  linux={"Native":["gcc"]},
-                                  osx={"Native":["gcc"]})
-configs["Test17-dev"] = TestSetup(win={"Native":["visualc"]},
-                                  linux={"Native":["gcc"]},
-                                  osx={"Native":["gcc"]})
+configs["Test15-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test16-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
+configs["Test17-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                        osx={"Native":["gcc"],"MakeFile":["gcc"]})
