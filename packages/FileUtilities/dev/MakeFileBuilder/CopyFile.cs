@@ -1,0 +1,96 @@
+// <copyright file="CopyFile.cs" company="Mark Final">
+//  Opus package
+// </copyright>
+// <summary>FileUtilities package</summary>
+// <author>Mark Final</author>
+namespace MakeFileBuilder
+{
+    public sealed partial class MakeFileBuilder
+    {
+        public object Build(FileUtilities.CopyFile copyFile, out bool success)
+        {
+            string sourceFilePath = copyFile.SourceFile.AbsolutePath;
+            if (!System.IO.File.Exists(sourceFilePath))
+            {
+                throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
+            }
+
+            Opus.Core.DependencyNode node = copyFile.OwningNode;
+
+            MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
+            System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
+            if (null != node.ExternalDependents)
+            {
+                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                {
+                    if (null != dependentNode.Data)
+                    {
+                        MakeFileData data = dependentNode.Data as MakeFileData;
+                        inputVariables.Append(data.VariableDictionary);
+                        dataArray.Add(data);
+                    }
+                }
+            }
+
+            Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
+            string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+
+            Opus.Core.Target target = node.Target;
+
+            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            Opus.Core.DirectoryCollection directoriesToCreate;
+            if (baseOptions is CommandLineProcessor.ICommandLineSupport)
+            {
+                CommandLineProcessor.ICommandLineSupport commandLineOption = baseOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                directoriesToCreate = commandLineOption.DirectoriesToCreate();
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+            }
+
+            Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFileTool));
+            string toolExecutablePath = tool.Executable((Opus.Core.BaseTarget)target);
+
+            string recipe = null;
+            if (toolExecutablePath.Contains(" "))
+            {
+                recipe += System.String.Format("\"{0}\"", toolExecutablePath);
+            }
+            else
+            {
+                recipe += toolExecutablePath;
+            }
+            // TODO: check the number of spaces after {0} - seems to be 2 with cp
+            recipe += System.String.Format(" {0} $< $@", commandLineBuilder.ToString(' '));
+            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+
+            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+            Opus.Core.Log.DebugMessage("Makefile path : '{0}'", makeFilePath);
+
+            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+
+            MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
+                                                 FileUtilities.OutputFileFlags.CopiedFile,
+                                                 node.UniqueModuleName,
+                                                 directoriesToCreate,
+                                                 null,
+                                                 new Opus.Core.StringArray(sourceFilePath),
+                                                 recipes);
+            makeFile.RuleArray.Add(rule);
+
+            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            {
+                makeFile.Write(makeFileWriter);
+            }
+
+            success = true;
+
+            MakeFileData nodeData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            return nodeData;
+        }
+    }
+}
