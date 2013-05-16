@@ -9,12 +9,6 @@ namespace MakeFileBuilder
     {
         public object Build(FileUtilities.CopyFile copyFile, out bool success)
         {
-            string sourceFilePath = copyFile.SourceFile.AbsolutePath;
-            if (!System.IO.File.Exists(sourceFilePath))
-            {
-                throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
-            }
-
             Opus.Core.DependencyNode node = copyFile.OwningNode;
 
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -73,6 +67,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+            string sourceFilePath = copyFile.SourceFile.AbsolutePath;
             MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
                                                  FileUtilities.OutputFileFlags.CopiedFile,
                                                  node.UniqueModuleName,

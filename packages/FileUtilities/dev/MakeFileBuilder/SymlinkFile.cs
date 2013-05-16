@@ -9,12 +9,6 @@ namespace MakeFileBuilder
     {
         public object Build(FileUtilities.SymlinkFile symlinkFile, out bool success)
         {
-            string sourceFilePath = symlinkFile.SourceFile.AbsolutePath;
-            if (!System.IO.File.Exists(sourceFilePath))
-            {
-                throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
-            }
-
             Opus.Core.DependencyNode node = symlinkFile.OwningNode;
 
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
@@ -79,6 +73,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+            string sourceFilePath = symlinkFile.SourceFile.AbsolutePath;
             MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
                                                  FileUtilities.OutputFileFlags.Symlink,
                                                  node.UniqueModuleName,
