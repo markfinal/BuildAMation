@@ -4,6 +4,9 @@
     <Opus:Package Name="FileUtilities">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="MakeFileBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
