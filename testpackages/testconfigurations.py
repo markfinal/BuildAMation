@@ -175,9 +175,12 @@ configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visu
 configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["Symlinks-dev"] = TestSetup(win={"Native":None},
-                                    linux={"Native":None},
-                                    osx={"Native":None})
+configs["Symlinks-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
+                                    linux={"Native":None,"MakeFile":None},
+                                    osx={"Native":None,"MakeFile":None})
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
 configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["gcc"]})
 configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["gcc"]})
+configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
+                                     linux={"Native":None,"MakeFile":None},
+                                     osx={"Native":None,"MakeFile":None})
