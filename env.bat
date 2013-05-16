@@ -16,9 +16,9 @@ SET NewPath=!PATH!
 
 REM Export the PATH
 IF NOT EXIST %OpusPath% (
-  ECHO Opus directory '%OpusPath%' does not exist
+  ECHO *** ERROR: Opus directory '%OpusPath%' does not exist ***
 ) ELSE (
-  ECHO Adding '%OpusPath%' to the start of PATH
+  ECHO Added '%OpusPath%' to the start of PATH
   SET NewPath=%OPUSPATH%;!NewPath!
 )
 
