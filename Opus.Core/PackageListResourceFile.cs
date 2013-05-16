@@ -9,20 +9,20 @@ namespace Opus.Core
     {
         public static string WriteResourceFile()
         {
-            if (0 == Core.State.PackageInfo.Count)
+            if (0 == State.PackageInfo.Count)
             {
-                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
+                throw new Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
+            PackageInformation mainPackage = State.PackageInfo.MainPackage;
             string tempDirectory = System.IO.Path.GetTempPath();
             string resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
 
             using (System.Resources.IResourceWriter writer = new System.Resources.ResourceWriter(resourceFilePathName))
             {
-                foreach (Core.PackageInformation package in Core.State.PackageInfo)
+                foreach (PackageInformation package in State.PackageInfo)
                 {
-                    Core.PackageIdentifier id = package.Identifier;
+                    PackageIdentifier id = package.Identifier;
                     string name = id.ToString("_");
                     string value = id.Root;
 
@@ -37,12 +37,12 @@ namespace Opus.Core
 
         public static string WriteResXFile()
         {
-            if (0 == Core.State.PackageInfo.Count)
+            if (0 == State.PackageInfo.Count)
             {
-                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
+                throw new Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
+            PackageInformation mainPackage = State.PackageInfo.MainPackage;
 
             string OpusDirectory = mainPackage.OpusDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))
@@ -86,7 +86,7 @@ namespace Opus.Core
                 root.AppendChild(writer);
             }
 
-            foreach (Core.PackageInformation package in Core.State.PackageInfo)
+            foreach (PackageInformation package in State.PackageInfo)
             {
                 System.Xml.XmlElement data = resourceFile.CreateElement("data");
                 data.SetAttribute("name", package.Identifier.ToString("_"));
