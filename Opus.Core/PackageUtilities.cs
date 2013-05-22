@@ -156,7 +156,7 @@ namespace Opus.Core
 
                 if (!isWorkingPackageWellDefined)
                 {
-                    throw new Exception("Working directory package is not well define");
+                    throw new Exception("Working directory package is not well defined");
                 }
 
                 State.DependentPackageList.Add(id);
