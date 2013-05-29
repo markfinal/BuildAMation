@@ -1,3 +1,5 @@
+29-May-2013 Adding workaround in VSSolutionBuilder for C# solutions, referencing Any CPU. See http://connect.microsoft.com/VisualStudio/feedback/details/503935/msbuild-inconsistent-platform-for-any-cpu-between-solution-and-project.
+
 15-May-2013 Opus.Core.IToolset now has a HasTool method to query if a tool has been registered, since calling Tool will throw an exception if not.
 
 15-May-2013 Corrected the logic in NativeBuilder.DirectoryUpToDate
