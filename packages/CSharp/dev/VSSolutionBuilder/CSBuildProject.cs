@@ -166,6 +166,7 @@ namespace VSSolutionBuilder
                     MSBuildProperty defaultPlatform = generalGroup.CreateProperty("Platform", "AnyCPU");
                     defaultPlatform.Condition = " '$(Platform)' == '' ";
                 }
+                generalGroup.CreateProperty("TargetFrameworkVersion", "v" + versionString);
 
                 // configurations
                 foreach (ProjectConfiguration configuration in this.ProjectConfigurations)
