@@ -237,19 +237,12 @@ namespace VSSolutionBuilder
                     MSBuildItemGroup referenceItemGroup = project.CreateItemGroup();
                     foreach (string reference in this.ReferencesList)
                     {
-                        if (Opus.Core.State.RunningMono)
+                        string noExtReference = reference;
+                        if (noExtReference.EndsWith(".dll"))
                         {
-                            string noExtReference = reference;
-                            if (noExtReference.EndsWith(".dll"))
-                            {
-                                noExtReference = reference.Remove(noExtReference.Length - 4);
-                            }
-                            referenceItemGroup.CreateItem("Reference", noExtReference);
+                            noExtReference = reference.Remove(noExtReference.Length - 4);
                         }
-                        else
-                        {
-                            referenceItemGroup.CreateItem("Reference", reference);
-                        }
+                        referenceItemGroup.CreateItem("Reference", noExtReference);
                     }
                 }
 

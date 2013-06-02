@@ -1,4 +1,4 @@
-30-May-2013 Mono builds for VSSolutionBuilder now ignore the .dll extension on any reference assembly.
+30-May-2013 VSSolutionBuilder now ignores the .dll extension on any reference assembly.
 
 30-May-2013 C# .csprojs generated from the VSSolutionBuilder now includes the TargetFrameworkVersion element.
 
