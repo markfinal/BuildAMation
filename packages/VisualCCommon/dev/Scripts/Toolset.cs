@@ -23,6 +23,7 @@ namespace VisualCCommon
         protected Toolset()
         {
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+            this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
         protected virtual string GetBinPath(Opus.Core.BaseTarget baseTarget)

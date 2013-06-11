@@ -14,6 +14,7 @@ namespace GccCommon
         protected Toolset()
         {
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+            this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
         private void GetInstallPath(Opus.Core.BaseTarget baseTarget)

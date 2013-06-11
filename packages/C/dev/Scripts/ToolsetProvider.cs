@@ -57,5 +57,10 @@ namespace C
         {
             return GenericGetToolset(toolType, "C", "Use C.toolset=<toolset>");
         }
+
+        static string GetThirdPartyToolset(System.Type toolType)
+        {
+            return GenericGetToolset(toolType, "C", "Use C.toolset=<toolset>");
+        }
     }
 }
