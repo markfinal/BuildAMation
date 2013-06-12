@@ -40,7 +40,7 @@ namespace Test5
         System.Type nextTo = typeof(MyDynamicLibTestApp);
     }
 
-    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
     class PublishPDBs : FileUtilities.CopyFileCollection
     {
         public PublishPDBs(Opus.Core.Target target)
