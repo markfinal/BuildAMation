@@ -25,11 +25,14 @@ namespace QtCommon
                                       string moduleName,
                                       bool includeModuleName)
         {
-            var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType);
-            string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
-            string includePath = System.IO.Path.Combine(installPath, "include");
-
-            options.IncludePaths.AddAbsoluteDirectory(includePath, false);
+            var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType) as Toolset;
+            string includePath = toolset.GetIncludePath((Opus.Core.BaseTarget)target);
+            options.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            if (includeModuleName)
+            {
+                includePath = System.IO.Path.Combine(includePath, moduleName);
+                options.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            }
         }
 
         protected void AddLibraryPath(System.Type toolsetType,
@@ -57,8 +60,13 @@ namespace QtCommon
                     options.Libraries.Add(System.String.Format("{0}.lib", moduleName));
                 }
             }
+            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                options.Libraries.Add(System.String.Format("-l{0}", moduleName));
+            }
             else
             {
+                // TODO: framework
                 throw new System.NotImplementedException();
             }
         }
@@ -82,8 +90,13 @@ namespace QtCommon
                     dynamicLibraryName = System.String.Format("{0}4.dll", moduleName);
                 }
             }
+            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                dynamicLibraryName = System.String.Format("{0}.so", moduleName);
+            }
             else
             {
+                // TODO: framework
                 throw new System.NotImplementedException();
             }
             string dynamicLibraryPath = System.IO.Path.Combine(binPath, dynamicLibraryName);

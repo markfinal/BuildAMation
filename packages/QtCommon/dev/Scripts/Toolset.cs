@@ -15,6 +15,12 @@ namespace QtCommon
             string binPath = System.IO.Path.Combine(installPath, "bin");
             return binPath;
         }
+        public virtual string GetIncludePath(Opus.Core.BaseTarget baseTarget)
+        {
+            string installPath = this.GetInstallPath(baseTarget);
+            string includePath = System.IO.Path.Combine(installPath, "include");
+            return includePath;
+        }
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 
