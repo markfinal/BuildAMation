@@ -173,8 +173,8 @@ configs["Direct3DTriangle-dev"] = TestSetup(win={"Native":["visualc"],"VSSolutio
 configs["MixedModeCpp-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]})
 configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
+configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
+configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
 configs["Symlinks-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                     linux={"Native":None,"MakeFile":None},
                                     osx={"Native":None,"MakeFile":None})
