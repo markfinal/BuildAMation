@@ -235,7 +235,12 @@ namespace Opus.Core
             return this.uniqueNameToNodeDictionary[moduleName][target.Key];
         }
 
-        private DependencyNode FindOrCreateUnparentedNode(System.Type moduleType, string moduleName, Target target, int currentRank, System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove)
+        private DependencyNode FindOrCreateUnparentedNode(System.Type moduleType,
+                                                          string moduleName,
+                                                          Target target,
+                                                          int currentRank,
+                                                          System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove,
+                                                          INestedDependents nestedDependentsInterface)
         {
             IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
             Target targetUsed = Target.GetInstance((BaseTarget)target, toolset);
@@ -243,9 +248,24 @@ namespace Opus.Core
             DependencyNode node = this.FindNodeForTargettedModule(moduleName, targetUsed);
             if (null != node)
             {
-                if (node.Rank < currentRank + 1)
+                int rankToMoveTo = currentRank + 1;
+                if (null != nestedDependentsInterface)
                 {
-                    nodesToMove[node] = currentRank + 1;
+                    var nestedDependentModules = nestedDependentsInterface.GetNestedDependents(target);
+                    if (null == nestedDependentModules)
+                    {
+                        throw new Exception("Module implements Opus.Core.INestedDependents but returns null");
+                    }
+
+                    if (nestedDependentModules.Count > 0)
+                    {
+                        ++rankToMoveTo;
+                    }
+                }
+
+                if (node.Rank < rankToMoveTo)
+                {
+                    nodesToMove[node] = rankToMoveTo;
                 }
             }
             else
@@ -269,6 +289,8 @@ namespace Opus.Core
                 DependencyNodeCollection rankNodes = this[currentRank];
                 foreach (DependencyNode node in rankNodes)
                 {
+                    var nestedDependentsInterface = node.Module as INestedDependents;
+
                     TypeArray externalDependentModuleTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
                     TypeArray additionalExternalDependentModuleTypes = null;
                     IIdentifyExternalDependencies identifyExternalDependencies = node.Module as IIdentifyExternalDependencies;
@@ -289,7 +311,7 @@ namespace Opus.Core
                         bool hasForwardedDeps = (node.Module is IForwardDependenciesOn);
                         foreach (System.Type dependentModuleType in externalDependentModuleTypes)
                         {
-                            DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove);
+                            DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove, nestedDependentsInterface);
                             if (null == newNode)
                             {
                                 continue;
@@ -323,7 +345,7 @@ namespace Opus.Core
                     {
                         foreach (System.Type requiredModuleType in externalRequiredModuleTypes)
                         {
-                            DependencyNode newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.FullName, node.Target, currentRank, nodesToMove);
+                            DependencyNode newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.FullName, node.Target, currentRank, nodesToMove, nestedDependentsInterface);
                             if (null == newNode)
                             {
                                 continue;
@@ -333,13 +355,12 @@ namespace Opus.Core
                         }
                     }
 
-                    if (node.Module is INestedDependents)
+                    if (null != nestedDependentsInterface)
                     {
-                        INestedDependents nestedDependentsInterface = node.Module as INestedDependents;
-                        ModuleCollection nestedDependentModules = nestedDependentsInterface.GetNestedDependents(node.Target);
+                        var nestedDependentModules = nestedDependentsInterface.GetNestedDependents(node.Target);
                         if (null == nestedDependentModules)
                         {
-                            throw new Exception("Module '{0}' implements Opus.Core.INestedDependents but returns null");
+                            throw new Exception("Module '{0}' implements Opus.Core.INestedDependents but returns null", node.UniqueModuleName);
                         }
 
                         int childIndex = 0;

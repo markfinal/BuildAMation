@@ -1,3 +1,5 @@
+12-Jun-2013 Dependent nodes that have to move ranks, must take into account if the dependee has nested components.
+
 12-Jun-2013 Updated OpenCL package to the new ThirdParty module scheme.
 
 12-Jun-2013 Fixed GLEW-1.5.7 package for mingw builds, and added two test packages to the mingw test suite.
