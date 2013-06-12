@@ -1,3 +1,5 @@
+12-Jun-2013 Updated OpenCL package to the new ThirdParty module scheme.
+
 12-Jun-2013 Fixed GLEW-1.5.7 package for mingw builds, and added two test packages to the mingw test suite.
 
 12-Jun-2013 Updated OpenGLSDK package to the new ThirdParty module scheme.

@@ -21,7 +21,7 @@ namespace OpenCLTest1
 #endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib", "OpenCL.lib");
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
 #if OPUSPACKAGE_FILEUTILITIES_DEV
