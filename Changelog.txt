@@ -1,3 +1,5 @@
+12-Jun-2012 Updated Direct3D9 module in the DirectX package to the new ThirdParty module scheme.
+
 11-Jun-2013 QtCommon and Qt-4.7.1 updated to follow the new ThirdParty module scheme, demonstrating the ease of copying files in Test13.
 
 11-Jun-2013 C.ThirdPartyModule now has a special tool type (C.IThirdPartyTool) with a minimal option collection. Overriding the C.ThirdPartyModule.RegisterOutputFiles virtual function in your derived classes then allows registering prebuilt files against Opus' usual output file enums. C.ThirdPartyModule.Libraries abstract function has been removed as it is now obsolete. This new system allows copying of files from ThirdParty prebuilds far easier.
