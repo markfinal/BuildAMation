@@ -51,14 +51,12 @@ namespace OpenGLUniformBufferTest
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib",
-            "GDI32.lib",
-            "OPENGL32.lib"
+            "GDI32.lib"
         );
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
         Opus.Core.StringArray winMingwLibraries = new Opus.Core.StringArray(
-            "-lgdi32",
-            "-lopengl32"
+            "-lgdi32"
         );
     }
 }

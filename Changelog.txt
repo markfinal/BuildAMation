@@ -1,4 +1,6 @@
-12-Jun-2012 Updated Direct3D9 module in the DirectX package to the new ThirdParty module scheme.
+12-Jun-2013 Updated OpenGLSDK package to the new ThirdParty module scheme.
+
+12-Jun-2013 Updated Direct3D9 module in the DirectX package to the new ThirdParty module scheme.
 
 11-Jun-2013 QtCommon and Qt-4.7.1 updated to follow the new ThirdParty module scheme, demonstrating the ease of copying files in Test13.
 
