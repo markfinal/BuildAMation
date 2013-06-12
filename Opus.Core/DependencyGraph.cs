@@ -178,6 +178,9 @@ namespace Opus.Core
                 return;
             }
 
+            Log.DebugMessage("\nTop level modules only");
+            this.Dump();
+
             {
                 TimeProfile profile = new TimeProfile(ETimingProfiles.PopulateGraph);
                 profile.StartProfile();
@@ -187,6 +190,9 @@ namespace Opus.Core
                 profile.StopProfile();
                 State.TimingProfiles[(int)ETimingProfiles.PopulateGraph] = profile;
             }
+
+            Log.DebugMessage("\nPost normal dependencies");
+            this.Dump();
 
             {
                 TimeProfile profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
@@ -207,6 +213,9 @@ namespace Opus.Core
                 profile.StopProfile();
                 State.TimingProfiles[(int)ETimingProfiles.HandleInjectionDependents] = profile;
             }
+
+            Log.DebugMessage("\nPost injected dependencies");
+            this.Dump();
         }
 
         private DependencyNode FindNodeForTargettedModule(string moduleName, Target target)

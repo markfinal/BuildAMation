@@ -773,11 +773,7 @@ namespace Opus.Core
                 }
             }
 
-            Log.DebugMessage("\nAfter adding top level modules...");
-            dependencyGraph.Dump();
             dependencyGraph.PopulateGraph();
-            Log.DebugMessage("\nAfter adding dependencies...");
-            dependencyGraph.Dump();
 
             TimeProfile dependencyGraphExecutionProfile = new TimeProfile(ETimingProfiles.GraphExecution);
             dependencyGraphExecutionProfile.StartProfile();
