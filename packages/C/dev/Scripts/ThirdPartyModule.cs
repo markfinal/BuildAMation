@@ -11,7 +11,7 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(IThirdPartyTool))]
     public abstract class ThirdPartyModule : Opus.Core.BaseModule
     {
-        public virtual void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target)
+        public virtual void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
             // do nothing
         }

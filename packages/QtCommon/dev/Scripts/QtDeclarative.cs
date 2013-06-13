@@ -17,10 +17,10 @@ namespace QtCommon
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_LinkerOptions);
         }
 
-        public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target)
+        public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
             options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(this.ToolsetType, target, "QtDeclarative");
-            base.RegisterOutputFiles(options, target);
+            base.RegisterOutputFiles(options, target, modulePath);
         }
 
         [C.ExportLinkerOptionsDelegate]

@@ -32,7 +32,14 @@ namespace C
             var thirdPartyModule = node.Module as C.ThirdPartyModule;
             if (null != thirdPartyModule)
             {
-                thirdPartyModule.RegisterOutputFiles(this, node.Target);
+                string packagePath = node.Package.Identifier.Path;
+                Opus.Core.ProxyModulePath proxyPath = (node.Module as Opus.Core.BaseModule).ProxyPath;
+                if (null != proxyPath)
+                {
+                    packagePath = proxyPath.Combine(node.Package.Identifier);
+                }
+
+                thirdPartyModule.RegisterOutputFiles(this, node.Target, packagePath);
             }
 
             base.FinalizeOptions(node);
