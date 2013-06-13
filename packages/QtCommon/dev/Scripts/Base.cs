@@ -75,8 +75,7 @@ namespace QtCommon
                                                  string moduleName)
         {
             var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType);
-            string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
-            string binPath = System.IO.Path.Combine(installPath, "bin");
+            string binPath = toolset.BinPath((Opus.Core.BaseTarget)target);
             string dynamicLibraryName = null;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
