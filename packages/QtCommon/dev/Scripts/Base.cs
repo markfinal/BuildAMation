@@ -39,10 +39,9 @@ namespace QtCommon
                                       C.ILinkerOptions options,
                                       Opus.Core.Target target)
         {
-            var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType);
-            string installPath = toolset.InstallPath((Opus.Core.BaseTarget)target);
-            string libraryPath = System.IO.Path.Combine(installPath, "lib");
-            options.LibraryPaths.AddAbsoluteDirectory(libraryPath, false);
+            var toolset = Opus.Core.ToolsetFactory.GetInstance (toolsetType) as Toolset;
+            string libraryPath = toolset.GetLibraryPath((Opus.Core.BaseTarget)target);
+            options.LibraryPaths.AddAbsoluteDirectory(libraryPath, true);
         }
 
         protected void AddModuleLibrary(C.ILinkerOptions options,
