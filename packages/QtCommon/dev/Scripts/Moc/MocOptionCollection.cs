@@ -57,9 +57,9 @@ namespace QtCommon
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            if (null == this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile])
+            if (!this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
             {
-                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
+                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = new Opus.Core.StringArray((this as IMocOptions).MocOutputPath);
             }
 
             base.FinalizeOptions(node);
@@ -74,9 +74,9 @@ namespace QtCommon
         {
             Opus.Core.DirectoryCollection dirsToCreate = new Opus.Core.DirectoryCollection();
 
-            IMocOptions options = this as IMocOptions;
-            if (null != options.MocOutputPath)
+            if (this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
             {
+                var options = this as IMocOptions;
                 string mocDir = System.IO.Path.GetDirectoryName(options.MocOutputPath);
                 dirsToCreate.AddAbsoluteDirectory(mocDir, false);
             }

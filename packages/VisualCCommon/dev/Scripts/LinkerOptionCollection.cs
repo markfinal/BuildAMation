@@ -44,12 +44,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase];
+                return this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase][0];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = value;
+                this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -57,7 +57,7 @@ namespace VisualCCommon
         {
             C.ILinkerOptions options = this as C.ILinkerOptions;
 
-            if (options.DebugSymbols && (null == this.ProgramDatabaseFilePath))
+            if (options.DebugSymbols && !this.OutputPaths.Has(C.OutputFileFlags.LinkerProgramDatabase))
             {
                 string pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
                 this.ProgramDatabaseFilePath = pdbPathName;
@@ -129,21 +129,21 @@ namespace VisualCCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            string outputPathName = this.OutputFilePath;
-            if (null != outputPathName)
+            if (this.OutputPaths.Has(C.OutputFileFlags.Executable))
             {
+                string outputPathName = this.OutputFilePath;
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
             }
 
-            string libraryPathName = this.StaticImportLibraryFilePath;
-            if (null != libraryPathName)
+            if (this.OutputPaths.Has(C.OutputFileFlags.StaticImportLibrary))
             {
+                string libraryPathName = this.StaticImportLibraryFilePath;
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(libraryPathName), false);
             }
 
-            string programDatabasePathName = this.ProgramDatabaseFilePath;
-            if (null != programDatabasePathName)
+            if (this.OutputPaths.Has(C.OutputFileFlags.LinkerProgramDatabase))
             {
+                string programDatabasePathName = this.ProgramDatabaseFilePath;
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(programDatabasePathName), false);
             }
 

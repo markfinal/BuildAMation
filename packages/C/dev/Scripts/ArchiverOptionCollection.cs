@@ -40,18 +40,18 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.StaticLibrary];
+                return this.OutputPaths[C.OutputFileFlags.StaticLibrary][0];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = value;
+                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = new Opus.Core.StringArray(value);
             }
         }
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            if (null == this.LibraryFilePath)
+            if (!this.OutputPaths.Has(C.OutputFileFlags.StaticLibrary))
             {
                 Opus.Core.Target target = node.Target;
                 IArchiverTool archiverTool = target.Toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;

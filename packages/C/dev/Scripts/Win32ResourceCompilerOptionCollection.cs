@@ -44,7 +44,7 @@ namespace C
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            if (null == this.CompiledResourceFilePath)
+            if (!this.OutputPaths.Has(C.OutputFileFlags.Win32CompiledResource))
             {
                 Opus.Core.Target target = node.Target;
                 var resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
@@ -71,12 +71,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.Win32CompiledResource];
+                return this.OutputPaths[C.OutputFileFlags.Win32CompiledResource][0];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.Win32CompiledResource] = value;
+                this.OutputPaths[C.OutputFileFlags.Win32CompiledResource] = new Opus.Core.StringArray(value);
             }
         }
 

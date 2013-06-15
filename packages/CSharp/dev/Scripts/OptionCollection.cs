@@ -66,11 +66,11 @@ namespace CSharp
         {
             get
             {
-                return this.OutputPaths[OutputFileFlags.AssemblyFile];
+                return this.OutputPaths[OutputFileFlags.AssemblyFile][0];
             }
             set
             {
-                this.OutputPaths[OutputFileFlags.AssemblyFile] = value;
+                this.OutputPaths[OutputFileFlags.AssemblyFile] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -78,11 +78,11 @@ namespace CSharp
         {
             get
             {
-                return this.OutputPaths[OutputFileFlags.ProgramDatabaseFile];
+                return this.OutputPaths[OutputFileFlags.ProgramDatabaseFile][0];
             }
             set
             {
-                this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = value;
+                this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -94,8 +94,9 @@ namespace CSharp
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            IOptions options = this as IOptions;
-            if (null == this.OutputFilePath)
+            var options = this as IOptions;
+
+            if (!this.OutputPaths.Has(OutputFileFlags.AssemblyFile))
             {
                 string outputSuffix;
                 switch (options.Target)
@@ -121,7 +122,7 @@ namespace CSharp
                 this.OutputFilePath = outputPathName;
             }
 
-            if ((options.DebugInformation != EDebugInformation.Disabled) && (null == this.ProgramDatabaseFilePath))
+            if ((options.DebugInformation != EDebugInformation.Disabled) && !this.OutputPaths.Has(OutputFileFlags.ProgramDatabaseFile))
             {
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {

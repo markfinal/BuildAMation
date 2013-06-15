@@ -80,11 +80,11 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.Executable];
+                return this.OutputPaths[C.OutputFileFlags.Executable][0];
             }
             set
             {
-                this.OutputPaths[C.OutputFileFlags.Executable] = value;
+                this.OutputPaths[C.OutputFileFlags.Executable] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -92,11 +92,11 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
+                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary][0];
             }
             set
             {
-                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
+                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -104,11 +104,11 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.MapFile];
+                return this.OutputPaths[C.OutputFileFlags.MapFile][0];
             }
             set
             {
-                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
+                this.OutputPaths[C.OutputFileFlags.MapFile] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -118,7 +118,7 @@ namespace C
             ILinkerTool linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             ILinkerOptions options = this as ILinkerOptions;
 
-            if (null == this.OutputFilePath)
+            if (!this.OutputPaths.Has(C.OutputFileFlags.Executable))
             {
                 string outputPrefix = string.Empty;
                 string outputSuffix = string.Empty;
@@ -160,7 +160,7 @@ namespace C
                 }
             }
 
-            if (options.GenerateMapFile && null == this.MapFilePath)
+            if (options.GenerateMapFile && !this.OutputPaths.Has(C.OutputFileFlags.MapFile))
             {
                 string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerTool.MapFileSuffix;
                 this.MapFilePath = mapPathName;

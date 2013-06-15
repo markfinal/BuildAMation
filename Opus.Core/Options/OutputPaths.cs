@@ -7,25 +7,25 @@ namespace Opus.Core
 {
     public sealed class OutputPaths : System.Collections.IEnumerable
     {
-        private System.Collections.Generic.SortedDictionary<System.Enum, string> fileDictionary;
+        private System.Collections.Generic.SortedDictionary<System.Enum, StringArray> fileArrayDictionary;
 
         public OutputPaths()
         {
-            this.fileDictionary = new System.Collections.Generic.SortedDictionary<System.Enum, string>();
+            this.fileArrayDictionary = new System.Collections.Generic.SortedDictionary<System.Enum, StringArray>();
         }
 
         public OutputPaths(OutputPaths source)
         {
-            this.fileDictionary = new System.Collections.Generic.SortedDictionary<System.Enum, string>(source.fileDictionary);
+            this.fileArrayDictionary = new System.Collections.Generic.SortedDictionary<System.Enum, StringArray>(source.fileArrayDictionary);
         }
 
-        public string this[System.Enum key]
+        public StringArray this[System.Enum key]
         {
             get
             {
                 if (this.Has(key))
                 {
-                    return this.fileDictionary[key];
+                    return this.fileArrayDictionary[key];
                 }
                 else
                 {
@@ -37,36 +37,36 @@ namespace Opus.Core
             {
                 if (value != null)
                 {
-                    this.fileDictionary[key] = value;
+                    this.fileArrayDictionary[key] = value;
                 }
                 else if (this.Has(key))
                 {
-                    this.fileDictionary.Remove(key);
+                    this.fileArrayDictionary.Remove(key);
                 }
             }
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this.fileDictionary.GetEnumerator();
+            return this.fileArrayDictionary.GetEnumerator();
         }
 
         public bool Has(System.Enum key)
         {
-            bool containsKey = this.fileDictionary.ContainsKey(key);
+            bool containsKey = this.fileArrayDictionary.ContainsKey(key);
             return containsKey;
         }
 
         public void Remove(System.Enum key)
         {
-            this.fileDictionary.Remove(key);
+            this.fileArrayDictionary.Remove(key);
         }
 
         public Array<System.Enum> Types
         {
             get
             {
-                return new Array<System.Enum>(this.fileDictionary.Keys);
+                return new Array<System.Enum>(this.fileArrayDictionary.Keys);
             }
         }
 
@@ -74,7 +74,12 @@ namespace Opus.Core
         {
             get
             {
-                return new StringArray(this.fileDictionary.Values);
+                var flattenedPaths = new StringArray();
+                foreach (var paths in this.fileArrayDictionary.Values)
+                {
+                    flattenedPaths.AddRange(paths);
+                }
+                return flattenedPaths;
             }
         }
     }

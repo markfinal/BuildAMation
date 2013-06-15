@@ -76,12 +76,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase];
+                return this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase][0];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = value;
+                this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -102,15 +102,15 @@ namespace VisualCCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            string objPathName = this.ObjectFilePath;
-            if (null != objPathName)
+            if (this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
             {
+                string objPathName = this.ObjectFilePath;
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
             }
 
-            string pdbPathName = this.ProgramDatabaseFilePath;
-            if (null != pdbPathName)
+            if (this.OutputPaths.Has(C.OutputFileFlags.CompilerProgramDatabase))
             {
+                string pdbPathName = this.ProgramDatabaseFilePath;
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(pdbPathName), false);
             }
 

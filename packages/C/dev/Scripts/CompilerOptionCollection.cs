@@ -133,12 +133,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
+                return this.OutputPaths[C.OutputFileFlags.ObjectFile][0];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
+                this.OutputPaths[C.OutputFileFlags.ObjectFile] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -146,12 +146,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
+                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile][0];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
+                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = new Opus.Core.StringArray(value);
             }
         }
 
@@ -162,12 +162,12 @@ namespace C
                 Opus.Core.Target target = node.Target;
                 ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                 ICCompilerOptions options = this as ICCompilerOptions;
-                if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
+                if ((options.OutputType == ECompilerOutput.CompileOnly) && !this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
                 {
                     string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
                     this.ObjectFilePath = objectPathname;
                 }
-                else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
+                else if ((options.OutputType == ECompilerOutput.Preprocess) && !this.OutputPaths.Has(C.OutputFileFlags.PreprocessedFile))
                 {
                     string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
                     this.PreprocessedFilePath = preprocessedPathname;
