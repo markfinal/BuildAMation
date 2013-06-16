@@ -155,10 +155,10 @@ namespace VisualCCommon
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DynamicLibraryVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
-            if (null != options.StaticImportLibraryFilePath)
+            var options = sender as LinkerOptionCollection;
+            if (options.OutputPaths.Has(C.OutputFileFlags.StaticImportLibrary))
             {
-                VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+                var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
                 returnVal.Add("ImportLibrary", options.StaticImportLibraryFilePath);
                 return returnVal;
             }
