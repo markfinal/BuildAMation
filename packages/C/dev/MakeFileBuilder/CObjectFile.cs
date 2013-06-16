@@ -50,7 +50,7 @@ namespace MakeFileBuilder
             }
             recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
             // replace target with $@
-            recipe = recipe.Replace(objectFileOptions.OutputPaths[C.OutputFileFlags.ObjectFile], "$@");
+            recipe = recipe.Replace(objectFileOptions.OutputPaths[C.OutputFileFlags.ObjectFile][0], "$@");
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);

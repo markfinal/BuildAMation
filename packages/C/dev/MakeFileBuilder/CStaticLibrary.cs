@@ -82,7 +82,7 @@ namespace MakeFileBuilder
 
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.StaticLibrary;
-            recipe = recipe.Replace(staticLibraryOptions.OutputPaths[primaryOutput], "$@");
+            recipe = recipe.Replace(staticLibraryOptions.OutputPaths[primaryOutput][0], "$@");
 
             Opus.Core.StringArray recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);

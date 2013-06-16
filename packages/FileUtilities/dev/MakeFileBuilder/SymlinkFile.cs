@@ -27,7 +27,7 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.BaseOptionCollection baseOptions = symlinkFile.Options;
-            string symlinkedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink];
+            string symlinkedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink][0];
 
             Opus.Core.Target target = node.Target;
 

@@ -102,7 +102,7 @@ namespace MakeFileBuilder
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
-            recipe = recipe.Replace(applicationOptions.OutputPaths[primaryOutput], "$@");
+            recipe = recipe.Replace(applicationOptions.OutputPaths[primaryOutput][0], "$@");
             string instanceName = MakeFile.InstanceName(node);
             if (Opus.Core.State.RunningMono)
             {
@@ -112,18 +112,18 @@ namespace MakeFileBuilder
                     if (!type.Equals(primaryOutput))
                     {
                         string variableName = System.String.Format("{0}_{1}_Variable", instanceName, type.ToString());
-                        recipe = recipe.Replace(applicationOptions.OutputPaths[type], System.String.Format("$({0})", variableName));
+                        recipe = recipe.Replace(applicationOptions.OutputPaths[type][0], System.String.Format("$({0})", variableName));
                     }
                 }
             }
             else
             {
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in applicationOptions.OutputPaths)
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> outputPath in applicationOptions.OutputPaths)
                 {
                     if (!outputPath.Key.Equals(primaryOutput))
                     {
                         string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                        recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
+                        recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key][0], System.String.Format("$({0})", variableName));
                     }
                 }
             }
