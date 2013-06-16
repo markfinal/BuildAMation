@@ -52,7 +52,7 @@ namespace FileUtilities
                     {
                         throw new Opus.Core.Exception("Source module to copy from '{0}' has not been created", options.SourceModuleType.ToString());
                     }
-                    string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum][0];
+                    string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
                     if (null == sourceModuleOutputPath)
                     {
                         throw new Opus.Core.Exception("Source module '{0}' has no output path of type '{1}'",
@@ -76,7 +76,7 @@ namespace FileUtilities
                     {
                         throw new Opus.Core.Exception("Module to copy next to '{0}' has not been created", options.DestinationModuleType.ToString());
                     }
-                    destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum][0]);
+                    destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum]);
                 }
                 else
                 {
@@ -86,15 +86,15 @@ namespace FileUtilities
                 if (null != options.CommonBaseDirectory)
                 {
                     string relPath = Opus.Core.RelativePathUtilities.GetPath(sourcePath, options.CommonBaseDirectory);
-                    this.OutputPaths[OutputFileFlags.CopiedFile] = new Opus.Core.StringArray(System.IO.Path.Combine(destinationDirectory, relPath));
+                    this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(destinationDirectory, relPath);
                 }
                 else
                 {
                     string sourceFileName = System.IO.Path.GetFileName(sourcePath);
-                    this.OutputPaths[OutputFileFlags.CopiedFile] = new Opus.Core.StringArray(System.IO.Path.Combine(destinationDirectory, sourceFileName));
+                    this.OutputPaths[OutputFileFlags.CopiedFile] = System.IO.Path.Combine(destinationDirectory, sourceFileName);
                 }
 
-                string parentDir = System.IO.Path.GetDirectoryName(this.OutputPaths[OutputFileFlags.CopiedFile][0]);
+                string parentDir = System.IO.Path.GetDirectoryName(this.OutputPaths[OutputFileFlags.CopiedFile]);
                 directoriesToCreate.AddAbsoluteDirectory(parentDir, false);
             }
             base.FinalizeOptions (node);

@@ -59,7 +59,7 @@ namespace QtCommon
         {
             if (!this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
             {
-                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = new Opus.Core.StringArray((this as IMocOptions).MocOutputPath);
+                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
             }
 
             base.FinalizeOptions(node);

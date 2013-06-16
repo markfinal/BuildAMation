@@ -66,11 +66,11 @@ namespace CSharp
         {
             get
             {
-                return this.OutputPaths[OutputFileFlags.AssemblyFile][0];
+                return this.OutputPaths[OutputFileFlags.AssemblyFile];
             }
             set
             {
-                this.OutputPaths[OutputFileFlags.AssemblyFile] = new Opus.Core.StringArray(value);
+                this.OutputPaths[OutputFileFlags.AssemblyFile] = value;
             }
         }
 
@@ -78,11 +78,11 @@ namespace CSharp
         {
             get
             {
-                return this.OutputPaths[OutputFileFlags.ProgramDatabaseFile][0];
+                return this.OutputPaths[OutputFileFlags.ProgramDatabaseFile];
             }
             set
             {
-                this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = new Opus.Core.StringArray(value);
+                this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = value;
             }
         }
 

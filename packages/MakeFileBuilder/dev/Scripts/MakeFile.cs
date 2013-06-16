@@ -194,7 +194,7 @@ namespace MakeFileBuilder
 
                             if (rule.ExportTarget)
                             {
-                                string relativeOutputPath = this.RelativePath(rule.OutputPaths[outputType][0]);
+                                string relativeOutputPath = this.RelativePath(rule.OutputPaths[outputType]);
                                 writer.WriteLine(exportVariableName + " := " + relativeOutputPath);
                                 writer.WriteLine("");
                             }

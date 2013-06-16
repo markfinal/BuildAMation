@@ -133,12 +133,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.ObjectFile][0];
+                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.ObjectFile] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
             }
         }
 
@@ -146,12 +146,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile][0];
+                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
             }
         }
 

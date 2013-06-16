@@ -44,12 +44,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase][0];
+                return this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = value;
             }
         }
 

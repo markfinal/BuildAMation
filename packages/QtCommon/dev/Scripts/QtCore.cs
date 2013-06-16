@@ -19,7 +19,7 @@ namespace QtCommon
 
         public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
-            options.OutputPaths[C.OutputFileFlags.Executable] = new Opus.Core.StringArray(this.GetModuleDynamicLibrary(this.ToolsetType, target, "QtCore"));
+            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(this.ToolsetType, target, "QtCore");
             base.RegisterOutputFiles(options, target, modulePath);
         }
 

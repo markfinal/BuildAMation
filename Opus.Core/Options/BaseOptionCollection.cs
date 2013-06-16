@@ -163,8 +163,8 @@ namespace Opus.Core
                     if (keyValue == (filterValue & keyValue))
                     //if (o.Key.Includes(filter))
                     {
-                        StringArray paths = outputPaths[key];
-                        outPaths.AddRange(paths);
+                        string paths = outputPaths[key];
+                        outPaths.Add(paths);
                     }
                 }
             }
@@ -172,7 +172,7 @@ namespace Opus.Core
             {
                 // TODO: this causes a System.InvalidCastException, Cannot cast from source type to destination type
                 // because it's a SortedDictionary? Can't find any reference to this though
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, StringArray> o in outputPaths)
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
                 {
                     if (o.Key.GetType() != filterType)
                     {
@@ -184,7 +184,7 @@ namespace Opus.Core
                     if (keyValue == (filterValue & keyValue))
                     //if (o.Key.Includes(filter))
                     {
-                        outPaths.AddRange(o.Value);
+                        outPaths.Add(o.Value);
                     }
                 }
             }

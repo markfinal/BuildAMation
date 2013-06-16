@@ -1,5 +1,3 @@
-14-Jun-2013 Opus.Core.OutputPaths now store an array of paths per output flag. Most uses will have a single path for Opus builds, but for C.ThirdParty modules, which may have different architectures.
-
 12-Jun-2013 Dependent nodes that have to move ranks, must take into account if the dependee has nested components.
 
 12-Jun-2013 Updated OpenCL package to the new ThirdParty module scheme.

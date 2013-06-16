@@ -102,7 +102,7 @@ namespace MakeFileBuilder
             string recipe = recipeBuilder.ToString();
             // replace primary target with $@
             C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
-            recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[primaryOutput][0], "$@");
+            recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[primaryOutput], "$@");
             string instanceName = MakeFile.InstanceName(node);
             // TODO: due to the foreach causing this exception in Mono
             // '(System.InvalidCastException) Cannot cast from source type to destination type.'
@@ -113,18 +113,18 @@ namespace MakeFileBuilder
                     if (!key.Equals(primaryOutput))
                     {
                         string variableName = System.String.Format("{0}_{1}_Variable", instanceName, key.ToString());
-                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[key][0], System.String.Format("$({0})", variableName));
+                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[key], System.String.Format("$({0})", variableName));
                     }
                 }
             }
             else
             {
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> outputPath in dynamicLibraryOptions.OutputPaths)
+                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibraryOptions.OutputPaths)
                 {
                     if (!outputPath.Key.Equals(primaryOutput))
                     {
                         string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[outputPath.Key][0], System.String.Format("$({0})", variableName));
+                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
                     }
                 }
             }

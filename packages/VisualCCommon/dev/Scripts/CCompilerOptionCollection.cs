@@ -76,12 +76,12 @@ namespace VisualCCommon
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase][0];
+                return this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = value;
             }
         }
 

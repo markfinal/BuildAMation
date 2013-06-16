@@ -40,12 +40,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.StaticLibrary][0];
+                return this.OutputPaths[C.OutputFileFlags.StaticLibrary];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.StaticLibrary] = value;
             }
         }
 

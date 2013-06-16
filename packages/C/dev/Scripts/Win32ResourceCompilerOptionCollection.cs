@@ -71,12 +71,12 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.Win32CompiledResource][0];
+                return this.OutputPaths[C.OutputFileFlags.Win32CompiledResource];
             }
 
             set
             {
-                this.OutputPaths[C.OutputFileFlags.Win32CompiledResource] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.Win32CompiledResource] = value;
             }
         }
 

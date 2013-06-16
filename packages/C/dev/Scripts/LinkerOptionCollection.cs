@@ -80,11 +80,11 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.Executable][0];
+                return this.OutputPaths[C.OutputFileFlags.Executable];
             }
             set
             {
-                this.OutputPaths[C.OutputFileFlags.Executable] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.Executable] = value;
             }
         }
 
@@ -92,11 +92,11 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary][0];
+                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
             }
             set
             {
-                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
             }
         }
 
@@ -104,11 +104,11 @@ namespace C
         {
             get
             {
-                return this.OutputPaths[C.OutputFileFlags.MapFile][0];
+                return this.OutputPaths[C.OutputFileFlags.MapFile];
             }
             set
             {
-                this.OutputPaths[C.OutputFileFlags.MapFile] = new Opus.Core.StringArray(value);
+                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
             }
         }
 

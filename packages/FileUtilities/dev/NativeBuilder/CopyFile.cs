@@ -16,7 +16,7 @@ namespace NativeBuilder
             }
 
             Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
-            string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile][0];
+            string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
 
             Opus.Core.DependencyNode node = copyFile.OwningNode;
 

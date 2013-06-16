@@ -43,7 +43,7 @@ namespace CodeGenTest2
             {
                 var options = node.Module.Options as ICodeGenOptions;
                 string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-                this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = new Opus.Core.StringArray(outputPath);
+                this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
             }
 
             base.FinalizeOptions (node);

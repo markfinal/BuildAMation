@@ -38,7 +38,7 @@ namespace FileUtilities
                 {
                     throw new Opus.Core.Exception("Source module to symlink from '{0}' has not been created", options.SourceModuleType.ToString());
                 }
-                string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum][0];
+                string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
                 if (null == sourceModuleOutputPath)
                 {
                     throw new Opus.Core.Exception("Source module '{0}' has no output path of type '{1}'",
@@ -58,7 +58,7 @@ namespace FileUtilities
                     {
                         throw new Opus.Core.Exception("Module to symlink next to '{0}' has not been created", options.DestinationModuleType.ToString());
                     }
-                    destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum][0]);
+                    destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum]);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace FileUtilities
                     targetName = filename;
                 }
 
-                this.OutputPaths[OutputFileFlags.Symlink] = new Opus.Core.StringArray(System.IO.Path.Combine(destinationDirectory, targetName));
+                this.OutputPaths[OutputFileFlags.Symlink] = System.IO.Path.Combine(destinationDirectory, targetName);
             }
 
             base.FinalizeOptions (node);
