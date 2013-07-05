@@ -1,3 +1,5 @@
+05-Jul-2013 Added Opus.Core.FileCollection.ToStringArray()
+
 05-Jul-2013 Added Union, Intersect and Complement functions to Opus.Core.Array for set notation operations.
 
 05-Jul-2013 Added Opus.Core.Array.AddRangeUnique to avoid duplicate additions.

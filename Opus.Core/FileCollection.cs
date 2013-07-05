@@ -122,5 +122,10 @@ namespace Opus.Core
                 this.filePaths.Add(path);
             }
         }
+
+        public Opus.Core.StringArray ToStringArray()
+        {
+            return new Opus.Core.StringArray(this.filePaths.ToArray());
+        }
     }
 }
