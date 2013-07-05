@@ -152,5 +152,39 @@ namespace Opus.Core
         {
             this.list.Sort();
         }
+
+        public Array<T> Union(Array<T> other)
+        {
+            Array<T> union = new Array<T>();
+            union.AddRangeUnique(this);
+            union.AddRangeUnique(other);
+            return union;
+        }
+
+        public Array<T> Intersect(Array<T> other)
+        {
+            Array<T> intersect = new Array<T>();
+            foreach (T item in this.list)
+            {
+                if (other.list.Contains(item))
+                {
+                    intersect.list.Add(item);
+                }
+            }
+            return intersect;
+        }
+
+        public Array<T> Complement(Array<T> other)
+        {
+            Array<T> complement = new Array<T>();
+            foreach (T item in this.list)
+            {
+                if (!other.list.Contains(item))
+                {
+                    complement.list.Add(item);
+                }
+            }
+            return complement;
+        }
     }
 }
