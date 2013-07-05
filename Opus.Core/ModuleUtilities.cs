@@ -120,14 +120,14 @@ namespace Opus.Core
             return GetFieldsWithAttributeType<Core.RequiredModulesAttribute>(module, target);
         }
 
-        private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>> typeBaseTargetToModuleDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>>();
+        private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>> typeBaseTargetToNodeDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>>();
 
-        public static IModule GetModule(System.Type type, Core.BaseTarget baseTarget)
+        public static DependencyNode GetNode(System.Type type, Core.BaseTarget baseTarget)
         {
-            if (typeBaseTargetToModuleDictionary.ContainsKey(type) &&
-                typeBaseTargetToModuleDictionary[type].ContainsKey(baseTarget))
+            if (typeBaseTargetToNodeDictionary.ContainsKey(type) &&
+                typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
             {
-                return typeBaseTargetToModuleDictionary[type][baseTarget];
+                return typeBaseTargetToNodeDictionary[type][baseTarget];
             }
 
             DependencyGraph graph = State.Get("System", "Graph") as DependencyGraph;
@@ -145,15 +145,15 @@ namespace Opus.Core
                 {
                     if (baseTargetMatch)
                     {
-                        if (!typeBaseTargetToModuleDictionary.ContainsKey(type))
+                        if (!typeBaseTargetToNodeDictionary.ContainsKey(type))
                         {
-                            typeBaseTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>());
+                            typeBaseTargetToNodeDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>());
                         }
-                        if (!typeBaseTargetToModuleDictionary[type].ContainsKey(baseTarget))
+                        if (!typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
                         {
-                            typeBaseTargetToModuleDictionary[type][baseTarget] = node.Module;
+                            typeBaseTargetToNodeDictionary[type][baseTarget] = node;
                         }
-                        return node.Module;
+                        return node;
                     }
                 }
                 else
@@ -163,20 +163,32 @@ namespace Opus.Core
                     {
                         if ((baseType == type) && baseTargetMatch)
                         {
-                            if (!typeBaseTargetToModuleDictionary.ContainsKey(type))
+                            if (!typeBaseTargetToNodeDictionary.ContainsKey(type))
                             {
-                                typeBaseTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, IModule>());
+                                typeBaseTargetToNodeDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>());
                             }
-                            if (!typeBaseTargetToModuleDictionary[type].ContainsKey(baseTarget))
+                            if (!typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
                             {
-                                typeBaseTargetToModuleDictionary[type][baseTarget] = node.Module;
+                                typeBaseTargetToNodeDictionary[type][baseTarget] = node;
                             }
-                            return node.Module;
+                            return node;
                         }
 
                         baseType = baseType.BaseType;
                     }
                 }
+            }
+
+            return null;
+        }
+
+        public static IModule GetModule(System.Type type, Core.BaseTarget baseTarget)
+        {
+            var node = GetNode(type, baseTarget);
+            if (null != node)
+            {
+                var module = node.Module;
+                return module;
             }
 
             return null;
