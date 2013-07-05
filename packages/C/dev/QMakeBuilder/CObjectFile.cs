@@ -19,15 +19,15 @@ namespace QMakeBuilder
                 return null;
             }
 
-            Opus.Core.BaseModule objectFileModule = objectFile as Opus.Core.BaseModule;
-            Opus.Core.Target target = objectFileModule.OwningNode.Target;
-            Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
+            var objectFileModule = objectFile as Opus.Core.BaseModule;
+            var target = objectFileModule.OwningNode.Target;
+            var objectFileOptions = objectFileModule.Options;
 
-            C.CompilerOptionCollection compilerOptions = objectFileOptions as C.CompilerOptionCollection;
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var compilerOptions = objectFileOptions as C.CompilerOptionCollection;
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
+                var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else
@@ -35,18 +35,18 @@ namespace QMakeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            NodeData nodeData = new NodeData();
+            var nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(target);
             nodeData.AddVariable("SOURCES", sourceFilePath);
             if (objectFileOptions is C.ICxxCompilerOptions)
             {
-                Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool));
+                var compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool));
                 nodeData.AddUniqueVariable("CXXFLAGS", commandLineBuilder);
                 nodeData.AddUniqueVariable("QMAKE_CXX", new Opus.Core.StringArray(compilerTool.Executable((Opus.Core.BaseTarget)target).Replace("\\", "/")));
             }
             else
             {
-                Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(C.ICxxCompilerTool));
+                var compilerTool = target.Toolset.Tool(typeof(C.ICxxCompilerTool));
                 nodeData.AddUniqueVariable("CFLAGS", commandLineBuilder);
                 nodeData.AddUniqueVariable("QMAKE_CC", new Opus.Core.StringArray(compilerTool.Executable((Opus.Core.BaseTarget)target).Replace("\\", "/")));
             }

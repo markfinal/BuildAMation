@@ -12,7 +12,7 @@ namespace QMakeBuilder
                                           System.Text.StringBuilder includesStatement,
                                           System.Text.StringBuilder definesStatement)
         {
-            foreach (string cflag in compilerFlags)
+            foreach (var cflag in compilerFlags)
             {
                 if (cflag.StartsWith("-o") || cflag.StartsWith("/Fo"))
                 {
@@ -20,7 +20,7 @@ namespace QMakeBuilder
                     continue;
                 }
 
-                string cflagModified = cflag;
+                var cflagModified = cflag;
                 if (cflag.Contains("\""))
                 {
                     int indexOfFirstQuote = cflag.IndexOf('"');

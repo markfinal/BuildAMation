@@ -9,8 +9,8 @@ namespace QMakeBuilder
     {
         public object Build(C.ObjectFileCollectionBase objectFileCollection, out bool success)
         {
-            Opus.Core.BaseModule objectFileCollectionModule = objectFileCollection as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
+            var objectFileCollectionModule = objectFileCollection as Opus.Core.BaseModule;
+            var node = objectFileCollectionModule.OwningNode;
 
             if ((null == node.Children) || (0 == node.Children.Count))
             {
@@ -18,19 +18,19 @@ namespace QMakeBuilder
                 return null;
             }
 
-            NodeData nodeData = new NodeData();
+            var nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(node.Target);
 
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
+            foreach (var childNode in node.Children)
             {
-                NodeData childData = childNode.Data as NodeData;
+                var childData = childNode.Data as NodeData;
                 nodeData.Merge(childData);
             }
             if (node.ExternalDependents != null)
             {
-                foreach (Opus.Core.DependencyNode externalDependent in node.ExternalDependents)
+                foreach (var externalDependent in node.ExternalDependents)
                 {
-                    NodeData childData = externalDependent.Data as NodeData;
+                    var childData = externalDependent.Data as NodeData;
                     nodeData.Merge(childData);
                 }
             }

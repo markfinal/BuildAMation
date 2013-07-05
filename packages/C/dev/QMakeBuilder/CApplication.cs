@@ -9,31 +9,31 @@ namespace QMakeBuilder
     {
         public object Build(C.Application application, out bool success)
         {
-            Opus.Core.BaseModule applicationModule = application as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = applicationModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var applicationModule = application as Opus.Core.BaseModule;
+            var node = applicationModule.OwningNode;
+            var target = node.Target;
 
-            NodeData nodeData = new NodeData();
+            var nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(target);
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
+            foreach (var childNode in node.Children)
             {
-                NodeData childData = childNode.Data as NodeData;
+                var childData = childNode.Data as NodeData;
                 nodeData.Merge(childData);
             }
 
-            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
-            C.LinkerOptionCollection linkerOptionCollection = applicationOptions as C.LinkerOptionCollection;
-            C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
+            var applicationOptions = applicationModule.Options;
+            var linkerOptionCollection = applicationOptions as C.LinkerOptionCollection;
+            var linkerOptions = applicationOptions as C.ILinkerOptions;
 
             {
-                Opus.Core.ITool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool));
+                var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool));
                 nodeData.AddUniqueVariable("QMAKE_LINK", new Opus.Core.StringArray(linkerTool.Executable((Opus.Core.BaseTarget)target).Replace("\\", "/")));
             }
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
+                var commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
             }
             else
@@ -49,20 +49,19 @@ namespace QMakeBuilder
                 node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
             }
 
-            string proFilePath = QMakeBuilder.GetProFilePath(node);
+            var proFilePath = QMakeBuilder.GetProFilePath(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(proFilePath));
             nodeData.ProFilePathName = proFilePath;
 
-            using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePath))
+            using (var proFileWriter = new System.IO.StreamWriter(proFilePath))
             {
                 proFileWriter.WriteLine("# --- Written by Opus");
-
                 {
-                    string relativePriPathName = Opus.Core.RelativePathUtilities.GetPath(this.DisableQtPriPathName, proFilePath);
+                    var relativePriPathName = Opus.Core.RelativePathUtilities.GetPath(this.DisableQtPriPathName, proFilePath);
                     proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
 
-                string targetName = applicationModule.OwningNode.ModuleName;
+                var targetName = applicationModule.OwningNode.ModuleName;
                 nodeData.AddUniqueVariable("TARGET", new Opus.Core.StringArray(targetName));
                 proFileWriter.WriteLine("TARGET = {0}", targetName);
                 proFileWriter.WriteLine("TEMPLATE = app");
@@ -71,10 +70,10 @@ namespace QMakeBuilder
 
                 // sources
                 {
-                    Opus.Core.StringArray sourcesArray = nodeData["SOURCES"];
-                    System.Text.StringBuilder sourcesStatement = new System.Text.StringBuilder();
+                    var sourcesArray = nodeData["SOURCES"];
+                    var sourcesStatement = new System.Text.StringBuilder();
                     sourcesStatement.AppendFormat("{0}:SOURCES += ", nodeData.Configuration);
-                    foreach (string source in sourcesArray)
+                    foreach (var source in sourcesArray)
                     {
                         sourcesStatement.AppendFormat("\\\n\t{0}", source.Replace('\\', '/'));
                     }
@@ -83,7 +82,7 @@ namespace QMakeBuilder
 
                 // headers
                 {
-                    Opus.Core.StringArray headerFiles = new Opus.Core.StringArray();
+                    var headerFiles = new Opus.Core.StringArray();
 
                     // moc headers
                     if (nodeData.Contains("HEADERS"))
@@ -92,16 +91,16 @@ namespace QMakeBuilder
                     }
 
                     // other headers
-                    System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
-                                                                       System.Reflection.BindingFlags.Public |
-                                                                       System.Reflection.BindingFlags.NonPublic;
-                    System.Reflection.FieldInfo[] fields = application.GetType().GetFields(fieldBindingFlags);
+                    var fieldBindingFlags = System.Reflection.BindingFlags.Instance |
+                                            System.Reflection.BindingFlags.Public |
+                                            System.Reflection.BindingFlags.NonPublic;
+                    var fields = application.GetType().GetFields(fieldBindingFlags);
                     foreach (System.Reflection.FieldInfo field in fields)
                     {
                         var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                         if (headerFileAttributes.Length > 0)
                         {
-                            Opus.Core.FileCollection headerFileCollection = field.GetValue(application) as Opus.Core.FileCollection;
+                            var headerFileCollection = field.GetValue(application) as Opus.Core.FileCollection;
                             foreach (string fileName in headerFileCollection)
                             {
                                 headerFiles.Add(fileName);
@@ -113,9 +112,9 @@ namespace QMakeBuilder
 
                     if (headerFiles.Count > 0)
                     {
-                        System.Text.StringBuilder headersStatement = new System.Text.StringBuilder();
+                        var headersStatement = new System.Text.StringBuilder();
                         headersStatement.AppendFormat("{0}:HEADERS += ", nodeData.Configuration);
-                        foreach (string header in headerFiles)
+                        foreach (var header in headerFiles)
                         {
                             headersStatement.AppendFormat("\\\n\t{0}", header.Replace('\\', '/'));
                         }
@@ -125,15 +124,15 @@ namespace QMakeBuilder
 
                 // cflags, cxxflags, include paths, defines, and tools
                 {
-                    System.Text.StringBuilder includePathsStatement = new System.Text.StringBuilder();
-                    System.Text.StringBuilder definesStatement = new System.Text.StringBuilder();
+                    var includePathsStatement = new System.Text.StringBuilder();
+                    var definesStatement = new System.Text.StringBuilder();
                     includePathsStatement.AppendFormat("{0}:INCLUDEPATH += ", nodeData.Configuration);
                     definesStatement.AppendFormat("{0}:DEFINES += ", nodeData.Configuration);
 
                     if (nodeData.Contains("CFLAGS"))
                     {
-                        Opus.Core.StringArray cflags = nodeData["CFLAGS"];
-                        System.Text.StringBuilder cflagsStatement = new System.Text.StringBuilder();
+                        var cflags = nodeData["CFLAGS"];
+                        var cflagsStatement = new System.Text.StringBuilder();
                         cflagsStatement.AppendFormat("{0}:QMAKE_CFLAGS += ", nodeData.Configuration);
                         this.ProcessCompilerFlags(cflags, cflagsStatement, includePathsStatement, definesStatement);
                         proFileWriter.WriteLine(cflagsStatement.ToString());
@@ -141,8 +140,8 @@ namespace QMakeBuilder
 
                     if (nodeData.Contains("CXXFLAGS"))
                     {
-                        Opus.Core.StringArray cxxflags = nodeData["CXXFLAGS"];
-                        System.Text.StringBuilder cxxflagsStatement = new System.Text.StringBuilder();
+                        var cxxflags = nodeData["CXXFLAGS"];
+                        var cxxflagsStatement = new System.Text.StringBuilder();
                         cxxflagsStatement.AppendFormat("{0}:QMAKE_CXXFLAGS += ", nodeData.Configuration);
                         this.ProcessCompilerFlags(cxxflags, cxxflagsStatement, includePathsStatement, definesStatement);
                         proFileWriter.WriteLine(cxxflagsStatement.ToString());
@@ -171,11 +170,11 @@ namespace QMakeBuilder
 
                 // link flags
                 {
-                    System.Text.StringBuilder linkFlagsStatement = new System.Text.StringBuilder();
-                    System.Text.StringBuilder libDirStatement = new System.Text.StringBuilder();
+                    var linkFlagsStatement = new System.Text.StringBuilder();
+                    var libDirStatement = new System.Text.StringBuilder();
                     linkFlagsStatement.AppendFormat("{0}:QMAKE_LFLAGS += ", nodeData.Configuration);
                     libDirStatement.AppendFormat("{0}:QMAKE_LIBDIR += ", nodeData.Configuration);
-                    foreach (string linkFlag in commandLineBuilder)
+                    foreach (var linkFlag in commandLineBuilder)
                     {
                         if (linkFlag.StartsWith("-o") || linkFlag.StartsWith("/OUT:"))
                         {
@@ -183,7 +182,7 @@ namespace QMakeBuilder
                             continue;
                         }
 
-                        string linkFlagModified = linkFlag;
+                        var linkFlagModified = linkFlag;
                         if (linkFlag.Contains("\""))
                         {
                             int indexOfFirstQuote = linkFlag.IndexOf('"');
@@ -219,13 +218,13 @@ namespace QMakeBuilder
 
                 // libraries
                 {
-                    Opus.Core.StringArray libraryFiles = new Opus.Core.StringArray();
-                    C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+                    var libraryFiles = new Opus.Core.StringArray();
+                    var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
                     C.LinkerUtilities.AppendLibrariesToCommandLine(libraryFiles, linkerTool, linkerOptions, dependentLibraryFiles);
 
-                    System.Text.StringBuilder libStatement = new System.Text.StringBuilder();
+                    var libStatement = new System.Text.StringBuilder();
                     libStatement.AppendFormat("{0}:QMAKE_LIBS += ", nodeData.Configuration);
-                    foreach (string lib in libraryFiles)
+                    foreach (var lib in libraryFiles)
                     {
                         libStatement.AppendFormat("\\\n\t{0}", lib.Replace('\\', '/'));
                     }
@@ -233,7 +232,7 @@ namespace QMakeBuilder
 
                     if (null != dependentLibraryFiles)
                     {
-                        foreach (string dependentLibrary in dependentLibraryFiles)
+                        foreach (var dependentLibrary in dependentLibraryFiles)
                         {
                             proFileWriter.WriteLine("{0}:PRE_TARGETDEPS += {1}", nodeData.Configuration, dependentLibrary.Replace('\\', '/'));
                         }

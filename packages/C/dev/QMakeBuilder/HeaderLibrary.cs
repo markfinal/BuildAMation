@@ -9,22 +9,22 @@ namespace QMakeBuilder
     {
         public object Build(C.HeaderLibrary headerLibrary, out bool success)
         {
-            Opus.Core.BaseModule headerLibraryModule = headerLibrary as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = headerLibraryModule.OwningNode;
+            var headerLibraryModule = headerLibrary as Opus.Core.BaseModule;
+            var node = headerLibraryModule.OwningNode;
 
-            NodeData nodeData = new NodeData();
+            var nodeData = new NodeData();
             nodeData.Configuration = GetQtConfiguration(node.Target);
 
-            string proFilePath = QMakeBuilder.GetProFilePath(node);
+            var proFilePath = QMakeBuilder.GetProFilePath(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(proFilePath));
             nodeData.ProFilePathName = proFilePath;
 
-            using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(proFilePath))
+            using (var proFileWriter = new System.IO.StreamWriter(proFilePath))
             {
                 proFileWriter.WriteLine("# --- Written by Opus");
 
                 {
-                    string relativePriPathName = Opus.Core.RelativePathUtilities.GetPath(this.DisableQtPriPathName, proFilePath);
+                    var relativePriPathName = Opus.Core.RelativePathUtilities.GetPath(this.DisableQtPriPathName, proFilePath);
                     proFileWriter.WriteLine("include({0})", relativePriPathName.Replace('\\', '/'));
                 }
 
@@ -32,19 +32,19 @@ namespace QMakeBuilder
 
                 // headers
                 {
-                    System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
-                                                                       System.Reflection.BindingFlags.Public |
-                                                                       System.Reflection.BindingFlags.NonPublic;
-                    System.Reflection.FieldInfo[] fields = headerLibrary.GetType().GetFields(fieldBindingFlags);
-                    foreach (System.Reflection.FieldInfo field in fields)
+                    var fieldBindingFlags = System.Reflection.BindingFlags.Instance |
+                                            System.Reflection.BindingFlags.Public |
+                                            System.Reflection.BindingFlags.NonPublic;
+                    var fields = headerLibrary.GetType().GetFields(fieldBindingFlags);
+                    foreach (var field in fields)
                     {
                         var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                         if (headerFileAttributes.Length > 0)
                         {
-                            Opus.Core.FileCollection headerFileCollection = field.GetValue(headerLibrary) as Opus.Core.FileCollection;
+                            var headerFileCollection = field.GetValue(headerLibrary) as Opus.Core.FileCollection;
                             if (headerFileCollection.Count > 0)
                             {
-                                System.Text.StringBuilder headersStatement = new System.Text.StringBuilder();
+                                var headersStatement = new System.Text.StringBuilder();
                                 headersStatement.AppendFormat("{0}:HEADERS += ", nodeData.Configuration);
                                 foreach (string headerPath in headerFileCollection)
                                 {
