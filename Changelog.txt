@@ -1,3 +1,5 @@
+05-Jul-2013 Opus.Core.StringArray now has a construct taking an Opus.Core.Array<string>. And added a ToString(char) overload to format the string array as a single string, separated by char.
+
 05-Jul-2013 Added Opus.Core.FileCollection.ToStringArray()
 
 05-Jul-2013 Added Union, Intersect and Complement functions to Opus.Core.Array for set notation operations.

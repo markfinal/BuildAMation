@@ -45,6 +45,17 @@ namespace Opus.Core
             }
         }
 
+        public StringArray(Opus.Core.Array<string> array)
+        {
+            foreach (string item in array)
+            {
+                if (!System.String.IsNullOrEmpty(item))
+                {
+                    this.list.Add(item);
+                }
+            }
+        }
+
         public override void Add(string item)
         {
             if (System.String.IsNullOrEmpty(item))
@@ -69,6 +80,18 @@ namespace Opus.Core
             }
             // remove the trailing separator
             string output = builder.ToString().TrimEnd(separator);
+            return output;
+        }
+
+        public string ToString(string separator)
+        {
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            foreach (string item in this.list)
+            {
+                builder.AppendFormat("{0}{1}", item.ToString(), separator);
+            }
+            // remove the trailing separator
+            string output = builder.ToString().TrimEnd(separator.ToCharArray());
             return output;
         }
 
