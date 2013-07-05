@@ -15,7 +15,10 @@ namespace C
 
             ILinkerTool linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.BinaryOutputSubDirectory);
-            if (linkerTool is IWinImportLibrary)
+
+            // special case here of the QMakeBuilder
+            // it does not support writing import libraries to a separate location to the dll
+            if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
             {
                 this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
             }

@@ -5,6 +5,15 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
+    public sealed partial class QMakeBuilder2
+    {
+        public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
+        {
+            success = true;
+            return null;
+        }
+    }
+
     public sealed partial class QMakeBuilder
     {
         public object Build(FileUtilities.CopyFile module, out bool success)

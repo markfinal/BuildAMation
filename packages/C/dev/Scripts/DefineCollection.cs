@@ -47,5 +47,10 @@ namespace C
             }
             return clonedObject;
         }
+
+        public Opus.Core.StringArray ToStringArray()
+        {
+            return this.defines;
+        }
     }
 }

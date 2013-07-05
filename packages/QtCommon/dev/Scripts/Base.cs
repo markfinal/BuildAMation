@@ -1,11 +1,11 @@
-// <copyright file="QtCommon.cs" company="Mark Final">
+// <copyright file="Base.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>QtCommon package</summary>
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class Base : C.ThirdPartyModule
+    public abstract class Base : ThirdPartyModule
     {
         protected System.Type ToolsetType
         {

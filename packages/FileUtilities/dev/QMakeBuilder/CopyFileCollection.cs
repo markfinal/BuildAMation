@@ -5,6 +5,16 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
+    public sealed partial class QMakeBuilder2
+    {
+        [Opus.Core.EmptyBuildFunction]
+        public object Build(FileUtilities.CopyFileCollection moduleToBuild, out bool success)
+        {
+            success = true;
+            return null;
+        }
+    }
+
     public sealed partial class QMakeBuilder
     {
         [Opus.Core.EmptyBuildFunction]

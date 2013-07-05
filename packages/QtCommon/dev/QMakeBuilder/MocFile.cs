@@ -5,6 +5,27 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
+    public partial class QMakeBuilder2
+    {
+        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
+        {
+            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var node = moduleToBuild.OwningNode;
+            var target = node.Target;
+
+            var data = new QMakeData(node);
+            data.PriPaths.Add(this.EmptyConfigPriPath);
+            data.Headers.Add(sourceFilePath);
+            data.Output = QMakeData.OutputType.MocFile;
+
+            var options = moduleToBuild.Options as QtCommon.MocOptionCollection;
+            data.MocDir = options.OutputDirectoryPath;
+
+            success = true;
+            return data;
+        }
+    }
+
     public partial class QMakeBuilder
     {
         public object Build(QtCommon.MocFile mocFile, out System.Boolean success)

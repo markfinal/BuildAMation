@@ -5,6 +5,55 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
+    public sealed partial class QMakeBuilder2
+    {
+        public object Build(C.DynamicLibrary moduleToBuild, out bool success)
+        {
+            var node = moduleToBuild.OwningNode;
+            var options = moduleToBuild.Options as C.LinkerOptionCollection;
+
+            var data = new QMakeData(node);
+            foreach (var child in node.Children)
+            {
+                var childData = child.Data as QMakeData;
+                if (null != childData)
+                {
+                    data.Merge(childData);
+                }
+            }
+            if (null != node.ExternalDependents)
+            {
+                foreach (var dependent in node.ExternalDependents)
+                {
+                    var depData = dependent.Data as QMakeData;
+                    if (null != depData)
+                    {
+                        data.Merge(depData, QMakeData.OutputType.StaticLibrary | QMakeData.OutputType.DynamicLibrary);
+                    }
+                }
+            }
+
+            data.Output = QMakeData.OutputType.DynamicLibrary;
+            data.DestDir = options.OutputDirectoryPath;
+
+            // find dependent library files
+            if (null != node.ExternalDependents)
+            {
+                var dependentLibraryFiles = new Opus.Core.StringArray();
+                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
+                data.Libraries.AddRangeUnique(dependentLibraryFiles);
+            }
+
+            var optionsInterface = moduleToBuild.Options as C.ILinkerOptions;
+
+            // find static library files
+            data.Libraries.AddRangeUnique(optionsInterface.Libraries.ToStringArray());
+
+            success = true;
+            return data;
+        }
+    }
+
     public sealed partial class QMakeBuilder
     {
         public object Build(C.DynamicLibrary dynamicLibrary, out bool success)

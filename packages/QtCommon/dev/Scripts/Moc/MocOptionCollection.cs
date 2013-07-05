@@ -34,9 +34,16 @@ namespace QtCommon
             options.Defines.Add(VersionDefine);
         }
 
+        public string OutputDirectoryPath
+        {
+            get;
+            set;
+        }
+
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
         {
             string mocDir = node.GetTargettedModuleBuildDirectory("src");
+            this.OutputDirectoryPath = mocDir;
             MocFile mocFile = node.Module as MocFile;
             string mocPath;
             if (null != mocFile)
