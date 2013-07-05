@@ -14,10 +14,16 @@ namespace FileUtilities
             private set;
         }
 
-        public Opus.Core.TypeArray AdditionalDependentModules
+        public System.Type BesideModuleType
         {
             get;
-            private set;
+            set;
+        }
+
+        private Opus.Core.TypeArray AdditionalDependentModules
+        {
+            get;
+            set;
         }
 
         public CopyFile()
@@ -64,6 +70,15 @@ namespace FileUtilities
             if (null == besideModule)
             {
                 return null;
+            }
+
+            if (null == this.BesideModuleType)
+            {
+                this.BesideModuleType = dependentModule;
+            }
+            else if (this.BesideModuleType != dependentModule)
+            {
+                throw new Opus.Core.Exception("Inconsistent beside module types");
             }
 
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {

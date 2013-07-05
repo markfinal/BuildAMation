@@ -24,7 +24,7 @@ namespace FileUtilities
 
                 if (null != dependentModule)
                 {
-                    file.AdditionalDependentModules.Add(dependentModule);
+                    file.BesideModuleType = dependentModule;
                 }
                 this.copyFiles.Add(file);
             }
