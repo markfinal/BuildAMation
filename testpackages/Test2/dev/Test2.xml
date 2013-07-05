@@ -27,6 +27,9 @@
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="Test3">
       <Opus:Version Id="dev" />
     </Opus:Package>

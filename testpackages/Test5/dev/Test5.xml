@@ -17,6 +17,9 @@
       <Opus:Version Id="3.4.5" Default="true" />
       <Opus:Version Id="4.5.0" />
     </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="Test4">
       <Opus:Version Id="dev" />
     </Opus:Package>

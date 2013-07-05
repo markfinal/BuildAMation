@@ -27,6 +27,9 @@
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="VisualC">
       <Opus:Version Id="10.0" />
       <Opus:Version Id="8.0" />
