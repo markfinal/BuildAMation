@@ -46,6 +46,22 @@ namespace Opus.Core
             }
         }
 
+        public void AddRangeUnique(Array<T> array)
+        {
+            if (this == array)
+            {
+                throw new Exception("Cannot add an array to itself");
+            }
+
+            foreach (T item in array)
+            {
+                if (!this.list.Contains(item))
+                {
+                    this.list.Add(item);
+                }
+            }
+        }
+
         public void Insert(int index, T item)
         {
             this.list.Insert(index, item);

@@ -1,3 +1,5 @@
+05-Jul-2013 Added Opus.Core.Array.AddRangeUnique to avoid duplicate additions.
+
 18-Jun-2013 Add Opus.Core.ModuleUtilities.GetNode, which returns the DependencyNode for a given module type and BaseTarget. This can be useful in builder code.
 
 12-Jun-2013 Dependent nodes that have to move ranks, must take into account if the dependee has nested components.
