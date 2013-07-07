@@ -24,6 +24,9 @@ namespace QMakeBuilder
         public QMakeData(Opus.Core.DependencyNode node)
         {
             this.OwningNode = node;
+
+            this.CCFlags = new Opus.Core.StringArray();
+            this.CXXFlags = new Opus.Core.StringArray();
             this.Defines = new Opus.Core.StringArray();
             this.DestDir = string.Empty;
             this.Headers = new Opus.Core.StringArray();
@@ -40,6 +43,18 @@ namespace QMakeBuilder
         }
 
         public Opus.Core.DependencyNode OwningNode
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.StringArray CCFlags
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.StringArray CXXFlags
         {
             get;
             private set;
@@ -430,6 +445,56 @@ namespace QMakeBuilder
             }
         }
 
+        private static void WriteCCFlags(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteStringArray(array[0].CCFlags, "QMAKE_CFLAGS+=", proFilePath, writer);
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.CCFlags;
+                    }
+                    else
+                    {
+                        values.Release = data.CCFlags;
+                    }
+                }
+
+                WriteStringArrays(values, "QMAKE_CFLAGS+=", proFilePath, writer);
+            }
+        }
+
+        private static void WriteCXXFlags(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteStringArray(array[0].CXXFlags, "QMAKE_CXXFLAGS+=", proFilePath, writer);
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.CXXFlags;
+                    }
+                    else
+                    {
+                        values.Release = data.CXXFlags;
+                    }
+                }
+
+                WriteStringArrays(values, "QMAKE_CXXFLAGS+=", proFilePath, writer);
+            }
+        }
+
         private static void WriteString(string value, string format, string proFilePath, System.IO.StreamWriter writer)
         {
             if (0 == value.Length)
@@ -602,6 +667,8 @@ namespace QMakeBuilder
                 throw new Opus.Core.Exception("Cannot merge data from different Opus.Core.BaseTargets: {0} vs {1}", baseTargetLHS.ToString(), baseTargetRHS.ToString());
             }
 
+            this.CCFlags.AddRangeUnique(data.CCFlags);
+            this.CXXFlags.AddRangeUnique(data.CXXFlags);
             this.Defines.AddRangeUnique(data.Defines);
             if (data.DestDir.Length > 0)
             {
@@ -675,6 +742,8 @@ namespace QMakeBuilder
                 WriteObjectsDir(array, proFilePath, proWriter);
                 WriteIncludePaths(array, proFilePath, proWriter);
                 WriteDefines(array, proFilePath, proWriter);
+                WriteCCFlags(array, proFilePath, proWriter);
+                WriteCXXFlags(array, proFilePath, proWriter);
                 WriteSources(array, proFilePath, proWriter);
                 WriteHeaders(array, proFilePath, proWriter);
                 WriteWinRCFiles(array, proFilePath, proWriter);
