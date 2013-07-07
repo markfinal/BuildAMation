@@ -43,12 +43,12 @@ namespace MakeFileBuilder
 
             Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (dynamicLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = dynamicLibraryOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = dynamicLibraryOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }

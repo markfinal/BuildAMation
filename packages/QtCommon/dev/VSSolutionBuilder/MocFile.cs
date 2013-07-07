@@ -119,8 +119,8 @@ namespace VSSolutionBuilder
             }
             if (mocFileOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = mocFileOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = mocFileOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
             }
             else
             {

@@ -30,16 +30,16 @@ namespace QMakeBuilder
     {
         public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
         {
-            Opus.Core.BaseModule mocFileModule = mocFile as Opus.Core.BaseModule;
-            Opus.Core.Target target = mocFileModule.OwningNode.Target;
-            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
+            var mocFileModule = mocFile as Opus.Core.BaseModule;
+            var target = mocFileModule.OwningNode.Target;
+            var mocFileOptions = mocFileModule.Options;
 
-            QtCommon.IMocOptions mocOptions = mocFileOptions as QtCommon.IMocOptions;
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var mocOptions = mocFileOptions as QtCommon.IMocOptions;
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (mocFileOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = mocFileOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = mocFileOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
             }
             else
             {

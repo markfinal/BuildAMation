@@ -1,3 +1,5 @@
+07-Jul-2013 Added an argument to CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments, that is either null, or an Opus.Core.StringArray, of names of options to NOT process. If options have been manually extracted from an OptionCollection, but a general run through of the command line arguments is needed, then this can be used to exclude those already processed.
+
 07-Jul-2013 Added property Opus.Core.BaseOptionCollection.OptionNames to provide an array of strings for the options names.
 
 05-Jul-2013 Reworked the QMakeBuilder support, now supporting debug & release .pro files. Dynamic libraries on Windows must write their import library to the same folder as the DLL.

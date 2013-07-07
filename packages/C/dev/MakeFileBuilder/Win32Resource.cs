@@ -26,12 +26,12 @@ namespace MakeFileBuilder
             Opus.Core.DependencyNode node = resourceFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }

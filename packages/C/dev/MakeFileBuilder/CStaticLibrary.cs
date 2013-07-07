@@ -47,13 +47,13 @@ namespace MakeFileBuilder
             Opus.Core.ITool archiverTool = toolset.Tool(typeof(C.IArchiverTool));
             string executable = archiverTool.Executable((Opus.Core.BaseTarget)target);
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 // TODO: pass in a map of path translations, e.g. outputfile > $@
-                CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }

@@ -16,12 +16,12 @@ namespace MakeFileBuilder
             inputFiles.Add(toolExePath);
             Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }

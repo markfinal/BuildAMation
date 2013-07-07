@@ -59,7 +59,7 @@ namespace QMakeBuilder
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
             }
             else
             {

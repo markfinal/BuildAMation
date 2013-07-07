@@ -102,14 +102,14 @@ namespace FileUtilities
 
         #region ICommandLineSupport implementation
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 commandLineBuilder.Add("/c");
                 commandLineBuilder.Add("COPY");
             }
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()

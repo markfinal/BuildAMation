@@ -147,8 +147,8 @@ namespace VSSolutionBuilder
                 }
                 if (objectFileOptions is CommandLineProcessor.ICommandLineSupport)
                 {
-                    CommandLineProcessor.ICommandLineSupport commandLineOption = objectFileOptions as CommandLineProcessor.ICommandLineSupport;
-                    commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                    var commandLineOption = objectFileOptions as CommandLineProcessor.ICommandLineSupport;
+                    commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
                 }
                 else
                 {

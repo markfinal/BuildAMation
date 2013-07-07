@@ -55,7 +55,7 @@ namespace QMakeBuilder
             if (archiverOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = archiverOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
             }
             else
             {
