@@ -109,6 +109,14 @@ namespace Opus.Core
             return this.table.ContainsKey(key);
         }
 
+        public StringArray OptionNames
+        {
+            get
+            {
+                return new StringArray(this.table.Keys);
+            }
+        }
+
         protected Type GetValueTypeOption<Type>(string optionName) where Type : struct
         {
             return (this[optionName] as Core.ValueTypeOption<Type>).Value;

@@ -1,3 +1,5 @@
+07-Jul-2013 Added property Opus.Core.BaseOptionCollection.OptionNames to provide an array of strings for the options names.
+
 05-Jul-2013 Reworked the QMakeBuilder support, now supporting debug & release .pro files. Dynamic libraries on Windows must write their import library to the same folder as the DLL.
 
 05-Jul-2013 Opus.Core.StringArray now has a construct taking an Opus.Core.Array<string>. And added a ToString(char) overload to format the string array as a single string, separated by char.
