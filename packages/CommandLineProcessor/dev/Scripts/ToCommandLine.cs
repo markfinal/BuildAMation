@@ -13,6 +13,13 @@ namespace CommandLineProcessor
             var optionNames = optionCollection.OptionNames;
             if (null != excludedOptionNames)
             {
+                // validate
+                var unrecognized = new Opus.Core.StringArray(excludedOptionNames.Complement(optionNames));
+                if (unrecognized.Count > 0)
+                {
+                    throw new Opus.Core.Exception("Unrecognized option names to exclude:\n\t{0}", unrecognized.ToString("\n\t"));
+                }
+
                 optionNames = new Opus.Core.StringArray(optionNames.Complement(excludedOptionNames));
             }
 
