@@ -49,6 +49,37 @@ namespace QMakeBuilder
             // find static library files
             data.Libraries.AddRangeUnique(optionsInterface.Libraries.ToStringArray());
 
+            // find library paths
+            foreach (string libPath in optionsInterface.LibraryPaths)
+            {
+                if (libPath.Contains(" "))
+                {
+                    data.Libraries.Add("-L$$quote(" + libPath + ")");
+                }
+                else
+                {
+                    data.Libraries.Add("-L" + libPath);
+                }
+            }
+
+            if (optionsInterface is CommandLineProcessor.ICommandLineSupport)
+            {
+                var commandLineBuilder = new Opus.Core.StringArray();
+                var target = node.Target;
+                var commandLineOption = optionsInterface as CommandLineProcessor.ICommandLineSupport;
+                var excludedOptionNames = new Opus.Core.StringArray();
+                excludedOptionNames.Add("OutputType");
+                excludedOptionNames.Add("LibraryPaths");
+                excludedOptionNames.Add("GenerateMapFile"); // TODO: better way of extracting the map file?
+                excludedOptionNames.Add("DebugSymbols"); // TODO: better way of extracting the PDB file?
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
+                data.LinkFlags.AddRangeUnique(commandLineBuilder);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Linker options does not support command line translation");
+            }
+
             success = true;
             return data;
         }

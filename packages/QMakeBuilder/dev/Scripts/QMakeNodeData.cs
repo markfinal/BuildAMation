@@ -32,6 +32,7 @@ namespace QMakeBuilder
             this.Headers = new Opus.Core.StringArray();
             this.IncludePaths = new Opus.Core.StringArray();
             this.Libraries = new Opus.Core.StringArray();
+            this.LinkFlags = new Opus.Core.StringArray();
             this.Merged = false;
             this.MocDir = string.Empty;
             this.ObjectsDir = string.Empty;
@@ -85,6 +86,12 @@ namespace QMakeBuilder
         }
 
         public Opus.Core.StringArray Libraries
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.StringArray LinkFlags
         {
             get;
             private set;
@@ -169,7 +176,7 @@ namespace QMakeBuilder
             newPath = newPath.Replace("\\", "/");
 
             // spaces in paths need to be quoted
-            if (newPath.Contains(" "))
+            if (newPath.Contains(" ") && !newPath.Contains("$$quote"))
             {
                 newPath = System.String.Format("$$quote({0})", newPath);
             }
@@ -648,6 +655,31 @@ namespace QMakeBuilder
             }
         }
 
+        private static void WriteLinkFlags(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteStringArray(array[0].LinkFlags, "QMAKE_LFLAGS+=", proFilePath, writer);
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.LinkFlags;
+                    }
+                    else
+                    {
+                        values.Release = data.LinkFlags;
+                    }
+                }
+
+                WriteStringArrays(values, "QMAKE_LFLAGS+=", proFilePath, writer);
+            }
+        }
+
         public void Merge(QMakeData data)
         {
             this.Merge(data, OutputType.None);
@@ -748,6 +780,7 @@ namespace QMakeBuilder
                 WriteHeaders(array, proFilePath, proWriter);
                 WriteWinRCFiles(array, proFilePath, proWriter);
                 WriteLibraries(array, proFilePath, proWriter);
+                WriteLinkFlags(array, proFilePath, proWriter);
             }
         }
     }
