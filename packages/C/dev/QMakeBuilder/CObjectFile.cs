@@ -29,6 +29,10 @@ namespace QMakeBuilder
             data.Output = QMakeData.OutputType.ObjectFile;
             data.ObjectsDir = options.OutputDirectoryPath;
             data.IncludePaths.AddRangeUnique(optionInterface.IncludePaths.ToStringArray());
+            if (optionInterface.IgnoreStandardIncludePaths)
+            {
+                data.IncludePaths.AddRangeUnique(optionInterface.SystemIncludePaths.ToStringArray());
+            }
             data.Defines.AddRangeUnique(optionInterface.Defines.ToStringArray());
 
             if (optionInterface is CommandLineProcessor.ICommandLineSupport)
@@ -40,7 +44,10 @@ namespace QMakeBuilder
                 excludedOptionNames.Add("OutputType");
                 excludedOptionNames.Add("Defines");
                 excludedOptionNames.Add("IncludePaths");
-                excludedOptionNames.Add("SystemIncludePaths");
+                if (optionInterface.IgnoreStandardIncludePaths)
+                {
+                    excludedOptionNames.Add("SystemIncludePaths");
+                }
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
                 if (optionInterface is C.ICxxCompilerOptions)
                 {
