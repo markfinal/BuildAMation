@@ -18,6 +18,9 @@
     <Opus:Package Name="Test15">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="VisualC">
+      <Opus:Version Id="11.0" />
+    </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
     <Opus:OpusAssembly Name="Opus.Core" />
