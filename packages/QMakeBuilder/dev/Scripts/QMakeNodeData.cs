@@ -41,6 +41,7 @@ namespace QMakeBuilder
             this.PriPaths = new Opus.Core.StringArray();
             this.QtModules = new Opus.Core.StringArray();
             this.Sources = new Opus.Core.StringArray();
+            this.Target = string.Empty;
             this.WinRCFiles = new Opus.Core.StringArray();
         }
 
@@ -147,6 +148,12 @@ namespace QMakeBuilder
         }
 
         public OutputType Output
+        {
+            get;
+            set;
+        }
+
+        public string Target
         {
             get;
             set;
@@ -333,6 +340,33 @@ namespace QMakeBuilder
                 }
 
                 WriteStringArrays(values, "HEADERS+=", proFilePath, writer);
+            }
+        }
+
+        private static void WriteTarget(Opus.Core.Array<QMakeData> array,
+                                        string proFilePath,
+                                        System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteString(array[0].Target, "TARGET=", null, writer);
+            }
+            else
+            {
+                var values = new Values<string>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.Target;
+                    }
+                    else
+                    {
+                        values.Release = data.Target;
+                    }
+                }
+
+                WriteString(values, "TARGET=", null, writer);
             }
         }
 
@@ -811,6 +845,10 @@ namespace QMakeBuilder
             {
                 this.Output = data.Output;
             }
+            if (this.Target.Length == 0)
+            {
+                this.Target = data.Target;
+            }
             this.WinRCFiles.AddRangeUnique(data.WinRCFiles);
 
             data.Merged = true;
@@ -842,6 +880,11 @@ namespace QMakeBuilder
             var node = array[0].OwningNode;
             string proFileDirectory = node.GetModuleBuildDirectory();
             string proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}.pro", node.ModuleName));
+            if (array[0].Target.Length > 0)
+            {
+                proFilePath = proFilePath.Replace(node.ModuleName, array[0].Target);
+                proFileDirectory = System.IO.Path.GetDirectoryName(proFilePath);
+            }
             Opus.Core.Log.MessageAll("QMake Pro File for node '{0}': '{1}'", node.UniqueModuleName, proFilePath);
             foreach (var data in array)
             {
@@ -856,6 +899,7 @@ namespace QMakeBuilder
                 WritePriPaths(array, proFilePath, proWriter);
                 WriteTemplate(array, proFilePath, proWriter);
                 WriteConfig(array, proFilePath, proWriter);
+                WriteTarget(array, proFilePath, proWriter);
                 WriteDestDir(array, proFilePath, proWriter);
                 WriteMocDir(array, proFilePath, proWriter);
                 WriteObjectsDir(array, proFilePath, proWriter);

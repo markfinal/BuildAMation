@@ -33,6 +33,7 @@ namespace QMakeBuilder
                 }
             }
 
+            data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.Application;
             data.DestDir = options.OutputDirectoryPath;
 

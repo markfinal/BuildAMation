@@ -33,6 +33,7 @@ namespace QMakeBuilder
                 }
             }
 
+            data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.DynamicLibrary;
             data.DestDir = options.OutputDirectoryPath;
 

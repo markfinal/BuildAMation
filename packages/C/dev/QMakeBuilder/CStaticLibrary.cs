@@ -22,6 +22,7 @@ namespace QMakeBuilder
                 }
             }
 
+            data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.StaticLibrary;
             data.DestDir = options.OutputDirectoryPath;
 
