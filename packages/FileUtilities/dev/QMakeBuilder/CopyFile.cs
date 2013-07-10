@@ -9,8 +9,43 @@ namespace QMakeBuilder
     {
         public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
         {
+            var options = moduleToBuild.Options;
+            var node = moduleToBuild.OwningNode;
+            var target = node.Target;
+
+            var tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFileTool));
+            var toolExecutablePath = tool.Executable((Opus.Core.BaseTarget)target);
+
+            var commandLineBuilder = new Opus.Core.StringArray();
+            if (options is CommandLineProcessor.ICommandLineSupport)
+            {
+                var commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Linker options does not support command line translation");
+            }
+            var copiedFilePath = options.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+            var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
+
+            var data = new QMakeData(node);
+
+            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+
+            System.Text.StringBuilder postLinkCommand = new System.Text.StringBuilder();
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                postLinkCommand.AppendFormat("{0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), sourceFilePath, destinationDirectory);
+            }
+            else
+            {
+                postLinkCommand.AppendFormat("{0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), sourceFilePath, destinationDirectory);
+            }
+            data.PostLink.Add(postLinkCommand.ToString());
+
             success = true;
-            return null;
+            return data;
         }
     }
 
