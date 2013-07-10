@@ -27,7 +27,6 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
-            string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
 
             Opus.Core.Target target = node.Target;
 
