@@ -37,6 +37,7 @@ namespace QMakeBuilder
             this.MocDir = string.Empty;
             this.ObjectsDir = string.Empty;
             this.Output = OutputType.Undefined;
+            this.PostLink = new Opus.Core.StringArray();
             this.PriPaths = new Opus.Core.StringArray();
             this.QtModules = new Opus.Core.StringArray();
             this.Sources = new Opus.Core.StringArray();
@@ -121,6 +122,12 @@ namespace QMakeBuilder
             private set;
         }
 
+        public Opus.Core.StringArray PostLink
+        {
+            get;
+            private set;
+        }
+
         public Opus.Core.StringArray PriPaths
         {
             get;
@@ -169,11 +176,19 @@ namespace QMakeBuilder
 
         private static string FormatPath(string path, string proFilePath)
         {
+            return FormatPath(path, proFilePath, false);
+        }
+
+        private static string FormatPath(string path, string proFilePath, bool verbose)
+        {
             // make the path relative to the .pro
             var newPath = (null != proFilePath) ? Opus.Core.RelativePathUtilities.GetPath(path, proFilePath) : path;
 
-            // QMake warning: unescaped backslashes are deprecated
-            newPath = newPath.Replace("\\", "/");
+            if (!verbose)
+            {
+                // QMake warning: unescaped backslashes are deprecated
+                newPath = newPath.Replace("\\", "/");
+            }
 
             // spaces in paths need to be quoted
             if (newPath.Contains(" ") && !newPath.Contains("$$quote"))
@@ -216,7 +231,7 @@ namespace QMakeBuilder
                     break;
 
                 default:
-                    throw new Opus.Core.Exception("Should not be writing out .pro files for outputs of type '{0}'", array[0].Output.ToString());
+                    throw new Opus.Core.Exception("Should not be writing out .pro files for outputs of type '{0}' : {1}", array[0].Output.ToString(), proFilePath);
             }
         }
 
@@ -504,6 +519,11 @@ namespace QMakeBuilder
 
         private static void WriteString(string value, string format, string proFilePath, System.IO.StreamWriter writer)
         {
+            WriteString(value, format, proFilePath, false, writer);
+        }
+
+        private static void WriteString(string value, string format, string proFilePath, bool verbose, System.IO.StreamWriter writer)
+        {
             if (0 == value.Length)
             {
                 return;
@@ -512,12 +532,23 @@ namespace QMakeBuilder
             {
                 format += "{0}";
             }
-            writer.WriteLine(format, FormatPath(value, proFilePath));
+            writer.WriteLine(format, FormatPath(value, proFilePath, verbose));
         }
 
         private static void WriteStringArray(Opus.Core.StringArray stringArray,
                                              string format,
                                              string proFilePath,
+                                             System.IO.StreamWriter writer)
+        {
+            WriteStringArray(stringArray, format, proFilePath, false, true, false, writer);
+        }
+
+        private static void WriteStringArray(Opus.Core.StringArray stringArray,
+                                             string format,
+                                             string proFilePath,
+                                             bool verbose,
+                                             bool useContinuation,
+                                             bool escaped,
                                              System.IO.StreamWriter writer)
         {
             if (0 == stringArray.Count)
@@ -531,10 +562,29 @@ namespace QMakeBuilder
             else
             {
                 System.Text.StringBuilder builder = new System.Text.StringBuilder();
-                builder.Append(format);
-                foreach (string value in stringArray)
+                if (useContinuation)
                 {
-                    builder.AppendFormat("\\\n\t{0}", FormatPath(value, proFilePath));
+                    builder.Append(format);
+                    foreach (string value in stringArray)
+                    {
+                        if (escaped)
+                        {
+                            builder.Append(@"$$escape_expand(\n\t)");
+                        }
+                        builder.AppendFormat("\\\n\t{0}", FormatPath(value, proFilePath, verbose));
+                    }
+                }
+                else
+                {
+                    foreach (string value in stringArray)
+                    {
+                        builder.AppendFormat("{0}{1}", format, FormatPath(value, proFilePath, verbose));
+                        if (escaped)
+                        {
+                            builder.Append(@"$$escape_expand(\n\t)");
+                        }
+                        builder.Append("\n");
+                    }
                 }
                 writer.WriteLine(builder.ToString());
             }
@@ -557,20 +607,31 @@ namespace QMakeBuilder
 
         private static void WriteStringArrays(Values<Opus.Core.StringArray> values, string format, string proFilePath, System.IO.StreamWriter writer)
         {
+            WriteStringArrays(values, format, proFilePath, false, true, false, writer);
+        }
+
+        private static void WriteStringArrays(Values<Opus.Core.StringArray> values,
+                                              string format,
+                                              string proFilePath,
+                                              bool verbose,
+                                              bool useContinuation,
+                                              bool escaped,
+                                              System.IO.StreamWriter writer)
+        {
             var intersect = new Opus.Core.StringArray(values.Debug.Intersect(values.Release));
-            WriteStringArray(intersect, format, proFilePath, writer);
+            WriteStringArray(intersect, format, proFilePath, verbose, useContinuation, escaped, writer);
 
             // see the following for an explanation of this syntax
             // http://qt-project.org/faq/answer/what_does_the_syntax_configdebugdebugrelease_mean_what_does_the_1st_argumen
             if (intersect.Count != values.Debug.Count)
             {
                 var debugOnly = new Opus.Core.StringArray(values.Debug.Complement(intersect));
-                WriteStringArray(debugOnly, "CONFIG(debug,debug|release):" + format, proFilePath, writer);
+                WriteStringArray(debugOnly, "CONFIG(debug,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
             if (intersect.Count != values.Release.Count)
             {
                 var releaseOnly = new Opus.Core.StringArray(values.Release.Complement(intersect));
-                WriteStringArray(releaseOnly, "CONFIG(release,debug|release):" + format, proFilePath, writer);
+                WriteStringArray(releaseOnly, "CONFIG(release,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
         }
 
@@ -680,6 +741,31 @@ namespace QMakeBuilder
             }
         }
 
+        private static void WritePostLinkCommands(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteStringArray(array[0].PostLink, "QMAKE_POST_LINK+=", proFilePath, true, false, true, writer);
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.PostLink;
+                    }
+                    else
+                    {
+                        values.Release = data.PostLink;
+                    }
+                }
+
+                WriteStringArrays(values, "QMAKE_POST_LINK+=", proFilePath, true, false, true, writer);
+            }
+        }
+
         public void Merge(QMakeData data)
         {
             this.Merge(data, OutputType.None);
@@ -717,6 +803,7 @@ namespace QMakeBuilder
             {
                 this.ObjectsDir = data.ObjectsDir;
             }
+            this.PostLink.AddRangeUnique(data.PostLink);
             this.PriPaths.AddRangeUnique(data.PriPaths);
             this.QtModules.AddRangeUnique(data.QtModules);
             this.Sources.AddRangeUnique(data.Sources);
@@ -781,7 +868,15 @@ namespace QMakeBuilder
                 WriteWinRCFiles(array, proFilePath, proWriter);
                 WriteLibraries(array, proFilePath, proWriter);
                 WriteLinkFlags(array, proFilePath, proWriter);
+                WritePostLinkCommands(array, proFilePath, proWriter);
             }
+        }
+
+        public override string ToString()
+        {
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            builder.AppendFormat("QMakeData: Type {0} node '{1}'", this.Output, this.OwningNode.UniqueModuleName);
+            return builder.ToString();
         }
     }
 
