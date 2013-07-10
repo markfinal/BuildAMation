@@ -18,7 +18,8 @@ namespace QMakeBuilder
             MocFile        = (1 << 3),
             StaticLibrary  = (1 << 4),
             DynamicLibrary = (1 << 5),
-            Application    = (1 << 6)
+            Application    = (1 << 6),
+            HeaderLibrary  = (1 << 7)
         }
 
         public QMakeData(Opus.Core.DependencyNode node)
@@ -235,6 +236,10 @@ namespace QMakeBuilder
                 case OutputType.ObjectFile:
                     // special case - a static library which has the least side-effects
                     writer.WriteLine("TEMPLATE = lib");
+                    break;
+
+                case OutputType.HeaderLibrary:
+                    writer.WriteLine("TEMPLATE = subdirs");
                     break;
 
                 default:
@@ -923,123 +928,4 @@ namespace QMakeBuilder
             return builder.ToString();
         }
     }
-
-    // old
-#if true
-    public class NodeData
-    {
-        private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-        private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> SingleValueDictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-
-        public NodeData()
-        {
-            this.HasPostLinks = false;
-        }
-
-        public string Configuration
-        {
-            get;
-            set;
-        }
-
-        public string ProFilePathName
-        {
-            get;
-            set;
-        }
-
-        public bool HasPostLinks
-        {
-            get;
-            set;
-        }
-
-        public bool Contains(string VariableName)
-        {
-            bool contains = this.Dictionary.ContainsKey(VariableName) || this.SingleValueDictionary.ContainsKey(VariableName);
-            return contains;
-        }
-
-        public Opus.Core.StringArray this[string VariableName]
-        {
-            get
-            {
-                if (!this.Dictionary.ContainsKey(VariableName) && !this.SingleValueDictionary.ContainsKey(VariableName))
-                {
-                    throw new Opus.Core.Exception("Unable to locate variable '{0}'", VariableName);
-                }
-
-                if (this.Dictionary.ContainsKey(VariableName))
-                {
-                    return this.Dictionary[VariableName];
-                }
-
-                return this.SingleValueDictionary[VariableName];
-            }
-        }
-
-        public void AddVariable(string VariableName, string Value)
-        {
-            Dictionary.Add(VariableName, new Opus.Core.StringArray(Value));
-        }
-
-        public void AddUniqueVariable(string VariableName, Opus.Core.StringArray Value)
-        {
-            try
-            {
-                SingleValueDictionary.Add(VariableName, Value);
-            }
-            catch (System.ArgumentException)
-            {
-                Opus.Core.Log.MessageAll("INVESTIGATE: Variable '{0}' already exists in dictionary; existing value '{1}', incoming value = '{2}'", VariableName, SingleValueDictionary[VariableName], Value);
-            }
-        }
-
-        public void Merge(NodeData data)
-        {
-            if (null == data)
-            {
-                return;
-            }
-
-            if (this.Configuration != data.Configuration)
-            {
-                throw new Opus.Core.Exception("Cannot merge data from different configurations");
-            }
-
-            foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray> entry in data.Dictionary)
-            {
-                if (this.Dictionary.ContainsKey(entry.Key))
-                {
-                    this.Dictionary[entry.Key].AddRange(entry.Value);
-                }
-                else
-                {
-                    this.Dictionary.Add(entry.Key, entry.Value);
-                }
-            }
-
-            foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray> entry in data.SingleValueDictionary)
-            {
-                if (this.SingleValueDictionary.ContainsKey(entry.Key))
-                {
-                    //throw new Opus.Core.Exception("Repeated entry for '{0}':\nwas '{1}'\nwanted '{2}'", entry.Key, this.SingleValueDictionary[entry.Key], entry.Value);
-
-                    // TODO: this isn't particularly great, as there may be conflicting arguments
-                    foreach (string item in entry.Value)
-                    {
-                        if (!this.SingleValueDictionary[entry.Key].Contains(item))
-                        {
-                            this.SingleValueDictionary[entry.Key].Add(item);
-                        }
-                    }
-                }
-                else
-                {
-                    this.SingleValueDictionary.Add(entry.Key, entry.Value);
-                }
-            }
-        }
-    }
-#endif // old
 }

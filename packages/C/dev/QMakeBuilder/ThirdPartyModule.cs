@@ -5,20 +5,10 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder2
-    {
-        [Opus.Core.EmptyBuildFunction]
-        public object Build(C.ThirdPartyModule moduleToBuild, out bool success)
-        {
-            success = true;
-            return null;
-        }
-    }
-
     public sealed partial class QMakeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(C.ThirdPartyModule thirdPartyModule, out bool success)
+        public object Build(C.ThirdPartyModule moduleToBuild, out bool success)
         {
             success = true;
             return null;

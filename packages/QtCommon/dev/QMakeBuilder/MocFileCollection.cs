@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder2
+    public sealed partial class QMakeBuilder
     {
         public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
         {
@@ -22,27 +22,6 @@ namespace QMakeBuilder
 
             success = true;
             return data;
-        }
-    }
-
-    public sealed partial class QMakeBuilder
-    {
-        public object Build(QtCommon.MocFileCollection mocFileCollection, out bool success)
-        {
-            Opus.Core.BaseModule mocFileCollectionModule = mocFileCollection as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = mocFileCollectionModule.OwningNode;
-
-            NodeData nodeData = new NodeData();
-            nodeData.Configuration = GetQtConfiguration(node.Target);
-
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
-            {
-                NodeData childData = childNode.Data as NodeData;
-                nodeData.Merge(childData);
-            }
-
-            success = true;
-            return nodeData;
         }
     }
 }

@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder2
+    public sealed partial class QMakeBuilder
     {
         public object Build(QtCommon.ThirdPartyModule moduleToBuild, out bool success)
         {

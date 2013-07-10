@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder2
+    public sealed partial class QMakeBuilder
     {
         public object Build(FileUtilities.CopyFileCollection moduleToBuild, out bool success)
         {
@@ -33,17 +33,6 @@ namespace QMakeBuilder
 
             success = true;
             return data;
-        }
-    }
-
-    public sealed partial class QMakeBuilder
-    {
-        [Opus.Core.EmptyBuildFunction]
-        public object Build(FileUtilities.CopyFileCollection module, out bool success)
-        {
-            Opus.Core.Log.MessageAll("TODO: Stub function for QMake support for {0}", module);
-            success = false;
-            return null;
         }
     }
 }
