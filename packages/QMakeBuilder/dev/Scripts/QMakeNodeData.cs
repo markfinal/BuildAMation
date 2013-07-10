@@ -878,7 +878,7 @@ namespace QMakeBuilder
             }
             if (array[0].Merged)
             {
-                Opus.Core.Log.MessageAll("Not writing a pro file as qmake data is merged");
+                Opus.Core.Log.DebugMessage("Not writing a pro file as qmake data is merged");
                 return;
             }
 
@@ -890,7 +890,7 @@ namespace QMakeBuilder
                 proFilePath = proFilePath.Replace(node.ModuleName, array[0].Target);
                 proFileDirectory = System.IO.Path.GetDirectoryName(proFilePath);
             }
-            Opus.Core.Log.MessageAll("QMake Pro File for node '{0}': '{1}'", node.UniqueModuleName, proFilePath);
+            Opus.Core.Log.DebugMessage("QMake Pro File for node '{0}': '{1}'", node.UniqueModuleName, proFilePath);
             foreach (var data in array)
             {
                 data.ProFilePath = proFilePath;

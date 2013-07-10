@@ -9,7 +9,7 @@ namespace QMakeBuilder
     {
         public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
         {
-            Opus.Core.Log.MessageAll("PostExecute for QMakeBuilder");
+            Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
             // find all nodes with the same unique name
             System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>> similarNodes = new System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>>();
@@ -17,7 +17,7 @@ namespace QMakeBuilder
             {
                 if (null == node.Data)
                 {
-                    Opus.Core.Log.MessageAll("*** Null data for node {0}", node.UniqueModuleName);
+                    Opus.Core.Log.DebugMessage("*** Null data for node {0}", node.UniqueModuleName);
                     continue;
                 }
 
@@ -33,7 +33,7 @@ namespace QMakeBuilder
 
             foreach (var keyPair in similarNodes)
             {
-                Opus.Core.Log.MessageAll("{0} : {1} nodes", keyPair.Key, keyPair.Value.Count);
+                Opus.Core.Log.DebugMessage("{0} : {1} nodes", keyPair.Key, keyPair.Value.Count);
                 QMakeData.Write(keyPair.Value);
             }
 
@@ -65,7 +65,7 @@ namespace QMakeBuilder
                 }
             }
 
-            Opus.Core.Log.MessageAll("Written .pro file '{0}'", proFilePath);
+            Opus.Core.Log.MessageAll("Written QMake .pro file '{0}'", proFilePath);
         }
     }
 }
