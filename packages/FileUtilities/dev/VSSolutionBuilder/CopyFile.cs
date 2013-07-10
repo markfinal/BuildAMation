@@ -7,9 +7,77 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(FileUtilities.CopyFile module, out bool success)
+        private void PostBuildEventCopyFiles(Opus.Core.IModule moduleForPostEvents,
+                                             string destinationDirectory,
+                                             string sourceFile)
         {
-            Opus.Core.Log.MessageAll("TODO: Stub function for VSSolution support for {0}", module);
+            var sourceModuleNode = (moduleForPostEvents as Opus.Core.BaseModule).OwningNode;
+            var nodeProjectData = sourceModuleNode.Data as IProject;
+
+            var configCollection = nodeProjectData.Configurations;
+            var configurationName = configCollection.GetConfigurationNameForTarget(sourceModuleNode.Target);
+            var configuration = configCollection[configurationName];
+
+            var toolName = "VCPostBuildEventTool";
+            var vcPostBuildEventTool = configuration.GetTool(toolName);
+            if (null == vcPostBuildEventTool)
+            {
+                vcPostBuildEventTool = new ProjectTool(toolName);
+                configuration.AddToolIfMissing(vcPostBuildEventTool);
+            }
+
+            var commandLine = new System.Text.StringBuilder();
+            commandLine.AppendFormat("IF NOT EXIST \"{0}\" MKDIR \"{0}\"\n\r", destinationDirectory);
+            commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"\n\r", sourceFile, destinationDirectory);
+
+            {
+                string attributeName = null;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == nodeProjectData.VSTarget)
+                {
+                    attributeName = "CommandLine";
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == nodeProjectData.VSTarget)
+                {
+                    attributeName = "Command";
+                }
+
+                lock (vcPostBuildEventTool)
+                {
+                    if (vcPostBuildEventTool.HasAttribute(attributeName))
+                    {
+                        var currentValue = vcPostBuildEventTool[attributeName];
+                        currentValue += commandLine.ToString();
+                        vcPostBuildEventTool[attributeName] = currentValue;
+                    }
+                    else
+                    {
+                        vcPostBuildEventTool.AddAttribute(attributeName, commandLine.ToString());
+                    }
+                }
+            }
+        }
+
+        public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
+        {
+            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var baseOptions = moduleToBuild.Options;
+            var copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+            var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
+
+            var besideModuleType = moduleToBuild.BesideModuleType;
+            if (null == besideModuleType)
+            {
+                Opus.Core.Log.MessageAll("VSSolution support for copying to arbitrary locations is unavailable");
+                success = true;
+                return null;
+            }
+
+            var node = moduleToBuild.OwningNode;
+            var target = node.Target;
+            var besideModule = Opus.Core.ModuleUtilities.GetModule(besideModuleType, (Opus.Core.BaseTarget)target);
+
+            PostBuildEventCopyFiles(besideModule, destinationDirectory, sourceFilePath);
+
             success = true;
             return null;
         }
