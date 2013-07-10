@@ -591,7 +591,7 @@ namespace QMakeBuilder
             }
             else if (1 == stringArray.Count)
             {
-                WriteString(stringArray[0], format, proFilePath, writer);
+                WriteString(stringArray[0], format, proFilePath, verbose, writer);
             }
             else
             {
