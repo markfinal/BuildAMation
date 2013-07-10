@@ -56,7 +56,7 @@ namespace QtCommon
                 }
                 else
                 {
-                    options.Libraries.Add(System.String.Format("{0}.lib", moduleName));
+                    options.Libraries.Add(System.String.Format("{0}4.lib", moduleName));
                 }
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
