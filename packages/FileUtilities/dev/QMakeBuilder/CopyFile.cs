@@ -30,6 +30,19 @@ namespace QMakeBuilder
             var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
 
             var data = new QMakeData(node);
+            if (null == node.Parent)
+            {
+                var besideModuleType = moduleToBuild.BesideModuleType;
+                if (null == besideModuleType)
+                {
+                    Opus.Core.Log.MessageAll("QMake support for copying to arbitrary locations is unavailable");
+                    success = true;
+                    return null;
+                }
+
+                var besideModuleNode = Opus.Core.ModuleUtilities.GetNode(besideModuleType, (Opus.Core.BaseTarget)target);
+                data.Merge(besideModuleNode.Data as QMakeData);
+            }
 
             var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
 
