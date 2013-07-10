@@ -110,55 +110,55 @@ def TestOptionSetup(optParser):
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of an Opus command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                 osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test4-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test5-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test6-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test7-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test8-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test9-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test10-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test11-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test12-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test15-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["gcc"],"MakeFile":["gcc"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
