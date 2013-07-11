@@ -8,7 +8,7 @@ namespace VSSolutionBuilder
     public sealed partial class VSSolutionBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(QtCommon.MocFileCollection mocFileCollection, out bool success)
+        public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
         {
             success = true;
             return null;

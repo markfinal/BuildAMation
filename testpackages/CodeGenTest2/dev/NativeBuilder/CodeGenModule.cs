@@ -2,9 +2,9 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(CodeGenTest2.CodeGenModule codeGenModule, out bool success)
+        public object Build(CodeGenTest2.CodeGenModule moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule codeGenModuleModule = codeGenModule as Opus.Core.BaseModule;
+            Opus.Core.BaseModule codeGenModuleModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;

@@ -7,9 +7,9 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.StaticLibrary staticLibrary, out bool success)
+        public object Build(C.StaticLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule staticLibraryModule = staticLibrary as Opus.Core.BaseModule;
+            Opus.Core.BaseModule staticLibraryModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
@@ -39,7 +39,7 @@ namespace VSSolutionBuilder
 
             // solution folder
             {
-                var groups = staticLibrary.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
                 if (groups.Length > 0)
                 {
                     projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
@@ -92,13 +92,13 @@ namespace VSSolutionBuilder
             System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
                                                                System.Reflection.BindingFlags.Public |
                                                                System.Reflection.BindingFlags.NonPublic;
-            System.Reflection.FieldInfo[] fields = staticLibrary.GetType().GetFields(fieldBindingFlags);
+            System.Reflection.FieldInfo[] fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
             foreach (System.Reflection.FieldInfo field in fields)
             {
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    Opus.Core.FileCollection headerFileCollection = field.GetValue(staticLibrary) as Opus.Core.FileCollection;
+                    Opus.Core.FileCollection headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
                         ICProject cProject = projectData as ICProject;

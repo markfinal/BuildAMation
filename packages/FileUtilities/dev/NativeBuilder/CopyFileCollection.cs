@@ -8,7 +8,7 @@ namespace NativeBuilder
     public sealed partial class NativeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(FileUtilities.CopyFileCollection copyFileCollection, out bool success)
+        public object Build(FileUtilities.CopyFileCollection moduleToBuild, out bool success)
         {
             success = true;
             return null;

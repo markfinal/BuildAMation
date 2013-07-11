@@ -7,11 +7,11 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(XmlUtilities.XmlModule xmlModule, out bool success)
+        public object Build(XmlUtilities.XmlModule moduleToBuild, out bool success)
         {
-            Opus.Core.DependencyNode node = xmlModule.OwningNode;
+            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
-            string xmlPath = xmlModule.Options.OutputPaths[XmlUtilities.OutputFileFlags.XmlFile];
+            string xmlPath = moduleToBuild.Options.OutputPaths[XmlUtilities.OutputFileFlags.XmlFile];
             if (null == xmlPath)
             {
                 throw new Opus.Core.Exception("XML output path was not set");
@@ -45,7 +45,7 @@ namespace NativeBuilder
 
             using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(xmlPath, settings))
             {
-                xmlModule.Document.WriteTo(writer);
+                moduleToBuild.Document.WriteTo(writer);
             }
 
             success = true;

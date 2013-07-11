@@ -7,13 +7,13 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.ObjectFile objectFile, out bool success)
+        public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule objectFileModule = objectFile as Opus.Core.BaseModule;
+            Opus.Core.BaseModule objectFileModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             string moduleName = node.ModuleName;
-            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
             Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 
@@ -110,7 +110,7 @@ namespace VSSolutionBuilder
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;
             }
 
-            string sourceFilePath = objectFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
 
             ProjectFile sourceFile;
             lock (projectData.SourceFiles)

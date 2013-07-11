@@ -7,15 +7,15 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.Win32Resource resourceFile, out bool success)
+        public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            string resourceFilePath = resourceFile.ResourceFile.AbsolutePath;
+            string resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
-            Opus.Core.BaseModule resourceFileModule = resourceFile as Opus.Core.BaseModule;
+            Opus.Core.BaseModule resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
 
             C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;

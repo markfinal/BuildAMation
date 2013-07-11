@@ -7,18 +7,18 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(FileUtilities.CopyFile copyFile, out bool success)
+        public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
         {
-            string sourceFilePath = copyFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
+            Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
             string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
 
-            Opus.Core.DependencyNode node = copyFile.OwningNode;
+            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             // dependency checking
             {

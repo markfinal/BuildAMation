@@ -7,9 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
+        public object Build(C.DynamicLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule dynamicLibraryModule = dynamicLibrary as Opus.Core.BaseModule;
+            Opus.Core.BaseModule dynamicLibraryModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
             Opus.Core.Target target = node.Target;
 

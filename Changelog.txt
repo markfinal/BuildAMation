@@ -1,3 +1,5 @@
+11-Jul-2013 Standardized all module Build() functions, to call the first argument (the instance of the module) 'moduleToBuild', so that it can be easily sought out.
+
 11-Jul-2013 Replaced the unregulated PreExecute and PostExecute methods in Builder instances, with Opus.Core.IBuilderPreExecute and Opus.Core.IBuildPostExecute interfaces that need to be implemented should the builder require them.
 
 11-Jul-2013 The build root directory is now created just prior to compiling the package assembly, rather than during argument parsing, which was too early.

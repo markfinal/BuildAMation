@@ -7,9 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(FileUtilities.CopyFileCollection copyFileCollection, out bool success)
+        public object Build(FileUtilities.CopyFileCollection moduleToBuild, out bool success)
         {
-            Opus.Core.DependencyNode node = copyFileCollection.OwningNode;
+            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();
             foreach (Opus.Core.DependencyNode childNode in node.Children)

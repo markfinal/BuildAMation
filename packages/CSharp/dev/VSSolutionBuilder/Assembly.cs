@@ -7,9 +7,9 @@ namespace VSSolutionBuilder
 {
     public partial class VSSolutionBuilder
     {
-        public object Build(CSharp.Assembly assembly, out System.Boolean success)
+        public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule assemblyModule = assembly as Opus.Core.BaseModule;
+            Opus.Core.BaseModule assemblyModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
             CSharp.OptionCollection options = assemblyModule.Options as CSharp.OptionCollection;
@@ -70,7 +70,7 @@ namespace VSSolutionBuilder
 
             // solution folder
             {
-                var groups = assembly.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
                 if (groups.Length > 0)
                 {
                     projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
@@ -121,7 +121,7 @@ namespace VSSolutionBuilder
                 }
             }
 
-            var fields = assembly.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+            var fields = moduleToBuild.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
             foreach (var field in fields)
             {
                 // C# files
@@ -129,7 +129,7 @@ namespace VSSolutionBuilder
                     var sourceFileAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
-                        var sourceField = field.GetValue(assembly);
+                        var sourceField = field.GetValue(moduleToBuild);
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
@@ -198,7 +198,7 @@ namespace VSSolutionBuilder
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.ApplicationDefinitionAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
-                        var sourceField = field.GetValue(assembly);
+                        var sourceField = field.GetValue(moduleToBuild);
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
@@ -264,7 +264,7 @@ namespace VSSolutionBuilder
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PagesAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
-                        var sourceField = field.GetValue(assembly);
+                        var sourceField = field.GetValue(moduleToBuild);
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;

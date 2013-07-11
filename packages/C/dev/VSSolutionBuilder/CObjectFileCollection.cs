@@ -7,9 +7,9 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.ObjectFileCollectionBase objectFileCollection, out bool success)
+        public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule objectFileCollectionModule = objectFileCollection as Opus.Core.BaseModule;
+            Opus.Core.BaseModule objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
             if (null == node.Parent || (node.Parent.Module.GetType().BaseType.BaseType == typeof(C.ObjectFileCollection) && null == node.Parent.Parent))
             {

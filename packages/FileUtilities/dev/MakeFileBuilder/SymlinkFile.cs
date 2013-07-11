@@ -7,9 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(FileUtilities.SymlinkFile symlinkFile, out bool success)
+        public object Build(FileUtilities.SymlinkFile moduleToBuild, out bool success)
         {
-            Opus.Core.DependencyNode node = symlinkFile.OwningNode;
+            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
             System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
@@ -26,7 +26,7 @@ namespace MakeFileBuilder
                 }
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = symlinkFile.Options;
+            Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
             string symlinkedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink];
 
             Opus.Core.Target target = node.Target;
@@ -73,7 +73,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string sourceFilePath = symlinkFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
             MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
                                                  FileUtilities.OutputFileFlags.Symlink,
                                                  node.UniqueModuleName,

@@ -7,9 +7,9 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.ObjectFile objectFile, out bool success)
+        public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            string sourceFilePath = objectFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
@@ -19,7 +19,7 @@ namespace NativeBuilder
             DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(sourceFilePath);
 #endif
 
-            Opus.Core.BaseModule objectFileModule = objectFile as Opus.Core.BaseModule;
+            Opus.Core.BaseModule objectFileModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
             Opus.Core.DependencyNode node = objectFileModule.OwningNode;
 
@@ -97,7 +97,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
             System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
             Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
 

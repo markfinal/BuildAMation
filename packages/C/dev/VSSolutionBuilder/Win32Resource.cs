@@ -7,9 +7,9 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.Win32Resource resourceFile, out bool success)
+        public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule resourceFileModule = resourceFile as Opus.Core.BaseModule;
+            Opus.Core.BaseModule resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = resourceFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
 
@@ -95,7 +95,7 @@ namespace VSSolutionBuilder
 #endif
             }
 
-            string resourceFilePath = resourceFile.ResourceFile.AbsolutePath;
+            string resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);

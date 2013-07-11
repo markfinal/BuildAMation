@@ -7,16 +7,16 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(FileUtilities.SymlinkDirectory symlinkDirectory, out bool success)
+        public object Build(FileUtilities.SymlinkDirectory moduleToBuild, out bool success)
         {
-            string sourceFilePath = symlinkDirectory.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
             if (!System.IO.Directory.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source directory '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = symlinkDirectory.Options;
-            Opus.Core.DependencyNode node = symlinkDirectory.OwningNode;
+            Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
+            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             // dependency checking
             if (DirectoryUpToDate(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink], sourceFilePath))

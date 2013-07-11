@@ -7,9 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(FileUtilities.CopyFile copyFile, out bool success)
+        public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
         {
-            Opus.Core.DependencyNode node = copyFile.OwningNode;
+            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
             System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
@@ -26,7 +26,7 @@ namespace MakeFileBuilder
                 }
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = copyFile.Options;
+            Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
 
             Opus.Core.Target target = node.Target;
 
@@ -66,7 +66,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string sourceFilePath = copyFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
             MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
                                                  FileUtilities.OutputFileFlags.CopiedFile,
                                                  node.UniqueModuleName,

@@ -2,9 +2,9 @@ namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
     {
-        public object Build(CodeGenTest.CodeGenModule codeGenModule, out System.Boolean success)
+        public object Build(CodeGenTest.CodeGenModule moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule codeGenModuleModule = codeGenModule as Opus.Core.BaseModule;
+            Opus.Core.BaseModule codeGenModuleModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;

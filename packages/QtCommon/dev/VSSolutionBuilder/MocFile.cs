@@ -7,9 +7,9 @@ namespace VSSolutionBuilder
 {
     public partial class VSSolutionBuilder
     {
-        public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
+        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule mocFileModule = mocFile as Opus.Core.BaseModule;
+            Opus.Core.BaseModule mocFileModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
@@ -87,7 +87,7 @@ namespace VSSolutionBuilder
                 }
             }
 
-            string sourceFilePath = mocFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
 
             ProjectFile sourceFile;
             ICProject cProject = projectData as ICProject;
