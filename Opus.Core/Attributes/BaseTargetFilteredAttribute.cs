@@ -42,8 +42,8 @@ namespace Opus.Core
             }
             else
             {
-                Opus.Core.StringArray toolsetTypes = new StringArray();
-                foreach (System.Type type in this.ToolsetTypes)
+                var toolsetTypes = new StringArray();
+                foreach (var type in this.ToolsetTypes)
                 {
                     toolsetTypes.Add(type.ToString());
                 }

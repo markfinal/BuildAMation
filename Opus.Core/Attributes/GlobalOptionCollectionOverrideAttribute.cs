@@ -11,7 +11,7 @@ namespace Opus.Core
         public GlobalOptionCollectionOverrideAttribute(System.Type instanceType)
         {
             var instance = System.Activator.CreateInstance(instanceType);
-            IGlobalOptionCollectionOverride overrideInterface = instance as IGlobalOptionCollectionOverride;
+            var overrideInterface = instance as IGlobalOptionCollectionOverride;
             if (null == overrideInterface)
             {
                 throw new Exception("'{0}' does not implement the Opus.Core.IGlobalOptionCollectionOverride interface", instance.ToString());

@@ -20,15 +20,15 @@ namespace Opus.Core
 
         public AssignToolsetProviderAttribute(System.Type providerClass, string methodName)
         {
-            System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Static |
-                                                   System.Reflection.BindingFlags.Public |
-                                                   System.Reflection.BindingFlags.NonPublic;
-            System.Reflection.MethodInfo method = providerClass.GetMethod(methodName, flags);
+            var flags = System.Reflection.BindingFlags.Static |
+                        System.Reflection.BindingFlags.Public |
+                        System.Reflection.BindingFlags.NonPublic;
+            var method = providerClass.GetMethod(methodName, flags);
             if (null == method)
             {
                 throw new Exception("Unable to locate a static method called '{0}' in class '{1}'", methodName, providerClass.ToString());
             }
-            System.Delegate dlg = System.Delegate.CreateDelegate(typeof(ProviderDelegate), method, false);
+            var dlg = System.Delegate.CreateDelegate(typeof(ProviderDelegate), method, false);
             if (null == dlg)
             {
                 throw new Exception("Unable to match method '{0}' in class '{1}' to the delegate 'string fn(System.Type)'", method, providerClass.ToString());
@@ -44,7 +44,7 @@ namespace Opus.Core
             }
             else
             {
-                string toolsetName = this.providerFn.Method.Invoke(null, new object[] { toolType }) as string;
+                var toolsetName = this.providerFn.Method.Invoke(null, new object[] { toolType }) as string;
                 return toolsetName;
             }
         }
