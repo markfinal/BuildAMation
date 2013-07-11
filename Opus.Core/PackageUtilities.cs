@@ -334,6 +334,11 @@ namespace Opus.Core
                 throw new Exception("Build root has not been specified");
             }
 
+            if (!System.IO.Directory.Exists(State.BuildRoot))
+            {
+                System.IO.Directory.CreateDirectory(State.BuildRoot);
+            }
+
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
@@ -563,6 +568,17 @@ namespace Opus.Core
         // special function for debugging, because you MUST compile from the source files, not source in memory
         public static bool CompileDebuggablePackageIntoAssembly()
         {
+            // validate build root
+            if (null == State.BuildRoot)
+            {
+                throw new Exception("Build root has not been specified");
+            }
+
+            if (!System.IO.Directory.Exists(State.BuildRoot))
+            {
+                System.IO.Directory.CreateDirectory(State.BuildRoot);
+            }
+
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 

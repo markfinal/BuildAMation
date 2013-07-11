@@ -41,13 +41,6 @@ namespace Opus
         public bool Execute()
         {
             Core.State.BuildRoot = this.BuildRootDirectoryName;
-
-            // the build root is refetched from the State here because if it was relative initially, the act of setting it above changes it to an absolute path
-            if (!System.IO.Directory.Exists(Core.State.BuildRoot))
-            {
-                System.IO.Directory.CreateDirectory(Core.State.BuildRoot);
-            }
-
             return true;
         }
 

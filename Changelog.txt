@@ -1,3 +1,5 @@
+11-Jul-2013 The build root directory is now created just prior to compiling the package assembly, rather than during argument parsing, which was too early.
+
 07-Jul-2013 Added an argument to CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments, that is either null, or an Opus.Core.StringArray, of names of options to NOT process. If options have been manually extracted from an OptionCollection, but a general run through of the command line arguments is needed, then this can be used to exclude those already processed.
 
 07-Jul-2013 Added property Opus.Core.BaseOptionCollection.OptionNames to provide an array of strings for the options names.
