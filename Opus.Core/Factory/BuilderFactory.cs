@@ -19,7 +19,7 @@ namespace Opus.Core
             TypeUtilities.CheckTypeImplementsInterface(builderType, typeof(IBuilder));
             TypeUtilities.CheckTypeIsNotAbstract(builderType);
 
-            IBuilder builder = System.Activator.CreateInstance(builderType) as IBuilder;
+            var builder = System.Activator.CreateInstance(builderType) as IBuilder;
             builders[builderType] = builder;
             return builder;
         }

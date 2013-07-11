@@ -19,7 +19,7 @@ namespace Opus.Core
             TypeUtilities.CheckTypeImplementsInterface(type, typeof(IToolset));
             TypeUtilities.CheckTypeIsNotAbstract(type);
 
-            IToolset created = System.Activator.CreateInstance(type) as IToolset;
+            var created = System.Activator.CreateInstance(type) as IToolset;
             map[type] = created;
             return created;
         }
