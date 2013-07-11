@@ -115,15 +115,6 @@ namespace Opus.Core
             }
         }
         
-        private void PreExecute()
-        {
-            var preExecuteMethod = this.Builder.GetType().GetMethod("PreExecute", new System.Type[] { });
-            if (null != preExecuteMethod)
-            {
-                preExecuteMethod.Invoke(this.Builder, new object[] {});
-            }
-        }
-        
         public bool Execute()
         {
             Log.Info("Build started");
@@ -134,7 +125,11 @@ namespace Opus.Core
 
             try
             {
-                this.PreExecute();
+                var preExecute = (this.Builder as IBuilderPreExecute);
+                if (null != preExecute)
+                {
+                    preExecute.PreExecute();
+                }
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
@@ -191,7 +186,11 @@ namespace Opus.Core
             {
                 try
                 {
-                    this.PostExecute();
+                    var postExecute = this.Builder as IBuilderPostExecute;
+                    if (null != postExecute)
+                    {
+                        postExecute.PostExecute(this.graph.ExecutedNodes);
+                    }
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {
@@ -333,16 +332,6 @@ namespace Opus.Core
 
             // signal complete
             allOutputComplete.Set();
-        }
-        
-        private void PostExecute()
-        {
-            var postExecuteMethod = this.Builder.GetType().GetMethod("PostExecute", new System.Type[] { typeof(DependencyNodeCollection) });
-
-            if ((this.graph.ExecutedNodes.Count > 0) && (null != postExecuteMethod))
-            {
-                postExecuteMethod.Invoke(this.Builder, new object[] { this.graph.ExecutedNodes });
-            }
         }
     }
 }

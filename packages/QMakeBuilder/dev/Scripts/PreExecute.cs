@@ -5,11 +5,13 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder
+    public sealed partial class QMakeBuilder : Opus.Core.IBuilderPreExecute
     {
-        public void PreExecute()
+        #region IBuilderPreExecute Members
+
+        void Opus.Core.IBuilderPreExecute.PreExecute()
         {
-            Opus.Core.Log.MessageAll("PreExecute for QMakeBuilder");
+            Opus.Core.Log.DebugMessage("PreExecute for QMakeBuilder");
 
             var mainPackage = Opus.Core.State.PackageInfo[0];
             string priFileName = "EmptyConfig.pri";
@@ -71,5 +73,7 @@ namespace QMakeBuilder
 
             this.EmptyConfigPriPath = priFilePath;
         }
+
+        #endregion
     }
 }

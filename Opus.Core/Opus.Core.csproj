@@ -93,6 +93,8 @@
     <Compile Include="Interfaces\IActionCommandComparison.cs" />
     <Compile Include="Interfaces\IActionWithArguments.cs" />
     <Compile Include="Interfaces\IBuilder.cs" />
+    <Compile Include="Interfaces\IBuilderPostExecute.cs" />
+    <Compile Include="Interfaces\IBuilderPreExecute.cs" />
     <Compile Include="Interfaces\IBuildScheduler.cs" />
     <Compile Include="Interfaces\IFieldAttributeProcessor.cs" />
     <Compile Include="Interfaces\IForwardDependenciesOn.cs" />

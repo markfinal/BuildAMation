@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    public sealed partial class MakeFileBuilder
+    public sealed partial class MakeFileBuilder : Opus.Core.IBuilderPostExecute
     {
         private class UniquePathCollection
         {
@@ -37,14 +37,16 @@ namespace MakeFileBuilder
             }
         }
 
-        public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
+        #region IBuilderPostExecute Members
+
+        void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
         {
             Opus.Core.Log.DebugMessage("PostExecute for MakeFiles");
 
             string targetList = null;
             UniquePathCollection environmentPaths = new UniquePathCollection(); // TODO: redundant
             System.Collections.Generic.Dictionary<string, UniquePathCollection> environment = new System.Collections.Generic.Dictionary<string, UniquePathCollection>();
-            foreach (Opus.Core.DependencyNode node in nodeCollection)
+            foreach (Opus.Core.DependencyNode node in executedNodes)
             {
                 MakeFileData data = node.Data as MakeFileData;
                 if (data != null)
@@ -127,7 +129,7 @@ namespace MakeFileBuilder
                     }
 
                     makeFileWriter.WriteLine("# include all sub-makefiles");
-                    foreach (Opus.Core.DependencyNode node in nodeCollection)
+                    foreach (Opus.Core.DependencyNode node in executedNodes)
                     {
                         MakeFileData data = node.Data as MakeFileData;
                         if (data != null)
@@ -164,6 +166,10 @@ namespace MakeFileBuilder
                     makeFileWriter.WriteLine("");
                 }
             }
+
+            Opus.Core.Log.MessageAll("Top level MakeFile written to '{0}'", this.topLevelMakeFilePath);
         }
+
+        #endregion
     }
 }

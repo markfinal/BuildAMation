@@ -5,15 +5,17 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder
+    public sealed partial class QMakeBuilder : Opus.Core.IBuilderPostExecute
     {
-        public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
+        #region IBuilderPostExecute Members
+
+        void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
         {
             Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
             // find all nodes with the same unique name
             System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>> similarNodes = new System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>>();
-            foreach (var node in nodeCollection)
+            foreach (var node in executedNodes)
             {
                 if (null == node.Data)
                 {
@@ -67,5 +69,7 @@ namespace QMakeBuilder
 
             Opus.Core.Log.MessageAll("Written QMake .pro file '{0}'", proFilePath);
         }
+
+        #endregion
     }
 }
