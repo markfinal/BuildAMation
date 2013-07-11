@@ -29,7 +29,7 @@ namespace Opus
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] definitions = arguments.Split(System.IO.Path.PathSeparator);
+            var definitions = arguments.Split(System.IO.Path.PathSeparator);
             this.DefinitionArray = new Opus.Core.StringArray(definitions);
         }
 
@@ -42,7 +42,7 @@ namespace Opus
         public bool Execute()
         {
             bool isWellDefined;
-            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
+            var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
@@ -52,14 +52,14 @@ namespace Opus
                 throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
-            Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
+            var xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isWellDefined)
             {
                 xmlFile.Read(true);
             }
 
-            bool success = false;
-            foreach (string definition in this.DefinitionArray)
+            var success = false;
+            foreach (var definition in this.DefinitionArray)
             {
                 if (!xmlFile.Definitions.Contains(definition))
                 {

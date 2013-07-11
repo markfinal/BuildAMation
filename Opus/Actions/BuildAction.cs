@@ -30,7 +30,7 @@ namespace Opus
         public bool Execute()
         {
             Core.Log.DebugMessage("Builder is {0}", Core.State.BuilderName);
-            bool compiledSuccessfully = false;
+            var compiledSuccessfully = false;
             if (Core.State.CompileWithDebugSymbols)
             {
                 compiledSuccessfully = Core.PackageUtilities.CompileDebuggablePackageIntoAssembly();
@@ -48,9 +48,9 @@ namespace Opus
             {
                 Core.PackageUtilities.LoadPackageAssembly();
 
-                Core.TimeProfile additionalArgumentProfile = new Core.TimeProfile(Core.ETimingProfiles.AdditionalArgumentProcessing);
+                var additionalArgumentProfile = new Core.TimeProfile(Core.ETimingProfiles.AdditionalArgumentProcessing);
                 additionalArgumentProfile.StartProfile();
-                bool fatal = true;
+                var fatal = true;
                 Core.PackageUtilities.ProcessLazyArguments(fatal);
                 Core.PackageUtilities.HandleUnprocessedArguments(fatal);
                 Core.State.ShowTimingStatistics = true;

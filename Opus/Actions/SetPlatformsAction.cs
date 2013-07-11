@@ -40,11 +40,11 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.Array<Core.EPlatform> buildPlatforms = new Core.Array<Core.EPlatform>();
+            var buildPlatforms = new Core.Array<Core.EPlatform>();
 
-            foreach (string platform in this.Platforms)
+            foreach (var platform in this.Platforms)
             {
-                Core.EPlatform p = Core.Platform.FromString(platform);
+                var p = Core.Platform.FromString(platform);
                 if (buildPlatforms.Contains(p))
                 {
                     throw new Core.Exception("Platform '{0}' already specified", platform);
