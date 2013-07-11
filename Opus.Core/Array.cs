@@ -40,7 +40,7 @@ namespace Opus.Core
                 throw new Exception("Cannot add an array to itself");
             }
 
-            foreach (T item in array)
+            foreach (var item in array)
             {
                 this.list.Add(item);
             }
@@ -53,7 +53,7 @@ namespace Opus.Core
                 throw new Exception("Cannot add an array to itself");
             }
 
-            foreach (T item in array)
+            foreach (var item in array)
             {
                 if (!this.list.Contains(item))
                 {
@@ -105,8 +105,8 @@ namespace Opus.Core
 
         public bool RemoveAll(Array<T> items)
         {
-            bool success = true;
-            foreach (T item in items)
+            var success = true;
+            foreach (var item in items)
             {
                 success &= this.list.Remove(item);
             }
@@ -134,14 +134,14 @@ namespace Opus.Core
 
         public T[] ToArray()
         {
-            T[] array = this.list.ToArray();
+            var array = this.list.ToArray();
             return array;
         }
 
         public override string ToString()
         {
             string message = null;
-            foreach (T item in this.list)
+            foreach (var item in this.list)
             {
                 message += item.ToString() + " ";
             }
@@ -155,7 +155,7 @@ namespace Opus.Core
 
         public Array<T> Union(Array<T> other)
         {
-            Array<T> union = new Array<T>();
+            var union = new Array<T>();
             union.AddRangeUnique(this);
             union.AddRangeUnique(other);
             return union;
@@ -163,8 +163,8 @@ namespace Opus.Core
 
         public Array<T> Intersect(Array<T> other)
         {
-            Array<T> intersect = new Array<T>();
-            foreach (T item in this.list)
+            var intersect = new Array<T>();
+            foreach (var item in this.list)
             {
                 if (other.list.Contains(item))
                 {
@@ -176,8 +176,8 @@ namespace Opus.Core
 
         public Array<T> Complement(Array<T> other)
         {
-            Array<T> complement = new Array<T>();
-            foreach (T item in this.list)
+            var complement = new Array<T>();
+            foreach (var item in this.list)
             {
                 if (!other.list.Contains(item))
                 {

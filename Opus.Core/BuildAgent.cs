@@ -47,20 +47,20 @@ namespace Opus.Core
 
         private static void Run(object obj)
         {
-            BuildAgent agent = obj as BuildAgent;
-            DependencyNode node = agent.Node;
-            IBuilder builder = agent.Builder as IBuilder;
+            var agent = obj as BuildAgent;
+            var node = agent.Node;
+            var builder = agent.Builder as IBuilder;
 
             Log.DebugMessage("Agent '{0}' is running node '{1}'", agent.Name, node.UniqueModuleName);
-            DependencyNode owningNode = node.Module.OwningNode;
+            var owningNode = node.Module.OwningNode;
 
             if (owningNode != node)
             {
                 throw new Exception("Node '{0}' has a module with different node ownership '{1}'. That should not be possible", node.UniqueModuleName, owningNode.UniqueModuleName);
             }
 
-            System.Reflection.MethodInfo buildFunction = node.BuildFunction;
-            object[] arguments = new object[] { node.Module, false };
+            var buildFunction = node.BuildFunction;
+            var arguments = new object[] { node.Module, false };
             try
             {
                 node.Data = buildFunction.Invoke(builder, arguments);
@@ -75,7 +75,7 @@ namespace Opus.Core
                 Exception.DisplayException(exception, "Build function '{0}' error", buildFunction.ToString());
                 arguments[1] = false;
             }
-            bool success = (bool)arguments[1];
+            var success = (bool)arguments[1];
             if (success)
             {
                 node.BuildState = EBuildState.Succeeded;

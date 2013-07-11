@@ -70,7 +70,7 @@ namespace Opus.Core
             get
             {
                 int totalNodeCount = 0;
-                foreach (DependencyNodeCollection collection in this.rankList)
+                foreach (var collection in this.rankList)
                 {
                     totalNodeCount += collection.Count;
                 }
@@ -80,10 +80,10 @@ namespace Opus.Core
         
         private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, BaseTarget baseTarget)
         {
-            IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
-            Target targetUsed = Target.GetInstance(baseTarget, toolset);
+            var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+            var targetUsed = Target.GetInstance(baseTarget, toolset);
 
-            ModuleTargetsAttribute[] moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
+            var moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)
             {
                 if (!TargetUtilities.MatchFilters(targetUsed, moduleTargetFilters[0]))
@@ -93,7 +93,7 @@ namespace Opus.Core
                 }
             }
 
-            DependencyNode moduleNode = new DependencyNode(moduleType, parent, targetUsed, -1, false);
+            var moduleNode = new DependencyNode(moduleType, parent, targetUsed, -1, false);
             AddDependencyNodeToCollection(moduleNode, rank);
 
             return moduleNode;
@@ -103,7 +103,7 @@ namespace Opus.Core
         {
             while (this.rankList.Count <= rank)
             {
-                DependencyNodeCollection newRank = new DependencyNodeCollection(this.rankList.Count);
+                var newRank = new DependencyNodeCollection(this.rankList.Count);
                 this.rankList.Insert(this.rankList.Count, newRank);
             }
 
@@ -121,10 +121,10 @@ namespace Opus.Core
         public void Dump()
         {
             Log.DebugMessage("-------------GRAPH--------------");
-            foreach (DependencyNodeCollection nodeCollection in this.rankList)
+            foreach (var nodeCollection in this.rankList)
             {
                 Log.DebugMessage("Rank {0}", nodeCollection.Rank);
-                foreach (DependencyNode node in nodeCollection)
+                foreach (var node in nodeCollection)
                 {
                     Log.DebugMessage("\t{0}", node.ToString());
                 }
@@ -140,9 +140,9 @@ namespace Opus.Core
 
             // in increasing rank, generate option collections, so that child inherit their parent options
             // if so desired
-            foreach (DependencyNodeCollection nodeCollection in this.rankList)
+            foreach (var nodeCollection in this.rankList)
             {
-                foreach (DependencyNode node in nodeCollection)
+                foreach (var node in nodeCollection)
                 {
                     // empty build functions do not equate to no option collection
                     node.CreateOptionCollection();
@@ -156,8 +156,8 @@ namespace Opus.Core
             // in decreasing rank, finalize option collections, so that dependent options can get their data
             for (int rank = this.RankCount - 1; rank >= 0; --rank)
             {
-                DependencyNodeCollection nodeCollection = this.rankList[rank];
-                foreach (DependencyNode node in nodeCollection)
+                var nodeCollection = this.rankList[rank];
+                foreach (var node in nodeCollection)
                 {
                     if (null != node.Module.Options)
                     {
@@ -182,7 +182,7 @@ namespace Opus.Core
             this.Dump();
 
             {
-                TimeProfile profile = new TimeProfile(ETimingProfiles.PopulateGraph);
+                var profile = new TimeProfile(ETimingProfiles.PopulateGraph);
                 profile.StartProfile();
 
                 this.AddChildAndExternalDependents();
@@ -195,7 +195,7 @@ namespace Opus.Core
             this.Dump();
 
             {
-                TimeProfile profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
+                var profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
                 profile.StartProfile();
 
                 this.CreateOptionCollections();
@@ -205,7 +205,7 @@ namespace Opus.Core
             }
 
             {
-                TimeProfile profile = new TimeProfile(ETimingProfiles.HandleInjectionDependents);
+                var profile = new TimeProfile(ETimingProfiles.HandleInjectionDependents);
                 profile.StartProfile();
 
                 this.AddInjectedDependents();
@@ -220,13 +220,13 @@ namespace Opus.Core
 
         private DependencyNode FindNodeForTargettedModule(string moduleName, Target target)
         {
-            bool moduleNameExists = this.uniqueNameToNodeDictionary.ContainsKey(moduleName);
+            var moduleNameExists = this.uniqueNameToNodeDictionary.ContainsKey(moduleName);
             if (!moduleNameExists)
             {
                 return null;
             }
 
-            bool moduleNameForTargetExists = this.uniqueNameToNodeDictionary[moduleName].ContainsKey(target.Key);
+            var moduleNameForTargetExists = this.uniqueNameToNodeDictionary[moduleName].ContainsKey(target.Key);
             if (!moduleNameForTargetExists)
             {
                 return null;
@@ -242,10 +242,10 @@ namespace Opus.Core
                                                           System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove,
                                                           INestedDependents nestedDependentsInterface)
         {
-            IToolset toolset = ModuleUtilities.GetToolsetForModule(moduleType);
-            Target targetUsed = Target.GetInstance((BaseTarget)target, toolset);
+            var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+            var targetUsed = Target.GetInstance((BaseTarget)target, toolset);
 
-            DependencyNode node = this.FindNodeForTargettedModule(moduleName, targetUsed);
+            var node = this.FindNodeForTargettedModule(moduleName, targetUsed);
             if (null != node)
             {
                 int rankToMoveTo = currentRank + 1;
@@ -279,21 +279,19 @@ namespace Opus.Core
 
         private void AddChildAndExternalDependents()
         {
-            DependencyNodeCollection nodesWithForwardedDependencies = new DependencyNodeCollection();
+            var nodesWithForwardedDependencies = new DependencyNodeCollection();
 
             int currentRank = 0;
             while (currentRank < this.RankCount)
             {
-                System.Collections.Generic.Dictionary<DependencyNode, int> nodesToMove = new System.Collections.Generic.Dictionary<DependencyNode,int>();
-
-                DependencyNodeCollection rankNodes = this[currentRank];
-                foreach (DependencyNode node in rankNodes)
+                var nodesToMove = new System.Collections.Generic.Dictionary<DependencyNode,int>();
+                var rankNodes = this[currentRank];
+                foreach (var node in rankNodes)
                 {
                     var nestedDependentsInterface = node.Module as INestedDependents;
-
-                    TypeArray externalDependentModuleTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
+                    var externalDependentModuleTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
                     TypeArray additionalExternalDependentModuleTypes = null;
-                    IIdentifyExternalDependencies identifyExternalDependencies = node.Module as IIdentifyExternalDependencies;
+                    var identifyExternalDependencies = node.Module as IIdentifyExternalDependencies;
                     if (null != identifyExternalDependencies)
                     {
                         additionalExternalDependentModuleTypes = identifyExternalDependencies.IdentifyExternalDependencies(node.Target);
@@ -308,10 +306,10 @@ namespace Opus.Core
                     }
                     if (externalDependentModuleTypes != null)
                     {
-                        bool hasForwardedDeps = (node.Module is IForwardDependenciesOn);
-                        foreach (System.Type dependentModuleType in externalDependentModuleTypes)
+                        var hasForwardedDeps = (node.Module is IForwardDependenciesOn);
+                        foreach (var dependentModuleType in externalDependentModuleTypes)
                         {
-                            DependencyNode newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove, nestedDependentsInterface);
+                            var newNode = this.FindOrCreateUnparentedNode(dependentModuleType, dependentModuleType.FullName, node.Target, currentRank, nodesToMove, nestedDependentsInterface);
                             if (null == newNode)
                             {
                                 continue;
@@ -340,12 +338,12 @@ namespace Opus.Core
                         }
                     }
 
-                    TypeArray externalRequiredModuleTypes = ModuleUtilities.GetRequiredDependents(node.Module, node.Target);
+                    var externalRequiredModuleTypes = ModuleUtilities.GetRequiredDependents(node.Module, node.Target);
                     if (externalRequiredModuleTypes != null)
                     {
-                        foreach (System.Type requiredModuleType in externalRequiredModuleTypes)
+                        foreach (var requiredModuleType in externalRequiredModuleTypes)
                         {
-                            DependencyNode newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.FullName, node.Target, currentRank, nodesToMove, nestedDependentsInterface);
+                            var newNode = this.FindOrCreateUnparentedNode(requiredModuleType, requiredModuleType.FullName, node.Target, currentRank, nodesToMove, nestedDependentsInterface);
                             if (null == newNode)
                             {
                                 continue;
@@ -364,16 +362,16 @@ namespace Opus.Core
                         }
 
                         int childIndex = 0;
-                        foreach (BaseModule nestedModule in nestedDependentModules)
+                        foreach (var nestedModule in nestedDependentModules)
                         {
-                            System.Type nestedModuleType = nestedModule.GetType();
+                            var nestedModuleType = nestedModule.GetType();
                             // TODO: the child index here might be a problem
-                            string nestedModuleUniqueName = node.GetChildModuleName(nestedModuleType, childIndex);
+                            var nestedModuleUniqueName = node.GetChildModuleName(nestedModuleType, childIndex);
 
-                            IToolset nestedToolset = ModuleUtilities.GetToolsetForModule(nestedModuleType);
-                            Target nestedTargetUsed = Target.GetInstance((BaseTarget)node.Target, nestedToolset);
+                            var nestedToolset = ModuleUtilities.GetToolsetForModule(nestedModuleType);
+                            var nestedTargetUsed = Target.GetInstance((BaseTarget)node.Target, nestedToolset);
 
-                            DependencyNode newNode = this.FindNodeForTargettedModule
+                            var newNode = this.FindNodeForTargettedModule
 (nestedModuleUniqueName, nestedTargetUsed);
                             if (null != newNode)
                             {
@@ -389,7 +387,7 @@ namespace Opus.Core
                             }
                             else
                             {
-                                newNode = new DependencyNode(nestedModule, node, nestedTargetUsed, childIndex, true);
+                                newNode = new DependencyNode(nestedModule as BaseModule, node, nestedTargetUsed, childIndex, true);
                                 this.AddDependencyNodeToCollection(newNode, currentRank + 1);
                             }
 
@@ -401,19 +399,19 @@ namespace Opus.Core
                 if (nodesToMove.Count > 0)
                 {
                     // flatten the hierarchy of nodes, so there is one move per dependency, to the maximum rank needed
-                    System.Collections.Generic.Dictionary<DependencyNode, int> flattenedList = new System.Collections.Generic.Dictionary<DependencyNode, int>();
-                    foreach (System.Collections.Generic.KeyValuePair<DependencyNode, int> value in nodesToMove)
+                    var flattenedList = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+                    foreach (var value in nodesToMove)
                     {
-                        DependencyNode node = value.Key;
+                        var node = value.Key;
                         int targetRank = value.Value;
 
                         this.FlattenHierarchy(node, targetRank, flattenedList, 0);
                     }
 
                     // now move
-                    foreach (System.Collections.Generic.KeyValuePair<DependencyNode, int> value in flattenedList)
+                    foreach (var value in flattenedList)
                     {
-                        DependencyNode node = value.Key;
+                        var node = value.Key;
                         int targetRank = value.Value;
 
                         this[node.Rank].Remove(node);
@@ -427,13 +425,13 @@ namespace Opus.Core
             // now, at the very end, link up forwarded dependencies
             // performed at the end because the existing dependencies are already in place
             // and they will automatically satisfy the new links
-            foreach (DependencyNode nodeWith in nodesWithForwardedDependencies)
+            foreach (var nodeWith in nodesWithForwardedDependencies)
             {
                 if (nodeWith.ExternalDependentFor != null)
                 {
-                    foreach (DependencyNode forNode in nodeWith.ExternalDependentFor)
+                    foreach (var forNode in nodeWith.ExternalDependentFor)
                     {
-                        foreach (DependencyNode forwardedDependency in nodeWith.ExternalDependents)
+                        foreach (var forwardedDependency in nodeWith.ExternalDependents)
                         {
                             forNode.AddExternalDependent(forwardedDependency);
                             if (!forwardedDependency.ConsiderForBuild)
@@ -450,13 +448,13 @@ namespace Opus.Core
             currentRank = 0;
             while (currentRank < this.RankCount)
             {
-                DependencyNodeCollection rankNodes = this[currentRank];
-                foreach (DependencyNode node in rankNodes)
+                var rankNodes = this[currentRank];
+                foreach (var node in rankNodes)
                 {
                     if (!node.ConsiderForBuild && (null != node.Children))
                     {
                         Log.DebugMessage("Node '{0}' is not under consideration", node.UniqueModuleName);
-                        foreach (DependencyNode child in node.Children)
+                        foreach (var child in node.Children)
                         {
                             Log.DebugMessage("\tMarking '{0}' as also not under consideration", child.UniqueModuleName);
                             child.ConsiderForBuild = false;
@@ -483,7 +481,7 @@ namespace Opus.Core
 
             if (node.Children != null)
             {
-                foreach (DependencyNode childNode in node.Children)
+                foreach (var childNode in node.Children)
                 {
                     int childTargetRank = childNode.Rank + rankDelta;
                     this.FlattenHierarchy(childNode, childTargetRank, flattenedList, depth + 1);
@@ -491,7 +489,7 @@ namespace Opus.Core
             }
             if (node.ExternalDependents != null)
             {
-                foreach (DependencyNode dependentNode in node.ExternalDependents)
+                foreach (var dependentNode in node.ExternalDependents)
                 {
                     int dependentTargetRank = dependentNode.Rank + rankDelta;
                     this.FlattenHierarchy(dependentNode, dependentTargetRank, flattenedList, depth + 1);
@@ -499,7 +497,7 @@ namespace Opus.Core
             }
             if (node.RequiredDependents != null)
             {
-                foreach (DependencyNode requiredNode in node.RequiredDependents)
+                foreach (var requiredNode in node.RequiredDependents)
                 {
                     int requiredTargetRank = requiredNode.Rank + rankDelta;
                     this.FlattenHierarchy(requiredNode, requiredTargetRank, flattenedList, depth + 1);
@@ -512,16 +510,16 @@ namespace Opus.Core
             int currentRank = 0;
             do
             {
-                DependencyNodeCollection nodeCollection = this.rankList[currentRank];
-                foreach (DependencyNode node in nodeCollection)
+                var nodeCollection = this.rankList[currentRank];
+                foreach (var node in nodeCollection)
                 {
-                    IInjectModules injectModules = node.Module as IInjectModules;
+                    var injectModules = node.Module as IInjectModules;
                     if (null != injectModules)
                     {
-                        ModuleCollection injectedModules = injectModules.GetInjectedModules(node.Target);
-                        foreach (BaseModule module in injectedModules)
+                        var injectedModules = injectModules.GetInjectedModules(node.Target);
+                        foreach (var module in injectedModules)
                         {
-                            DependencyNodeCollection externalDependencyForCollection = node.ExternalDependentFor;
+                            var externalDependencyForCollection = node.ExternalDependentFor;
                             if (null == externalDependencyForCollection)
                             {
                                 // check the parent, in case this was part of a collection
@@ -543,9 +541,9 @@ namespace Opus.Core
                             }
 
                             DependencyNode sourceOfDependency = null;
-                            foreach (DependencyNode ext in externalDependencyForCollection)
+                            foreach (var ext in externalDependencyForCollection)
                             {
-                                foreach (DependencyNode extDep in ext.ExternalDependents)
+                                foreach (var extDep in ext.ExternalDependents)
                                 {
                                     if (extDep == node || extDep == node.Parent)
                                     {
@@ -575,7 +573,7 @@ namespace Opus.Core
                             }
 
                             // TODO: would like to override the name in a better way
-                            DependencyNode newNode = new DependencyNode(module, sourceOfDependency, sourceOfDependency.Target, childIndex, true);
+                            var newNode = new DependencyNode(module as BaseModule, sourceOfDependency, sourceOfDependency.Target, childIndex, true);
                             newNode.AddExternalDependent(node);
                             this.AddDependencyNodeToCollection(newNode, node.Rank - 1);
 
