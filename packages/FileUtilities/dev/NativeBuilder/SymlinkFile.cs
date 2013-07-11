@@ -51,15 +51,16 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
+            const string delimiter = "\"";
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink]);
-                commandLineBuilder.Add(sourceFilePath);
+                commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink], delimiter));
+                commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, sourceFilePath, delimiter));
             }
             else
             {
-                commandLineBuilder.Add(sourceFilePath);
-                commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink]);
+                commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, sourceFilePath, delimiter));
+                commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink], delimiter));
             }
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ISymlinkTool));

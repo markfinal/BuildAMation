@@ -53,8 +53,9 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            commandLineBuilder.Add(sourceFilePath);
-            commandLineBuilder.Add(copiedFilePath);
+            const string delimiter = "\"";
+            commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, sourceFilePath, delimiter));
+            commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, copiedFilePath, delimiter));
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ICopyFileTool));
             int returnValue = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
