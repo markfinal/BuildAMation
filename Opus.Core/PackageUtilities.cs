@@ -11,8 +11,8 @@ namespace Opus.Core
         {
             get
             {
-                System.Version coreVersion = State.OpusVersion;
-                string coreVersionDefine = System.String.Format("OPUS_CORE_VERSION_{0}_{1}", coreVersion.Major, coreVersion.Minor);
+                var coreVersion = State.OpusVersion;
+                var coreVersionDefine = System.String.Format("OPUS_CORE_VERSION_{0}_{1}", coreVersion.Major, coreVersion.Minor);
                 return coreVersionDefine;
             }
         }
@@ -21,15 +21,15 @@ namespace Opus.Core
         {
             get
             {
-                EPlatform platform = State.Platform;
-                string platformString = Platform.ToString(platform, '\0', "OPUS_HOST_", true);
+                var platform = State.Platform;
+                var platformString = Platform.ToString(platform, '\0', "OPUS_HOST_", true);
                 return platformString;
             }
         }
 
         private static void GetPackageDetailsFromPath(string path, out string name, out string version)
         {
-            string[] directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
+            var directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
             if (directories.Length < 2)
             {
                 throw new Exception("Cannot determine package name and version from the path '{0}'. Expected format is 'root{1}packagename{1}version'", path, System.IO.Path.DirectorySeparatorChar);
@@ -53,23 +53,23 @@ namespace Opus.Core
                 return null;
             }
 
-            System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(path);
+            var parentDir = System.IO.Directory.GetParent(path);
             if (null == parentDir)
             {
                 Log.DebugMessage("No parent directory");
                 return null;
             }
-            System.IO.DirectoryInfo parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
+            var parentParentDir = System.IO.Directory.GetParent(parentDir.FullName);
             if (null == parentParentDir)
             {
                 Log.DebugMessage("No parent of parent directory");
                 return null;
             }
-            string packageRoot = parentParentDir.FullName;
+            var packageRoot = parentParentDir.FullName;
 
-            string basePackageFilename = System.IO.Path.Combine(path, packageName);
-            string scriptFilename = basePackageFilename + ".cs";
-            string xmlFilename = basePackageFilename + ".xml";
+            var basePackageFilename = System.IO.Path.Combine(path, packageName);
+            var scriptFilename = basePackageFilename + ".cs";
+            var xmlFilename = basePackageFilename + ".xml";
             if (System.IO.File.Exists(scriptFilename) &&
                 System.IO.File.Exists(xmlFilename))
             {
@@ -86,7 +86,7 @@ namespace Opus.Core
                 State.PackageRoots.Add(packageRoot);
             }
 
-            PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+            var id = new PackageIdentifier(packageName, packageVersion);
             return id;
         }
 
@@ -94,9 +94,9 @@ namespace Opus.Core
         {
             if (id.Root != null)
             {
-                string packageDirectory = id.Path;
-                string definitionFileName = id.Name + ".xml";
-                string definitionPathName = System.IO.Path.Combine(packageDirectory, definitionFileName);
+                var packageDirectory = id.Path;
+                var definitionFileName = id.Name + ".xml";
+                var definitionPathName = System.IO.Path.Combine(packageDirectory, definitionFileName);
                 return definitionPathName;
             }
             else
@@ -109,7 +109,7 @@ namespace Opus.Core
         {
             // find the working directory package
             bool isWorkingPackageWellDefined;
-            PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
+            var id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
             if (null == id)
             {
                 throw new Exception("No valid package found in the working directory");
@@ -120,8 +120,8 @@ namespace Opus.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            string definitionPathName = PackageDefinitionPathName(id);
-            PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
+            var definitionPathName = PackageDefinitionPathName(id);
+            var definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
             definitionFile.Read(true);
             id.Definition = definitionFile;
 
@@ -137,18 +137,18 @@ namespace Opus.Core
                 return;
             }
 
-            PackageInformation info = new PackageInformation(id);
+            var info = new PackageInformation(id);
             State.PackageInfo.Add(info);
         }
 
         public static void IdentifyMainAndDependentPackages(bool resolveToSinglePackageVersion, bool allowUndefinedPackages)
         {
-            PackageBuildList buildList = new PackageBuildList();
+            var buildList = new PackageBuildList();
 
             // find the working directory package
             {
                 bool isWorkingPackageWellDefined;
-                PackageIdentifier id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
+                var id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
                 if (null == id)
                 {
                     throw new Exception("No valid package found in the working directory");
@@ -170,8 +170,8 @@ namespace Opus.Core
             int i = 0;
             while (i < State.DependentPackageList.Count)
             {
-                PackageIdentifier id = State.DependentPackageList[i++];
-                string definitionPathName = PackageDefinitionPathName(id);
+                var id = State.DependentPackageList[i++];
+                var definitionPathName = PackageDefinitionPathName(id);
                 if (null == definitionPathName)
                 {
                     if (allowUndefinedPackages)
@@ -184,7 +184,7 @@ namespace Opus.Core
                     }
                 }
 
-                PackageDefinitionFile definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
+                var definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
                 definitionFile.Read(true);
                 id.Definition = definitionFile;
 
@@ -200,7 +200,7 @@ namespace Opus.Core
                     continue;
                 }
 
-                foreach (PackageIdentifier id2 in definitionFile.PackageIdentifiers)
+                foreach (var id2 in definitionFile.PackageIdentifiers)
                 {
                     if (!OSUtilities.IsCurrentPlatformSupported(id2.PlatformFilter))
                     {
@@ -208,7 +208,7 @@ namespace Opus.Core
                         continue;
                     }
 
-                    PackageBuild build = buildList.GetPackage(id2.Name);
+                    var build = buildList.GetPackage(id2.Name);
                     if (null == build)
                     {
                         build = new PackageBuild(id2);
@@ -226,15 +226,15 @@ namespace Opus.Core
             if (resolveToSinglePackageVersion)
             {
                 // can we resolve down to a single package?
-                foreach (PackageBuild build in buildList)
+                foreach (var build in buildList)
                 {
                     if (build.Versions.Count > 1)
                     {
                         string defaultVersion;
                         if (!State.Has("PackageDefaultVersions", build.Name.ToLower()))
                         {
-                            StringArray defaultVersions = new StringArray();
-                            foreach (PackageIdentifier id in build.Versions)
+                            var defaultVersions = new StringArray();
+                            foreach (var id in build.Versions)
                             {
                                 if (id.IsDefaultVersion)
                                 {
@@ -258,7 +258,7 @@ namespace Opus.Core
                             defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
                         }
                         bool found = false;
-                        foreach (PackageIdentifier version in build.Versions)
+                        foreach (var version in build.Versions)
                         {
                             if (version.Version == defaultVersion)
                             {
@@ -274,22 +274,22 @@ namespace Opus.Core
                     }
                     else if (State.Has("PackageDefaultVersions", build.Name.ToLower()))
                     {
-                        string defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
+                        var defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
                         if (build.SelectedVersion.Version != defaultVersion)
                         {
                             throw new Exception("{0} version selected on command line was {1}, but only {2} exists in the definition file", build.Name, defaultVersion, build.SelectedVersion.Version);
                         }
                     }
 
-                    PackageInformation info = new PackageInformation(build.SelectedVersion);
+                    var info = new PackageInformation(build.SelectedVersion);
                     State.PackageInfo.Add(info);
                 }
             }
             else
             {
-                foreach (PackageBuild build in buildList)
+                foreach (var build in buildList)
                 {
-                    foreach (PackageIdentifier id in build.Versions)
+                    foreach (var id in build.Versions)
                     {
                         PackageInformation info = new PackageInformation(id);
                         State.PackageInfo.Add(info, true);
@@ -308,21 +308,21 @@ namespace Opus.Core
         private static string GetPackageHash(StringArray sourceCode, StringArray definitions, StringArray opusAssemblies)
         {
             int hashCode = 0;
-            foreach (string source in sourceCode)
+            foreach (var source in sourceCode)
             {
                 hashCode ^= source.GetHashCode();
             }
-            foreach (string define in definitions)
+            foreach (var define in definitions)
             {
                 hashCode ^= define.GetHashCode();
             }
-            foreach (string assemblyPath in opusAssemblies)
+            foreach (var assemblyPath in opusAssemblies)
             {
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.Load(assemblyPath);
-                string version = assembly.GetName().Version.ToString();
+                var assembly = System.Reflection.Assembly.Load(assemblyPath);
+                var version = assembly.GetName().Version.ToString();
                 hashCode ^= version.GetHashCode();
             }
-            string hash = hashCode.ToString();
+            var hash = hashCode.ToString();
             return hash;
         }
 
@@ -334,41 +334,41 @@ namespace Opus.Core
                 throw new Exception("Build root has not been specified");
             }
 
-            TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
+            var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
             IdentifyMainAndDependentPackages(true, false);
 
-            PackageInformation mainPackage = State.PackageInfo.MainPackage;
+            var mainPackage = State.PackageInfo.MainPackage;
 
             Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
             BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
-            string resourceFilePathName = PackageListResourceFile.WriteResourceFile();
+            var resourceFilePathName = PackageListResourceFile.WriteResourceFile();
 
-            StringArray definitions = new StringArray();
+            var definitions = new StringArray();
 
             // gather source files
-            StringArray sourceCode = new StringArray();
+            var sourceCode = new StringArray();
 
             int packageIndex = 0;
-            foreach (PackageInformation package in State.PackageInfo)
+            foreach (var package in State.PackageInfo)
             {
-                PackageIdentifier id = package.Identifier;
+                var id = package.Identifier;
                 Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
 
-                using (System.IO.TextReader reader = new System.IO.StreamReader(id.ScriptPathName))
+                using (var reader = new System.IO.StreamReader(id.ScriptPathName))
                 {
                     sourceCode.Add(reader.ReadToEnd());
                 }
                 Log.DebugMessage("\t'{0}'", id.ScriptPathName);
                 if (null != package.Scripts)
                 {
-                    foreach (string scriptFile in package.Scripts)
+                    foreach (var scriptFile in package.Scripts)
                     {
-                        using (System.IO.TextReader reader = new System.IO.StreamReader(scriptFile))
+                        using (var reader = new System.IO.StreamReader(scriptFile))
                         {
                             sourceCode.Add(reader.ReadToEnd());
                         }
@@ -377,9 +377,9 @@ namespace Opus.Core
                 }
                 if (null != package.BuilderScripts)
                 {
-                    foreach (string builderScriptFile in package.BuilderScripts)
+                    foreach (var builderScriptFile in package.BuilderScripts)
                     {
-                        using (System.IO.TextReader reader = new System.IO.StreamReader(builderScriptFile))
+                        using (var reader = new System.IO.StreamReader(builderScriptFile))
                         {
                             sourceCode.Add(reader.ReadToEnd());
                         }
@@ -387,7 +387,7 @@ namespace Opus.Core
                     }
                 }
 
-                foreach (string define in package.Identifier.Definition.Definitions)
+                foreach (var define in package.Identifier.Definition.Definitions)
                 {
                     if (!definitions.Contains(define))
                     {
@@ -413,23 +413,23 @@ namespace Opus.Core
 
             gatherSourceProfile.StopProfile();
 
-            TimeProfile assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
+            var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
             assemblyCompileProfile.StartProfile();
 
             // assembly is written to the build root
-            string assemblyPathname = System.IO.Path.Combine(State.BuildRoot, "OpusPackageAssembly");
+            var assemblyPathname = System.IO.Path.Combine(State.BuildRoot, "OpusPackageAssembly");
             assemblyPathname = System.IO.Path.Combine(assemblyPathname, mainPackage.Name) + ".dll";
 
             // can an existing assembly be reused?
-            string hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
-            string thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.OpusAssemblies);
+            var hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
+            var thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.OpusAssemblies);
             if (State.CacheAssembly)
             {
                 if (System.IO.File.Exists(hashPathName))
                 {
-                    using (System.IO.TextReader reader = new System.IO.StreamReader(hashPathName))
+                    using (var reader = new System.IO.StreamReader(hashPathName))
                     {
-                        string diskHashCode = reader.ReadLine();
+                        var diskHashCode = reader.ReadLine();
                         if (diskHashCode.Equals(thisHashCode))
                         {
                             Log.DebugMessage("Cached assembly used '{0}', with hash {1}", assemblyPathname, diskHashCode);
@@ -450,7 +450,7 @@ namespace Opus.Core
 
             Log.Detail("Compiling package assembly");
 
-            System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
+            var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
 
             if (State.RunningMono)
@@ -458,9 +458,9 @@ namespace Opus.Core
                 Log.DebugMessage("Compiling assembly for Mono");
             }
 
-            using (Microsoft.CSharp.CSharpCodeProvider provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
+            using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
             {
-                System.CodeDom.Compiler.CompilerParameters compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
+                var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
                 compilerParameters.TreatWarningsAsErrors = true;
                 if (!State.RunningMono)
                 {
@@ -476,7 +476,7 @@ namespace Opus.Core
 
                 compilerParameters.OutputAssembly = assemblyPathname;
 
-                string compilerOptions = "/checked+ /unsafe-";
+                var compilerOptions = "/checked+ /unsafe-";
                 if (State.CompileWithDebugSymbols)
                 {
                     compilerParameters.IncludeDebugInformation = true;
@@ -505,17 +505,17 @@ namespace Opus.Core
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
                     // Opus assembly
-                    foreach (string opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
+                    foreach (var opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
                     {
-                        string assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
-                        string assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
+                        var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
+                        var assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
 
                     // DotNet assembly
-                    foreach (DotNetAssemblyDescription desc in mainPackage.Identifier.Definition.DotNetAssemblies)
+                    foreach (var desc in mainPackage.Identifier.Definition.DotNetAssemblies)
                     {
-                        string assemblyFileName = System.String.Format("{0}.dll", desc.Name);
+                        var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
                 }
@@ -526,7 +526,7 @@ namespace Opus.Core
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
-                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
+                var results = provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
 
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {
@@ -540,7 +540,7 @@ namespace Opus.Core
 
                 if (State.CacheAssembly)
                 {
-                    using (System.IO.TextWriter writer = new System.IO.StreamWriter(hashPathName))
+                    using (var writer = new System.IO.StreamWriter(hashPathName))
                     {
                         writer.WriteLine(thisHashCode);
                     }
@@ -563,36 +563,36 @@ namespace Opus.Core
         // special function for debugging, because you MUST compile from the source files, not source in memory
         public static bool CompileDebuggablePackageIntoAssembly()
         {
-            TimeProfile gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
+            var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
             IdentifyMainAndDependentPackages(true, false);
 
-            PackageInformation mainPackage = State.PackageInfo.MainPackage;
+            var mainPackage = State.PackageInfo.MainPackage;
 
             Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
             BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
-            string resourceFilePathName = PackageListResourceFile.WriteResourceFile();
+            var resourceFilePathName = PackageListResourceFile.WriteResourceFile();
 
-            StringArray definitions = new StringArray();
+            var definitions = new StringArray();
 
             // gather source files
-            System.Collections.ArrayList sourceFileList = new System.Collections.ArrayList();
+            var sourceFileList = new System.Collections.ArrayList();
 
             int packageIndex = 0;
-            foreach (PackageInformation package in State.PackageInfo)
+            foreach (var package in State.PackageInfo)
             {
-                PackageIdentifier id = package.Identifier;
+                var id = package.Identifier;
                 Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
 
                 sourceFileList.Add(id.ScriptPathName);
                 Log.DebugMessage("\t'{0}'", id.ScriptPathName);
                 if (null != package.Scripts)
                 {
-                    foreach (string scriptFile in package.Scripts)
+                    foreach (var scriptFile in package.Scripts)
                     {
                         sourceFileList.Add(scriptFile);
                         Log.DebugMessage("\t'{0}'", scriptFile);
@@ -600,14 +600,14 @@ namespace Opus.Core
                 }
                 if (null != package.BuilderScripts)
                 {
-                    foreach (string builderScriptFile in package.BuilderScripts)
+                    foreach (var builderScriptFile in package.BuilderScripts)
                     {
                         sourceFileList.Add(builderScriptFile);
                         Log.DebugMessage("\t'{0}'", builderScriptFile);
                     }
                 }
 
-                foreach (string define in package.Identifier.Definition.Definitions)
+                foreach (var define in package.Identifier.Definition.Definitions)
                 {
                     if (!definitions.Contains(define))
                     {
@@ -633,10 +633,10 @@ namespace Opus.Core
 
             Log.Detail("Compiling package assembly");
 
-            TimeProfile assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
+            var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
             assemblyCompileProfile.StartProfile();
 
-            System.Collections.Generic.Dictionary<string, string> providerOptions = new System.Collections.Generic.Dictionary<string, string>();
+            var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
 
             if (State.RunningMono)
@@ -644,11 +644,11 @@ namespace Opus.Core
                 Log.DebugMessage("Compiling assembly for Mono");
             }
 
-            using (Microsoft.CSharp.CSharpCodeProvider provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
+            using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
             {
-                string[] sourceFiles = sourceFileList.ToArray(typeof(string)) as string[];
+                var sourceFiles = sourceFileList.ToArray(typeof(string)) as string[];
 
-                System.CodeDom.Compiler.CompilerParameters compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
+                var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
                 compilerParameters.TreatWarningsAsErrors = true;
                 if (!State.RunningMono)
                 {
@@ -662,7 +662,7 @@ namespace Opus.Core
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
                 compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
-                string compilerOptions = "/checked+ /unsafe-";
+                var compilerOptions = "/checked+ /unsafe-";
                 if (State.CompileWithDebugSymbols)
                 {
                     compilerParameters.IncludeDebugInformation = true;
@@ -691,17 +691,17 @@ namespace Opus.Core
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
                     // Opus assembly
-                    foreach (string opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
+                    foreach (var opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
                     {
-                        string assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
-                        string assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
+                        var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
+                        var assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
 
                     // DotNet assembly
-                    foreach (DotNetAssemblyDescription desc in mainPackage.Identifier.Definition.DotNetAssemblies)
+                    foreach (var desc in mainPackage.Identifier.Definition.DotNetAssemblies)
                     {
-                        string assemblyFileName = System.String.Format("{0}.dll", desc.Name);
+                        var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
                 }
@@ -711,7 +711,7 @@ namespace Opus.Core
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
-                System.CodeDom.Compiler.CompilerResults results = provider.CompileAssemblyFromFile(compilerParameters, sourceFiles);
+                var results = provider.CompileAssemblyFromFile(compilerParameters, sourceFiles);
 
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {
@@ -741,7 +741,7 @@ namespace Opus.Core
             //            System.Reflection.Assembly assembly = domain.Load(assemblyName);
             //            System.AppDomain.Unload(domain);
 
-            TypeArray topLevelTypes = GetTopLevelModuleTypes();
+            var topLevelTypes = GetTopLevelModuleTypes();
 
             BuilderUtilities.CreateBuilderInstance();
 
@@ -756,17 +756,17 @@ namespace Opus.Core
                 throw new Exception("No build configurations were specified");
             }
 
-            DependencyGraph dependencyGraph = new DependencyGraph();
+            var dependencyGraph = new DependencyGraph();
             State.Set("System", "Graph", dependencyGraph);
 
             // add modules in for each target configured
-            foreach (EPlatform platform in State.BuildPlatforms)
+            foreach (var platform in State.BuildPlatforms)
             {
-                foreach (EConfiguration configuration in State.BuildConfigurations)
+                foreach (var configuration in State.BuildConfigurations)
                 {
-                    BaseTarget baseTarget = BaseTarget.GetInstance(platform, configuration);
+                    var baseTarget = BaseTarget.GetInstance(platform, configuration);
                     Log.DebugMessage("Added base target '{0}'", baseTarget);
-                    foreach (System.Type topLevelType in topLevelTypes)
+                    foreach (var topLevelType in topLevelTypes)
                     {
                         dependencyGraph.AddTopLevelModule(topLevelType, baseTarget);
                     }
@@ -775,13 +775,13 @@ namespace Opus.Core
 
             dependencyGraph.PopulateGraph();
 
-            TimeProfile dependencyGraphExecutionProfile = new TimeProfile(ETimingProfiles.GraphExecution);
+            var dependencyGraphExecutionProfile = new TimeProfile(ETimingProfiles.GraphExecution);
             dependencyGraphExecutionProfile.StartProfile();
 
-            BuildManager buildManager = new BuildManager(dependencyGraph);
+            var buildManager = new BuildManager(dependencyGraph);
             State.BuildManager = buildManager;
             State.ReadOnly = true;
-            bool success = buildManager.Execute();
+            var success = buildManager.Execute();
 
             dependencyGraphExecutionProfile.StopProfile();
 
@@ -790,17 +790,17 @@ namespace Opus.Core
 
         public static PackageInformation GetOwningPackage(object obj)
         {
-            System.Type objType = obj.GetType();
+            var objType = obj.GetType();
             TypeUtilities.CheckTypeImplementsInterface(objType, typeof(IModule));
 
-            string packageName = objType.Namespace;
-            PackageInformation package = State.PackageInfo[packageName];
+            var packageName = objType.Namespace;
+            var package = State.PackageInfo[packageName];
             return package;
         }
 
         public static void LoadPackageAssembly()
         {
-            TimeProfile assemblyLoadProfile = new TimeProfile(ETimingProfiles.LoadAssembly);
+            var assemblyLoadProfile = new TimeProfile(ETimingProfiles.LoadAssembly);
             assemblyLoadProfile.StartProfile();
 
             System.Reflection.Assembly scriptAssembly = null;
@@ -831,7 +831,7 @@ namespace Opus.Core
                 var actions = ActionManager.ScriptActions;
                 if ((null == actions) || (0 == actions.Count))
                 {
-                    System.Text.StringBuilder message = new System.Text.StringBuilder();
+                    var message = new System.Text.StringBuilder();
                     message.AppendLine("There are unprocessed arguments, but no actions to associate with them:");
                     foreach (var arg in State.LazyArguments.Keys)
                     {
@@ -849,13 +849,13 @@ namespace Opus.Core
                     }
                 }
 
-                StringArray lazyCommandsProcessed = new StringArray();
-                foreach (string command in State.LazyArguments.Keys)
+                var lazyCommandsProcessed = new StringArray();
+                foreach (var command in State.LazyArguments.Keys)
                 {
                     foreach (var action in actions)
                     {
-                        Core.IAction iaction = action.Action;
-                        bool isThisCommand = false;
+                        var iaction = action.Action;
+                        var isThisCommand = false;
                         if (iaction is IActionCommandComparison)
                         {
                             isThisCommand = (iaction as IActionCommandComparison).Compare(iaction.CommandLineSwitch, command);
@@ -883,7 +883,7 @@ namespace Opus.Core
                 }
 
                 // remove those that have been processed
-                foreach (string command in lazyCommandsProcessed)
+                foreach (var command in lazyCommandsProcessed)
                 {
                     State.LazyArguments.Remove(command);
                 }
@@ -896,37 +896,38 @@ namespace Opus.Core
         {
             if (State.LazyArguments.Count > 0)
             {
-                string message = "Unrecognized command line arguments:\n";
-                foreach (string command in State.LazyArguments.Keys)
+                var message = new System.Text.StringBuilder();
+                message.Append("Unrecognized command line arguments:\n");
+                foreach (var command in State.LazyArguments.Keys)
                 {
-                    message += "\t'" + command + "'\n";
+                    message.AppendFormat("\t'{0}'\n", command);
                 }
                 if (fatal)
                 {
-                    throw new Exception(message);
+                    throw new Exception(message.ToString());
                 }
                 else
                 {
-                    Log.Info(message);
+                    Log.Info(message.ToString());
                 }
             }
         }
 
         private static TypeArray GetTopLevelModuleTypes()
         {
-            TimeProfile findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
+            var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
             findBuildableModulesProfile.StartProfile();
 
             // TODO: not sure I like this; find the top level namespace another way
             // TODO: maybe add a Resource into the assembly to indicate the top level types?
-            string topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
-            TypeArray topLevelTypes = new TypeArray();
-            StringArray topLevelTypeNames = new StringArray();
+            var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
+            var topLevelTypes = new TypeArray();
+            var topLevelTypeNames = new StringArray();
             Log.DebugMessage("Searching for top level modules...");
             try
             {
-                System.Type[] assemblyTypes = State.ScriptAssembly.GetTypes();
-                foreach (System.Type assemblyType in assemblyTypes)
+                var assemblyTypes = State.ScriptAssembly.GetTypes();
+                foreach (var assemblyType in assemblyTypes)
                 {
                     if ((0 == System.String.Compare(assemblyType.Namespace, topLevelNamespace, false)) &&
                         !assemblyType.IsNested)
@@ -951,15 +952,15 @@ namespace Opus.Core
 
                 // scan the top level types to see if they consist of any types of the fields in the others
                 {
-                    TypeArray tltToRemove = new TypeArray();
-                    foreach (System.Type topLevelType in topLevelTypes)
+                    var tltToRemove = new TypeArray();
+                    foreach (var topLevelType in topLevelTypes)
                     {
-                        System.Reflection.FieldInfo[] fields = topLevelType.GetFields(System.Reflection.BindingFlags.Instance |
-                                                                                      System.Reflection.BindingFlags.Public |
-                                                                                      System.Reflection.BindingFlags.NonPublic);
-                        foreach (System.Reflection.FieldInfo field in fields)
+                        var fields = topLevelType.GetFields(System.Reflection.BindingFlags.Instance |
+                                                            System.Reflection.BindingFlags.Public |
+                                                            System.Reflection.BindingFlags.NonPublic);
+                        foreach (var field in fields)
                         {
-                            System.Type t = field.FieldType;
+                            var t = field.FieldType;
                             if (topLevelTypes.Contains(t))
                             {
                                 tltToRemove.Add(t);
@@ -967,7 +968,7 @@ namespace Opus.Core
                         }
                     }
 
-                    foreach (System.Type t in tltToRemove)
+                    foreach (var t in tltToRemove)
                     {
                         Log.DebugMessage("\tRemoving '{0}' as it is used as a field in another top level type", t.FullName);
                         topLevelTypeNames.Remove(t.FullName);
@@ -977,7 +978,7 @@ namespace Opus.Core
             }
             catch (System.Reflection.ReflectionTypeLoadException exception)
             {
-                System.Exception[] loaderExceptions = exception.LoaderExceptions;
+                var loaderExceptions = exception.LoaderExceptions;
                 Log.ErrorMessage("Loader exceptions");
                 foreach (System.IO.FileLoadException loaderException in loaderExceptions)
                 {
@@ -997,14 +998,14 @@ namespace Opus.Core
             }
 
             // now find the intersection of the specified build modules and the top-level modules found
-            StringArray buildModules = State.BuildModules;
+            var buildModules = State.BuildModules;
             if (null != buildModules)
             {
-                TypeArray filteredTopLevelTypes = new TypeArray();
-                foreach (string buildModule in buildModules)
+                var filteredTopLevelTypes = new TypeArray();
+                foreach (var buildModule in buildModules)
                 {
-                    bool found = false;
-                    foreach (System.Type topLevelType in topLevelTypes)
+                    var found = false;
+                    foreach (var topLevelType in topLevelTypes)
                     {
                         if (buildModule == topLevelType.FullName)
                         {

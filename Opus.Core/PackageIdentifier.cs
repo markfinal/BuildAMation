@@ -52,7 +52,7 @@ namespace Opus.Core
         {
             get
             {
-                string scriptFile = System.IO.Path.Combine(this.Path, this.Name + ".xml");
+                var scriptFile = System.IO.Path.Combine(this.Path, this.Name + ".xml");
                 return scriptFile;
             }
         }
@@ -67,7 +67,7 @@ namespace Opus.Core
         {
             get
             {
-                string scriptFile = System.IO.Path.Combine(this.Path, this.Name + ".cs");
+                var scriptFile = System.IO.Path.Combine(this.Path, this.Name + ".cs");
                 return scriptFile;
             }
         }
@@ -76,7 +76,7 @@ namespace Opus.Core
         {
             get
             {
-                string compilationDefine = System.String.Format("OPUSPACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
+                var compilationDefine = System.String.Format("OPUSPACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
                 return compilationDefine;
             }
         }
@@ -88,7 +88,7 @@ namespace Opus.Core
 
         public bool MatchName(string name, bool ignoreCase)
         {
-            bool match = (0 == System.String.Compare(this.Name, name, ignoreCase));
+            var match = (0 == System.String.Compare(this.Name, name, ignoreCase));
             return match;
         }
 
@@ -105,13 +105,13 @@ namespace Opus.Core
 
         public bool Match(PackageIdentifier identifier, bool ignoreCase)
         {
-            bool match = this.MatchName(identifier, ignoreCase) && (0 == this.MatchVersion(identifier, ignoreCase));
+            var match = this.MatchName(identifier, ignoreCase) && (0 == this.MatchVersion(identifier, ignoreCase));
             return match;
         }
 
         public bool Match(string name, string version, bool ignoreCase)
         {
-            bool match = this.MatchName(name, ignoreCase) && (0 == this.MatchVersion(version, ignoreCase));
+            var match = this.MatchName(name, ignoreCase) && (0 == this.MatchVersion(version, ignoreCase));
             return match;
         }
 
@@ -122,7 +122,7 @@ namespace Opus.Core
 
         public string ToString(string separator)
         {
-            string identifierString = System.String.Format("{0}{1}{2}", this.Name, separator, this.Version);
+            var identifierString = System.String.Format("{0}{1}{2}", this.Name, separator, this.Version);
             return identifierString;
         }
 
@@ -135,7 +135,7 @@ namespace Opus.Core
         {
             get
             {
-                string rootedPath = System.IO.Path.Combine(this.Root, this.Name);
+                var rootedPath = System.IO.Path.Combine(this.Root, this.Name);
                 rootedPath = System.IO.Path.Combine(rootedPath, this.Version);
                 return rootedPath;
             }
@@ -143,7 +143,7 @@ namespace Opus.Core
 
         int System.IComparable.CompareTo(object obj)
         {
-            PackageIdentifier objAs = obj as PackageIdentifier;
+            var objAs = obj as PackageIdentifier;
             string left = this.ToString("-");
             string right = objAs.ToString("-");
             int compared = left.CompareTo(right);
@@ -152,16 +152,16 @@ namespace Opus.Core
 
         private string LocateRoot()
         {
-            bool rootContainingPackage = false;
-            foreach (string root in State.PackageRoots)
+            var rootContainingPackage = false;
+            foreach (var root in State.PackageRoots)
             {
-                string packageDirectory = System.IO.Path.Combine(root, this.Name);
+                var packageDirectory = System.IO.Path.Combine(root, this.Name);
                 if (System.IO.Directory.Exists(packageDirectory))
                 {
                     rootContainingPackage = true;
                 }
 
-                string versionDirectory = System.IO.Path.Combine(packageDirectory, this.Version);
+                var versionDirectory = System.IO.Path.Combine(packageDirectory, this.Version);
                 if (System.IO.Directory.Exists(versionDirectory))
                 {
                     return root;

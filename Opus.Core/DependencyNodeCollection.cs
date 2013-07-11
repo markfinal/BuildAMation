@@ -51,7 +51,7 @@ namespace Opus.Core
 
         public void AddRange(DependencyNodeCollection itemCollection)
         {
-            foreach (DependencyNode item in itemCollection)
+            foreach (var item in itemCollection)
             {
                 this.Add(item);
             }
@@ -135,11 +135,11 @@ namespace Opus.Core
 
         public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
-            foreach (DependencyNode node in this.list)
+            foreach (var node in this.list)
             {
                 if (node.Module is IModuleCollection)
                 {
-                    DependencyNodeCollection childNodes = node.Children;
+                    var childNodes = node.Children;
                     if (null != childNodes)
                     {
                         childNodes.FilterOutputPaths(filter, paths);
@@ -154,7 +154,7 @@ namespace Opus.Core
 
         public object Clone()
         {
-            DependencyNodeCollection clone = new DependencyNodeCollection();
+            var clone = new DependencyNodeCollection();
             clone.Rank = this.Rank;
             clone.AddRange(this);
             return clone;
@@ -162,9 +162,8 @@ namespace Opus.Core
 
         public override string ToString()
         {
-            System.Text.StringBuilder description = new System.Text.StringBuilder();
-            description.AppendFormat("DependencyNode: rank {0} with {1} nodes",
-                                     this.Rank, this.list.Count);
+            var description = new System.Text.StringBuilder();
+            description.AppendFormat("DependencyNode: rank {0} with {1} nodes", this.Rank, this.list.Count);
             return description.ToString();
         }
     }

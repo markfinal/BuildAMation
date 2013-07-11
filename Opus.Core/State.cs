@@ -17,20 +17,20 @@ namespace Opus.Core
         {
             ReadOnly = false;
 
-            System.Reflection.Assembly coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
-            System.Version version = coreAssembly.GetName().Version;
-            string productVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location).ProductVersion;
+            var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
+            var version = coreAssembly.GetName().Version;
+            var productVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location).ProductVersion;
 
             AddCategory("Opus");
-            string opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Add<string>("Opus", "Directory", opusDirectory);
             Add<System.Version>("Opus", "Version", version);
             Add<string>("Opus", "VersionString", productVersion);
             Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
-            string opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
+            var opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
             {
-                string opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
+                var opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
                 if (!System.IO.File.Exists(opusSchemaPathname))
                 {
                     throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory);
@@ -38,7 +38,7 @@ namespace Opus.Core
                 Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
             }
             {
-                string v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
+                var v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
                 if (!System.IO.File.Exists(v2SchemaPathName))
                 {
                     throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory);
@@ -55,15 +55,15 @@ namespace Opus.Core
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
 
-            string opusPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(opusDirectory).FullName).FullName, "packages");
-            StringArray packageRoots = new StringArray();
+            var opusPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(opusDirectory).FullName).FullName, "packages");
+            var packageRoots = new StringArray();
             packageRoots.Add(opusPackageRoot);
             Add<StringArray>("System", "PackageRoots", packageRoots);
 
-            PackageInformationCollection packageInfoCollection = new PackageInformationCollection();
+            var packageInfoCollection = new PackageInformationCollection();
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
 
-            UniqueList<PackageIdentifier> dependentPackageList = new UniqueList<PackageIdentifier>();
+            var dependentPackageList = new UniqueList<PackageIdentifier>();
             Add<UniqueList<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
 
             Add<string>("System", "ScriptAssemblyPathname", null);
@@ -102,10 +102,10 @@ namespace Opus.Core
         [System.Diagnostics.Conditional("DEBUG")]
         public static void Print()
         {
-            foreach (System.Collections.Generic.KeyValuePair<string, Category> category in s)
+            foreach (var category in s)
             {
                 Log.DebugMessage("Category '{0}'", category.Key);
-                foreach (System.Collections.Generic.KeyValuePair<string, object> item in category.Value)
+                foreach (var item in category.Value)
                 {
                     Log.DebugMessage("\t'{0}' = '{1}'", item.Key, (null != item.Value) ? item.Value.ToString() : "null");
                 }
@@ -129,7 +129,7 @@ namespace Opus.Core
         
         public static bool HasCategory(string category)
         {
-            bool hasCategory = s.ContainsKey(category);
+            var hasCategory = s.ContainsKey(category);
             return hasCategory;
         }
 
@@ -353,7 +353,7 @@ namespace Opus.Core
         {
             set
             {
-                string absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
+                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
 
                 Set("System", "BuildRoot", absoluteBuildRootPath);
             }

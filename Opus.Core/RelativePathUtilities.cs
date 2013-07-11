@@ -9,8 +9,8 @@ namespace Opus.Core
     {
         public static bool IsPathAbsolute(string path)
         {
-            System.Uri pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
-            bool isAbsolute = pathUri.IsAbsoluteUri;
+            var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
+            var isAbsolute = pathUri.IsAbsoluteUri;
             return isAbsolute;
         }
 
@@ -28,15 +28,15 @@ namespace Opus.Core
                 return path;
             }
 
-            System.Uri pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
-            System.Uri relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
+            var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
+            var relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
             if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
             {
                 return path;
             }
             else
             {
-                string relativePath = relativePathUri.ToString();
+                var relativePath = relativePathUri.ToString();
                 relativePath = System.Uri.UnescapeDataString(relativePath);
                 if (null != relativePrefix)
                 {
@@ -57,27 +57,27 @@ namespace Opus.Core
 
         public static string GetPath(string path, string relativeToString, string relativePrefix)
         {
-            System.Uri relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
-            string relativePath = GetPath(path, relativeToUri, relativePrefix);
+            var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
+            var relativePath = GetPath(path, relativeToUri, relativePrefix);
             return relativePath;
         }
 
         public static string GetPath(string path, string relativeToString)
         {
-            System.Uri relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
-            string relativePath = GetPath(path, relativeToUri);
+            var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
+            var relativePath = GetPath(path, relativeToUri);
             return relativePath;
         }
 
         public static string MakeRelativePathAbsoluteToWorkingDir(string relativePath)
         {
-            System.Uri relativePathUri = new System.Uri(relativePath, System.UriKind.RelativeOrAbsolute);
+            var relativePathUri = new System.Uri(relativePath, System.UriKind.RelativeOrAbsolute);
             if (!relativePathUri.IsAbsoluteUri)
             {
                 relativePathUri = new System.Uri(System.IO.Path.Combine(Core.State.WorkingDirectory, relativePath));
             }
 
-            string absolutePath = relativePathUri.AbsolutePath;
+            var absolutePath = relativePathUri.AbsolutePath;
             absolutePath = System.IO.Path.GetFullPath(absolutePath);
             absolutePath = System.Uri.UnescapeDataString(absolutePath);
             if (Core.OSUtilities.IsWindowsHosting)

@@ -15,10 +15,10 @@ namespace Opus.Core
                 return;
             }
 
-            System.IComparable comparable = obj as System.IComparable;
+            var comparable = obj as System.IComparable;
             if (null != comparable)
             {
-                foreach (T item in this)
+                foreach (var item in this)
                 {
                     if (0 == comparable.CompareTo(item))
                     {
@@ -40,8 +40,8 @@ namespace Opus.Core
 
         public override string ToString()
         {
-            System.Text.StringBuilder text = new System.Text.StringBuilder();
-            foreach (T item in this)
+            var text = new System.Text.StringBuilder();
+            foreach (var item in this)
             {
                 text.AppendFormat("{0} ", item.ToString());
             }

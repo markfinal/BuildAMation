@@ -14,7 +14,7 @@ namespace Opus.Core
 
         public StringArray(params string[] itemsToAdd)
         {
-            foreach (string item in itemsToAdd)
+            foreach (var item in itemsToAdd)
             {
                 if (!System.String.IsNullOrEmpty(item))
                 {
@@ -36,7 +36,7 @@ namespace Opus.Core
 
         public StringArray(StringArray array)
         {
-            foreach (string item in array)
+            foreach (var item in array)
             {
                 if (!System.String.IsNullOrEmpty(item))
                 {
@@ -47,7 +47,7 @@ namespace Opus.Core
 
         public StringArray(Opus.Core.Array<string> array)
         {
-            foreach (string item in array)
+            foreach (var item in array)
             {
                 if (!System.String.IsNullOrEmpty(item))
                 {
@@ -73,32 +73,32 @@ namespace Opus.Core
 
         public string ToString(char separator)
         {
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            foreach (string item in this.list)
+            var builder = new System.Text.StringBuilder();
+            foreach (var item in this.list)
             {
                 builder.AppendFormat("{0}{1}", item.ToString(), separator);
             }
             // remove the trailing separator
-            string output = builder.ToString().TrimEnd(separator);
+            var output = builder.ToString().TrimEnd(separator);
             return output;
         }
 
         public string ToString(string separator)
         {
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            foreach (string item in this.list)
+            var builder = new System.Text.StringBuilder();
+            foreach (var item in this.list)
             {
                 builder.AppendFormat("{0}{1}", item.ToString(), separator);
             }
             // remove the trailing separator
-            string output = builder.ToString().TrimEnd(separator.ToCharArray());
+            var output = builder.ToString().TrimEnd(separator.ToCharArray());
             return output;
         }
 
         public void RemoveDuplicates()
         {
-            System.Collections.Generic.List<string> newList = new System.Collections.Generic.List<string>();
-            foreach (string item in this.list)
+            var newList = new System.Collections.Generic.List<string>();
+            foreach (var item in this.list)
             {
                 if (!newList.Contains(item))
                 {
@@ -111,7 +111,7 @@ namespace Opus.Core
 
         object System.ICloneable.Clone()
         {
-            StringArray clone = new StringArray();
+            var clone = new StringArray();
             clone.list.AddRange(this.list);
             return clone;
         }

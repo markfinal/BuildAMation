@@ -53,7 +53,7 @@ namespace Opus.Core
         {
             get
             {
-                string scriptsDirectory = System.IO.Path.Combine(this.Identifier.Path, "Scripts");
+                var scriptsDirectory = System.IO.Path.Combine(this.Identifier.Path, "Scripts");
                 return scriptsDirectory;
             }
         }
@@ -62,7 +62,7 @@ namespace Opus.Core
         {
             get
             {
-                string opusDirectory = System.IO.Path.Combine(this.Identifier.Path, "Opus");
+                var opusDirectory = System.IO.Path.Combine(this.Identifier.Path, "Opus");
                 return opusDirectory;
             }
         }
@@ -71,7 +71,7 @@ namespace Opus.Core
         {
             get
             {
-                string debugProjectFilename = System.IO.Path.Combine(this.OpusDirectory, System.String.Format("{0}.csproj", this.FullName));
+                var debugProjectFilename = System.IO.Path.Combine(this.OpusDirectory, System.String.Format("{0}.csproj", this.FullName));
                 return debugProjectFilename;
             }
         }
@@ -80,10 +80,10 @@ namespace Opus.Core
         {
             get
             {
-                StringArray scripts = new StringArray();
+                var scripts = new StringArray();
                 if (System.IO.Directory.Exists(this.ScriptsDirectory))
                 {
-                    string[] files = System.IO.Directory.GetFiles(this.ScriptsDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
+                    var files = System.IO.Directory.GetFiles(this.ScriptsDirectory, "*.cs", System.IO.SearchOption.AllDirectories);
                     if (files.Length > 0)
                     {
                         scripts.AddRange(files);
@@ -101,17 +101,17 @@ namespace Opus.Core
         {
             get
             {
-                PackageInformation builderPackage = State.BuilderPackage;
+                var builderPackage = State.BuilderPackage;
                 if (null == builderPackage)
                 {
                     return null;
                 }
 
-                StringArray builderScripts = new StringArray();
-                string builderDirectory = System.IO.Path.Combine(this.Identifier.Path, builderPackage.Name);
+                var builderScripts = new StringArray();
+                var builderDirectory = System.IO.Path.Combine(this.Identifier.Path, builderPackage.Name);
                 if (System.IO.Directory.Exists(builderDirectory))
                 {
-                    string[] files = System.IO.Directory.GetFiles(builderDirectory, "*.cs");
+                    var files = System.IO.Directory.GetFiles(builderDirectory, "*.cs");
                     if (files.Length > 0)
                     {
                         builderScripts.AddRange(files);
@@ -131,8 +131,8 @@ namespace Opus.Core
         {
             get
             {
-                string buildRoot = Core.State.BuildRoot;
-                string packageBuildDirectory = System.IO.Path.Combine(buildRoot, this.FullName);
+                var buildRoot = Core.State.BuildRoot;
+                var packageBuildDirectory = System.IO.Path.Combine(buildRoot, this.FullName);
                 return packageBuildDirectory;
             }
         }
@@ -141,7 +141,7 @@ namespace Opus.Core
         {
             get
             {
-                string fullName = this.Identifier.ToString("-");
+                var fullName = this.Identifier.ToString("-");
                 return fullName;
             }
         }
@@ -153,7 +153,7 @@ namespace Opus.Core
 
         int System.IComparable.CompareTo(object obj)
         {
-            PackageInformation objAs = obj as PackageInformation;
+            var objAs = obj as PackageInformation;
             int compared = this.FullName.CompareTo(objAs.FullName);
             return compared;
         }

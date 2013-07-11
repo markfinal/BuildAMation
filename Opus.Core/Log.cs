@@ -42,7 +42,7 @@ namespace Opus.Core
         /// <returns>Escaped string</returns>
         private static string EscapeString(string incoming)
         {
-            string escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([^[0-9]]*)|{$", @"{{$1");
+            var escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([^[0-9]]*)|{$", @"{{$1");
             escapedText = System.Text.RegularExpressions.Regex.Replace(escapedText, @"^}|([^[0-9]]*)}", @"$1}}");
             return escapedText;
         }
@@ -57,7 +57,7 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel >= level)
             {
-                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                var formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
@@ -65,7 +65,7 @@ namespace Opus.Core
 
         public static void MessageAll(string format, params object[] args)
         {
-            System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+            var formattedMessage = new System.Text.StringBuilder();
             formattedMessage.AppendFormat(EscapeString(format), args);
             Message(formattedMessage.ToString(), false);
         }
@@ -74,7 +74,7 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel >= EVerboseLevel.Info)
             {
-                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                var formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
@@ -84,7 +84,7 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel >= EVerboseLevel.Detail)
             {
-                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                var formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
@@ -94,7 +94,7 @@ namespace Opus.Core
         {
             if (EVerboseLevel.Full == State.VerbosityLevel)
             {
-                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                var formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }
@@ -102,7 +102,7 @@ namespace Opus.Core
 
         public static void ErrorMessage(string format, params object[] args)
         {
-            System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+            var formattedMessage = new System.Text.StringBuilder();
             formattedMessage.AppendFormat(EscapeString("ERROR: " + format), args);
             Message(formattedMessage.ToString(), true);
         }
@@ -112,7 +112,7 @@ namespace Opus.Core
         {
             if (State.VerbosityLevel > EVerboseLevel.Detail)
             {
-                System.Text.StringBuilder formattedMessage = new System.Text.StringBuilder();
+                var formattedMessage = new System.Text.StringBuilder();
                 formattedMessage.AppendFormat(EscapeString(format), args);
                 Message(formattedMessage.ToString(), false);
             }

@@ -15,7 +15,7 @@ namespace Opus.Core
         /// <returns>True if the Target matches the filters, false otherwise.</returns>
         public static bool MatchFilters(Target target, ITargetFilters filterInterface)
         {
-            BaseTarget baseTarget = (BaseTarget)target;
+            var baseTarget = (BaseTarget)target;
             if (!baseTarget.HasPlatform(filterInterface.Platform))
             {
                 return false;
@@ -29,7 +29,7 @@ namespace Opus.Core
                 return true;
             }
 
-            foreach (System.Type toolsetType in filterInterface.ToolsetTypes)
+            foreach (var toolsetType in filterInterface.ToolsetTypes)
             {
                 if (target.HasToolsetType(toolsetType))
                 {
@@ -51,8 +51,8 @@ namespace Opus.Core
             {
                 throw new Exception("Getting the directory name for a null Toolset is not supported");
             }
-            string versionString = target.Toolset.Version((BaseTarget)target);
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            var versionString = target.Toolset.Version((BaseTarget)target);
+            var builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}", target.ToString(), versionString);
             return builder.ToString().ToLower();
         }

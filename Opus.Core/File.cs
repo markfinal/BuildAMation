@@ -14,7 +14,7 @@ namespace Opus.Core
 
         private static bool ContainsDirectorySeparators(string pathSegment)
         {
-            bool containsSeparators = pathSegment.Contains(DirectorySeparatorString) || pathSegment.Contains(AltDirectorySeparatorString);
+            var containsSeparators = pathSegment.Contains(DirectorySeparatorString) || pathSegment.Contains(AltDirectorySeparatorString);
             return containsSeparators;
         }
 
@@ -28,8 +28,8 @@ namespace Opus.Core
 
         internal static string CombinePaths(ref string baseDirectory, params string[] pathSegments)
         {
-            string combinedPath = baseDirectory;
-            bool canExtendBaseDirectoryWithUps = true;
+            var combinedPath = baseDirectory;
+            var canExtendBaseDirectoryWithUps = true;
             for (int i = 0; i < pathSegments.Length; ++i)
             {
                 ValidateFilePart(pathSegments[i]);
@@ -61,7 +61,7 @@ namespace Opus.Core
 
         public static string CanonicalPath(string path)
         {
-            string canonicalPath = System.IO.Path.GetFullPath(new System.Uri(path).LocalPath);
+            var canonicalPath = System.IO.Path.GetFullPath(new System.Uri(path).LocalPath);
             return canonicalPath;
         }
 
@@ -92,14 +92,14 @@ namespace Opus.Core
 
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            var package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (owner as BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (owner as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
@@ -130,7 +130,7 @@ namespace Opus.Core
                 return true;
             }
 
-            System.IO.DirectoryInfo dirInfo = file.Directory;
+            var dirInfo = file.Directory;
             while (dirInfo.FullName != rootDir)
             {
                 if (System.IO.FileAttributes.Hidden == (dirInfo.Attributes & System.IO.FileAttributes.Hidden))
@@ -154,7 +154,7 @@ namespace Opus.Core
             int i = 0;
             for (; i < pathSegments.Length; ++i)
             {
-                string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
+                var baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
                 if (System.IO.Directory.Exists(baseDirTest))
                 {
                     combinedBaseDirectory = baseDirTest;
@@ -165,7 +165,7 @@ namespace Opus.Core
                 }
             }
 
-            bool isDirectory = false;
+            var isDirectory = false;
             if (i < pathSegments.Length - 1)
             {
                 throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
@@ -180,9 +180,9 @@ namespace Opus.Core
             {
                 try
                 {
-                    System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
-                    System.IO.FileInfo[] files = dirInfo.GetFiles("*", System.IO.SearchOption.AllDirectories);
-                    Opus.Core.StringArray nonHiddenFiles = new StringArray();
+                    var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
+                    var files = dirInfo.GetFiles("*", System.IO.SearchOption.AllDirectories);
+                    var nonHiddenFiles = new StringArray();
                     foreach (var file in files)
                     {
                         if (!IsFileInHiddenHierarchy(file, combinedBaseDirectory))
@@ -202,9 +202,9 @@ namespace Opus.Core
             {
                 try
                 {
-                    System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
-                    System.IO.FileInfo[] files = dirInfo.GetFiles(pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
-                    Opus.Core.StringArray nonHiddenFiles = new StringArray();
+                    var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
+                    var files = dirInfo.GetFiles(pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                    var nonHiddenFiles = new StringArray();
                     foreach (var file in files)
                     {
                         if (0 == (file.Attributes & System.IO.FileAttributes.Hidden))
@@ -232,7 +232,7 @@ namespace Opus.Core
         {
             get
             {
-                bool isValid = (null != this.absolutePath);
+                var isValid = (null != this.absolutePath);
                 return isValid;
             }
         }

@@ -16,8 +16,8 @@ namespace Opus.Core
 
         public ProxyModulePath(params string[] segments)
         {
-            string combinedPath = string.Empty;
-            foreach (string path in segments)
+            var combinedPath = string.Empty;
+            foreach (var path in segments)
             {
                 combinedPath = System.IO.Path.Combine(combinedPath, path);
             }
@@ -32,7 +32,7 @@ namespace Opus.Core
                 return packageId.Path;
             }
 
-            string combinedPath = System.IO.Path.Combine(packageId.Path, this.combinedPathSegments);
+            var combinedPath = System.IO.Path.Combine(packageId.Path, this.combinedPathSegments);
             combinedPath = File.CanonicalPath(combinedPath);
 
             return combinedPath;

@@ -14,15 +14,15 @@ namespace Opus.Core
                 throw new Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
-            PackageInformation mainPackage = State.PackageInfo.MainPackage;
-            string tempDirectory = System.IO.Path.GetTempPath();
-            string resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
+            var mainPackage = State.PackageInfo.MainPackage;
+            var tempDirectory = System.IO.Path.GetTempPath();
+            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
 
-            using (System.Resources.IResourceWriter writer = new System.Resources.ResourceWriter(resourceFilePathName))
+            using (var writer = new System.Resources.ResourceWriter(resourceFilePathName))
             {
-                foreach (PackageInformation package in State.PackageInfo)
+                foreach (var package in State.PackageInfo)
                 {
-                    PackageIdentifier id = package.Identifier;
+                    var id = package.Identifier;
                     string name = id.ToString("_");
                     string value = id.Root;
 
@@ -42,36 +42,36 @@ namespace Opus.Core
                 throw new Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
-            PackageInformation mainPackage = State.PackageInfo.MainPackage;
+            var mainPackage = State.PackageInfo.MainPackage;
 
-            string OpusDirectory = mainPackage.OpusDirectory;
+            var OpusDirectory = mainPackage.OpusDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))
             {
                 System.IO.Directory.CreateDirectory(OpusDirectory);
             }
 
-            string resourceFilePathName = System.IO.Path.Combine(OpusDirectory, "PackageInfoResources.resx");
+            var resourceFilePathName = System.IO.Path.Combine(OpusDirectory, "PackageInfoResources.resx");
 
-            System.Xml.XmlDocument resourceFile = new System.Xml.XmlDocument();
-            System.Xml.XmlElement root = resourceFile.CreateElement("root");
+            var resourceFile = new System.Xml.XmlDocument();
+            var root = resourceFile.CreateElement("root");
             resourceFile.AppendChild(root);
 
             {
-                System.Xml.XmlElement mimeType = resourceFile.CreateElement("resheader");
+                var mimeType = resourceFile.CreateElement("resheader");
                 mimeType.SetAttribute("name", "resmimetype");
                 mimeType.InnerText = "text/microsoft-resx";
                 root.AppendChild(mimeType);
             }
 
             {
-                System.Xml.XmlElement version = resourceFile.CreateElement("resheader");
+                var version = resourceFile.CreateElement("resheader");
                 version.SetAttribute("name", "version");
                 version.InnerText = "2.0";
                 root.AppendChild(version);
             }
 
             {
-                System.Xml.XmlElement reader = resourceFile.CreateElement("resheader");
+                var reader = resourceFile.CreateElement("resheader");
                 reader.SetAttribute("name", "reader");
                 // TODO: this looks like the System.Windows.Forms.dll assembly
                 reader.InnerText = "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
@@ -79,28 +79,28 @@ namespace Opus.Core
             }
 
             {
-                System.Xml.XmlElement writer = resourceFile.CreateElement("resheader");
+                var writer = resourceFile.CreateElement("resheader");
                 writer.SetAttribute("name", "writer");
                 // TODO: this looks like the System.Windows.Forms.dll assembly
                 writer.InnerText = "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
                 root.AppendChild(writer);
             }
 
-            foreach (PackageInformation package in State.PackageInfo)
+            foreach (var package in State.PackageInfo)
             {
-                System.Xml.XmlElement data = resourceFile.CreateElement("data");
+                var data = resourceFile.CreateElement("data");
                 data.SetAttribute("name", package.Identifier.ToString("_"));
-                System.Xml.XmlElement value = resourceFile.CreateElement("value");
+                var value = resourceFile.CreateElement("value");
                 value.InnerText = package.Identifier.Root;
                 data.AppendChild(value);
                 root.AppendChild(data);
             }
 
-            System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+            var xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.CloseOutput = true;
             xmlWriterSettings.OmitXmlDeclaration = true;
-            using (System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(resourceFilePathName, xmlWriterSettings))
+            using (var xmlWriter = System.Xml.XmlWriter.Create(resourceFilePathName, xmlWriterSettings))
             {
                 resourceFile.WriteTo(xmlWriter);
             }

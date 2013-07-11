@@ -55,14 +55,14 @@ namespace Opus.Core
         {
             if (absoluteUri.IsFile)
             {
-                System.IO.StreamReader reader = new System.IO.StreamReader(absoluteUri.LocalPath);
+                var reader = new System.IO.StreamReader(absoluteUri.LocalPath);
                 return reader.BaseStream;
             }
             else
             {
                 if ("http://code.google.com/p/opus" == absoluteUri.ToString())
                 {
-                    System.IO.StreamReader reader = new System.IO.StreamReader(State.OpusPackageDependencySchemaPathNameV2);
+                    var reader = new System.IO.StreamReader(State.OpusPackageDependencySchemaPathNameV2);
                     return reader.BaseStream;
                 }
 
@@ -113,14 +113,14 @@ namespace Opus.Core
                 // OLD style definition files
                 if (args.Exception.SourceUri.Contains(".xsd"))
                 {
-                    System.Uri schemaUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
+                    var schemaUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
                     if (schemaUri.AbsolutePath != args.Exception.SourceUri)
                     {
                         throw new Exception("Duplicate schemas exist! From package definition file '{0}', and from the Opus build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath);
                     }
                 }
 
-                string message = System.String.Format("Validation error: " + args.Message);
+                var message = System.String.Format("Validation error: " + args.Message);
                 message += System.String.Format("\nAt '" + args.Exception.SourceUri + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
 
                 throw new System.Xml.XmlException(message);
@@ -129,7 +129,7 @@ namespace Opus.Core
         
         private void Validate()
         {
-            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+            var settings = new System.Xml.XmlReaderSettings();
             settings.ValidationType = System.Xml.ValidationType.Schema;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
@@ -138,7 +138,7 @@ namespace Opus.Core
             settings.XmlResolver = new OpusXmlResolver();
 
             // Create the XmlReader object.
-            System.Xml.XmlReader reader = System.Xml.XmlReader.Create(this.xmlFilename, settings);
+            var reader = System.Xml.XmlReader.Create(this.xmlFilename, settings);
     
             // Parse the file. 
             while (reader.Read());
@@ -159,7 +159,7 @@ namespace Opus.Core
         {
             if (System.IO.File.Exists(this.xmlFilename))
             {
-                System.IO.FileAttributes attributes = System.IO.File.GetAttributes(this.xmlFilename);
+                var attributes = System.IO.File.GetAttributes(this.xmlFilename);
                 if (0 != (attributes & System.IO.FileAttributes.ReadOnly))
                 {
                     throw new Exception("File '{0}' cannot be written to as it is read only", this.xmlFilename);
@@ -168,13 +168,13 @@ namespace Opus.Core
 
             this.PackageIdentifiers.Sort();
 
-            System.Xml.XmlDocument document = new System.Xml.XmlDocument();
-            string targetNamespace = "Opus";
-            string namespaceURI = "http://code.google.com/p/opus";
-            System.Xml.XmlElement packageDefinition = document.CreateElement(targetNamespace, "PackageDefinition", namespaceURI);
+            var document = new System.Xml.XmlDocument();
+            var targetNamespace = "Opus";
+            var namespaceURI = "http://code.google.com/p/opus";
+            var packageDefinition = document.CreateElement(targetNamespace, "PackageDefinition", namespaceURI);
             {
-                string xmlns = "http://www.w3.org/2001/XMLSchema-instance";
-                System.Xml.XmlAttribute schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
+                var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
+                var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
                 schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, State.OpusPackageDependencySchemaRelativePathNameV2);
                 packageDefinition.Attributes.Append(schemaAttribute);
             }
@@ -182,17 +182,17 @@ namespace Opus.Core
 
             if (this.PackageIdentifiers.Count > 0)
             {
-                System.Xml.XmlElement requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
-                foreach (PackageIdentifier package in this.PackageIdentifiers)
+                var requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
+                foreach (var package in this.PackageIdentifiers)
                 {
                     System.Xml.XmlElement packageElement = null;
 
                     {
-                        System.Xml.XmlNode node = requiredPackages.FirstChild;
+                        var node = requiredPackages.FirstChild;
                         while (node != null)
                         {
-                            System.Xml.XmlAttributeCollection attributes = node.Attributes;
-                            System.Xml.XmlAttribute nameAttribute = attributes["Name"];
+                            var attributes = node.Attributes;
+                            var nameAttribute = attributes["Name"];
                             if ((null != nameAttribute) && (nameAttribute.Value == package.Name))
                             {
                                 packageElement = node as System.Xml.XmlElement;
@@ -210,10 +210,10 @@ namespace Opus.Core
                         requiredPackages.AppendChild(packageElement);
                     }
                     {
-                        System.Xml.XmlElement packageVersionElement = document.CreateElement(targetNamespace, "Version", namespaceURI);
+                        var packageVersionElement = document.CreateElement(targetNamespace, "Version", namespaceURI);
                         packageVersionElement.SetAttribute("Id", package.Version);
 
-                        EPlatform platformFilter = package.PlatformFilter;
+                        var platformFilter = package.PlatformFilter;
                         if (platformFilter == EPlatform.Invalid)
                         {
                             throw new Exception("Dependent '{0}' requires at least one platform filter", package.ToString());
@@ -221,10 +221,10 @@ namespace Opus.Core
 
                         if (platformFilter != EPlatform.All)
                         {
-                            string platformFilterString = Platform.ToString(platformFilter, ' ');
-                            string[] split = platformFilterString.Split(' ');
+                            var platformFilterString = Platform.ToString(platformFilter, ' ');
+                            var split = platformFilterString.Split(' ');
                             string conditionText = null;
-                            foreach (string platform in split)
+                            foreach (var platform in split)
                             {
                                 if (null != conditionText)
                                 {
@@ -249,10 +249,10 @@ namespace Opus.Core
 
             if (this.OpusAssemblies.Count > 0)
             {
-                System.Xml.XmlElement requiredOpusAssemblies = document.CreateElement(targetNamespace, "RequiredOpusAssemblies", namespaceURI);
-                foreach (string assemblyName in this.OpusAssemblies)
+                var requiredOpusAssemblies = document.CreateElement(targetNamespace, "RequiredOpusAssemblies", namespaceURI);
+                foreach (var assemblyName in this.OpusAssemblies)
                 {
-                    System.Xml.XmlElement assemblyElement = document.CreateElement(targetNamespace, "OpusAssembly", namespaceURI);
+                    var assemblyElement = document.CreateElement(targetNamespace, "OpusAssembly", namespaceURI);
                     assemblyElement.SetAttribute("Name", assemblyName);
                     requiredOpusAssemblies.AppendChild(assemblyElement);
                 }
@@ -261,10 +261,10 @@ namespace Opus.Core
 
             if (this.DotNetAssemblies.Count > 0)
             {
-                System.Xml.XmlElement requiredDotNetAssemblies = document.CreateElement(targetNamespace, "RequiredDotNetAssemblies", namespaceURI);
-                foreach (DotNetAssemblyDescription desc in this.DotNetAssemblies)
+                var requiredDotNetAssemblies = document.CreateElement(targetNamespace, "RequiredDotNetAssemblies", namespaceURI);
+                foreach (var desc in this.DotNetAssemblies)
                 {
-                    System.Xml.XmlElement assemblyElement = document.CreateElement(targetNamespace, "DotNetAssembly", namespaceURI);
+                    var assemblyElement = document.CreateElement(targetNamespace, "DotNetAssembly", namespaceURI);
                     assemblyElement.SetAttribute("Name", desc.Name);
                     if (null != desc.RequiredTargetFramework)
                     {
@@ -277,23 +277,23 @@ namespace Opus.Core
 
             // supported platforms
             {
-                System.Xml.XmlElement supportedPlatformsElement = document.CreateElement(targetNamespace, "SupportedPlatforms", namespaceURI);
+                var supportedPlatformsElement = document.CreateElement(targetNamespace, "SupportedPlatforms", namespaceURI);
 
                 if (EPlatform.Windows == (this.SupportedPlatforms & EPlatform.Windows))
                 {
-                    System.Xml.XmlElement platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
+                    var platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
                     platformElement.SetAttribute("Name", "Windows");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.Unix == (this.SupportedPlatforms & EPlatform.Unix))
                 {
-                    System.Xml.XmlElement platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
+                    var platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
                     platformElement.SetAttribute("Name", "Unix");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.OSX == (this.SupportedPlatforms & EPlatform.OSX))
                 {
-                    System.Xml.XmlElement platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
+                    var platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
                     platformElement.SetAttribute("Name", "OSX");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
@@ -304,11 +304,11 @@ namespace Opus.Core
             // definitions
             if (this.Definitions.Count > 0)
             {
-                System.Xml.XmlElement definitionsElement = document.CreateElement(targetNamespace, "Definitions", namespaceURI);
+                var definitionsElement = document.CreateElement(targetNamespace, "Definitions", namespaceURI);
 
                 foreach (string define in this.Definitions)
                 {
-                    System.Xml.XmlElement defineElement = document.CreateElement(targetNamespace, "Definition", namespaceURI);
+                    var defineElement = document.CreateElement(targetNamespace, "Definition", namespaceURI);
                     defineElement.SetAttribute("Name", define);
                     definitionsElement.AppendChild(defineElement);
                 }
@@ -316,7 +316,7 @@ namespace Opus.Core
                 packageDefinition.AppendChild(definitionsElement);
             }
 
-            System.Xml.XmlWriterSettings xmlWriterSettings = new System.Xml.XmlWriterSettings();
+            var xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.CloseOutput = true;
             xmlWriterSettings.OmitXmlDeclaration = false;
@@ -324,7 +324,7 @@ namespace Opus.Core
             xmlWriterSettings.NewLineChars = "\n";
             xmlWriterSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
 
-            using (System.Xml.XmlWriter xmlWriter = System.Xml.XmlWriter.Create(this.xmlFilename, xmlWriterSettings))
+            using (var xmlWriter = System.Xml.XmlWriter.Create(this.xmlFilename, xmlWriterSettings))
             {
                 document.WriteTo(xmlWriter);
             }
@@ -337,7 +337,7 @@ namespace Opus.Core
 
         public void Read(bool validateSchemaLocation)
         {
-            System.Xml.XmlReaderSettings xmlReaderSettings = new System.Xml.XmlReaderSettings();
+            var xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = true;
             xmlReaderSettings.CloseInput = true;
             xmlReaderSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
@@ -386,14 +386,14 @@ namespace Opus.Core
             //string pattern = @"^('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')";
             //string pattern = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')\s([\|]{2})";
             //string pattern2 = @"^\s([\|]{2})\s";
-            string[] pattern = new string[2];
+            var pattern = new string[2];
             pattern[0] = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')";
             pattern[1] = @"([\|]{2})";
             System.Text.RegularExpressions.RegexOptions expOptions =
                 System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace |
                 System.Text.RegularExpressions.RegexOptions.Singleline;
 
-            EPlatform supportedPlatforms = EPlatform.Invalid;
+            var supportedPlatforms = EPlatform.Invalid;
 
             int position = 0;
             int patternIndex = 0;
@@ -406,8 +406,8 @@ namespace Opus.Core
                     break;
                 }
 
-                System.Text.RegularExpressions.Regex exp = new System.Text.RegularExpressions.Regex(pattern[patternIndex], expOptions);
-                System.Text.RegularExpressions.MatchCollection matches = exp.Matches(condition, position);
+                var exp = new System.Text.RegularExpressions.Regex(pattern[patternIndex], expOptions);
+                var matches = exp.Matches(condition, position);
                 if (0 == matches.Count)
                 {
                     break;
@@ -440,8 +440,8 @@ namespace Opus.Core
                                 throw new Exception("Only supporting equivalence == in '{0}'", match.Value);
                             }
 
-                            string platform = match.Groups[4].Value;
-                            EPlatform ePlatform = Platform.FromString(platform);
+                            var platform = match.Groups[4].Value;
+                            var ePlatform = Platform.FromString(platform);
                             if (ePlatform == EPlatform.Invalid)
                             {
                                 throw new Exception("Unrecognize platform '{0}'", platform);
@@ -477,13 +477,13 @@ namespace Opus.Core
 
         private bool ReadRequiredPackages(System.Xml.XmlReader xmlReader)
         {
-            string requiredPackagesElementName = "Opus:RequiredPackages";
+            var requiredPackagesElementName = "Opus:RequiredPackages";
             if (requiredPackagesElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            string packageElementName = "Opus:Package";
+            var packageElementName = "Opus:Package";
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == requiredPackagesElementName) &&
@@ -494,14 +494,14 @@ namespace Opus.Core
 
                 if (xmlReader.Name == packageElementName)
                 {
-                    string packageNameAttribute = "Name";
+                    var packageNameAttribute = "Name";
                     if (!xmlReader.MoveToAttribute(packageNameAttribute))
                     {
                         throw new Exception("Required attribute 'Name' of 'Package' node missing");
                     }
-                    string packageName = xmlReader.Value;
+                    var packageName = xmlReader.Value;
 
-                    string packageVersionElementName = "Opus:Version";
+                    var packageVersionElementName = "Opus:Version";
                     while (xmlReader.Read())
                     {
                         if ((xmlReader.Name == packageElementName) &&
@@ -514,30 +514,30 @@ namespace Opus.Core
                         {
                             if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                             {
-                                string packageVersionIdAttribute = "Id";
+                                var packageVersionIdAttribute = "Id";
                                 if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
                                 {
                                     throw new Exception("Required 'Id' attribute of 'Version' node missing");
                                 }
-                                string packageVersion = xmlReader.Value;
+                                var packageVersion = xmlReader.Value;
 
-                                EPlatform platformFilter = EPlatform.All;
-                                string packageConditionAttribute = "Condition";
+                                var platformFilter = EPlatform.All;
+                                var packageConditionAttribute = "Condition";
                                 if (xmlReader.MoveToAttribute(packageConditionAttribute))
                                 {
-                                    string conditionValue = xmlReader.Value;
+                                    var conditionValue = xmlReader.Value;
                                     platformFilter = this.InterpretConditionValue(conditionValue);
                                 }
 
-                                bool isDefaultVersion = false;
-                                string packageVersionDefaultAttribute = "Default";
+                                var isDefaultVersion = false;
+                                var packageVersionDefaultAttribute = "Default";
                                 if (xmlReader.MoveToAttribute(packageVersionDefaultAttribute))
                                 {
-                                    bool isDefault = System.Xml.XmlConvert.ToBoolean(xmlReader.Value);
+                                    var isDefault = System.Xml.XmlConvert.ToBoolean(xmlReader.Value);
                                     isDefaultVersion = isDefault;
                                 }
 
-                                PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                var id = new PackageIdentifier(packageName, packageVersion);
                                 id.PlatformFilter = platformFilter;
                                 id.IsDefaultVersion = isDefaultVersion;
                                 this.PackageIdentifiers.Add(id);
@@ -560,13 +560,13 @@ namespace Opus.Core
 
         private bool ReadRequiredOpusAssemblies(System.Xml.XmlReader xmlReader)
         {
-            string requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
+            var requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
             if (requiredOpusAssembliesElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            string opusAssemblyElementName = "Opus:OpusAssembly";
+            var opusAssemblyElementName = "Opus:OpusAssembly";
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == requiredOpusAssembliesElementName) &&
@@ -579,12 +579,12 @@ namespace Opus.Core
                 {
                     if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                     {
-                        string assemblyNameAttribute = "Name";
+                        var assemblyNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
                         {
                             throw new Exception("Required 'Name' attribute of 'Opus:OpusAssembly' node missing");
                         }
-                        string assemblyName = xmlReader.Value;
+                        var assemblyName = xmlReader.Value;
 
                         this.OpusAssemblies.Add(assemblyName);
                     }
@@ -600,13 +600,13 @@ namespace Opus.Core
 
         private bool ReadRequiredDotNetAssemblies(System.Xml.XmlReader xmlReader)
         {
-            string requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
+            var requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
             if (requiredDotNetAssembliesElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            string dotNetAssemblyElementName = "Opus:DotNetAssembly";
+            var dotNetAssemblyElementName = "Opus:DotNetAssembly";
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
@@ -619,16 +619,16 @@ namespace Opus.Core
                 {
                     if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                     {
-                        string assemblyNameAttribute = "Name";
+                        var assemblyNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
                         {
                             throw new Exception("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing");
                         }
-                        string assemblyName = xmlReader.Value;
+                        var assemblyName = xmlReader.Value;
 
-                        DotNetAssemblyDescription desc = new DotNetAssemblyDescription(assemblyName);
+                        var desc = new DotNetAssemblyDescription(assemblyName);
 
-                        string assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
+                        var assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
                         if (xmlReader.MoveToAttribute(assemblyRequiredTargetFrameworkNameAttribute))
                         {
                             desc.RequiredTargetFramework = xmlReader.Value;
@@ -648,14 +648,14 @@ namespace Opus.Core
 
         private bool ReadSupportedPlatforms(System.Xml.XmlReader xmlReader)
         {
-            string supportedPlatformsElementName = "Opus:SupportedPlatforms";
+            var supportedPlatformsElementName = "Opus:SupportedPlatforms";
             if (supportedPlatformsElementName != xmlReader.Name)
             {
                 return false;
             }
 
             this.SupportedPlatforms = EPlatform.Invalid;
-            string platformElementName = "Opus:Platform";
+            var platformElementName = "Opus:Platform";
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == supportedPlatformsElementName) &&
@@ -668,13 +668,13 @@ namespace Opus.Core
                 {
                     if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                     {
-                        string platformNameAttribute = "Name";
+                        var platformNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(platformNameAttribute))
                         {
                             throw new Exception("Required 'Name' attribute of 'Opus:Platform' node missing");
                         }
 
-                        string platformName = xmlReader.Value;
+                        var platformName = xmlReader.Value;
                         if ("Windows" == platformName)
                         {
                             this.SupportedPlatforms |= EPlatform.Windows;
@@ -700,13 +700,13 @@ namespace Opus.Core
 
         private bool ReadDefinitions(System.Xml.XmlReader xmlReader)
         {
-            string definitionsElementName = "Opus:Definitions";
+            var definitionsElementName = "Opus:Definitions";
             if (definitionsElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            string defineElementName = "Opus:Definition";
+            var defineElementName = "Opus:Definition";
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == definitionsElementName) &&
@@ -719,13 +719,13 @@ namespace Opus.Core
                 {
                     if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                     {
-                        string defineNameAttribute = "Name";
+                        var defineNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(defineNameAttribute))
                         {
                             throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing");
                         }
 
-                        string definition = xmlReader.Value;
+                        var definition = xmlReader.Value;
 
                         this.Definitions.Add(definition);
                     }
@@ -743,7 +743,7 @@ namespace Opus.Core
         {
             try
             {
-                System.Xml.XmlReaderSettings settings = readerSettings.Clone();
+                var settings = readerSettings.Clone();
                 if (this.validate)
                 {
                     if (validateSchemaLocation)
@@ -754,7 +754,7 @@ namespace Opus.Core
                     settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
                 }
 
-                using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
+                using (var xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
                 {
                     string rootElementName = "Opus:PackageDefinition";
                     if (!xmlReader.ReadToFollowing(rootElementName))
@@ -821,10 +821,10 @@ namespace Opus.Core
         {
             try
             {
-                System.Xml.XmlReaderSettings settings = readerSettings.Clone();
+                var settings = readerSettings.Clone();
                 settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathName);
 
-                using (System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
+                using (var xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
                 {
                     while (xmlReader.Read())
                     {
@@ -864,11 +864,11 @@ namespace Opus.Core
                                             if (xmlReader.HasAttributes)
                                             {
                                                 xmlReader.MoveToAttribute("Name");
-                                                string packageName = xmlReader.Value;
+                                                var packageName = xmlReader.Value;
                                                 xmlReader.MoveToAttribute("Version");
-                                                string packageVersion = xmlReader.Value;
+                                                var packageVersion = xmlReader.Value;
 
-                                                PackageIdentifier id = new PackageIdentifier(packageName, packageVersion);
+                                                var id = new PackageIdentifier(packageName, packageVersion);
                                                 id.PlatformFilter = EPlatform.All;
                                                 this.PackageIdentifiers.Add(id);
 
@@ -902,8 +902,8 @@ namespace Opus.Core
 
             // add required DotNet assemblies
             {
-                DotNetAssemblyDescription systemDesc = new DotNetAssemblyDescription("System");
-                DotNetAssemblyDescription systemXmlDesc = new DotNetAssemblyDescription("System.Xml");
+                var systemDesc = new DotNetAssemblyDescription("System");
+                var systemXmlDesc = new DotNetAssemblyDescription("System.Xml");
 
                 systemDesc.RequiredTargetFramework = "2.0.50727";
                 systemXmlDesc.RequiredTargetFramework = "2.0.50727";
@@ -922,7 +922,7 @@ namespace Opus.Core
 
         public void AddRequiredPackage(PackageIdentifier idToAdd)
         {
-            foreach (PackageIdentifier id in this.PackageIdentifiers)
+            foreach (var id in this.PackageIdentifiers)
             {
                 if (id.Match(idToAdd, false))
                 {
@@ -937,7 +937,7 @@ namespace Opus.Core
         public bool RemovePackage(PackageIdentifier idToRemove)
         {
             PackageIdentifier idToRemoveReally = null;
-            foreach (PackageIdentifier id in this.PackageIdentifiers)
+            foreach (var id in this.PackageIdentifiers)
             {
                 if (id.Match(idToRemove, false))
                 {

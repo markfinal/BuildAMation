@@ -58,7 +58,7 @@ namespace Opus.Core
         {
             this.BaseTarget = baseTarget;
             this.Toolset = toolset;
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            var builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}{2}", baseTarget.ToString(), BaseTarget.ToStringSeparator, this.Toolset.GetType().Namespace);
             this.Key = builder.ToString();
         }
@@ -93,7 +93,7 @@ namespace Opus.Core
                 return false;
             }
 
-            bool hasToolset = toolsetType.IsAssignableFrom(this.Toolset.GetType());
+            var hasToolset = toolsetType.IsAssignableFrom(this.Toolset.GetType());
             return hasToolset;
         }
 
@@ -104,7 +104,7 @@ namespace Opus.Core
 
         public string ToolsetName(char formatter)
         {
-            string text = this.Toolset.GetType().Namespace;
+            var text = this.Toolset.GetType().Namespace;
             if (formatter == 'u')
             {
                 return text.ToUpper();
