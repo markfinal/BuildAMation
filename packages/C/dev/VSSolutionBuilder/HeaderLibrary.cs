@@ -9,10 +9,10 @@ namespace VSSolutionBuilder
     {
         public object Build(C.HeaderLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule headerLibraryModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = headerLibraryModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            string moduleName = node.ModuleName;
+            var headerLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = headerLibraryModule.OwningNode;
+            var target = node.Target;
+            var moduleName = node.ModuleName;
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -24,15 +24,15 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
-                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
-                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
+                    var projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
                     projectPathName += projectExtension;
 
-                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    var projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, headerLibraryModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
@@ -40,7 +40,7 @@ namespace VSSolutionBuilder
             }
 
             {
-                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                var platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
                 if (!projectData.Platforms.Contains(platformName))
                 {
                     projectData.Platforms.Add(platformName);
@@ -56,7 +56,7 @@ namespace VSSolutionBuilder
                 }
             }
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
@@ -77,24 +77,24 @@ namespace VSSolutionBuilder
 
             configuration.Type = EProjectConfigurationType.Utility;
 
-            System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
-                                                               System.Reflection.BindingFlags.Public |
-                                                               System.Reflection.BindingFlags.NonPublic;
-            System.Reflection.FieldInfo[] fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
-            foreach (System.Reflection.FieldInfo field in fields)
+            var fieldBindingFlags = System.Reflection.BindingFlags.Instance |
+                                    System.Reflection.BindingFlags.Public |
+                                    System.Reflection.BindingFlags.NonPublic;
+            var fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
+            foreach (var field in fields)
             {
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    Opus.Core.FileCollection headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        ICProject cProject = projectData as ICProject;
+                        var cProject = projectData as ICProject;
                         lock (cProject.HeaderFiles)
                         {
                             if (!cProject.HeaderFiles.Contains(headerPath))
                             {
-                                ProjectFile headerFile = new ProjectFile(headerPath);
+                                var headerFile = new ProjectFile(headerPath);
                                 cProject.HeaderFiles.Add(headerFile);
                             }
                         }

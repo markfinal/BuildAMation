@@ -9,10 +9,10 @@ namespace VSSolutionBuilder
     {
         public object Build(C.DynamicLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule dynamicLibraryModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            string moduleName = node.ModuleName;
+            var dynamicLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = dynamicLibraryModule.OwningNode;
+            var target = node.Target;
+            var moduleName = node.ModuleName;
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -30,7 +30,7 @@ namespace VSSolutionBuilder
             }
 
             {
-                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                var platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
                 if (!projectData.Platforms.Contains(platformName))
                 {
                     projectData.Platforms.Add(platformName);
@@ -48,7 +48,7 @@ namespace VSSolutionBuilder
 
             if (null != node.ExternalDependents)
             {
-                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (dependentNode.ModuleName != moduleName)
                     {
@@ -57,7 +57,7 @@ namespace VSSolutionBuilder
                         {
                             if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
                             {
-                                IProject dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                                var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
                                 projectData.DependentProjects.Add(dependentProject);
                             }
                         }
@@ -65,9 +65,9 @@ namespace VSSolutionBuilder
                 }
             }
 
-            Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
+            var dynamicLibraryOptions = dynamicLibraryModule.Options;
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
@@ -108,24 +108,24 @@ namespace VSSolutionBuilder
                 }
             }
 
-            System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
-                                                               System.Reflection.BindingFlags.Public |
-                                                               System.Reflection.BindingFlags.NonPublic;
-            System.Reflection.FieldInfo[] fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
-            foreach (System.Reflection.FieldInfo field in fields)
+            var fieldBindingFlags = System.Reflection.BindingFlags.Instance |
+                                    System.Reflection.BindingFlags.Public |
+                                    System.Reflection.BindingFlags.NonPublic;
+            var fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
+            foreach (var field in fields)
             {
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    Opus.Core.FileCollection headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        ICProject cProject = projectData as ICProject;
+                        var cProject = projectData as ICProject;
                         lock (cProject.HeaderFiles)
                         {
                             if (!cProject.HeaderFiles.Contains(headerPath))
                             {
-                                ProjectFile headerFile = new ProjectFile(headerPath);
+                                var headerFile = new ProjectFile(headerPath);
                                 cProject.HeaderFiles.Add(headerFile);
                             }
                         }
@@ -135,22 +135,22 @@ namespace VSSolutionBuilder
 
             configuration.Type = EProjectConfigurationType.DynamicLibrary;
 
-            string toolName = "VCLinkerTool";
-            ProjectTool vcCLLinkerTool = configuration.GetTool(toolName);
+            var toolName = "VCLinkerTool";
+            var vcCLLinkerTool = configuration.GetTool(toolName);
             if (null == vcCLLinkerTool)
             {
                 vcCLLinkerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
-                string outputDirectory = (dynamicLibraryOptions as C.LinkerOptionCollection).OutputDirectoryPath;
+                var outputDirectory = (dynamicLibraryOptions as C.LinkerOptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
 
                 if (dynamicLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = dynamicLibraryOptions as VisualStudioProcessor.IVisualStudioSupport;
-                    VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+                    var visualStudioProjectOption = dynamicLibraryOptions as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
+                    foreach (var setting in settingsDictionary)
                     {
                         vcCLLinkerTool[setting.Key] = setting.Value;
                     }
