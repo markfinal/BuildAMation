@@ -18,23 +18,23 @@ namespace C
 
         public void Include(object owner, params string[] pathSegments)
         {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            foreach (string path in filePaths)
+            var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            foreach (var path in filePaths)
             {
-                ObjectFile objectFile = new ObjectFile();
+                var objectFile = new ObjectFile();
                 (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
                 objectFile.SourceFile.SetAbsolutePath(path);
                 this.list.Add(objectFile);
@@ -43,24 +43,24 @@ namespace C
 
         public void Exclude(object owner, params string[] pathSegments)
         {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            System.Collections.Generic.List<ObjectFile> toRemove = new System.Collections.Generic.List<ObjectFile>();
-            foreach (string path in filePaths)
+            var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            var toRemove = new System.Collections.Generic.List<ObjectFile>();
+            foreach (var path in filePaths)
             {
-                foreach (ObjectFile file in this.list)
+                foreach (var file in this.list)
                 {
                     if (file.SourceFile.AbsolutePath == path)
                     {
@@ -69,7 +69,7 @@ namespace C
                 }
             }
 
-            foreach (ObjectFile file in toRemove)
+            foreach (var file in toRemove)
             {
                 this.list.Remove(file);
             }

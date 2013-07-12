@@ -32,8 +32,8 @@ namespace C
             var thirdPartyModule = node.Module as C.ThirdPartyModule;
             if (null != thirdPartyModule)
             {
-                string packagePath = node.Package.Identifier.Path;
-                Opus.Core.ProxyModulePath proxyPath = (node.Module as Opus.Core.BaseModule).ProxyPath;
+                var packagePath = node.Package.Identifier.Path;
+                var proxyPath = (node.Module as Opus.Core.BaseModule).ProxyPath;
                 if (null != proxyPath)
                 {
                     packagePath = proxyPath.Combine(node.Package.Identifier);

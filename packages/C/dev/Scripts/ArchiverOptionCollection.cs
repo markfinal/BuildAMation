@@ -11,11 +11,11 @@ namespace C
         {
             this.OutputName = node.ModuleName;
 
-            Opus.Core.Target target = node.Target;
-            IArchiverTool archiverTool = target.Toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
+            var target = node.Target;
+            var archiverTool = target.Toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(archiverTool.StaticLibraryOutputSubDirectory);
 
-            IArchiverOptions archiverOptions = this as IArchiverOptions;
+            var archiverOptions = this as IArchiverOptions;
             archiverOptions.AdditionalOptions = "";
         }
 
@@ -53,9 +53,9 @@ namespace C
         {
             if (!this.OutputPaths.Has(C.OutputFileFlags.StaticLibrary))
             {
-                Opus.Core.Target target = node.Target;
-                IArchiverTool archiverTool = target.Toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
-                string libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverTool.StaticLibraryPrefix + this.OutputName + archiverTool.StaticLibrarySuffix);
+                var target = node.Target;
+                var archiverTool = target.Toolset.Tool(typeof(IArchiverTool)) as IArchiverTool;
+                var libraryPathname = System.IO.Path.Combine(this.OutputDirectoryPath, archiverTool.StaticLibraryPrefix + this.OutputName + archiverTool.StaticLibrarySuffix);
                 this.LibraryFilePath = libraryPathname;
             }
 

@@ -30,15 +30,15 @@ namespace C
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
         {
-            Win32Resource resourceModule = node.Module as Win32Resource;
+            var resourceModule = node.Module as Win32Resource;
             if (null != resourceModule)
             {
-                string sourcePathName = resourceModule.ResourceFile.AbsolutePath;
+                var sourcePathName = resourceModule.ResourceFile.AbsolutePath;
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
 
-            Opus.Core.Target target = node.Target;
-            ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            var target = node.Target;
+            var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
         }
 
@@ -46,9 +46,9 @@ namespace C
         {
             if (!this.OutputPaths.Has(C.OutputFileFlags.Win32CompiledResource))
             {
-                Opus.Core.Target target = node.Target;
+                var target = node.Target;
                 var resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
-                string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
+                var objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
                 this.CompiledResourceFilePath = objectPathname;
             }
 
@@ -87,7 +87,7 @@ namespace C
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
         {
-            Opus.Core.DirectoryCollection directories = new Opus.Core.DirectoryCollection();
+            var directories = new Opus.Core.DirectoryCollection();
             directories.Add(System.IO.Path.GetDirectoryName(this.CompiledResourceFilePath), false);
             return directories;
         }

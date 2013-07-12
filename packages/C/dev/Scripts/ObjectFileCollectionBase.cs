@@ -11,9 +11,9 @@ namespace C
 
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
-            Opus.Core.ModuleCollection collection = new Opus.Core.ModuleCollection();
+            var collection = new Opus.Core.ModuleCollection();
 
-            foreach (ObjectFile objectFile in this.list)
+            foreach (var objectFile in this.list)
             {
                 collection.Add(objectFile as Opus.Core.IModule);
             }
@@ -23,28 +23,28 @@ namespace C
 
         public Opus.Core.IModule GetChildModule(object owner, params string[] pathSegments)
         {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             if (filePaths.Count != 1)
             {
                 throw new Opus.Core.Exception("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n'));
             }
 
-            string pathToFind = filePaths[0];
+            var pathToFind = filePaths[0];
 
-            foreach (ObjectFile objFile in this.list)
+            foreach (var objFile in this.list)
             {
                 if (objFile.SourceFile.AbsolutePath == pathToFind)
                 {
