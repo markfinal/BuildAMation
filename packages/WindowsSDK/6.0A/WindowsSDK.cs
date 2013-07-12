@@ -21,18 +21,18 @@ namespace WindowsSDK
                 return;
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v6.0A"))
+            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v6.0A"))
             {
                 if (null == key)
                 {
                     // TODO: do I want to hard code VisualC here?
-                    Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", "visualc") as Opus.Core.IToolset;
+                    var toolset = Opus.Core.State.Get("Toolset", "visualc") as Opus.Core.IToolset;
                     if (null == toolset)
                     {
                         throw new Opus.Core.Exception("Toolset information for 'visualc' is missing");
                     }
 
-                    string platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");
+                    var platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");
                     
                     if (System.IO.Directory.Exists(platformSDKPath))
                     {
