@@ -59,7 +59,7 @@ namespace Clang
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string executablePath = System.IO.Path.Combine(this.toolset.InstallPath(baseTarget), "clang++");
+            var executablePath = System.IO.Path.Combine(this.toolset.InstallPath(baseTarget), "clang++");
             if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 // TODO: can we have this file extension somewhere central?
