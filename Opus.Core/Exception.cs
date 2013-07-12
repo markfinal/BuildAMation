@@ -57,6 +57,7 @@ namespace Opus.Core
         public Exception(string message, System.Exception innerException)
             : this(innerException, message)
         {
+            // TODO: remove this and fix what breaks
         }
 
         /// <summary>
