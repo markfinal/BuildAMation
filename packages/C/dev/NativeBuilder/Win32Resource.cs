@@ -9,22 +9,22 @@ namespace NativeBuilder
     {
         public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            string resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
+            var resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
-            Opus.Core.BaseModule resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
+            var resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var resourceFileOptions = resourceFileModule.Options;
 
-            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
+            var compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
 
             // dependency checking, source against output files
             {
-                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                var inputFiles = new Opus.Core.StringArray();
                 inputFiles.Add(resourceFilePath);
-                Opus.Core.StringArray outputFiles = compilerOptions.OutputPaths.Paths;
+                var outputFiles = compilerOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", resourceFileModule.OwningNode.UniqueModuleName);
@@ -41,7 +41,7 @@ namespace NativeBuilder
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
                 {
                     NativeBuilder.MakeDirectory(directoryPath);

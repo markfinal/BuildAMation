@@ -9,20 +9,20 @@ namespace NativeBuilder
     {
         public object Build(C.Application moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule applicationModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = applicationModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
-            C.ILinkerOptions linkerOptions = applicationOptions as C.ILinkerOptions;
+            var applicationModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = applicationModule.OwningNode;
+            var target = node.Target;
+            var applicationOptions = applicationModule.Options;
+            var linkerOptions = applicationOptions as C.ILinkerOptions;
 
-            C.OutputFileFlags objectFileFlags = C.OutputFileFlags.ObjectFile;
+            var objectFileFlags = C.OutputFileFlags.ObjectFile;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 objectFileFlags |= C.OutputFileFlags.Win32CompiledResource;
             }
 
             // find dependent object files
-            Opus.Core.StringArray dependentObjectFiles = new Opus.Core.StringArray();
+            var dependentObjectFiles = new Opus.Core.StringArray();
             if (null != node.Children)
             {
                 node.Children.FilterOutputPaths(objectFileFlags, dependentObjectFiles);
@@ -48,13 +48,13 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                var inputFiles = new Opus.Core.StringArray();
                 inputFiles.AddRange(dependentObjectFiles);
                 if (null != dependentLibraryFiles)
                 {
                     inputFiles.AddRange(dependentLibraryFiles);
                 }
-                Opus.Core.StringArray outputFiles = applicationOptions.OutputPaths.Paths;
+                var outputFiles = applicationOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -69,7 +69,8 @@ namespace NativeBuilder
                 var commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                // TODO: convert to var
                 foreach (string directoryPath in directoriesToCreate)
                 {
                     NativeBuilder.MakeDirectory(directoryPath);
@@ -84,7 +85,7 @@ namespace NativeBuilder
             commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));
 
             // then libraries
-            C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+            var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
             C.LinkerUtilities.AppendLibrariesToCommandLine(commandLineBuilder, linkerTool, linkerOptions, dependentLibraryFiles);
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, commandLineBuilder);
