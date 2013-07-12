@@ -51,6 +51,8 @@ namespace Opus
 
             Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
+            // this is now optional - if you pass -builder=<name> then the generated package will be limited to that
+            // otherwise, all packages with names ending in 'Builder' will have their scripts added
             Core.BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information

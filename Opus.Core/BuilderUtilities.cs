@@ -7,6 +7,11 @@ namespace Opus.Core
 {
     public static class BuilderUtilities
     {
+        public static bool IsBuilderPackage(string packageName)
+        {
+            return packageName.EndsWith("Builder");
+        }
+
         public static void SetBuilderPackage()
         {
             if (null == State.BuilderName)

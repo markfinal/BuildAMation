@@ -101,20 +101,35 @@ namespace Opus.Core
         {
             get
             {
+                var builderNames = new StringArray();
+
                 var builderPackage = State.BuilderPackage;
-                if (null == builderPackage)
+                if (null != builderPackage)
                 {
-                    return null;
+                    builderNames.Add(builderPackage.Name);
+                }
+                else
+                {
+                    foreach (var package in State.PackageInfo)
+                    {
+                        if (BuilderUtilities.IsBuilderPackage(package.Name))
+                        {
+                            builderNames.Add(package.Name);
+                        }
+                    }
                 }
 
                 var builderScripts = new StringArray();
-                var builderDirectory = System.IO.Path.Combine(this.Identifier.Path, builderPackage.Name);
-                if (System.IO.Directory.Exists(builderDirectory))
+                foreach (var builderName in builderNames)
                 {
-                    var files = System.IO.Directory.GetFiles(builderDirectory, "*.cs");
-                    if (files.Length > 0)
+                    var builderDirectory = System.IO.Path.Combine(this.Identifier.Path, builderName);
+                    if (System.IO.Directory.Exists(builderDirectory))
                     {
-                        builderScripts.AddRange(files);
+                        var files = System.IO.Directory.GetFiles(builderDirectory, "*.cs");
+                        if (files.Length > 0)
+                        {
+                            builderScripts.AddRange(files);
+                        }
                     }
                 }
 
