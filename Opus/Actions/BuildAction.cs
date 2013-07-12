@@ -43,15 +43,14 @@ namespace Opus
                 Core.State.ShowTimingStatistics = true;
                 additionalArgumentProfile.StopProfile();
 
-                // TODO: these two exit codes need to be different
                 if (!Core.PackageUtilities.ExecutePackageAssembly())
                 {
-                    System.Environment.ExitCode = -3;
+                    System.Environment.ExitCode = -6;
                 }
             }
             else
             {
-                System.Environment.ExitCode = -3;
+                System.Environment.ExitCode = -5;
             }
 
             return true;

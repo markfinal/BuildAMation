@@ -212,7 +212,7 @@ namespace Opus
 
             if (!this.triggerAction.Execute())
             {
-                System.Environment.ExitCode = -3;
+                System.Environment.ExitCode = -4;
             }
         }
 
