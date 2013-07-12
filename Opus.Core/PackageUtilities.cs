@@ -326,7 +326,7 @@ namespace Opus.Core
             return hash;
         }
 
-        public static bool CompilePackageIntoAssembly()
+        public static bool CompilePackageAssembly()
         {
             // validate build root
             if (null == State.BuildRoot)
@@ -357,38 +357,69 @@ namespace Opus.Core
 
             // gather source files
             var sourceCode = new StringArray();
-
             int packageIndex = 0;
             foreach (var package in State.PackageInfo)
             {
                 var id = package.Identifier;
                 Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
 
-                using (var reader = new System.IO.StreamReader(id.ScriptPathName))
+                // to compile with debug information, you must compile the files
+                // to compile without, we need to file contents to hash the source
+                if (State.CompileWithDebugSymbols)
                 {
-                    sourceCode.Add(reader.ReadToEnd());
+                    sourceCode.Add(id.ScriptPathName);
+                }
+                else
+                {
+                    using (var reader = new System.IO.StreamReader(id.ScriptPathName))
+                    {
+                        sourceCode.Add(reader.ReadToEnd());
+                    }
                 }
                 Log.DebugMessage("\t'{0}'", id.ScriptPathName);
+
                 if (null != package.Scripts)
                 {
-                    foreach (var scriptFile in package.Scripts)
+                    if (State.CompileWithDebugSymbols)
                     {
-                        using (var reader = new System.IO.StreamReader(scriptFile))
+                        foreach (var scriptFile in package.Scripts)
                         {
-                            sourceCode.Add(reader.ReadToEnd());
+                            sourceCode.Add(scriptFile);
+                            Log.DebugMessage("\t'{0}'", scriptFile);
                         }
-                        Log.DebugMessage("\t'{0}'", scriptFile);
+                    }
+                    else
+                    {
+                        foreach (var scriptFile in package.Scripts)
+                        {
+                            using (var reader = new System.IO.StreamReader(scriptFile))
+                            {
+                                sourceCode.Add(reader.ReadToEnd());
+                            }
+                            Log.DebugMessage("\t'{0}'", scriptFile);
+                        }
                     }
                 }
                 if (null != package.BuilderScripts)
                 {
-                    foreach (var builderScriptFile in package.BuilderScripts)
+                    if (State.CompileWithDebugSymbols)
                     {
-                        using (var reader = new System.IO.StreamReader(builderScriptFile))
+                        foreach (var builderScriptFile in package.BuilderScripts)
                         {
-                            sourceCode.Add(reader.ReadToEnd());
+                            sourceCode.Add(builderScriptFile);
+                            Log.DebugMessage("\t'{0}'", builderScriptFile);
                         }
-                        Log.DebugMessage("\t'{0}'", builderScriptFile);
+                    }
+                    else
+                    {
+                        foreach (var builderScriptFile in package.BuilderScripts)
+                        {
+                            using (var reader = new System.IO.StreamReader(builderScriptFile))
+                            {
+                                sourceCode.Add(reader.ReadToEnd());
+                            }
+                            Log.DebugMessage("\t'{0}'", builderScriptFile);
+                        }
                     }
                 }
 
@@ -405,8 +436,6 @@ namespace Opus.Core
 
                 ++packageIndex;
             }
-
-            //sourceCode.Sort();
 
             // add/remove other definitions
             definitions.Add(OpusVersionDefineForCompiler);
@@ -422,235 +451,42 @@ namespace Opus.Core
             assemblyCompileProfile.StartProfile();
 
             // assembly is written to the build root
-            var assemblyPathname = System.IO.Path.Combine(State.BuildRoot, "OpusPackageAssembly");
-            assemblyPathname = System.IO.Path.Combine(assemblyPathname, mainPackage.Name) + ".dll";
+            var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "OpusPackageAssembly");
+            cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, mainPackage.Name) + ".dll";
+            var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
+            string thisHashCode = null;
 
-            // can an existing assembly be reused?
-            var hashPathName = System.IO.Path.ChangeExtension(assemblyPathname, "hash");
-            var thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.OpusAssemblies);
-            if (State.CacheAssembly)
+            if (!State.CompileWithDebugSymbols)
             {
-                if (System.IO.File.Exists(hashPathName))
-                {
-                    using (var reader = new System.IO.StreamReader(hashPathName))
-                    {
-                        var diskHashCode = reader.ReadLine();
-                        if (diskHashCode.Equals(thisHashCode))
-                        {
-                            Log.DebugMessage("Cached assembly used '{0}', with hash {1}", assemblyPathname, diskHashCode);
-                            Log.Detail("Re-using existing package assembly");
-                            State.ScriptAssemblyPathname = assemblyPathname;
-
-                            assemblyCompileProfile.StopProfile();
-
-                            return true;
-                        }
-                        else
-                        {
-                            Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
-                        }
-                    }
-                }
-            }
-
-            Log.Detail("Compiling package assembly");
-
-            var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
-            providerOptions.Add("CompilerVersion", "v3.5");
-
-            if (State.RunningMono)
-            {
-                Log.DebugMessage("Compiling assembly for Mono");
-            }
-
-            using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
-            {
-                var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
-                compilerParameters.TreatWarningsAsErrors = true;
-                if (!State.RunningMono)
-                {
-                    compilerParameters.WarningLevel = 4;
-                }
-                else
-                {
-                    // mono appears to be a lot fussier about warnings
-                    compilerParameters.WarningLevel = 2;
-                }
-                compilerParameters.GenerateExecutable = false;
-                compilerParameters.GenerateInMemory = false;
-
-                compilerParameters.OutputAssembly = assemblyPathname;
-
-                var compilerOptions = "/checked+ /unsafe-";
-                if (State.CompileWithDebugSymbols)
-                {
-                    compilerParameters.IncludeDebugInformation = true;
-                    compilerOptions += " /optimize-";
-                    if (State.RunningMono)
-                    {
-                        compilerOptions += " /define:DEBUG";
-                    }
-                }
-                else
-                {
-                    compilerOptions += " /optimize+";
-                }
-                if (!State.RunningMono)
-                {
-                    // apparently, some versions of Mono don't support the /platform option
-                    compilerOptions += " /platform:anycpu";
-                }
-
-                // define strings
-                compilerOptions += " /define:" + definitions.ToString(';');
-
-                compilerParameters.CompilerOptions = compilerOptions;
-                compilerParameters.EmbeddedResources.Add(resourceFilePathName);
-
-                if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
-                {
-                    // Opus assembly
-                    foreach (var opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
-                    {
-                        var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
-                        var assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
-                        compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
-                    }
-
-                    // DotNet assembly
-                    foreach (var desc in mainPackage.Identifier.Definition.DotNetAssemblies)
-                    {
-                        var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
-                        compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
-                    }
-                }
-                else
-                {
-                    throw new Exception("C# compiler does not support Resources");
-                }
-
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
-
-                var results = provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
-
-                if (results.Errors.HasErrors || results.Errors.HasWarnings)
-                {
-                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
-                    foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
-                    {
-                        Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
-                    }
-                    return false;
-                }
-
+                // can an existing assembly be reused?
+                thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.OpusAssemblies);
                 if (State.CacheAssembly)
                 {
-                    using (var writer = new System.IO.StreamWriter(hashPathName))
+                    if (System.IO.File.Exists(hashPathName))
                     {
-                        writer.WriteLine(thisHashCode);
+                        using (var reader = new System.IO.StreamReader(hashPathName))
+                        {
+                            var diskHashCode = reader.ReadLine();
+                            if (diskHashCode.Equals(thisHashCode))
+                            {
+                                Log.DebugMessage("Cached assembly used '{0}', with hash {1}", cachedAssemblyPathname, diskHashCode);
+                                Log.Detail("Re-using existing package assembly");
+                                State.ScriptAssemblyPathname = cachedAssemblyPathname;
+
+                                assemblyCompileProfile.StopProfile();
+
+                                return true;
+                            }
+                            else
+                            {
+                                Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
+                            }
+                        }
                     }
                 }
-                else
-                {
-                    // will not throw if the file doesn't exist
-                    System.IO.File.Delete(hashPathName);
-                }
-
-                Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
-                State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
-
-            assemblyCompileProfile.StopProfile();
-
-            return true;
-        }
-
-        // special function for debugging, because you MUST compile from the source files, not source in memory
-        public static bool CompileDebuggablePackageIntoAssembly()
-        {
-            // validate build root
-            if (null == State.BuildRoot)
-            {
-                throw new Exception("Build root has not been specified");
-            }
-
-            if (!System.IO.Directory.Exists(State.BuildRoot))
-            {
-                System.IO.Directory.CreateDirectory(State.BuildRoot);
-            }
-
-            var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
-            gatherSourceProfile.StartProfile();
-
-            IdentifyMainAndDependentPackages(true, false);
-
-            var mainPackage = State.PackageInfo.MainPackage;
-
-            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
-
-            BuilderUtilities.SetBuilderPackage();
-
-            // Create resource file containing package information
-            var resourceFilePathName = PackageListResourceFile.WriteResourceFile();
-
-            var definitions = new StringArray();
-
-            // gather source files
-            var sourceFileList = new System.Collections.ArrayList();
-
-            int packageIndex = 0;
-            foreach (var package in State.PackageInfo)
-            {
-                var id = package.Identifier;
-                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
-
-                sourceFileList.Add(id.ScriptPathName);
-                Log.DebugMessage("\t'{0}'", id.ScriptPathName);
-                if (null != package.Scripts)
-                {
-                    foreach (var scriptFile in package.Scripts)
-                    {
-                        sourceFileList.Add(scriptFile);
-                        Log.DebugMessage("\t'{0}'", scriptFile);
-                    }
-                }
-                if (null != package.BuilderScripts)
-                {
-                    foreach (var builderScriptFile in package.BuilderScripts)
-                    {
-                        sourceFileList.Add(builderScriptFile);
-                        Log.DebugMessage("\t'{0}'", builderScriptFile);
-                    }
-                }
-
-                foreach (var define in package.Identifier.Definition.Definitions)
-                {
-                    if (!definitions.Contains(define))
-                    {
-                        definitions.Add(define);
-                    }
-                }
-
-                definitions.Add(package.Identifier.CompilationDefinition);
-                Log.DebugMessage("Package define: {0}", package.Identifier.CompilationDefinition);
-
-                ++packageIndex;
-            }
-
-            // add/remove other definitions
-            definitions.Add(OpusVersionDefineForCompiler);
-            definitions.Add(OpusHostPlatformForCompiler);
-            // command line definitions
-            definitions.AddRange(State.PackageCompilationDefines);
-            definitions.RemoveAll(State.PackageCompilationUndefines);
-            definitions.Sort();
-
-            gatherSourceProfile.StopProfile();
 
             Log.Detail("Compiling package assembly");
-
-            var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
-            assemblyCompileProfile.StartProfile();
 
             var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", "v3.5");
@@ -662,8 +498,6 @@ namespace Opus.Core
 
             using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
             {
-                var sourceFiles = sourceFileList.ToArray(typeof(string)) as string[];
-
                 var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
                 compilerParameters.TreatWarningsAsErrors = true;
                 if (!State.RunningMono)
@@ -677,7 +511,16 @@ namespace Opus.Core
                 }
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
-                compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
+
+                if (State.CompileWithDebugSymbols)
+                {
+                    compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
+                }
+                else
+                {
+                    compilerParameters.OutputAssembly = cachedAssemblyPathname;
+                }
+
                 var compilerOptions = "/checked+ /unsafe-";
                 if (State.CompileWithDebugSymbols)
                 {
@@ -727,7 +570,10 @@ namespace Opus.Core
                 }
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
-                var results = provider.CompileAssemblyFromFile(compilerParameters, sourceFiles);
+
+                var results = State.CompileWithDebugSymbols ? 
+                    provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :
+                    provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
 
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {
@@ -737,6 +583,22 @@ namespace Opus.Core
                         Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
                     }
                     return false;
+                }
+
+                if (!State.CompileWithDebugSymbols)
+                {
+                    if (State.CacheAssembly)
+                    {
+                        using (var writer = new System.IO.StreamWriter(hashPathName))
+                        {
+                            writer.WriteLine(thisHashCode);
+                        }
+                    }
+                    else
+                    {
+                        // will not throw if the file doesn't exist
+                        System.IO.File.Delete(hashPathName);
+                    }
                 }
 
                 Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);

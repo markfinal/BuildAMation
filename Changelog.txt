@@ -1,3 +1,5 @@
+12-Jul-2013 Merged debug and non-debug package compilation functions together to reduce code duplication.
+
 12-Jul-2013 The -createdebugproject action no longer mandates the need for a -builder option, to select the builder in action. The C# project generated cannot be executed, so there is a benefit to seeing all applicable builder scripts. Performing an actual build will still require the -builder argument.
 
 11-Jul-2013 Standardized all module Build() functions, to call the first argument (the instance of the module) 'moduleToBuild', so that it can be easily sought out.
