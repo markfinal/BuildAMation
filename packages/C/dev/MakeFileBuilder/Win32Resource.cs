@@ -9,22 +9,22 @@ namespace MakeFileBuilder
     {
         public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            string resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
+            var resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+            var inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(resourceFilePath);
 
-            Opus.Core.BaseModule resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
+            var resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var resourceFileOptions = resourceFileModule.Options;
 
-            C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
+            var compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
 
-            Opus.Core.DependencyNode node = resourceFileModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var node = resourceFileModule.OwningNode;
+            var target = node.Target;
 
             var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
@@ -43,8 +43,8 @@ namespace MakeFileBuilder
             // add output path
             commandLineBuilder.Add(System.String.Format("/fo {0}", compilerOptions.CompiledResourceFilePath));
 
-            Opus.Core.IToolset toolset = target.Toolset;
-            Opus.Core.ITool compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool));
+            var toolset = target.Toolset;
+            var compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool));
             string executablePath = compilerTool.Executable((Opus.Core.BaseTarget)target);
 
             string recipe = null;
@@ -60,30 +60,30 @@ namespace MakeFileBuilder
             // replace target with $@
             recipe = recipe.Replace(resourceFileOptions.OutputPaths[C.OutputFileFlags.Win32CompiledResource], "$@");
 
-            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
-            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
 
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(resourceFileOptions.OutputPaths, C.OutputFileFlags.Win32CompiledResource, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            var rule = new MakeFileRule(resourceFileOptions.OutputPaths, C.OutputFileFlags.Win32CompiledResource, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
                 makeFile.Write(makeFileWriter);
             }
 
-            MakeFileTargetDictionary targetDictionary = makeFile.ExportedTargets;
-            MakeFileVariableDictionary variableDictionary = makeFile.ExportedVariables;
+            var targetDictionary = makeFile.ExportedTargets;
+            var variableDictionary = makeFile.ExportedVariables;
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (compilerTool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environment);
+            var returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environment);
             success = true;
             return returnData;
         }

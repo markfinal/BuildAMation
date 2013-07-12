@@ -9,15 +9,15 @@ namespace MakeFileBuilder
     {
         public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = objectFileCollectionModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = objectFileCollectionModule.OwningNode;
+            var target = node.Target;
 
-            MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();
-            Opus.Core.Array<MakeFileData> childDataArray = new Opus.Core.Array<MakeFileData>();
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
+            var dependents = new MakeFileVariableDictionary();
+            var childDataArray = new Opus.Core.Array<MakeFileData>();
+            foreach (var childNode in node.Children)
             {
-                MakeFileData data = childNode.Data as MakeFileData;
+                var data = childNode.Data as MakeFileData;
                 if (!data.VariableDictionary.ContainsKey(C.OutputFileFlags.ObjectFile))
                 {
                     throw new Opus.Core.Exception("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName);
@@ -28,11 +28,11 @@ namespace MakeFileBuilder
             }
             if (null != node.ExternalDependents)
             {
-                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null != dependentNode.Data)
                     {
-                        MakeFileData data = dependentNode.Data as MakeFileData;
+                        var data = dependentNode.Data as MakeFileData;
                         foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> makeVariable in data.VariableDictionary)
                         {
                             dependents.Add(makeVariable.Key, makeVariable.Value);
@@ -41,13 +41,13 @@ namespace MakeFileBuilder
                 }
             }
 
-            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
 
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             // no output paths because this rule has no recipe
-            MakeFileRule rule = new MakeFileRule(null, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null, null);
+            var rule = new MakeFileRule(null, C.OutputFileFlags.ObjectFileCollection, node.UniqueModuleName, null, dependents, null, null);
             if (null == node.Parent)
             {
                 // phony target
@@ -55,12 +55,12 @@ namespace MakeFileBuilder
             }
             makeFile.RuleArray.Add(rule);
 
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
                 makeFile.Write(makeFileWriter);
             }
 
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            var returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             success = true;
             return returnData;
         }
