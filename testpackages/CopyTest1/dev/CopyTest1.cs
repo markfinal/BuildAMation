@@ -26,9 +26,9 @@ namespace CopyTest1
 
     class CopyDirectoryTest : FileUtilities.CopyDirectory
     {
-        public CopyDirectoryTest()
+        public CopyDirectoryTest(Opus.Core.Target target)
         {
-            this.Include(this, "data");
+            this.Include(this, target, "data");
         }
     }
 }

@@ -19,13 +19,8 @@ namespace FileUtilities
 
             foreach (var moduleType in moduleTypes)
             {
-                CopyFile file = new CopyFile();
+                CopyFile file = new CopyFile(besideModule, dependentModule);
                 file.Set(moduleType, outputFileEnum);
-
-                if (null != dependentModule)
-                {
-                    file.BesideModuleType = dependentModule;
-                }
                 this.copyFiles.Add(file);
             }
         }

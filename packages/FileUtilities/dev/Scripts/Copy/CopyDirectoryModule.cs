@@ -19,31 +19,52 @@ namespace FileUtilities
             }
         }
 
-        public void Include(object owner, params string[] pathSegments)
+        public void Include(object owner, Opus.Core.Target target, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
-            
+
             string packagePath = package.Identifier.Path;
             Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
-            
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out this.commonBaseDirectory, packagePath, pathSegments);
+
+            // each file to copy needs to know where the parent was set to copy next to
+            BesideModuleAttribute besideModule;
+            System.Type dependentModule;
+            Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+
+            string commonBaseDirectory;
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out commonBaseDirectory, packagePath, pathSegments);
             foreach (string path in filePaths)
             {
-                CopyFile file = new CopyFile();
+                CopyFile file = new CopyFile(besideModule, dependentModule);
                 (file as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
                 file.SourceFile.SetAbsolutePath(path);
                 this.copyFiles.Add(file);
             }
+
+            if (null == this.commonBaseDirectory)
+            {
+                this.commonBaseDirectory = commonBaseDirectory;
+            }
+            else
+            {
+                var commonRoot = Opus.Core.RelativePathUtilities.GetCommonRoot(commonBaseDirectory, this.commonBaseDirectory);
+                if (null == commonRoot)
+                {
+                    throw new Opus.Core.Exception("Unable to locate common path between '{0}' and '{1}'", commonBaseDirectory, this.commonBaseDirectory);
+                }
+
+                this.commonBaseDirectory = commonRoot;
+            }
         }
-        
+
         public void Exclude(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);

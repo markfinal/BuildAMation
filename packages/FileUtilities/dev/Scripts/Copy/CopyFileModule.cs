@@ -14,10 +14,16 @@ namespace FileUtilities
             private set;
         }
 
+        public BesideModuleAttribute BesideModuleAttribute
+        {
+            get;
+            private set;
+        }
+
         public System.Type BesideModuleType
         {
             get;
-            set;
+            private set;
         }
 
         private Opus.Core.TypeArray AdditionalDependentModules
@@ -30,6 +36,13 @@ namespace FileUtilities
         {
             this.SourceFile = new Opus.Core.File();
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
+        }
+
+        public CopyFile(BesideModuleAttribute attribute, System.Type besideModuleType)
+            : this()
+        {
+            this.BesideModuleAttribute = attribute;
+            this.BesideModuleType = besideModuleType;
         }
 
         public void SetRelativePath(object owner, params string[] pathSegments)
@@ -64,9 +77,21 @@ namespace FileUtilities
 
         private Opus.Core.TypeArray GetDestinationDependents(Opus.Core.Target target)
         {
+            if ((null != this.BesideModuleAttribute) && (null != this.BesideModuleType))
+            {
+                this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget)
+                {
+                    var options = module.Options as ICopyFileOptions;
+                    options.DestinationModuleType = this.BesideModuleType;
+                    options.DestinationModuleOutputEnum = this.BesideModuleAttribute.OutputFileFlag;
+                };
+
+                return new Opus.Core.TypeArray(this.BesideModuleType);
+            }
+
             BesideModuleAttribute besideModule;
-            System.Type dependentModule;
-            Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+            System.Type dependentModuleType;
+            Utilities.GetBesideModule(this, target, out besideModule, out dependentModuleType);
             if (null == besideModule)
             {
                 return null;
@@ -74,20 +99,20 @@ namespace FileUtilities
 
             if (null == this.BesideModuleType)
             {
-                this.BesideModuleType = dependentModule;
+                this.BesideModuleType = dependentModuleType;
             }
-            else if (this.BesideModuleType != dependentModule)
+            else if (this.BesideModuleType != dependentModuleType)
             {
                 throw new Opus.Core.Exception("Inconsistent beside module types");
             }
 
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
                 var options = module.Options as ICopyFileOptions;
-                options.DestinationModuleType = dependentModule;
+                options.DestinationModuleType = dependentModuleType;
                 options.DestinationModuleOutputEnum = besideModule.OutputFileFlag;
             };
 
-            return new Opus.Core.TypeArray(dependentModule);
+            return new Opus.Core.TypeArray(dependentModuleType);
         }
 
         #region IIdentifyExternalDependencies implementation
@@ -111,5 +136,16 @@ namespace FileUtilities
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            var description = new System.Text.StringBuilder();
+            description.Append(this.SourceFile.ToString());
+            if (null != this.BesideModuleType)
+            {
+                description.AppendFormat(" -> {0} {1}", this.BesideModuleType.ToString(), this.BesideModuleAttribute.OutputFileFlag);
+            }
+            return description.ToString();
+        }
     }
 }
