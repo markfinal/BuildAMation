@@ -254,5 +254,10 @@ namespace Opus.Core
                 this.absolutePath = value;
             }
         }
+
+        public override string ToString()
+        {
+            return this.AbsolutePath;
+        }
     }
 }
