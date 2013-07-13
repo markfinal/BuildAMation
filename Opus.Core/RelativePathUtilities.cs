@@ -106,7 +106,7 @@ namespace Opus.Core
                     break;
                 }
 
-                if (commonRoot.Length > 0)
+                if (null != commonRoot)
                 {
                     commonRoot = System.IO.Path.Combine(commonRoot, path1Parts[i]);
                 }
