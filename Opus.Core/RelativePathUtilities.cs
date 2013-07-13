@@ -87,5 +87,40 @@ namespace Opus.Core
 
             return absolutePath;
         }
+
+        public static string GetCommonRoot(string path1, string path2)
+        {
+            var path1Parts = path1.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
+            var path2Parts = path2.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
+
+            string commonRoot = null;
+            for (int i = 0; i < path1Parts.Length; ++i)
+            {
+                if (i >= path2Parts.Length)
+                {
+                    break;
+                }
+
+                if (!path1Parts[i].Equals(path2Parts[i]))
+                {
+                    break;
+                }
+
+                if (commonRoot.Length > 0)
+                {
+                    commonRoot = System.IO.Path.Combine(commonRoot, path1Parts[i]);
+                }
+                else
+                {
+                    commonRoot = path1Parts[i];
+                    if (commonRoot.EndsWith(System.IO.Path.VolumeSeparatorChar.ToString()))
+                    {
+                        commonRoot += System.IO.Path.DirectorySeparatorChar;
+                    }
+                }
+            }
+
+            return commonRoot;
+        }
     }
 }

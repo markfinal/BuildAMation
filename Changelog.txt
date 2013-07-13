@@ -1,3 +1,5 @@
+13-Jul-2013 Added Opus.Core.RelativePathUtilities.GetCommonRoot to find the common root between two paths. If there is no common root, null is returned.
+
 13-Jul-2013 Opus.Core.File.ToString() now displays the path if it has been set.
 
 12-Jul-2013 Added another constructor to Opus.Core.Exception, that accepts a System.Exception, followed by a format string, and variable arguments. This is switching the order of arguments for an existing constructor, now deprecated, to allow the format arguments.
