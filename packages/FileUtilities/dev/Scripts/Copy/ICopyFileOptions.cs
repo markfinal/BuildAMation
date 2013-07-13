@@ -40,6 +40,13 @@ namespace FileUtilities
         }
 
         // StateOnly
+        string DestinationRelativePath
+        {
+            get;
+            set;
+        }
+
+        // StateOnly
         System.Type SourceModuleType
         {
             get;

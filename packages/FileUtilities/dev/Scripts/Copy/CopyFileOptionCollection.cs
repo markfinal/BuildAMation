@@ -77,6 +77,11 @@ namespace FileUtilities
                         throw new Opus.Core.Exception("Module to copy next to '{0}' has not been created", options.DestinationModuleType.ToString());
                     }
                     destinationDirectory = System.IO.Path.GetDirectoryName(destinationModule.Options.OutputPaths[options.DestinationModuleOutputEnum]);
+                    if (null != options.DestinationRelativePath)
+                    {
+                        destinationDirectory = System.IO.Path.Combine(destinationDirectory, options.DestinationRelativePath);
+                        destinationDirectory = System.IO.Path.GetFullPath(destinationDirectory);
+                    }
                 }
                 else
                 {

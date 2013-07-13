@@ -9,6 +9,11 @@ namespace FileUtilities
     public class BesideModuleAttribute : Opus.Core.BaseTargetFilteredAttribute
     {
         public BesideModuleAttribute(object flag)
+            : this(flag, string.Empty)
+        {
+        }
+
+        public BesideModuleAttribute(object flag, string relativePath)
         {
             if (!flag.GetType().IsEnum)
             {
@@ -16,9 +21,16 @@ namespace FileUtilities
             }
 
             this.OutputFileFlag = flag as System.Enum;
+            this.RelativePath = relativePath;
         }
 
         public System.Enum OutputFileFlag
+        {
+            get;
+            private set;
+        }
+
+        public string RelativePath
         {
             get;
             private set;

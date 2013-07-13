@@ -54,6 +54,18 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("DestinationModuleOutputEnumSetHandler", this["DestinationModuleOutputEnum"]);
             }
         }
+        string ICopyFileOptions.DestinationRelativePath
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("DestinationRelativePath");
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("DestinationRelativePath", value);
+                this.ProcessNamedSetHandler("DestinationRelativePathSetHandler", this["DestinationRelativePath"]);
+            }
+        }
         System.Type ICopyFileOptions.SourceModuleType
         {
             get

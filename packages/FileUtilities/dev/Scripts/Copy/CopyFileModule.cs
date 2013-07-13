@@ -84,6 +84,7 @@ namespace FileUtilities
                     var options = module.Options as ICopyFileOptions;
                     options.DestinationModuleType = this.BesideModuleType;
                     options.DestinationModuleOutputEnum = this.BesideModuleAttribute.OutputFileFlag;
+                    options.DestinationRelativePath = this.BesideModuleAttribute.RelativePath;
                 };
 
                 return new Opus.Core.TypeArray(this.BesideModuleType);
@@ -110,6 +111,7 @@ namespace FileUtilities
                 var options = module.Options as ICopyFileOptions;
                 options.DestinationModuleType = dependentModuleType;
                 options.DestinationModuleOutputEnum = besideModule.OutputFileFlag;
+                options.DestinationRelativePath = besideModule.RelativePath;
             };
 
             return new Opus.Core.TypeArray(dependentModuleType);

@@ -14,6 +14,7 @@ namespace FileUtilities
             // Property 'CommonBaseDirectory' is state only
             // Property 'DestinationModuleType' is state only
             // Property 'DestinationModuleOutputEnum' is state only
+            // Property 'DestinationRelativePath' is state only
             // Property 'SourceModuleType' is state only
             // Property 'SourceModuleOutputEnum' is state only
         }
