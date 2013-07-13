@@ -10,17 +10,16 @@ namespace FileUtilities
         public static void GetBesideModule(object module,
                                            Opus.Core.Target target,
                                            out BesideModuleAttribute attribute,
-                                           out System.Type dependentModule)
+                                           out System.Type dependentModuleType)
         {
             attribute = null;
-            dependentModule = null;
+            dependentModuleType = null;
 
-            System.Reflection.BindingFlags bindingFlags =
-                System.Reflection.BindingFlags.NonPublic |
-                    System.Reflection.BindingFlags.Public |
-                    System.Reflection.BindingFlags.Instance;
-            System.Reflection.FieldInfo[] fields = module.GetType().GetFields(bindingFlags);
-            foreach (System.Reflection.FieldInfo field in fields)
+            var bindingFlags = System.Reflection.BindingFlags.NonPublic |
+                               System.Reflection.BindingFlags.Public |
+                               System.Reflection.BindingFlags.Instance;
+            var fields = module.GetType().GetFields(bindingFlags);
+            foreach (var field in fields)
             {
                 var attributes = field.GetCustomAttributes(typeof(BesideModuleAttribute), false);
                 if (1 == attributes.Length)
@@ -34,7 +33,7 @@ namespace FileUtilities
                     var value = field.GetValue(module);
                     if (value is System.Type)
                     {
-                        dependentModule = field.GetValue(module) as System.Type;
+                        dependentModuleType = field.GetValue(module) as System.Type;
                     }
                     else
                     {
@@ -47,7 +46,7 @@ namespace FileUtilities
             {
                 if (!Opus.Core.TargetUtilities.MatchFilters(target, attribute))
                 {
-                    dependentModule = null;
+                    dependentModuleType = null;
                     attribute = null;
                 }
             }
