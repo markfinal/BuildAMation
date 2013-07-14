@@ -32,6 +32,7 @@ namespace FileUtilities
             }
             options.DestinationModuleType = null;
             options.DestinationModuleOutputEnum = null;
+            options.DestinationRelativePath = null;
             options.SourceModuleType = null;
             options.SourceModuleOutputEnum = null;
         }
