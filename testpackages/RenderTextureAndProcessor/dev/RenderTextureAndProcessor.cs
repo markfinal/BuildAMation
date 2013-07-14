@@ -44,7 +44,6 @@ namespace RenderTextureAndProcessor
             "KERNEL32.lib",
             "GDI32.lib",
             "USER32.lib",
-            "OPENGL32.lib",
             "WS2_32.lib",
             "SHELL32.lib"
         );
@@ -52,14 +51,17 @@ namespace RenderTextureAndProcessor
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
         Opus.Core.StringArray requiredLibrariesMingw = new Opus.Core.StringArray(
             "-lws2_32",
-            "-lopengl32",
             "-lgdi32"
         );
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK),
             typeof(OpenGLSDK.OpenGL)
+        );
+
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Opus.Core.TypeArray winVCDependentModules = new Opus.Core.TypeArray(
+            typeof(WindowsSDK.WindowsSDK)
         );
 
         [Opus.Core.RequiredModules]

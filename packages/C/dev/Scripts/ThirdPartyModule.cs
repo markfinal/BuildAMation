@@ -8,21 +8,12 @@ namespace C
     /// <summary>
     /// C third party library (externally built libraries)
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(INullOpTool))]
+    [Opus.Core.ModuleToolAssignment(typeof(IThirdPartyTool))]
     public abstract class ThirdPartyModule : Opus.Core.BaseModule
     {
-        public override Opus.Core.BaseOptionCollection Options
+        public virtual void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                // do nothing
-            }
+            // do nothing
         }
-
-        public abstract Opus.Core.StringArray Libraries(Opus.Core.Target target);
     }
 }

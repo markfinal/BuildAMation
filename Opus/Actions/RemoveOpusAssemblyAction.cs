@@ -29,7 +29,7 @@ namespace Opus
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
+            var assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
             this.OpusAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
@@ -42,7 +42,7 @@ namespace Opus
         public bool Execute()
         {
             bool isWellDefined;
-            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
+            var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
@@ -52,14 +52,14 @@ namespace Opus
                 throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
-            Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
+            var xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isWellDefined)
             {
                 xmlFile.Read(true);
             }
 
-            bool success = false;
-            foreach (string opusAssemblyName in this.OpusAssemblyNameArray)
+            var success = false;
+            foreach (var opusAssemblyName in this.OpusAssemblyNameArray)
             {
                 if (xmlFile.OpusAssemblies.Contains(opusAssemblyName))
                 {

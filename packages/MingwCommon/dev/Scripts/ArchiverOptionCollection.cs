@@ -27,7 +27,7 @@ namespace MingwCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            if (null != this.LibraryFilePath)
+            if (this.OutputPaths.Has(C.OutputFileFlags.StaticLibrary))
             {
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.LibraryFilePath), false);
             }

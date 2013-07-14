@@ -11,7 +11,7 @@ namespace C
         {
             var compilerOptions = this as ICCompilerOptions;
 
-            Opus.Core.Target target = node.Target;
+            var target = node.Target;
 
             // process character set early, as it sets #defines
             compilerOptions.CharacterSet = ECharacterSet.NotSet;
@@ -101,10 +101,10 @@ namespace C
 
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
         {
-            ObjectFile objectFileModule = node.Module as ObjectFile;
+            var objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)
             {
-                string sourcePathName = (node.Module as ObjectFile).SourceFile.AbsolutePath;
+                var sourcePathName = (node.Module as ObjectFile).SourceFile.AbsolutePath;
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
             else
@@ -112,8 +112,8 @@ namespace C
                 this.OutputName = null;
             }
 
-            Opus.Core.Target target = node.Target;
-            ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+            var target = node.Target;
+            var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
         }
 
@@ -159,17 +159,17 @@ namespace C
         {
             if (null != this.OutputName)
             {
-                Opus.Core.Target target = node.Target;
-                ICompilerTool compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
-                ICCompilerOptions options = this as ICCompilerOptions;
-                if ((options.OutputType == ECompilerOutput.CompileOnly) && (null == this.ObjectFilePath))
+                var target = node.Target;
+                var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+                var options = this as ICCompilerOptions;
+                if ((options.OutputType == ECompilerOutput.CompileOnly) && !this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
                 {
-                    string objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
+                    var objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
                     this.ObjectFilePath = objectPathname;
                 }
-                else if ((options.OutputType == ECompilerOutput.Preprocess) && (null == this.PreprocessedFilePath))
+                else if ((options.OutputType == ECompilerOutput.Preprocess) && !this.OutputPaths.Has(C.OutputFileFlags.PreprocessedFile))
                 {
-                    string preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
+                    var preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
                     this.PreprocessedFilePath = preprocessedPathname;
                 }
             }
@@ -177,9 +177,9 @@ namespace C
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
         public abstract Opus.Core.DirectoryCollection DirectoriesToCreate();

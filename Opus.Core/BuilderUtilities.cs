@@ -7,6 +7,11 @@ namespace Opus.Core
 {
     public static class BuilderUtilities
     {
+        public static bool IsBuilderPackage(string packageName)
+        {
+            return packageName.EndsWith("Builder");
+        }
+
         public static void SetBuilderPackage()
         {
             if (null == State.BuilderName)
@@ -14,8 +19,8 @@ namespace Opus.Core
                 return;
             }
 
-            string builderPackageName = System.String.Format("{0}Builder", State.BuilderName);
-            foreach (PackageInformation package in State.PackageInfo)
+            var builderPackageName = System.String.Format("{0}Builder", State.BuilderName);
+            foreach (var package in State.PackageInfo)
             {
                 if (builderPackageName == package.Name)
                 {
@@ -41,8 +46,8 @@ namespace Opus.Core
             }
 
             IBuilder builderInstance = null;
-            DeclareBuilderAttribute[] attributes = State.ScriptAssembly.GetCustomAttributes(typeof(DeclareBuilderAttribute), false) as DeclareBuilderAttribute[];
-            foreach (DeclareBuilderAttribute attribute in attributes)
+            var attributes = State.ScriptAssembly.GetCustomAttributes(typeof(DeclareBuilderAttribute), false) as DeclareBuilderAttribute[];
+            foreach (var attribute in attributes)
             {
                 if (attribute.Name == State.BuilderName)
                 {

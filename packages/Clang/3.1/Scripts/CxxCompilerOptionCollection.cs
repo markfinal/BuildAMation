@@ -20,10 +20,10 @@ namespace Clang
         {
             base.InitializeDefaults(node);
 
-            C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
+            var cInterfaceOptions = this as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
 
-            C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;
+            var cxxInterfaceOptions = this as C.ICxxCompilerOptions;
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
     }

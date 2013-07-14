@@ -18,7 +18,7 @@ namespace Opus.Core
                     throw new Exception("No packages have been specified or identified. Please run Opus from a package directory");
                 }
 
-                PackageInformation mainPackage = this.list[0];
+                var mainPackage = this.list[0];
                 return mainPackage;
             }
         }
@@ -32,7 +32,7 @@ namespace Opus.Core
 
             this.list.Add(item);
 
-            string root = item.Identifier.Root;
+            var root = item.Identifier.Root;
             if (!State.PackageRoots.Contains(root))
             {
                 State.PackageRoots.Add(root);
@@ -51,9 +51,9 @@ namespace Opus.Core
 
         public bool Contains(PackageInformation item)
         {
-            bool ignoreCase = true;
+            var ignoreCase = true;
 
-            foreach (PackageInformation package in this.list)
+            foreach (var package in this.list)
             {
                 if (package.Identifier.MatchName(item.Identifier, ignoreCase))
                 {
@@ -159,9 +159,9 @@ namespace Opus.Core
         {
             get
             {
-                foreach (PackageInformation package in this.list)
+                foreach (var package in this.list)
                 {
-                    bool ignoreCase = false;
+                    var ignoreCase = false;
                     if (package.Identifier.MatchName(name, ignoreCase))
                     {
                         return package;
@@ -180,7 +180,7 @@ namespace Opus.Core
         public string ToString(string prefix, string suffix)
         {
             string message = null;
-            foreach (PackageInformation package in this.list)
+            foreach (var package in this.list)
             {
                 message += prefix + package.ToString() + suffix;
             }

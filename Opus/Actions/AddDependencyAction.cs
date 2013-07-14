@@ -29,7 +29,7 @@ namespace Opus
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] packageAndVersions = arguments.Split(System.IO.Path.PathSeparator);
+            var packageAndVersions = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageAndVersionArray = new Opus.Core.StringArray(packageAndVersions);
         }
 
@@ -42,7 +42,7 @@ namespace Opus
         public bool Execute()
         {
             bool isWellDefined;
-            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
+            var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
@@ -52,15 +52,15 @@ namespace Opus
                 throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
-            Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
+            var xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isWellDefined)
             {
                 xmlFile.Read(true);
             }
 
-            foreach (string packageAndVersion in this.PackageAndVersionArray)
+            foreach (var packageAndVersion in this.PackageAndVersionArray)
             {
-                string[] packageNameAndVersion = packageAndVersion.Split('-');
+                var packageNameAndVersion = packageAndVersion.Split('-');
                 string packageName = null;
                 string packageVersion = null;
                 if (packageNameAndVersion.Length < 2)
@@ -82,7 +82,7 @@ namespace Opus
                     packageVersion = packageNameAndVersion[1];
                 }
 
-                Core.PackageIdentifier id = new Core.PackageIdentifier(packageName, packageVersion);
+                var id = new Core.PackageIdentifier(packageName, packageVersion);
                 xmlFile.AddRequiredPackage(id);
             }
 

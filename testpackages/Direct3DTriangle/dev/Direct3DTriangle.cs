@@ -52,9 +52,7 @@ namespace Direct3DTriangle
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib",
-            "d3d9.lib",
-            "dxerr.lib",
-            "d3dx9.lib"
+            "DxErr.lib"
         );
     }
 }

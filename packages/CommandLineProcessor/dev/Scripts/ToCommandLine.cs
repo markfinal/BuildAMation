@@ -7,27 +7,37 @@ namespace CommandLineProcessor
 {
     public static class ToCommandLine
     {
-        public static void Execute(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        public static void Execute(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
-            Opus.Core.BaseOptionCollection optionCollection = sender as Opus.Core.BaseOptionCollection;
-
-            foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.Option> optionKeyValue in optionCollection)
+            var optionCollection = sender as Opus.Core.BaseOptionCollection;
+            var optionNames = optionCollection.OptionNames;
+            if (null != excludedOptionNames)
             {
-                string optionName = optionKeyValue.Key;
-                Opus.Core.Option option = optionKeyValue.Value;
+                // validate
+                var unrecognized = new Opus.Core.StringArray(excludedOptionNames.Complement(optionNames));
+                if (unrecognized.Count > 0)
+                {
+                    throw new Opus.Core.Exception("Unrecognized option names to exclude:\n\t{0}", unrecognized.ToString("\n\t"));
+                }
 
+                optionNames = new Opus.Core.StringArray(optionNames.Complement(excludedOptionNames));
+            }
+
+            foreach (string optionName in optionNames)
+            {
+                var option = optionCollection[optionName];
                 if (null == option.PrivateData)
                 {
                     continue;
                 }
 
-                ICommandLineDelegate data = option.PrivateData as ICommandLineDelegate;
+                var data = option.PrivateData as ICommandLineDelegate;
                 if (null == data)
                 {
                     throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(ICommandLineDelegate).ToString(), sender.GetType().ToString());
                 }
 
-                Delegate commandLineDelegate = data.CommandLineDelegate;
+                var commandLineDelegate = data.CommandLineDelegate;
                 if (null != commandLineDelegate)
                 {
                     if (null != commandLineDelegate.Target)

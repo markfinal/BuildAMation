@@ -56,6 +56,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        private static string WorkaroundMSBuildBug(string key)
+        {
+            // http://connect.microsoft.com/VisualStudio/feedback/details/503935/msbuild-inconsistent-platform-for-any-cpu-between-solution-and-project
+            return key.Replace("AnyCPU", "Any CPU");
+        }
+
         public void Serialize()
         {
             // serialize each vcproj
@@ -140,7 +146,9 @@ namespace VSSolutionBuilder
                     textWriter.WriteLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
                     foreach (System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.List<IProject>> configuration in this.ProjectConfigurations)
                     {
-                        textWriter.WriteLine("\t\t{0} = {1}", configuration.Key, configuration.Key); // TODO: fixme
+                        string key = configuration.Key;
+                        key = WorkaroundMSBuildBug(key);
+                        textWriter.WriteLine("\t\t{0} = {1}", key, key); // TODO: fixme - should this be repeated?
                     }
                     textWriter.WriteLine("\tEndGlobalSection");
 
@@ -153,9 +161,11 @@ namespace VSSolutionBuilder
 
                         foreach (ProjectConfiguration configurations in projectData.Configurations)
                         {
+                            string configName = configurations.Name;
+                            configName = WorkaroundMSBuildBug(configName);
                             // TODO: the second .Name should be from the solution configurations
-                            textWriter.WriteLine("\t\t{0}.{1}.{2} = {3}", projectData.Guid.ToString("B").ToUpper(), configurations.Name, "ActiveCfg", configurations.Name);
-                            textWriter.WriteLine("\t\t{0}.{1}.{2}.{3} = {4}", projectData.Guid.ToString("B").ToUpper(), configurations.Name, "Build", 0, configurations.Name);
+                            textWriter.WriteLine("\t\t{0}.{1}.{2} = {3}", projectData.Guid.ToString("B").ToUpper(), configName, "ActiveCfg", configName);
+                            textWriter.WriteLine("\t\t{0}.{1}.{2}.{3} = {4}", projectData.Guid.ToString("B").ToUpper(), configName, "Build", 0, configName);
                         }
                     }
                     textWriter.WriteLine("\tEndGlobalSection");

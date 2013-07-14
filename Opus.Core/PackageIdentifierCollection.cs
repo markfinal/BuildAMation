@@ -19,13 +19,13 @@ namespace Opus.Core
 
         public override bool Contains(PackageIdentifier item)
         {
-            bool baseContainsIt = base.Contains(item);
+            var baseContainsIt = base.Contains(item);
             if (baseContainsIt)
             {
                 return true;
             }
 
-            foreach (PackageIdentifier id in this.list)
+            foreach (var id in this.list)
             {
                 if (id.Match(item, true))
                 {

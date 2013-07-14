@@ -75,43 +75,16 @@ namespace Test13
         SourceFiles sourceFiles = new SourceFiles();
 
         [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(Qt.Qt));
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+            typeof(Qt.Core),
+            typeof(Qt.Gui)
+            );
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(Mingw.Toolset) } )]
-        Opus.Core.StringArray winMingwDebugLibraries = new Opus.Core.StringArray(
-            "-lQtCored4",
-            "-lQtGuid4"
-        );
-
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
-        Opus.Core.StringArray winMingwOptimizedLibraries = new Opus.Core.StringArray(
-            "-lQtCore4",
-            "-lQtGui4"
-        );
-
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");
-
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray winVCDebugLibraries = new Opus.Core.StringArray(
-            "QtCored4.lib",
-            "QtGuid4.lib"
-        );
-
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, Configuration = Opus.Core.EConfiguration.All & ~Opus.Core.EConfiguration.Debug, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray winVCOptimizedLibraries = new Opus.Core.StringArray(
-            "QtCore4.lib",
-            "QtGui4.lib"
-        );
-
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Unix, ToolsetTypes = new[] { typeof(Gcc.Toolset) })]
-        Opus.Core.StringArray unixGCCLibraries = new Opus.Core.StringArray(
-            "-lQtCore",
-            "-lQtGui"
-        );
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
         Opus.Core.TypeArray resourceFiles = new Opus.Core.TypeArray(
@@ -119,6 +92,21 @@ namespace Test13
             );
     }
 
+#if OPUSPACKAGE_FILEUTILITIES_DEV
+    class PublishDynamicLibraries : FileUtilities.CopyFileCollection
+    {
+        public PublishDynamicLibraries(Opus.Core.Target target)
+        {
+            this.Include(target,
+                         C.OutputFileFlags.Executable,
+                         typeof(Qt.Core),
+                         typeof(Qt.Gui));
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(QtApplication);
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         public PublishDynamicLibraries(Opus.Core.Target target)
@@ -161,5 +149,8 @@ namespace Test13
         [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(QtApplication));
     }
+#else
+#error Unknown FileUtilities package version
+#endif
 }
  

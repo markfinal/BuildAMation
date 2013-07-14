@@ -16,7 +16,7 @@ namespace Opus.Core
                 return null;
             }
 
-            RegisterActionAttribute[] customAttributes = assembly.GetCustomAttributes(typeof(RegisterActionAttribute), false) as RegisterActionAttribute[];
+            var customAttributes = assembly.GetCustomAttributes(typeof(RegisterActionAttribute), false) as RegisterActionAttribute[];
             return new Array<RegisterActionAttribute>(customAttributes);
         }
 
@@ -45,9 +45,9 @@ namespace Opus.Core
         {
             get
             {
-                Array<RegisterActionAttribute> filteredAction = new Array<RegisterActionAttribute>();
+                var filteredAction = new Array<RegisterActionAttribute>();
 
-                foreach (RegisterActionAttribute action in actions)
+                foreach (var action in actions)
                 {
                     var actionType = action.Action.GetType().GetCustomAttributes(false);
                     if (0 == actionType.Length)
@@ -71,9 +71,9 @@ namespace Opus.Core
         {
             get
             {
-                Array<RegisterActionAttribute> filteredAction = new Array<RegisterActionAttribute>();
+                var filteredAction = new Array<RegisterActionAttribute>();
 
-                foreach (RegisterActionAttribute action in actions)
+                foreach (var action in actions)
                 {
                     var actionType = action.Action.GetType().GetCustomAttributes(false);
                     if (0 == actionType.Length)
@@ -97,9 +97,9 @@ namespace Opus.Core
         {
             get
             {
-                Array<RegisterActionAttribute> filteredAction = new Array<RegisterActionAttribute>();
+                var filteredAction = new Array<RegisterActionAttribute>();
 
-                foreach (RegisterActionAttribute action in actions)
+                foreach (var action in actions)
                 {
                     var actionType = action.Action.GetType().GetCustomAttributes(false);
                     if (0 == actionType.Length)
@@ -121,8 +121,8 @@ namespace Opus.Core
 
         public static Array<IAction> FindInvokedActionsByType(System.Type actionType)
         {
-            Array<IAction> array = new Array<IAction>();
-            foreach (IAction action in State.InvokedActions)
+            var array = new Array<IAction>();
+            foreach (var action in State.InvokedActions)
             {
                 if (action.GetType() == actionType)
                 {

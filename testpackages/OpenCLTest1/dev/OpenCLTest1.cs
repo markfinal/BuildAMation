@@ -21,9 +21,21 @@ namespace OpenCLTest1
 #endif
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib", "OpenCL.lib");
+        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
+#if OPUSPACKAGE_FILEUTILITIES_DEV
+    class CopyKernels : FileUtilities.CopyFileCollection
+    {
+        public CopyKernels()
+        {
+            this.Include(this, "data", "*.cl");
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(OpenCLTest1);
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class CopyKernels : FileUtilities.CopyFiles
     {
         public CopyKernels(Opus.Core.Target target)
@@ -37,4 +49,7 @@ namespace OpenCLTest1
         [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
         Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(OpenCLTest1));
     }
+#else
+#error Unknown FileUtilities package version
+#endif
 }

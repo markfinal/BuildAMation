@@ -21,10 +21,10 @@ namespace Opus
 
             try
             {
-                Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
+                var profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
                 profile.StartProfile();
 
-                Application application = new Application(args);
+                var application = new Application(args);
                 application.Run();
 
                 profile.StopProfile();
@@ -66,7 +66,7 @@ namespace Opus
         static void HandleCancellation(object sender, System.ConsoleCancelEventArgs e)
         {
             // allow the build to fail gracefully
-            Core.BuildManager buildManager = Core.State.BuildManager;
+            var buildManager = Core.State.BuildManager;
             if (null != buildManager)
             {
                 buildManager.Cancel();

@@ -28,6 +28,37 @@ namespace Test5
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
+#if OPUSPACKAGE_FILEUTILITIES_DEV
+    class PublishDynamicLibraries : FileUtilities.CopyFile
+    {
+        public PublishDynamicLibraries()
+        {
+            this.Set(typeof(Test4.MyDynamicLib), C.OutputFileFlags.Executable);
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(MyDynamicLibTestApp);
+    }
+
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+    class PublishPDBs : FileUtilities.CopyFileCollection
+    {
+        public PublishPDBs(Opus.Core.Target target)
+        {
+            this.Include(target,
+                         C.OutputFileFlags.LinkerProgramDatabase,
+                         typeof(Test4.MyDynamicLib),
+                         typeof(MyDynamicLibTestApp));
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
+                FileUtilities.ICopyFileOptions options = module.Options as FileUtilities.ICopyFileOptions;
+                if (null != options)
+                {
+                    options.DestinationDirectory = @"c:\PDBs";
+                }
+            };
+        }
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
@@ -54,4 +85,7 @@ namespace Test5
         [FileUtilities.DestinationDirectoryPath]
         Opus.Core.DirectoryCollection destinationDirectory = new Opus.Core.DirectoryCollection();
     }
+#else
+#error Unrecognized FileUtilities package version
+#endif
 }

@@ -23,6 +23,7 @@ namespace VisualCCommon
         protected Toolset()
         {
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+            this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
         protected virtual string GetBinPath(Opus.Core.BaseTarget baseTarget)
@@ -43,6 +44,87 @@ namespace VisualCCommon
             else
             {
                 return this.bin32Folder;
+            }
+        }
+
+        private static string GetVCRegistryKeyPath(string platformName, string versionNumber, string editionName, int LCID)
+        {
+            string keyPath = System.String.Format(@"Microsoft\DevDiv\{0}\Servicing\{1}\{2}\{3}", platformName, versionNumber, editionName, LCID);
+            return keyPath;
+        }
+
+        private static string GetVersionAndEditionString(string registryKeyPath, string versionNumber)
+        {
+            string edition = null;
+            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKeyPath))
+            {
+                if (null == key)
+                {
+                    throw new Opus.Core.Exception(System.String.Format("Unable to locate registry key, '{0}', for the VisualStudio service pack", registryKeyPath), false);
+                }
+
+                edition = key.GetValue("SPName") as string;
+            }
+
+            string version = System.String.Format("{0}{1}", versionNumber, edition);
+            return version;
+        }
+
+        protected string GetVersionString(string versionNumber)
+        {
+            int LCID = 1033; // Culture (English - United States)
+            string platformName;
+            string editionName;
+            string vcRegistryKeyPath;
+
+            // try professional version first
+            platformName = "VS";
+            editionName = "PRO";
+            vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
+            if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+            {
+                string versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
+                return versionString;
+            }
+            else
+            {
+                // now try Express edition
+                platformName = "VC";
+                editionName = "EXP";
+                vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
+                if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+                {
+                    string versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
+                    return versionString;
+                }
+                else
+                {
+                    // now try regular edition
+                    platformName = "VC";
+                    editionName = "RED";
+                    vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
+                    if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+                    {
+                        string versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
+                        return versionString;
+                    }
+                    else
+                    {
+                        // now try latest 
+                        platformName = "VC";
+                        editionName = "CompilerCore";
+                        vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
+                        if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+                        {
+                            string versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
+                            return versionString;
+                        }
+                        else
+                        {
+                            throw new Opus.Core.Exception("Unable to locate registry key, '{0}', for the VisualStudio {1} service pack", vcRegistryKeyPath, versionNumber);
+                        }
+                    }
+                }
             }
         }
 
@@ -73,9 +155,14 @@ namespace VisualCCommon
             return this.GetVersion(baseTarget);
         }
 
+        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        {
+            return this.toolConfig.ContainsKey(toolType);
+        }
+
         Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
         {
-            if (!this.toolConfig.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
@@ -85,7 +172,7 @@ namespace VisualCCommon
 
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            if (!this.toolConfig.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }

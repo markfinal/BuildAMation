@@ -35,7 +35,7 @@ namespace Opus.Core
 
         public override string ToString()
         {
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            var builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}: Package '{1}' with {2} versions", base.ToString(), this.Name, this.Versions.Count);
             return builder.ToString();
         }
@@ -45,7 +45,7 @@ namespace Opus.Core
     {
         public PackageBuild GetPackage(string name)
         {
-            foreach (PackageBuild i in this)
+            foreach (var i in this)
             {
                 if (i.Name == name)
                 {

@@ -42,13 +42,14 @@ namespace Opus.Core
             {
                 if (!this.Contains(key))
                 {
-                    string message = System.String.Format("Option '{0}' has not been registered in collection '{1}'. Is a default value missing?\n", key, this.ToString());
-                    message += "Options registered are:\n";
-                    foreach (string keyName in this.table.Keys)
+                    var builder = new System.Text.StringBuilder();
+                    builder.AppendFormat("Option '{0}' has not been registered in collection '{1}'. Is a default value missing?\n", key, this.ToString());
+                    builder.Append("Options registered are:\n");
+                    foreach (var keyName in this.table.Keys)
                     {
-                        message += System.String.Format("\t'{0}'\n", keyName);
+                        builder.AppendFormat("\t'{0}'\n", keyName);
                     }
-                    throw new Exception(message);
+                    throw new Exception(builder.ToString());
                 }
 
                 return this.table[key];
@@ -62,9 +63,10 @@ namespace Opus.Core
 
         public virtual object Clone()
         {
-            System.Type optionsType = this.GetType();
-            BaseOptionCollection clonedOptions = OptionCollectionFactory.CreateOptionCollection(optionsType);
+            var optionsType = this.GetType();
+            var clonedOptions = OptionCollectionFactory.CreateOptionCollection(optionsType);
 
+            // TODO: can I use var here? check in Mono
             foreach (System.Collections.Generic.KeyValuePair<string, Option> option in this.table)
             {
                 clonedOptions.table.Add(option.Key, option.Value.Clone() as Option);
@@ -87,10 +89,10 @@ namespace Opus.Core
 
         public void ProcessNamedSetHandler(string setHandlerName, Option option)
         {
-            System.Type type = this.GetType();
-            System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.Static |           // don't need an instance
-                                                          System.Reflection.BindingFlags.NonPublic |        // generally hidden - should be protected
-                                                          System.Reflection.BindingFlags.FlattenHierarchy;  // bring in protected static functions
+            var type = this.GetType();
+            var bindingFlags = System.Reflection.BindingFlags.Static |           // don't need an instance
+                               System.Reflection.BindingFlags.NonPublic |        // generally hidden - should be protected
+                               System.Reflection.BindingFlags.FlattenHierarchy;  // bring in protected static functions
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
@@ -107,6 +109,14 @@ namespace Opus.Core
         public bool Contains(string key)
         {
             return this.table.ContainsKey(key);
+        }
+
+        public StringArray OptionNames
+        {
+            get
+            {
+                return new StringArray(this.table.Keys);
+            }
         }
 
         protected Type GetValueTypeOption<Type>(string optionName) where Type : struct
@@ -143,15 +153,15 @@ namespace Opus.Core
             }
         }
 
-        public void FilterOutputPaths(System.Enum filter, StringArray paths)
+        public void FilterOutputPaths(System.Enum filter, StringArray outPaths)
         {
-            System.Type filterType = filter.GetType();
+            var filterType = filter.GetType();
             int filterValue = System.Convert.ToInt32(filter);
 
-            Opus.Core.OutputPaths outputPaths = this.OutputPaths;
+            var outputPaths = this.OutputPaths;
             if (State.RunningMono)
             {
-                foreach (System.Enum key in outputPaths.Types)
+                foreach (var key in outputPaths.Types)
                 {
                     if (key.GetType() != filterType)
                     {
@@ -163,8 +173,8 @@ namespace Opus.Core
                     if (keyValue == (filterValue & keyValue))
                     //if (o.Key.Includes(filter))
                     {
-                        string path = outputPaths[key];
-                        paths.Add(path);
+                        string paths = outputPaths[key];
+                        outPaths.Add(paths);
                     }
                 }
             }
@@ -184,7 +194,7 @@ namespace Opus.Core
                     if (keyValue == (filterValue & keyValue))
                     //if (o.Key.Includes(filter))
                     {
-                        paths.Add(o.Value);
+                        outPaths.Add(o.Value);
                     }
                 }
             }

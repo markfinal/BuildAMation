@@ -11,7 +11,7 @@ namespace Opus.Core
 
         public object Clone()
         {
-            DirectoryCollection clone = new DirectoryCollection();
+            var clone = new DirectoryCollection();
             clone.directoryPaths.AddRange(this.directoryPaths);
             return clone;
         }
@@ -50,11 +50,11 @@ namespace Opus.Core
                 // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
                 // cannot use GetFiles with a pattern containing directories
 
-                string combinedBaseDirectory = baseDirectory;
+                var combinedBaseDirectory = baseDirectory;
                 int i = 0;
                 for (; i < pathSegments.Length - 1; ++i)
                 {
-                    string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
+                    var baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
                     if (System.IO.Directory.Exists(baseDirTest))
                     {
                         combinedBaseDirectory = baseDirTest;
@@ -74,11 +74,11 @@ namespace Opus.Core
 
                 try
                 {
-                    StringArray directories = new StringArray(System.IO.Directory.GetDirectories(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly));
-                    StringArray nonHiddenDirectories = new StringArray();
-                    foreach (string dir in directories)
+                    var directories = new StringArray(System.IO.Directory.GetDirectories(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly));
+                    var nonHiddenDirectories = new StringArray();
+                    foreach (var dir in directories)
                     {
-                        System.IO.DirectoryInfo info = new System.IO.DirectoryInfo(dir);
+                        var info = new System.IO.DirectoryInfo(dir);
                         if (0 == (info.Attributes & System.IO.FileAttributes.Hidden))
                         {
                             nonHiddenDirectories.Add(dir);
@@ -100,8 +100,8 @@ namespace Opus.Core
             }
             else
             {
-                string baseDirChanges = System.String.Empty;
-                string relativePath = File.CombinePaths(ref baseDirChanges, pathSegments);
+                var baseDirChanges = System.String.Empty;
+                var relativePath = File.CombinePaths(ref baseDirChanges, pathSegments);
                 if (baseDirChanges != System.String.Empty)
                 {
                     baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
@@ -109,11 +109,11 @@ namespace Opus.Core
                 }
                 try
                 {
-                    StringArray directories = new StringArray(System.IO.Directory.GetDirectories(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly));
-                    StringArray nonHiddenDirectories = new StringArray();
-                    foreach (string dir in directories)
+                    var directories = new StringArray(System.IO.Directory.GetDirectories(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly));
+                    var nonHiddenDirectories = new StringArray();
+                    foreach (var dir in directories)
                     {
-                        System.IO.DirectoryInfo info = new System.IO.DirectoryInfo(dir);
+                        var info = new System.IO.DirectoryInfo(dir);
                         if (0 == (info.Attributes & System.IO.FileAttributes.Hidden))
                         {
                             nonHiddenDirectories.Add(dir);
@@ -137,21 +137,21 @@ namespace Opus.Core
 
         public void Include(object module, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            var package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (module as BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            StringArray paths = GetDirectories(packagePath, pathSegments);
-            foreach (string path in paths)
+            var paths = GetDirectories(packagePath, pathSegments);
+            foreach (var path in paths)
             {
                 if (!this.directoryPaths.Contains(path))
                 {
@@ -162,21 +162,21 @@ namespace Opus.Core
 
         public void Exclude(object module, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            var package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (module as BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            StringArray paths = GetDirectories(packagePath, pathSegments);
-            foreach (string path in paths)
+            var paths = GetDirectories(packagePath, pathSegments);
+            foreach (var path in paths)
             {
                 if (!this.directoryPaths.Contains(path))
                 {
@@ -187,7 +187,7 @@ namespace Opus.Core
 
         public void AddRange(string[] absolutePaths)
         {
-            foreach (string absolutePath in absolutePaths)
+            foreach (var absolutePath in absolutePaths)
             {
                 this.Add(absolutePath, false);
             }
@@ -195,7 +195,7 @@ namespace Opus.Core
 
         public void AddRange(StringArray absolutePaths)
         {
-            foreach (string absolutePath in absolutePaths)
+            foreach (var absolutePath in absolutePaths)
             {
                 this.Add(absolutePath, false);
             }
@@ -208,7 +208,7 @@ namespace Opus.Core
                 throw new Exception("Use AddRange without a package");
             }
 
-            foreach (string path in relativePaths)
+            foreach (var path in relativePaths)
             {
                 this.Include(package, path);
             }
@@ -221,7 +221,7 @@ namespace Opus.Core
                 throw new Exception("Use AddRange without a package");
             }
 
-            foreach (string path in relativePaths)
+            foreach (var path in relativePaths)
             {
                 this.Include(package, path);
             }
@@ -229,7 +229,7 @@ namespace Opus.Core
 
         public void AddRange(object owner, string[] relativePaths)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            var package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
@@ -240,7 +240,7 @@ namespace Opus.Core
 
         public void AddRange(object owner, StringArray relativePaths)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            var package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
@@ -272,7 +272,7 @@ namespace Opus.Core
 
         public StringArray ToStringArray()
         {
-            StringArray array = new StringArray(this.directoryPaths);
+            var array = new StringArray(this.directoryPaths);
             return array;
         }
     }

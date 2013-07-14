@@ -94,8 +94,9 @@ namespace CSharp
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            IOptions options = this as IOptions;
-            if (null == this.OutputFilePath)
+            var options = this as IOptions;
+
+            if (!this.OutputPaths.Has(OutputFileFlags.AssemblyFile))
             {
                 string outputSuffix;
                 switch (options.Target)
@@ -121,7 +122,7 @@ namespace CSharp
                 this.OutputFilePath = outputPathName;
             }
 
-            if ((options.DebugInformation != EDebugInformation.Disabled) && (null == this.ProgramDatabaseFilePath))
+            if ((options.DebugInformation != EDebugInformation.Disabled) && !this.OutputPaths.Has(OutputFileFlags.ProgramDatabaseFile))
             {
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {
@@ -133,9 +134,9 @@ namespace CSharp
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()

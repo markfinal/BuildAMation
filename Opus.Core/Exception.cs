@@ -40,13 +40,26 @@ namespace Opus.Core
         /// <summary>
         /// Initializes a new instance of the Exception class.
         /// </summary>
+        /// <param name="innerException">Inner exception.</param>
+        /// <param name="format">Format string.</param>
+        /// <param name="args">Variable number of arguments to satisfy the format string.</param>
+        public Exception(System.Exception innerException, string format, params object[] args)
+            : base(System.String.Format(format, args), innerException)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the Exception class.
+        /// DEPRECATED
+        /// </summary>
         /// <param name="message">Exception message.</param>
         /// <param name="innerException">Inner exception.</param>
         public Exception(string message, System.Exception innerException)
-            : base(message, innerException)
+            : this(innerException, message)
         {
+            // TODO: remove this and fix what breaks
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the Exception class.
         /// </summary>
@@ -64,7 +77,7 @@ namespace Opus.Core
                 return false;
             }
 
-            bool anyInnerExceptions = DisplayException(exception.InnerException);
+            var anyInnerExceptions = DisplayException(exception.InnerException);
             Log.ErrorMessage("({0}) {1}", exception.GetType().ToString(), exception.Message);
             if (!anyInnerExceptions)
             {

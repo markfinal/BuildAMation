@@ -21,27 +21,6 @@ namespace Opus.Core
             Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.GetInstance(toolsetType));
         }
 
-        public class ToolAndOptions
-        {
-            public ToolAndOptions(System.Type toolType, System.Type optionsType)
-            {
-                this.ToolType = toolType;
-                this.OptionType = optionsType;
-            }
-
-            public System.Type ToolType
-            {
-                get;
-                private set;
-            }
-
-            public System.Type OptionType
-            {
-                get;
-                private set;
-            }
-        }
-
         public static void RegisterAll()
         {
             // need to use inheritence here as the base class is abstract

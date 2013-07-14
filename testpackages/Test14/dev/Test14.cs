@@ -86,6 +86,21 @@ namespace Test14
         );
     }
 
+#if OPUSPACKAGE_FILEUTILITIES_DEV
+    class PublishDynamicLibraries : FileUtilities.CopyFileCollection
+    {
+        public PublishDynamicLibraries(Opus.Core.Target target)
+        {
+            this.Include(target,
+                         C.OutputFileFlags.Executable,
+                         typeof(DynamicLibraryA),
+                         typeof(DynamicLibraryB));
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(Application);
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_1_0
     class PublishDynamicLibraries : FileUtilities.CopyFiles
     {
         [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
@@ -97,4 +112,7 @@ namespace Test14
             typeof(DynamicLibraryB)
         );
     }
+#else
+#error Unknown FileUtilities package version
+#endif
 }

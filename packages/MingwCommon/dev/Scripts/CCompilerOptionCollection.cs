@@ -53,9 +53,9 @@ namespace MingwCommon
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
 
-            string objPathName = this.ObjectFilePath;
-            if (null != objPathName)
+            if (this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
             {
+                string objPathName = this.ObjectFilePath;
                 directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
             }
 

@@ -23,7 +23,7 @@ namespace Opus.Core
 
             for (int rank = this.highestRankToBuild; rank >= 0; --rank)
             {
-                DependencyNodeCollection rankCollection = this.graph[rank];
+                var rankCollection = this.graph[rank];
                 if (0 == rankCollection.Count)
                 {
                     throw new Exception("Dependency node collection for rank {0} is empty", rank);
@@ -69,7 +69,7 @@ namespace Opus.Core
 
         static private bool RankedNodeCollectionComplete(DependencyNodeCollection rankCollection)
         {
-            bool rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.AllNodesCompletedEvent, 0);
+            var rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.AllNodesCompletedEvent, 0);
             return rankCollectionComplete;
         }
         
@@ -77,7 +77,7 @@ namespace Opus.Core
         {
             for (int rank = this.highestRankToBuild; rank >= 0; --rank)
             {
-                DependencyNodeCollection rankCollection = this.graph[rank];
+                var rankCollection = this.graph[rank];
 
                 if (RankedNodeCollectionComplete(rankCollection))
                 {
@@ -89,7 +89,7 @@ namespace Opus.Core
                     continue;
                 }
 
-                foreach (DependencyNode node in rankCollection)
+                foreach (var node in rankCollection)
                 {
                     if (node.IsReadyToBuild())
                     {

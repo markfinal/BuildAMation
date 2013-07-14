@@ -7,35 +7,22 @@ namespace QMakeBuilder
 {
     public partial class QMakeBuilder
     {
-        public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
+        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule mocFileModule = mocFile as Opus.Core.BaseModule;
-            Opus.Core.Target target = mocFileModule.OwningNode.Target;
-            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
+            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var node = moduleToBuild.OwningNode;
+            var target = node.Target;
 
-            QtCommon.IMocOptions mocOptions = mocFileOptions as QtCommon.IMocOptions;
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-            if (mocFileOptions is CommandLineProcessor.ICommandLineSupport)
-            {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = mocFileOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
-            }
-            else
-            {
-                throw new Opus.Core.Exception("Moc options does not support command line translation");
-            }
+            var data = new QMakeData(node);
+            data.PriPaths.Add(this.EmptyConfigPriPath);
+            data.Headers.Add(sourceFilePath);
+            data.Output = QMakeData.OutputType.MocFile;
 
-            NodeData nodeData = new NodeData();
-            nodeData.Configuration = GetQtConfiguration(target);
-            nodeData.AddVariable("HEADERS", mocFile.SourceFile.AbsolutePath);
-            nodeData.AddUniqueVariable("MOC_DIR", new Opus.Core.StringArray(System.IO.Path.GetDirectoryName(mocOptions.MocOutputPath)));
-
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            string toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
-            nodeData.AddUniqueVariable("QMAKE_MOC", new Opus.Core.StringArray(toolExePath.Replace("\\", "/")));
+            var options = moduleToBuild.Options as QtCommon.MocOptionCollection;
+            data.MocDir = options.OutputDirectoryPath;
 
             success = true;
-            return nodeData;
+            return data;
         }
     }
 }

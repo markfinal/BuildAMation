@@ -7,15 +7,15 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.Win32Resource resourceFile, out bool success)
+        public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule resourceFileModule = resourceFile as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = resourceFileModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = resourceFileModule.OwningNode;
+            var target = node.Target;
 
             // do not generate a project file for this module
             // instead, find what it is used by, and add it into that project
-            Opus.Core.DependencyNode parentNode = node.Parent;
+            var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
             if ((null != parentNode) && (parentNode.Module is Opus.Core.IModuleCollection))
             {
@@ -26,7 +26,7 @@ namespace VSSolutionBuilder
                 targetNode = node.ExternalDependentFor[0];
             }
 
-            string moduleName = targetNode.ModuleName;
+            var moduleName = targetNode.ModuleName;
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -38,15 +38,15 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
-                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
-                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    string projectPathName = System.IO.Path.Combine(targetNode.GetModuleBuildDirectory(), moduleName);
+                    var projectPathName = System.IO.Path.Combine(targetNode.GetModuleBuildDirectory(), moduleName);
                     projectPathName += projectExtension;
 
-                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    var projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, resourceFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
@@ -54,14 +54,14 @@ namespace VSSolutionBuilder
             }
 
             {
-                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                var platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
                 if (!projectData.Platforms.Contains(platformName))
                 {
                     projectData.Platforms.Add(platformName);
                 }
             }
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             // TODO: want to remove this
             lock (this.solutionFile.ProjectConfigurations)
@@ -95,14 +95,14 @@ namespace VSSolutionBuilder
 #endif
             }
 
-            string resourceFilePath = resourceFile.ResourceFile.AbsolutePath;
+            var resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
             ProjectFile sourceFile;
-            ICProject cProjectData = projectData as ICProject;
+            var cProjectData = projectData as ICProject;
             lock (cProjectData.ResourceFiles)
             {
                 if (!cProjectData.ResourceFiles.Contains(resourceFilePath))
@@ -117,27 +117,27 @@ namespace VSSolutionBuilder
                 }
             }
 
-            Opus.Core.BaseOptionCollection resourceFileOptions = resourceFileModule.Options;
+            var resourceFileOptions = resourceFileModule.Options;
 
             {
-                string toolName = "VCResourceCompilerTool";
+                var toolName = "VCResourceCompilerTool";
 
                 // do not share the compiler tool in order to handle differences
-                ProjectTool vcResourceCompilerTool = new ProjectTool(toolName);
+                var vcResourceCompilerTool = new ProjectTool(toolName);
 
                 // if the main configuration does not yet have an instance of this tool, add it (could happen if a single ObjectFile is added to a library or application)
                 configuration.AddToolIfMissing(vcResourceCompilerTool);
 
                 // need to add each configuration a source file is applicable to in order to determine exclusions later
-                ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, vcResourceCompilerTool, false);
+                var fileConfiguration = new ProjectFileConfiguration(configuration, vcResourceCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
                 if (resourceFileOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = resourceFileOptions as VisualStudioProcessor.IVisualStudioSupport;
-                    VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+                    var visualStudioProjectOption = resourceFileOptions as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
+                    foreach (var setting in settingsDictionary)
                     {
                         vcResourceCompilerTool[setting.Key] = setting.Value;
                     }
@@ -148,7 +148,7 @@ namespace VSSolutionBuilder
                 }
 
                 // add the output file spec
-                C.Win32ResourceCompilerOptionCollection compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
+                var compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
                 vcResourceCompilerTool["ResourceOutputFileName"] = compilerOptions.CompiledResourceFilePath;
             }
 

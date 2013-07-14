@@ -40,11 +40,11 @@ namespace Opus
 
         public bool Execute()
         {
-            Core.Array<Core.EConfiguration> buildConfigurations = new Core.Array<Opus.Core.EConfiguration>();
+            var buildConfigurations = new Core.Array<Opus.Core.EConfiguration>();
 
-            foreach (string configuration in this.Configurations)
+            foreach (var configuration in this.Configurations)
             {
-                Core.EConfiguration c = Core.Configuration.FromString(configuration);
+                var c = Core.Configuration.FromString(configuration);
                 if (buildConfigurations.Contains(c))
                 {
                     throw new Core.Exception("Configuration '{0}' already specified", configuration);

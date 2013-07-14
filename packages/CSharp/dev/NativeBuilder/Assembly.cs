@@ -7,9 +7,9 @@ namespace NativeBuilder
 {
     public partial class NativeBuilder
     {
-        public object Build(CSharp.Assembly assembly, out System.Boolean success)
+        public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule assemblyModule = assembly as Opus.Core.BaseModule;
+            Opus.Core.BaseModule assemblyModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = assemblyModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;
@@ -24,7 +24,7 @@ namespace NativeBuilder
             }
 
             Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
-            var fields = assembly.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+            var fields = moduleToBuild.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
             foreach (var field in fields)
             {
                 // C# files
@@ -32,7 +32,7 @@ namespace NativeBuilder
                     var sourceFileAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
-                        var sourceField = field.GetValue(assembly);
+                        var sourceField = field.GetValue(moduleToBuild);
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
@@ -75,7 +75,7 @@ namespace NativeBuilder
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.ApplicationDefinitionAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
-                        var sourceField = field.GetValue(assembly);
+                        var sourceField = field.GetValue(moduleToBuild);
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
@@ -135,7 +135,7 @@ namespace NativeBuilder
                     var xamlFileAttributes = field.GetCustomAttributes(typeof(CSharp.PagesAttribute), false);
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
-                        var sourceField = field.GetValue(assembly);
+                        var sourceField = field.GetValue(moduleToBuild);
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
@@ -207,11 +207,11 @@ namespace NativeBuilder
                 }
             }
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)

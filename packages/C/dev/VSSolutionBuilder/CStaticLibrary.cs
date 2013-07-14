@@ -7,12 +7,12 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.StaticLibrary staticLibrary, out bool success)
+        public object Build(C.StaticLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule staticLibraryModule = staticLibrary as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            string moduleName = node.ModuleName;
+            var staticLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = staticLibraryModule.OwningNode;
+            var target = node.Target;
+            var moduleName = node.ModuleName;
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -30,7 +30,7 @@ namespace VSSolutionBuilder
             }
 
             {
-                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                var platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
                 if (!projectData.Platforms.Contains(platformName))
                 {
                     projectData.Platforms.Add(platformName);
@@ -39,16 +39,16 @@ namespace VSSolutionBuilder
 
             // solution folder
             {
-                var groups = staticLibrary.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
                 if (groups.Length > 0)
                 {
                     projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
                 }
             }
 
-            Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
+            var staticLibraryOptions = staticLibraryModule.Options;
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
@@ -89,24 +89,24 @@ namespace VSSolutionBuilder
                 }
             }
 
-            System.Reflection.BindingFlags fieldBindingFlags = System.Reflection.BindingFlags.Instance |
-                                                               System.Reflection.BindingFlags.Public |
-                                                               System.Reflection.BindingFlags.NonPublic;
-            System.Reflection.FieldInfo[] fields = staticLibrary.GetType().GetFields(fieldBindingFlags);
-            foreach (System.Reflection.FieldInfo field in fields)
+            var fieldBindingFlags = System.Reflection.BindingFlags.Instance |
+                                    System.Reflection.BindingFlags.Public |
+                                    System.Reflection.BindingFlags.NonPublic;
+            var fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
+            foreach (var field in fields)
             {
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    Opus.Core.FileCollection headerFileCollection = field.GetValue(staticLibrary) as Opus.Core.FileCollection;
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        ICProject cProject = projectData as ICProject;
+                        var cProject = projectData as ICProject;
                         lock (cProject.HeaderFiles)
                         {
                             if (!cProject.HeaderFiles.Contains(headerPath))
                             {
-                                ProjectFile headerFile = new ProjectFile(headerPath);
+                                var headerFile = new ProjectFile(headerPath);
                                 cProject.HeaderFiles.Add(headerFile);
                             }
                         }
@@ -116,22 +116,22 @@ namespace VSSolutionBuilder
 
             configuration.Type = EProjectConfigurationType.StaticLibrary;
 
-            string toolName = "VCLibrarianTool";
-            ProjectTool vcCLLibrarianTool = configuration.GetTool(toolName);
+            var toolName = "VCLibrarianTool";
+            var vcCLLibrarianTool = configuration.GetTool(toolName);
             if (null == vcCLLibrarianTool)
             {
                 vcCLLibrarianTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLibrarianTool);
 
-                string outputDirectory = (staticLibraryOptions as C.ArchiverOptionCollection).OutputDirectoryPath;
+                var outputDirectory = (staticLibraryOptions as C.ArchiverOptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
 
                 if (staticLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = staticLibraryOptions as VisualStudioProcessor.IVisualStudioSupport;
-                    VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+                    var visualStudioProjectOption = staticLibraryOptions as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
+                    foreach (var setting in settingsDictionary)
                     {
                         vcCLLibrarianTool[setting.Key] = setting.Value;
                     }

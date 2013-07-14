@@ -7,15 +7,15 @@ namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
     {
-        public object Build(QtCommon.MocFile mocFile, out System.Boolean success)
+        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule mocFileModule = mocFile as Opus.Core.BaseModule;
+            Opus.Core.BaseModule mocFileModule = moduleToBuild as Opus.Core.BaseModule;
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
 
-            string sourceFilePath = mocFile.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);
@@ -27,12 +27,12 @@ namespace MakeFileBuilder
             Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
             node.FilterOutputPaths(QtCommon.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }

@@ -35,11 +35,11 @@ namespace Opus
             Core.Log.MessageAll("Repeated commands will always take the last value set.");
             Core.Log.MessageAll("There can be only one response file.");
 
-            Core.Array<Core.RegisterActionAttribute> actions = Core.ActionManager.Actions;
+            var actions = Core.ActionManager.Actions;
             
             // first loop over these to determine the command length
             int maximumLength = 0;
-            foreach (Core.RegisterActionAttribute actionAttribute in actions)
+            foreach (var actionAttribute in actions)
             {
                 int length = actionAttribute.Action.CommandLineSwitch.Length;
                 if (length > maximumLength)
@@ -64,12 +64,11 @@ namespace Opus
         private void DisplayCommands(Core.Array<Core.RegisterActionAttribute> actions,
                                      int maximumLength)
         {
-            foreach (Core.RegisterActionAttribute actionAttribute in actions)
+            foreach (var actionAttribute in actions)
             {
-                Core.IAction action = actionAttribute.Action;
-
-                string commandSwitch = action.CommandLineSwitch;
-                string description = action.Description;
+                var action = actionAttribute.Action;
+                var commandSwitch = action.CommandLineSwitch;
+                var description = action.Description;
 
                 int length = commandSwitch.Length;
                 int spaces = maximumLength - length;

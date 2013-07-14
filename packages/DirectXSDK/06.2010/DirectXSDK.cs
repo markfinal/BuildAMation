@@ -37,13 +37,19 @@ namespace DirectXSDK
         public Direct3D9()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_LibraryPaths);
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_LinkerOptions);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void Direct3D9_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void Direct3D9_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            // add library paths
             string platformLibraryPath = null;
             if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
@@ -57,32 +63,32 @@ namespace DirectXSDK
             {
                 throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
             }
-
             linkerOptions.LibraryPaths.AddAbsoluteDirectory(platformLibraryPath, true);
+
+            // add libraries
+            Opus.Core.StringArray libraries = new Opus.Core.StringArray();
+            libraries.Add("d3d9.lib");
+            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            {
+                libraries.Add("d3dx9d.lib");
+            }
+            else
+            {
+                libraries.Add("d3dx9.lib");
+            }
+            linkerOptions.Libraries.AddRange(libraries);
         }
 
         [C.ExportCompilerOptionsDelegate]
         void Direct3D9_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            if (compilerOptions == null)
+            {
+                return;
+            }
+
             compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
-        }
-
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
-        {
-            Opus.Core.StringArray libraries = new Opus.Core.StringArray();
-
-            libraries.Add(@"d3d9.lib");
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
-            {
-                libraries.Add(@"d3dx9d.lib");
-            }
-            else
-            {
-                libraries.Add(@"d3dx9.lib");
-            }
-
-            return libraries;
         }
     }
 }

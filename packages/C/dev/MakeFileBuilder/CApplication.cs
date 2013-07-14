@@ -7,22 +7,22 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.Application application, out bool success)
+        public object Build(C.Application moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule applicationModule = application as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = applicationModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var applicationModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = applicationModule.OwningNode;
+            var target = node.Target;
 
             // dependents
-            MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
-            System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
+            var inputVariables = new MakeFileVariableDictionary();
+            var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
-                foreach (Opus.Core.DependencyNode childNode in node.Children)
+                foreach (var childNode in node.Children)
                 {
                     if (null != childNode.Data)
                     {
-                        MakeFileData data = childNode.Data as MakeFileData;
+                        var data = childNode.Data as MakeFileData;
                         inputVariables.Append(data.VariableDictionary);
                         dataArray.Add(data);
                     }
@@ -30,25 +30,25 @@ namespace MakeFileBuilder
             }
             if (null != node.ExternalDependents)
             {
-                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null != dependentNode.Data)
                     {
-                        MakeFileData data = dependentNode.Data as MakeFileData;
+                        var data = dependentNode.Data as MakeFileData;
                         inputVariables.Append(data.VariableDictionary);
                         dataArray.Add(data);
                     }
                 }
             }
 
-            Opus.Core.BaseOptionCollection applicationOptions = applicationModule.Options;
+            var applicationOptions = applicationModule.Options;
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (applicationOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = applicationOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = applicationOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
                 directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
@@ -57,11 +57,11 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
-            Opus.Core.IToolset toolset = target.Toolset;
-            C.ILinkerTool linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
-            string executable = linkerTool.Executable((Opus.Core.BaseTarget)target);
+            var toolset = target.Toolset;
+            var linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+            var executable = linkerTool.Executable((Opus.Core.BaseTarget)target);
 
-            System.Text.StringBuilder recipeBuilder = new System.Text.StringBuilder();
+            var recipeBuilder = new System.Text.StringBuilder();
             if (executable.Contains(" "))
             {
                 recipeBuilder.AppendFormat("\"{0}\"", executable);
@@ -71,30 +71,25 @@ namespace MakeFileBuilder
                 recipeBuilder.Append(executable);
             }
 
-            Opus.Core.StringArray dependentLibraryCommandLine = new Opus.Core.StringArray();
+            var dependentLibraryCommandLine = new Opus.Core.StringArray();
             {
-                C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+                var compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
 
                 recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
 
-                // TODO: is there a better way of doing this? the toolset.Tool function will throw an exception
-                // if the required tool is not present
-                if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                if (toolset.HasTool(typeof(C.IWinResourceCompilerTool)))
                 {
-                    C.IWinResourceCompilerTool winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-                    if (null != winResourceCompilerTool)
-                    {
-                        recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
-                    }
+                    var winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+                    recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
                 }
 
                 // TODO: don't want to access the archiver tool here really, as creating
                 // an application does not require one
                 // although we do need to know where static libraries are written
                 // perhaps the ILinkerTool can have a duplicate of the static library suffix?
-                C.IArchiverTool archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
+                var archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
 
-                Opus.Core.StringArray dependentLibraries = new Opus.Core.StringArray();
+                var dependentLibraries = new Opus.Core.StringArray();
                 dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
                 if (linkerTool is C.IWinImportLibrary)
                 {
@@ -104,11 +99,11 @@ namespace MakeFileBuilder
             }
 
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
-            string recipe = recipeBuilder.ToString();
+            var recipe = recipeBuilder.ToString();
             // replace primary target with $@
-            C.OutputFileFlags primaryOutput = C.OutputFileFlags.Executable;
+            var primaryOutput = C.OutputFileFlags.Executable;
             recipe = recipe.Replace(applicationOptions.OutputPaths[primaryOutput], "$@");
-            string instanceName = MakeFile.InstanceName(node);
+            var instanceName = MakeFile.InstanceName(node);
             if (Opus.Core.State.RunningMono)
             {
                 // TODO: workaround for an invalid cast exception
@@ -116,7 +111,7 @@ namespace MakeFileBuilder
                 {
                     if (!type.Equals(primaryOutput))
                     {
-                        string variableName = System.String.Format("{0}_{1}_Variable", instanceName, type.ToString());
+                        var variableName = System.String.Format("{0}_{1}_Variable", instanceName, type.ToString());
                         recipe = recipe.Replace(applicationOptions.OutputPaths[type], System.String.Format("$({0})", variableName));
                     }
                 }
@@ -127,36 +122,36 @@ namespace MakeFileBuilder
                 {
                     if (!outputPath.Key.Equals(primaryOutput))
                     {
-                        string variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
+                        var variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
                         recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
                     }
                 }
             }
 
-            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            MakeFileRule rule = new MakeFileRule(applicationOptions.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            var rule = new MakeFileRule(applicationOptions.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
-            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
 
-            using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
                 makeFile.Write(makeFileWriter);
             }
 
-            MakeFileTargetDictionary exportedTargets = makeFile.ExportedTargets;
-            MakeFileVariableDictionary exportedVariables = makeFile.ExportedVariables;
+            var exportedTargets = makeFile.ExportedTargets;
+            var exportedVariables = makeFile.ExportedVariables;
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (linkerTool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environment);
+            var returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environment);
             success = true;
             return returnData;
         }

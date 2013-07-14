@@ -12,8 +12,8 @@ namespace C
                                                         ILinkerOptions linkerOptions,
                                                         Opus.Core.StringArray otherLibraryPaths)
         {
-            bool includeStandardLibraries = linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0;
-            bool includeOtherLibraries = (null != otherLibraryPaths) && (otherLibraryPaths.Count > 0);
+            var includeStandardLibraries = linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0;
+            var includeOtherLibraries = (null != otherLibraryPaths) && (otherLibraryPaths.Count > 0);
             if (includeStandardLibraries ||
                 (linkerOptions.Libraries.Count > 0) ||
                 includeOtherLibraries)
@@ -25,6 +25,7 @@ namespace C
                     commandLineBuilder.AddRange(otherLibraryPaths);
                 }
 
+                // TODO: replace with 'var'
                 foreach (string libraryPath in linkerOptions.Libraries)
                 {
                     if (libraryPath.Contains(" "))
@@ -39,6 +40,7 @@ namespace C
 
                 if (includeStandardLibraries)
                 {
+                    // TODO: replace with 'var'
                     foreach (string standardLibraryPath in linkerOptions.StandardLibraries)
                     {
                         if (standardLibraryPath.Contains(" "))

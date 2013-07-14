@@ -11,7 +11,7 @@ namespace ObjectiveCTest1
                 {
                     if (target.HasPlatform(Opus.Core.EPlatform.OSX))
                     {
-                        link.AdditionalOptions = "-framework Cocoa";
+                        link.OSXFrameworks.Add("Cocoa");
                     }
                 }
             };

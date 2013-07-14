@@ -7,14 +7,14 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.StaticLibrary staticLibrary, out bool success)
+        public object Build(C.StaticLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule staticLibraryModule = staticLibrary as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = staticLibraryModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var staticLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = staticLibraryModule.OwningNode;
+            var target = node.Target;
 
             // find dependent object files
-            Opus.Core.StringArray dependentObjectFiles = new Opus.Core.StringArray();
+            var dependentObjectFiles = new Opus.Core.StringArray();
             if (null != node.Children)
             {
                 node.Children.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
@@ -30,13 +30,13 @@ namespace NativeBuilder
                 return null;
             }
 
-            Opus.Core.BaseOptionCollection staticLibraryOptions = staticLibraryModule.Options;
+            var staticLibraryOptions = staticLibraryModule.Options;
 
             // dependency checking
             {
-                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                var inputFiles = new Opus.Core.StringArray();
                 inputFiles.AddRange(dependentObjectFiles);
-                Opus.Core.StringArray outputFiles = staticLibraryOptions.OutputPaths.Paths;
+                var outputFiles = staticLibraryOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -45,13 +45,13 @@ namespace NativeBuilder
                 }
             }
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
                 {
                     NativeBuilder.MakeDirectory(directoryPath);
@@ -62,12 +62,12 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Archiver options does not support command line translation");
             }
 
-            foreach (string dependentObjectFile in dependentObjectFiles)
+            foreach (var dependentObjectFile in dependentObjectFiles)
             {
                 commandLineBuilder.Add(dependentObjectFile);
             }
 
-            Opus.Core.ITool archiverTool = target.Toolset.Tool(typeof(C.IArchiverTool));
+            var archiverTool = target.Toolset.Tool(typeof(C.IArchiverTool));
             int exitCode = CommandLineProcessor.Processor.Execute(node, archiverTool, commandLineBuilder);
             success = (0 == exitCode);
 

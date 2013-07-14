@@ -9,22 +9,22 @@ namespace Opus.Core
     {
         public static void DumpProfiles()
         {
-            bool additionalDetails = false;
+            var additionalDetails = false;
 
-            string profileHeader = "Profile";
-            string minutesHeader = "Minutes";
-            string secondsHeader = "Seconds";
-            string millisecondsHeader = "Milliseconds";
-            string startTimeHeader = "Start";
-            string stopTimeHeader = "Stop";
+            var profileHeader = "Profile";
+            var minutesHeader = "Minutes";
+            var secondsHeader = "Seconds";
+            var millisecondsHeader = "Milliseconds";
+            var startTimeHeader = "Start";
+            var stopTimeHeader = "Stop";
 
-            System.Array profiles = System.Enum.GetValues(typeof(ETimingProfiles));
+            var profiles = System.Enum.GetValues(typeof(ETimingProfiles));
             int maxNameLength = profileHeader.Length;
             int maxMinuteLength = minutesHeader.Length;
             int maxSecondLength = secondsHeader.Length;
             int maxMillisecondLength = millisecondsHeader.Length;
             int maxTimeLength = 9;
-            foreach (ETimingProfiles profile in profiles)
+            foreach (var profile in profiles)
             {
                 int nameLength = profile.ToString().Length;
                 if (nameLength > maxNameLength)
@@ -32,7 +32,7 @@ namespace Opus.Core
                     maxNameLength = nameLength;
                 }
 
-                TimeProfile profileTime = State.TimingProfiles[(int)profile];
+                var profileTime = State.TimingProfiles[(int)profile];
                 if (null == profileTime)
                 {
                     continue;
@@ -57,7 +57,7 @@ namespace Opus.Core
                 }
             }
 
-            string header =
+            var header =
                 System.String.Format("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11}",
                                      profileHeader,
                                      new string(' ', maxNameLength - profileHeader.Length),
@@ -71,16 +71,16 @@ namespace Opus.Core
                                      startTimeHeader,
                                      new string(' ', maxTimeLength - stopTimeHeader.Length),
                                      stopTimeHeader);
-            string horizontalRule = new string('-', header.Length);
+            var horizontalRule = new string('-', header.Length);
             Core.Log.Info(horizontalRule);
             Core.Log.Info(header);
             Core.Log.Info(horizontalRule);
-            System.TimeSpan cumulativeTime = new System.TimeSpan();
+            var cumulativeTime = new System.TimeSpan();
             foreach (ETimingProfiles profile in profiles)
             {
                 int intProfile = (int)profile;
-                TimeProfile profileTime = State.TimingProfiles[intProfile];
-                System.TimeSpan elapsedTime = (null != profileTime) ? profileTime.Elapsed : new System.TimeSpan(0);
+                var profileTime = State.TimingProfiles[intProfile];
+                var elapsedTime = (null != profileTime) ? profileTime.Elapsed : new System.TimeSpan(0);
                 if (ETimingProfiles.TimedTotal != profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
@@ -89,23 +89,23 @@ namespace Opus.Core
                 string diffString = null;
                 if (additionalDetails && (intProfile > 0) && (ETimingProfiles.TimedTotal != profile))
                 {
-                    System.TimeSpan diff = profileTime.Start - State.TimingProfiles[intProfile - 1].Stop;
+                    var diff = profileTime.Start - State.TimingProfiles[intProfile - 1].Stop;
                     diffString = diff.Milliseconds.ToString();
                 }
 
-                string minuteString = elapsedTime.Minutes.ToString();
-                string secondString = elapsedTime.Seconds.ToString();
-                string millisecondString = elapsedTime.Milliseconds.ToString();
-                string startTimeString = (null != profileTime) ? profileTime.Start.ToString(TimeProfile.DateTimeFormat) : "0";
-                string stopTimeString = (null != profileTime) ? profileTime.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
+                var minuteString = elapsedTime.Minutes.ToString();
+                var secondString = elapsedTime.Seconds.ToString();
+                var millisecondString = elapsedTime.Milliseconds.ToString();
+                var startTimeString = (null != profileTime) ? profileTime.Start.ToString(TimeProfile.DateTimeFormat) : "0";
+                var stopTimeString = (null != profileTime) ? profileTime.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
 
                 if (ETimingProfiles.TimedTotal == profile)
                 {
                     Log.Info(horizontalRule);
-                    string cumulativeString = "CumulativeTotal";
-                    string cumulativeMinutesString = cumulativeTime.Minutes.ToString();
-                    string cumulativeSecondsString = cumulativeTime.Seconds.ToString();
-                    string cumulativeMillisecondsString = cumulativeTime.Milliseconds.ToString();
+                    var cumulativeString = "CumulativeTotal";
+                    var cumulativeMinutesString = cumulativeTime.Minutes.ToString();
+                    var cumulativeSecondsString = cumulativeTime.Seconds.ToString();
+                    var cumulativeMillisecondsString = cumulativeTime.Milliseconds.ToString();
 
                     Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
                              cumulativeString,

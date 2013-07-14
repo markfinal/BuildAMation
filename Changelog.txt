@@ -1,3 +1,67 @@
+13-Jul-2013 Added Opus.Core.RelativePathUtilities.GetCommonRoot to find the common root between two paths. If there is no common root, null is returned.
+
+13-Jul-2013 Opus.Core.File.ToString() now displays the path if it has been set.
+
+12-Jul-2013 Added another constructor to Opus.Core.Exception, that accepts a System.Exception, followed by a format string, and variable arguments. This is switching the order of arguments for an existing constructor, now deprecated, to allow the format arguments.
+
+12-Jul-2013 Merged debug and non-debug package compilation functions together to reduce code duplication.
+
+12-Jul-2013 The -createdebugproject action no longer mandates the need for a -builder option, to select the builder in action. The C# project generated cannot be executed, so there is a benefit to seeing all applicable builder scripts. Performing an actual build will still require the -builder argument.
+
+11-Jul-2013 Standardized all module Build() functions, to call the first argument (the instance of the module) 'moduleToBuild', so that it can be easily sought out.
+
+11-Jul-2013 Replaced the unregulated PreExecute and PostExecute methods in Builder instances, with Opus.Core.IBuilderPreExecute and Opus.Core.IBuildPostExecute interfaces that need to be implemented should the builder require them.
+
+11-Jul-2013 The build root directory is now created just prior to compiling the package assembly, rather than during argument parsing, which was too early.
+
+07-Jul-2013 Added an argument to CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments, that is either null, or an Opus.Core.StringArray, of names of options to NOT process. If options have been manually extracted from an OptionCollection, but a general run through of the command line arguments is needed, then this can be used to exclude those already processed.
+
+07-Jul-2013 Added property Opus.Core.BaseOptionCollection.OptionNames to provide an array of strings for the options names.
+
+05-Jul-2013 Reworked the QMakeBuilder support, now supporting debug & release .pro files. Dynamic libraries on Windows must write their import library to the same folder as the DLL.
+
+05-Jul-2013 Opus.Core.StringArray now has a construct taking an Opus.Core.Array<string>. And added a ToString(char) overload to format the string array as a single string, separated by char.
+
+05-Jul-2013 Added Opus.Core.FileCollection.ToStringArray()
+
+05-Jul-2013 Added Union, Intersect and Complement functions to Opus.Core.Array for set notation operations.
+
+05-Jul-2013 Added Opus.Core.Array.AddRangeUnique to avoid duplicate additions.
+
+18-Jun-2013 Add Opus.Core.ModuleUtilities.GetNode, which returns the DependencyNode for a given module type and BaseTarget. This can be useful in builder code.
+
+12-Jun-2013 Dependent nodes that have to move ranks, must take into account if the dependee has nested components.
+
+12-Jun-2013 Updated OpenCL package to the new ThirdParty module scheme.
+
+12-Jun-2013 Fixed GLEW-1.5.7 package for mingw builds, and added two test packages to the mingw test suite.
+
+12-Jun-2013 Updated OpenGLSDK package to the new ThirdParty module scheme.
+
+12-Jun-2013 Updated Direct3D9 module in the DirectX package to the new ThirdParty module scheme.
+
+11-Jun-2013 QtCommon and Qt-4.7.1 updated to follow the new ThirdParty module scheme, demonstrating the ease of copying files in Test13.
+
+11-Jun-2013 C.ThirdPartyModule now has a special tool type (C.IThirdPartyTool) with a minimal option collection. Overriding the C.ThirdPartyModule.RegisterOutputFiles virtual function in your derived classes then allows registering prebuilt files against Opus' usual output file enums. C.ThirdPartyModule.Libraries abstract function has been removed as it is now obsolete. This new system allows copying of files from ThirdParty prebuilds far easier.
+
+04-Jun-2013 Gcc-4.0 Objective C and C++ option sets also use the Gcc-4.0 C visibility interface.
+
+30-May-2013 VSSolutionBuilder now ignores the .dll extension on any reference assembly.
+
+30-May-2013 C# .csprojs generated from the VSSolutionBuilder now includes the TargetFrameworkVersion element.
+
+29-May-2013 Adding workaround in VSSolutionBuilder for C# solutions, referencing Any CPU. See http://connect.microsoft.com/VisualStudio/feedback/details/503935/msbuild-inconsistent-platform-for-any-cpu-between-solution-and-project.
+
+15-May-2013 Opus.Core.IToolset now has a HasTool method to query if a tool has been registered, since calling Tool will throw an exception if not.
+
+15-May-2013 Corrected the logic in NativeBuilder.DirectoryUpToDate
+
+13-May-2013 OpusOptionCodeGenerator no longer throws an exception when an interface with no properties is used.
+
+07-May-2013 Each package included into a build now adds a preprocessor definition of OPUSPACKAGE_<name>_<version>. Name and version are converted to upper case. Periods and dashes are replaced with underscores.
+
+24-Apr-2013 Opus.Core.File.GetFiles() can now search through directories (last path segment is a directory) and also returns the common directory for all files found.
+
 20-Apr-2013 Adding support for VisualStudio 2012, package VisualC-11.0
 
 20-Apr-2013 Generalizing Opus.Core.Win32RegistryUtilities access and adding accessors to the current user area. If you used any functions from this before, finding 32-bit registry keys is now more explicit.

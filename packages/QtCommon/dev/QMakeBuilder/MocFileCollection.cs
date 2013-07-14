@@ -7,22 +7,21 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(QtCommon.MocFileCollection mocFileCollection, out bool success)
+        public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule mocFileCollectionModule = mocFileCollection as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = mocFileCollectionModule.OwningNode;
-
-            NodeData nodeData = new NodeData();
-            nodeData.Configuration = GetQtConfiguration(node.Target);
-
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
+            var node = moduleToBuild.OwningNode;
+            var data = new QMakeData(node);
+            foreach (var child in node.Children)
             {
-                NodeData childData = childNode.Data as NodeData;
-                nodeData.Merge(childData);
+                var childData = child.Data as QMakeData;
+                if (null != childData)
+                {
+                    data.Merge(childData);
+                }
             }
 
             success = true;
-            return nodeData;
+            return data;
         }
     }
 }

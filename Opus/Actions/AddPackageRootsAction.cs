@@ -35,15 +35,15 @@ namespace Opus
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] roots = arguments.Split(System.IO.Path.PathSeparator);
+            var roots = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageRoots = new Opus.Core.StringArray(roots);
         }
 
         public bool Execute()
         {
-            foreach (string packageRoot in this.PackageRoots)
+            foreach (var packageRoot in this.PackageRoots)
             {
-                string absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(packageRoot);
+                var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(packageRoot);
 
                 Core.State.PackageRoots.Add(absolutePackageRoot);
             }

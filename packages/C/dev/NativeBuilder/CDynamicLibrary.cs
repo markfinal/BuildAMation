@@ -7,22 +7,22 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.DynamicLibrary dynamicLibrary, out bool success)
+        public object Build(C.DynamicLibrary moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule dynamicLibraryModule = dynamicLibrary as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = dynamicLibraryModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection dynamicLibraryOptions = dynamicLibraryModule.Options;
-            C.ILinkerOptions linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
+            var dynamicLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = dynamicLibraryModule.OwningNode;
+            var target = node.Target;
+            var dynamicLibraryOptions = dynamicLibraryModule.Options;
+            var linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
 
-            C.OutputFileFlags objectFileFlags = C.OutputFileFlags.ObjectFile;
+            var objectFileFlags = C.OutputFileFlags.ObjectFile;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 objectFileFlags |= C.OutputFileFlags.Win32CompiledResource;
             }
 
             // find dependent object files
-            Opus.Core.StringArray dependentObjectFiles = new Opus.Core.StringArray();
+            var dependentObjectFiles = new Opus.Core.StringArray();
             if (null != node.Children)
             {
                 node.Children.FilterOutputPaths(objectFileFlags, dependentObjectFiles);
@@ -48,7 +48,7 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+                var inputFiles = new Opus.Core.StringArray();
                 inputFiles.AddRange(dependentObjectFiles);
                 if (null != dependentLibraryFiles)
                 {
@@ -58,10 +58,10 @@ namespace NativeBuilder
                 // don't dependency check against the static import library, since it is generally not rewritten
                 // when code changes
                 // note that a copy is taken here as we do not want to remove the static import library from the original outputs
-                Opus.Core.OutputPaths filteredOutputPaths = new Opus.Core.OutputPaths(dynamicLibraryOptions.OutputPaths);
+                var filteredOutputPaths = new Opus.Core.OutputPaths(dynamicLibraryOptions.OutputPaths);
                 filteredOutputPaths.Remove(C.OutputFileFlags.StaticImportLibrary);
 
-                Opus.Core.StringArray outputFiles = filteredOutputPaths.Paths;
+                var outputFiles = filteredOutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -70,13 +70,13 @@ namespace NativeBuilder
                 }
             }
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                CommandLineProcessor.ICommandLineSupport commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                var commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
 
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
+                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
                 foreach (string directoryPath in directoriesToCreate)
                 {
                     NativeBuilder.MakeDirectory(directoryPath);
@@ -91,7 +91,7 @@ namespace NativeBuilder
             commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));
 
             // then libraries
-            C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+            var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
             C.LinkerUtilities.AppendLibrariesToCommandLine(commandLineBuilder, linkerTool, linkerOptions, dependentLibraryFiles);
 
             int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, commandLineBuilder);

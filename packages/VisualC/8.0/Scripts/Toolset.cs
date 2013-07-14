@@ -79,7 +79,7 @@ namespace VisualC
 
         protected override string GetVersion (Opus.Core.BaseTarget baseTarget)
         {
-            return "8.0"; // TODO: return CRT version
+            return this.GetVersionString("8.0");
         }
 
         #region IVisualStudioTargetInfo Members

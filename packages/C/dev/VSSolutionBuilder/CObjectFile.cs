@@ -7,15 +7,15 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.ObjectFile objectFile, out bool success)
+        public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule objectFileModule = objectFile as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = objectFileModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            string moduleName = node.ModuleName;
-            var moduleToolAttributes = objectFile.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            System.Type toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
-            Opus.Core.ITool toolInterface = target.Toolset.Tool(toolType);
+            var objectFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = objectFileModule.OwningNode;
+            var target = node.Target;
+            var moduleName = node.ModuleName;
+            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
+            var toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
+            var toolInterface = target.Toolset.Tool(toolType);
 
             IProject projectData = null;
             // TODO: want to remove this
@@ -27,15 +27,15 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
-                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
-                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
+                    var projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
                     projectPathName += projectExtension;
 
-                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    var projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, objectFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
@@ -43,14 +43,14 @@ namespace VSSolutionBuilder
             }
 
             {
-                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                var platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
                 if (!projectData.Platforms.Contains(platformName))
                 {
                     projectData.Platforms.Add(platformName);
                 }
             }
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             // TODO: want to remove this
             lock (this.solutionFile.ProjectConfigurations)
@@ -62,7 +62,7 @@ namespace VSSolutionBuilder
             }
             this.solutionFile.ProjectConfigurations[configurationName].Add(projectData);
 
-            Opus.Core.BaseOptionCollection objectFileOptions = objectFileModule.Options;
+            var objectFileOptions = objectFileModule.Options;
 
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
@@ -106,11 +106,11 @@ namespace VSSolutionBuilder
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
 
-                C.CompilerOptionCollection options = objectFileOptions as C.CompilerOptionCollection;
+                var options = objectFileOptions as C.CompilerOptionCollection;
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;
             }
 
-            string sourceFilePath = objectFile.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
 
             ProjectFile sourceFile;
             lock (projectData.SourceFiles)
@@ -133,10 +133,10 @@ namespace VSSolutionBuilder
                 // this must be a utility configuration
                 configuration.Type = EProjectConfigurationType.Utility;
 
-                string executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
+                var executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
                 // TODO: pdb if it exists?
 
-                Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+                var commandLineBuilder = new Opus.Core.StringArray();
                 if (executable.Contains(" "))
                 {
                     commandLineBuilder.Add(System.String.Format("\"{0}\"", executable));
@@ -147,18 +147,18 @@ namespace VSSolutionBuilder
                 }
                 if (objectFileOptions is CommandLineProcessor.ICommandLineSupport)
                 {
-                    CommandLineProcessor.ICommandLineSupport commandLineOption = objectFileOptions as CommandLineProcessor.ICommandLineSupport;
-                    commandLineOption.ToCommandLineArguments(commandLineBuilder, target);
+                    var commandLineOption = objectFileOptions as CommandLineProcessor.ICommandLineSupport;
+                    commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
                 }
                 else
                 {
                     throw new Opus.Core.Exception("Compiler options does not support command line translation");
                 }
 
-                ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
+                var customTool = new ProjectTool("VCCustomBuildTool");
 
-                C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-                string objectFileSuffix = compilerTool.ObjectFileSuffix;
+                var compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+                var objectFileSuffix = compilerTool.ObjectFileSuffix;
 
                 string commandToken;
                 string outputsToken;
@@ -193,29 +193,29 @@ namespace VSSolutionBuilder
                 customTool.AddAttribute(outputsToken, outputPathname);
                 customTool.AddAttribute(messageToken, message);
 
-                ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
+                var fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
             }
             else
             {
-                string toolName = "VCCLCompilerTool";
+                var toolName = "VCCLCompilerTool";
 
                 // do not share the compiler tool in order to handle differences
-                ProjectTool vcCLCompilerTool = new ProjectTool(toolName);
+                var vcCLCompilerTool = new ProjectTool(toolName);
 
                 // if the main configuration does not yet have an instance of this tool, add it (could happen if a single ObjectFile is added to a library or application)
                 configuration.AddToolIfMissing(vcCLCompilerTool);
 
                 // need to add each configuration a source file is applicable to in order to determine exclusions later
-                ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);
+                var fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
                 if (objectFileOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = objectFileOptions as VisualStudioProcessor.IVisualStudioSupport;
-                    VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+                    var visualStudioProjectOption = objectFileOptions as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
+                    foreach (var setting in settingsDictionary)
                     {
                         vcCLCompilerTool[setting.Key] = setting.Value;
                     }

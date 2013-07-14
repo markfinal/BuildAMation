@@ -14,7 +14,7 @@ namespace Opus.Core
 
         private static bool ContainsDirectorySeparators(string pathSegment)
         {
-            bool containsSeparators = pathSegment.Contains(DirectorySeparatorString) || pathSegment.Contains(AltDirectorySeparatorString);
+            var containsSeparators = pathSegment.Contains(DirectorySeparatorString) || pathSegment.Contains(AltDirectorySeparatorString);
             return containsSeparators;
         }
 
@@ -22,14 +22,14 @@ namespace Opus.Core
         {
             if (ContainsDirectorySeparators(pathSegment))
             {
-                throw new Exception("Individual file parts cannot contain directory separators; '{0}'", pathSegment);
+                throw new Exception("Any file part cannot contain a directory separators; '{0}'", pathSegment);
             }
         }
 
         internal static string CombinePaths(ref string baseDirectory, params string[] pathSegments)
         {
-            string combinedPath = baseDirectory;
-            bool canExtendBaseDirectoryWithUps = true;
+            var combinedPath = baseDirectory;
+            var canExtendBaseDirectoryWithUps = true;
             for (int i = 0; i < pathSegments.Length; ++i)
             {
                 ValidateFilePart(pathSegments[i]);
@@ -61,7 +61,7 @@ namespace Opus.Core
 
         public static string CanonicalPath(string path)
         {
-            string canonicalPath = System.IO.Path.GetFullPath(new System.Uri(path).LocalPath);
+            var canonicalPath = System.IO.Path.GetFullPath(new System.Uri(path).LocalPath);
             return canonicalPath;
         }
 
@@ -92,14 +92,14 @@ namespace Opus.Core
 
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(owner);
+            var package = PackageUtilities.GetOwningPackage(owner);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (owner as BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (owner as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
@@ -123,65 +123,116 @@ namespace Opus.Core
             this.Initialize(absolutePath, false);
         }
 
-        public static StringArray GetFiles(string baseDirectory, params string[] pathSegments)
+        private static bool IsFileInHiddenHierarchy(System.IO.FileInfo file, string rootDir)
         {
-            if (State.RunningMono)
+            if (System.IO.FileAttributes.Hidden == (file.Attributes & System.IO.FileAttributes.Hidden))
             {
-                // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
-                // cannot use GetFiles with a pattern containing directories
-
-                string combinedBaseDirectory = baseDirectory;
-                int i = 0;
-                for (; i < pathSegments.Length; ++i)
-                {
-                    string baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
-                    if (System.IO.Directory.Exists(baseDirTest))
-                    {
-                        combinedBaseDirectory = baseDirTest;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                if (i != pathSegments.Length - 1)
-                {
-                    throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
-                }
-
-                combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
-
-                string[] files = System.IO.Directory.GetFiles(combinedBaseDirectory, pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
-                return new StringArray(files);
+                return true;
             }
-            else
+
+            var dirInfo = file.Directory;
+            while (dirInfo.FullName != rootDir)
             {
-                string baseDirChanges = System.String.Empty;
-                string relativePath = CombinePaths(ref baseDirChanges, pathSegments);
-                if (baseDirChanges != System.String.Empty)
+                if (System.IO.FileAttributes.Hidden == (dirInfo.Attributes & System.IO.FileAttributes.Hidden))
                 {
-                    baseDirectory = System.IO.Path.Combine(baseDirectory, baseDirChanges);
-                    baseDirectory = System.IO.Path.GetFullPath(baseDirectory);
+                    return true;
                 }
+
+                dirInfo = dirInfo.Parent;
+            }
+
+            return false;
+        }
+
+        public static StringArray GetFiles(out string combinedBaseDirectory, string baseDirectory, params string[] pathSegments)
+        {
+            // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
+            // cannot use GetFiles with a pattern containing directories
+            // this is also useful for getting wildcarded recursive file searches from a directory
+
+            combinedBaseDirectory = baseDirectory;
+            int i = 0;
+            for (; i < pathSegments.Length; ++i)
+            {
+                var baseDirTest = System.IO.Path.Combine(combinedBaseDirectory, pathSegments[i]);
+                if (System.IO.Directory.Exists(baseDirTest))
+                {
+                    combinedBaseDirectory = baseDirTest;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var isDirectory = false;
+            if (i < pathSegments.Length - 1)
+            {
+                throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
+            }
+            else if (i == pathSegments.Length)
+            {
+                isDirectory = true;
+            }
+
+            combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
+            if (isDirectory)
+            {
                 try
                 {
-                    string[] files = System.IO.Directory.GetFiles(baseDirectory, relativePath, System.IO.SearchOption.TopDirectoryOnly);
-                    return new StringArray(files);
+                    var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
+                    var files = dirInfo.GetFiles("*", System.IO.SearchOption.AllDirectories);
+                    var nonHiddenFiles = new StringArray();
+                    foreach (var file in files)
+                    {
+                        if (!IsFileInHiddenHierarchy(file, combinedBaseDirectory))
+                        {
+                            nonHiddenFiles.Add(file.FullName);
+                        }
+                    }
+                    return nonHiddenFiles;
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
-                    Log.Detail("Warning: No files match the pattern {0}{1}{2}", baseDirectory, System.IO.Path.DirectorySeparatorChar, relativePath);
+                    Log.Detail("Warning: No files match the pattern {0}{1}{2} for all subdirectory", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, "*");
                     return new StringArray();
                 }
             }
+            else
+            {
+                try
+                {
+                    var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
+                    var files = dirInfo.GetFiles(pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                    var nonHiddenFiles = new StringArray();
+                    foreach (var file in files)
+                    {
+                        if (0 == (file.Attributes & System.IO.FileAttributes.Hidden))
+                        {
+                            nonHiddenFiles.Add(file.FullName);
+                        }
+                    }
+                    return nonHiddenFiles;
+                }
+                catch (System.IO.DirectoryNotFoundException)
+                {
+                    Log.Detail("Warning: No files match the pattern {0}{1}{2} for the top directory only", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
+                    return new StringArray();
+                }
+            }
+        }
+
+        public static StringArray GetFiles(string baseDirectory, params string[] pathSegments)
+        {
+            string commonBaseDirectory;
+            return GetFiles(out commonBaseDirectory, baseDirectory, pathSegments);
         }
 
         public bool IsValid
         {
             get
             {
-                bool isValid = (null != this.absolutePath);
+                var isValid = (null != this.absolutePath);
                 return isValid;
             }
         }
@@ -202,6 +253,11 @@ namespace Opus.Core
             {
                 this.absolutePath = value;
             }
+        }
+
+        public override string ToString()
+        {
+            return this.AbsolutePath;
         }
     }
 }

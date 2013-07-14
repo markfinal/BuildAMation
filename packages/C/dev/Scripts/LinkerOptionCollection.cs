@@ -11,11 +11,14 @@ namespace C
         {
             this.OutputName = node.ModuleName;
 
-            Opus.Core.Target target = node.Target;
+            var target = node.Target;
 
-            ILinkerTool linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
+            var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.BinaryOutputSubDirectory);
-            if (linkerTool is IWinImportLibrary)
+
+            // special case here of the QMakeBuilder
+            // it does not support writing import libraries to a separate location to the dll
+            if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
             {
                 this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
             }
@@ -24,7 +27,7 @@ namespace C
                 this.LibraryDirectoryPath = this.OutputDirectoryPath;
             }
 
-            ILinkerOptions linkerOptions = this as ILinkerOptions;
+            var linkerOptions = this as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.Executable;
             linkerOptions.SubSystem = ESubsystem.NotSet;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
@@ -114,14 +117,14 @@ namespace C
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            Opus.Core.Target target = node.Target;
-            ILinkerTool linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
-            ILinkerOptions options = this as ILinkerOptions;
+            var target = node.Target;
+            var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
+            var options = this as ILinkerOptions;
 
-            if (null == this.OutputFilePath)
+            if (!this.OutputPaths.Has(C.OutputFileFlags.Executable))
             {
-                string outputPrefix = string.Empty;
-                string outputSuffix = string.Empty;
+                var outputPrefix = string.Empty;
+                var outputSuffix = string.Empty;
                 if (options.OutputType == ELinkerOutput.Executable)
                 {
                     outputSuffix = linkerTool.ExecutableSuffix;
@@ -132,7 +135,7 @@ namespace C
                     outputSuffix = linkerTool.DynamicLibrarySuffix;
                 }
 
-                string baseOutputPath = this.OutputDirectoryPath;
+                var baseOutputPath = this.OutputDirectoryPath;
                 if (target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
                 {
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
@@ -140,7 +143,7 @@ namespace C
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOS");
                 }
 
-                string outputPathName = System.IO.Path.Combine(baseOutputPath, outputPrefix + this.OutputName) + outputSuffix;
+                var outputPathName = System.IO.Path.Combine(baseOutputPath, outputPrefix + this.OutputName) + outputSuffix;
                 this.OutputFilePath = outputPathName;
             }
 
@@ -149,8 +152,8 @@ namespace C
                 if (linkerTool is IWinImportLibrary)
                 {
                     // explicit import library
-                    IWinImportLibrary importLibrary = linkerTool as IWinImportLibrary;
-                    string importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, importLibrary.ImportLibraryPrefix + this.OutputName) + importLibrary.ImportLibrarySuffix;
+                    var importLibrary = linkerTool as IWinImportLibrary;
+                    var importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, importLibrary.ImportLibraryPrefix + this.OutputName) + importLibrary.ImportLibrarySuffix;
                     this.StaticImportLibraryFilePath = importLibraryPathName;
                 }
                 else
@@ -160,18 +163,18 @@ namespace C
                 }
             }
 
-            if (options.GenerateMapFile && null == this.MapFilePath)
+            if (options.GenerateMapFile && !this.OutputPaths.Has(C.OutputFileFlags.MapFile))
             {
-                string mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerTool.MapFileSuffix;
+                var mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerTool.MapFileSuffix;
                 this.MapFilePath = mapPathName;
             }
 
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
         public abstract Opus.Core.DirectoryCollection DirectoriesToCreate();

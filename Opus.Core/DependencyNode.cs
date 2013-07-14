@@ -17,7 +17,7 @@ namespace Opus.Core
     {
         public override string ToString()
         {
-            System.Text.StringBuilder output = new System.Text.StringBuilder();
+            var output = new System.Text.StringBuilder();
             output.AppendFormat("Family '{0}'", this.ModuleName);
             output.AppendFormat(" Instance '{0}'", this.UniqueModuleName);
             if (this.Parent != null)
@@ -35,7 +35,7 @@ namespace Opus.Core
             if (null != this.Children)
             {
                 output.Append(" Children { ");
-                foreach (DependencyNode node in this.Children)
+                foreach (var node in this.Children)
                 {
                     output.AppendFormat("{0} ", node.UniqueModuleName);
                 }
@@ -44,7 +44,7 @@ namespace Opus.Core
             if (null != this.ExternalDependents)
             {
                 output.Append(" Deps { ");
-                foreach (DependencyNode node in this.ExternalDependents)
+                foreach (var node in this.ExternalDependents)
                 {
                     output.AppendFormat("{0} ", node.UniqueModuleName);
                 }
@@ -53,7 +53,7 @@ namespace Opus.Core
             if (null != this.RequiredDependents)
             {
                 output.Append(" Reqs { ");
-                foreach (DependencyNode node in this.RequiredDependents)
+                foreach (var node in this.RequiredDependents)
                 {
                     output.AppendFormat("{0} ", node.UniqueModuleName);
                 }
@@ -108,8 +108,8 @@ namespace Opus.Core
             if (null == parent || !nestedModule)
             {
                 string packageName = moduleType.Namespace;
-                PackageInformationCollection packages = State.PackageInfo;
-                PackageInformation package = packages[packageName];
+                var packages = State.PackageInfo;
+                var package = packages[packageName];
                 if (null == package)
                 {
                     throw new Exception("No package found for '{0}'", packageName);
@@ -125,12 +125,12 @@ namespace Opus.Core
                 this.UniqueModuleName = parent.GetChildModuleName(moduleType, childIndex);
             }
 
-            IBuilder builderInstance = State.BuilderInstance;
+            var builderInstance = State.BuilderInstance;
             if (null == builderInstance)
             {
                 throw new Exception("Builder instance not found");
             }
-            System.Reflection.MethodInfo buildFunction = builderInstance.GetType().GetMethod("Build", new System.Type[] { moduleType, System.Type.GetType("System.Boolean&") });
+            var buildFunction = builderInstance.GetType().GetMethod("Build", new System.Type[] { moduleType, System.Type.GetType("System.Boolean&") });
             if (null == buildFunction)
             {
                 throw new Exception("Could not find method 'object {0}.Build({1}, {2})' for module '{3}'",
@@ -139,7 +139,7 @@ namespace Opus.Core
                                     System.Type.GetType("System.Boolean&").ToString(),
                                     moduleType.ToString());
             }
-            object[] emptyBuildFunctions = buildFunction.GetCustomAttributes(typeof(EmptyBuildFunctionAttribute), false);
+            var emptyBuildFunctions = buildFunction.GetCustomAttributes(typeof(EmptyBuildFunctionAttribute), false);
             if (null == emptyBuildFunctions || 0 == emptyBuildFunctions.Length)
             {
                 this.BuildFunction = buildFunction;
@@ -161,9 +161,10 @@ namespace Opus.Core
 
         public void CreateOptionCollection()
         {
-            IToolset toolset = this.Target.Toolset;
+            var toolset = this.Target.Toolset;
 
-            System.Type moduleType = this.Module.GetType();
+            var moduleType = this.Module.GetType();
+            Opus.Core.Log.DebugMessage("Constructing option collection for node '{0}'", this.UniqueModuleName);
 
             // requires inheritence because the attribute is usually on the base class
             var moduleTools = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
@@ -177,24 +178,24 @@ namespace Opus.Core
                 throw new Exception("There is more than one tool associated with this module '{0}'", moduleType.ToString());
             }
 
-            System.Type toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolType;
+            var toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolType;
             if (null == toolset)
             {
-                Opus.Core.Log.DebugMessage("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+                Opus.Core.Log.DebugMessage("\tNo toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
                 return;
                 //throw new Exception("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             }
 
-            Opus.Core.Log.DebugMessage("Using toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+            Opus.Core.Log.DebugMessage("\tUsing toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
             if (!toolType.IsInterface)
             {
                 throw new Exception("Tool '{0}' is NOT an interface", toolType.ToString());
             }
 
-            System.Type optionCollectionType = toolset.ToolOptionType(toolType);
+            var optionCollectionType = toolset.ToolOptionType(toolType);
             if (null == optionCollectionType)
             {
-                Opus.Core.Log.DebugMessage("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
+                Opus.Core.Log.DebugMessage("\tNo option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
                 return;
                 //throw new Exception("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
             }
@@ -206,11 +207,11 @@ namespace Opus.Core
                 throw new Exception("Missing local and export types attribute on tool type '{0}'", toolType.ToString());
             }
 
-            System.Type exportType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
-            System.Type localType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).LocalType;
+            var exportType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
+            var localType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).LocalType;
 
-            System.Reflection.MethodInfo method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            System.Reflection.MethodInfo genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
+            var method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            var genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
             genericMethod.Invoke(null, new object[] { this });
         }
 
@@ -226,7 +227,7 @@ namespace Opus.Core
         {
             this.Initialize(moduleType, parent, target, childIndex, nestedModule);
 
-            BaseModule module = ModuleFactory.CreateModule(moduleType, target);
+            var module = ModuleFactory.CreateModule(moduleType, target);
             this.Module = module;
             module.OwningNode = this;
         }
@@ -293,14 +294,14 @@ namespace Opus.Core
 
         private DependencyNodeCollection Ancestors()
         {
-            DependencyNodeCollection collection = this.ExternalDependentFor;
+            var collection = this.ExternalDependentFor;
             if (collection != null)
             {
-                DependencyNodeCollection ancestors = new DependencyNodeCollection();
+                var ancestors = new DependencyNodeCollection();
                 ancestors.AddRange(collection);
-                foreach (DependencyNode node in collection)
+                foreach (var node in collection)
                 {
-                    DependencyNodeCollection more = node.Ancestors();
+                    var more = node.Ancestors();
                     if (null != more)
                     {
                         ancestors.AddRange(more);
@@ -325,13 +326,13 @@ namespace Opus.Core
             {
                 throw new Exception("Circular dependency detected in external dependents for node '{0}'", this);
             }
-            DependencyNodeCollection ancestors = this.Ancestors();
+            var ancestors = this.Ancestors();
             if (null != ancestors)
             {
                 if (ancestors.Contains(dependent))
                 {
-                    System.Text.StringBuilder text = new System.Text.StringBuilder();
-                    foreach (DependencyNode ancestor in ancestors)
+                    var text = new System.Text.StringBuilder();
+                    foreach (var ancestor in ancestors)
                     {
                         text.AppendFormat("\t{0}\n", ancestor.UniqueModuleName);
                     }
@@ -406,15 +407,15 @@ namespace Opus.Core
 
         public string GetModuleBuildDirectory()
         {
-            string packageBuildDirectory = this.Package.BuildDirectory;
-            string moduleBuildDirectory = System.IO.Path.Combine(packageBuildDirectory, this.ModuleName);
+            var packageBuildDirectory = this.Package.BuildDirectory;
+            var moduleBuildDirectory = System.IO.Path.Combine(packageBuildDirectory, this.ModuleName);
             return moduleBuildDirectory;
         }
 
         public string GetTargettedModuleBuildDirectory(string subDirectory)
         {
-            string moduleBuildDirectory = this.GetModuleBuildDirectory();
-            string targettedModuleBuildDirectory = System.IO.Path.Combine(moduleBuildDirectory, TargetUtilities.DirectoryName(this.Target));
+            var moduleBuildDirectory = this.GetModuleBuildDirectory();
+            var targettedModuleBuildDirectory = System.IO.Path.Combine(moduleBuildDirectory, TargetUtilities.DirectoryName(this.Target));
             if (null != subDirectory)
             {
                 targettedModuleBuildDirectory = System.IO.Path.Combine(targettedModuleBuildDirectory, subDirectory);
@@ -425,8 +426,8 @@ namespace Opus.Core
 
         public string GetTargetPathName(string subDirectory, string targetPrefix, string targetLeafName, string targetExtension)
         {
-            string targetFileName = System.String.Format("{0}{1}{2}", targetPrefix, targetLeafName, targetExtension);
-            string moduleTargetPathName = System.IO.Path.Combine(this.GetTargettedModuleBuildDirectory(subDirectory), targetFileName);
+            var targetFileName = System.String.Format("{0}{1}{2}", targetPrefix, targetLeafName, targetExtension);
+            var moduleTargetPathName = System.IO.Path.Combine(this.GetTargettedModuleBuildDirectory(subDirectory), targetFileName);
             return moduleTargetPathName;
         }
 
@@ -482,7 +483,7 @@ namespace Opus.Core
 
         public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
-            BaseOptionCollection options = this.Module.Options;
+            var options = this.Module.Options;
             if (null == options)
             {
                 return;

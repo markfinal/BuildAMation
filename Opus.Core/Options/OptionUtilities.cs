@@ -9,13 +9,13 @@ namespace Opus.Core
     {
         public static void AttachModuleOptionUpdatesFromType<AttributeType>(IModule module, System.Type type, Target target, int depth)
         {
-            System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.NonPublic |
-                                                          System.Reflection.BindingFlags.Public |
-                                                          System.Reflection.BindingFlags.Static |
-                                                          System.Reflection.BindingFlags.Instance |
-                                                          System.Reflection.BindingFlags.FlattenHierarchy;
-            System.Reflection.MethodInfo[] methods = type.GetMethods(bindingFlags);
-            foreach (System.Reflection.MethodInfo method in methods)
+            var bindingFlags = System.Reflection.BindingFlags.NonPublic |
+                               System.Reflection.BindingFlags.Public |
+                               System.Reflection.BindingFlags.Static |
+                               System.Reflection.BindingFlags.Instance |
+                               System.Reflection.BindingFlags.FlattenHierarchy;
+            var methods = type.GetMethods(bindingFlags);
+            foreach (var method in methods)
             {
                 var attributes = method.GetCustomAttributes(typeof(AttributeType), false);
                 if (0 == attributes.Length)
@@ -32,7 +32,7 @@ namespace Opus.Core
                                      typeof(AttributeType).ToString(),
                                      new string('\t', depth));
 
-                    IModule moduleContainingMethod = ModuleUtilities.GetModule(type, target);
+                    var moduleContainingMethod = ModuleUtilities.GetModule(type, target);
                     if (null == moduleContainingMethod)
                     {
                         throw new Exception("While adding option update delegate '{0}', cannot find module of type '{1}' in module '{2}' for target '{3}'", method.Name, type.FullName, module.GetType().FullName, target.ToString());
@@ -59,9 +59,9 @@ namespace Opus.Core
                 return;
             }
 
-            foreach (DependencyNode dependentNode in collection)
+            foreach (var dependentNode in collection)
             {
-                Log.DebugMessage("{0} dependent '{1}' of '{2}'", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
+                Log.DebugMessage("\tAttaching {0} dependent '{1}' of '{2}' to option updates", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
 
                 AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth);
 
@@ -70,15 +70,15 @@ namespace Opus.Core
                     continue;
                 }
 
-                foreach (DependencyNode childOfDependent in dependentNode.Children)
+                foreach (var childOfDependent in dependentNode.Children)
                 {
-                    IModule childModule = childOfDependent.Module;
-                    System.Type childType = childModule.GetType();
+                    var childModule = childOfDependent.Module;
+                    var childType = childModule.GetType();
 
                     if (!owningNode.ExportedUpdatesAdded.Contains(childType))
                     {
-                        IToolset childToolset = ModuleUtilities.GetToolsetForModule(childType);
-                        Target childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
+                        var childToolset = ModuleUtilities.GetToolsetForModule(childType);
+                        var childTarget = Target.GetInstance((BaseTarget)node.Target, childToolset);
                         AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, childType, childTarget, newDepth);
                         owningNode.ExportedUpdatesAdded.Add(childType);
                     }
@@ -89,9 +89,9 @@ namespace Opus.Core
         // this version only applies the exported attribute type
         private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(BaseModule module, DependencyNode node, int depth)
         {
-            System.Type nodeModuleType = node.Module.GetType();
-            Target target = node.Target;
-            DependencyNode owningNode = module.OwningNode;
+            var nodeModuleType = node.Module.GetType();
+            var target = node.Target;
+            var owningNode = module.OwningNode;
             int newDepth = depth + 1;
 
             if (!owningNode.ExportedUpdatesAdded.Contains(nodeModuleType))
@@ -111,9 +111,9 @@ namespace Opus.Core
         // this applies both local and export, but not local to the external dependents
         private static void AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(BaseModule module, DependencyNode node, int depth)
         {
-            System.Type nodeModuleType = node.Module.GetType();
-            Target target = node.Target;
-            DependencyNode owningNode = module.OwningNode;
+            var nodeModuleType = node.Module.GetType();
+            var target = node.Target;
+            var owningNode = module.OwningNode;
             int newDepth = depth + 1;
 
             // only apply local here
@@ -146,16 +146,16 @@ namespace Opus.Core
 
         private static void ProcessFieldAttributes(IModule module, Target target)
         {
-            System.Reflection.BindingFlags bindingFlags = System.Reflection.BindingFlags.NonPublic |
-                                                          System.Reflection.BindingFlags.Public |
-                                                          System.Reflection.BindingFlags.Instance;
-            System.Reflection.FieldInfo[] fields = module.GetType().GetFields(bindingFlags);
-            foreach (System.Reflection.FieldInfo field in fields)
+            var bindingFlags = System.Reflection.BindingFlags.NonPublic |
+                               System.Reflection.BindingFlags.Public |
+                               System.Reflection.BindingFlags.Instance;
+            var fields = module.GetType().GetFields(bindingFlags);
+            foreach (var field in fields)
             {
-                object[] attributes = field.GetCustomAttributes(false);
-                foreach (object attribute in attributes)
+                var attributes = field.GetCustomAttributes(false);
+                foreach (var attribute in attributes)
                 {
-                    IFieldAttributeProcessor fieldAttributeProcessor = attribute as IFieldAttributeProcessor;
+                    var fieldAttributeProcessor = attribute as IFieldAttributeProcessor;
                     if (fieldAttributeProcessor != null)
                     {
                         fieldAttributeProcessor.Execute(field, module, target);
@@ -166,14 +166,16 @@ namespace Opus.Core
 
         public static void CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(DependencyNode node) where OptionCollectionType : BaseOptionCollection
         {
-            BaseModule module = node.Module;
-            Target target = node.Target;
+            var module = node.Module;
+            var target = node.Target;
 
             ProcessFieldAttributes(module, target);
 
             OptionCollectionType options;
             if (null != node.Parent && node.Parent.Module.Options is OptionCollectionType)
             {
+                Log.DebugMessage("\tCloning option collection for node '{0}' from '{1}'", node.UniqueModuleName, node.Parent.UniqueModuleName);
+
                 options = (node.Parent.Module.Options as OptionCollectionType).Clone() as OptionCollectionType;
 
                 // claim ownership
@@ -181,7 +183,7 @@ namespace Opus.Core
             }
             else
             {
-                Log.DebugMessage("Creating option collection for node '{0}'", node.UniqueModuleName);
+                Log.DebugMessage("\tCreating new collection", node.UniqueModuleName);
 
                 options = OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
 
@@ -189,7 +191,7 @@ namespace Opus.Core
                 AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, node, 0);
 
                 // update option collections for the current "node group" (i.e. the top-most node of this type, and it's nested objects)
-                DependencyNode parentNode = node.Parent;
+                var parentNode = node.Parent;
                 while (parentNode != null)
                 {
                     // TODO: I don't know if this is needed or not
@@ -226,7 +228,7 @@ namespace Opus.Core
             var globalOverrides = State.ScriptAssembly.GetCustomAttributes(typeof(GlobalOptionCollectionOverrideAttribute), false);
             foreach (var globalOverride in globalOverrides)
             {
-                IGlobalOptionCollectionOverride instance = (globalOverride as GlobalOptionCollectionOverrideAttribute).OverrideInterface;
+                var instance = (globalOverride as GlobalOptionCollectionOverrideAttribute).OverrideInterface;
                 instance.OverrideOptions(options, target);
             }
 

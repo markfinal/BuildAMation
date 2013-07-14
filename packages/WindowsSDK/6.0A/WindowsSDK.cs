@@ -21,18 +21,18 @@ namespace WindowsSDK
                 return;
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v6.0A"))
+            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v6.0A"))
             {
                 if (null == key)
                 {
                     // TODO: do I want to hard code VisualC here?
-                    Opus.Core.IToolset toolset = Opus.Core.State.Get("Toolset", "visualc") as Opus.Core.IToolset;
+                    var toolset = Opus.Core.State.Get("Toolset", "visualc") as Opus.Core.IToolset;
                     if (null == toolset)
                     {
                         throw new Opus.Core.Exception("Toolset information for 'visualc' is missing");
                     }
 
-                    string platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");
+                    var platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");
                     
                     if (System.IO.Directory.Exists(platformSDKPath))
                     {
@@ -73,7 +73,12 @@ namespace WindowsSDK
         [C.ExportLinkerOptionsDelegate]
         void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
             if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib32Path, true);
@@ -91,13 +96,13 @@ namespace WindowsSDK
         [C.ExportCompilerOptionsDelegate]
         void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
-        }
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            if (null == compilerOptions)
+            {
+                return;
+            }
 
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
-        {
-            throw new System.NotImplementedException();
+            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
         }
 
         public static string BinPath(Opus.Core.BaseTarget baseTarget)

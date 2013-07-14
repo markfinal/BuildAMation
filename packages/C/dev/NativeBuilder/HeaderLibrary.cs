@@ -8,7 +8,7 @@ namespace NativeBuilder
     public sealed partial class NativeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(C.HeaderLibrary headerLibrary, out bool success)
+        public object Build(C.HeaderLibrary moduleToBuild, out bool success)
         {
             success = true;
             return null;

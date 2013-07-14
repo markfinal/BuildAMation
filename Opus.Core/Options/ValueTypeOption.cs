@@ -20,7 +20,7 @@ namespace Opus.Core
 
         public override object Clone()
         {
-            ValueTypeOption<T> clonedOption = new ValueTypeOption<T>(this.Value);
+            var clonedOption = new ValueTypeOption<T>(this.Value);
 
             // we can share the private data
             clonedOption.PrivateData = this.PrivateData;

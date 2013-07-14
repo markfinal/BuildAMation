@@ -16,14 +16,14 @@ namespace Opus.Core
 
         public void StartProfile()
         {
-            System.DateTime time = System.DateTime.Now;
+            var time = System.DateTime.Now;
             this.Start = time;
             Log.DebugMessage("Profile '{0}': start {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
         }
 
         public void StopProfile()
         {
-            System.DateTime time = System.DateTime.Now;
+            var time = System.DateTime.Now;
             this.Stop = time;
             this.Elapsed = time - this.Start;
             State.TimingProfiles[(int)this.Profile] = this;

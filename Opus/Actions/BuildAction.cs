@@ -30,27 +30,14 @@ namespace Opus
         public bool Execute()
         {
             Core.Log.DebugMessage("Builder is {0}", Core.State.BuilderName);
-            bool compiledSuccessfully = false;
-            if (Core.State.CompileWithDebugSymbols)
-            {
-                compiledSuccessfully = Core.PackageUtilities.CompileDebuggablePackageIntoAssembly();
-            }
-            else
-            {
-                compiledSuccessfully = Core.PackageUtilities.CompilePackageIntoAssembly();
-            }
-
-            if (!compiledSuccessfully)
-            {
-                System.Environment.ExitCode = -3;
-            }
-            else
+            var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
+            if (compiledSuccessfully)
             {
                 Core.PackageUtilities.LoadPackageAssembly();
 
-                Core.TimeProfile additionalArgumentProfile = new Core.TimeProfile(Core.ETimingProfiles.AdditionalArgumentProcessing);
+                var additionalArgumentProfile = new Core.TimeProfile(Core.ETimingProfiles.AdditionalArgumentProcessing);
                 additionalArgumentProfile.StartProfile();
-                bool fatal = true;
+                var fatal = true;
                 Core.PackageUtilities.ProcessLazyArguments(fatal);
                 Core.PackageUtilities.HandleUnprocessedArguments(fatal);
                 Core.State.ShowTimingStatistics = true;
@@ -58,8 +45,12 @@ namespace Opus
 
                 if (!Core.PackageUtilities.ExecutePackageAssembly())
                 {
-                    System.Environment.ExitCode = -3;
+                    System.Environment.ExitCode = -6;
                 }
+            }
+            else
+            {
+                System.Environment.ExitCode = -5;
             }
 
             return true;

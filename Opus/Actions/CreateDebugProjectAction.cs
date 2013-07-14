@@ -43,18 +43,20 @@ namespace Opus
                 throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
             }
 
-            bool fatal = false;
+            var fatal = false;
             Core.PackageUtilities.ProcessLazyArguments(fatal);
             Core.PackageUtilities.HandleUnprocessedArguments(fatal);
 
-            Core.PackageInformation mainPackage = Core.State.PackageInfo.MainPackage;
+            var mainPackage = Core.State.PackageInfo.MainPackage;
 
             Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
 
+            // this is now optional - if you pass -builder=<name> then the generated package will be limited to that
+            // otherwise, all packages with names ending in 'Builder' will have their scripts added
             Core.BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
-            string resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();
+            var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();
 
             // Project to debug the script
             CSharpProject.Create(mainPackage, VisualStudioVersion.VS2008, new string[] { resourceFilePathName });

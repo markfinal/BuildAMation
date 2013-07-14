@@ -14,6 +14,7 @@ namespace GccCommon
         protected Toolset()
         {
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+            this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
         private void GetInstallPath(Opus.Core.BaseTarget baseTarget)
@@ -66,9 +67,14 @@ namespace GccCommon
             return this.installPath;
         }
 
-        Opus.Core.ITool Opus.Core.IToolset.Tool (System.Type toolType)
+        bool Opus.Core.IToolset.HasTool(System.Type toolType)
         {
-            if (!this.toolConfig.ContainsKey(toolType))
+            return this.toolConfig.ContainsKey(toolType);
+        }
+
+        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        {
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
@@ -76,9 +82,9 @@ namespace GccCommon
             return this.toolConfig[toolType].Tool;
         }
 
-        System.Type Opus.Core.IToolset.ToolOptionType (System.Type toolType)
+        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
-            if (!this.toolConfig.ContainsKey(toolType))
+            if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }

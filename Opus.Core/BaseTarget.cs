@@ -59,7 +59,7 @@ namespace Opus.Core
 
         private static string GenerateKey(EPlatform platform, EConfiguration configuration)
         {
-            System.Text.StringBuilder keyBuilder = new System.Text.StringBuilder();
+            var keyBuilder = new System.Text.StringBuilder();
             keyBuilder.AppendFormat("{0}-{1}", platform, configuration);
             return keyBuilder.ToString();
         }
@@ -71,13 +71,13 @@ namespace Opus.Core
 
         public bool HasPlatform(EPlatform platforms)
         {
-            bool hasPlatform = (0 != (this.Platform & platforms));
+            var hasPlatform = (0 != (this.Platform & platforms));
             return hasPlatform;
         }
 
         public bool HasConfiguration(EConfiguration configurations)
         {
-            bool hasConfiguration = (0 != (this.Configuration & configurations));
+            var hasConfiguration = (0 != (this.Configuration & configurations));
             return hasConfiguration;
         }
 
@@ -88,8 +88,8 @@ namespace Opus.Core
                 return true;
             }
 
-            bool same = (lhs.Platform == rhs.Platform) &&
-                        (lhs.Configuration == rhs.Configuration);
+            var same = (lhs.Platform == rhs.Platform) &&
+                       (lhs.Configuration == rhs.Configuration);
             return same;
         }
 
@@ -120,14 +120,14 @@ namespace Opus.Core
 
         public override string ToString()
         {
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            var builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}{2}", this.Platform, ToStringSeparator, this.Configuration);
             return builder.ToString();
         }
 
         public string PlatformName(char formatter)
         {
-            string text = this.Platform.ToString();
+            var text = this.Platform.ToString();
             if (formatter == 'u')
             {
                 return text.ToUpper();
@@ -152,7 +152,7 @@ namespace Opus.Core
 
         public string ConfigurationName(char formatter)
         {
-            string text = this.Configuration.ToString();
+            var text = this.Configuration.ToString();
             if (formatter == 'u')
             {
                 return text.ToUpper();

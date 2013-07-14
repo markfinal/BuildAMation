@@ -29,7 +29,7 @@ namespace Opus
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            string[] assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
+            var assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
             this.DotNetAssemblyNameArray = new Opus.Core.StringArray(assemblyNames);
         }
 
@@ -42,7 +42,7 @@ namespace Opus
         public bool Execute()
         {
             bool isWellDefined;
-            Core.PackageIdentifier mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
+            var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
             {
                 throw new Core.Exception("Working directory, '{0}', is not a package", Core.State.WorkingDirectory);
@@ -52,19 +52,19 @@ namespace Opus
                 throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
-            Core.PackageDefinitionFile xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
+            var xmlFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isWellDefined)
             {
                 xmlFile.Read(true);
             }
 
-            foreach (string dotNetAssemblyName in this.DotNetAssemblyNameArray)
+            foreach (var dotNetAssemblyName in this.DotNetAssemblyNameArray)
             {
                 string assemblyName = null;
                 string targetVersion = null;
                 if (dotNetAssemblyName.Contains("-"))
                 {
-                    string[] split = dotNetAssemblyName.Split('-');
+                    var split = dotNetAssemblyName.Split('-');
                     if (split.Length != 2)
                     {
                         throw new Core.Exception("DotNet assembly name and version is ill-formed: '{0}'", dotNetAssemblyName);
@@ -78,7 +78,7 @@ namespace Opus
                     assemblyName = dotNetAssemblyName;
                 }
 
-                foreach (Core.DotNetAssemblyDescription desc in xmlFile.DotNetAssemblies)
+                foreach (var desc in xmlFile.DotNetAssemblies)
                 {
                     if (desc.Name == assemblyName)
                     {
@@ -86,7 +86,7 @@ namespace Opus
                     }
                 }
 
-                Core.DotNetAssemblyDescription descToAdd = new Core.DotNetAssemblyDescription(assemblyName);
+                var descToAdd = new Core.DotNetAssemblyDescription(assemblyName);
                 if (null != targetVersion)
                 {
                     descToAdd.RequiredTargetFramework = targetVersion;

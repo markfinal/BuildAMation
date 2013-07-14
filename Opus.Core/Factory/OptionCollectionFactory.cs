@@ -21,13 +21,13 @@ namespace Opus.Core
                 throw new Exception("Default constructor for type '{0}' does not exist", requiredOptionCollectionType.ToString());
             }
 
-            BaseOptionCollection optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType) as BaseOptionCollection;
+            var optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType) as BaseOptionCollection;
             return optionCollection;
         }
 
         public static DerivedType CreateOptionCollection<DerivedType>(DependencyNode owningNode) where DerivedType : BaseOptionCollection
         {
-            System.Type requiredOptionCollectionType = typeof(DerivedType);
+            var requiredOptionCollectionType = typeof(DerivedType);
             if (!requiredOptionCollectionType.IsSubclassOf(optionCollectionType))
             {
                 throw new Exception("Type '{0}' does not derive from the base class {1}", requiredOptionCollectionType.ToString(), optionCollectionType.ToString());
@@ -38,9 +38,9 @@ namespace Opus.Core
                 throw new Exception("Missing constructor: '{0}(DependencyNode)'", requiredOptionCollectionType.ToString());
             }
 
-            BaseOptionCollection optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType, new object[] { owningNode }) as BaseOptionCollection;
+            var optionCollection = System.Activator.CreateInstance(requiredOptionCollectionType, new object[] { owningNode }) as BaseOptionCollection;
 
-            DerivedType derivedOptionCollection = optionCollection as DerivedType;
+            var derivedOptionCollection = optionCollection as DerivedType;
             return derivedOptionCollection;
         }
     }

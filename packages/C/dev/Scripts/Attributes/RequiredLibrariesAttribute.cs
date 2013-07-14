@@ -15,7 +15,7 @@ namespace C
                 return;
             }
 
-            System.Reflection.FieldInfo field = sender as System.Reflection.FieldInfo;
+            var field = sender as System.Reflection.FieldInfo;
             string[] libraries = null;
             if (field.GetValue(module) is Opus.Core.Array<string>)
             {
@@ -32,8 +32,8 @@ namespace C
 
             module.UpdateOptions += delegate(Opus.Core.IModule dlgModule, Opus.Core.Target dlgTarget)
             {
-                ILinkerOptions linkerOptions = dlgModule.Options as ILinkerOptions;
-                foreach (string library in libraries)
+                var linkerOptions = dlgModule.Options as ILinkerOptions;
+                foreach (var library in libraries)
                 {
                     linkerOptions.Libraries.Add(library);
                 }

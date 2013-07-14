@@ -15,7 +15,7 @@ namespace C
         {
             if (Opus.Core.OSUtilities.IsWindows(target))
             {
-                ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+                var compilerOptions = module.Options as ICCompilerOptions;
                 compilerOptions.Defines.Add("_WINDOWS");
             }
         }
@@ -25,7 +25,7 @@ namespace C
         {
             if (Opus.Core.OSUtilities.IsWindows(target))
             {
-                ILinkerOptions linkerOptions = module.Options as ILinkerOptions;
+                var linkerOptions = module.Options as ILinkerOptions;
                 linkerOptions.SubSystem = ESubsystem.Windows;
             }
         }

@@ -15,7 +15,7 @@ namespace Opus.Core
 
         public FileCollection(params FileCollection[] collections)
         {
-            foreach (FileCollection collection in collections)
+            foreach (var collection in collections)
             {
                 foreach (string path in collection)
                 {
@@ -26,7 +26,7 @@ namespace Opus.Core
 
         public object Clone()
         {
-            FileCollection clone = new FileCollection();
+            var clone = new FileCollection();
             clone.filePaths.AddRange(this.filePaths);
             return clone;
         }
@@ -38,7 +38,7 @@ namespace Opus.Core
 
         public void AddRange(StringArray absolutePathArray)
         {
-            foreach (string path in absolutePathArray)
+            foreach (var path in absolutePathArray)
             {
                 this.filePaths.Add(path);
             }
@@ -67,21 +67,21 @@ namespace Opus.Core
 
         public void Include(object module, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            var package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (module as BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            StringArray paths = File.GetFiles(packagePath, pathSegments);
-            foreach (string path in paths)
+            var paths = File.GetFiles(packagePath, pathSegments);
+            foreach (var path in paths)
             {
                 this.filePaths.Add(path);
             }
@@ -89,21 +89,21 @@ namespace Opus.Core
 
         public void Exclude(object module, params string[] pathSegments)
         {
-            PackageInformation package = PackageUtilities.GetOwningPackage(module);
+            var package = PackageUtilities.GetOwningPackage(module);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", module.GetType().Namespace);
             }
 
-            string packagePath = package.Identifier.Path;
-            ProxyModulePath proxyPath = (module as BaseModule).ProxyPath;
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
                 packagePath = proxyPath.Combine(package.Identifier);
             }
 
-            StringArray paths = File.GetFiles(packagePath, pathSegments);
-            foreach (string path in paths)
+            var paths = File.GetFiles(packagePath, pathSegments);
+            foreach (var path in paths)
             {
                 this.filePaths.Remove(path);
             }
@@ -116,11 +116,16 @@ namespace Opus.Core
                 throw new Exception("Base directory '{0}' does not exist", baseDirectory);
             }
 
-            StringArray paths = File.GetFiles(baseDirectory, relativePath);
-            foreach (string path in paths)
+            var paths = File.GetFiles(baseDirectory, relativePath);
+            foreach (var path in paths)
             {
                 this.filePaths.Add(path);
             }
+        }
+
+        public Opus.Core.StringArray ToStringArray()
+        {
+            return new Opus.Core.StringArray(this.filePaths.ToArray());
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Opus.Core
             {
                 return System.String.Empty;
             }
-            char[] a = word.ToCharArray();
+            var a = word.ToCharArray();
             a[0] = char.ToUpper(a[0]);
             return new string(a);
         }

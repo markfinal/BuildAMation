@@ -47,28 +47,44 @@ namespace AMDAPPSDK
         public AMDAPPSDK()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_IncludePath);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_LibraryPath);
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_LinkerOptions);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_EnableExceptionHandling);
         }
 
         [C.ExportCompilerOptionsDelegate]
         void AMDAPPSDK_EnableExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
+            var compilerOptions = module.Options as C.ICxxCompilerOptions;
+            if (null == compilerOptions)
+            {
+                return;
+            }
+
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
         }
 
         [C.ExportCompilerOptionsDelegate]
         void AMDAPPSDK_IncludePath(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            if (null == compilerOptions)
+            {
+                return;
+            }
+
             compilerOptions.IncludePaths.AddAbsoluteDirectory(IncludePath, true);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void AMDAPPSDK_LibraryPath(Opus.Core.IModule module, Opus.Core.Target target)
+        void AMDAPPSDK_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            // set library paths
             string platformLibraryPath = null;
             if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
@@ -82,13 +98,10 @@ namespace AMDAPPSDK
             {
                 throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
             }
-
             linkerOptions.LibraryPaths.AddAbsoluteDirectory(platformLibraryPath, true);
-        }
 
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
-        {
-            throw new System.NotImplementedException();
+            // libraries to link against
+            linkerOptions.Libraries.Add("OpenCL.lib");
         }
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]

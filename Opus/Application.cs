@@ -18,10 +18,10 @@ namespace Opus
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
             Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
             Core.Log.Message(level, "Working dir  : '{0}'", Core.State.WorkingDirectory);
-            System.Text.StringBuilder arguments = new System.Text.StringBuilder();
-            foreach (string command in argDict.Keys)
+            var arguments = new System.Text.StringBuilder();
+            foreach (var command in argDict.Keys)
             {
-                string value = argDict[command];
+                var value = argDict[command];
                 if (null != value)
                 {
                     arguments.AppendFormat("{0}={1} ", command, value);
@@ -38,8 +38,8 @@ namespace Opus
 
         private void AddCommandValue(System.Collections.Generic.Dictionary<string,string> argDict, string argument)
         {
-            string[] splitArg = argument.Split('=');
-            string command = splitArg[0];
+            var splitArg = argument.Split('=');
+            var command = splitArg[0];
             command = command.Trim(new char[] { '\n', '\r' });
             string value = null;
             if (splitArg.Length > 1)
@@ -63,9 +63,9 @@ namespace Opus
         /// <returns>Dictionary of key-value pairs for the arguments</returns>
         private System.Collections.Generic.Dictionary<string, string> ProcessCommandLine(string[] args)
         {
-            System.Collections.Generic.Dictionary<string, string> argList = new System.Collections.Generic.Dictionary<string, string>();
+            var argList = new System.Collections.Generic.Dictionary<string, string>();
             string responseFileArgument = null;
-            foreach (string arg in args)
+            foreach (var arg in args)
             {
                 // found a response file
                 if (arg.StartsWith("@"))
@@ -77,17 +77,17 @@ namespace Opus
 
                     responseFileArgument = arg;
 
-                    string responseFile = responseFileArgument.Substring(1);
+                    var responseFile = responseFileArgument.Substring(1);
                     if (!System.IO.File.Exists(responseFile))
                     {
                         throw new Core.Exception("Response file '{0}' does not exist", responseFile);
                     }
 
-                    using (System.IO.TextReader responseFileReader = new System.IO.StreamReader(responseFile))
+                    using (var responseFileReader = new System.IO.StreamReader(responseFile))
                     {
-                        string responseFileArguments = responseFileReader.ReadToEnd();
-                        string[] arguments = responseFileArguments.Split(new string[] { " ", "\r\n", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-                        foreach (string argument in arguments)
+                        var responseFileArguments = responseFileReader.ReadToEnd();
+                        var arguments = responseFileArguments.Split(new string[] { " ", "\r\n", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var argument in arguments)
                         {
                             // handle comments
                             if (argument.StartsWith("#"))
@@ -106,16 +106,16 @@ namespace Opus
                 }
             }
 
-            foreach (string commandName in argList.Keys)
+            foreach (var commandName in argList.Keys)
             {
-                string commandValue = argList[commandName];
+                var commandValue = argList[commandName];
                 Core.Log.DebugMessage("Converting command '{0}' with value '{1}' to its action", commandName, commandValue);
 
-                bool foundAction = false;
-                foreach (Core.RegisterActionAttribute actionAttribute in Core.ActionManager.Actions)
+                var foundAction = false;
+                foreach (var actionAttribute in Core.ActionManager.Actions)
                 {
-                    Core.IAction action = actionAttribute.Action;
-                    bool isThisAction = false;
+                    var action = actionAttribute.Action;
+                    var isThisAction = false;
                     if (action is Core.IActionCommandComparison)
                     {
                         isThisAction = (action as Core.IActionCommandComparison).Compare(action.CommandLineSwitch, commandName);
@@ -127,7 +127,7 @@ namespace Opus
 
                     if (isThisAction)
                     {
-                        Core.IAction clone = action.Clone() as Core.IAction;
+                        var clone = action.Clone() as Core.IAction;
 
                         if (clone is Core.IActionWithArguments)
                         {
@@ -180,10 +180,10 @@ namespace Opus
         /// <param name="args">Command line arguments.</param>
         public Application(string[] args)
         {
-            Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
+            var profile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
             profile.StartProfile();
 
-            System.Collections.Generic.Dictionary<string, string> argList = ProcessCommandLine(args);
+            var argList = ProcessCommandLine(args);
             displayInfo(Core.EVerboseLevel.Info, argList);
 
             profile.StopProfile();
@@ -197,10 +197,10 @@ namespace Opus
             // get notified of the progress of any scheduling updates
             Core.State.SchedulerProgressUpdates.Add(new Core.BuildSchedulerProgressUpdatedDelegate(scheduler_ProgressUpdated));
 
-            Core.TimeProfile profile = new Core.TimeProfile(Core.ETimingProfiles.PreambleCommandExecution);
+            var profile = new Core.TimeProfile(Core.ETimingProfiles.PreambleCommandExecution);
             profile.StartProfile();
 
-            foreach (Core.IAction action in this.preambleActions)
+            foreach (var action in this.preambleActions)
             {
                 if (!action.Execute())
                 {
@@ -212,7 +212,7 @@ namespace Opus
 
             if (!this.triggerAction.Execute())
             {
-                System.Environment.ExitCode = -3;
+                System.Environment.ExitCode = -4;
             }
         }
 

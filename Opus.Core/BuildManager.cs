@@ -38,7 +38,7 @@ namespace Opus.Core
         {
             this.graph = graph;
 
-            System.Type schedulerType = System.Type.GetType(State.SchedulerType);
+            var schedulerType = System.Type.GetType(State.SchedulerType);
             if (null == schedulerType)
             {
                 schedulerType = State.ScriptAssembly.GetType(State.SchedulerType);
@@ -51,7 +51,7 @@ namespace Opus.Core
 
             this.scheduler = System.Activator.CreateInstance(schedulerType, new object[] { graph }) as IBuildScheduler;
             // attach updates
-            foreach (BuildSchedulerProgressUpdatedDelegate function in State.SchedulerProgressUpdates)
+            foreach (var function in State.SchedulerProgressUpdates)
             {
                 this.scheduler.ProgressUpdated += function;
             }
@@ -68,7 +68,7 @@ namespace Opus.Core
             this.agentsAvailable = new System.Collections.Generic.List<System.Threading.ManualResetEvent>(jobCount);
             for (int job = 0; job < jobCount; ++job)
             {
-                BuildAgent agent = new BuildAgent(System.String.Format("Agent {0}", job), this.Builder, this.AgentReportsFailure);
+                var agent = new BuildAgent(System.String.Format("Agent {0}", job), this.Builder, this.AgentReportsFailure);
                 this.agents.Insert(job, agent);
                 this.agentsAvailable.Insert(job, agent.IsAvailable);
             }
@@ -92,7 +92,7 @@ namespace Opus.Core
         {
             // wait indefinitely for an available agent
             int availableAgentIndex = System.Threading.WaitHandle.WaitAny(this.agentsAvailable.ToArray(), -1);
-            BuildAgent availableAgent = this.agents[availableAgentIndex];
+            var availableAgent = this.agents[availableAgentIndex];
             return availableAgent;
         }
 
@@ -115,15 +115,6 @@ namespace Opus.Core
             }
         }
         
-        private void PreExecute()
-        {
-            System.Reflection.MethodInfo preExecuteMethod = this.Builder.GetType().GetMethod("PreExecute", new System.Type[] { });
-            if (null != preExecuteMethod)
-            {
-                preExecuteMethod.Invoke(this.Builder, new object[] {});
-            }
-        }
-        
         public bool Execute()
         {
             Log.Info("Build started");
@@ -134,7 +125,11 @@ namespace Opus.Core
 
             try
             {
-                this.PreExecute();
+                var preExecute = (this.Builder as IBuilderPreExecute);
+                if (null != preExecute)
+                {
+                    preExecute.PreExecute();
+                }
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
@@ -144,8 +139,8 @@ namespace Opus.Core
 
             while (this.scheduler.AreNodesAvailable)
             {
-                BuildAgent agent = this.AvailableAgent();
-                DependencyNode nodeWork = this.scheduler.GetNextNodeToBuild();
+                var agent = this.AvailableAgent();
+                var nodeWork = this.scheduler.GetNextNodeToBuild();
 
                 // check for failure to build a previous node
                 if (this.HasFailed)
@@ -184,14 +179,18 @@ namespace Opus.Core
             System.Threading.WaitHandle.WaitAll(this.agentsAvailable.ToArray(), -1);
 
             // check for failure
-            bool agentsFailed = this.HasFailed;
+            var agentsFailed = this.HasFailed;
 
             bool returnValue;
             if (!agentsFailed)
             {
                 try
                 {
-                    this.PostExecute();
+                    var postExecute = this.Builder as IBuilderPostExecute;
+                    if (null != postExecute)
+                    {
+                        postExecute.PostExecute(this.graph.ExecutedNodes);
+                    }
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {
@@ -250,7 +249,7 @@ namespace Opus.Core
                 return;
             }
 
-            OutputQueueData OutputQueueData = new OutputQueueData();
+            var OutputQueueData = new OutputQueueData();
             OutputQueueData.node = node;
             OutputQueueData.output = node.OutputStringBuilder;
             OutputQueueData.error = node.ErrorStringBuilder;
@@ -264,8 +263,8 @@ namespace Opus.Core
 
         private void OutputErrorProcessingThread(object state)
         {
-            BuildManager buildManager = state as BuildManager;
-            System.Collections.Generic.Queue<OutputQueueData> outputQueue = buildManager.outputQueue;
+            var buildManager = state as BuildManager;
+            var outputQueue = buildManager.outputQueue;
 
             while (buildManager.active)
             {
@@ -285,7 +284,7 @@ namespace Opus.Core
                         throw new Exception("Output Queue contained a null reference; there was {0} items before the last dequeue", outputQueue.Count + 1);
                     }
 
-                    bool preamble = false;
+                    var preamble = false;
                     if (outputOutputQueueData.output.Length > 0)
                     {
                         if (!preamble)
@@ -295,9 +294,9 @@ namespace Opus.Core
                         }
 
                         Log.Info("Messages:");
-                        string[] lines = outputOutputQueueData.output.ToString().Split(new char[] { '\n' });
+                        var lines = outputOutputQueueData.output.ToString().Split(new char[] { '\n' });
                         int count = 0;
-                        foreach (string line in lines)
+                        foreach (var line in lines)
                         {
                             if (line.Length > 0)
                             {
@@ -313,8 +312,8 @@ namespace Opus.Core
                             preamble = true;
                         }
 
-                        string[] lines = outputOutputQueueData.error.ToString().Split(new char[] { '\n' });
-                        foreach (string line in lines)
+                        var lines = outputOutputQueueData.error.ToString().Split(new char[] { '\n' });
+                        foreach (var line in lines)
                         {
                             if (line.Length > 0)
                             {
@@ -333,16 +332,6 @@ namespace Opus.Core
 
             // signal complete
             allOutputComplete.Set();
-        }
-        
-        private void PostExecute()
-        {
-            System.Reflection.MethodInfo postExecuteMethod = this.Builder.GetType().GetMethod("PostExecute", new System.Type[] { typeof(DependencyNodeCollection) });
-
-            if ((this.graph.ExecutedNodes.Count > 0) && (null != postExecuteMethod))
-            {
-                postExecuteMethod.Invoke(this.Builder, new object[] { this.graph.ExecutedNodes });
-            }
         }
     }
 }

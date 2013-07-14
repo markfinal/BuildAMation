@@ -26,8 +26,8 @@ namespace Opus.Core
 
         int System.IComparable.CompareTo(object obj)
         {
-            RegisterActionAttribute thisAs = this as RegisterActionAttribute;
-            RegisterActionAttribute objAs = obj as RegisterActionAttribute;
+            var thisAs = this as RegisterActionAttribute;
+            var objAs = obj as RegisterActionAttribute;
 
             int compare = thisAs.Action.CommandLineSwitch.CompareTo(objAs.Action.CommandLineSwitch);
             return compare;

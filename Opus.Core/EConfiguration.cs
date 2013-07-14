@@ -20,7 +20,7 @@ namespace Opus.Core
     {
         public static EConfiguration FromString(string configurationName)
         {
-            EConfiguration configuration = EConfiguration.Invalid;
+            var configuration = EConfiguration.Invalid;
             if (0 == System.String.Compare(configurationName, "Debug", true))
             {
                 configuration = EConfiguration.Debug;

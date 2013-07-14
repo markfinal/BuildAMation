@@ -21,7 +21,7 @@ namespace WindowsSDK
                 return;
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v7.1"))
+            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v7.1"))
             {
                 if (null == key)
                 {
@@ -50,7 +50,12 @@ namespace WindowsSDK
         [C.ExportLinkerOptionsDelegate]
         void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
             if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
                 linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib32Path, true);
@@ -68,13 +73,13 @@ namespace WindowsSDK
         [C.ExportCompilerOptionsDelegate]
         void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
-        }
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            if (null == compilerOptions)
+            {
+                return;
+            }
 
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
-        {
-            throw new System.NotImplementedException();
+            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
         }
 
         public static string BinPath(Opus.Core.BaseTarget baseTarget)

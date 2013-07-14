@@ -11,7 +11,7 @@ namespace C
 
         public void Add(object toAdd)
         {
-            string define = toAdd as string;
+            var define = toAdd as string;
             lock (this.defines)
             {
                 if (!this.defines.Contains(define))
@@ -40,12 +40,17 @@ namespace C
 
         public object Clone()
         {
-            DefineCollection clonedObject = new DefineCollection();
-            foreach (string define in this.defines)
+            var clonedObject = new DefineCollection();
+            foreach (var define in this.defines)
             {
                 clonedObject.Add(define.Clone() as string);
             }
             return clonedObject;
+        }
+
+        public Opus.Core.StringArray ToStringArray()
+        {
+            return this.defines;
         }
     }
 }

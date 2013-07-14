@@ -27,7 +27,7 @@ namespace Opus.Core
     {
         public static EPlatform FromString(string platformName)
         {
-            EPlatform platform = EPlatform.Invalid;
+            var platform = EPlatform.Invalid;
             if (0 == System.String.Compare(platformName, "Windows", true))
             {
                 platform = EPlatform.Windows;
@@ -98,19 +98,19 @@ namespace Opus.Core
 
         public static bool Contains(EPlatform flags, EPlatform specificPlatform)
         {
-            bool contains = (specificPlatform == (flags & specificPlatform));
+            var contains = (specificPlatform == (flags & specificPlatform));
             return contains;
         }
 
         public static string ToString(EPlatform platformFlags)
         {
-            string value = ToString(platformFlags, '\0', null, false);
+            var value = ToString(platformFlags, '\0', null, false);
             return value;
         }
 
         public static string ToString(EPlatform platformFlags, char separator)
         {
-            string value = ToString(platformFlags, separator, null, false);
+            var value = ToString(platformFlags, separator, null, false);
             return value;
         }
 

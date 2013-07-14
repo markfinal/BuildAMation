@@ -5,14 +5,18 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public sealed partial class VSSolutionBuilder
+    public sealed partial class VSSolutionBuilder : Opus.Core.IBuilderPostExecute
     {
-        public void PostExecute(Opus.Core.DependencyNodeCollection nodeCollection)
+        #region IBuilderPostExecute Members
+
+        void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
         {
             Opus.Core.Log.DebugMessage("PostExecute for VSSolutionBuilder");
 
             this.solutionFile.ResolveSourceFileConfigurationExclusions();
             this.solutionFile.Serialize();
         }
+
+        #endregion
     }
 }

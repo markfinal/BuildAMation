@@ -16,7 +16,7 @@ namespace Opus.Core
 
         public void AddRange(ModuleCollection itemCollection)
         {
-            foreach (IModule module in itemCollection)
+            foreach (var module in itemCollection)
             {
                 this.list.Add(module);
             }

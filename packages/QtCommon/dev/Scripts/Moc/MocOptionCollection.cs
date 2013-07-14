@@ -34,9 +34,16 @@ namespace QtCommon
             options.Defines.Add(VersionDefine);
         }
 
+        public string OutputDirectoryPath
+        {
+            get;
+            set;
+        }
+
         public override void SetNodeOwnership(Opus.Core.DependencyNode node)
         {
             string mocDir = node.GetTargettedModuleBuildDirectory("src");
+            this.OutputDirectoryPath = mocDir;
             MocFile mocFile = node.Module as MocFile;
             string mocPath;
             if (null != mocFile)
@@ -57,7 +64,7 @@ namespace QtCommon
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            if (null == this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile])
+            if (!this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
             {
                 this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
             }
@@ -65,18 +72,18 @@ namespace QtCommon
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target)
+        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
-            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target);
+            CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
         {
             Opus.Core.DirectoryCollection dirsToCreate = new Opus.Core.DirectoryCollection();
 
-            IMocOptions options = this as IMocOptions;
-            if (null != options.MocOutputPath)
+            if (this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
             {
+                var options = this as IMocOptions;
                 string mocDir = System.IO.Path.GetDirectoryName(options.MocOutputPath);
                 dirsToCreate.AddAbsoluteDirectory(mocDir, false);
             }

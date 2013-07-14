@@ -29,9 +29,9 @@ namespace Opus
 
         private void DisplayDependencies(Core.PackageDefinitionFile definition, int depth)
         {
-            foreach (Core.PackageIdentifier id in definition.PackageIdentifiers)
+            foreach (var id in definition.PackageIdentifiers)
             {
-                string platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
+                var platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
 
                 Core.Log.MessageAll("{0}{1}{2} (filter: {3}) (root: '{4}')", new string('\t', depth), (null != id.Root) ? id.ToString("-") : id.ToString("-").ToUpper(), id.IsDefaultVersion ? "*" : System.String.Empty, platformFilter, (null != id.Root) ? id.Root : "UNKNOWN");
 
@@ -47,22 +47,22 @@ namespace Opus
             // there may be multiple versions of packages - so show them all
             Core.PackageUtilities.IdentifyMainAndDependentPackages(false, true);
 
-            Core.PackageIdentifier mainPackageId = Core.State.PackageInfo[0].Identifier;
-            Core.PackageDefinitionFile definitionFile = mainPackageId.Definition;
+            var mainPackageId = Core.State.PackageInfo[0].Identifier;
+            var definitionFile = mainPackageId.Definition;
 
-            string packageName = mainPackageId.ToString();
-            string formatString = "Definition of package '{0}'";
+            var packageName = mainPackageId.ToString();
+            var formatString = "Definition of package '{0}'";
             int dashLength = formatString.Length - 3 + packageName.Length;
             Core.Log.MessageAll("Definition of package '{0}'", mainPackageId.ToString());
             Core.Log.MessageAll(new string('-', dashLength));
             Core.Log.MessageAll("\nSupported on: {0}", Core.Platform.ToString(definitionFile.SupportedPlatforms, ' '));
             Core.Log.MessageAll("\nOpus assemblies:");
-            foreach (string opusAssembly in definitionFile.OpusAssemblies)
+            foreach (var opusAssembly in definitionFile.OpusAssemblies)
             {
                 Core.Log.MessageAll("\t{0}", opusAssembly);
             }
             Core.Log.MessageAll("\nDotNet assemblies:");
-            foreach (Core.DotNetAssemblyDescription desc in definitionFile.DotNetAssemblies)
+            foreach (var desc in definitionFile.DotNetAssemblies)
             {
                 if (null == desc.RequiredTargetFramework)
                 {
@@ -76,7 +76,7 @@ namespace Opus
             if (definitionFile.Definitions.Count > 0)
             {
                 Core.Log.MessageAll("\n#defines:");
-                foreach (string definition in definitionFile.Definitions)
+                foreach (var definition in definitionFile.Definitions)
                 {
                     Core.Log.MessageAll("\t{0}", definition);
                 }

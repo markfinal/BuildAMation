@@ -49,7 +49,7 @@ namespace Opus
             {
                 throw new Core.Exception("Multiple SetDependent actions were specified");
             }
-            SetDependentAction setDependentAction = setDependentActionArray[0] as SetDependentAction;
+            var setDependentAction = setDependentActionArray[0] as SetDependentAction;
             if (null == setDependentAction.DependentPackageAndVersion)
             {
                 throw new Core.Exception("Dependent package has not been set");
@@ -57,17 +57,17 @@ namespace Opus
 
             Core.Log.DebugMessage("Dependent package is '{0}'", setDependentAction.DependentPackageAndVersion);
 
-            string[] nameAndVersion = setDependentAction.DependentPackageAndVersion.Split('-');
+            var nameAndVersion = setDependentAction.DependentPackageAndVersion.Split('-');
             if (nameAndVersion.Length != 2)
             {
                 throw new Core.Exception("Ill-formed package name-version pair, '{0}'", nameAndVersion);
             }
 
             Core.PackageUtilities.IdentifyMainPackageOnly();
-            Core.PackageIdentifier mainPackageId = Core.State.PackageInfo[0].Identifier;
+            var mainPackageId = Core.State.PackageInfo[0].Identifier;
 
             Core.PackageIdentifier foundId = null;
-            foreach (Core.PackageIdentifier id in mainPackageId.Definition.PackageIdentifiers)
+            foreach (var id in mainPackageId.Definition.PackageIdentifiers)
             {
                 if (id.Match(nameAndVersion[0], nameAndVersion[1], false))
                 {
@@ -78,7 +78,7 @@ namespace Opus
 
             if (null != foundId)
             {
-                Core.PackageIdentifier newId = new Core.PackageIdentifier(nameAndVersion[0], this.NewVersion);
+                var newId = new Core.PackageIdentifier(nameAndVersion[0], this.NewVersion);
 
                 if (mainPackageId.Definition.PackageIdentifiers.Contains(newId))
                 {

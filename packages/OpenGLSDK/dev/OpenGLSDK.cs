@@ -25,10 +25,22 @@ namespace OpenGLSDK
             winMingwTarget.ToolsetTypes = new[] { typeof(Mingw.Toolset) };
         }
 
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
+        public OpenGL()
         {
-            Opus.Core.StringArray libraries = new Opus.Core.StringArray();
+            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(OpenGL_LinkerOptions);
+        }
 
+        [C.ExportLinkerOptionsDelegate]
+        void OpenGL_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            // add libraries
+            Opus.Core.StringArray libraries = new Opus.Core.StringArray();
             if (Opus.Core.TargetUtilities.MatchFilters(target, winVCTarget))
             {
                 libraries.Add(@"OPENGL32.lib");
@@ -41,8 +53,7 @@ namespace OpenGLSDK
             {
                 throw new Opus.Core.Exception("Unsupported OpenGL platform");
             }
-
-            return libraries;
+            linkerOptions.Libraries.AddRange(libraries);
         }
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
