@@ -1,3 +1,5 @@
+18-Jul-2013 Added zeromq-3.2.3 package.
+
 13-Jul-2013 Added Opus.Core.RelativePathUtilities.GetCommonRoot to find the common root between two paths. If there is no common root, null is returned.
 
 13-Jul-2013 Opus.Core.File.ToString() now displays the path if it has been set.
