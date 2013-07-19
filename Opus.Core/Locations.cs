@@ -25,6 +25,7 @@ namespace Opus.Core
             set;
         }
 
+#if false
         public string Path
         {
             get
@@ -47,7 +48,7 @@ namespace Opus.Core
                     packagePath = proxyPath.Combine(package.Identifier);
                 }
 
-                var filePaths = Opus.Core.File.GetFiles(packagePath, this.Segments);
+                var filePaths = Opus.Core.File.GetFiles(packagePath, this.Segments.ToArray());
                 foreach (var path in filePaths)
                 {
                     var objectFile = new ObjectFile();
@@ -63,6 +64,7 @@ namespace Opus.Core
         {
             get;
         }
+#endif
 
         private BaseModule Module
         {
