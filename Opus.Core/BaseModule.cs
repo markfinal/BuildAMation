@@ -7,8 +7,10 @@ namespace Opus.Core
 {
     public abstract class BaseModule : IModule
     {
-        // TOOD: would like to be able to do this, but the point at which modules and nodes are
-        // created is ill-defined
+        // TODO: cannot change the constructor away from the default for this, because of the automatically
+        // created modules that are fields of others.
+        // But I do want to do some of what's in here... which will happen when the owning node is set
+        // Should also make owning the node a singular operation
 #if false
         public BaseModule(Opus.Core.DependencyNode owningNode)
         {
