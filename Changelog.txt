@@ -1,3 +1,5 @@
+19-Jul-2013 Reduced the number of ways to create an Opus.Core.DependencyNode to simplify the code.
+
 18-Jul-2013 Added zeromq-3.2.3 package.
 
 13-Jul-2013 Added Opus.Core.RelativePathUtilities.GetCommonRoot to find the common root between two paths. If there is no common root, null is returned.
