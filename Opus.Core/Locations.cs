@@ -7,11 +7,28 @@ namespace Opus.Core
 {
     public abstract class Location
     {
+        protected Location(LocationDirectory root, StringArray segments)
+        {
+            this.Root = root;
+            this.Module = null;
+            this.Segments = segments;
+            this.CachedPath = null;
+        }
+
         protected Location(BaseModule module, StringArray segments)
         {
+            this.Root = null;
             this.Module = module;
             this.Segments = segments;
             this.CachedPath = null;
+        }
+
+        protected Location(string absolutePath)
+        {
+            this.Root = null;
+            this.Module = null;
+            this.Segments = null;
+            this.CachedPath = absolutePath;
         }
 
         public abstract bool IsFile
@@ -20,6 +37,12 @@ namespace Opus.Core
         }
 
         private string CachedPath
+        {
+            get;
+            set;
+        }
+
+        private LocationDirectory Root
         {
             get;
             set;
@@ -81,8 +104,18 @@ namespace Opus.Core
 
     public sealed class LocationFile : Location
     {
+        public LocationFile(LocationDirectory root, params string[] segments)
+            : base(root, new StringArray(segments))
+        {
+        }
+
         public LocationFile(BaseModule module, params string[] segments)
             : base(module, new StringArray(segments))
+        {
+        }
+
+        public LocationFile(string absolutePath)
+            : base(absolutePath)
         {
         }
 
@@ -97,8 +130,18 @@ namespace Opus.Core
 
     public sealed class LocationDirectory : Location
     {
+        public LocationDirectory(LocationDirectory root, params string[] segments)
+            : base(root, new StringArray(segments))
+        {
+        }
+
         public LocationDirectory(BaseModule module, params string[] segments)
             : base(module, new StringArray(segments))
+        {
+        }
+
+        public LocationDirectory(string absolutePath)
+            : base(absolutePath)
         {
         }
 
@@ -115,17 +158,22 @@ namespace Opus.Core
     {
         private System.Collections.Generic.Dictionary<string, Location> map = new System.Collections.Generic.Dictionary<string, Location>();
 
-        public Location this[string index]
+        public Location this[string name]
         {
             get
             {
-                return this.map[index];
+                return this.map[name];
             }
 
             set
             {
-                this.map[index] = value;
+                this.map[name] = value;
             }
+        }
+
+        public bool Contains(string name)
+        {
+            return this.map.ContainsKey(name);
         }
     }
 }

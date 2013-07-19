@@ -152,6 +152,15 @@ namespace Opus.Core
             }
         }
 
+        public LocationDirectory BuildDirectoryLocation
+        {
+            get
+            {
+                var buildDirectory = new Opus.Core.LocationDirectory(State.BuildRootLocation, this.FullName);
+                return buildDirectory;
+            }
+        }
+
         public string FullName
         {
             get

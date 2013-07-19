@@ -4,6 +4,12 @@ namespace Test13
     // Define module classes here
     class QtApplication : C.Application
     {
+        public QtApplication()
+        {
+            this.Locations["source"] = new Opus.Core.LocationDirectory(this, "source");
+            this.Locations["resources"] = new Opus.Core.LocationDirectory(this, "resources");
+        }
+
         [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
         class Win32ResourceFile : C.Win32Resource
         {
