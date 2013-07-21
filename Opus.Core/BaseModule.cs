@@ -5,24 +5,16 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    /// <summary>
+    /// BaseModules are the base class for all real modules in package scripts.
+    /// These are constructed by the Opus Core when they are required.
+    /// Nested modules that appear as fields are either constructed automatically by
+    /// the default constructor of their parent, or in the custom construct required to be
+    /// written by the package author. As such, there must always be a default constructor
+    /// in BaseModule.
+    /// </summary>
     public abstract class BaseModule : IModule
     {
-        // TODO: cannot change the constructor away from the default for this, because of the automatically
-        // created modules that are fields of others.
-        // But I do want to do some of what's in here... which will happen when the owning node is set
-        // Should also make owning the node a singular operation
-#if false
-        public BaseModule(Opus.Core.DependencyNode owningNode)
-        {
-            this.OwningNode = owningNode;
-            var target = owningNode.Target;
-
-            var package = this.OwningNode.Package;
-
-            this.Locations["TargetDir"] = new Opus.Core.LocationDirectory(package.BuildDirectoryLocation, TargetUtilities.DirectoryName(target));
-        }
-#endif
-
         public event UpdateOptionCollectionDelegate UpdateOptions;
 
         public virtual BaseOptionCollection Options
@@ -45,11 +37,23 @@ namespace Opus.Core
             }
         }
 
+        private DependencyNode owningNode = null;
         public DependencyNode OwningNode
         {
-            get;
-            // TODO: would like to make this private since it should be readonly
-            set;
+            get
+            {
+                return this.owningNode;
+            }
+
+            set
+            {
+                if (null != this.owningNode)
+                {
+                    throw new Exception("Module {0} cannot have it's node reassigned to", this.owningNode.UniqueModuleName, value.UniqueModuleName);
+                }
+
+                this.owningNode = value;
+            }
         }
 
         private LocationMap locationMap = new LocationMap();
