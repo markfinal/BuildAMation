@@ -49,7 +49,7 @@ namespace Opus.Core
             {
                 if (null != this.owningNode)
                 {
-                    throw new Exception("Module {0} cannot have it's node reassigned to", this.owningNode.UniqueModuleName, value.UniqueModuleName);
+                    throw new Exception("Module {0} cannot have it's node reassigned to {1}", this.owningNode.UniqueModuleName, value.UniqueModuleName);
                 }
 
                 this.owningNode = value;
