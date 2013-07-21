@@ -93,7 +93,9 @@ namespace Opus.Core
                 }
             }
 
-            var moduleNode = new DependencyNode(moduleType, parent, targetUsed, -1, false);
+            // this is the only place a manual construction of a module is made
+            var module = ModuleFactory.CreateModule(moduleType, targetUsed);
+            var moduleNode = new DependencyNode(module, parent, targetUsed, -1, false);
             AddDependencyNodeToCollection(moduleNode, rank);
 
             return moduleNode;

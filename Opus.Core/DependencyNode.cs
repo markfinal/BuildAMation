@@ -90,8 +90,65 @@ namespace Opus.Core
             this.Children.Add(childNode);
         }
         
-        private void Initialize(System.Type moduleType, DependencyNode parent, Target target, int childIndex, bool nestedModule)
+        public void CreateOptionCollection()
         {
+            var toolset = this.Target.Toolset;
+
+            var moduleType = this.Module.GetType();
+            Opus.Core.Log.DebugMessage("Constructing option collection for node '{0}'", this.UniqueModuleName);
+
+            // requires inheritence because the attribute is usually on the base class
+            var moduleTools = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
+            if (null == moduleTools || 0 == moduleTools.Length)
+            {
+                throw new Exception("Module type '{0}' (base type '{1}') does not have any assigned tools", moduleType.ToString(), moduleType.BaseType.ToString());
+            }
+
+            if (moduleTools.Length > 1)
+            {
+                throw new Exception("There is more than one tool associated with this module '{0}'", moduleType.ToString());
+            }
+
+            var toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolType;
+            if (null == toolset)
+            {
+                Opus.Core.Log.DebugMessage("\tNo toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+                return;
+                //throw new Exception("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+            }
+
+            Opus.Core.Log.DebugMessage("\tUsing toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
+            if (!toolType.IsInterface)
+            {
+                throw new Exception("Tool '{0}' is NOT an interface", toolType.ToString());
+            }
+
+            var optionCollectionType = toolset.ToolOptionType(toolType);
+            if (null == optionCollectionType)
+            {
+                Opus.Core.Log.DebugMessage("\tNo option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
+                return;
+                //throw new Exception("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
+            }
+
+            var localAndExportTypes = toolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
+
+            if (localAndExportTypes.Length == 0)
+            {
+                throw new Exception("Missing local and export types attribute on tool type '{0}'", toolType.ToString());
+            }
+
+            var exportType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
+            var localType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).LocalType;
+
+            var method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            var genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
+            genericMethod.Invoke(null, new object[] { this });
+        }
+
+        public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
+        {
+            var moduleType = module.GetType();
             if (!typeof(BaseModule).IsAssignableFrom(moduleType))
             {
                 throw new Exception("Module type '{0}' does not derive from the Opus.Core.BaseModule class", moduleType.ToString());
@@ -157,77 +214,8 @@ namespace Opus.Core
                 parent.AddChild(this);
             }
             this.BuildState = EBuildState.NotStarted;
-        }
 
-        public void CreateOptionCollection()
-        {
-            var toolset = this.Target.Toolset;
-
-            var moduleType = this.Module.GetType();
-            Opus.Core.Log.DebugMessage("Constructing option collection for node '{0}'", this.UniqueModuleName);
-
-            // requires inheritence because the attribute is usually on the base class
-            var moduleTools = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
-            if (null == moduleTools || 0 == moduleTools.Length)
-            {
-                throw new Exception("Module type '{0}' (base type '{1}') does not have any assigned tools", moduleType.ToString(), moduleType.BaseType.ToString());
-            }
-
-            if (moduleTools.Length > 1)
-            {
-                throw new Exception("There is more than one tool associated with this module '{0}'", moduleType.ToString());
-            }
-
-            var toolType = (moduleTools[0] as ModuleToolAssignmentAttribute).ToolType;
-            if (null == toolset)
-            {
-                Opus.Core.Log.DebugMessage("\tNo toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
-                return;
-                //throw new Exception("No toolset for target '{0}' and tool '{1}' for module '{2}'", Target.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
-            }
-
-            Opus.Core.Log.DebugMessage("\tUsing toolset '{0}' for tool '{1}' for module '{2}'", toolset.ToString(), (null != toolType) ? toolType.ToString() : "undefined", moduleType.ToString());
-            if (!toolType.IsInterface)
-            {
-                throw new Exception("Tool '{0}' is NOT an interface", toolType.ToString());
-            }
-
-            var optionCollectionType = toolset.ToolOptionType(toolType);
-            if (null == optionCollectionType)
-            {
-                Opus.Core.Log.DebugMessage("\tNo option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
-                return;
-                //throw new Exception("No option collection type for tool '{0}' from toolset '{1}'", toolType.ToString(), toolset.ToString());
-            }
-
-            var localAndExportTypes = toolType.GetCustomAttributes(typeof(LocalAndExportTypesAttribute), false);
-
-            if (localAndExportTypes.Length == 0)
-            {
-                throw new Exception("Missing local and export types attribute on tool type '{0}'", toolType.ToString());
-            }
-
-            var exportType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).ExportType;
-            var localType = (localAndExportTypes[0] as LocalAndExportTypesAttribute).LocalType;
-
-            var method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-            var genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
-            genericMethod.Invoke(null, new object[] { this });
-        }
-
-        public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
-        {
-            this.Initialize(module.GetType(), parent, target, childIndex, nestedModule);
-
-            this.Module = module;
-            module.OwningNode = this;
-        }
-        
-        public DependencyNode(System.Type moduleType, DependencyNode parent, Target target, int childIndex, bool nestedModule)
-        {
-            this.Initialize(moduleType, parent, target, childIndex, nestedModule);
-
-            var module = ModuleFactory.CreateModule(moduleType, target);
+            // assign the module to the node, and the node to the module
             this.Module = module;
             module.OwningNode = this;
         }
