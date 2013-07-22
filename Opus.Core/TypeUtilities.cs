@@ -7,6 +7,14 @@ namespace Opus.Core
 {
     public static class TypeUtilities
     {
+        public static void CheckTypeDerivesFrom(System.Type type, System.Type baseClass)
+        {
+            if (!baseClass.IsAssignableFrom(type))
+            {
+                throw new Exception("Type '{0}' is not derived from {1}", type.ToString(), baseClass.ToString());
+            }
+        }
+
         public static void CheckTypeImplementsInterface(System.Type type, System.Type interfaceType)
         {
             if (!interfaceType.IsInterface)
