@@ -7,13 +7,11 @@ namespace GccCommon
 {
     public class ObjCCompilerOptionCollection : CCompilerOptionCollection
     {
-        public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection
+        public static void ExportedDefaults(Opus.Core.BaseOptionCollection options, Opus.Core.DependencyNode node)
         {
-            C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
-
+            var cInterfaceOptions = options as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.ObjectiveC;
-
-            ICCompilerOptions gccInterfaceOptions = options as ICCompilerOptions;
+            var gccInterfaceOptions = options as ICCompilerOptions;
             gccInterfaceOptions.StrictAliasing = false; // causes type-punning warnings with 'super' in 4.0
         }
 
