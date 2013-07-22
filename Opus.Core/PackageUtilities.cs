@@ -669,7 +669,7 @@ namespace Opus.Core
         public static PackageInformation GetOwningPackage(object obj)
         {
             var objType = obj.GetType();
-            TypeUtilities.CheckTypeImplementsInterface(objType, typeof(IModule));
+            TypeUtilities.CheckTypeDerivesFrom(objType, typeof(BaseModule));
 
             var packageName = objType.Namespace;
             var package = State.PackageInfo[packageName];
