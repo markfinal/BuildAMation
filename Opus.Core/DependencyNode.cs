@@ -149,11 +149,6 @@ namespace Opus.Core
         public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
         {
             var moduleType = module.GetType();
-            if (!typeof(BaseModule).IsAssignableFrom(moduleType))
-            {
-                throw new Exception("Module type '{0}' does not derive from the Opus.Core.BaseModule class", moduleType.ToString());
-            }
-
             this.ConsiderForBuild = true;
             this.Rank = -1;
             this.Parent = parent;

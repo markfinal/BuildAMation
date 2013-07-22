@@ -9,7 +9,7 @@ namespace Opus.Core
     {
         public static BaseModule CreateModule(System.Type moduleType, Target target)
         {
-            TypeUtilities.CheckTypeImplementsInterface(moduleType, typeof(IModule));
+            TypeUtilities.CheckTypeDerivesFrom(moduleType, typeof(BaseModule));
             TypeUtilities.CheckTypeIsNotAbstract(moduleType);
 
             BaseModule module = null;
