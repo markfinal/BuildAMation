@@ -25,6 +25,52 @@ namespace QtCommon
             return collection;
         }
 
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (null != this.ProxyPath)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            // TODO: replace with Location
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
+            foreach (string path in filePaths)
+            {
+                MocFile mocFile = new MocFile();
+                (mocFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                mocFile.SetAbsolutePath(path);
+                this.list.Add(mocFile);
+            }
+        }
+
+        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (null != this.ProxyPath)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            // TODO: replace with Location
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
+            System.Collections.Generic.List<MocFile> toRemove = new System.Collections.Generic.List<MocFile>();
+            foreach (string path in filePaths)
+            {
+                foreach (MocFile file in this.list)
+                {
+                    if (file.SourceFile.AbsolutePath == path)
+                    {
+                        toRemove.Add(file);
+                    }
+                }
+            }
+
+            foreach (MocFile file in toRemove)
+            {
+                this.list.Remove(file);
+            }
+        }
+
+        // deprecated
         public void Include(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -50,6 +96,7 @@ namespace QtCommon
             }
         }
 
+        // deprecated
         public void Exclude(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
