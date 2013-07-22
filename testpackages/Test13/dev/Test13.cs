@@ -23,7 +23,8 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "*.cpp");
+                var sourceDir = new Opus.Core.LocationDirectory(this.Locations["PackageDir"], "source");
+                this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
