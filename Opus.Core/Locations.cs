@@ -7,8 +7,13 @@ namespace Opus.Core
 {
     public abstract class Location
     {
-        protected Location(LocationDirectory root, StringArray segments)
+        protected Location(Location root, StringArray segments)
         {
+            if (root.IsFile && segments.Count > 0)
+            {
+                throw new Exception("Cannot root a location from a file and with additional path segments");
+            }
+
             this.Root = root;
             this.Module = null;
             this.Segments = segments;
@@ -36,13 +41,43 @@ namespace Opus.Core
             get;
         }
 
-        private string CachedPath
+        private string CalculatePathFromRoot()
         {
-            get;
-            set;
+            var combinedPath = this.Root.CachedPath;
+            foreach (var segment in this.Segments)
+            {
+                combinedPath = System.IO.Path.Combine(combinedPath, segment);
+            }
+            return combinedPath;
         }
 
-        private LocationDirectory Root
+        private string cachedPath = null;
+        public string CachedPath
+        {
+            get
+            {
+                if (null == this.cachedPath)
+                {
+                    if (null != this.Root)
+                    {
+                        this.cachedPath = this.CalculatePathFromRoot();
+                    }
+                    else
+                    {
+                        throw new Exception("Need to calculate cached path");
+                    }
+                }
+
+                return this.cachedPath;
+            }
+
+            private set
+            {
+                this.cachedPath = value;
+            }
+        }
+
+        private Location Root
         {
             get;
             set;
@@ -100,6 +135,11 @@ namespace Opus.Core
             get;
             set;
         }
+
+        public override string ToString()
+        {
+            return this.cachedPath;
+        }
     }
 
     public sealed class LocationFile : Location
@@ -130,7 +170,7 @@ namespace Opus.Core
 
     public sealed class LocationDirectory : Location
     {
-        public LocationDirectory(LocationDirectory root, params string[] segments)
+        public LocationDirectory(Location root, params string[] segments)
             : base(root, new StringArray(segments))
         {
         }
@@ -174,6 +214,17 @@ namespace Opus.Core
         public bool Contains(string name)
         {
             return this.map.ContainsKey(name);
+        }
+
+        public override string ToString()
+        {
+            var repr = new System.Text.StringBuilder();
+            foreach (var key in this.map.Keys)
+            {
+                // TODO: add the value too
+                repr.AppendFormat("{0} ", key);
+            }
+            return repr.ToString();
         }
     }
 }

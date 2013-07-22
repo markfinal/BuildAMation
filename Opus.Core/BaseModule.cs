@@ -15,6 +15,26 @@ namespace Opus.Core
     /// </summary>
     public abstract class BaseModule : IModule
     {
+        protected BaseModule()
+        {
+            var packageName = this.GetType().Namespace;
+            var package = State.PackageInfo[packageName];
+            if (null != package)
+            {
+                this.Locations = new LocationMap();
+                this.Locations["PackageDir"] = new LocationDirectory(package.Identifier.Path);
+            }
+        }
+
+        /// <summary>
+        /// Locations are only valid for named modules
+        /// </summary>
+        public LocationMap Locations
+        {
+            get;
+            private set;
+        }
+
         public event UpdateOptionCollectionDelegate UpdateOptions;
 
         public virtual BaseOptionCollection Options
@@ -54,27 +74,6 @@ namespace Opus.Core
 
                 this.owningNode = value;
             }
-        }
-
-        private LocationMap locationMap = new LocationMap();
-        public LocationMap Locations
-        {
-            get
-            {
-                return this.locationMap;
-            }
-        }
-
-        public Location MakeLocationDirectory(string name, params string[] segments)
-        {
-            if (this.locationMap.Contains(name))
-            {
-                throw new Exception("Location '{0}' already exists for module '{1}'", name, this.OwningNode.UniqueModuleName);
-            }
-
-            var location = new Opus.Core.LocationDirectory(this, segments);
-            this.locationMap[name] = location;
-            return location;
         }
     }
 }

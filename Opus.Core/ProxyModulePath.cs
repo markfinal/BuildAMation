@@ -8,14 +8,17 @@ namespace Opus.Core
     public class ProxyModulePath
     {
         private string combinedPathSegments;
+        private string[] pathSegments;
 
         public ProxyModulePath()
         {
             this.combinedPathSegments = null;
+            this.pathSegments = null;
         }
 
         public ProxyModulePath(params string[] segments)
         {
+            this.pathSegments = segments;
             var combinedPath = string.Empty;
             foreach (var path in segments)
             {
@@ -25,6 +28,18 @@ namespace Opus.Core
             this.combinedPathSegments = combinedPath;
         }
 
+        public Location Combine(Location root)
+        {
+            if (null == this.pathSegments)
+            {
+                return root;
+            }
+
+            var combinedRoot = new LocationDirectory(root, this.pathSegments);
+            return combinedRoot;
+        }
+
+        // deprecated
         public string Combine(PackageIdentifier packageId)
         {
             if (null == this.combinedPathSegments)
