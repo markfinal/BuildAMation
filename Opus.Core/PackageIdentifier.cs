@@ -22,6 +22,7 @@ namespace Opus.Core
             this.Version = version;
             this.Root = this.LocateRoot();
             this.PlatformFilter = EPlatform.All;
+            this.Location = new LocationDirectory(this.Path);
         }
 
         public string Name
@@ -129,6 +130,12 @@ namespace Opus.Core
         public override string ToString()
         {
             return this.ToString("-");
+        }
+
+        public LocationDirectory Location
+        {
+            get;
+            private set;
         }
 
         public string Path

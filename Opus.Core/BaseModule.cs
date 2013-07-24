@@ -22,7 +22,7 @@ namespace Opus.Core
             if (null != package)
             {
                 this.Locations = new LocationMap();
-                this.Locations["PackageDir"] = new LocationDirectory(package.Identifier.Path);
+                this.Locations["PackageDir"] = package.Identifier.Location;
             }
         }
 
