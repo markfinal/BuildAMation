@@ -45,7 +45,7 @@ namespace FileUtilities
                                                   options.SourceModuleType.ToString(),
                                                   options.SourceModuleOutputEnum.ToString());
                 }
-                (node.Module as SymlinkBase).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
+                (node.Module as SymlinkBase).SourceFile.AbsolutePath = sourceModuleOutputPath;
             }
 
             if (null == this.OutputPaths[OutputFileFlags.Symlink])

@@ -45,7 +45,7 @@ namespace FileUtilities
             {
                 CopyFile file = new CopyFile();
                 (file as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                file.SourceFile.SetAbsolutePath(path);
+                file.SourceFile.AbsolutePath = path;
                 this.copyFiles.Add(file);
             }
         }

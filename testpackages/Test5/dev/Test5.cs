@@ -8,7 +8,8 @@ namespace Test5
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "dynamicmain.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "dynamicmain.c");
             }
         }
 

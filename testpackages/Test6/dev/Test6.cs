@@ -20,38 +20,42 @@ namespace Test6
             {
                 this.UpdateOptions += this.OverrideOptionCollection;
 
-                C.ObjectFile mainObjectFile = new C.ObjectFile();
-                mainObjectFile.SetRelativePath(this, "source", "main.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var debugSourceDir = sourceDir.ChildDirectory("debug");
+                var optSourceDir = sourceDir.ChildDirectory("optimized");
+
+                var mainObjectFile = new C.ObjectFile();
+                mainObjectFile.Include(sourceDir, "main.c");
                 mainObjectFile.UpdateOptions += MainUpdateOptionCollection;
                 this.Add(mainObjectFile);
 
                 if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
-                    this.Include(this, "source", "debug", "debug.c");
+                    this.Include(debugSourceDir, "debug.c");
                 }
                 else
                 {
-                    this.Include(this, "source", "optimized", "optimized.c");
+                    this.Include(optSourceDir, "optimized.c");
                 }
             }
 
             private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this, "include");
+                var compilerOptions = module.Options as C.ICCompilerOptions;
+                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
             }
 
             private void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("MAIN_C");
-                compilerOptions.IncludePaths.Include(this, "include", "platform");
+                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include", "platform");
             }
         }
 
         private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions options = module.Options as C.ILinkerOptions;
+            var options = module.Options as C.ILinkerOptions;
             //options.DebugSymbols = false;
         }
 

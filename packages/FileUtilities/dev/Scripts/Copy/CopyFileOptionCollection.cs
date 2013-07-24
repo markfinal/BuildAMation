@@ -60,7 +60,7 @@ namespace FileUtilities
                                                       options.SourceModuleType.ToString(),
                                                       options.SourceModuleOutputEnum.ToString());
                     }
-                    (node.Module as CopyFile).SetGuaranteedAbsolutePath(sourceModuleOutputPath);
+                    (node.Module as CopyFile).SourceFile.AbsolutePath = sourceModuleOutputPath;
                 }
 
                 string sourcePath = (node.Module as CopyFile).SourceFile.AbsolutePath;

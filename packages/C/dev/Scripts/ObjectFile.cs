@@ -22,6 +22,17 @@ namespace C
             this.SourceFile = new Opus.Core.File();
         }
 
+#if true
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (this.ProxyPath != null)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            this.SourceFile.Include(root, pathSegments);
+        }
+#else
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
             this.SourceFile.SetRelativePath(owner, pathSegments);
@@ -41,5 +52,6 @@ namespace C
         {
             this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
         }
+#endif
     }
 }

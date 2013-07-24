@@ -8,15 +8,16 @@ namespace Test2
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "library.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "library.c");
                 this.UpdateOptions += SetIncludePaths;
             }
 
             [C.ExportCompilerOptionsDelegate]
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this, "include");
+                var compilerOptions = module.Options as C.ICCompilerOptions;
+                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
             }
         }
 
@@ -30,7 +31,8 @@ namespace Test2
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "application.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "application.c");
             }
         }
 

@@ -140,6 +140,8 @@ namespace Opus.Core
         {
             return this.cachedPath;
         }
+
+        public abstract LocationDirectory ChildDirectory(params string[] segments);
     }
 
     public sealed class LocationFile : Location
@@ -166,6 +168,11 @@ namespace Opus.Core
                 return true;
             }
         }
+
+        public override LocationDirectory ChildDirectory(params string[] segments)
+        {
+            throw new Exception("Cannot make a child directory from a file");
+        }
     }
 
     public sealed class LocationDirectory : Location
@@ -191,6 +198,11 @@ namespace Opus.Core
             {
                 return false;
             }
+        }
+
+        public override LocationDirectory ChildDirectory(params string[] segments)
+        {
+            return new LocationDirectory(this, segments);
         }
     }
 

@@ -90,6 +90,20 @@ namespace Opus.Core
             this.AbsolutePath = absolutePath;
         }
 
+#if true
+        // Note: this no longer include the module's proxy path
+        public void Include(Location root, params string[] pathSegments)
+        {
+            var files = GetFiles(root.CachedPath, pathSegments);
+            if (files.Count != 1)
+            {
+                throw new Exception("Path expression resolves to more than one file");
+            }
+
+            this.AbsolutePath = CanonicalPath(files[0]);
+        }
+#else
+        // deprecated
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
             var package = PackageUtilities.GetOwningPackage(owner);
@@ -122,6 +136,7 @@ namespace Opus.Core
         {
             this.Initialize(absolutePath, false);
         }
+#endif
 
         private static bool IsFileInHiddenHierarchy(System.IO.FileInfo file, string rootDir)
         {
@@ -249,7 +264,7 @@ namespace Opus.Core
                 return this.absolutePath;
             }
 
-            private set
+            set
             {
                 this.absolutePath = value;
             }

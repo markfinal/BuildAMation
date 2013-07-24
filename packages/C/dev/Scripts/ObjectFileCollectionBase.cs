@@ -21,6 +21,33 @@ namespace C
             return collection;
         }
 
+        public Opus.Core.IModule GetChildModule(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (null != this.ProxyPath)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            // TODO: replace with Location
+            var filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
+            if (filePaths.Count != 1)
+            {
+                throw new Opus.Core.Exception("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n'));
+            }
+
+            var pathToFind = filePaths[0];
+            foreach (var objFile in this.list)
+            {
+                if (objFile.SourceFile.AbsolutePath == pathToFind)
+                {
+                    return objFile;
+                }
+            }
+
+            return null;
+        }
+
+        // deprecated
         public Opus.Core.IModule GetChildModule(object owner, params string[] pathSegments)
         {
             var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);

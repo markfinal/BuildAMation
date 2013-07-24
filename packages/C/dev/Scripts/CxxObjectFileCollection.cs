@@ -29,7 +29,7 @@ namespace C.Cxx
             {
                 var objectFile = new ObjectFile();
                 (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                objectFile.SourceFile.SetAbsolutePath(path);
+                objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
         }
@@ -54,7 +54,7 @@ namespace C.Cxx
             {
                 var objectFile = new ObjectFile();
                 (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                objectFile.SourceFile.SetAbsolutePath(path);
+                objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
         }
