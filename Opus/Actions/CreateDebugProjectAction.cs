@@ -61,8 +61,9 @@ namespace Opus
             // Project to debug the script
             CSharpProject.Create(mainPackage, VisualStudioVersion.VS2008, new string[] { resourceFilePathName });
 
-            Core.Log.Info("Successfully created debug project for package '{0}' at '{1}'",
-                          mainPackage.Identifier.ToString("-"),
+            Core.Log.Info("Successfully created debug project for package '{0}'",
+                          mainPackage.Identifier.ToString("-"));
+            Core.Log.Info("\t{0}",
                           mainPackage.DebugProjectFilename);
 
             return true;
