@@ -7,14 +7,16 @@ namespace Direct3DTriangle
     {
         public D3D9TriangleTest()
         {
-            this.headerFiles.Include(this, "source", "*.h");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.headerFiles.Include(sourceDir, "*.h");
         }
 
         class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "*.cpp");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_VCDefines);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_EnableException);
@@ -22,7 +24,7 @@ namespace Direct3DTriangle
 
             void SourceFiles_EnableException(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
+                var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
@@ -30,7 +32,7 @@ namespace Direct3DTriangle
             {
                 if (module.Options is VisualCCommon.ICCompilerOptions)
                 {
-                    C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                    var compilerOptions = module.Options as C.ICCompilerOptions;
                     compilerOptions.Defines.Add("_CRT_SECURE_NO_WARNINGS");
                 }
             }

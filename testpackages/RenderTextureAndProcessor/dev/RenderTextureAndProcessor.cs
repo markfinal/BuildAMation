@@ -6,29 +6,31 @@ namespace RenderTextureAndProcessor
     {
         public RenderTexture()
         {
-            this.headerFiles.Include(this, "source", "common", "*.h");
-            this.headerFiles.Include(this, "source", "rendertexture", "*.h");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.headerFiles.Include(sourceDir, "common", "*.h");
+            this.headerFiles.Include(sourceDir, "rendertexture", "*.h");
         }
 
         class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "common", "*.cpp");
-                this.Include(this, "source", "rendertexture", "*.cpp");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "common", "*.cpp");
+                this.Include(sourceDir, "rendertexture", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 {
-                    C.ICxxCompilerOptions options = module.Options as C.ICxxCompilerOptions;
+                    var options = module.Options as C.ICxxCompilerOptions;
                     options.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 }
 
                 {
-                    C.ICCompilerOptions options = module.Options as C.ICCompilerOptions;
-                    options.IncludePaths.Include(this, "source", "common");
+                    var options = module.Options as C.ICCompilerOptions;
+                    options.IncludePaths.Include(this.Locations["PackageDir"], "source", "common");
                 }
             }
         }
@@ -72,29 +74,31 @@ namespace RenderTextureAndProcessor
     {
         public TextureProcessor()
         {
-            this.headerFiles.Include(this, "source", "common", "*.h");
-            this.headerFiles.Include(this, "source", "textureprocessor", "*.h");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.headerFiles.Include(sourceDir, "common", "*.h");
+            this.headerFiles.Include(sourceDir, "textureprocessor", "*.h");
         }
 
         class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "common", "*.cpp");
-                this.Include(this, "source", "textureprocessor", "*.cpp");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "common", "*.cpp");
+                this.Include(sourceDir, "textureprocessor", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 {
-                    C.ICxxCompilerOptions options = module.Options as C.ICxxCompilerOptions;
+                    var options = module.Options as C.ICxxCompilerOptions;
                     options.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 }
 
                 {
-                    C.ICCompilerOptions options = module.Options as C.ICCompilerOptions;
-                    options.IncludePaths.Include(this, "source", "common");
+                    var options = module.Options as C.ICCompilerOptions;
+                    options.IncludePaths.Include(this.Locations["PackageDir"], "source", "common");
                 }
             }
         }

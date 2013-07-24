@@ -25,6 +25,52 @@ namespace FileUtilities
             }
         }
 
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (null != this.ProxyPath)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            // TODO: Replace with Location
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
+            foreach (string path in filePaths)
+            {
+                CopyFile file = new CopyFile();
+                (file as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                file.SourceFile.AbsolutePath = path;
+                this.copyFiles.Add(file);
+            }
+        }
+
+        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (null != this.ProxyPath)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            // TODO: Replace with Location
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
+            System.Collections.Generic.List<CopyFile> toRemove = new System.Collections.Generic.List<CopyFile>();
+            foreach (string path in filePaths)
+            {
+                foreach (CopyFile file in this.copyFiles)
+                {
+                    if (file.SourceFile.AbsolutePath == path)
+                    {
+                        toRemove.Add(file);
+                    }
+                }
+            }
+
+            foreach (CopyFile file in toRemove)
+            {
+                this.copyFiles.Remove(file);
+            }
+        }
+
+        // deprecated
         public void Include(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -50,6 +96,7 @@ namespace FileUtilities
             }
         }
 
+        // deprecated
         public void Exclude(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);

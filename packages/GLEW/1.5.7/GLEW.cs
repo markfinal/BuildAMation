@@ -10,14 +10,16 @@ namespace GLEW
     {
         public GLEWStatic()
         {
-            this.headerFiles.Include(this, "glew-1.5.7", "include", "GL", "*.h");
+            var glIncludeDir = this.Locations["PackageDir"].ChildDirectory("glew-1.5.7", "include", "GL");
+            this.headerFiles.Include(glIncludeDir, "*.h");
         }
 
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.Include(this, "glew-1.5.7", "src", "glew.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("glew-1.5.7", "src");
+                this.Include(sourceDir, "glew.c");
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));
 
@@ -30,14 +32,14 @@ namespace GLEW
             {
                 if (module.Options is VisualCCommon.ICCompilerOptions)
                 {
-                    C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                    var compilerOptions = module.Options as C.ICCompilerOptions;
                     compilerOptions.Defines.Add("_CRT_SECURE_NO_WARNINGS");
                 }
             }
 
             void GLEW_VCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                VisualCCommon.ICCompilerOptions compilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
+                var compilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (null != compilerOptions)
                 {
                     compilerOptions.WarningLevel = VisualCCommon.EWarningLevel.Level3;
@@ -47,8 +49,8 @@ namespace GLEW
             [C.ExportCompilerOptionsDelegate]
             void GLEW_IncludePathAndStaticDefine(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this, "glew-1.5.7", "include");
+                var compilerOptions = module.Options as C.ICCompilerOptions;
+                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "glew-1.5.7", "include");
                 compilerOptions.Defines.Add("GLEW_STATIC");
             }
         }

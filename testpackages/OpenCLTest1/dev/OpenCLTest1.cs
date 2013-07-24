@@ -8,7 +8,8 @@ namespace OpenCLTest1
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "*.cpp");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "*.cpp");
             }
         }
 
@@ -29,7 +30,8 @@ namespace OpenCLTest1
     {
         public CopyKernels()
         {
-            this.Include(this, "data", "*.cl");
+            var dataDir = this.Locations["PackageDir"].ChildDirectory("data");
+            this.Include(dataDir, "*.cl");
         }
 
         [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]

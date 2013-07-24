@@ -32,12 +32,7 @@ namespace FileUtilities
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 
-#if true
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
-        {
-            this.SourceFile.Include(root, pathSegments);
-        }
-#else
+#if false
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
             this.SourceFile.SetRelativePath(owner, pathSegments);

@@ -4,18 +4,13 @@ namespace Test13
     // Define module classes here
     class QtApplication : C.Application
     {
-        public QtApplication()
-        {
-            this.Locations["source"] = new Opus.Core.LocationDirectory(this, "source");
-            this.Locations["resources"] = new Opus.Core.LocationDirectory(this, "resources");
-        }
-
         [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
         class Win32ResourceFile : C.Win32Resource
         {
             public Win32ResourceFile()
             {
-                this.ResourceFile.SetRelativePath(this, "resources", "QtApplication.rc");
+                var resourcesDir = this.Locations["PackageDir"].ChildDirectory("resources");
+                this.ResourceFile.Include(resourcesDir, "QtApplication.rc");
             }
         }
 
@@ -23,7 +18,7 @@ namespace Test13
         {
             public SourceFiles()
             {
-                var sourceDir = new Opus.Core.LocationDirectory(this.Locations["PackageDir"], "source");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
                 this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
@@ -54,9 +49,10 @@ namespace Test13
             {
                 public MyMocFiles()
                 {
-                    this.Include(this, "source", "*.h");
+                    var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                    this.Include(sourceDir, "*.h");
 
-                    Opus.Core.IModule mocFile = this.GetChildModule(this, "source", "myobject2.h");
+                    var mocFile = this.GetChildModule(sourceDir, "myobject2.h");
                     if (null != mocFile)
                     {
                         mocFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mocFile_UpdateOptions);
@@ -65,7 +61,7 @@ namespace Test13
 
                 void mocFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
                 {
-                    QtCommon.IMocOptions options = module.Options as QtCommon.IMocOptions;
+                    var options = module.Options as QtCommon.IMocOptions;
                     if (null != options)
                     {
                         options.Defines.Add("CUSTOM_MOC_DEFINE_FOR_MYOBJECTS2");

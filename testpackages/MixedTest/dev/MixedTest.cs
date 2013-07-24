@@ -6,7 +6,8 @@ namespace MixedTest
     {
         public CSharpTest()
         {
-            this.source.SetRelativePath(this, "source", "main.cs");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.source.Include(sourceDir, "main.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -17,7 +18,8 @@ namespace MixedTest
     {
         public CApp()
         {
-            this.source.SetRelativePath(this, "source", "main.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.source.Include(sourceDir, "main.c");
         }
 
         [Opus.Core.SourceFiles]

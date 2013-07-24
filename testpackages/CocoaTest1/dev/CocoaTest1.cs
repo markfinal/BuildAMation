@@ -17,7 +17,8 @@ namespace CocoaTest1
         {
             public Source()
             {
-                this.Include(this, "source", "*.m");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "*.m");
             }
         }
 

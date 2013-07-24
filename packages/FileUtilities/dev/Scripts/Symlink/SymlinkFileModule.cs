@@ -7,5 +7,9 @@ namespace FileUtilities
 {
     public class SymlinkFile : SymlinkBase
     {
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            this.SourceFile.Include(root, pathSegments);
+        }
     }
 }

@@ -38,7 +38,7 @@ namespace QtCommon
             {
                 MocFile mocFile = new MocFile();
                 (mocFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                mocFile.SetAbsolutePath(path);
+                mocFile.SourceFile.AbsolutePath = path;
                 this.list.Add(mocFile);
             }
         }
@@ -91,7 +91,7 @@ namespace QtCommon
             {
                 MocFile mocFile = new MocFile();
                 (mocFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                mocFile.SetAbsolutePath(path);
+                mocFile.SourceFile.AbsolutePath = path;
                 this.list.Add(mocFile);
             }
         }
@@ -131,6 +131,33 @@ namespace QtCommon
             }
         }
 
+        public Opus.Core.IModule GetChildModule(Opus.Core.Location root, params string[] pathSegments)
+        {
+            if (null != this.ProxyPath)
+            {
+                root = this.ProxyPath.Combine(root);
+            }
+
+            // TODO: Replace with Location
+            var filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
+            if (filePaths.Count != 1)
+            {
+                throw new Opus.Core.Exception("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n'));
+            }
+
+            string pathToFind = filePaths[0];
+            foreach (var mocFile in this.list)
+            {
+                if (mocFile.SourceFile.AbsolutePath == pathToFind)
+                {
+                    return mocFile;
+                }
+            }
+
+            return null;
+        }
+
+        // deprecated
         public Opus.Core.IModule GetChildModule(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);

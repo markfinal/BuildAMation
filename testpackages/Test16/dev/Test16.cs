@@ -5,14 +5,16 @@ namespace Test16
     {
         public StaticLibrary2()
         {
-            this.headers.Include(this, "include", "*.h");
+            var includeDir = this.Locations["PackageDir"].ChildDirectory("include");
+            this.headers.Include(includeDir, "*.h");
         }
 
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "*.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "*.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
@@ -22,7 +24,7 @@ namespace Test16
                 var cOptions = module.Options as C.ICCompilerOptions;
                 if (null != cOptions)
                 {
-                    cOptions.IncludePaths.Include(this, "include");
+                    cOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
                 }
             }
         }

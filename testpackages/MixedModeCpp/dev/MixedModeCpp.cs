@@ -12,7 +12,7 @@ namespace MixedModeCpp
 
         void TestApplication_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions options = module.Options as C.ILinkerOptions;
+            var options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
         }
 
@@ -20,7 +20,8 @@ namespace MixedModeCpp
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "native.cpp");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "native.cpp");
             }
         }
 
@@ -28,7 +29,8 @@ namespace MixedModeCpp
         {
             public ManagedSourceFiles()
             {
-                this.Include(this, "source", "managed.cpp");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "managed.cpp");
             }
         }
 

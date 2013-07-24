@@ -6,7 +6,8 @@ namespace Test14
     {
         public DynamicLibraryA()
         {
-            this.source.SetRelativePath(this, "source", "dynamicLibraryA.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.source.Include(sourceDir, "dynamicLibraryA.c");
             this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_UpdateOptions);
         }
@@ -14,13 +15,13 @@ namespace Test14
         [C.ExportCompilerOptionsDelegate]
         void DynamicLibraryA_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this, "include");
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
         }
 
         void DynamicLibraryA_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
         }
 
@@ -35,20 +36,21 @@ namespace Test14
     {
         public DynamicLibraryB()
         {
-            this.source.SetRelativePath(this, "source", "dynamicLibraryB.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.source.Include(sourceDir, "dynamicLibraryB.c");
             this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_UpdateOptions);
         }
 
         void DynamicLibraryB_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this, "include");
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
         }
 
         void DynamicLibraryB_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
         }
 
@@ -66,13 +68,14 @@ namespace Test14
     {
         public Application()
         {
-            this.source.SetRelativePath(this, "source", "main.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.source.Include(sourceDir, "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Application_UpdateOptions);
         }
 
         void Application_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
         }
 

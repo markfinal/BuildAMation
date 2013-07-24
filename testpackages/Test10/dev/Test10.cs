@@ -5,7 +5,8 @@ namespace Test10
     {
         public MyStaticLibrary()
         {
-            this.sourceFile.SetRelativePath(this, "source", "stlib.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.sourceFile.Include(sourceDir, "stlib.c");
         }
 
         [Opus.Core.SourceFiles]
@@ -16,7 +17,8 @@ namespace Test10
     {
         public MyDynamicLibrary()
         {
-            this.sourceFile.SetRelativePath(this, "source", "dylib.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.sourceFile.Include(sourceDir, "dylib.c");
         }
 
         [Opus.Core.SourceFiles]
@@ -33,7 +35,8 @@ namespace Test10
     {
         public MyStandaloneApp()
         {
-            this.sourceFile.SetRelativePath(this, "source", "standaloneapp.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.sourceFile.Include(sourceDir, "standaloneapp.c");
         }
 
         [Opus.Core.SourceFiles]
@@ -53,7 +56,8 @@ namespace Test10
     {
         public DllDependentApp()
         {
-            this.sourceFile.SetRelativePath(this, "source", "dlldependentapp.c");
+            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            this.sourceFile.Include(sourceDir, "dlldependentapp.c");
         }
 
         [Opus.Core.SourceFiles]

@@ -7,7 +7,8 @@ namespace Test17
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "*.c");
+                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                this.Include(sourceDir, "*.c");
             }
         }
 
