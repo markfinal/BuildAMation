@@ -16,8 +16,27 @@ namespace C.ObjC
             this.list.Add(objectFile);
         }
 
+        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.StringArray pathList)
+        {
+            var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
+
+            foreach (var path in pathList)
+            {
+                var objectFile = new ObjectFile();
+                objectFile.ProxyPath.Assign(this.ProxyPath);
+                objectFile.SourceFile.AbsolutePath = path;
+                objectFileList.Add(objectFile);
+            }
+
+            return objectFileList;
+        }
+
         public void Include(Opus.Core.Location root, params string[] pathSegments)
         {
+#if true
+            this.IncludeRoot = root;
+            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
+#else
             if (null != this.ProxyPath)
             {
                 root = this.ProxyPath.Combine(root);
@@ -32,10 +51,15 @@ namespace C.ObjC
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
+#endif
         }
 
         public void Exclude(Opus.Core.Location root, params string[] pathSegments)
         {
+#if true
+            this.ExcludeRoot = root;
+            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
+#else
             if (null != this.ProxyPath)
             {
                 root = this.ProxyPath.Combine(root);
@@ -59,6 +83,7 @@ namespace C.ObjC
             {
                 this.list.Remove(file);
             }
+#endif
         }
 
         // deprecated

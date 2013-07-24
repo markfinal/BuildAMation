@@ -119,6 +119,7 @@
     <Compile Include="Options\OptionUtilities.cs" />
     <Compile Include="Options\OutputPaths.cs" />
     <Compile Include="Options\ReferenceTypeOption.cs" />
+    <Compile Include="Options\UpdateOptionCollectionDelegateArray.cs" />
     <Compile Include="Options\ValueTypeOption.cs" />
     <Compile Include="OSUtilities.cs" />
     <Compile Include="PackageBuildList.cs" />

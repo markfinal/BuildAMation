@@ -37,7 +37,7 @@ namespace FileUtilities
             foreach (string path in filePaths)
             {
                 CopyFile file = new CopyFile(besideModule, dependentModule);
-                (file as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                file.ProxyPath.Assign(this.ProxyPath);
                 file.SourceFile.AbsolutePath = path;
                 this.copyFiles.Add(file);
             }
@@ -98,7 +98,7 @@ namespace FileUtilities
             Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             // each file to copy needs to know where the parent was set to copy next to
@@ -111,7 +111,7 @@ namespace FileUtilities
             foreach (string path in filePaths)
             {
                 CopyFile file = new CopyFile(besideModule, dependentModule);
-                (file as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                file.ProxyPath.Assign(this.ProxyPath);
                 file.SourceFile.AbsolutePath = path;
                 this.copyFiles.Add(file);
             }
@@ -145,7 +145,7 @@ namespace FileUtilities
             Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
@@ -169,7 +169,13 @@ namespace FileUtilities
 
         
         #region IModuleCollection implementation
-        
+
+#if true
+        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray, Opus.Core.Location root, params string[] pathSegments)
+        {
+            throw new System.NotImplementedException();
+        }
+#else
         Opus.Core.IModule Opus.Core.IModuleCollection.GetChildModule(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -198,6 +204,7 @@ namespace FileUtilities
             }
             return null;
         }
+#endif
         
         #endregion
         

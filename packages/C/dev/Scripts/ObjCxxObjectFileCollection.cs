@@ -16,6 +16,33 @@ namespace C.ObjCxx
             this.list.Add(objectFile);
         }
 
+        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.StringArray pathList)
+        {
+            var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
+
+            foreach (var path in pathList)
+            {
+                var objectFile = new ObjectFile();
+                objectFile.ProxyPath.Assign(this.ProxyPath);
+                objectFile.SourceFile.AbsolutePath = path;
+                objectFileList.Add(objectFile);
+            }
+
+            return objectFileList;
+        }
+
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            this.IncludeRoot = root;
+            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
+        }
+
+        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
+        {
+            this.ExcludeRoot = root;
+            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
+        }
+
         // TODO: need to deprecate this
         public void Include(object owner, params string[] pathSegments)
         {
@@ -42,6 +69,7 @@ namespace C.ObjCxx
             }
         }
 
+        // TODO: need to deprecate this
         public void Exclude(object owner, params string[] pathSegments)
         {
             var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);

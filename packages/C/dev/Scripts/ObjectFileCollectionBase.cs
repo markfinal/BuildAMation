@@ -47,7 +47,7 @@ namespace C
             return remainingPathList;
         }
 
-        protected virtual System.Collections.Generic.List<ObjectFile> MakeChildModules(Opus.Core.StringArray pathList)
+        protected virtual System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.StringArray pathList)
         {
             throw new Opus.Core.Exception("This needs to be implemented");
         }
@@ -55,49 +55,53 @@ namespace C
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();
-#if true
             var pathList = this.EvaluatePaths();
             var childModules = this.MakeChildModules(pathList);
-            foreach (var objectFile in childModules)
+            if (null != this.DeferredUpdates)
             {
-                collection.Add(objectFile as Opus.Core.IModule);
+                foreach (var objectFile in childModules)
+                {
+                    var objectFileDeferredLocation = new Opus.Core.DeferredLocations((objectFile as ObjectFile).SourceFile.AbsolutePath);
+                    if (this.DeferredUpdates.ContainsKey(objectFileDeferredLocation))
+                    {
+                        foreach (var updateDelegate in this.DeferredUpdates[objectFileDeferredLocation])
+                        {
+                            objectFile.UpdateOptions += updateDelegate;
+                        }
+                    }
+
+                    collection.Add(objectFile);
+                }
             }
-#else
-            foreach (var objectFile in this.list)
+            else
             {
-                collection.Add(objectFile as Opus.Core.IModule);
+                foreach (var objectFile in childModules)
+                {
+                    collection.Add(objectFile as Opus.Core.IModule);
+                }
             }
-#endif
             return collection;
         }
 
-        public Opus.Core.IModule GetChildModule(Opus.Core.Location root, params string[] pathSegments)
+#if true
+        private System.Collections.Generic.Dictionary<Opus.Core.DeferredLocations, Opus.Core.UpdateOptionCollectionDelegateArray> DeferredUpdates
         {
-            if (null != this.ProxyPath)
-            {
-                root = this.ProxyPath.Combine(root);
-            }
-
-            // TODO: replace with Location
-            var filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
-            if (filePaths.Count != 1)
-            {
-                throw new Opus.Core.Exception("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n'));
-            }
-
-            var pathToFind = filePaths[0];
-            foreach (var objFile in this.list)
-            {
-                if (objFile.SourceFile.AbsolutePath == pathToFind)
-                {
-                    return objFile;
-                }
-            }
-
-            return null;
+            get;
+            set;
         }
 
-        // deprecated
+        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
+                                          Opus.Core.Location root,
+                                          params string[] pathSegments)
+        {
+            if (null == this.DeferredUpdates)
+            {
+                this.DeferredUpdates = new System.Collections.Generic.Dictionary<Opus.Core.DeferredLocations, Opus.Core.UpdateOptionCollectionDelegateArray>(new Opus.Core.DeferredLocationsComparer());
+            }
+
+            this.DeferredUpdates[new Opus.Core.DeferredLocations(root, new Opus.Core.StringArray(pathSegments))] = delegateArray;
+        }
+#else
         public Opus.Core.IModule GetChildModule(object owner, params string[] pathSegments)
         {
             var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -131,5 +135,6 @@ namespace C
 
             return null;
         }
+#endif
     }
 }

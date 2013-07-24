@@ -22,6 +22,11 @@ namespace Opus.Core
 
         public void Assign(ProxyModulePath proxy)
         {
+            if (null == proxy.pathSegments)
+            {
+                return;
+            }
+
             this.pathSegments = new string[proxy.pathSegments.Length];
             var index = 0;
             foreach (var a in proxy.pathSegments)

@@ -16,9 +16,9 @@ namespace C
             this.list.Add(objectFile);
         }
 
-        protected override System.Collections.Generic.List<ObjectFile> MakeChildModules(Opus.Core.StringArray pathList)
+        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.StringArray pathList)
         {
-            var objectFileList = new System.Collections.Generic.List<ObjectFile>();
+            var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
 
             foreach (var path in pathList)
             {
@@ -51,6 +51,10 @@ namespace C
 
         public void Exclude(Opus.Core.Location root, params string[] pathSegments)
         {
+#if true
+            this.ExcludeRoot = root;
+            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
+#else
             if (null != this.ProxyPath)
             {
                 root = this.ProxyPath.Combine(root);
@@ -74,6 +78,7 @@ namespace C
             {
                 this.list.Remove(file);
             }
+#endif
         }
 
         // deprecated

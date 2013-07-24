@@ -52,11 +52,17 @@ namespace Test13
                     var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                     this.Include(sourceDir, "*.h");
 
+#if true
+                    this.RegisterUpdateOptions(new Opus.Core.UpdateOptionCollectionDelegateArray(mocFile_UpdateOptions),
+                                               sourceDir,
+                                               "myobject2.h");
+#else
                     var mocFile = this.GetChildModule(sourceDir, "myobject2.h");
                     if (null != mocFile)
                     {
                         mocFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mocFile_UpdateOptions);
                     }
+#endif
                 }
 
                 void mocFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)

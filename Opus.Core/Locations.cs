@@ -217,6 +217,11 @@ namespace Opus.Core
         {
         }
 
+        public LocationDirectory(Location root, StringArray segments)
+            : base(root, segments)
+        {
+        }
+
         public LocationDirectory(Location root, ProxyModulePath proxy)
             : base(root, proxy)
         {
@@ -278,5 +283,42 @@ namespace Opus.Core
             }
             return repr.ToString();
         }
+    }
+
+    public class DeferredLocations
+    {
+        public DeferredLocations(Location root, StringArray pathSegments)
+        {
+            this.Deferred = new LocationDirectory(root, pathSegments);
+        }
+
+        public DeferredLocations(string absolutePath)
+        {
+            this.Deferred = new LocationDirectory(absolutePath);
+        }
+
+        public Location Deferred
+        {
+            get;
+            private set;
+        }
+    }
+
+    public class DeferredLocationsComparer : System.Collections.Generic.IEqualityComparer<DeferredLocations>
+    {
+        #region IEqualityComparer<DeferredLocations> Members
+
+        bool System.Collections.Generic.IEqualityComparer<DeferredLocations>.Equals(DeferredLocations x, DeferredLocations y)
+        {
+            bool equals = (x.Deferred.CachedPath.Equals(y.Deferred.CachedPath));
+            return equals;
+        }
+
+        int System.Collections.Generic.IEqualityComparer<DeferredLocations>.GetHashCode(DeferredLocations obj)
+        {
+            return obj.Deferred.CachedPath.GetHashCode();
+        }
+
+        #endregion
     }
 }
