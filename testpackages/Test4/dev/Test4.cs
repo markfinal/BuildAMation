@@ -19,7 +19,7 @@ namespace Test4
             private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this, "include");
+                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
             }
 
             [C.ExportCompilerOptionsDelegate]
@@ -62,7 +62,7 @@ namespace Test4
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this, "include");
+            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
         }
     }
 }
