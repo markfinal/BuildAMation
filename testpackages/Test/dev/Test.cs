@@ -131,6 +131,9 @@ namespace Test
 
             this.UpdateOptions += OverrideOptionCollection;
 
+            // TODO: fix this
+            this.RegisterChildUpdateOptions(mainObjFile_UpdateOptions, sourceDir, "main.c");
+
             // override the options on one specific file
             var mainObjFile = this.GetChildModule(sourceDir, "main.c");
             if (null != mainObjFile)

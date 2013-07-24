@@ -100,7 +100,7 @@ namespace Opus.Core
             var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var paths = File.GetFiles(packagePath, pathSegments);
@@ -123,7 +123,7 @@ namespace Opus.Core
             var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var paths = File.GetFiles(packagePath, pathSegments);

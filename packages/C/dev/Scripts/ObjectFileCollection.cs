@@ -16,22 +16,37 @@ namespace C
             this.list.Add(objectFile);
         }
 
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        protected override System.Collections.Generic.List<ObjectFile> MakeChildModules(Opus.Core.StringArray pathList)
         {
-            if (null != this.ProxyPath)
+            var objectFileList = new System.Collections.Generic.List<ObjectFile>();
+
+            foreach (var path in pathList)
             {
-                root = this.ProxyPath.Combine(root);
+                var objectFile = new ObjectFile();
+                objectFile.ProxyPath.Assign(this.ProxyPath);
+                objectFile.SourceFile.AbsolutePath = path;
+                objectFileList.Add(objectFile);
             }
 
+            return objectFileList;
+        }
+
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+#if true
+            this.IncludeRoot = root;
+            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
+#else
             // TODO replace with Locations
             var filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
             foreach (var path in filePaths)
             {
                 var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                objectFile.ProxyPath.Assign(this.ProxyPath);
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
+#endif
         }
 
         public void Exclude(Opus.Core.Location root, params string[] pathSegments)
@@ -74,14 +89,14 @@ namespace C
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             foreach (var path in filePaths)
             {
                 var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                objectFile.ProxyPath.Assign(this.ProxyPath);
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
@@ -100,7 +115,7 @@ namespace C
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);

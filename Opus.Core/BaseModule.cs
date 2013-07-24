@@ -17,12 +17,15 @@ namespace Opus.Core
     {
         protected BaseModule()
         {
+            this.ProxyPath = new ProxyModulePath();
+
             var packageName = this.GetType().Namespace;
             var package = State.PackageInfo[packageName];
             if (null != package)
             {
+                var root = new LocationDirectory(package.Identifier.Location, this.ProxyPath);
                 this.Locations = new LocationMap();
-                this.Locations["PackageDir"] = package.Identifier.Location;
+                this.Locations["PackageDir"] = root;
             }
         }
 
@@ -46,7 +49,7 @@ namespace Opus.Core
         public ProxyModulePath ProxyPath
         {
             get;
-            set;
+            private set;
         }
 
         public void ExecuteOptionUpdate(Target target)

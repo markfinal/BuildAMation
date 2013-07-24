@@ -18,6 +18,16 @@ namespace Opus.Core
             this.Module = null;
             this.Segments = segments;
             this.CachedPath = null;
+            this.Proxy = null;
+        }
+
+        protected Location(Location root, ProxyModulePath proxy)
+        {
+            this.Root = root;
+            this.Module = null;
+            this.Segments = null;
+            this.CachedPath = null;
+            this.Proxy = proxy;
         }
 
         protected Location(BaseModule module, StringArray segments)
@@ -26,6 +36,7 @@ namespace Opus.Core
             this.Module = module;
             this.Segments = segments;
             this.CachedPath = null;
+            this.Proxy = null;
         }
 
         protected Location(string absolutePath)
@@ -34,6 +45,7 @@ namespace Opus.Core
             this.Module = null;
             this.Segments = null;
             this.CachedPath = absolutePath;
+            this.Proxy = null;
         }
 
         public abstract bool IsFile
@@ -43,12 +55,24 @@ namespace Opus.Core
 
         private string CalculatePathFromRoot()
         {
-            var combinedPath = this.Root.CachedPath;
-            foreach (var segment in this.Segments)
+            if (null != this.Segments)
             {
-                combinedPath = System.IO.Path.Combine(combinedPath, segment);
+                var combinedPath = this.Root.CachedPath;
+                foreach (var segment in this.Segments)
+                {
+                    combinedPath = System.IO.Path.Combine(combinedPath, segment);
+                }
+                return System.IO.Path.GetFullPath(combinedPath);
             }
-            return combinedPath;
+            else if (null != this.Proxy)
+            {
+                var newLocation = this.Proxy.Combine(this.Root);
+                return newLocation.CachedPath;
+            }
+            else
+            {
+                throw new Exception("Do not know how to evaluate the path in this Location");
+            }
         }
 
         private string cachedPath = null;
@@ -136,6 +160,12 @@ namespace Opus.Core
             set;
         }
 
+        private ProxyModulePath Proxy
+        {
+            get;
+            set;
+        }
+
         public override string ToString()
         {
             return this.cachedPath;
@@ -148,6 +178,11 @@ namespace Opus.Core
     {
         public LocationFile(LocationDirectory root, params string[] segments)
             : base(root, new StringArray(segments))
+        {
+        }
+
+        public LocationFile(Location root, ProxyModulePath proxy)
+            : base(root, proxy)
         {
         }
 
@@ -179,6 +214,11 @@ namespace Opus.Core
     {
         public LocationDirectory(Location root, params string[] segments)
             : base(root, new StringArray(segments))
+        {
+        }
+
+        public LocationDirectory(Location root, ProxyModulePath proxy)
+            : base(root, proxy)
         {
         }
 

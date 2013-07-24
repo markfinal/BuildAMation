@@ -91,16 +91,54 @@ namespace Opus.Core
         }
 
 #if true
-        // Note: this no longer include the module's proxy path
+        private Location Root
+        {
+            get;
+            set;
+        }
+
+        private StringArray PathSegments
+        {
+            get;
+            set;
+        }
+
+        private string EvaluateExpression()
+        {
+            // TODO: yuck, ToArray()
+            var files = GetFiles(this.Root.CachedPath, this.PathSegments.ToArray());
+            if (0 == files.Count)
+            {
+                throw new Exception("Include expression does not relate to any existing files.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.CachedPath, this.PathSegments.ToString('\n'));
+            }
+            else if (files.Count != 1)
+            {
+                throw new Exception("Include expression resolves to more than one file.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.CachedPath, this.PathSegments.ToString('\n'));
+            }
+
+            var path = CanonicalPath(files[0]);
+            return path;
+        }
+
+        // Note: this no longer includes the module's proxy path
         public void Include(Location root, params string[] pathSegments)
         {
+#if true
+            this.Root = root;
+            this.PathSegments = new StringArray(pathSegments);
+#else
             var files = GetFiles(root.CachedPath, pathSegments);
-            if (files.Count != 1)
+            if (0 == files.Count)
             {
-                throw new Exception("Path expression resolves to more than one file");
+                throw new Exception("Include expression does not relate to any existing files.\n\tRoot: {0}\n\tPath segments: {1}", root.CachedPath, new StringArray(pathSegments).ToString('\n'));
+            }
+            else if (files.Count != 1)
+            {
+                throw new Exception("Include expression resolves to more than one file.\n\tRoot: {0}\n\tPath segments: {1}", root.CachedPath, new StringArray(pathSegments).ToString('\n'));
             }
 
             this.AbsolutePath = CanonicalPath(files[0]);
+#endif
         }
 #else
         // deprecated
@@ -258,7 +296,14 @@ namespace Opus.Core
             {
                 if (null == this.absolutePath)
                 {
-                    throw new Exception("File path has not been set");
+                    if (null != this.Root)
+                    {
+                        this.absolutePath = this.EvaluateExpression();
+                    }
+                    else
+                    {
+                        throw new Exception("File path has not been set");
+                    }
                 }
 
                 return this.absolutePath;

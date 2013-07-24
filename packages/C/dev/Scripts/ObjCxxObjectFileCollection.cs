@@ -16,6 +16,7 @@ namespace C.ObjCxx
             this.list.Add(objectFile);
         }
 
+        // TODO: need to deprecate this
         public void Include(object owner, params string[] pathSegments)
         {
             var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -28,14 +29,14 @@ namespace C.ObjCxx
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             foreach (var path in filePaths)
             {
                 var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                objectFile.ProxyPath.Assign(this.ProxyPath);
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
@@ -53,7 +54,7 @@ namespace C.ObjCxx
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);

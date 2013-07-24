@@ -28,7 +28,7 @@ namespace C.ObjC
             foreach (var path in filePaths)
             {
                 var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                objectFile.ProxyPath.Assign(this.ProxyPath);
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
@@ -74,14 +74,14 @@ namespace C.ObjC
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
             foreach (var path in filePaths)
             {
                 var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                objectFile.ProxyPath.Assign(this.ProxyPath);
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
@@ -100,7 +100,7 @@ namespace C.ObjC
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);

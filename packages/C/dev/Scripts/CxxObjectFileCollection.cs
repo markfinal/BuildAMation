@@ -28,32 +28,7 @@ namespace C.Cxx
             foreach (var path in filePaths)
             {
                 var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                objectFile.SourceFile.AbsolutePath = path;
-                this.list.Add(objectFile);
-            }
-        }
-
-        public void Include(object owner, params string[] pathSegments)
-        {
-            var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
-            }
-
-            var packagePath = package.Identifier.Path;
-            var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier);
-            }
-
-            var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            foreach (var path in filePaths)
-            {
-                var objectFile = new ObjectFile();
-                (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
+                objectFile.ProxyPath.Assign(this.ProxyPath);
                 objectFile.SourceFile.AbsolutePath = path;
                 this.list.Add(objectFile);
             }
@@ -87,6 +62,32 @@ namespace C.Cxx
         }
 
         // deprecated
+        public void Include(object owner, params string[] pathSegments)
+        {
+            var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
+            }
+
+            var packagePath = package.Identifier.Path;
+            var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
+            }
+
+            var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            foreach (var path in filePaths)
+            {
+                var objectFile = new ObjectFile();
+                objectFile.ProxyPath.Assign(this.ProxyPath);
+                objectFile.SourceFile.AbsolutePath = path;
+                this.list.Add(objectFile);
+            }
+        }
+
+        // deprecated
         public void Exclude(object owner, params string[] pathSegments)
         {
             var package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -99,7 +100,7 @@ namespace C.Cxx
             var proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);

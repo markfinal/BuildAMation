@@ -7,26 +7,34 @@ namespace Opus.Core
 {
     public class ProxyModulePath
     {
-        private string combinedPathSegments;
         private string[] pathSegments;
 
         public ProxyModulePath()
         {
-            this.combinedPathSegments = null;
             this.pathSegments = null;
         }
 
+#if true
+        public void Assign(params string[] segments)
+        {
+            this.pathSegments = segments;
+        }
+
+        public void Assign(ProxyModulePath proxy)
+        {
+            this.pathSegments = new string[proxy.pathSegments.Length];
+            var index = 0;
+            foreach (var a in proxy.pathSegments)
+            {
+                this.pathSegments[index++] = a;
+            }
+        }
+#else
         public ProxyModulePath(params string[] segments)
         {
             this.pathSegments = segments;
-            var combinedPath = string.Empty;
-            foreach (var path in segments)
-            {
-                combinedPath = System.IO.Path.Combine(combinedPath, path);
-            }
-
-            this.combinedPathSegments = combinedPath;
         }
+#endif
 
         public Location Combine(Location root)
         {
@@ -37,20 +45,6 @@ namespace Opus.Core
 
             var combinedRoot = new LocationDirectory(root, this.pathSegments);
             return combinedRoot;
-        }
-
-        // deprecated
-        public string Combine(PackageIdentifier packageId)
-        {
-            if (null == this.combinedPathSegments)
-            {
-                return packageId.Path;
-            }
-
-            var combinedPath = System.IO.Path.Combine(packageId.Path, this.combinedPathSegments);
-            combinedPath = File.CanonicalPath(combinedPath);
-
-            return combinedPath;
         }
     }
 }
