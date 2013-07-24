@@ -80,7 +80,7 @@ namespace CodeGenTest
 
         public CodeGeneratorTool()
         {
-            var codeGenToolSourceDir = this.Locations["PackageDir"].ChildDirectory("source", "codegentool");
+            var codeGenToolSourceDir = this.Locations["PackageDir"].SubDirectory("source", "codegentool");
             this.source.Include(codeGenToolSourceDir, "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CodeGeneratorTool_UpdateOptions);
         }

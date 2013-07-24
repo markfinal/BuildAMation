@@ -9,7 +9,7 @@ namespace Test4
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "dynamiclibrary.c");
                 this.UpdateOptions += SetIncludePaths;
                 this.UpdateOptions += SetRuntimeLibrary;
@@ -50,7 +50,7 @@ namespace Test4
     {
         public MyStaticLib()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.sourceFile.Include(sourceDir, "staticlibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }

@@ -8,7 +8,7 @@ namespace Test12
         {
             public CommonSourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "main.cpp");
             }
         }
@@ -17,7 +17,7 @@ namespace Test12
         {
             public WindowsSourceFiles()
             {
-                var winSourceDir = this.Locations["PackageDir"].ChildDirectory("source", "win");
+                var winSourceDir = this.Locations["PackageDir"].SubDirectory("source", "win");
                 this.Include(winSourceDir, "win.cpp");
             }
         }
@@ -26,7 +26,7 @@ namespace Test12
         {
             public UnixSourceFiles()
             {
-                var unixSourceDir = this.Locations["PackageDir"].ChildDirectory("source", "unix");
+                var unixSourceDir = this.Locations["PackageDir"].SubDirectory("source", "unix");
                 this.Include(unixSourceDir, "unix.cpp");
             }
         }
@@ -35,7 +35,7 @@ namespace Test12
         {
             public OSXSourceFiles()
             {
-                var osxSourceDir = this.Locations["PackageDir"].ChildDirectory("source", "osx");
+                var osxSourceDir = this.Locations["PackageDir"].SubDirectory("source", "osx");
                 this.Include(osxSourceDir, "osx.cpp");
             }
         }

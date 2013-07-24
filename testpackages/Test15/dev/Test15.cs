@@ -5,7 +5,7 @@ namespace Test15
     {
         public StaticLibrary1()
         {
-            var includeDir = this.Locations["PackageDir"].ChildDirectory("include");
+            var includeDir = this.Locations["PackageDir"].SubDirectory("include");
             this.headers.Include(includeDir, "*.h");
         }
 
@@ -13,7 +13,7 @@ namespace Test15
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "*.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }

@@ -8,7 +8,7 @@ namespace OpenCLTest1
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
             }
         }
@@ -30,7 +30,7 @@ namespace OpenCLTest1
     {
         public CopyKernels()
         {
-            var dataDir = this.Locations["PackageDir"].ChildDirectory("data");
+            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
             this.Include(dataDir, "*.cl");
         }
 

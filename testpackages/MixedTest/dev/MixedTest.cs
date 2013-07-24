@@ -6,7 +6,7 @@ namespace MixedTest
     {
         public CSharpTest()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "main.cs");
         }
 
@@ -18,7 +18,7 @@ namespace MixedTest
     {
         public CApp()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "main.c");
         }
 

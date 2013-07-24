@@ -20,9 +20,9 @@ namespace Test6
             {
                 this.UpdateOptions += this.OverrideOptionCollection;
 
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
-                var debugSourceDir = sourceDir.ChildDirectory("debug");
-                var optSourceDir = sourceDir.ChildDirectory("optimized");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var debugSourceDir = sourceDir.SubDirectory("debug");
+                var optSourceDir = sourceDir.SubDirectory("optimized");
 
                 var mainObjectFile = new C.ObjectFile();
                 mainObjectFile.Include(sourceDir, "main.c");

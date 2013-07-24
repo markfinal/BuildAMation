@@ -7,7 +7,7 @@ namespace Direct3DTriangle
     {
         public D3D9TriangleTest()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.headerFiles.Include(sourceDir, "*.h");
         }
 
@@ -15,7 +15,7 @@ namespace Direct3DTriangle
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_VCDefines);

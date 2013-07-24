@@ -6,7 +6,7 @@ namespace CSharpTest1
     {
         public SimpleLibrary()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "simpletest.cs");
         }
 
@@ -18,7 +18,7 @@ namespace CSharpTest1
     {
         public SimpleExecutable()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "simpleexecutable.cs");
         }
 
@@ -30,7 +30,7 @@ namespace CSharpTest1
     {
         public SimpleWindowExecutable()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "simplewindowsexecutable.cs");
         }
 
@@ -42,7 +42,7 @@ namespace CSharpTest1
     {
         public SimpleModule()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "simplemodule.cs");
         }
 
@@ -54,7 +54,7 @@ namespace CSharpTest1
     {
         public Executable2()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "executable2.cs");
         }
 
@@ -93,7 +93,7 @@ namespace CSharpTest1
     {
         public ExecutableReferences()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.source.Include(sourceDir, "executablexml.cs");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(ExecutableReferences_UpdateOptions);

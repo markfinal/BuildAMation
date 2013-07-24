@@ -80,7 +80,7 @@ namespace CodeGenTest2
 
         public CodeGeneratorTool()
         {
-            var codegentoolSourceDir = this.Locations["PackageDir"].ChildDirectory("source", "codegentool");
+            var codegentoolSourceDir = this.Locations["PackageDir"].SubDirectory("source", "codegentool");
             this.source.Include(codegentoolSourceDir, "main.cs");
         }
 

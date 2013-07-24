@@ -10,7 +10,7 @@ namespace GLEW
     {
         public GLEWStatic()
         {
-            var glIncludeDir = this.Locations["PackageDir"].ChildDirectory("glew-1.5.7", "include", "GL");
+            var glIncludeDir = this.Locations["PackageDir"].SubDirectory("glew-1.5.7", "include", "GL");
             this.headerFiles.Include(glIncludeDir, "*.h");
         }
 
@@ -18,7 +18,7 @@ namespace GLEW
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("glew-1.5.7", "src");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("glew-1.5.7", "src");
                 this.Include(sourceDir, "glew.c");
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));

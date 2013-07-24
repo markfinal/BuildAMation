@@ -8,7 +8,7 @@ namespace Test2
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "library.c");
                 this.UpdateOptions += SetIncludePaths;
             }
@@ -31,7 +31,7 @@ namespace Test2
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "application.c");
             }
         }

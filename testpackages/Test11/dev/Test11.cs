@@ -6,7 +6,7 @@ namespace Test11
     {
         public CrossPlatformApplication()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.commonSourceFile.Include(sourceDir, "main.c");
             this.winSourceFile.Include(sourceDir, "win", "win.c");
             this.unixSourceFile.Include(sourceDir, "unix", "unix.c");

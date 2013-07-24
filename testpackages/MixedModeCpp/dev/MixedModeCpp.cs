@@ -20,7 +20,7 @@ namespace MixedModeCpp
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "native.cpp");
             }
         }
@@ -29,7 +29,7 @@ namespace MixedModeCpp
         {
             public ManagedSourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
                 this.Include(sourceDir, "managed.cpp");
             }
         }

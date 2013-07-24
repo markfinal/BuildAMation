@@ -6,7 +6,7 @@ namespace Test7
     {
         public ExplicitDynamicLibrary()
         {
-            var sourceDir = this.Locations["PackageDir"].ChildDirectory("source");
+            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dynamiclibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
