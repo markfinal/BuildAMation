@@ -210,22 +210,22 @@ namespace Opus.Core
     {
         private System.Collections.Generic.Dictionary<string, Location> map = new System.Collections.Generic.Dictionary<string, Location>();
 
-        public Location this[string name]
+        public Location this[string locationName]
         {
             get
             {
-                return this.map[name];
+                return this.map[locationName];
             }
 
             set
             {
-                this.map[name] = value;
+                this.map[locationName] = value;
             }
         }
 
-        public bool Contains(string name)
+        public bool Contains(string locationName)
         {
-            return this.map.ContainsKey(name);
+            return this.map.ContainsKey(locationName);
         }
 
         public override string ToString()
