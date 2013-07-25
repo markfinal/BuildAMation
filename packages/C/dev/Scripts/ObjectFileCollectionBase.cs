@@ -33,6 +33,18 @@ namespace C
             set;
         }
 
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            this.IncludeRoot = root;
+            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
+        }
+
+        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
+        {
+            this.ExcludeRoot = root;
+            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
+        }
+
         private Opus.Core.StringArray EvaluatePaths()
         {
             // TODO: Remove Cached Path and remove ToArray

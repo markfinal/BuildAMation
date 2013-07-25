@@ -31,18 +31,7 @@ namespace C.ObjCxx
             return objectFileList;
         }
 
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
-        {
-            this.IncludeRoot = root;
-            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
-        }
-
-        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
-        {
-            this.ExcludeRoot = root;
-            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
-        }
-
+#if false
         // TODO: need to deprecate this
         public void Include(object owner, params string[] pathSegments)
         {
@@ -103,5 +92,6 @@ namespace C.ObjCxx
                 this.list.Remove(file);
             }
         }
+#endif
     }
 }

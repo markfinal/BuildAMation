@@ -31,61 +31,7 @@ namespace C.Cxx
             return objectFileList;
         }
 
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
-        {
-#if true
-            this.IncludeRoot = root;
-            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
-#else
-            if (null != this.ProxyPath)
-            {
-                root = this.ProxyPath.Combine(root);
-            }
-
-            // TODO: rewrite this passing the Location directly
-            var filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
-            foreach (var path in filePaths)
-            {
-                var objectFile = new ObjectFile();
-                objectFile.ProxyPath.Assign(this.ProxyPath);
-                objectFile.SourceFile.AbsolutePath = path;
-                this.list.Add(objectFile);
-            }
-#endif
-        }
-
-        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
-        {
-#if true
-            this.ExcludeRoot = root;
-            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
-#else
-            if (null != this.ProxyPath)
-            {
-                root = this.ProxyPath.Combine(root);
-            }
-
-            // TODO: change to pass Location directly
-            var filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
-            var toRemove = new System.Collections.Generic.List<ObjectFile>();
-            foreach (var path in filePaths)
-            {
-                foreach (ObjectFile file in this.list)
-                {
-                    if (file.SourceFile.AbsolutePath == path)
-                    {
-                        toRemove.Add(file);
-                    }
-                }
-            }
-
-            foreach (var file in toRemove)
-            {
-                this.list.Remove(file);
-            }
-#endif
-        }
-
+#if false
         // deprecated
         public void Include(object owner, params string[] pathSegments)
         {
@@ -146,5 +92,6 @@ namespace C.Cxx
                 this.list.Remove(file);
             }
         }
+#endif
     }
 }
