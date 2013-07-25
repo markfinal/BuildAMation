@@ -52,6 +52,11 @@ namespace QtCommon
 
         private Opus.Core.StringArray EvaluatePaths()
         {
+            if (null == this.IncludeRoot)
+            {
+                return null;
+            }
+
             // TODO: Remove Cached Path and remove ToArray
             var includePathList = Opus.Core.File.GetFiles(this.IncludeRoot.CachedPath, this.IncludePathSegments.ToArray());
             if (null == this.ExcludeRoot)
@@ -80,7 +85,19 @@ namespace QtCommon
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();
+
+            // add in modules obtained through mechanisms other than paths
+            foreach (var module in this.list)
+            {
+                collection.Add(module);
+            }
+
             var pathList = this.EvaluatePaths();
+            if (null == pathList)
+            {
+                return collection;
+            }
+
             var childModules = this.MakeChildModules(pathList);
             if (null != this.DeferredUpdates)
             {
