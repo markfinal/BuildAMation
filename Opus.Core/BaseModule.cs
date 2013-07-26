@@ -25,7 +25,7 @@ namespace Opus.Core
             {
                 var root = new LocationDirectory(package.Identifier.Location, this.ProxyPath);
                 this.Locations = new LocationMap();
-                this.Locations["PackageDir"] = root;
+                this.PackageLocation = root;
             }
         }
 
@@ -36,6 +36,19 @@ namespace Opus.Core
         {
             get;
             private set;
+        }
+
+        public Location PackageLocation
+        {
+            get
+            {
+                return this.Locations["PackageDir"];
+            }
+
+            private set
+            {
+                this.Locations["PackageDir"] = value;
+            }
         }
 
         public event UpdateOptionCollectionDelegate UpdateOptions;
