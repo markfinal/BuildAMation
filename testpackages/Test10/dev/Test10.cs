@@ -5,7 +5,7 @@ namespace Test10
     {
         public MyStaticLibrary()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "stlib.c");
         }
 
@@ -17,7 +17,7 @@ namespace Test10
     {
         public MyDynamicLibrary()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dylib.c");
         }
 
@@ -35,7 +35,7 @@ namespace Test10
     {
         public MyStandaloneApp()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "standaloneapp.c");
         }
 
@@ -56,7 +56,7 @@ namespace Test10
     {
         public DllDependentApp()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dlldependentapp.c");
         }
 

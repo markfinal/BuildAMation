@@ -34,7 +34,7 @@ namespace CodeGenTest2
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source", "testapp");
+                var sourceDir = this.PackageLocation.SubDirectory("source", "testapp");
                 this.Include(sourceDir, "main.c");
             }
 

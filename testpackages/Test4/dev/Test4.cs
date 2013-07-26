@@ -9,7 +9,7 @@ namespace Test4
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "dynamiclibrary.c");
                 this.UpdateOptions += SetIncludePaths;
                 this.UpdateOptions += SetRuntimeLibrary;
@@ -19,7 +19,7 @@ namespace Test4
             private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
             [C.ExportCompilerOptionsDelegate]
@@ -50,7 +50,7 @@ namespace Test4
     {
         public MyStaticLib()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "staticlibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
@@ -62,7 +62,7 @@ namespace Test4
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
     }
 }

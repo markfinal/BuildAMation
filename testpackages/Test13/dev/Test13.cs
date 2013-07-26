@@ -9,7 +9,7 @@ namespace Test13
         {
             public Win32ResourceFile()
             {
-                var resourcesDir = this.Locations["PackageDir"].SubDirectory("resources");
+                var resourcesDir = this.PackageLocation.SubDirectory("resources");
                 this.ResourceFile.Include(resourcesDir, "QtApplication.rc");
             }
         }
@@ -18,7 +18,7 @@ namespace Test13
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
@@ -49,7 +49,7 @@ namespace Test13
             {
                 public MyMocFiles()
                 {
-                    var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                    var sourceDir = this.PackageLocation.SubDirectory("source");
                     this.Include(sourceDir, "*.h");
 
 #if true

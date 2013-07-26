@@ -6,7 +6,7 @@ namespace WPFTest
     {
         public WPFExecutable()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.applicationDefinition.Include(sourceDir, "App.xaml");
             this.page.Include(sourceDir, "MainWindow.xaml");
 

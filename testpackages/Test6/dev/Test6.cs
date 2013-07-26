@@ -20,7 +20,7 @@ namespace Test6
             {
                 this.UpdateOptions += this.OverrideOptionCollection;
 
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 var debugSourceDir = sourceDir.SubDirectory("debug");
                 var optSourceDir = sourceDir.SubDirectory("optimized");
 
@@ -42,14 +42,14 @@ namespace Test6
             private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
             private void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("MAIN_C");
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include", "platform");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include", "platform");
             }
         }
 

@@ -31,7 +31,7 @@ namespace Test
     {
         public CompileSingleCFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main.c");
         }
     }
@@ -40,7 +40,7 @@ namespace Test
     {
         public CompileSingleCFileWithCustomOptions()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main.c");
             this.UpdateOptions += UpdateCompilerOptions;
         }
@@ -99,7 +99,7 @@ namespace Test
     {
         public CompileCSourceCollection()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "*.c");
         }
     }
@@ -108,7 +108,7 @@ namespace Test
     {
         public CompileSingleCppFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main.c");
         }
     }
@@ -117,7 +117,7 @@ namespace Test
     {
         public CompileCppSourceCollection()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "*.c");
         }
     }
@@ -126,7 +126,7 @@ namespace Test
     {
         public CompileCSourceCollectionWithCustomOptions()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "*.c");
 
             this.UpdateOptions += OverrideOptionCollection;
@@ -164,7 +164,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "main.c");
             }
         }
@@ -185,7 +185,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "main.c");
             }
         }
@@ -206,7 +206,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "main.c");
 
                 this.UpdateOptions += OverrideOptionCollection;
@@ -247,7 +247,7 @@ namespace Test
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "main.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Clang_CompilerOptions);
             }
@@ -267,7 +267,7 @@ namespace Test
         {
             public Win32Resources()
             {
-                var resourcesDir = this.Locations["PackageDir"].SubDirectory("resources");
+                var resourcesDir = this.PackageLocation.SubDirectory("resources");
                 this.ResourceFile.Include(resourcesDir, "win32.rc");
             }
         }

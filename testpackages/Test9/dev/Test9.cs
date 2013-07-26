@@ -6,7 +6,7 @@ namespace Test9
     {
         public CFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_c.c");
         }
     }
@@ -15,7 +15,7 @@ namespace Test9
     {
         public CFileCollection()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_c.c");
         }
     }
@@ -24,7 +24,7 @@ namespace Test9
     {
         public CppFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_cpp.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFile_UpdateOptions);
         }
@@ -40,7 +40,7 @@ namespace Test9
     {
         public CppFileCollection()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_cpp.c");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFileCollection_UpdateOptions);
@@ -76,7 +76,7 @@ namespace Test9
         {
             public CSourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePaths);
             }
@@ -84,7 +84,7 @@ namespace Test9
             void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
@@ -92,7 +92,7 @@ namespace Test9
         {
             public CxxSourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
                 this.Include(sourceDir, "appmain_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CxxSourceFiles_UpdateOptions);
@@ -102,7 +102,7 @@ namespace Test9
             void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
             void CxxSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -125,7 +125,7 @@ namespace Test9
     {
         public CStaticLibraryFromFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_c.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
@@ -133,7 +133,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         [Opus.Core.SourceFiles]
@@ -146,7 +146,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
@@ -154,7 +154,7 @@ namespace Test9
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
@@ -166,7 +166,7 @@ namespace Test9
     {
         public CppStaticLibraryFromFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_cpp.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
@@ -175,7 +175,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
@@ -194,7 +194,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
@@ -203,7 +203,7 @@ namespace Test9
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
@@ -221,7 +221,7 @@ namespace Test9
     {
         public CDynamicLibraryFromFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_c.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
@@ -229,7 +229,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         [Opus.Core.SourceFiles]
@@ -248,7 +248,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
@@ -256,7 +256,7 @@ namespace Test9
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
@@ -274,7 +274,7 @@ namespace Test9
     {
         public CppDynamicLibraryFromFile()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_cpp.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
@@ -283,7 +283,7 @@ namespace Test9
         void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
@@ -308,7 +308,7 @@ namespace Test9
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
@@ -317,7 +317,7 @@ namespace Test9
             void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
             void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)

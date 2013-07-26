@@ -5,7 +5,7 @@ namespace ProxyTest
     {
         public ProxiedObjectFile()
         {
-            this.SourceFile.Include(this.Locations["PackageDir"], "main.c");
+            this.SourceFile.Include(this.PackageLocation, "main.c");
 
             // note that the proxy is set AFTER the Include call
             this.ProxyPath.Assign("..", "..", "FakePackage");
@@ -16,7 +16,7 @@ namespace ProxyTest
     {
         public ProxiedObjectFileCollection()
         {
-            this.Include(this.Locations["PackageDir"], "main.c");
+            this.Include(this.PackageLocation, "main.c");
 
             // note that the proxy is set AFTER the Include call
             this.ProxyPath.Assign("..", "..", "FakePackage");

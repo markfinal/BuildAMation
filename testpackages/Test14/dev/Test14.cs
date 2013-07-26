@@ -6,7 +6,7 @@ namespace Test14
     {
         public DynamicLibraryA()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryA.c");
             this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_UpdateOptions);
@@ -16,7 +16,7 @@ namespace Test14
         void DynamicLibraryA_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         void DynamicLibraryA_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -36,7 +36,7 @@ namespace Test14
     {
         public DynamicLibraryB()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryB.c");
             this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_UpdateOptions);
@@ -45,7 +45,7 @@ namespace Test14
         void DynamicLibraryB_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         void DynamicLibraryB_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
@@ -68,7 +68,7 @@ namespace Test14
     {
         public Application()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Application_UpdateOptions);
         }

@@ -6,7 +6,7 @@ namespace RenderTextureAndProcessor
     {
         public RenderTexture()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.headerFiles.Include(sourceDir, "common", "*.h");
             this.headerFiles.Include(sourceDir, "rendertexture", "*.h");
         }
@@ -15,7 +15,7 @@ namespace RenderTextureAndProcessor
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "common", "*.cpp");
                 this.Include(sourceDir, "rendertexture", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
@@ -30,7 +30,7 @@ namespace RenderTextureAndProcessor
 
                 {
                     var options = module.Options as C.ICCompilerOptions;
-                    options.IncludePaths.Include(this.Locations["PackageDir"], "source", "common");
+                    options.IncludePaths.Include(this.PackageLocation, "source", "common");
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace RenderTextureAndProcessor
     {
         public TextureProcessor()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.headerFiles.Include(sourceDir, "common", "*.h");
             this.headerFiles.Include(sourceDir, "textureprocessor", "*.h");
         }
@@ -83,7 +83,7 @@ namespace RenderTextureAndProcessor
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "common", "*.cpp");
                 this.Include(sourceDir, "textureprocessor", "*.cpp");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
@@ -98,7 +98,7 @@ namespace RenderTextureAndProcessor
 
                 {
                     var options = module.Options as C.ICCompilerOptions;
-                    options.IncludePaths.Include(this.Locations["PackageDir"], "source", "common");
+                    options.IncludePaths.Include(this.PackageLocation, "source", "common");
                 }
             }
         }

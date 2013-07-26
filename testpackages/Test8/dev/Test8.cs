@@ -8,7 +8,7 @@ namespace Test8
     {
         public ApplicationTest()
         {
-            var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "main.c");
         }
 

@@ -13,7 +13,7 @@ namespace OpenGLUniformBufferTest
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_VCDefines);

@@ -8,7 +8,7 @@ namespace Test2
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library.c");
                 this.UpdateOptions += SetIncludePaths;
             }
@@ -17,7 +17,7 @@ namespace Test2
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.Locations["PackageDir"], "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
@@ -31,7 +31,7 @@ namespace Test2
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("source");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "application.c");
             }
         }

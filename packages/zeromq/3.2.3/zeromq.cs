@@ -5,7 +5,7 @@ namespace zeromq
     {
         public ZMQSharedLibrary()
         {
-            var includeDir = this.Locations["PackageDir"].SubDirectory("zeromq-3.2.3", "include");
+            var includeDir = this.PackageLocation.SubDirectory("zeromq-3.2.3", "include");
             this.headers.Include(includeDir, "*.hpp");
         }
 
@@ -13,7 +13,7 @@ namespace zeromq
         {
             public SourceFiles()
             {
-                var sourceDir = this.Locations["PackageDir"].SubDirectory("zeromq-3.2.3", "src");
+                var sourceDir = this.PackageLocation.SubDirectory("zeromq-3.2.3", "src");
                 this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePath);
@@ -71,7 +71,7 @@ namespace zeromq
                 {
                     if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                     {
-                        options.IncludePaths.Include(this.Locations["PackageDir"], "zeromq-3.2.3", "builds", "msvc");
+                        options.IncludePaths.Include(this.PackageLocation, "zeromq-3.2.3", "builds", "msvc");
                     }
                 }
             }
@@ -82,7 +82,7 @@ namespace zeromq
                 var options = module.Options as C.ICCompilerOptions;
                 if (null != options)
                 {
-                    options.IncludePaths.Include(this.Locations["PackageDir"], "zeromq-3.2.3", "include");
+                    options.IncludePaths.Include(this.PackageLocation, "zeromq-3.2.3", "include");
                 }
             }
         }

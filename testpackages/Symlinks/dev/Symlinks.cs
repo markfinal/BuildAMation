@@ -6,7 +6,7 @@ namespace Symlinks
     {
         public SymLinkToFile()
         {
-            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
+            var dataDir = this.PackageLocation.SubDirectory("data");
             this.Include(dataDir, "TestFile.txt");
         }
     }
@@ -15,7 +15,7 @@ namespace Symlinks
     {
         public SymLinkToFileRenamed()
         {
-            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
+            var dataDir = this.PackageLocation.SubDirectory("data");
             this.Include(dataDir, "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
@@ -28,7 +28,7 @@ namespace Symlinks
     {
         public SymLinkToFileNextTo()
         {
-            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
+            var dataDir = this.PackageLocation.SubDirectory("data");
             this.Include(dataDir, "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
@@ -56,7 +56,7 @@ namespace Symlinks
     {
         public SymlinkToDirectory()
         {
-            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
+            var dataDir = this.PackageLocation.SubDirectory("data");
             this.Include(dataDir, "TestDir");
         }
     }
@@ -65,7 +65,7 @@ namespace Symlinks
     {
         public SymlinkToDirectoryRenamed()
         {
-            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
+            var dataDir = this.PackageLocation.SubDirectory("data");
             this.Include(dataDir, "TestDir");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
@@ -78,7 +78,7 @@ namespace Symlinks
     {
         public SymlinkToDirectoryNextTo()
         {
-            var dataDir = this.Locations["PackageDir"].SubDirectory("data");
+            var dataDir = this.PackageLocation.SubDirectory("data");
             this.Include(dataDir, "TestDir");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
