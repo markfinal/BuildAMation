@@ -32,7 +32,8 @@ namespace CodeGenTest
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "testapp", "main.c");
+                var sourceDir = this.Locations["PackageDir"].SubDirectory("source", "testapp");
+                this.Include(sourceDir, "main.c");
             }
 
             [Opus.Core.DependentModules]
