@@ -287,15 +287,6 @@ namespace Opus.Core
             return GetFiles(out commonBaseDirectory, baseDirectory, pathSegments);
         }
 
-        public bool IsValid
-        {
-            get
-            {
-                var isValid = (null != this.absolutePath);
-                return isValid;
-            }
-        }
-
         public string AbsolutePath
         {
             get
