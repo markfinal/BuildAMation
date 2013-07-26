@@ -223,14 +223,18 @@ namespace Opus.Core
             {
                 throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
             }
+            else if (0 == pathSegments.Length)
+            {
+                isDirectory = System.IO.Directory.Exists(combinedBaseDirectory);
+            }
             else if (i == pathSegments.Length)
             {
                 isDirectory = true;
             }
 
-            combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
             if (isDirectory)
             {
+                combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
                 try
                 {
                     var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
@@ -253,10 +257,12 @@ namespace Opus.Core
             }
             else
             {
+                var isCombinedADirectory = System.IO.Directory.Exists(combinedBaseDirectory);
+                var dirInfo = isCombinedADirectory ? new System.IO.DirectoryInfo(combinedBaseDirectory) : System.IO.Directory.GetParent(combinedBaseDirectory);
+                var filename = isCombinedADirectory ? pathSegments[pathSegments.Length - 1] : combinedBaseDirectory.Replace(dirInfo.FullName, string.Empty).Trim(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
                 try
                 {
-                    var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
-                    var files = dirInfo.GetFiles(pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                    var files = dirInfo.GetFiles(filename, System.IO.SearchOption.TopDirectoryOnly);
                     var nonHiddenFiles = new StringArray();
                     foreach (var file in files)
                     {

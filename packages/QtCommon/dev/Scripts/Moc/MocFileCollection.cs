@@ -14,25 +14,13 @@ namespace QtCommon
         private System.Collections.Generic.List<MocFile> list = new System.Collections.Generic.List<MocFile>();
 
 #if true
-        protected Opus.Core.Location IncludeRoot
+        protected System.Collections.Generic.List<Opus.Core.DeferredLocations> Includes
         {
             get;
             set;
         }
 
-        protected Opus.Core.StringArray IncludePathSegments
-        {
-            get;
-            set;
-        }
-
-        protected Opus.Core.Location ExcludeRoot
-        {
-            get;
-            set;
-        }
-
-        protected Opus.Core.StringArray ExcludePathSegments
+        protected System.Collections.Generic.List<Opus.Core.DeferredLocations> Excludes
         {
             get;
             set;
@@ -40,31 +28,50 @@ namespace QtCommon
 
         public void Include(Opus.Core.Location root, params string[] pathSegments)
         {
-            this.IncludeRoot = root;
-            this.IncludePathSegments = new Opus.Core.StringArray(pathSegments);
+            if (null == this.Includes)
+            {
+                this.Includes = new System.Collections.Generic.List<Opus.Core.DeferredLocations>();
+            }
+
+            this.Includes.Add(new Opus.Core.DeferredLocations(root, pathSegments));
         }
 
         public void Exclude(Opus.Core.Location root, params string[] pathSegments)
         {
-            this.ExcludeRoot = root;
-            this.ExcludePathSegments = new Opus.Core.StringArray(pathSegments);
+            if (null == this.Excludes)
+            {
+                this.Excludes = new System.Collections.Generic.List<Opus.Core.DeferredLocations>();
+            }
+
+            this.Excludes.Add(new Opus.Core.DeferredLocations(root, pathSegments));
         }
 
         private Opus.Core.StringArray EvaluatePaths()
         {
-            if (null == this.IncludeRoot)
+            if (null == this.Includes)
             {
                 return null;
             }
 
             // TODO: Remove Cached Path and remove ToArray
-            var includePathList = Opus.Core.File.GetFiles(this.IncludeRoot.CachedPath, this.IncludePathSegments.ToArray());
-            if (null == this.ExcludeRoot)
+            var includePathList = new Opus.Core.StringArray();
+            foreach (var include in this.Includes)
+            {
+                var pathList = Opus.Core.File.GetFiles(include.Deferred.CachedPath);
+                includePathList.AddRange(pathList);
+            }
+            if (null == this.Excludes)
             {
                 return includePathList;
             }
 
-            var excludePathList = Opus.Core.File.GetFiles(this.ExcludeRoot.CachedPath, this.ExcludePathSegments.ToArray());
+            var excludePathList = new Opus.Core.StringArray();
+            foreach (var exclude in this.Excludes)
+            {
+                var pathList = Opus.Core.File.GetFiles(exclude.Deferred.CachedPath);
+                excludePathList.AddRange(pathList);
+            }
+
             var remainingPathList = new Opus.Core.StringArray(includePathList.Complement(excludePathList));
             return remainingPathList;
         }

@@ -53,6 +53,12 @@ namespace Opus.Core
             get;
         }
 
+        public bool MayContainWildcards
+        {
+            get;
+            set;
+        }
+
         private string CalculatePathFromRoot()
         {
             if (null != this.Segments)
@@ -62,7 +68,14 @@ namespace Opus.Core
                 {
                     combinedPath = System.IO.Path.Combine(combinedPath, segment);
                 }
-                return System.IO.Path.GetFullPath(combinedPath);
+                if (this.MayContainWildcards)
+                {
+                    return combinedPath;
+                }
+                else
+                {
+                    return System.IO.Path.GetFullPath(combinedPath);
+                }
             }
             else if (null != this.Proxy)
             {
@@ -287,14 +300,22 @@ namespace Opus.Core
 
     public class DeferredLocations
     {
+        public DeferredLocations(Location root, params string[] pathSegments)
+        {
+            this.Deferred = new LocationDirectory(root, pathSegments);
+            this.Deferred.MayContainWildcards = true;
+        }
+
         public DeferredLocations(Location root, StringArray pathSegments)
         {
             this.Deferred = new LocationDirectory(root, pathSegments);
+            this.Deferred.MayContainWildcards = true;
         }
 
         public DeferredLocations(string absolutePath)
         {
             this.Deferred = new LocationDirectory(absolutePath);
+            this.Deferred.MayContainWildcards = true;
         }
 
         public Location Deferred
