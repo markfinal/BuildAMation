@@ -275,7 +275,14 @@ namespace Opus.Core
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
-                    Log.Detail("Warning: No files match the pattern {0}{1}{2} for the top directory only", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
+                    if (0 == pathSegments.Length)
+                    {
+                        Log.Detail("Warning: No files match the pattern {0} for the top directory only", combinedBaseDirectory);
+                    }
+                    else
+                    {
+                        Log.Detail("Warning: No files match the pattern {0}{1}{2} for the top directory only", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
+                    }
                     return new StringArray();
                 }
             }
