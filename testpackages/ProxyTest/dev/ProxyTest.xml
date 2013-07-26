@@ -4,11 +4,25 @@
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Gcc">
+      <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
+      <Opus:Version Id="4.1" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
+      <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
+      <Opus:Version Id="4.5" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
+      <Opus:Version Id="4.6" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
+    </Opus:Package>
+    <Opus:Package Name="Mingw">
+      <Opus:Version Id="3.4.5" Default="true" />
+      <Opus:Version Id="4.5.0" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="VisualC">
-      <Opus:Version Id="9.0" />
+      <Opus:Version Id="10.0" />
+      <Opus:Version Id="11.0" />
+      <Opus:Version Id="8.0" />
+      <Opus:Version Id="9.0" Default="true" />
     </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
