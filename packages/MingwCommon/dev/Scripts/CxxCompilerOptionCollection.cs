@@ -7,12 +7,11 @@ namespace MingwCommon
 {
     public abstract partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        public static void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICxxCompilerOptions
+        public static void ExportedDefaults(Opus.Core.BaseOptionCollection options, Opus.Core.DependencyNode node)
         {
-            C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
-            C.ICxxCompilerOptions cxxInterfaceOptions = options as C.ICxxCompilerOptions;
-
+            var cInterfaceOptions = options as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
+            var cxxInterfaceOptions = options as C.ICxxCompilerOptions;
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 

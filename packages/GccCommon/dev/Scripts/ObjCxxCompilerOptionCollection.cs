@@ -7,12 +7,11 @@ namespace GccCommon
 {
     public partial class ObjCxxCompilerOptionCollection : ObjCCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        public static new void ExportedDefaults<T>(T options, Opus.Core.DependencyNode node) where T : CCompilerOptionCollection, C.ICxxCompilerOptions
+        public static new void ExportedDefaults(Opus.Core.BaseOptionCollection options, Opus.Core.DependencyNode node)
         {
-            C.ICCompilerOptions cInterfaceOptions = options as C.ICCompilerOptions;
-            C.ICxxCompilerOptions cxxInterfaceOptions = options as C.ICxxCompilerOptions;
-
+            var cInterfaceOptions = options as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+            var cxxInterfaceOptions = options as C.ICxxCompilerOptions;
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
