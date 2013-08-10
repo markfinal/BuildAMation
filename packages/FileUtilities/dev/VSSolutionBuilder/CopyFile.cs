@@ -63,17 +63,27 @@ namespace VSSolutionBuilder
             var baseOptions = moduleToBuild.Options;
             var copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
             var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
+            var node = moduleToBuild.OwningNode;
+            var target = node.Target;
 
             var besideModuleType = moduleToBuild.BesideModuleType;
             if (null == besideModuleType)
             {
-                Opus.Core.Log.MessageAll("VSSolution support for copying to arbitrary locations is unavailable");
+                var copyOptions = baseOptions as FileUtilities.ICopyFileOptions;
+                if (null == copyOptions.SourceModuleType)
+                {
+                    Opus.Core.Log.MessageAll("VSSolution support for copying to arbitrary locations is unavailable");
+                    success = true;
+                    return null;
+                }
+
+                var copySourceModule = Opus.Core.ModuleUtilities.GetModule(copyOptions.SourceModuleType, (Opus.Core.BaseTarget)target);
+
+                PostBuildEventCopyFiles(copySourceModule, destinationDirectory, sourceFilePath);
                 success = true;
                 return null;
             }
 
-            var node = moduleToBuild.OwningNode;
-            var target = node.Target;
             var besideModule = Opus.Core.ModuleUtilities.GetModule(besideModuleType, (Opus.Core.BaseTarget)target);
 
             PostBuildEventCopyFiles(besideModule, destinationDirectory, sourceFilePath);
