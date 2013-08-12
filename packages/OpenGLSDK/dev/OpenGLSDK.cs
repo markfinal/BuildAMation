@@ -13,6 +13,7 @@ namespace OpenGLSDK
 
         private static readonly TargetFilter winVCTarget;
         private static readonly TargetFilter winMingwTarget;
+        private static readonly TargetFilter unixTarget;
 
         static OpenGL()
         {
@@ -23,6 +24,9 @@ namespace OpenGLSDK
             winMingwTarget = new TargetFilter();
             winMingwTarget.Platform = Opus.Core.EPlatform.Windows;
             winMingwTarget.ToolsetTypes = new[] { typeof(Mingw.Toolset) };
+
+            unixTarget = new TargetFilter();
+            unixTarget.Platform = Opus.Core.EPlatform.Unix;
         }
 
         public OpenGL()
@@ -48,6 +52,10 @@ namespace OpenGLSDK
             else if (Opus.Core.TargetUtilities.MatchFilters(target, winMingwTarget))
             {
                 libraries.Add("-lopengl32");
+            }
+            else if (Opus.Core.TargetUtilities.MatchFilters(target, unixTarget))
+            {
+                libraries.Add("-lGL");
             }
             else
             {
