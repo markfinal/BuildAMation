@@ -14,6 +14,7 @@ namespace OpenGLSDK
         private static readonly TargetFilter winVCTarget;
         private static readonly TargetFilter winMingwTarget;
         private static readonly TargetFilter unixTarget;
+        private static readonly TargetFilter osxTarget;
 
         static OpenGL()
         {
@@ -27,6 +28,9 @@ namespace OpenGLSDK
 
             unixTarget = new TargetFilter();
             unixTarget.Platform = Opus.Core.EPlatform.Unix;
+            
+            osxTarget = new TargetFilter();
+            osxTarget.Platform = Opus.Core.EPlatform.OSX;
         }
 
         public OpenGL()
@@ -44,7 +48,7 @@ namespace OpenGLSDK
             }
 
             // add libraries
-            Opus.Core.StringArray libraries = new Opus.Core.StringArray();
+            var libraries = new Opus.Core.StringArray();
             if (Opus.Core.TargetUtilities.MatchFilters(target, winVCTarget))
             {
                 libraries.Add(@"OPENGL32.lib");
@@ -57,11 +61,19 @@ namespace OpenGLSDK
             {
                 libraries.Add("-lGL");
             }
+            else if (Opus.Core.TargetUtilities.MatchFilters(target, osxTarget))
+            {
+                linkerOptions.OSXFrameworks.Add("OpenGL");
+            }
             else
             {
                 throw new Opus.Core.Exception("Unsupported OpenGL platform");
             }
-            linkerOptions.Libraries.AddRange(libraries);
+
+            if (libraries.Count > 0)
+            {
+                linkerOptions.Libraries.AddRange (libraries);
+            }
         }
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
