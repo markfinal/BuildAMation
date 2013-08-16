@@ -138,7 +138,7 @@ namespace VisualCCommon
                 case C.ECompilerOutput.Preprocess: // with line numbers
                     {
                         commandLineBuilder.Add("/P");
-                        string objPathName = options.ObjectFilePath;
+                        string objPathName = options.PreprocessedFilePath;
                         if (objPathName.Contains(" "))
                         {
                             commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", objPathName));
@@ -163,18 +163,22 @@ namespace VisualCCommon
             }
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
+                VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary ();
+                returnVal.Add ("GeneratePreprocessedFile", processOption.Value.ToString ("D"));
                 switch (processOption.Value)
                 {
-                    case C.ECompilerOutput.CompileOnly:
-                    case C.ECompilerOutput.Preprocess:
-                        {
-                            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                            returnVal.Add("GeneratePreprocessedFile", processOption.Value.ToString("D"));
-                            returnVal.Add("ObjectFile", options.ObjectFilePath);
-                            return returnVal;
-                        }
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
+                case C.ECompilerOutput.CompileOnly:
+                    {
+                        returnVal.Add ("ObjectFile", options.ObjectFilePath);
+                        return returnVal;
+                    }
+                case C.ECompilerOutput.Preprocess:
+                    {
+                        returnVal.Add ("ObjectFile", options.PreprocessedFilePath);
+                        return returnVal;
+                    }
+                default:
+                    throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
                 }
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
@@ -191,7 +195,7 @@ namespace VisualCCommon
                     case C.ECompilerOutput.Preprocess:
                         {
                             returnVal.Add("PreprocessToFile", "true");
-                            returnVal.Add("ObjectFileName", options.ObjectFilePath);
+                            returnVal.Add("ObjectFileName", options.PreprocessedFilePath);
                         }
                         break;
                     default:
