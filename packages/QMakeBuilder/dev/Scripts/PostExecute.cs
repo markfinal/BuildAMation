@@ -41,7 +41,7 @@ namespace QMakeBuilder
 
             var mainPackage = Opus.Core.State.PackageInfo[0];
             string proFileName = mainPackage + ".pro";
-            string rootDirectory = mainPackage.BuildDirectory;
+            string rootDirectory = Opus.Core.State.BuildRoot;
             string proFilePath = System.IO.Path.Combine(rootDirectory, proFileName);
 
             // relative paths need a trailing slash to work
