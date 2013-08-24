@@ -69,6 +69,7 @@ namespace QMakeBuilder
                 proFileWriter.WriteLine("QMAKE_LFLAGS=");
                 proFileWriter.WriteLine("QMAKE_LFLAGS_DEBUG=");
                 proFileWriter.WriteLine("QMAKE_LFLAGS_RELEASE=");
+                proFileWriter.WriteLine("QMAKE_LN_SHLIB=");
             }
 
             this.EmptyConfigPriPath = priFilePath;
