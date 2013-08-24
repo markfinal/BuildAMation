@@ -142,10 +142,15 @@ namespace FileUtilities
         public override string ToString()
         {
             var description = new System.Text.StringBuilder();
-            description.Append(this.SourceFile.ToString());
+            description.AppendFormat("{0} -> ", this.SourceFile.ToString());
             if (null != this.BesideModuleType)
             {
-                description.AppendFormat(" -> {0} {1}", this.BesideModuleType.ToString(), this.BesideModuleAttribute.OutputFileFlag);
+                description.AppendFormat("{0} {1}", this.BesideModuleType.ToString(), this.BesideModuleAttribute.OutputFileFlag);
+            }
+            else
+            {
+                var options = this.Options as ICopyFileOptions;
+                description.Append(options.DestinationDirectory);
             }
             return description.ToString();
         }
