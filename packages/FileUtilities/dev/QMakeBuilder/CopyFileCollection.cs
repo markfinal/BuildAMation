@@ -32,7 +32,7 @@ namespace QMakeBuilder
             }
 
             success = true;
-            return data;
+            return null;
         }
     }
 }

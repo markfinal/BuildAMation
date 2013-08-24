@@ -33,15 +33,24 @@ namespace QMakeBuilder
             if (null == node.Parent)
             {
                 var besideModuleType = moduleToBuild.BesideModuleType;
-                if (null == besideModuleType)
+                if (null != besideModuleType)
                 {
-                    Opus.Core.Log.MessageAll("QMake support for copying to arbitrary locations is unavailable");
-                    success = true;
-                    return null;
+                    var besideModuleNode = Opus.Core.ModuleUtilities.GetNode(besideModuleType, (Opus.Core.BaseTarget)target);
+                    data.Merge(besideModuleNode.Data as QMakeData);
                 }
+                else
+                {
+                    var copyOptions = options as FileUtilities.ICopyFileOptions;
+                    if (null == copyOptions.SourceModuleType)
+                    {
+                        Opus.Core.Log.MessageAll("QMake support for copying to arbitrary locations is unavailable");
+                        success = true;
+                        return null;
+                    }
 
-                var besideModuleNode = Opus.Core.ModuleUtilities.GetNode(besideModuleType, (Opus.Core.BaseTarget)target);
-                data.Merge(besideModuleNode.Data as QMakeData);
+                    var copySourceNode = Opus.Core.ModuleUtilities.GetNode(copyOptions.SourceModuleType, (Opus.Core.BaseTarget)target);
+                    data.Merge(copySourceNode.Data as QMakeData);
+                }
             }
 
             var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
