@@ -14,6 +14,11 @@ namespace Opus.Core
             this.pathSegments = null;
         }
 
+        public ProxyModulePath(params string[] segments)
+        {
+            this.pathSegments = segments;
+        }
+
 #if true
         public void Assign(params string[] segments)
         {
