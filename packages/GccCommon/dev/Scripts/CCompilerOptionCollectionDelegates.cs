@@ -85,7 +85,7 @@ namespace GccCommon
                 case C.ECompilerOutput.Preprocess:
                     {
                         commandLineBuilder.Add("-E");
-                        string objPathName = options.ObjectFilePath;
+                        string objPathName = options.PreprocessedFilePath;
                         if (objPathName.Contains(" "))
                         {
                             commandLineBuilder.Add(System.String.Format("-o \"{0}\" ", objPathName));

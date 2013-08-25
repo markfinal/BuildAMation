@@ -30,32 +30,51 @@ namespace QMakeBuilder
             var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
 
             var data = new QMakeData(node);
-            if (null == node.Parent)
             {
                 var besideModuleType = moduleToBuild.BesideModuleType;
-                if (null == besideModuleType)
+                if (null != besideModuleType)
                 {
-                    Opus.Core.Log.MessageAll("QMake support for copying to arbitrary locations is unavailable");
-                    success = true;
-                    return null;
+                    var besideModuleNode = Opus.Core.ModuleUtilities.GetNode(besideModuleType, (Opus.Core.BaseTarget)target);
+                    data.Merge(besideModuleNode.Data as QMakeData);
                 }
+                else
+                {
+                    var copyOptions = options as FileUtilities.ICopyFileOptions;
+                    if (null == copyOptions.SourceModuleType)
+                    {
+                        Opus.Core.Log.MessageAll("QMake support for copying to arbitrary locations is unavailable");
+                        success = true;
+                        return null;
+                    }
 
-                var besideModuleNode = Opus.Core.ModuleUtilities.GetNode(besideModuleType, (Opus.Core.BaseTarget)target);
-                data.Merge(besideModuleNode.Data as QMakeData);
+                    var copySourceNode = Opus.Core.ModuleUtilities.GetNode(copyOptions.SourceModuleType, (Opus.Core.BaseTarget)target);
+                    data.Merge(copySourceNode.Data as QMakeData);
+                }
             }
 
             var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
 
-            System.Text.StringBuilder postLinkCommand = new System.Text.StringBuilder();
+            var makeDirCommand = new System.Text.StringBuilder();
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                postLinkCommand.AppendFormat("{0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), sourceFilePath, destinationDirectory);
+                makeDirCommand.AppendFormat("IF NOT EXIST {0} MKDIR {0}", destinationDirectory);
             }
             else
             {
-                postLinkCommand.AppendFormat("{0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), sourceFilePath, destinationDirectory);
+                makeDirCommand.AppendFormat("mkdir -p {0}", destinationDirectory);
             }
-            data.PostLink.Add(postLinkCommand.ToString());
+            data.PostLink.Add(makeDirCommand.ToString());
+
+            var copyCommand = new System.Text.StringBuilder();
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                copyCommand.AppendFormat("{0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), sourceFilePath, destinationDirectory);
+            }
+            else
+            {
+                copyCommand.AppendFormat("{0} {1} {2} {3}", toolExecutablePath, commandLineBuilder.ToString(' '), sourceFilePath, destinationDirectory);
+            }
+            data.PostLink.Add(copyCommand.ToString());
 
             success = true;
             return data;

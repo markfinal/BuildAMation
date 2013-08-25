@@ -734,7 +734,7 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
-                WriteStringArray(array[0].Libraries, "LIBS=", null, writer);
+                WriteStringArray(array[0].Libraries, "LIBS+=", null, writer);
             }
             else
             {
@@ -751,7 +751,7 @@ namespace QMakeBuilder
                     }
                 }
 
-                WriteStringArrays(values, "LIBS=", null, writer);
+                WriteStringArrays(values, "LIBS+=", null, writer);
             }
         }
 
