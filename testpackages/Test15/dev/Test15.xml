@@ -9,7 +9,7 @@
       <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
     </Opus:Package>
     <Opus:Package Name="LLVMGcc">
-      <Opus:Version Id="4.2" Condition="'$(Platform)' == 'OSX'" Default="true" />
+      <Opus:Version Id="4.2" Default="true" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
