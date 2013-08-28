@@ -11,11 +11,14 @@ namespace GccCommon
 
         public static GccDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
         {
+            var executable = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
+            bool isLLVMGcc = System.IO.Path.GetFileName(executable).StartsWith("llvm");
+
             // get version
             string gccVersion = null;
             {
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
+                processStartInfo.FileName = executable;
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
                 processStartInfo.RedirectStandardOutput = true;
@@ -136,11 +139,14 @@ namespace GccCommon
                     }
                 }
 
-                if (!gxxIncludeDir.StartsWith(pathPrefix))
+                if (!isLLVMGcc)
                 {
-                    // remove any prefix directory separator so that Combine works
-                    gxxIncludeDir = gxxIncludeDir.TrimStart(System.IO.Path.DirectorySeparatorChar);
-                    gxxIncludeDir = System.IO.Path.Combine(pathPrefix, gxxIncludeDir);
+                    if (!gxxIncludeDir.StartsWith(pathPrefix))
+                    {
+                        // remove any prefix directory separator so that Combine works
+                        gxxIncludeDir = gxxIncludeDir.TrimStart(System.IO.Path.DirectorySeparatorChar);
+                        gxxIncludeDir = System.IO.Path.Combine(pathPrefix, gxxIncludeDir);
+                    }
                 }
 
                 // C include paths (http://gcc.gnu.org/onlinedocs/cpp/Search-Path.html)
@@ -153,12 +159,24 @@ namespace GccCommon
                 string gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libDir, gccTarget, gccVersion);
                 string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
                 string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
-    
-                if (!System.IO.Directory.Exists(gccIncludeFolder))
+
+                if (!isLLVMGcc)
                 {
-                    throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
+                    if (!System.IO.Directory.Exists(gccIncludeFolder))
+                    {
+                        throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
+                    }
+                    includePaths.Add(gccIncludeFolder);
                 }
-                includePaths.Add(gccIncludeFolder);
+                else
+                {
+                    gccIncludeFolder = System.String.Format("{0}/lib/gcc/{1}/{2}/include", pathPrefix, gccTarget, gccVersion);
+                    if (!System.IO.Directory.Exists(gccIncludeFolder))
+                    {
+                        throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
+                    }
+                    includePaths.Add(gccIncludeFolder);
+                }
 
                 // OSX does not have this path
                 if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
