@@ -86,6 +86,15 @@ namespace Test
                 GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
                 gccCompilerOptions.PositionIndependentCode = true;
             }
+            else if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
+            {
+                Opus.Core.Log.MessageAll("Toolset for llvm-gcc in use");
+
+                compilerOptions.AdditionalOptions = "-Wall";
+
+                GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
+                gccCompilerOptions.PositionIndependentCode = true;
+            }
             else
             {
                 Opus.Core.Log.MessageAll("Unrecognized toolset, '{0}'", target.ToolsetName('='));
