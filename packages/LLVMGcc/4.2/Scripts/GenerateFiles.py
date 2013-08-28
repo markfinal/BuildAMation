@@ -45,3 +45,35 @@ cxxCompiler_options = [
 cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
 print stdout
+
+# ObjC compiler options
+objcCompiler_options = [
+    opusCodeGeneratorExe,
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "LLVMGcc", "4.2", "Scripts", "ICCompilerOptions.cs")),
+    "-n=LLVMGcc",
+    "-c=ObjCCompilerOptionCollection",
+    "-p", # generate properties
+    "-d", # generate delegates
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-pv=GccCommon.PrivateData",
+    "-e" # this option set derives from the GccCommon option set
+]
+objcCompiler_options.extend(extra_args)
+(stdout,stderr) = ExecuteProcess(objcCompiler_options, True, True)
+print stdout
+
+# C++ compiler options
+objcxxCompiler_options = [
+    opusCodeGeneratorExe,
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICxxCompilerOptions.cs")),
+    "-n=LLVMGcc",
+    "-c=ObjCxxCompilerOptionCollection",
+    "-p", # generate properties
+    "-d", # generate delegates
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-pv=GccCommon.PrivateData",
+    "-e" # this option set derives from the C option set
+]
+objcxxCompiler_options.extend(extra_args)
+(stdout,stderr) = ExecuteProcess(objcxxCompiler_options, True, True)
+print stdout
