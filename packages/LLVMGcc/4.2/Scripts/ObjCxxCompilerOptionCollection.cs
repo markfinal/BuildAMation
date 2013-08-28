@@ -24,14 +24,17 @@ namespace LLVMGcc
             {
                 throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath);
             }
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);
+
+            // TODO: not sure if this is necessary
+#if false
             string cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
             if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
                 throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath2);
             }
-
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);
             (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath2, false);
+#endif
 
             GccCommon.ObjCxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
