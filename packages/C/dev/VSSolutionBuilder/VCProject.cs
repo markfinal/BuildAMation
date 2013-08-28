@@ -29,9 +29,6 @@ namespace VSSolutionBuilder
                 this.PackageDirectory = proxyPath.Combine(packageId);
             }
 
-            var isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(this.PackageDirectory);
-            var kind = isPackageDirAbsolute ? System.UriKind.Absolute : System.UriKind.Relative;
-
             if (this.PackageDirectory[this.PackageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
             {
                 this.PackageUri = new System.Uri(this.PackageDirectory, System.UriKind.Absolute);
