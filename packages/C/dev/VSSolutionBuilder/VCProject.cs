@@ -26,7 +26,7 @@ namespace VSSolutionBuilder
             this.PackageDirectory = packageId.Path;
             if (null != proxyPath)
             {
-                this.PackageDirectory = proxyPath.Combine(packageId);
+                this.PackageDirectory = proxyPath.Combine(packageId.Location).CachedPath;
             }
 
             if (this.PackageDirectory[this.PackageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)

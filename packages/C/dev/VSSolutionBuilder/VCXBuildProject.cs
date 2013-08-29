@@ -26,7 +26,7 @@ namespace VSSolutionBuilder
             this.PackageDirectory = packageId.Path;
             if (null != proxyPath)
             {
-                this.PackageDirectory = proxyPath.Combine(packageId);
+                this.PackageDirectory = proxyPath.Combine(packageId.Location).CachedPath;
             }
 
             var isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(this.PackageDirectory);

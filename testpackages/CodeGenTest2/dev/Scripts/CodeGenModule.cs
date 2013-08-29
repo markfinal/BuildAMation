@@ -80,7 +80,8 @@ namespace CodeGenTest2
 
         public CodeGeneratorTool()
         {
-            this.source.SetRelativePath(this, "source", "codegentool", "main.cs");
+            var codegentoolSourceDir = this.PackageLocation.SubDirectory("source", "codegentool");
+            this.source.Include(codegentoolSourceDir, "main.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -98,13 +99,13 @@ namespace CodeGenTest2
 
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
-            Opus.Core.IModule module = this as Opus.Core.IModule;
-            ICodeGenOptions options = module.Options as ICodeGenOptions;
-            string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-            C.ObjectFile injectedFile = new C.ObjectFile();
-            injectedFile.SourceFile.SetGuaranteedAbsolutePath(outputPath);
+            var module = this as Opus.Core.IModule;
+            var options = module.Options as ICodeGenOptions;
+            var outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
+            var injectedFile = new C.ObjectFile();
+            injectedFile.SourceFile.AbsolutePath = outputPath;
 
-            Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
+            var moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);
 
             return moduleCollection;

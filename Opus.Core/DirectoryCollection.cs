@@ -135,6 +135,36 @@ namespace Opus.Core
             }
         }
 
+#if true
+        // Note that this no longer applies a module's proxy path
+        public void Include(Location root, params string[] pathSegments)
+        {
+            // TODO: replace with Location
+            var paths = GetDirectories(root.CachedPath, pathSegments);
+            foreach (var path in paths)
+            {
+                if (!this.directoryPaths.Contains(path))
+                {
+                    this.directoryPaths.Add(path);
+                }
+            }
+        }
+
+        // Note that this no longer applies a module's proxy path
+        public void Exclude(Location root, params string[] pathSegments)
+        {
+            // TODO: replace with Location
+            var paths = GetDirectories(root.CachedPath, pathSegments);
+            foreach (var path in paths)
+            {
+                if (!this.directoryPaths.Contains(path))
+                {
+                    this.directoryPaths.Remove(path);
+                }
+            }
+        }
+#else
+        // deprecated
         public void Include(object module, params string[] pathSegments)
         {
             var package = PackageUtilities.GetOwningPackage(module);
@@ -160,6 +190,7 @@ namespace Opus.Core
             }
         }
 
+        // deprecated
         public void Exclude(object module, params string[] pathSegments)
         {
             var package = PackageUtilities.GetOwningPackage(module);
@@ -184,6 +215,7 @@ namespace Opus.Core
                 }
             }
         }
+#endif
 
         public void AddRange(string[] absolutePaths)
         {
@@ -201,6 +233,8 @@ namespace Opus.Core
             }
         }
 
+        // TODO: no longer possible?
+#if false
         public void AddRange(PackageInformation package, string[] relativePaths)
         {
             if (null == package)
@@ -248,6 +282,7 @@ namespace Opus.Core
 
             this.AddRange(package, relativePaths);
         }
+#endif
 
         public string this[int index]
         {

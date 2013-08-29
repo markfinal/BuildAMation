@@ -21,7 +21,8 @@ namespace ObjectiveCTest1
         {
             public Source()
             {
-                this.Include(this, "source", "*.m");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "*.m");
                 this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                     var compileOptions = module.Options as C.ICCompilerOptions;
                     if (null != compileOptions)

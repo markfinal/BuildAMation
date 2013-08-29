@@ -6,15 +6,16 @@ namespace Test7
     {
         public ExplicitDynamicLibrary()
         {
-            this.sourceFile.SetRelativePath(this, "source", "dynamiclibrary.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.sourceFile.Include(sourceDir, "dynamiclibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
 
         [C.ExportCompilerOptionsDelegate]
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this, "include");
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
         [Opus.Core.SourceFiles]

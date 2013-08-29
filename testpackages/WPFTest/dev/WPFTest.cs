@@ -6,15 +6,16 @@ namespace WPFTest
     {
         public WPFExecutable()
         {
-            this.applicationDefinition.SetRelativePath(this, "source", "App.xaml");
-            this.page.SetRelativePath(this, "source", "MainWindow.xaml");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.applicationDefinition.Include(sourceDir, "App.xaml");
+            this.page.Include(sourceDir, "MainWindow.xaml");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WPFExecutable_UpdateOptions);
         }
 
         void WPFExecutable_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            CSharp.IOptions options = module.Options as CSharp.IOptions;
+            var options = module.Options as CSharp.IOptions;
             options.References.Add("System.dll");
             options.References.Add("System.Data.dll");
             options.References.Add("System.Xaml.dll");

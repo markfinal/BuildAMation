@@ -45,6 +45,12 @@ namespace FileUtilities
             this.BesideModuleType = besideModuleType;
         }
 
+#if true
+        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        {
+            this.SourceFile.Include(root, pathSegments);
+        }
+#else
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
             this.SourceFile.SetRelativePath(owner, pathSegments);
@@ -64,6 +70,7 @@ namespace FileUtilities
         {
             this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
         }
+#endif
 
         public void Set(System.Type moduleType, object outputFileEnum)
         {

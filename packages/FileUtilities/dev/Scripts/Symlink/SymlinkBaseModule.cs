@@ -32,6 +32,7 @@ namespace FileUtilities
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 
+#if false
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
             this.SourceFile.SetRelativePath(owner, pathSegments);
@@ -51,6 +52,7 @@ namespace FileUtilities
         {
             this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
         }
+#endif
 
         public void Set(System.Type moduleType, object outputFileEnum)
         {

@@ -6,7 +6,8 @@ namespace CSharpTest1
     {
         public SimpleLibrary()
         {
-            this.source.Include(this, "source", "simpletest.cs");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.source.Include(sourceDir, "simpletest.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -17,7 +18,8 @@ namespace CSharpTest1
     {
         public SimpleExecutable()
         {
-            this.source.SetRelativePath(this, "source", "simpleexecutable.cs");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.source.Include(sourceDir, "simpleexecutable.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -28,7 +30,8 @@ namespace CSharpTest1
     {
         public SimpleWindowExecutable()
         {
-            this.source.SetRelativePath(this, "source", "simplewindowsexecutable.cs");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.source.Include(sourceDir, "simplewindowsexecutable.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -39,7 +42,8 @@ namespace CSharpTest1
     {
         public SimpleModule()
         {
-            this.source.SetRelativePath(this, "source", "simplemodule.cs");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.source.Include(sourceDir, "simplemodule.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -50,7 +54,8 @@ namespace CSharpTest1
     {
         public Executable2()
         {
-            this.source.SetRelativePath(this, "source", "executable2.cs");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.source.Include(sourceDir, "executable2.cs");
         }
 
         [Opus.Core.SourceFiles]
@@ -88,14 +93,15 @@ namespace CSharpTest1
     {
         public ExecutableReferences()
         {
-            this.source.SetRelativePath(this, "source", "executablexml.cs");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.source.Include(sourceDir, "executablexml.cs");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(ExecutableReferences_UpdateOptions);
         }
 
         void ExecutableReferences_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            CSharp.IOptions options = module.Options as CSharp.IOptions;
+            var options = module.Options as CSharp.IOptions;
             options.References.Add("System.Xml.dll");
         }
 

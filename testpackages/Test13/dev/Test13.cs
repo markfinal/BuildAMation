@@ -9,7 +9,8 @@ namespace Test13
         {
             public Win32ResourceFile()
             {
-                this.ResourceFile.SetRelativePath(this, "resources", "QtApplication.rc");
+                var resourcesDir = this.PackageLocation.SubDirectory("resources");
+                this.ResourceFile.Include(resourcesDir, "QtApplication.rc");
             }
         }
 
@@ -17,7 +18,8 @@ namespace Test13
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "*.cpp");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
@@ -47,18 +49,25 @@ namespace Test13
             {
                 public MyMocFiles()
                 {
-                    this.Include(this, "source", "*.h");
+                    var sourceDir = this.PackageLocation.SubDirectory("source");
+                    this.Include(sourceDir, "*.h");
 
-                    Opus.Core.IModule mocFile = this.GetChildModule(this, "source", "myobject2.h");
+#if true
+                    this.RegisterUpdateOptions(new Opus.Core.UpdateOptionCollectionDelegateArray(mocFile_UpdateOptions),
+                                               sourceDir,
+                                               "myobject2.h");
+#else
+                    var mocFile = this.GetChildModule(sourceDir, "myobject2.h");
                     if (null != mocFile)
                     {
                         mocFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mocFile_UpdateOptions);
                     }
+#endif
                 }
 
                 void mocFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
                 {
-                    QtCommon.IMocOptions options = module.Options as QtCommon.IMocOptions;
+                    var options = module.Options as QtCommon.IMocOptions;
                     if (null != options)
                     {
                         options.Defines.Add("CUSTOM_MOC_DEFINE_FOR_MYOBJECTS2");

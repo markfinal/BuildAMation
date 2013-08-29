@@ -8,7 +8,8 @@ namespace Test8
     {
         public ApplicationTest()
         {
-            this.sourceFile.SetRelativePath(this, "source", "main.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.sourceFile.Include(sourceDir, "main.c");
         }
 
         [Opus.Core.SourceFiles]

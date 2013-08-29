@@ -70,6 +70,7 @@ namespace Opus.Core
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
+            Add<LocationDirectory>("System", "BuildRootLocation", null);
             Add<DependencyGraph>("System", "Graph", null);
             Add<BuildManager>("System", "BuildManager", null);
             Add<System.Threading.ManualResetEvent>("System", "BuildStartedEvent", new System.Threading.ManualResetEvent(false));
@@ -356,10 +357,19 @@ namespace Opus.Core
                 var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
 
                 Set("System", "BuildRoot", absoluteBuildRootPath);
+                Set("System", "BuildRootLocation", new LocationDirectory(absoluteBuildRootPath));
             }
             get
             {
                 return Get("System", "BuildRoot") as string;
+            }
+        }
+
+        public static LocationDirectory BuildRootLocation
+        {
+            get
+            {
+                return Get("System", "BuildRootLocation") as LocationDirectory;
             }
         }
         

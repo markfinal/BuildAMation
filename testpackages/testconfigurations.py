@@ -184,3 +184,6 @@ configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"]})
 configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                      linux={"Native":None,"MakeFile":None},
                                      osx={"Native":None,"MakeFile":None})
+configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"]},
+                                     linux={"Native":["gcc"]},
+                                     osx={"Native":["gcc"]})

@@ -5,9 +5,10 @@ namespace CopyTest1
     {
         public CopySingleFileTest()
         {
-            this.SetRelativePath(this, "data", "testfile.txt");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "testfile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
-                FileUtilities.ICopyFileOptions options = module.Options as FileUtilities.ICopyFileOptions;
+                var options = module.Options as FileUtilities.ICopyFileOptions;
                 if (null != options)
                 {
                     options.DestinationDirectory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "CopyTest");
@@ -20,7 +21,8 @@ namespace CopyTest1
     {
         public CopyMultipleFileTest()
         {
-            this.Include(this, "data", "*");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "*");
         }
     }
 
@@ -28,7 +30,7 @@ namespace CopyTest1
     {
         public CopyDirectoryTest(Opus.Core.Target target)
         {
-            this.Include(this, target, "data");
+            this.Include(this.PackageLocation, target, "data");
         }
     }
 }

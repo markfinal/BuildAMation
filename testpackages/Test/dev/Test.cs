@@ -9,19 +9,19 @@ namespace Test
         {
             if (optionCollection is C.ICCompilerOptions)
             {
-                C.ICCompilerOptions compilerOptions = optionCollection as C.ICCompilerOptions;
+                var compilerOptions = optionCollection as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("GLOBALOVERRIDE");
             }
 
             if (optionCollection is C.ICxxCompilerOptions)
             {
-                C.ICxxCompilerOptions compilerOptions = optionCollection as C.ICxxCompilerOptions;
+                var compilerOptions = optionCollection as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
             if (optionCollection is VisualCCommon.LinkerOptionCollection)
             {
-                VisualCCommon.LinkerOptionCollection linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
+                var linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
                 linkerOptions.ProgamDatabaseDirectoryPath = System.IO.Path.Combine(Opus.Core.State.BuildRoot, "symbols");
             }
         }
@@ -31,7 +31,8 @@ namespace Test
     {
         public CompileSingleCFile()
         {
-            this.SetRelativePath(this, "source", "main.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.Include(sourceDir, "main.c");
         }
     }
 
@@ -39,13 +40,14 @@ namespace Test
     {
         public CompileSingleCFileWithCustomOptions()
         {
-            this.SetRelativePath(this, "source", "main.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.Include(sourceDir, "main.c");
             this.UpdateOptions += UpdateCompilerOptions;
         }
 
         private static void UpdateCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            var compilerOptions = module.Options as C.ICCompilerOptions;
 
             compilerOptions.ShowIncludes = true;
 
@@ -60,7 +62,7 @@ namespace Test
 
                 compilerOptions.AdditionalOptions = "-Wall";
 
-                MingwCommon.ICCompilerOptions mingwCompilerOptions = compilerOptions as MingwCommon.ICCompilerOptions;
+                var mingwCompilerOptions = compilerOptions as MingwCommon.ICCompilerOptions;
                 mingwCompilerOptions.InlineFunctions = true;
             }
             else if (target.HasToolsetType(typeof(VisualC.Toolset)))
@@ -72,7 +74,7 @@ namespace Test
                 compilerOptions.AdditionalOptions = "/openmp";
 
                 compilerOptions.DebugSymbols = true;
-                VisualCCommon.ICCompilerOptions vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
+                var vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
                 vcCompilerOptions.DebugType = VisualCCommon.EDebugType.Embedded;
                 vcCompilerOptions.BasicRuntimeChecks = VisualCCommon.EBasicRuntimeChecks.None;
                 vcCompilerOptions.SmallerTypeConversionRuntimeCheck = false;
@@ -83,7 +85,7 @@ namespace Test
 
                 compilerOptions.AdditionalOptions = "-Wall";
 
-                GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
+                var gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
                 gccCompilerOptions.PositionIndependentCode = true;
             }
             else if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
@@ -106,7 +108,8 @@ namespace Test
     {
         public CompileCSourceCollection()
         {
-            this.Include(this, "source", "*.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.Include(sourceDir, "*.c");
         }
     }
 
@@ -114,7 +117,8 @@ namespace Test
     {
         public CompileSingleCppFile()
         {
-            this.SetRelativePath(this, "source", "main.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.Include(sourceDir, "main.c");
         }
     }
 
@@ -122,7 +126,8 @@ namespace Test
     {
         public CompileCppSourceCollection()
         {
-            this.Include(this, "source", "*.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.Include(sourceDir, "*.c");
         }
     }
 
@@ -130,27 +135,33 @@ namespace Test
     {
         public CompileCSourceCollectionWithCustomOptions()
         {
-            this.Include(this, "source", "*.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.Include(sourceDir, "*.c");
 
             this.UpdateOptions += OverrideOptionCollection;
 
             // override the options on one specific file
-            Opus.Core.IModule mainObjFile = this.GetChildModule(this, "source", "main.c");
+#if true
+            this.RegisterUpdateOptions(new Opus.Core.UpdateOptionCollectionDelegateArray(mainObjFile_UpdateOptions),
+                                       sourceDir, "main.c");
+#else
+            var mainObjFile = this.GetChildModule(sourceDir, "main.c");
             if (null != mainObjFile)
             {
                 mainObjFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mainObjFile_UpdateOptions);
             }
+#endif
         }
 
         void mainObjFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.Defines.Add("DEFINE_FOR_MAIN_ONLY");
         }
 
         public void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.ShowIncludes = true;
             compilerOptions.Defines.Add("DEFINE_FOR_ALL_SOURCE");
         }
@@ -162,7 +173,8 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "main.c");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "main.c");
             }
         }
 
@@ -182,7 +194,8 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "main.c");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "main.c");
             }
         }
 
@@ -202,23 +215,24 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "main.c");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "main.c");
 
                 this.UpdateOptions += OverrideOptionCollection;
             }
 
             private static void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+                var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.ShowIncludes = true;
                 compilerOptions.CharacterSet = C.ECharacterSet.NotSet;
 
-                VisualC.CCompilerOptionCollection vcOptions = compilerOptions as VisualC.CCompilerOptionCollection;
+                var vcOptions = compilerOptions as VisualC.CCompilerOptionCollection;
                 if (null != vcOptions)
                 {
                     //vcOptions.DebugType = VisualC.EDebugType.Embedded;
                 }
-                Mingw.CCompilerOptionCollection mingwOptions = compilerOptions as Mingw.CCompilerOptionCollection;
+                var mingwOptions = compilerOptions as Mingw.CCompilerOptionCollection;
                 if (null != mingwOptions)
                 {
                 }
@@ -242,7 +256,8 @@ namespace Test
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "main.c");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "main.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Clang_CompilerOptions);
             }
 
@@ -261,7 +276,8 @@ namespace Test
         {
             public Win32Resources()
             {
-                this.ResourceFile.SetRelativePath(this, "resources", "win32.rc");
+                var resourcesDir = this.PackageLocation.SubDirectory("resources");
+                this.ResourceFile.Include(resourcesDir, "win32.rc");
             }
         }
 

@@ -9,7 +9,8 @@ namespace Test4
         {
             public SourceFiles()
             {
-                this.Include(this, "source", "dynamiclibrary.c");
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "dynamiclibrary.c");
                 this.UpdateOptions += SetIncludePaths;
                 this.UpdateOptions += SetRuntimeLibrary;
             }
@@ -17,14 +18,14 @@ namespace Test4
             [C.ExportCompilerOptionsDelegate]
             private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this, "include");
+                var compilerOptions = module.Options as C.ICCompilerOptions;
+                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
             [C.ExportCompilerOptionsDelegate]
             private static void SetRuntimeLibrary(Opus.Core.IModule module, Opus.Core.Target target)
             {
-                VisualCCommon.ICCompilerOptions vcCompilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
+                var vcCompilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (vcCompilerOptions != null)
                 {
                     vcCompilerOptions.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDebugDLL;
@@ -49,7 +50,8 @@ namespace Test4
     {
         public MyStaticLib()
         {
-            this.sourceFile.SetRelativePath(this, "source", "staticlibrary.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.sourceFile.Include(sourceDir, "staticlibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
         }
 
@@ -59,8 +61,8 @@ namespace Test4
         [C.ExportCompilerOptionsDelegate]
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this, "include");
+            var compilerOptions = module.Options as C.ICCompilerOptions;
+            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
     }
 }

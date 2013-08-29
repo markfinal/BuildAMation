@@ -47,12 +47,6 @@ namespace MakeFileBuilder
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
-                            if (!file.IsValid)
-                            {
-                                Opus.Core.Log.DebugMessage("Field '{0}' has an invalid path set", field.Name);
-                                continue;
-                            }
-
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
@@ -90,12 +84,6 @@ namespace MakeFileBuilder
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
-                            if (!file.IsValid)
-                            {
-                                Opus.Core.Log.DebugMessage("Field '{0}' has an invalid path set", field.Name);
-                                continue;
-                            }
-
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {
@@ -150,12 +138,6 @@ namespace MakeFileBuilder
                         if (sourceField is Opus.Core.File)
                         {
                             Opus.Core.File file = sourceField as Opus.Core.File;
-                            if (!file.IsValid)
-                            {
-                                Opus.Core.Log.DebugMessage("Field '{0}' has an invalid path set", field.Name);
-                                continue;
-                            }
-
                             string absolutePath = file.AbsolutePath;
                             if (!System.IO.File.Exists(absolutePath))
                             {

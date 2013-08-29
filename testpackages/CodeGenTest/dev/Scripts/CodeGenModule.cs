@@ -80,13 +80,14 @@ namespace CodeGenTest
 
         public CodeGeneratorTool()
         {
-            this.source.SetRelativePath(this, "source", "codegentool", "main.c");
+            var codeGenToolSourceDir = this.PackageLocation.SubDirectory("source", "codegentool");
+            this.source.Include(codeGenToolSourceDir, "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CodeGeneratorTool_UpdateOptions);
         }
 
         void CodeGeneratorTool_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions options = module.Options as C.ILinkerOptions;
+            var options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
         }
 
@@ -110,13 +111,13 @@ namespace CodeGenTest
 
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
-            Opus.Core.IModule module = this as Opus.Core.IModule;
-            ICodeGenOptions options = module.Options as ICodeGenOptions;
-            string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-            C.ObjectFile injectedFile = new C.ObjectFile();
-            injectedFile.SetGuaranteedAbsolutePath(outputPath);
+            var module = this as Opus.Core.IModule;
+            var options = module.Options as ICodeGenOptions;
+            var outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
+            var injectedFile = new C.ObjectFile();
+            injectedFile.SourceFile.AbsolutePath = outputPath;
 
-            Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
+            var moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);
 
             return moduleCollection;

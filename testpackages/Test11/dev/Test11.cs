@@ -6,10 +6,11 @@ namespace Test11
     {
         public CrossPlatformApplication()
         {
-            this.commonSourceFile.SetRelativePath(this, "source", "main.c");
-            this.winSourceFile.SetRelativePath(this, "source", "win", "win.c");
-            this.unixSourceFile.SetRelativePath(this, "source", "unix", "unix.c");
-            this.osxSourceFile.SetRelativePath(this, "source", "osx", "osx.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.commonSourceFile.Include(sourceDir, "main.c");
+            this.winSourceFile.Include(sourceDir, "win", "win.c");
+            this.unixSourceFile.Include(sourceDir, "unix", "unix.c");
+            this.osxSourceFile.Include(sourceDir, "osx", "osx.c");
         }
 
         [Opus.Core.SourceFiles]

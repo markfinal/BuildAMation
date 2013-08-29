@@ -27,6 +27,7 @@ namespace C
             // no delegates, as there are no options
         }
 
+        // TODO: this needs to be updated for Location
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             var thirdPartyModule = node.Module as C.ThirdPartyModule;
@@ -36,7 +37,7 @@ namespace C
                 var proxyPath = (node.Module as Opus.Core.BaseModule).ProxyPath;
                 if (null != proxyPath)
                 {
-                    packagePath = proxyPath.Combine(node.Package.Identifier);
+                    packagePath = proxyPath.Combine(node.Package.Identifier.Location).CachedPath;
                 }
 
                 thirdPartyModule.RegisterOutputFiles(this, node.Target, packagePath);

@@ -90,6 +90,58 @@ namespace Opus.Core
             this.AbsolutePath = absolutePath;
         }
 
+#if true
+        private Location Root
+        {
+            get;
+            set;
+        }
+
+        private StringArray PathSegments
+        {
+            get;
+            set;
+        }
+
+        private string EvaluateExpression()
+        {
+            // TODO: yuck, ToArray()
+            var files = GetFiles(this.Root.CachedPath, this.PathSegments.ToArray());
+            if (0 == files.Count)
+            {
+                throw new Exception("Include expression does not relate to any existing files.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.CachedPath, this.PathSegments.ToString('\n'));
+            }
+            else if (files.Count != 1)
+            {
+                throw new Exception("Include expression resolves to more than one file.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.CachedPath, this.PathSegments.ToString('\n'));
+            }
+
+            var path = CanonicalPath(files[0]);
+            return path;
+        }
+
+        // Note: this no longer includes the module's proxy path
+        public void Include(Location root, params string[] pathSegments)
+        {
+#if true
+            this.Root = root;
+            this.PathSegments = new StringArray(pathSegments);
+#else
+            var files = GetFiles(root.CachedPath, pathSegments);
+            if (0 == files.Count)
+            {
+                throw new Exception("Include expression does not relate to any existing files.\n\tRoot: {0}\n\tPath segments: {1}", root.CachedPath, new StringArray(pathSegments).ToString('\n'));
+            }
+            else if (files.Count != 1)
+            {
+                throw new Exception("Include expression resolves to more than one file.\n\tRoot: {0}\n\tPath segments: {1}", root.CachedPath, new StringArray(pathSegments).ToString('\n'));
+            }
+
+            this.AbsolutePath = CanonicalPath(files[0]);
+#endif
+        }
+#else
+        // deprecated
         public void SetRelativePath(object owner, params string[] pathSegments)
         {
             var package = PackageUtilities.GetOwningPackage(owner);
@@ -122,6 +174,7 @@ namespace Opus.Core
         {
             this.Initialize(absolutePath, false);
         }
+#endif
 
         private static bool IsFileInHiddenHierarchy(System.IO.FileInfo file, string rootDir)
         {
@@ -170,14 +223,18 @@ namespace Opus.Core
             {
                 throw new Exception("Unable to locate path, starting with '{0}' and ending in '{1}'", combinedBaseDirectory, pathSegments[i]);
             }
+            else if (0 == pathSegments.Length)
+            {
+                isDirectory = System.IO.Directory.Exists(combinedBaseDirectory);
+            }
             else if (i == pathSegments.Length)
             {
                 isDirectory = true;
             }
 
-            combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
             if (isDirectory)
             {
+                combinedBaseDirectory = System.IO.Path.GetFullPath(combinedBaseDirectory);
                 try
                 {
                     var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
@@ -200,10 +257,12 @@ namespace Opus.Core
             }
             else
             {
+                var isCombinedADirectory = System.IO.Directory.Exists(combinedBaseDirectory);
+                var dirInfo = isCombinedADirectory ? new System.IO.DirectoryInfo(combinedBaseDirectory) : System.IO.Directory.GetParent(combinedBaseDirectory);
+                var filename = isCombinedADirectory ? pathSegments[pathSegments.Length - 1] : combinedBaseDirectory.Replace(dirInfo.FullName, string.Empty).Trim(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
                 try
                 {
-                    var dirInfo = new System.IO.DirectoryInfo(combinedBaseDirectory);
-                    var files = dirInfo.GetFiles(pathSegments[pathSegments.Length - 1], System.IO.SearchOption.TopDirectoryOnly);
+                    var files = dirInfo.GetFiles(filename, System.IO.SearchOption.TopDirectoryOnly);
                     var nonHiddenFiles = new StringArray();
                     foreach (var file in files)
                     {
@@ -216,7 +275,14 @@ namespace Opus.Core
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
-                    Log.Detail("Warning: No files match the pattern {0}{1}{2} for the top directory only", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
+                    if (0 == pathSegments.Length)
+                    {
+                        Log.Detail("Warning: No files match the pattern {0} for the top directory only", combinedBaseDirectory);
+                    }
+                    else
+                    {
+                        Log.Detail("Warning: No files match the pattern {0}{1}{2} for the top directory only", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, pathSegments[pathSegments.Length - 1]);
+                    }
                     return new StringArray();
                 }
             }
@@ -228,28 +294,26 @@ namespace Opus.Core
             return GetFiles(out commonBaseDirectory, baseDirectory, pathSegments);
         }
 
-        public bool IsValid
-        {
-            get
-            {
-                var isValid = (null != this.absolutePath);
-                return isValid;
-            }
-        }
-
         public string AbsolutePath
         {
             get
             {
                 if (null == this.absolutePath)
                 {
-                    throw new Exception("File path has not been set");
+                    if (null != this.Root)
+                    {
+                        this.absolutePath = this.EvaluateExpression();
+                    }
+                    else
+                    {
+                        throw new Exception("File path has not been set");
+                    }
                 }
 
                 return this.absolutePath;
             }
 
-            private set
+            set
             {
                 this.absolutePath = value;
             }

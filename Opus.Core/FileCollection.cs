@@ -65,6 +65,29 @@ namespace Opus.Core
             return this.filePaths.GetEnumerator();
         }
 
+        // Note: this no longer applies a module's proxy path
+        public void Include(Location root, params string[] pathSegments)
+        {
+            // TODO: replace with Location
+            var paths = File.GetFiles(root.CachedPath, pathSegments);
+            foreach (var path in paths)
+            {
+                this.filePaths.Add(path);
+            }
+        }
+
+        // Note: this no longer applies a module's proxy path
+        public void Exclude(Location root, params string[] pathSegments)
+        {
+            // TODO: replace with the Location
+            var paths = File.GetFiles(root.CachedPath, pathSegments);
+            foreach (var path in paths)
+            {
+                this.filePaths.Remove(path);
+            }
+        }
+
+        // deprecated
         public void Include(object module, params string[] pathSegments)
         {
             var package = PackageUtilities.GetOwningPackage(module);
@@ -77,7 +100,7 @@ namespace Opus.Core
             var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var paths = File.GetFiles(packagePath, pathSegments);
@@ -87,6 +110,7 @@ namespace Opus.Core
             }
         }
 
+        // deprecated
         public void Exclude(object module, params string[] pathSegments)
         {
             var package = PackageUtilities.GetOwningPackage(module);
@@ -99,7 +123,7 @@ namespace Opus.Core
             var proxyPath = (module as BaseModule).ProxyPath;
             if (null != proxyPath)
             {
-                packagePath = proxyPath.Combine(package.Identifier);
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
             }
 
             var paths = File.GetFiles(packagePath, pathSegments);

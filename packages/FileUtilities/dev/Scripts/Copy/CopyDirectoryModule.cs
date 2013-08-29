@@ -19,19 +19,11 @@ namespace FileUtilities
             }
         }
 
-        public void Include(object owner, Opus.Core.Target target, params string[] pathSegments)
+        public void Include(Opus.Core.Location root, Opus.Core.Target target, params string[] pathSegments)
         {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
+            if (null != this.ProxyPath)
             {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
-            }
-
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier);
+                root = this.ProxyPath.Combine(root);
             }
 
             // each file to copy needs to know where the parent was set to copy next to
@@ -40,12 +32,13 @@ namespace FileUtilities
             Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
 
             string commonBaseDirectory;
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out commonBaseDirectory, packagePath, pathSegments);
+            // TODO: replace with Location
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out commonBaseDirectory, root.CachedPath, pathSegments);
             foreach (string path in filePaths)
             {
                 CopyFile file = new CopyFile(besideModule, dependentModule);
-                (file as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                file.SourceFile.SetAbsolutePath(path);
+                file.ProxyPath.Assign(this.ProxyPath);
+                file.SourceFile.AbsolutePath = path;
                 this.copyFiles.Add(file);
             }
 
@@ -65,22 +58,15 @@ namespace FileUtilities
             }
         }
 
-        public void Exclude(object owner, params string[] pathSegments)
+        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
         {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
+            if (null != this.ProxyPath)
             {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
+                root = this.ProxyPath.Combine(root);
             }
             
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier);
-            }
-            
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            // TODO: replace with Location
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
             System.Collections.Generic.List<CopyFile> toRemove = new System.Collections.Generic.List<CopyFile>();
             foreach (string path in filePaths)
             {
@@ -98,9 +84,98 @@ namespace FileUtilities
                 this.copyFiles.Remove(file);
             }
         }
+
+        // deprecated
+        public void Include(object owner, Opus.Core.Target target, params string[] pathSegments)
+        {
+            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
+            }
+
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
+            }
+
+            // each file to copy needs to know where the parent was set to copy next to
+            BesideModuleAttribute besideModule;
+            System.Type dependentModule;
+            Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
+
+            string commonBaseDirectory;
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out commonBaseDirectory, packagePath, pathSegments);
+            foreach (string path in filePaths)
+            {
+                CopyFile file = new CopyFile(besideModule, dependentModule);
+                file.ProxyPath.Assign(this.ProxyPath);
+                file.SourceFile.AbsolutePath = path;
+                this.copyFiles.Add(file);
+            }
+
+            if (null == this.commonBaseDirectory)
+            {
+                this.commonBaseDirectory = commonBaseDirectory;
+            }
+            else
+            {
+                var commonRoot = Opus.Core.RelativePathUtilities.GetCommonRoot(commonBaseDirectory, this.commonBaseDirectory);
+                if (null == commonRoot)
+                {
+                    throw new Opus.Core.Exception("Unable to locate common path between '{0}' and '{1}'", commonBaseDirectory, this.commonBaseDirectory);
+                }
+
+                this.commonBaseDirectory = commonRoot;
+            }
+        }
+
+        // deprecated
+        public void Exclude(object owner, params string[] pathSegments)
+        {
+            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
+            if (null == package)
+            {
+                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
+            }
+
+            string packagePath = package.Identifier.Path;
+            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
+            if (null != proxyPath)
+            {
+                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
+            }
+
+            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
+            System.Collections.Generic.List<CopyFile> toRemove = new System.Collections.Generic.List<CopyFile>();
+            foreach (string path in filePaths)
+            {
+                foreach (CopyFile file in this.copyFiles)
+                {
+                    if (file.SourceFile.AbsolutePath == path)
+                    {
+                        toRemove.Add(file);
+                    }
+                }
+            }
+
+            foreach (CopyFile file in toRemove)
+            {
+                this.copyFiles.Remove(file);
+            }
+        }
+
         
         #region IModuleCollection implementation
-        
+
+#if true
+        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray, Opus.Core.Location root, params string[] pathSegments)
+        {
+            throw new System.NotImplementedException();
+        }
+#else
         Opus.Core.IModule Opus.Core.IModuleCollection.GetChildModule(object owner, params string[] pathSegments)
         {
             Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
@@ -129,6 +204,7 @@ namespace FileUtilities
             }
             return null;
         }
+#endif
         
         #endregion
         

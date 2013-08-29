@@ -6,7 +6,8 @@ namespace Symlinks
     {
         public SymLinkToFile()
         {
-            this.SetRelativePath(this, "data", "TestFile.txt");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "TestFile.txt");
         }
     }
 
@@ -14,7 +15,8 @@ namespace Symlinks
     {
         public SymLinkToFileRenamed()
         {
-            this.SetRelativePath(this, "data", "TestFile.txt");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "RenamedLinkedFile.txt";
@@ -26,7 +28,8 @@ namespace Symlinks
     {
         public SymLinkToFileNextTo()
         {
-            this.SetRelativePath(this, "data", "TestFile.txt");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "TestFile.txt");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "NextToLinkedFile.txt";
@@ -53,7 +56,8 @@ namespace Symlinks
     {
         public SymlinkToDirectory()
         {
-            this.SetRelativePath(this, "data", "TestDir");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "TestDir");
         }
     }
 
@@ -61,7 +65,8 @@ namespace Symlinks
     {
         public SymlinkToDirectoryRenamed()
         {
-            this.SetRelativePath(this, "data", "TestDir");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "TestDir");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "RenamedLinkedDir";
@@ -73,7 +78,8 @@ namespace Symlinks
     {
         public SymlinkToDirectoryNextTo()
         {
-            this.SetRelativePath(this, "data", "TestDir");
+            var dataDir = this.PackageLocation.SubDirectory("data");
+            this.Include(dataDir, "TestDir");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "NextToLinkedDir";
