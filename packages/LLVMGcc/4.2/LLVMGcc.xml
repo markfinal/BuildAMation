@@ -1,17 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
   <Opus:RequiredPackages>
-    <Opus:Package Name="C">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
-    <Opus:Package Name="Gcc">
-      <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" Default="true" />
-      <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
-    </Opus:Package>
-    <Opus:Package Name="LLVMGcc">
-      <Opus:Version Id="4.2" Default="true" />
-    </Opus:Package>
-    <Opus:Package Name="NativeBuilder">
+    <Opus:Package Name="GccCommon">
       <Opus:Version Id="dev" />
     </Opus:Package>
   </Opus:RequiredPackages>
