@@ -10,13 +10,10 @@ namespace C
         [LocalCompilerOptionsDelegate]
         protected static void GccCommonDynamicLibrarySetPositionIndependentCode(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsUnix(target))
+            var compilerOptions = module.Options as GccCommon.ICCompilerOptions;
+            if (null != compilerOptions)
             {
-                GccCommon.ICCompilerOptions compilerOptions = module.Options as GccCommon.ICCompilerOptions;
-                if (null != compilerOptions)
-                {
-                    compilerOptions.PositionIndependentCode = true;
-                }
+                compilerOptions.PositionIndependentCode = true;
             }
         }
     }
