@@ -1,4 +1,4 @@
-29-Aug-2013 Adding Opus.Core.Location which is an abstraction for a location on disk. Opus.Core.BaseModule has a dictionary of Locations, and a primary PackageLocation. This simplifies the Include and Exclude functionality to locate files, but is a breaking change to the API. Generally, for Include(this, ...) older style API, replace with Include(this.PackageLocation, ...).
+29-Aug-2013 Adding Opus.Core.Location which is an abstraction for a location on disk. Opus.Core.BaseModule has a dictionary of Locations, and a primary PackageLocation. This simplifies the Include and Exclude functionality to locate files, but is a breaking change to the API. Generally, for Include(this, ...) older style API, replace with Include(this.PackageLocation, ...). IModuleCollection.GetChildModule, used to update option collections on an individual source file, has been replaced with IModuleCollection.RegisterUpdateOptions
 
 28-Aug-2013 Adding LLVMGcc-4.2 package for OSX.
 
