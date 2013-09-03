@@ -9,7 +9,11 @@ namespace XCodeBuilder
     {
         public object Build(C.Application moduleToBuild, out bool success)
         {
-            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName);
+            var options = moduleToBuild.Options as C.LinkerOptionCollection;
+            var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
+
+            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, outputPath);
+            fileRef.IsExecutable = true;
             this.Project.FileReferences.Add(fileRef);
 
             var data = new PBXNativeTarget(moduleToBuild.OwningNode.ModuleName);

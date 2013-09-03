@@ -29,11 +29,16 @@ namespace XCodeBuilder
 #region IWriteableNode implementation
         void IWriteableNode.Write (System.IO.TextWriter writer)
         {
+            if (this.FileReferences.Count == 0)
+            {
+                return;
+            }
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXFileReference section */");
             foreach (var FileRef in this.FileReferences)
             {
-                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference;}};", FileRef.UUID, FileRef.Name);
+                (FileRef as IWriteableNode).Write(writer);
             }
             writer.WriteLine("/* End PBXFileReference section */");
         }
@@ -64,6 +69,11 @@ namespace XCodeBuilder
 #region IWriteableNode implementation
         void IWriteableNode.Write (System.IO.TextWriter writer)
         {
+            if (this.NativeTargets.Count == 0)
+            {
+                return;
+            }
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXNativeTarget section */");
             foreach (var nativeTarget in this.NativeTargets)
@@ -178,15 +188,47 @@ namespace XCodeBuilder
 
     public sealed class PBXFileReference : XCodeNodeData, IWriteableNode
     {
-        public PBXFileReference(string name)
+        public PBXFileReference(string name, string path)
             : base(name)
-        {}
+        {
+            // TODO: should this always be stripped?
+            this.Path = System.IO.Path.GetFileName(path);
+        }
+
+        public string Path
+        {
+            get;
+            private set;
+        }
+
+        public bool IsExecutable
+        {
+            get;
+            set;
+        }
+
+        public bool IsSourceCode
+        {
+            get;
+            set;
+        }
 
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
-            throw new System.NotImplementedException ();
+            if (this.IsExecutable)
+            {
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; path = {2}; sourceTree = BUILT_PRODUCTS_DIR;}};", this.UUID, this.Name, this.Path);
+            }
+            else if (this.IsSourceCode)
+            {
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = {2}; sourceTree = \"<group>\";}};", this.UUID, this.Name, this.Path);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Unknown PBXFileReference type");
+            }
         }
 
 #endregion
