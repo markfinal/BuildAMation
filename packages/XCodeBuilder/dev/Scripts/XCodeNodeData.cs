@@ -12,7 +12,7 @@ namespace XCodeBuilder
             this.FileReferences = new System.Collections.Generic.List<PBXFileReference>();
         }
 
-        public void AddFileRef(PBXFileReference fileRef)
+        public void Add(PBXFileReference fileRef)
         {
             lock (this.FileReferences)
             {
@@ -40,13 +40,19 @@ namespace XCodeBuilder
 #endregion
     }
 
-    public sealed class PBXProject : XCodeNodeData, IWriteableNode
+    public sealed class PBXNativeTargetSection : IWriteableNode, System.Collections.IEnumerable
     {
-        public PBXProject(string name)
-            : base(name)
+        public PBXNativeTargetSection()
         {
             this.NativeTargets = new System.Collections.Generic.List<PBXNativeTarget>();
-            this.FileReferences = new PBXFileReferenceSection();
+        }
+
+        public void Add(PBXNativeTarget target)
+        {
+            lock (this.NativeTargets)
+            {
+                this.NativeTargets.Add(target);
+            }
         }
 
         private System.Collections.Generic.List<PBXNativeTarget> NativeTargets
@@ -55,12 +61,42 @@ namespace XCodeBuilder
             set;
         }
 
-        public void AddNativeTarget(PBXNativeTarget target)
+#region IWriteableNode implementation
+        void IWriteableNode.Write (System.IO.TextWriter writer)
         {
-            lock (this.NativeTargets)
+            writer.WriteLine("");
+            writer.WriteLine("/* Begin PBXNativeTarget section */");
+            foreach (var nativeTarget in this.NativeTargets)
             {
-                this.NativeTargets.Add(target);
+                (nativeTarget as IWriteableNode).Write(writer);
             }
+            writer.WriteLine("/* End PBXNativeTarget section */");
+        }
+#endregion
+
+#region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        {
+            return this.NativeTargets.GetEnumerator();
+        }
+
+#endregion
+    }
+
+    public sealed class PBXProject : XCodeNodeData, IWriteableNode
+    {
+        public PBXProject(string name)
+            : base(name)
+        {
+            this.NativeTargets = new PBXNativeTargetSection();
+            this.FileReferences = new PBXFileReferenceSection();
+        }
+
+        public PBXNativeTargetSection NativeTargets
+        {
+            get;
+            private set;
         }
 
         public PBXFileReferenceSection FileReferences
@@ -78,7 +114,7 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t{0} /* Project object */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXProject;");
             writer.WriteLine("\t\t\ttargets = (");
-            foreach (var target in this.NativeTargets)
+            foreach (PBXNativeTarget target in this.NativeTargets)
             {
                 writer.WriteLine("\t\t\t\t{0} /* {1} */,", target.UUID, target.Name);
             }
@@ -86,11 +122,7 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t};");
             writer.WriteLine("/* End PBXProject section */");
 
-            foreach (var target in this.NativeTargets)
-            {
-                (target as IWriteableNode).Write(writer);
-            }
-
+            (this.NativeTargets as IWriteableNode).Write(writer);
             (this.FileReferences as IWriteableNode).Write(writer);
         }
 #endregion
@@ -112,8 +144,6 @@ namespace XCodeBuilder
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
-            writer.WriteLine("");
-            writer.WriteLine("/* Begin PBXNativeTarget section */");
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXNativeTarget;");
             writer.WriteLine("\t\t\tbuildPhases = (");
@@ -126,7 +156,6 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t\tproductType= \"com.apple.product-type.tool\";");
             writer.WriteLine("\t\t\tproductReference = {0};", this.ProductReference.UUID);
             writer.WriteLine("\t\t};");
-            writer.WriteLine("/* End PBXNativeTarget section */");
         }
 #endregion
     }
