@@ -33,7 +33,9 @@ namespace XCodeBuilder
             System.IO.Directory.CreateDirectory(rootDirectory);
             var projectPath = System.IO.Path.Combine(rootDirectory, projectFilename);
 
-            using (var projectFile = new System.IO.StreamWriter(projectPath, false, System.Text.Encoding.UTF8) as System.IO.TextWriter)
+            // cannot write a Byte-Ordering-Mark (BOM) into the project file
+            var encoding = new System.Text.UTF8Encoding(false);
+            using (var projectFile = new System.IO.StreamWriter(projectPath, false, encoding) as System.IO.TextWriter)
             {
                 this.WriteRoot(projectFile);
             }
