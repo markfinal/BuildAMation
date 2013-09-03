@@ -161,9 +161,9 @@ namespace XCodeBuilder
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = XCBuildConfiguration;");
-            writer.WriteLine("\t\t\tbuildSettings = (");
+            writer.WriteLine("\t\t\tbuildSettings = {");
             writer.WriteLine("\t\t\t\tPRODUCT_NAME = \"$(TARGET_NAME)\";");
-            writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t\t};");
             writer.WriteLine("\t\t\tname = {0};", this.Name);
             writer.WriteLine("\t\t};");
         }
