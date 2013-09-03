@@ -94,6 +94,55 @@ namespace XCodeBuilder
 #endregion
     }
 
+    public sealed class PBXBuildFileSection : IWriteableNode, System.Collections.IEnumerable
+    {
+        public PBXBuildFileSection()
+        {
+            this.BuildFiles = new System.Collections.Generic.List<PBXBuildFile>();
+        }
+
+        public void Add(PBXBuildFile buildFile)
+        {
+            lock (this.BuildFiles)
+            {
+                this.BuildFiles.Add(buildFile);
+            }
+        }
+
+        private System.Collections.Generic.List<PBXBuildFile> BuildFiles
+        {
+            get;
+            set;
+        }
+
+#region IWriteableNode implementation
+        void IWriteableNode.Write (System.IO.TextWriter writer)
+        {
+            if (this.BuildFiles.Count == 0)
+            {
+                return;
+            }
+
+            writer.WriteLine("");
+            writer.WriteLine("/* Begin PBXBuildFile section */");
+            foreach (var buildFile in this.BuildFiles)
+            {
+                (buildFile as IWriteableNode).Write(writer);
+            }
+            writer.WriteLine("/* End PBXBuildFile section */");
+        }
+#endregion
+
+#region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        {
+            return this.BuildFiles.GetEnumerator();
+        }
+
+#endregion
+    }
+
     public sealed class PBXProject : XCodeNodeData, IWriteableNode
     {
         public PBXProject(string name)
@@ -101,6 +150,7 @@ namespace XCodeBuilder
         {
             this.NativeTargets = new PBXNativeTargetSection();
             this.FileReferences = new PBXFileReferenceSection();
+            this.BuildFiles = new PBXBuildFileSection();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -110,6 +160,12 @@ namespace XCodeBuilder
         }
 
         public PBXFileReferenceSection FileReferences
+        {
+            get;
+            private set;
+        }
+
+        public PBXBuildFileSection BuildFiles
         {
             get;
             private set;
@@ -134,6 +190,7 @@ namespace XCodeBuilder
 
             (this.NativeTargets as IWriteableNode).Write(writer);
             (this.FileReferences as IWriteableNode).Write(writer);
+            (this.BuildFiles as IWriteableNode).Write(writer);
         }
 #endregion
     }
@@ -176,11 +233,17 @@ namespace XCodeBuilder
             : base(name)
         {}
 
+        public PBXFileReference FileReference
+        {
+            get;
+            set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
-            throw new System.NotImplementedException ();
+            writer.WriteLine("\t\t{0} /* {1} in TODO */ = {{ isa = PBXBuildFile; fileRef = {2} /* {1} */; }};", this.UUID, this.FileReference.Path, this.FileReference.UUID);
         }
 
 #endregion
