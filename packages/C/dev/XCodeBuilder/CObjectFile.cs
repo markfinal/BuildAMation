@@ -9,8 +9,8 @@ namespace XCodeBuilder
     {
         public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            var data = new XCodeNodeData();
-            success = false;
+            var data = new PBXBuildFile(moduleToBuild.OwningNode.ModuleName);
+            success = true;
             return data;
         }
     }

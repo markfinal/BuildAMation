@@ -9,9 +9,10 @@ namespace XCodeBuilder
     {
         public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)
         {
-            var data = new XCodeNodeData();
-            success = false;
-            return data;
+            //var data = new XCodeNodeData();
+            success = true;
+            //return data;
+            return null;
         }
     }
 }

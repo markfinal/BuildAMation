@@ -7,11 +7,10 @@ namespace XCodeBuilder
 {
     public sealed partial class XCodeBuilder : Opus.Core.IBuilder
     {
-        #region IBuilderPostExecute implementation
-        void Opus.Core.IBuilderPostExecute.PostExecute (Opus.Core.DependencyNodeCollection executedNodes)
+        public PBXProject Project
         {
-            throw new System.NotImplementedException ();
+            get;
+            private set;
         }
-        #endregion
     }
 }
