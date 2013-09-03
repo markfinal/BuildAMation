@@ -9,6 +9,7 @@ namespace XCodeBuilder
     {
         public object Build(C.Application moduleToBuild, out bool success)
         {
+            Opus.Core.Log.MessageAll("Application");
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 

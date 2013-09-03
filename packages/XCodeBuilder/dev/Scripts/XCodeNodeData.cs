@@ -5,6 +5,172 @@
 // <author>Mark Final</author>
 namespace XCodeBuilder
 {
+    public sealed class XCConfigurationListSection : IWriteableNode, System.Collections.IEnumerable
+    {
+        public XCConfigurationListSection()
+        {
+            this.ConfigurationLists = new System.Collections.Generic.List<XCConfigurationList>();
+        }
+
+        public void Add(XCConfigurationList configurationList)
+        {
+            lock (this.ConfigurationLists)
+            {
+                this.ConfigurationLists.Add(configurationList);
+            }
+        }
+
+        private System.Collections.Generic.List<XCConfigurationList> ConfigurationLists
+        {
+            get;
+            set;
+        }
+
+        #region IWriteableNode implementation
+        void IWriteableNode.Write (System.IO.TextWriter writer)
+        {
+            if (this.ConfigurationLists.Count == 0)
+            {
+                return;
+            }
+
+            writer.WriteLine("");
+            writer.WriteLine("/* Begin XCConfigurationList section */");
+            foreach (var configurationList in this.ConfigurationLists)
+            {
+                (configurationList as IWriteableNode).Write(writer);
+            }
+            writer.WriteLine("/* End XCConfigurationList section */");
+        }
+        #endregion
+
+        #region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        {
+            return this.ConfigurationLists.GetEnumerator();
+        }
+
+        #endregion
+    }
+
+    public sealed class XCConfigurationList : XCodeNodeData, IWriteableNode
+    {
+        public XCConfigurationList(string name)
+            : base(name)
+        {
+            this.BuildConfigurations = new System.Collections.Generic.List<XCBuildConfiguration>();
+        }
+
+        public XCodeNodeData Parent
+        {
+            get;
+            set;
+        }
+
+        public void Add(XCBuildConfiguration configuration)
+        {
+            lock (this.BuildConfigurations)
+            {
+                this.BuildConfigurations.Add(configuration);
+            }
+        }
+
+        private System.Collections.Generic.List<XCBuildConfiguration> BuildConfigurations
+        {
+            get;
+            set;
+        }
+
+#region IWriteableNode implementation
+
+        void IWriteableNode.Write (System.IO.TextWriter writer)
+        {
+            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, (this.Parent != null) ? this.Parent.GetType().Name : "TODO", this.Name);
+            writer.WriteLine("\t\t\tisa = XCConfigurationList;");
+            writer.WriteLine("\t\t\tbuildConfigurations = (");
+            foreach (var configuration in this.BuildConfigurations)
+            {
+                writer.WriteLine("\t\t\t\t{0} /* {1} */,", configuration.UUID, configuration.Name);
+            }
+            writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t};");
+        }
+
+#endregion
+    }
+
+    public sealed class XCBuildConfigurationSection : IWriteableNode, System.Collections.IEnumerable
+    {
+        public XCBuildConfigurationSection()
+        {
+            this.BuildConfigurations = new System.Collections.Generic.List<XCBuildConfiguration>();
+        }
+
+        public void Add(XCBuildConfiguration target)
+        {
+            lock (this.BuildConfigurations)
+            {
+                this.BuildConfigurations.Add(target);
+            }
+        }
+
+        private System.Collections.Generic.List<XCBuildConfiguration> BuildConfigurations
+        {
+            get;
+            set;
+        }
+
+        #region IWriteableNode implementation
+        void IWriteableNode.Write (System.IO.TextWriter writer)
+        {
+            if (this.BuildConfigurations.Count == 0)
+            {
+                return;
+            }
+
+            writer.WriteLine("");
+            writer.WriteLine("/* Begin XCBuildConfiguration section */");
+            foreach (var buildConfiguration in this.BuildConfigurations)
+            {
+                (buildConfiguration as IWriteableNode).Write(writer);
+            }
+            writer.WriteLine("/* End XCBuildConfiguration section */");
+        }
+        #endregion
+
+        #region IEnumerable implementation
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        {
+            return this.BuildConfigurations.GetEnumerator();
+        }
+
+        #endregion
+    }
+
+    public sealed class XCBuildConfiguration : XCodeNodeData, IWriteableNode
+    {
+        public XCBuildConfiguration(string name)
+            : base(name)
+        {}
+
+#region IWriteableNode implementation
+
+        void IWriteableNode.Write (System.IO.TextWriter writer)
+        {
+            writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
+            writer.WriteLine("\t\t\tisa = XCBuildConfiguration;");
+            writer.WriteLine("\t\t\tbuildSettings = (");
+            writer.WriteLine("\t\t\t\tPRODUCT_NAME = \"$(TARGET_NAME)\";");
+            writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t\tname = {0};", this.Name);
+            writer.WriteLine("\t\t};");
+        }
+
+#endregion
+    }
+
     public sealed class PBXFileReferenceSection : IWriteableNode
     {
         public PBXFileReferenceSection()
@@ -151,6 +317,8 @@ namespace XCodeBuilder
             this.NativeTargets = new PBXNativeTargetSection();
             this.FileReferences = new PBXFileReferenceSection();
             this.BuildFiles = new PBXBuildFileSection();
+            this.BuildConfigurations = new XCBuildConfigurationSection();
+            this.ConfigurationLists = new XCConfigurationListSection();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -166,6 +334,18 @@ namespace XCodeBuilder
         }
 
         public PBXBuildFileSection BuildFiles
+        {
+            get;
+            private set;
+        }
+
+        public XCBuildConfigurationSection BuildConfigurations
+        {
+            get;
+            private set;
+        }
+
+        public XCConfigurationListSection ConfigurationLists
         {
             get;
             private set;
@@ -191,6 +371,8 @@ namespace XCodeBuilder
             (this.NativeTargets as IWriteableNode).Write(writer);
             (this.FileReferences as IWriteableNode).Write(writer);
             (this.BuildFiles as IWriteableNode).Write(writer);
+            (this.BuildConfigurations as IWriteableNode).Write(writer);
+            (this.ConfigurationLists as IWriteableNode).Write(writer);
         }
 #endregion
     }
