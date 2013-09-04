@@ -17,7 +17,6 @@ namespace XCodeBuilder
             writer.WriteLine("\tobjectVersion = 45;");
             writer.WriteLine("\tobjects = {");
             (this.Project as IWriteableNode).Write(writer);
-            writer.WriteLine("");
             writer.WriteLine("\t};");
             writer.WriteLine("\trootObject = {0} /* Project object */;", this.Project.UUID);
             writer.WriteLine("}");

@@ -15,6 +15,7 @@ namespace XCodeBuilder
             this.BuildFiles = new PBXBuildFileSection();
             this.BuildConfigurations = new XCBuildConfigurationSection();
             this.ConfigurationLists = new XCConfigurationListSection();
+            this.Groups = new PBXGroupSection();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -62,6 +63,12 @@ namespace XCodeBuilder
             }
         }
 
+        public PBXGroupSection Groups
+        {
+            get;
+            private set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
@@ -93,6 +100,7 @@ namespace XCodeBuilder
             (this.BuildFiles as IWriteableNode).Write(writer);
             (this.BuildConfigurations as IWriteableNode).Write(writer);
             (this.ConfigurationLists as IWriteableNode).Write(writer);
+            (this.Groups as IWriteableNode).Write(writer);
         }
 #endregion
     }
