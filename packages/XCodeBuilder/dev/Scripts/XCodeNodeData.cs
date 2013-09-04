@@ -395,6 +395,22 @@ namespace XCodeBuilder
             private set;
         }
 
+        private XCConfigurationList _BuildConfigurationList;
+        public XCConfigurationList BuildConfigurationList
+        {
+            get
+            {
+                return this._BuildConfigurationList;
+            }
+
+            set
+            {
+                this._BuildConfigurationList = value;
+                // TODO: can't do this yet as we're sharing configuration lists
+                //value.Parent = this;
+            }
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
@@ -403,6 +419,7 @@ namespace XCodeBuilder
             writer.WriteLine("/* Begin PBXProject section */");
             writer.WriteLine("\t\t{0} /* Project object */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXProject;");
+            writer.WriteLine("\t\t\tbuildConfigurationList = {0} /* Build configuration list for PBXProject \"{1}\" */;", this.BuildConfigurationList.UUID, this.Name);
             writer.WriteLine("\t\t\ttargets = (");
             foreach (PBXNativeTarget target in this.NativeTargets)
             {

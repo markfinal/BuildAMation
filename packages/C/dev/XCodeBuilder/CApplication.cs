@@ -29,6 +29,9 @@ namespace XCodeBuilder
             configurationList.AddUnique(buildConfiguration);
             data.BuildConfigurationList = configurationList;
 
+            // TODO: this probably should not be shared with the native target
+            this.Project.BuildConfigurationList = configurationList;
+
             success = true;
             return data;
         }
