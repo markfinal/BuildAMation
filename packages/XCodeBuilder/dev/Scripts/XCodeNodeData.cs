@@ -119,6 +119,8 @@ namespace XCodeBuilder
             {
                 writer.WriteLine("\t\t\t\t{0} /* {1} */,", configuration.UUID, configuration.Name);
             }
+            writer.WriteLine("\t\t\tdefaultConfigurationIsVisible = 0;");
+            writer.WriteLine("\t\t\tdefaultConfigurationName = {0};", this.BuildConfigurations[0].Name);
             writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t};");
         }
@@ -420,6 +422,14 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t{0} /* Project object */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXProject;");
             writer.WriteLine("\t\t\tbuildConfigurationList = {0} /* Build configuration list for PBXProject \"{1}\" */;", this.BuildConfigurationList.UUID, this.Name);
+            writer.WriteLine("\t\t\tcompatibilityVersion = \"Xcode 3.2\";");
+            writer.WriteLine("\t\t\tdevelopmentRegion = English;");
+            writer.WriteLine("\t\t\thasScannedForEncodings = 0;");
+            writer.WriteLine("\t\t\tknownRegions = (");
+            writer.WriteLine("\t\t\t\ten,");
+            writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t\tprojectDirPath = \"\";");
+            writer.WriteLine("\t\t\tprojectRoot = \"\";");
             writer.WriteLine("\t\t\ttargets = (");
             foreach (PBXNativeTarget target in this.NativeTargets)
             {
