@@ -29,6 +29,25 @@ namespace XCodeBuilder
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
+            if (0 == this.Children.Count)
+            {
+                return;
+            }
+            if (this.SourceTree.Equals(string.Empty))
+            {
+                throw new Opus.Core.Exception("Source tree not set");
+            }
+
+            writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
+            writer.WriteLine("\t\t\tisa = PBXGroup;");
+            writer.WriteLine("\t\t\tchildren = (");
+            foreach (var child in this.Children)
+            {
+                writer.WriteLine("\t\t\t\t{0} /* {1} */,", child.UUID, child.Name);
+            }
+            writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t\tsourceTree = \"{0}\";", this.SourceTree);
+            writer.WriteLine("\t\t};");
         }
 
 #endregion
