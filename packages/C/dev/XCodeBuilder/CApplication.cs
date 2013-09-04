@@ -31,6 +31,33 @@ namespace XCodeBuilder
             nativeTargetConfigurationList.AddUnique(buildConfiguration);
             data.BuildConfigurationList = nativeTargetConfigurationList;
 
+            // adding the group for the target
+            var group = new PBXGroup(moduleToBuild.OwningNode.ModuleName);
+            group.SourceTree = "<group>";
+            group.Path = moduleToBuild.OwningNode.ModuleName;
+            foreach (var source in moduleToBuild.OwningNode.Children)
+            {
+                if (source.Module is Opus.Core.IModuleCollection)
+                {
+                    Opus.Core.Log.MessageAll("Collective source; {0}", source.UniqueModuleName);
+                    foreach (var source2 in source.Children)
+                    {
+                        Opus.Core.Log.MessageAll("\tsource; {0}", source2.UniqueModuleName);
+                        var sourceData = source2.Data as XCodeNodeData;
+                        Opus.Core.Log.MessageAll("\t{0}", sourceData.Name);
+                        group.Children.Add(sourceData);
+                    }
+                }
+                else
+                {
+                    Opus.Core.Log.MessageAll("source; {0}", source.UniqueModuleName);
+                    var sourceData = source.Data as XCodeNodeData;
+                    group.Children.Add(sourceData);
+                }
+            }
+            this.Project.Groups.Add(group);
+            this.Project.MainGroup.Children.Add(group);
+
             success = true;
             return data;
         }
