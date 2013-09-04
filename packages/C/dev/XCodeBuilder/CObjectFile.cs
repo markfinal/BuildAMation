@@ -17,10 +17,8 @@ namespace XCodeBuilder
 
             var target = moduleToBuild.OwningNode.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
-            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
-
-            var configurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='));
-            configurationList.AddUnique(buildConfiguration);
+            /*var buildConfiguration = */this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
+            // TODO: more will happen with configurations once we start to add options to it
 
             var data = new PBXBuildFile(moduleToBuild.OwningNode.ModuleName);
             data.FileReference = fileRef;

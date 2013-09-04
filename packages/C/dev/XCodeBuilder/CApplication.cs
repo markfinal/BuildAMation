@@ -25,12 +25,15 @@ namespace XCodeBuilder
             var baseTarget = (Opus.Core.BaseTarget)target;
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
 
-            var configurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='));
-            configurationList.AddUnique(buildConfiguration);
-            data.BuildConfigurationList = configurationList;
+            // adding the configuration list for the PBXNativeTarget
+            var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), data);
+            nativeTargetConfigurationList.AddUnique(buildConfiguration);
+            data.BuildConfigurationList = nativeTargetConfigurationList;
 
-            // TODO: this probably should not be shared with the native target
-            this.Project.BuildConfigurationList = configurationList;
+            // adding a separate configuration list for the PBXProject
+            var projectConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), this.Project);
+            projectConfigurationList.AddUnique(buildConfiguration);
+            this.Project.BuildConfigurationList = projectConfigurationList;
 
             success = true;
             return data;

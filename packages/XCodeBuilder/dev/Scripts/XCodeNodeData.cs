@@ -20,13 +20,13 @@ namespace XCodeBuilder
             }
         }
 
-        public XCConfigurationList Get(string name)
+        public XCConfigurationList Get(string name, XCodeNodeData owner)
         {
             lock (this.ConfigurationLists)
             {
                 foreach (var configurationList in this.ConfigurationLists)
                 {
-                    if (configurationList.Name == name)
+                    if ((configurationList.Name == name) && (configurationList.Parent == owner))
                     {
                         return configurationList;
                     }
@@ -112,16 +112,16 @@ namespace XCodeBuilder
                 throw new Opus.Core.Exception("Parent of this configuration list has not been set");
             }
 
-            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, this.Parent.GetType().Name, this.Name);
+            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, this.Parent.GetType().Name, this.Parent.Name);
             writer.WriteLine("\t\t\tisa = XCConfigurationList;");
             writer.WriteLine("\t\t\tbuildConfigurations = (");
             foreach (var configuration in this.BuildConfigurations)
             {
                 writer.WriteLine("\t\t\t\t{0} /* {1} */,", configuration.UUID, configuration.Name);
             }
+            writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t\tdefaultConfigurationIsVisible = 0;");
             writer.WriteLine("\t\t\tdefaultConfigurationName = {0};", this.BuildConfigurations[0].Name);
-            writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t};");
         }
 
@@ -408,8 +408,7 @@ namespace XCodeBuilder
             set
             {
                 this._BuildConfigurationList = value;
-                // TODO: can't do this yet as we're sharing configuration lists
-                //value.Parent = this;
+                value.Parent = this;
             }
         }
 
