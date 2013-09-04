@@ -26,7 +26,7 @@ namespace XCodeBuilder
             {
                 foreach (var configurationList in this.ConfigurationLists)
                 {
-                    if ((configurationList.Name == name) && (configurationList.Parent == owner))
+                    if ((configurationList.Name == name) && (configurationList.Owner == owner))
                     {
                         return configurationList;
                     }
@@ -80,7 +80,7 @@ namespace XCodeBuilder
             this.BuildConfigurations = new System.Collections.Generic.List<XCBuildConfiguration>();
         }
 
-        public XCodeNodeData Parent
+        public XCodeNodeData Owner
         {
             get;
             set;
@@ -107,12 +107,12 @@ namespace XCodeBuilder
 
         void IWriteableNode.Write (System.IO.TextWriter writer)
         {
-            if (null == this.Parent)
+            if (null == this.Owner)
             {
-                throw new Opus.Core.Exception("Parent of this configuration list has not been set");
+                throw new Opus.Core.Exception("Owner of this configuration list has not been set");
             }
 
-            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, this.Parent.GetType().Name, this.Parent.Name);
+            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, this.Owner.GetType().Name, this.Owner.Name);
             writer.WriteLine("\t\t\tisa = XCConfigurationList;");
             writer.WriteLine("\t\t\tbuildConfigurations = (");
             foreach (var configuration in this.BuildConfigurations)
@@ -408,7 +408,7 @@ namespace XCodeBuilder
             set
             {
                 this._BuildConfigurationList = value;
-                value.Parent = this;
+                value.Owner = this;
             }
         }
 
@@ -470,7 +470,7 @@ namespace XCodeBuilder
             set
             {
                 this._BuildConfigurationList = value;
-                value.Parent = this;
+                value.Owner = this;
             }
         }
 
