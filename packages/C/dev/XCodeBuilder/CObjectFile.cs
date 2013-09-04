@@ -17,12 +17,10 @@ namespace XCodeBuilder
 
             var target = moduleToBuild.OwningNode.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
-            var buildConfiguration = new XCBuildConfiguration(baseTarget.ConfigurationName('='));
-            this.Project.BuildConfigurations.Add(buildConfiguration);
+            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
 
-            var configurationList = new XCConfigurationList(baseTarget.ConfigurationName('='));
-            configurationList.Add(buildConfiguration);
-            this.Project.ConfigurationLists.Add(configurationList);
+            var configurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='));
+            configurationList.AddUnique(buildConfiguration);
 
             var data = new PBXBuildFile(moduleToBuild.OwningNode.ModuleName);
             data.FileReference = fileRef;

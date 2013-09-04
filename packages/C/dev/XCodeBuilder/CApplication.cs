@@ -21,6 +21,14 @@ namespace XCodeBuilder
             data.ProductReference = fileRef;
             this.Project.NativeTargets.Add(data);
 
+            var target = moduleToBuild.OwningNode.Target;
+            var baseTarget = (Opus.Core.BaseTarget)target;
+            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
+
+            var configurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='));
+            configurationList.AddUnique(buildConfiguration);
+            data.BuildConfigurationList = configurationList;
+
             success = true;
             return data;
         }

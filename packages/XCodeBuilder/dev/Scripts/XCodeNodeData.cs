@@ -20,6 +20,24 @@ namespace XCodeBuilder
             }
         }
 
+        public XCConfigurationList Get(string name)
+        {
+            lock (this.ConfigurationLists)
+            {
+                foreach (var configurationList in this.ConfigurationLists)
+                {
+                    if (configurationList.Name == name)
+                    {
+                        return configurationList;
+                    }
+                }
+
+                var newConfigurationList = new XCConfigurationList(name);
+                this.ConfigurationLists.Add(newConfigurationList);
+                return newConfigurationList;
+            }
+        }
+
         private System.Collections.Generic.List<XCConfigurationList> ConfigurationLists
         {
             get;
@@ -68,11 +86,14 @@ namespace XCodeBuilder
             set;
         }
 
-        public void Add(XCBuildConfiguration configuration)
+        public void AddUnique(XCBuildConfiguration configuration)
         {
             lock (this.BuildConfigurations)
             {
-                this.BuildConfigurations.Add(configuration);
+                if (!this.BuildConfigurations.Contains(configuration))
+                {
+                    this.BuildConfigurations.Add(configuration);
+                }
             }
         }
 
@@ -86,7 +107,12 @@ namespace XCodeBuilder
 
         void IWriteableNode.Write (System.IO.TextWriter writer)
         {
-            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, (this.Parent != null) ? this.Parent.GetType().Name : "TODO", this.Name);
+            if (null == this.Parent)
+            {
+                throw new Opus.Core.Exception("Parent of this configuration list has not been set");
+            }
+
+            writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, this.Parent.GetType().Name, this.Name);
             writer.WriteLine("\t\t\tisa = XCConfigurationList;");
             writer.WriteLine("\t\t\tbuildConfigurations = (");
             foreach (var configuration in this.BuildConfigurations)
@@ -112,6 +138,24 @@ namespace XCodeBuilder
             lock (this.BuildConfigurations)
             {
                 this.BuildConfigurations.Add(target);
+            }
+        }
+
+        public XCBuildConfiguration Get(string name)
+        {
+            lock(this.BuildConfigurations)
+            {
+                foreach (var buildConfiguration in this.BuildConfigurations)
+                {
+                    if (buildConfiguration.Name == name)
+                    {
+                        return buildConfiguration;
+                    }
+                }
+
+                var newBuildConfiguration = new XCBuildConfiguration(name);
+                this.Add(newBuildConfiguration);
+                return newBuildConfiguration;
             }
         }
 
@@ -389,12 +433,28 @@ namespace XCodeBuilder
             set;
         }
 
+        private XCConfigurationList _BuildConfigurationList;
+        public XCConfigurationList BuildConfigurationList
+        {
+            get
+            {
+                return this._BuildConfigurationList;
+            }
+
+            set
+            {
+                this._BuildConfigurationList = value;
+                value.Parent = this;
+            }
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXNativeTarget;");
+            writer.WriteLine("\t\t\tbuildConfigurationList = {0} /* Build configuration list for PBXNativeTarget \"{1}\" */;", this.BuildConfigurationList.UUID, this.Name);
             writer.WriteLine("\t\t\tbuildPhases = (");
             writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t\tbuildRules = (");
