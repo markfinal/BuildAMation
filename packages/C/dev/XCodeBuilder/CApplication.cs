@@ -30,11 +30,6 @@ namespace XCodeBuilder
             nativeTargetConfigurationList.AddUnique(buildConfiguration);
             data.BuildConfigurationList = nativeTargetConfigurationList;
 
-            // adding a separate configuration list for the PBXProject
-            var projectConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), this.Project);
-            projectConfigurationList.AddUnique(buildConfiguration);
-            this.Project.BuildConfigurationList = projectConfigurationList;
-
             success = true;
             return data;
         }

@@ -17,6 +17,8 @@ namespace XCodeBuilder
 
             var target = moduleToBuild.OwningNode.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
+
+            // TODO: this has to be separate from the project configuration
             /*var buildConfiguration = */this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
             // TODO: more will happen with configurations once we start to add options to it
 

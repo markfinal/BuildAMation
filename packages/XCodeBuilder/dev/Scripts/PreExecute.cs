@@ -13,6 +13,17 @@ namespace XCodeBuilder
         {
             var mainPackage = Opus.Core.State.PackageInfo[0];
             this.Project = new PBXProject(mainPackage.Name);
+
+            // create the project configuration lists
+            foreach (var configuration in Opus.Core.State.BuildConfigurations)
+            {
+                var configurationName = configuration.ToString();
+                var buildConfiguration = this.Project.BuildConfigurations.Get(configurationName);
+
+                var projectConfigurationList = this.Project.ConfigurationLists.Get(configurationName, this.Project);
+                projectConfigurationList.AddUnique(buildConfiguration);
+                this.Project.BuildConfigurationList = projectConfigurationList;
+            }
         }
 
 #endregion
