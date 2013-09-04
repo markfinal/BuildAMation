@@ -16,6 +16,7 @@ namespace XCodeBuilder
             this.BuildConfigurations = new XCBuildConfigurationSection();
             this.ConfigurationLists = new XCConfigurationListSection();
             this.Groups = new PBXGroupSection();
+            this.SourceBuildPhases = new PBXSourcesBuildPhaseSection();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -69,6 +70,12 @@ namespace XCodeBuilder
             private set;
         }
 
+        public PBXSourcesBuildPhaseSection SourceBuildPhases
+        {
+            get;
+            private set;
+        }
+
         public PBXGroup MainGroup
         {
             get;
@@ -115,6 +122,7 @@ namespace XCodeBuilder
             (this.BuildConfigurations as IWriteableNode).Write(writer);
             (this.ConfigurationLists as IWriteableNode).Write(writer);
             (this.Groups as IWriteableNode).Write(writer);
+            (this.SourceBuildPhases as IWriteableNode).Write(writer);
         }
 #endregion
     }
