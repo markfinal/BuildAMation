@@ -9,7 +9,7 @@ namespace XCodeBuilder
     {
         public object Build(C.Application moduleToBuild, out bool success)
         {
-            Opus.Core.Log.MessageAll("Application");
+            Opus.Core.Log.MessageAll("Application {0}", moduleToBuild.OwningNode.ModuleName);
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
@@ -23,7 +23,7 @@ namespace XCodeBuilder
 
             var target = moduleToBuild.OwningNode.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
-            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
+            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleToBuild.OwningNode.ModuleName);
 
             // adding the configuration list for the PBXNativeTarget
             var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), data);

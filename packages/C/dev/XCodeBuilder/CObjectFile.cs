@@ -9,7 +9,7 @@ namespace XCodeBuilder
     {
         public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            Opus.Core.Log.MessageAll("ObjectFile");
+            Opus.Core.Log.MessageAll("ObjectFile {0}", moduleToBuild.OwningNode.ModuleName);
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
             var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, sourceFile);
             fileRef.IsSourceCode = true;
@@ -19,7 +19,7 @@ namespace XCodeBuilder
             var baseTarget = (Opus.Core.BaseTarget)target;
 
             // TODO: this has to be separate from the project configuration
-            /*var buildConfiguration = */this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='));
+            /*var buildConfiguration = */this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleToBuild.OwningNode.ModuleName);
             // TODO: more will happen with configurations once we start to add options to it
 
             var data = new PBXBuildFile(moduleToBuild.OwningNode.ModuleName);

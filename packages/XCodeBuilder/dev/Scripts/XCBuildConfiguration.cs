@@ -7,9 +7,17 @@ namespace XCodeBuilder
 {
     public sealed class XCBuildConfiguration : XCodeNodeData, IWriteableNode
     {
-        public XCBuildConfiguration(string name)
+        public XCBuildConfiguration(string name, string moduleName)
             : base(name)
-        {}
+        {
+            this.ModuleName = moduleName;
+        }
+
+        public string ModuleName
+        {
+            get;
+            private set;
+        }
 
 #region IWriteableNode implementation
 

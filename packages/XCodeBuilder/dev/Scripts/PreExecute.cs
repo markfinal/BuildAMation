@@ -18,7 +18,7 @@ namespace XCodeBuilder
             foreach (var configuration in Opus.Core.State.BuildConfigurations)
             {
                 var configurationName = configuration.ToString();
-                var buildConfiguration = this.Project.BuildConfigurations.Get(configurationName);
+                var buildConfiguration = this.Project.BuildConfigurations.Get(configurationName, "PBXProjectRoot");
 
                 var projectConfigurationList = this.Project.ConfigurationLists.Get(configurationName, this.Project);
                 projectConfigurationList.AddUnique(buildConfiguration);

@@ -20,19 +20,19 @@ namespace XCodeBuilder
             }
         }
 
-        public XCBuildConfiguration Get(string name)
+        public XCBuildConfiguration Get(string name, string moduleName)
         {
             lock(this.BuildConfigurations)
             {
                 foreach (var buildConfiguration in this.BuildConfigurations)
                 {
-                    if (buildConfiguration.Name == name)
+                    if ((buildConfiguration.Name == name) && (buildConfiguration.ModuleName == moduleName))
                     {
                         return buildConfiguration;
                     }
                 }
 
-                var newBuildConfiguration = new XCBuildConfiguration(name);
+                var newBuildConfiguration = new XCBuildConfiguration(name, moduleName);
                 this.Add(newBuildConfiguration);
                 return newBuildConfiguration;
             }
