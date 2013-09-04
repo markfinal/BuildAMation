@@ -69,6 +69,18 @@ namespace XCodeBuilder
             private set;
         }
 
+        public PBXGroup MainGroup
+        {
+            get;
+            set;
+        }
+
+        public PBXGroup ProductsGroup
+        {
+            get;
+            set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
@@ -84,6 +96,8 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t\tknownRegions = (");
             writer.WriteLine("\t\t\t\ten,");
             writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t\tmainGroup = {0};", this.MainGroup.UUID);
+            writer.WriteLine("\t\t\tproductRefGroup = {0} /* {1} */;", this.ProductsGroup.UUID, this.ProductsGroup.Name);
             writer.WriteLine("\t\t\tprojectDirPath = \"\";");
             writer.WriteLine("\t\t\tprojectRoot = \"\";");
             writer.WriteLine("\t\t\ttargets = (");

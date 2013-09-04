@@ -13,6 +13,12 @@ namespace XCodeBuilder
             this.Children = new System.Collections.Generic.List<XCodeNodeData>();
         }
 
+        public string Path
+        {
+            get;
+            set;
+        }
+
         public string SourceTree
         {
             get;
@@ -33,12 +39,20 @@ namespace XCodeBuilder
             {
                 return;
             }
-            if (this.SourceTree.Equals(string.Empty))
+            if (string.IsNullOrEmpty(this.SourceTree))
             {
                 throw new Opus.Core.Exception("Source tree not set");
             }
 
-            writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
+            if (string.IsNullOrEmpty(this.Name))
+            {
+                // this is the main group
+                writer.WriteLine("\t\t{0} = {{", this.UUID);
+            }
+            else
+            {
+                writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
+            }
             writer.WriteLine("\t\t\tisa = PBXGroup;");
             writer.WriteLine("\t\t\tchildren = (");
             foreach (var child in this.Children)
@@ -46,6 +60,17 @@ namespace XCodeBuilder
                 writer.WriteLine("\t\t\t\t{0} /* {1} */,", child.UUID, child.Name);
             }
             writer.WriteLine("\t\t\t);");
+            if (string.IsNullOrEmpty(this.Path))
+            {
+                if (!string.IsNullOrEmpty(this.Name))
+                {
+                    writer.WriteLine("\t\t\tname = {0};", this.Name);
+                }
+            }
+            else
+            {
+                writer.WriteLine("\t\t\tpath = {0};", this.Path);
+            }
             writer.WriteLine("\t\t\tsourceTree = \"{0}\";", this.SourceTree);
             writer.WriteLine("\t\t};");
         }
