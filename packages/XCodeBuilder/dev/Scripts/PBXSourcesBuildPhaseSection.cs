@@ -20,6 +20,24 @@ namespace XCodeBuilder
             }
         }
 
+        public PBXSourcesBuildPhase Get(string name, string moduleName)
+        {
+            lock (this.SourcesBuildPhase)
+            {
+                foreach (var buildPhase in this.SourcesBuildPhase)
+                {
+                    if ((buildPhase.Name == name) && (buildPhase.ModuleName == moduleName))
+                    {
+                        return buildPhase;
+                    }
+                }
+
+                var newBuildPhase = new PBXSourcesBuildPhase(name, moduleName);
+                this.SourcesBuildPhase.Add(newBuildPhase);
+                return newBuildPhase;
+            }
+        }
+
         private System.Collections.Generic.List<PBXSourcesBuildPhase> SourcesBuildPhase
         {
             get;
