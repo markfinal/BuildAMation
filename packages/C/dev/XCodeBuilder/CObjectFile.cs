@@ -25,6 +25,11 @@ namespace XCodeBuilder
             var data = new PBXBuildFile(moduleToBuild.OwningNode.ModuleName);
             data.FileReference = fileRef;
             this.Project.BuildFiles.Add(data);
+
+            var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleToBuild.OwningNode.ModuleName);
+            sourcesBuildPhase.Files.Add(data);
+            data.BuildPhase = sourcesBuildPhase;
+
             success = true;
             return data;
         }

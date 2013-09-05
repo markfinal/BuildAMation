@@ -17,11 +17,26 @@ namespace XCodeBuilder
             set;
         }
 
+        public PBXSourcesBuildPhase BuildPhase
+        {
+            get;
+            set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
-            writer.WriteLine("\t\t{0} /* {1} in TODO */ = {{ isa = PBXBuildFile; fileRef = {2} /* {1} */; }};", this.UUID, this.FileReference.Path, this.FileReference.UUID);
+            if (this.FileReference == null)
+            {
+                throw new Opus.Core.Exception("File reference not set on this build file");
+            }
+            if (this.BuildPhase == null)
+            {
+                throw new Opus.Core.Exception("Build phase not set on this build file");
+            }
+
+            writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{ isa = PBXBuildFile; fileRef = {3} /* {1} */; }};", this.UUID, this.FileReference.Path, this.BuildPhase.Name, this.FileReference.UUID);
         }
 
 #endregion
