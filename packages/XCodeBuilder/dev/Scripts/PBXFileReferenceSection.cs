@@ -20,6 +20,14 @@ namespace XCodeBuilder
             }
         }
 
+        public void Insert(PBXFileReference fileRef, int index)
+        {
+            lock (this.FileReferences)
+            {
+                this.FileReferences.Insert(0, fileRef);
+            }
+        }
+
         private System.Collections.Generic.List<PBXFileReference> FileReferences
         {
             get;

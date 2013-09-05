@@ -42,7 +42,7 @@ namespace XCodeBuilder
             }
             else if (this.IsSourceCode)
             {
-                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.Name, this.Path);
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = {1}; sourceTree = \"<group>\"; }};", this.UUID, this.Path);
             }
             else
             {
