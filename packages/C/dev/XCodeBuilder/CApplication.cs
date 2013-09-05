@@ -63,6 +63,12 @@ namespace XCodeBuilder
             var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleToBuild.OwningNode.ModuleName);
             data.BuildPhases.Add(sourcesBuildPhase);
 
+            var copyFilesBuildPhase = this.Project.CopyFilesBuildPhases.Get("CopyFiles", moduleToBuild.OwningNode.ModuleName);
+            data.BuildPhases.Add(copyFilesBuildPhase);
+
+            var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleToBuild.OwningNode.ModuleName);
+            data.BuildPhases.Add(frameworksBuildPhase);
+
             success = true;
             return data;
         }

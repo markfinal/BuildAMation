@@ -10,7 +10,7 @@ namespace XCodeBuilder
         public PBXNativeTarget(string name)
             : base (name)
         {
-            this.BuildPhases = new System.Collections.Generic.List<PBXSourcesBuildPhase>();
+            this.BuildPhases = new System.Collections.Generic.List<BuildPhase>();
         }
 
         public PBXFileReference ProductReference
@@ -34,7 +34,7 @@ namespace XCodeBuilder
             }
         }
 
-        public System.Collections.Generic.List<PBXSourcesBuildPhase> BuildPhases
+        public System.Collections.Generic.List<BuildPhase> BuildPhases
         {
             get;
             private set;
