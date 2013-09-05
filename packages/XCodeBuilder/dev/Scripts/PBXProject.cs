@@ -92,6 +92,11 @@ namespace XCodeBuilder
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
+            (this.BuildFiles as IWriteableNode).Write(writer);
+            (this.FileReferences as IWriteableNode).Write(writer);
+            (this.Groups as IWriteableNode).Write(writer);
+            (this.NativeTargets as IWriteableNode).Write(writer);
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXProject section */");
             writer.WriteLine("\t\t{0} /* Project object */ = {{", this.UUID);
@@ -116,13 +121,9 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t};");
             writer.WriteLine("/* End PBXProject section */");
 
-            (this.NativeTargets as IWriteableNode).Write(writer);
-            (this.FileReferences as IWriteableNode).Write(writer);
-            (this.BuildFiles as IWriteableNode).Write(writer);
+            (this.SourceBuildPhases as IWriteableNode).Write(writer);
             (this.BuildConfigurations as IWriteableNode).Write(writer);
             (this.ConfigurationLists as IWriteableNode).Write(writer);
-            (this.Groups as IWriteableNode).Write(writer);
-            (this.SourceBuildPhases as IWriteableNode).Write(writer);
         }
 #endregion
     }
