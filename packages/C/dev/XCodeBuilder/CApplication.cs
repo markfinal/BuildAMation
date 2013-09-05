@@ -45,16 +45,16 @@ namespace XCodeBuilder
                     foreach (var source2 in source.Children)
                     {
                         Opus.Core.Log.MessageAll("\tsource; {0}", source2.UniqueModuleName);
-                        var sourceData = source2.Data as XCodeNodeData;
+                        var sourceData = source2.Data as PBXBuildFile;
                         Opus.Core.Log.MessageAll("\t{0}", sourceData.Name);
-                        group.Children.Add(sourceData);
+                        group.Children.Add(sourceData.FileReference);
                     }
                 }
                 else
                 {
                     Opus.Core.Log.MessageAll("source; {0}", source.UniqueModuleName);
-                    var sourceData = source.Data as XCodeNodeData;
-                    group.Children.Add(sourceData);
+                    var sourceData = source.Data as PBXBuildFile;
+                    group.Children.Add(sourceData.FileReference);
                 }
             }
             this.Project.Groups.Add(group);

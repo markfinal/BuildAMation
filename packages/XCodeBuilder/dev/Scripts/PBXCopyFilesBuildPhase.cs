@@ -19,6 +19,8 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXCopyFilesBuildPhase;");
             writer.WriteLine("\t\t\tbuildActionMask = 2147483647;");
+            writer.WriteLine("\t\t\tdstPath = /usr/share/man/man1/;");
+            writer.WriteLine("\t\t\tdstSubfolderSpec = 0;");
             writer.WriteLine("\t\t\tfiles = (");
             foreach (var file in this.Files)
             {
