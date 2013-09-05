@@ -58,6 +58,9 @@ namespace XCodeBuilder
             this.Project.Groups.Add(group);
             this.Project.MainGroup.Children.Add(group);
 
+            var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleToBuild.OwningNode.ModuleName);
+            data.BuildPhases.Add(sourcesBuildPhase);
+
             success = true;
             return data;
         }

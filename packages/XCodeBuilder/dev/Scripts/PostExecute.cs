@@ -14,7 +14,7 @@ namespace XCodeBuilder
             writer.WriteLine("\tarchiveVersion = 1;");
             writer.WriteLine("\tclasses = {");
             writer.WriteLine("\t};");
-            writer.WriteLine("\tobjectVersion = 45;");
+            writer.WriteLine("\tobjectVersion = 46;");
             writer.WriteLine("\tobjects = {");
             (this.Project as IWriteableNode).Write(writer);
             writer.WriteLine("\t};");

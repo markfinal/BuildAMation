@@ -101,6 +101,10 @@ namespace XCodeBuilder
             writer.WriteLine("/* Begin PBXProject section */");
             writer.WriteLine("\t\t{0} /* Project object */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXProject;");
+            writer.WriteLine("\t\t\tattributes = {");
+            writer.WriteLine("\t\t\t\tLastUpgradeCheck = 0460;");
+            writer.WriteLine("\t\t\t\tORGANIZATIONNAME = \"Mark Final\";");
+            writer.WriteLine("\t\t\t};");
             writer.WriteLine("\t\t\tbuildConfigurationList = {0} /* Build configuration list for PBXProject \"{1}\" */;", this.BuildConfigurationList.UUID, this.Name);
             writer.WriteLine("\t\t\tcompatibilityVersion = \"Xcode 3.2\";");
             writer.WriteLine("\t\t\tdevelopmentRegion = English;");

@@ -28,15 +28,17 @@ namespace XCodeBuilder
             // create a products group
             var productsGroup = new PBXGroup("Products");
             productsGroup.SourceTree = "<group>";
-            this.Project.Groups.Add(productsGroup);
             this.Project.ProductsGroup = productsGroup;
 
             // create a main group
             var mainGroup = new PBXGroup(string.Empty);
             mainGroup.SourceTree = "<group>";
             mainGroup.Children.Add(productsGroup);
-            this.Project.Groups.Add(mainGroup);
             this.Project.MainGroup = mainGroup;
+
+            // add them in this order
+            this.Project.Groups.Add(mainGroup);
+            this.Project.Groups.Add(productsGroup);
         }
 
 #endregion
