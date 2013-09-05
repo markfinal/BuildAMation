@@ -5,25 +5,11 @@
 // <author>Mark Final</author>
 namespace XCodeBuilder
 {
-    public sealed class PBXSourcesBuildPhase : XCodeNodeData, IWriteableNode
+    public sealed class PBXSourcesBuildPhase : BuildPhase, IWriteableNode
     {
         public PBXSourcesBuildPhase(string name, string moduleName)
-            : base(name)
+            : base(name, moduleName)
         {
-            this.ModuleName = moduleName;
-            this.Files = new System.Collections.Generic.List<PBXBuildFile>();
-        }
-
-        public string ModuleName
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<PBXBuildFile> Files
-        {
-            get;
-            private set;
         }
 
 #region IWriteableNode implementation
