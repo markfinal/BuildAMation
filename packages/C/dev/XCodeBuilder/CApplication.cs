@@ -13,7 +13,7 @@ namespace XCodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, outputPath);
+            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, outputPath, this.RootUri);
             fileRef.IsExecutable = true;
             //this.Project.FileReferences.Add(fileRef);
             // TODO: intentionally add this to the front for consistency with XCode generated projects

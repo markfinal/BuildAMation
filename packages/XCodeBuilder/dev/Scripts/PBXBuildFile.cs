@@ -36,7 +36,7 @@ namespace XCodeBuilder
                 throw new Opus.Core.Exception("Build phase not set on this build file");
             }
 
-            writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; }};", this.UUID, this.FileReference.Path, this.BuildPhase.Name, this.FileReference.UUID);
+            writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; }};", this.UUID, this.FileReference.ShortPath, this.BuildPhase.Name, this.FileReference.UUID);
         }
 
 #endregion

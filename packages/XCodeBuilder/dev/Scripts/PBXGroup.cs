@@ -59,7 +59,7 @@ namespace XCodeBuilder
             {
                 if (child is PBXBuildFile)
                 {
-                    writer.WriteLine("\t\t\t\t{0} /* {1} */,", child.UUID, System.IO.Path.GetFileName((child as PBXBuildFile).FileReference.Path));
+                    writer.WriteLine("\t\t\t\t{0} /* {1} */,", child.UUID, System.IO.Path.GetFileName((child as PBXBuildFile).FileReference.ShortPath));
                 }
                 else
                 {

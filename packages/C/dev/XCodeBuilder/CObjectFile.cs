@@ -11,7 +11,7 @@ namespace XCodeBuilder
         {
             Opus.Core.Log.MessageAll("ObjectFile {0}", moduleToBuild.OwningNode.ModuleName);
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
-            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, sourceFile);
+            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, sourceFile, this.RootUri);
             fileRef.IsSourceCode = true;
             this.Project.FileReferences.Add(fileRef);
 

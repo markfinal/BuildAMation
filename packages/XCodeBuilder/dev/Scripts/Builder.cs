@@ -12,5 +12,17 @@ namespace XCodeBuilder
             get;
             private set;
         }
+
+        public System.Uri RootUri
+        {
+            get;
+            private set;
+        }
+
+        public string ProjectPath
+        {
+            get;
+            private set;
+        }
     }
 }

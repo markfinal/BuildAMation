@@ -7,17 +7,27 @@ namespace XCodeBuilder
 {
     public sealed class PBXFileReference : XCodeNodeData, IWriteableNode
     {
-        public PBXFileReference(string name, string path)
+        public PBXFileReference(string name, string path, System.Uri rootPath)
             : base(name)
         {
             // TODO: should this always be stripped?
-            this.Path = System.IO.Path.GetFileName(path);
+            this.ShortPath = System.IO.Path.GetFileName(path);
+
+            var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
+            this.RelativePath = relative;
+            Opus.Core.Log.MessageAll("path {0}: {1}", path, relative);
         }
 
-        public string Path
+        public string ShortPath
         {
             get;
             private set;
+        }
+
+        private string RelativePath
+        {
+            get;
+            set;
         }
 
         public bool IsExecutable
@@ -38,11 +48,11 @@ namespace XCodeBuilder
         {
             if (this.IsExecutable)
             {
-                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {2}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.Name, this.Path);
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {2}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.Name, this.ShortPath);
             }
             else if (this.IsSourceCode)
             {
-                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = {1}; sourceTree = \"<group>\"; }};", this.UUID, this.Path);
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.c; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
             }
             else
             {

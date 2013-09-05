@@ -26,20 +26,14 @@ namespace XCodeBuilder
 
         void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
         {
-            var mainPackage = Opus.Core.State.PackageInfo[0];
-            var projectFilename = "project.pbxproj";
-            var rootDirectory = System.IO.Path.Combine(Opus.Core.State.BuildRoot, mainPackage.Name) + ".xcodeproj";
-            System.IO.Directory.CreateDirectory(rootDirectory);
-            var projectPath = System.IO.Path.Combine(rootDirectory, projectFilename);
-
             // cannot write a Byte-Ordering-Mark (BOM) into the project file
             var encoding = new System.Text.UTF8Encoding(false);
-            using (var projectFile = new System.IO.StreamWriter(projectPath, false, encoding) as System.IO.TextWriter)
+            using (var projectFile = new System.IO.StreamWriter(this.ProjectPath, false, encoding) as System.IO.TextWriter)
             {
                 this.WriteRoot(projectFile);
             }
 
-            Opus.Core.Log.MessageAll("XCode project written to '{0}'", projectPath);
+            Opus.Core.Log.MessageAll("XCode project written to '{0}'", this.ProjectPath);
         }
 
 #endregion

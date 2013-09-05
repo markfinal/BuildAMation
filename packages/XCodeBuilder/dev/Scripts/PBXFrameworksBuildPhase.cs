@@ -23,7 +23,7 @@ namespace XCodeBuilder
             foreach (var file in this.Files)
             {
                 var buildFile = file as PBXBuildFile;
-                writer.WriteLine("\t\t\t\t{0} /* {1} in {2} */,", file.UUID, System.IO.Path.GetFileName(buildFile.FileReference.Path), buildFile.BuildPhase.Name);
+                writer.WriteLine("\t\t\t\t{0} /* {1} in {2} */,", file.UUID, System.IO.Path.GetFileName(buildFile.FileReference.ShortPath), buildFile.BuildPhase.Name);
             }
             writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t\trunOnlyForDeploymentPostprocessing = 0;");
