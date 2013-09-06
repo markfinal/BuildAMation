@@ -34,6 +34,7 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = XCBuildConfiguration;");
             writer.WriteLine("\t\t\tbuildSettings = {");
+            // TODO: ideally the options dictionary should be sorted alphabetically
             foreach (var option in this.Options)
             {
                 writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
