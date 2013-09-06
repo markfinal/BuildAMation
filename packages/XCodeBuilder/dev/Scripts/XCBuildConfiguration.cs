@@ -11,8 +11,8 @@ namespace XCodeBuilder
             : base(name)
         {
             this.ModuleName = moduleName;
-            this.Options = new System.Collections.Generic.Dictionary<string, string>();
-            this.Options["PRODUCT_NAME"] = "\"$(TARGET_NAME)\"";
+            this.Options = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            this.Options["PRODUCT_NAME"] = new Opus.Core.StringArray("\"$(TARGET_NAME)\"");
         }
 
         public string ModuleName
@@ -21,8 +21,7 @@ namespace XCodeBuilder
             private set;
         }
 
-        // TODO: the value can be a list of values
-        public System.Collections.Generic.Dictionary<string, string> Options
+        public System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Options
         {
             get;
             private set;
@@ -38,7 +37,19 @@ namespace XCodeBuilder
             // TODO: ideally the options dictionary should be sorted alphabetically
             foreach (var option in this.Options)
             {
-                writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
+                if (option.Value.Count == 1)
+                {
+                    writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
+                }
+                else
+                {
+                    writer.WriteLine("\t\t\t\t{0} = (", option.Key);
+                    foreach (var value in option.Value)
+                    {
+                        writer.WriteLine("\t\t\t\t\t{0},", value);
+                    }
+                    writer.WriteLine("\t\t\t\t);");
+                }
             }
             writer.WriteLine("\t\t\t};");
             writer.WriteLine("\t\t\tname = {0};", this.Name);

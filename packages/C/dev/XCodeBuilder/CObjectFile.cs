@@ -23,21 +23,21 @@ namespace XCodeBuilder
             // TODO: what to do when there are multiple configurations
             if (target.HasPlatform(Opus.Core.EPlatform.OSX64))
             {
-                buildConfiguration.Options["ARCHS"] = "\"$(ARCHS_STANDARD_64_BIT)\"";
+                buildConfiguration.Options["ARCHS"] = new Opus.Core.StringArray("\"$(ARCHS_STANDARD_64_BIT)\"");
             }
             else
             {
-                buildConfiguration.Options["ARCHS"] = "\"$(ARCHS_STANDARD_32_BIT)\"";
+                buildConfiguration.Options["ARCHS"] = new Opus.Core.StringArray("\"$(ARCHS_STANDARD_32_BIT)\"");
             }
-            buildConfiguration.Options["ONLY_ACTIVE_ARCH"] = "YES";
-            buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"] = "10.8";
-            buildConfiguration.Options["SDKROOT"] = "macosx";
+            buildConfiguration.Options["ONLY_ACTIVE_ARCH"] = new Opus.Core.StringArray("YES");
+            buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"] = new Opus.Core.StringArray("10.8");
+            buildConfiguration.Options["SDKROOT"] = new Opus.Core.StringArray("macosx");
 
             if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
             {
                 if (target.Toolset.Version(baseTarget).StartsWith("4.2"))
                 {
-                    buildConfiguration.Options["GCC_VERSION"] = "com.apple.compilers.llvmgcc42";
+                    buildConfiguration.Options["GCC_VERSION"] = new Opus.Core.StringArray("com.apple.compilers.llvmgcc42");
                 }
                 else
                 {
@@ -51,15 +51,7 @@ namespace XCodeBuilder
             }
 
             var options = moduleToBuild.Options as C.ICCompilerOptions;
-            foreach (var path in options.IncludePaths)
-            {
-                if (path.Equals("."))
-                {
-                    continue;
-                }
-
-                buildConfiguration.Options["HEADER_SEARCH_PATHS"] = path as string;
-            }
+            buildConfiguration.Options["HEADER_SEARCH_PATHS"] = new Opus.Core.StringArray(options.IncludePaths.ToStringArray());
 
             var data = new PBXBuildFile(moduleName);
             data.FileReference = fileRef;
