@@ -15,9 +15,7 @@ namespace XCodeBuilder
 
             var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, outputPath, this.RootUri);
             fileRef.IsExecutable = true;
-            //this.Project.FileReferences.Add(fileRef);
-            // TODO: intentionally add this to the front for consistency with XCode generated projects
-            this.Project.FileReferences.Insert(fileRef, 0);
+            this.Project.FileReferences.Add(fileRef);
             this.Project.ProductsGroup.Children.Add(fileRef);
 
             var data = new PBXNativeTarget(moduleToBuild.OwningNode.ModuleName);
