@@ -34,6 +34,16 @@ namespace XCodeBuilder
             buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"] = "10.8";
             buildConfiguration.Options["SDKROOT"] = "macosx";
 
+            if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
+            {
+                buildConfiguration.Options["GCC_VERSION"] = "com.apple.compilers.llvmgcc42";
+            }
+            else
+            {
+                // clang GCC_VERSION = com.apple.compilers.llvm.clang.1_0
+                throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
+            }
+
             var data = new PBXBuildFile(moduleName);
             data.FileReference = fileRef;
             this.Project.BuildFiles.Add(data);
