@@ -22,7 +22,7 @@ namespace XCodeBuilder
             this.Project.FileReferences.Add(fileRef);
             this.Project.ProductsGroup.Children.Add(fileRef);
 
-            var data = new PBXNativeTarget(moduleName);
+            var data = new PBXNativeTarget(moduleName, PBXNativeTarget.EType.StaticLibrary);
             data.ProductReference = fileRef;
             this.Project.NativeTargets.Add(data);
 

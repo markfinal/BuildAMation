@@ -7,10 +7,23 @@ namespace XCodeBuilder
 {
     public sealed class PBXNativeTarget : XCodeNodeData, IWriteableNode
     {
-        public PBXNativeTarget(string name)
+        public enum EType
+        {
+            Executable,
+            StaticLibrary
+        }
+
+        public PBXNativeTarget(string name, EType type)
             : base (name)
         {
+            this.Type = type;
             this.BuildPhases = new System.Collections.Generic.List<BuildPhase>();
+        }
+
+        private EType Type
+        {
+            get;
+            set;
         }
 
         public PBXFileReference ProductReference
@@ -60,7 +73,19 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t\tname = {0};", this.Name);
             writer.WriteLine("\t\t\tproductName = {0};", this.Name);
             writer.WriteLine("\t\t\tproductReference = {0} /* {1} */;", this.ProductReference.UUID, this.ProductReference.Name);
-            writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.tool\";");
+            switch (this.Type)
+            {
+            case EType.Executable:
+                writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.tool\";");
+                break;
+
+            case EType.StaticLibrary:
+                writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.library.static\";");
+                break;
+
+            default:
+                throw new Opus.Core.Exception("Unknown product type");
+            }
             writer.WriteLine("\t\t};");
         }
 #endregion

@@ -17,7 +17,7 @@ namespace XCodeBuilder
             this.Project.FileReferences.Add(fileRef);
             this.Project.ProductsGroup.Children.Add(fileRef);
 
-            var data = new PBXNativeTarget(moduleToBuild.OwningNode.ModuleName);
+            var data = new PBXNativeTarget(moduleToBuild.OwningNode.ModuleName, PBXNativeTarget.EType.Executable);
             data.ProductReference = fileRef;
             this.Project.NativeTargets.Add(data);
 
