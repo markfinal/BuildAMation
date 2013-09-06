@@ -51,11 +51,11 @@ namespace XCodeBuilder
             switch (this.Type)
             {
             case EType.Executable:
-                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {2}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.Name, this.ShortPath);
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
                 break;
 
             case EType.StaticLibrary:
-                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = {2}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.Name, this.ShortPath);
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
                 break;
 
             case EType.SourceFile:
