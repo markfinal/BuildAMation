@@ -7,10 +7,18 @@ namespace XCodeBuilder
 {
     public sealed class PBXFileReference : XCodeNodeData, IWriteableNode
     {
-        public PBXFileReference(string name, string path, System.Uri rootPath)
+        public enum EType
+        {
+            Executable,
+            StaticLibrary,
+            SourceFile,
+            HeaderFile
+        }
+
+        public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
             : base(name)
         {
-            // TODO: should this always be stripped?
+            this.Type = type;
             this.ShortPath = System.IO.Path.GetFileName(path);
 
             var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
@@ -30,13 +38,7 @@ namespace XCodeBuilder
             set;
         }
 
-        public bool IsExecutable
-        {
-            get;
-            set;
-        }
-
-        public bool IsSourceCode
+        private EType Type
         {
             get;
             set;
@@ -46,16 +48,25 @@ namespace XCodeBuilder
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
-            if (this.IsExecutable)
+            switch (this.Type)
             {
+            case EType.Executable:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {2}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.Name, this.ShortPath);
-            }
-            else if (this.IsSourceCode)
-            {
+                break;
+
+            case EType.StaticLibrary:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = {2}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.Name, this.ShortPath);
+                break;
+
+            case EType.SourceFile:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
-            }
-            else
-            {
+                break;
+
+            case EType.HeaderFile:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            default:
                 throw new Opus.Core.Exception("Unknown PBXFileReference type");
             }
         }
