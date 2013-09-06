@@ -11,9 +11,17 @@ namespace XCodeBuilder
             : base(name)
         {
             this.ModuleName = moduleName;
+            this.Options = new System.Collections.Generic.Dictionary<string, string>();
+            this.Options["PRODUCT_NAME"] = "\"$(TARGET_NAME)\"";
         }
 
         public string ModuleName
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<string, string> Options
         {
             get;
             private set;
@@ -26,7 +34,10 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = XCBuildConfiguration;");
             writer.WriteLine("\t\t\tbuildSettings = {");
-            writer.WriteLine("\t\t\t\tPRODUCT_NAME = \"$(TARGET_NAME)\";");
+            foreach (var option in this.Options)
+            {
+                writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
+            }
             writer.WriteLine("\t\t\t};");
             writer.WriteLine("\t\t\tname = {0};", this.Name);
             writer.WriteLine("\t\t};");

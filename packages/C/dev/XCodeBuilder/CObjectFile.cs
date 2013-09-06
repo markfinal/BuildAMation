@@ -18,9 +18,9 @@ namespace XCodeBuilder
             var target = moduleToBuild.OwningNode.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
-            // TODO: this has to be separate from the project configuration
-            /*var buildConfiguration = */this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleToBuild.OwningNode.ModuleName);
-            // TODO: more will happen with configurations once we start to add options to it
+            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleToBuild.OwningNode.ModuleName);
+            buildConfiguration.Options["ARCHS"] = "\"$(ARCHS_STANDARD_64_BIT)\"";
+            buildConfiguration.Options["ONLY_ACTIVE_ARCH"] = "YES";
 
             var data = new PBXBuildFile(moduleToBuild.OwningNode.ModuleName);
             data.FileReference = fileRef;
