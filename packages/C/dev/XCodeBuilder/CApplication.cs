@@ -9,21 +9,24 @@ namespace XCodeBuilder
     {
         public object Build(C.Application moduleToBuild, out bool success)
         {
-            Opus.Core.Log.MessageAll("Application {0}", moduleToBuild.OwningNode.ModuleName);
+            var node = moduleToBuild.OwningNode;
+            var moduleName = node.ModuleName;
+            var target = node.Target;
+            var baseTarget = (Opus.Core.BaseTarget)target;
+
+            Opus.Core.Log.MessageAll("Application {0}", moduleName);
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var fileRef = new PBXFileReference(moduleToBuild.OwningNode.ModuleName, PBXFileReference.EType.Executable, outputPath, this.RootUri);
+            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.Executable, outputPath, this.RootUri);
             this.Project.FileReferences.Add(fileRef);
             this.Project.ProductsGroup.Children.Add(fileRef);
 
-            var data = new PBXNativeTarget(moduleToBuild.OwningNode.ModuleName, PBXNativeTarget.EType.Executable);
+            var data = new PBXNativeTarget(moduleName, PBXNativeTarget.EType.Executable);
             data.ProductReference = fileRef;
             this.Project.NativeTargets.Add(data);
 
-            var target = moduleToBuild.OwningNode.Target;
-            var baseTarget = (Opus.Core.BaseTarget)target;
-            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleToBuild.OwningNode.ModuleName);
+            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
 
             // adding the configuration list for the PBXProject - this is the one with all the configuration options
             var projectConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), this.Project);
@@ -39,10 +42,10 @@ namespace XCodeBuilder
             }
 
             // adding the group for the target
-            var group = new PBXGroup(moduleToBuild.OwningNode.ModuleName);
+            var group = new PBXGroup(moduleName);
             group.SourceTree = "<group>";
-            group.Path = moduleToBuild.OwningNode.ModuleName;
-            foreach (var source in moduleToBuild.OwningNode.Children)
+            group.Path = moduleName;
+            foreach (var source in node.Children)
             {
                 if (source.Module is Opus.Core.IModuleCollection)
                 {
@@ -65,13 +68,13 @@ namespace XCodeBuilder
             this.Project.Groups.Add(group);
             this.Project.MainGroup.Children.Add(group);
 
-            var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleToBuild.OwningNode.ModuleName);
+            var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleName);
             data.BuildPhases.Add(sourcesBuildPhase);
 
-            var copyFilesBuildPhase = this.Project.CopyFilesBuildPhases.Get("CopyFiles", moduleToBuild.OwningNode.ModuleName);
+            var copyFilesBuildPhase = this.Project.CopyFilesBuildPhases.Get("CopyFiles", moduleName);
             data.BuildPhases.Add(copyFilesBuildPhase);
 
-            var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleToBuild.OwningNode.ModuleName);
+            var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleName);
             data.BuildPhases.Add(frameworksBuildPhase);
 
             success = true;
