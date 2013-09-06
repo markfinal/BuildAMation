@@ -50,6 +50,17 @@ namespace XCodeBuilder
                 throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
             }
 
+            var options = moduleToBuild.Options as C.ICCompilerOptions;
+            foreach (var path in options.IncludePaths)
+            {
+                if (path.Equals("."))
+                {
+                    continue;
+                }
+
+                buildConfiguration.Options["HEADER_SEARCH_PATHS"] = path as string;
+            }
+
             var data = new PBXBuildFile(moduleName);
             data.FileReference = fileRef;
             this.Project.BuildFiles.Add(data);
