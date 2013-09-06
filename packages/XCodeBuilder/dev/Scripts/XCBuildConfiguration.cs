@@ -21,6 +21,7 @@ namespace XCodeBuilder
             private set;
         }
 
+        // TODO: the value can be a list of values
         public System.Collections.Generic.Dictionary<string, string> Options
         {
             get;

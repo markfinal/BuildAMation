@@ -28,10 +28,18 @@ namespace XCodeBuilder
             var baseTarget = (Opus.Core.BaseTarget)target;
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleToBuild.OwningNode.ModuleName);
 
-            // adding the configuration list for the PBXNativeTarget
+            // adding the configuration list for the PBXProject - this is the one with all the configuration options
+            var projectConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), this.Project);
+            projectConfigurationList.AddUnique(buildConfiguration);
+            this.Project.BuildConfigurationList = projectConfigurationList;
+
+            // adding the generic configuration list for the PBXNativeTarget - this is the smaller configuration
             var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), data);
-            nativeTargetConfigurationList.AddUnique(buildConfiguration);
-            data.BuildConfigurationList = nativeTargetConfigurationList;
+            {
+                var genericBuildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), "Generic");
+                nativeTargetConfigurationList.AddUnique(genericBuildConfiguration);
+                data.BuildConfigurationList = nativeTargetConfigurationList;
+            }
 
             // adding the group for the target
             var group = new PBXGroup(moduleToBuild.OwningNode.ModuleName);

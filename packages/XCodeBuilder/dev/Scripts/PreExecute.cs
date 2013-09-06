@@ -21,17 +21,6 @@ namespace XCodeBuilder
 
             this.Project = new PBXProject(mainPackage.Name);
 
-            // create the project configuration lists
-            foreach (var configuration in Opus.Core.State.BuildConfigurations)
-            {
-                var configurationName = configuration.ToString();
-                var buildConfiguration = this.Project.BuildConfigurations.Get(configurationName, "PBXProjectRoot");
-
-                var projectConfigurationList = this.Project.ConfigurationLists.Get(configurationName, this.Project);
-                projectConfigurationList.AddUnique(buildConfiguration);
-                this.Project.BuildConfigurationList = projectConfigurationList;
-            }
-
             // create a products group
             var productsGroup = new PBXGroup("Products");
             productsGroup.SourceTree = "<group>";
