@@ -36,7 +36,14 @@ namespace XCodeBuilder
 
             if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
             {
-                buildConfiguration.Options["GCC_VERSION"] = "com.apple.compilers.llvmgcc42";
+                if (target.Toolset.Version(baseTarget).StartsWith("4.2"))
+                {
+                    buildConfiguration.Options["GCC_VERSION"] = "com.apple.compilers.llvmgcc42";
+                }
+                else
+                {
+                    throw new Opus.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
+                }
             }
             else
             {
