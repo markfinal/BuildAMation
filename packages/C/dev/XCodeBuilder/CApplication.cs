@@ -82,6 +82,12 @@ namespace XCodeBuilder
                 var dependentData = dependency.Data as PBXNativeTarget;
                 var targetDependency = new PBXTargetDependency(moduleName, dependentData);
                 this.Project.TargetDependencies.Add(targetDependency);
+
+                var containerItemProxy = new PBXContainerItemProxy(moduleName, targetDependency, this.Project);
+                this.Project.ContainerItemProxies.Add(containerItemProxy);
+                targetDependency.TargetProxy = containerItemProxy;
+
+                data.Dependencies.Add(targetDependency);
             }
 
             success = true;

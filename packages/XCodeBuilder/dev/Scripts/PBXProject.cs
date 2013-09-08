@@ -20,6 +20,7 @@ namespace XCodeBuilder
             this.CopyFilesBuildPhases = new PBXCopyFilesBuildPhaseSection();
             this.FrameworksBuildPhases = new PBXFrameworksBuildPhaseSection();
             this.TargetDependencies = new PBXTargetDependencySection();
+            this.ContainerItemProxies = new PBXContainerItemProxySection();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -97,6 +98,12 @@ namespace XCodeBuilder
             private set;
         }
 
+        public PBXContainerItemProxySection ContainerItemProxies
+        {
+            get;
+            private set;
+        }
+
         public PBXGroup MainGroup
         {
             get;
@@ -114,6 +121,7 @@ namespace XCodeBuilder
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
             (this.BuildFiles as IWriteableNode).Write(writer);
+            (this.ContainerItemProxies as IWriteableNode).Write(writer);
             (this.CopyFilesBuildPhases as IWriteableNode).Write(writer);
             (this.FileReferences as IWriteableNode).Write(writer);
             (this.FrameworksBuildPhases as IWriteableNode).Write(writer);

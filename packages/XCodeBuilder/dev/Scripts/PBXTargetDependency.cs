@@ -19,7 +19,11 @@ namespace XCodeBuilder
             set;
         }
 
-        // TODO: Need targetProxy
+        public PBXContainerItemProxy TargetProxy
+        {
+            get;
+            set;
+        }
 
 #region IWriteableNode implementation
 
@@ -29,10 +33,15 @@ namespace XCodeBuilder
             {
                 throw new Opus.Core.Exception("Native target not set on this dependency");
             }
+            if (this.TargetProxy == null)
+            {
+                throw new Opus.Core.Exception("Target proxy not set on this dependency");
+            }
 
-            writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
+            writer.WriteLine("\t\t{0} /* PBXTargetDependency */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXTargetDependency;");
             writer.WriteLine("\t\t\ttarget = {0} /* {1} */;", this.NativeTarget.UUID, this.NativeTarget.Name);
+            writer.WriteLine("\t\t\ttargetProxy = {0} /* {1} */;", this.TargetProxy.UUID, this.TargetProxy.GetType().ToString());
             writer.WriteLine("\t\t};");
         }
 

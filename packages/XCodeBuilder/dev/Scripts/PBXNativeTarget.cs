@@ -18,6 +18,7 @@ namespace XCodeBuilder
         {
             this.Type = type;
             this.BuildPhases = new System.Collections.Generic.List<BuildPhase>();
+            this.Dependencies = new System.Collections.Generic.List<PBXTargetDependency>();
         }
 
         private EType Type
@@ -53,6 +54,12 @@ namespace XCodeBuilder
             private set;
         }
 
+        public System.Collections.Generic.List<PBXTargetDependency> Dependencies
+        {
+            get;
+            private set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
@@ -69,6 +76,10 @@ namespace XCodeBuilder
             writer.WriteLine("\t\t\tbuildRules = (");
             writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t\tdependencies = (");
+            foreach (var dependency in this.Dependencies)
+            {
+                writer.WriteLine("\t\t\t\t{0} /* {1} */,", dependency.UUID, dependency.GetType().Name);
+            }
             writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t\tname = {0};", this.Name);
             writer.WriteLine("\t\t\tproductName = {0};", this.Name);
