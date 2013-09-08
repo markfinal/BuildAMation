@@ -19,6 +19,7 @@ namespace XCodeBuilder
             this.SourceBuildPhases = new PBXSourcesBuildPhaseSection();
             this.CopyFilesBuildPhases = new PBXCopyFilesBuildPhaseSection();
             this.FrameworksBuildPhases = new PBXFrameworksBuildPhaseSection();
+            this.TargetDependencies = new PBXTargetDependencySection();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -90,6 +91,12 @@ namespace XCodeBuilder
             private set;
         }
 
+        public PBXTargetDependencySection TargetDependencies
+        {
+            get;
+            private set;
+        }
+
         public PBXGroup MainGroup
         {
             get;
@@ -142,6 +149,7 @@ namespace XCodeBuilder
             writer.WriteLine("/* End PBXProject section */");
 
             (this.SourceBuildPhases as IWriteableNode).Write(writer);
+            (this.TargetDependencies as IWriteableNode).Write(writer);
             (this.BuildConfigurations as IWriteableNode).Write(writer);
             (this.ConfigurationLists as IWriteableNode).Write(writer);
         }

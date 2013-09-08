@@ -77,6 +77,13 @@ namespace XCodeBuilder
             var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleName);
             data.BuildPhases.Add(frameworksBuildPhase);
 
+            foreach (var dependency in node.ExternalDependents)
+            {
+                var dependentData = dependency.Data as PBXNativeTarget;
+                var targetDependency = new PBXTargetDependency(moduleName, dependentData);
+                this.Project.TargetDependencies.Add(targetDependency);
+            }
+
             success = true;
             return data;
         }

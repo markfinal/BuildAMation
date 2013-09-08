@@ -19,6 +19,8 @@ namespace XCodeBuilder
             set;
         }
 
+        // TODO: Need targetProxy
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
@@ -28,7 +30,7 @@ namespace XCodeBuilder
                 throw new Opus.Core.Exception("Native target not set on this dependency");
             }
 
-            writer.WriteLine("\t\t{0} /* {1} */ = {", this.UUID, this.Name);
+            writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXTargetDependency;");
             writer.WriteLine("\t\t\ttarget = {0} /* {1} */;", this.NativeTarget.UUID, this.NativeTarget.Name);
             writer.WriteLine("\t\t};");
