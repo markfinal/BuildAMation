@@ -78,17 +78,20 @@ namespace XcodeBuilder
             var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleName);
             data.BuildPhases.Add(frameworksBuildPhase);
 
-            foreach (var dependency in node.ExternalDependents)
+            if (null != node.ExternalDependents)
             {
-                var dependentData = dependency.Data as PBXNativeTarget;
-                var targetDependency = new PBXTargetDependency(moduleName, dependentData);
-                this.Project.TargetDependencies.Add(targetDependency);
+                foreach (var dependency in node.ExternalDependents)
+                {
+                    var dependentData = dependency.Data as PBXNativeTarget;
+                    var targetDependency = new PBXTargetDependency(moduleName, dependentData);
+                    this.Project.TargetDependencies.Add(targetDependency);
 
-                var containerItemProxy = new PBXContainerItemProxy(moduleName, dependentData, this.Project);
-                this.Project.ContainerItemProxies.Add(containerItemProxy);
-                targetDependency.TargetProxy = containerItemProxy;
+                    var containerItemProxy = new PBXContainerItemProxy(moduleName, dependentData, this.Project);
+                    this.Project.ContainerItemProxies.Add(containerItemProxy);
+                    targetDependency.TargetProxy = containerItemProxy;
 
-                data.Dependencies.Add(targetDependency);
+                    data.Dependencies.Add(targetDependency);
+                }
             }
 
             success = true;
