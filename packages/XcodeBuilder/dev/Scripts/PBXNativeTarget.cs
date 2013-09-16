@@ -10,6 +10,7 @@ namespace XcodeBuilder
         public enum EType
         {
             Executable,
+            DynamicLibrary,
             StaticLibrary
         }
 
@@ -79,6 +80,10 @@ namespace XcodeBuilder
             {
             case EType.Executable:
                 writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.tool\";");
+                break;
+
+            case EType.DynamicLibrary:
+                writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.library.dynamic\";");
                 break;
 
             case EType.StaticLibrary:

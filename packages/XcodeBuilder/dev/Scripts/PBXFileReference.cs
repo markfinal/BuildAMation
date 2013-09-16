@@ -10,6 +10,7 @@ namespace XcodeBuilder
         public enum EType
         {
             Executable,
+            DynamicLibrary,
             StaticLibrary,
             SourceFile,
             HeaderFile
@@ -52,6 +53,10 @@ namespace XcodeBuilder
             {
             case EType.Executable:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
+                break;
+
+            case EType.DynamicLibrary:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.dylib\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
                 break;
 
             case EType.StaticLibrary:
