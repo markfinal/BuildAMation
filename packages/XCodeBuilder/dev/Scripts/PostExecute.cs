@@ -33,7 +33,7 @@ namespace XCodeBuilder
                 this.WriteRoot(projectFile);
             }
 
-            Opus.Core.Log.MessageAll("XCode project written to '{0}'", this.ProjectPath);
+            Opus.Core.Log.MessageAll("XCode project written to '{0}'", this.ProjectRootUri.AbsolutePath);
         }
 
 #endregion

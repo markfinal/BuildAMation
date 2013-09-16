@@ -18,7 +18,7 @@ namespace XCodeBuilder
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.StaticLibrary];
 
-            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, this.RootUri);
+            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, this.ProjectRootUri);
             this.Project.FileReferences.Add(fileRef);
             this.Project.ProductsGroup.Children.Add(fileRef);
 

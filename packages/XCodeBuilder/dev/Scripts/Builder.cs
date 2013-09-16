@@ -13,7 +13,7 @@ namespace XCodeBuilder
             private set;
         }
 
-        public System.Uri RootUri
+        public System.Uri ProjectRootUri
         {
             get;
             private set;

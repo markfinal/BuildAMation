@@ -18,7 +18,7 @@ namespace XCodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.Executable, outputPath, this.RootUri);
+            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.Executable, outputPath, this.ProjectRootUri);
             this.Project.FileReferences.Add(fileRef);
             this.Project.ProductsGroup.Children.Add(fileRef);
 

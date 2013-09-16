@@ -14,7 +14,7 @@ namespace XCodeBuilder
             var mainPackage = Opus.Core.State.PackageInfo[0];
             var projectFilename = "project.pbxproj";
             var rootDirectory = System.IO.Path.Combine(Opus.Core.State.BuildRoot, mainPackage.Name) + ".xcodeproj";
-            this.RootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
+            this.ProjectRootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
             System.IO.Directory.CreateDirectory(rootDirectory);
             var projectPath = System.IO.Path.Combine(rootDirectory, projectFilename);
             this.ProjectPath = projectPath;
