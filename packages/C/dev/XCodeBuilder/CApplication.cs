@@ -82,6 +82,7 @@ namespace XcodeBuilder
             {
                 foreach (var dependency in node.ExternalDependents)
                 {
+                    // first add a dependency so that they are built in the right order
                     var dependentData = dependency.Data as PBXNativeTarget;
                     var targetDependency = new PBXTargetDependency(moduleName, dependentData);
                     this.Project.TargetDependencies.Add(targetDependency);
@@ -91,6 +92,14 @@ namespace XcodeBuilder
                     targetDependency.TargetProxy = containerItemProxy;
 
                     data.Dependencies.Add(targetDependency);
+
+                    // now add a link dependency
+                    var buildFile = new PBXBuildFile(dependency.UniqueModuleName);
+                    buildFile.FileReference = dependentData.ProductReference;
+                    buildFile.BuildPhase = frameworksBuildPhase;
+                    this.Project.BuildFiles.Add(buildFile);
+
+                    frameworksBuildPhase.Files.Add(buildFile);
                 }
             }
 

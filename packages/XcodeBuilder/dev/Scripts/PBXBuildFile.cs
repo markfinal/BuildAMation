@@ -17,7 +17,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public PBXSourcesBuildPhase BuildPhase
+        public BuildPhase BuildPhase
         {
             get;
             set;
