@@ -53,19 +53,10 @@ namespace XcodeBuilder
             private set;
         }
 
-        private XCConfigurationList _BuildConfigurationList;
         public XCConfigurationList BuildConfigurationList
         {
-            get
-            {
-                return this._BuildConfigurationList;
-            }
-
-            set
-            {
-                this._BuildConfigurationList = value;
-                value.Owner = this;
-            }
+            get;
+            set;
         }
 
         public PBXGroupSection Groups
@@ -120,6 +111,11 @@ namespace XcodeBuilder
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
         {
+            if (null == this.BuildConfigurationList)
+            {
+                throw new Opus.Core.Exception("Project build configuration list not assigned");
+            }
+
             (this.BuildFiles as IWriteableNode).Write(writer);
             (this.ContainerItemProxies as IWriteableNode).Write(writer);
             (this.CopyFilesBuildPhases as IWriteableNode).Write(writer);

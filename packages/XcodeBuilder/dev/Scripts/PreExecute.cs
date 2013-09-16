@@ -35,6 +35,16 @@ namespace XcodeBuilder
             // add them in this order
             this.Project.Groups.Add(mainGroup);
             this.Project.Groups.Add(productsGroup);
+
+            // create common build configurations for all targets
+            // these settings are overriden by per-target build configurations
+            var projectConfigurationList = this.Project.ConfigurationLists.Get(this.Project);
+            this.Project.BuildConfigurationList = projectConfigurationList;
+            foreach (var config in Opus.Core.State.BuildConfigurations)
+            {
+                var genericBuildConfiguration = this.Project.BuildConfigurations.Get(config.ToString(), "Generic");
+                projectConfigurationList.AddUnique(genericBuildConfiguration);
+            }
         }
 
 #endregion

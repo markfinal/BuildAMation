@@ -26,19 +26,20 @@ namespace XcodeBuilder
             data.ProductReference = fileRef;
             this.Project.NativeTargets.Add(data);
 
+            // build configuration target overrides to the project build configuration
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
-
-            // adding the configuration list for the PBXProject - this is the one with all the configuration options
-            var projectConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), this.Project);
-            projectConfigurationList.AddUnique(buildConfiguration);
-            this.Project.BuildConfigurationList = projectConfigurationList;
-
-            // adding the generic configuration list for the PBXNativeTarget - this is the smaller configuration
-            var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(baseTarget.ConfigurationName('='), data);
+            var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(data);
+            nativeTargetConfigurationList.AddUnique(buildConfiguration);
+            if (null == data.BuildConfigurationList)
             {
-                var genericBuildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), "Generic");
-                nativeTargetConfigurationList.AddUnique(genericBuildConfiguration);
                 data.BuildConfigurationList = nativeTargetConfigurationList;
+            }
+            else
+            {
+                if (data.BuildConfigurationList != nativeTargetConfigurationList)
+                {
+                    throw new Opus.Core.Exception("Inconsistent build configuration lists");
+                }
             }
 
             // adding the group for the target

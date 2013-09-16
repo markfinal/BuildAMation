@@ -33,19 +33,10 @@ namespace XcodeBuilder
             set;
         }
 
-        private XCConfigurationList _BuildConfigurationList;
         public XCConfigurationList BuildConfigurationList
         {
-            get
-            {
-                return this._BuildConfigurationList;
-            }
-
-            set
-            {
-                this._BuildConfigurationList = value;
-                value.Owner = this;
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<BuildPhase> BuildPhases

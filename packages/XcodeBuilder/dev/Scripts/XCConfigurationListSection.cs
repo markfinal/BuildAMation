@@ -20,19 +20,19 @@ namespace XcodeBuilder
             }
         }
 
-        public XCConfigurationList Get(string name, XCodeNodeData owner)
+        public XCConfigurationList Get(XCodeNodeData owner)
         {
             lock (this.ConfigurationLists)
             {
                 foreach (var configurationList in this.ConfigurationLists)
                 {
-                    if ((configurationList.Name == name) && (configurationList.Owner == owner))
+                    if (configurationList.Owner == owner)
                     {
                         return configurationList;
                     }
                 }
 
-                var newConfigurationList = new XCConfigurationList(name);
+                var newConfigurationList = new XCConfigurationList(owner);
                 this.ConfigurationLists.Add(newConfigurationList);
                 return newConfigurationList;
             }

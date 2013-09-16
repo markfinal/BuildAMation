@@ -7,16 +7,17 @@ namespace XcodeBuilder
 {
     public sealed class XCConfigurationList : XCodeNodeData, IWriteableNode
     {
-        public XCConfigurationList(string name)
-            : base(name)
+        public XCConfigurationList(XCodeNodeData owner)
+            : base(owner.Name)
         {
+            this.Owner = owner;
             this.BuildConfigurations = new System.Collections.Generic.List<XCBuildConfiguration>();
         }
 
         public XCodeNodeData Owner
         {
             get;
-            set;
+            private set;
         }
 
         public void AddUnique(XCBuildConfiguration configuration)
