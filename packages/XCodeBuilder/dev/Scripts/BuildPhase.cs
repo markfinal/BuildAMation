@@ -1,9 +1,9 @@
 // <copyright file="BuildPhase.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>XCodeBuilder package</summary>
+// <summary>XcodeBuilder package</summary>
 // <author>Mark Final</author>
-namespace XCodeBuilder
+namespace XcodeBuilder
 {
     public abstract class BuildPhase : XCodeNodeData
     {

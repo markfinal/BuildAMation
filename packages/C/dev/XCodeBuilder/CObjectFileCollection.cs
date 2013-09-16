@@ -3,9 +3,9 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
-namespace XCodeBuilder
+namespace XcodeBuilder
 {
-    public sealed partial class XCodeBuilder
+    public sealed partial class XcodeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
         public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)

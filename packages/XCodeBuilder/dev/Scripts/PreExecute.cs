@@ -1,11 +1,11 @@
 // <copyright file="PreExecute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>XCodeBuilder package</summary>
+// <summary>XcodeBuilder package</summary>
 // <author>Mark Final</author>
-namespace XCodeBuilder
+namespace XcodeBuilder
 {
-    public sealed partial class XCodeBuilder : Opus.Core.IBuilderPreExecute
+    public sealed partial class XcodeBuilder : Opus.Core.IBuilderPreExecute
     {
 #region IBuilderPreExecute Members
 

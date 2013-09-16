@@ -3,9 +3,9 @@
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
-namespace XCodeBuilder
+namespace XcodeBuilder
 {
-    public sealed partial class XCodeBuilder
+    public sealed partial class XcodeBuilder
     {
         public object Build(C.StaticLibrary moduleToBuild, out bool success)
         {
