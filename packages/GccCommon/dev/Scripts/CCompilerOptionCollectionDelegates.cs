@@ -17,6 +17,8 @@ namespace GccCommon
         }
         private static void DefinesXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            configuration.Options["GCC_PREPROCESSOR_DEFINITIONS"] = new Opus.Core.StringArray(definesOption.Value.ToStringArray());
         }
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
