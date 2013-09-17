@@ -39,14 +39,28 @@ namespace XcodeBuilder
             {
                 if (option.Value.Count == 1)
                 {
-                    writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
+                    if (option.Value.Contains("="))
+                    {
+                        writer.WriteLine("\t\t\t\t{0} = \"{1}\";", option.Key, option.Value);
+                    }
+                    else
+                    {
+                        writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
+                    }
                 }
                 else
                 {
                     writer.WriteLine("\t\t\t\t{0} = (", option.Key);
                     foreach (var value in option.Value)
                     {
-                        writer.WriteLine("\t\t\t\t\t{0},", value);
+                        if (value.Contains("="))
+                        {
+                            writer.WriteLine("\t\t\t\t\t\"{0}\",", value);
+                        }
+                        else
+                        {
+                            writer.WriteLine("\t\t\t\t\t{0},", value);
+                        }
                     }
                     writer.WriteLine("\t\t\t\t);");
                 }
