@@ -215,6 +215,27 @@ namespace GccCommon
         }
         private static void TargetLanguageXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
+            switch (targetLanguageOption.Value)
+            {
+            case C.ETargetLanguage.Default:
+                configuration.Options["GCC_INPUT_FILETYPE"].AddUnique("automatic");
+                break;
+            case C.ETargetLanguage.C:
+                configuration.Options["GCC_INPUT_FILETYPE"].AddUnique("sourcecode.c.c");
+                break;
+            case C.ETargetLanguage.Cxx:
+                configuration.Options["GCC_INPUT_FILETYPE"].AddUnique("sourcecode.cpp.cpp");
+                break;
+            case C.ETargetLanguage.ObjectiveC:
+                configuration.Options["GCC_INPUT_FILETYPE"].AddUnique("sourcecode.c.objc");
+                break;
+            case C.ETargetLanguage.ObjectiveCxx:
+                configuration.Options["GCC_INPUT_FILETYPE"].AddUnique("sourcecode.cpp.objcpp");
+                break;
+            default:
+                throw new Opus.Core.Exception("Unrecognized target language option");
+            }
         }
         private static void ShowIncludesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
