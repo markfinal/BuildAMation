@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
-// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=GccCommon -c=ObjCxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData -e -b
+// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=GccCommon -c=ObjCxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData -e -b
 namespace GccCommon
 {
     public partial class ObjCxxCompilerOptionCollection

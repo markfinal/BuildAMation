@@ -42,6 +42,14 @@ namespace XcodeBuilder
                 }
             }
 
+            // fill out the build configuration
+            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, buildConfiguration, target);
+            Opus.Core.Log.MessageAll("Options");
+            foreach (var o in buildConfiguration.Options)
+            {
+                Opus.Core.Log.MessageAll("  {0} {1}", o.Key, o.Value);
+            }
+
             // adding the group for the target
             var group = new PBXGroup(moduleName);
             group.SourceTree = "<group>";

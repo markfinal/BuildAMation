@@ -19,7 +19,11 @@ namespace XcodeBuilder
             var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.SourceFile, sourceFile, this.ProjectRootUri);
             this.Project.FileReferences.Add(fileRef);
 
+            // fill out the build configuration
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
+            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, buildConfiguration, target);
+            // TODO: not sure where all these will come from
+#if true
             // TODO: what to do when there are multiple configurations
             if (target.HasPlatform(Opus.Core.EPlatform.OSX64))
             {
@@ -49,9 +53,12 @@ namespace XcodeBuilder
                 // clang GCC_VERSION = com.apple.compilers.llvm.clang.1_0
                 throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
             }
-
-            var options = moduleToBuild.Options as C.ICCompilerOptions;
-            buildConfiguration.Options["HEADER_SEARCH_PATHS"] = new Opus.Core.StringArray(options.IncludePaths.ToStringArray());
+#endif
+            Opus.Core.Log.MessageAll("Options");
+            foreach (var o in buildConfiguration.Options)
+            {
+                Opus.Core.Log.MessageAll("  {0} {1}", o.Key, o.Value);
+            }
 
             var data = new PBXBuildFile(moduleName);
             data.FileReference = fileRef;

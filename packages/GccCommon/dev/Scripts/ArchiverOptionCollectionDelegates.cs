@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
-// -i=../../../C/dev/Scripts/IArchiverOptions.cs:IArchiverOptions.cs -n=GccCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/IArchiverOptions.cs:IArchiverOptions.cs -n=GccCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
 
 namespace GccCommon
 {
@@ -27,6 +27,9 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
         }
+        private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
@@ -35,6 +38,9 @@ namespace GccCommon
             {
                 commandLineBuilder.Add(argument);
             }
+        }
+        private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
         }
         #endregion
         #region IArchiverOptions Option delegates
@@ -50,6 +56,9 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unrecognized command option");
             }
         }
+        private static void CommandXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         private static void DoNotWarnIfLibraryCreatedCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -58,13 +67,16 @@ namespace GccCommon
                 commandLineBuilder.Add("-c");
             }
         }
+        private static void DoNotWarnIfLibraryCreatedXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
-            this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor);
-            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
-            this["Command"].PrivateData = new PrivateData(CommandCommandLineProcessor);
-            this["DoNotWarnIfLibraryCreated"].PrivateData = new PrivateData(DoNotWarnIfLibraryCreatedCommandLineProcessor);
+            this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeXcodeProjectProcessor);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);
+            this["Command"].PrivateData = new PrivateData(CommandCommandLineProcessor,CommandXcodeProjectProcessor);
+            this["DoNotWarnIfLibraryCreated"].PrivateData = new PrivateData(DoNotWarnIfLibraryCreatedCommandLineProcessor,DoNotWarnIfLibraryCreatedXcodeProjectProcessor);
         }
     }
 }
