@@ -111,6 +111,23 @@ namespace XcodeBuilder
                 }
             }
 
+            if (null != node.RequiredDependents)
+            {
+                // no link dependency
+                foreach (var dependency in node.RequiredDependents)
+                {
+                    var dependentData = dependency.Data as PBXNativeTarget;
+                    var targetDependency = new PBXTargetDependency(moduleName, dependentData);
+                    this.Project.TargetDependencies.Add(targetDependency);
+
+                    var containerItemProxy = new PBXContainerItemProxy(moduleName, dependentData, this.Project);
+                    this.Project.ContainerItemProxies.Add(containerItemProxy);
+                    targetDependency.TargetProxy = containerItemProxy;
+
+                    data.Dependencies.Add(targetDependency);
+                }
+            }
+
             success = true;
             return data;
         }
