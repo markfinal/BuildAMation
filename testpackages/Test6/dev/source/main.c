@@ -9,7 +9,7 @@
 
 int main()
 {
-    char *configuration = GetConfiguration();
+    const char *configuration = GetConfiguration();
     printf("Configuration is '%s'\n", configuration);
 
     return 0;
