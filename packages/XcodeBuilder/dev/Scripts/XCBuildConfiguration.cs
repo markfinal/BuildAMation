@@ -7,12 +7,48 @@ namespace XcodeBuilder
 {
     public sealed class XCBuildConfiguration : XCodeNodeData, IWriteableNode
     {
+        public class OptionsDictionary : System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
+        {
+            private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+
+            public Opus.Core.StringArray this[string key]
+            {
+                get
+                {
+                    if (!this.dictionary.ContainsKey(key))
+                    {
+                        this.dictionary[key] = new Opus.Core.StringArray();
+                    }
+
+                    return this.dictionary[key];
+                }
+            }
+
+            #region IEnumerable implementation
+
+            System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>.GetEnumerator ()
+            {
+                return this.dictionary.GetEnumerator();
+            }
+
+            #endregion
+
+            #region IEnumerable implementation
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return (this as System.Collections.IEnumerable).GetEnumerator();
+            }
+
+            #endregion
+        }
+
         public XCBuildConfiguration(string name, string moduleName)
             : base(name)
         {
             this.ModuleName = moduleName;
-            this.Options = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-            this.Options["PRODUCT_NAME"] = new Opus.Core.StringArray("\"$(TARGET_NAME)\"");
+            this.Options = new OptionsDictionary();
+            this.Options["PRODUCT_NAME"].AddUnique("\"$(TARGET_NAME)\"");
         }
 
         public string ModuleName
@@ -21,7 +57,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Options
+        public OptionsDictionary Options
         {
             get;
             private set;

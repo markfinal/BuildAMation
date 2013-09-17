@@ -27,21 +27,21 @@ namespace XcodeBuilder
             // TODO: what to do when there are multiple configurations
             if (target.HasPlatform(Opus.Core.EPlatform.OSX64))
             {
-                buildConfiguration.Options["ARCHS"] = new Opus.Core.StringArray("\"$(ARCHS_STANDARD_64_BIT)\"");
+                buildConfiguration.Options["ARCHS"].AddUnique("\"$(ARCHS_STANDARD_64_BIT)\"");
             }
             else
             {
-                buildConfiguration.Options["ARCHS"] = new Opus.Core.StringArray("\"$(ARCHS_STANDARD_32_BIT)\"");
+                buildConfiguration.Options["ARCHS"].AddUnique("\"$(ARCHS_STANDARD_32_BIT)\"");
             }
-            buildConfiguration.Options["ONLY_ACTIVE_ARCH"] = new Opus.Core.StringArray("YES");
-            buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"] = new Opus.Core.StringArray("10.8");
-            buildConfiguration.Options["SDKROOT"] = new Opus.Core.StringArray("macosx");
+            buildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
+            buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique("10.8");
+            buildConfiguration.Options["SDKROOT"].AddUnique("macosx");
 
             if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
             {
                 if (target.Toolset.Version(baseTarget).StartsWith("4.2"))
                 {
-                    buildConfiguration.Options["GCC_VERSION"] = new Opus.Core.StringArray("com.apple.compilers.llvmgcc42");
+                    buildConfiguration.Options["GCC_VERSION"].AddUnique("com.apple.compilers.llvmgcc42");
                 }
                 else
                 {

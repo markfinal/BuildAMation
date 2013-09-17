@@ -18,7 +18,7 @@ namespace GccCommon
         private static void DefinesXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
-            configuration.Options["GCC_PREPROCESSOR_DEFINITIONS"] = new Opus.Core.StringArray(definesOption.Value.ToStringArray());
+            configuration.Options["GCC_PREPROCESSOR_DEFINITIONS"].AddRangeUnique(definesOption.Value.ToStringArray());
         }
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -41,7 +41,7 @@ namespace GccCommon
         private static void IncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
-            configuration.Options["HEADER_SEARCH_PATHS"] = new Opus.Core.StringArray(includePathsOption.Value.ToStringArray());
+            configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
         }
         private static void SystemIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
