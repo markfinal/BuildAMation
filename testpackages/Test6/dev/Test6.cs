@@ -55,7 +55,7 @@ namespace Test6
 
         private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            var options = module.Options as C.ILinkerOptions;
+            //var options = module.Options as C.ILinkerOptions;
             //options.DebugSymbols = false;
         }
 
