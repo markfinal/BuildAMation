@@ -28,6 +28,14 @@ namespace Opus.Core
             this.list.Add(item);
         }
 
+        public void AddUnique(T item)
+        {
+            if (!this.list.Contains(item))
+            {
+                this.Add(item);
+            }
+        }
+
         public void AddRange(T[] itemsToAdd)
         {
             this.list.AddRange(itemsToAdd);
