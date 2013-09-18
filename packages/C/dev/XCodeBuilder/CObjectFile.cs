@@ -14,8 +14,33 @@ namespace XcodeBuilder
             var target = node.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
-            Opus.Core.Log.MessageAll("ObjectFile {0}", moduleName);
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
+
+            Opus.Core.Log.MessageAll("ObjectFile {0}: {1} Nested? {2}", moduleName, sourceFile, node.IsModuleNested);
+            // TODO: needs refactoring
+            if (null == node.Parent ||
+                (node.Parent.Module.GetType().BaseType.BaseType == typeof(C.ObjectFileCollectionBase) && null == node.Parent.Parent))
+            {
+                Opus.Core.Log.MessageAll("*** Object file has no parent");
+            }
+            else
+            {
+                Opus.Core.Log.MessageAll("*** Object file has a parent {0}", node.Parent.UniqueModuleName);
+            }
+
+            if (node.IsModuleNested)
+            {
+                var thisOptions = moduleToBuild.Options;
+                var parentOptions = node.Parent.Module.Options;
+
+                var thisDefines = thisOptions["Defines"] as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+                var parentDefines = parentOptions["Defines"] as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+
+                Opus.Core.Log.MessageAll("This: {0}, Parent {1}", thisOptions.OptionNames.Count, parentOptions.OptionNames.Count);
+                Opus.Core.Log.MessageAll("This: {0}", thisDefines.Value.ToStringArray());
+                Opus.Core.Log.MessageAll("Pare: {0}", parentDefines.Value.ToStringArray());
+            }
+
             var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.SourceFile, sourceFile, this.ProjectRootUri);
             this.Project.FileReferences.Add(fileRef);
 
