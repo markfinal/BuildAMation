@@ -22,6 +22,26 @@ namespace XcodeBuilder
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return this.dictionary.Count;
+            }
+        }
+
+        public override string ToString()
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.Append("{ ");
+            foreach (var item in this.dictionary)
+            {
+                builder.AppendFormat("{0} = {1}; ", item.Key, item.Value.ToString());
+            }
+            builder.Append("};");
+            return builder.ToString();
+        }
+
         #region IEnumerable implementation
 
         System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>.GetEnumerator ()

@@ -9,7 +9,9 @@ namespace XcodeBuilder
     {
         public PBXBuildFile(string name)
             : base(name)
-        {}
+        {
+            this.Settings = new OptionsDictionary();
+        }
 
         public PBXFileReference FileReference
         {
@@ -21,6 +23,12 @@ namespace XcodeBuilder
         {
             get;
             set;
+        }
+
+        public OptionsDictionary Settings
+        {
+            get;
+            private set;
         }
 
 #region IWriteableNode implementation
@@ -36,7 +44,14 @@ namespace XcodeBuilder
                 throw new Opus.Core.Exception("Build phase not set on this build file");
             }
 
-            writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; }};", this.UUID, this.FileReference.ShortPath, this.BuildPhase.Name, this.FileReference.UUID);
+            if (this.Settings.Count > 0)
+            {
+                writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; settings = {4}}};", this.UUID, this.FileReference.ShortPath, this.BuildPhase.Name, this.FileReference.UUID, this.Settings.ToString());
+            }
+            else
+            {
+                writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; }};", this.UUID, this.FileReference.ShortPath, this.BuildPhase.Name, this.FileReference.UUID);
+            }
         }
 
 #endregion
