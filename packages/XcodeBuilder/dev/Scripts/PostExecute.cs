@@ -26,6 +26,12 @@ namespace XcodeBuilder
 
         void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
         {
+            if (0 == executedNodes.Count)
+            {
+                Opus.Core.Log.Info("No Xcode project written as there were no targets generated");
+                return;
+            }
+
             // cannot write a Byte-Ordering-Mark (BOM) into the project file
             var encoding = new System.Text.UTF8Encoding(false);
             using (var projectFile = new System.IO.StreamWriter(this.ProjectPath, false, encoding) as System.IO.TextWriter)
