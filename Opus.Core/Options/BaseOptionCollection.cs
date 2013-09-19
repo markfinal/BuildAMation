@@ -211,7 +211,7 @@ namespace Opus.Core
         {
             if (this.table.Count != other.table.Count)
             {
-                throw new Exception("Option collections have a different number of options. Cannot compare");
+                throw new Exception("Option collections have a different number of options {0} & {1}. Cannot compare", this.table.Count, other.table.Count);
             }
 
             BaseOptionCollection complement = null;
@@ -228,7 +228,10 @@ namespace Opus.Core
                 if (!thisValue.Equals(otherValue))
                 {
                     var complementOption = thisValue.Complement(otherValue);
-                    Opus.Core.Log.MessageAll("Option {0} differs, {1}", optionKey, complementOption);
+                    if (null == complementOption)
+                    {
+                        throw new Exception("Complement option collection for option '{0}' does not exist. Is there something wrong with the equivalence checks?", optionKey);
+                    }
 
                     if (null == complement)
                     {
