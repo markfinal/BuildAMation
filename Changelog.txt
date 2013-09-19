@@ -1,3 +1,5 @@
+18-Sep-2013 Added Opus.Core.BaseOptionCollection.Complement() function, to find the delta of two BaseOptionCollections.
+
 17-Sep-2013 Added Opus.Core.Array.AddUnique method.
 
 29-Aug-2013 Adding Opus.Core.Location which is an abstraction for a location on disk. Opus.Core.BaseModule has a dictionary of Locations, and a primary PackageLocation. This simplifies the Include and Exclude functionality to locate files.

@@ -61,5 +61,38 @@ namespace Opus.Core
 
             return clonedOption;
         }
+
+        public override bool Equals(object obj)
+        {
+            var thisValue = this.Value;
+            var otherValue = ((ReferenceTypeOption<T>)(obj)).Value;
+            var equals = thisValue.Equals(otherValue);
+            return equals;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override Option Complement(Option other)
+        {
+            var thisValue = this.Value;
+            var otherValue = ((ReferenceTypeOption<T>)(other)).Value;
+
+            if (!typeof(IComplement<T>).IsAssignableFrom(thisValue.GetType()))
+            {
+                throw new Exception("Type {0} does not implement the Opus.Core.IComplement<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+            }
+
+            var complementInterface = thisValue as IComplement<T>;
+            var complementResult = complementInterface.Complement(otherValue);
+
+            var complementOption = new ReferenceTypeOption<T>(complementResult);
+            // we can share private data
+            complementOption.PrivateData = this.PrivateData;
+
+            return complementOption;
+        }
     }
 }

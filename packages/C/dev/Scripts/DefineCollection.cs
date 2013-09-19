@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public sealed class DefineCollection : System.ICloneable
+    public sealed class DefineCollection : System.ICloneable, Opus.Core.IComplement<DefineCollection>
     {
         private Opus.Core.StringArray defines = new Opus.Core.StringArray();
 
@@ -51,6 +51,30 @@ namespace C
         public Opus.Core.StringArray ToStringArray()
         {
             return this.defines;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherCollection = obj as DefineCollection;
+            return (this.defines.Equals(otherCollection.defines));
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        DefineCollection Opus.Core.IComplement<DefineCollection>.Complement(DefineCollection other)
+        {
+            var complementDefines = this.defines.Complement(other.defines);
+            if (0 == complementDefines.Count)
+            {
+                throw new Opus.Core.Exception("DefineCollection complement is empty");
+            }
+
+            var complementDefinesCollection = new DefineCollection();
+            complementDefinesCollection.defines.AddRange(complementDefines);
+            return complementDefinesCollection;
         }
     }
 }

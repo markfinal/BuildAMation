@@ -194,5 +194,29 @@ namespace Opus.Core
             }
             return complement;
         }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Array<T>;
+            if (this.list.Count != other.list.Count)
+            {
+                return false;
+            }
+
+            foreach (var item in this.list)
+            {
+                if (!other.list.Contains(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

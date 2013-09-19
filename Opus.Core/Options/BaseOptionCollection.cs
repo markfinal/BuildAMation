@@ -15,6 +15,12 @@ namespace Opus.Core
             private set;
         }
 
+        private DependencyNode OwningNode
+        {
+            get;
+            set;
+        }
+
         protected BaseOptionCollection()
         {
             this.OutputPaths = new OutputPaths();
@@ -23,6 +29,7 @@ namespace Opus.Core
         protected BaseOptionCollection(DependencyNode owningNode)
             : this()
         {
+            this.OwningNode = owningNode;
             this.SetNodeOwnership(owningNode);
             this.InitializeDefaults(owningNode);
             this.SetDelegates(owningNode);
@@ -198,6 +205,40 @@ namespace Opus.Core
                     }
                 }
             }
+        }
+
+        public BaseOptionCollection Complement(Opus.Core.BaseOptionCollection other)
+        {
+            if (this.table.Count != other.table.Count)
+            {
+                throw new Exception("Option collections have a different number of options. Cannot compare");
+            }
+
+            BaseOptionCollection complement = null;
+            foreach (var optionKey in this.table.Keys)
+            {
+                var thisValue = this.table[optionKey];
+                var otherValue = other.table[optionKey];
+
+                if (thisValue.GetType() != otherValue.GetType())
+                {
+                    throw new Exception("Option values for key {0} have different types: {1} & {2}", optionKey, thisValue.GetType().ToString(), otherValue.GetType().ToString());
+                }
+
+                if (!thisValue.Equals(otherValue))
+                {
+                    var complementOption = thisValue.Complement(otherValue);
+                    Opus.Core.Log.MessageAll("Option {0} differs, {1}", optionKey, complementOption);
+
+                    if (null == complement)
+                    {
+                        complement = OptionCollectionFactory.CreateOptionCollection(this.GetType());
+                    }
+                    complement[optionKey] = complementOption;
+                }
+            }
+
+            return complement;
         }
     }
 }
