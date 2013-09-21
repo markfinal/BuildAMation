@@ -1,3 +1,5 @@
+21-Sep-2013 Added property EncapsulatingNode to Opus.Core.DependencyNode, as the DependencyNode in which this node resides. For example, if you are inspecting an ObjectFile within an Application, the encapsulating node is the Application.
+
 18-Sep-2013 Added Opus.Core.BaseOptionCollection.Complement() function, to find the delta of two BaseOptionCollections.
 
 17-Sep-2013 Added Opus.Core.Array.AddUnique method.
