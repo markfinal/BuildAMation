@@ -54,7 +54,7 @@ namespace VisualCCommon
         {
             get
             {
-                return new Opus.Core.StringArray("/I");
+                return new Opus.Core.StringArray("-I");
             }
         }
 

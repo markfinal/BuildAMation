@@ -16,11 +16,11 @@ namespace VisualCCommon
                     ArchiverOptionCollection options = sender as ArchiverOptionCollection;
                     if (options.LibraryFilePath.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", options.LibraryFilePath));
+                        commandLineBuilder.Add(System.String.Format("-OUT:\"{0}\"", options.LibraryFilePath));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("/OUT:{0}", options.LibraryFilePath));
+                        commandLineBuilder.Add(System.String.Format("-OUT:{0}", options.LibraryFilePath));
                     }
                     break;
                 default:
@@ -66,7 +66,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
-                commandLineBuilder.Add("/NOLOGO");
+                commandLineBuilder.Add("-NOLOGO");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)

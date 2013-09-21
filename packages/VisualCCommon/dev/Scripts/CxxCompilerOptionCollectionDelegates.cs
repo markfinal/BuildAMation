@@ -16,13 +16,13 @@ namespace VisualCCommon
                     // nothing
                     break;
                 case C.Cxx.EExceptionHandler.Asynchronous:
-                    commandLineBuilder.Add("/EHa");
+                    commandLineBuilder.Add("-EHa");
                     break;
                 case C.Cxx.EExceptionHandler.Synchronous:
-                    commandLineBuilder.Add("/EHsc");
+                    commandLineBuilder.Add("-EHsc");
                     break;
                 case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
-                    commandLineBuilder.Add("/EHs");
+                    commandLineBuilder.Add("-EHs");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized exception handler option");

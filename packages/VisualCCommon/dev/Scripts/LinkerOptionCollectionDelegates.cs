@@ -18,11 +18,11 @@ namespace VisualCCommon
                     string outputPathName = options.OutputFilePath;
                     if (outputPathName.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/OUT:\"{0}\"", outputPathName));
+                        commandLineBuilder.Add(System.String.Format("-OUT:\"{0}\"", outputPathName));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("/OUT:{0}", outputPathName));
+                        commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputPathName));
                     }
                     break;
                 default:
@@ -51,7 +51,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
-                commandLineBuilder.Add("/NODEFAULTLIB");
+                commandLineBuilder.Add("-NODEFAULTLIB");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DoNotAutoIncludeStandardLibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -66,7 +66,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
-                commandLineBuilder.Add("/DEBUG");
+                commandLineBuilder.Add("-DEBUG");
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 string pdbPathName = options.ProgramDatabaseFilePath;
                 if (pdbPathName.Contains(" "))
@@ -100,10 +100,10 @@ namespace VisualCCommon
                     // do nothing
                     break;
                 case C.ESubsystem.Console:
-                    commandLineBuilder.Add("/SUBSYSTEM:CONSOLE");
+                    commandLineBuilder.Add("-SUBSYSTEM:CONSOLE");
                     break;
                 case C.ESubsystem.Windows:
-                    commandLineBuilder.Add("/SUBSYSTEM:WINDOWS");
+                    commandLineBuilder.Add("-SUBSYSTEM:WINDOWS");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized subsystem option");
@@ -138,17 +138,17 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
-                commandLineBuilder.Add("/DLL");
+                commandLineBuilder.Add("-DLL");
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (null != options.StaticImportLibraryFilePath)
                 {
                     if (options.StaticImportLibraryFilePath.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/IMPLIB:\"{0}\"", options.StaticImportLibraryFilePath));
+                        commandLineBuilder.Add(System.String.Format("-IMPLIB:\"{0}\"", options.StaticImportLibraryFilePath));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("/IMPLIB:{0}", options.StaticImportLibraryFilePath));
+                        commandLineBuilder.Add(System.String.Format("-IMPLIB:{0}", options.StaticImportLibraryFilePath));
                     }
                 }
             }
@@ -174,11 +174,11 @@ namespace VisualCCommon
             {
                 if (includePath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("/LIBPATH:\"{0}\"", includePath));
+                    commandLineBuilder.Add(System.String.Format("-LIBPATH:\"{0}\"", includePath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("/LIBPATH:{0}", includePath));
+                    commandLineBuilder.Add(System.String.Format("-LIBPATH:{0}", includePath));
                 }
             }
         }
@@ -287,11 +287,11 @@ namespace VisualCCommon
                 LinkerOptionCollection options = sender as LinkerOptionCollection;
                 if (options.MapFilePath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("/MAP:\"{0}\"", options.MapFilePath));
+                    commandLineBuilder.Add(System.String.Format("-MAP:\"{0}\"", options.MapFilePath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("/MAP:{0}", options.MapFilePath));
+                    commandLineBuilder.Add(System.String.Format("-MAP:{0}", options.MapFilePath));
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
-                commandLineBuilder.Add("/NOLOGO");
+                commandLineBuilder.Add("-NOLOGO");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -355,7 +355,7 @@ namespace VisualCCommon
             if (stackSize != null)
             {
                 // this will be formatted as "reserve[,commit]"
-                commandLineBuilder.Add(System.String.Format("/STACK:{0}", stackSizeOption.Value));
+                commandLineBuilder.Add(System.String.Format("-STACK:{0}", stackSizeOption.Value));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary StackReserveAndCommitVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -380,7 +380,7 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (string library in ignoredLibrariesOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("/NODEFAULTLIB:{0}", library));
+                commandLineBuilder.Add(System.String.Format("-NODEFAULTLIB:{0}", library));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary IgnoredLibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -403,11 +403,11 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/INCREMENTAL");
+                commandLineBuilder.Add("-INCREMENTAL");
             }
             else
             {
-                commandLineBuilder.Add("/INCREMENTAL:NO");
+                commandLineBuilder.Add("-INCREMENTAL:NO");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary IncrementalLinkVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
