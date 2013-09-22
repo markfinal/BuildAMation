@@ -334,5 +334,13 @@ namespace Opus.Core
             complementDirectoryCollection.directoryPaths.AddRange(complementPaths);
             return complementDirectoryCollection;
         }
+
+        DirectoryCollection IComplement<DirectoryCollection>.Intersect(DirectoryCollection other)
+        {
+            var intersectPaths = this.directoryPaths.Intersect(other.directoryPaths);
+            var intersectDirectoryCollection = new DirectoryCollection();
+            intersectDirectoryCollection.directoryPaths.AddRange(intersectPaths);
+            return intersectDirectoryCollection;
+        }
     }
 }

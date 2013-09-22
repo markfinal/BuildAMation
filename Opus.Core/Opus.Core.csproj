@@ -96,6 +96,7 @@
     <Compile Include="Interfaces\IBuilderPostExecute.cs" />
     <Compile Include="Interfaces\IBuilderPreExecute.cs" />
     <Compile Include="Interfaces\IBuildScheduler.cs" />
+    <Compile Include="Interfaces\ICommonOptionCollection.cs" />
     <Compile Include="Interfaces\IComplement.cs" />
     <Compile Include="Interfaces\IFieldAttributeProcessor.cs" />
     <Compile Include="Interfaces\IForwardDependenciesOn.cs" />

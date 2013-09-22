@@ -48,7 +48,14 @@ namespace Opus.Core
 
         public override Option Complement(Option other)
         {
-            throw new System.NotImplementedException();
+            // two value types will be singular value so if they are not equal, their complement is the first value
+            return this.Clone() as Option;
+        }
+
+        public override Option Intersect(Option other)
+        {
+            // two value types will be singular value so if they are not equal, they will not intersect
+            return null;
         }
     }
 }

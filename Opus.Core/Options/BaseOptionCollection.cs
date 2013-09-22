@@ -207,41 +207,138 @@ namespace Opus.Core
             }
         }
 
-        public BaseOptionCollection Complement(Opus.Core.BaseOptionCollection other)
+        public override bool Equals(object obj)
         {
-            if (this.table.Count != other.table.Count)
-            {
-                throw new Exception("Option collections have a different number of options {0} & {1}. Cannot compare", this.table.Count, other.table.Count);
-            }
-
-            BaseOptionCollection complement = null;
+            var other = obj as BaseOptionCollection;
             foreach (var optionKey in this.table.Keys)
             {
-                var thisValue = this.table[optionKey];
-                var otherValue = other.table[optionKey];
-
-                if (thisValue.GetType() != otherValue.GetType())
+                var thisOption = this.table[optionKey];
+                if (!other.table.ContainsKey(optionKey))
                 {
-                    throw new Exception("Option values for key {0} have different types: {1} & {2}", optionKey, thisValue.GetType().ToString(), otherValue.GetType().ToString());
+                    return false;
+                }
+                var otherOption = other.table[optionKey];
+                if (thisOption.GetType() != otherOption.GetType())
+                {
+                    throw new Exception("Option values for key {0} have different types: {1} & {2}",
+                                        optionKey, thisOption.GetType().ToString(), otherOption.GetType().ToString());
                 }
 
-                if (!thisValue.Equals(otherValue))
+                if (!thisOption.Equals(otherOption))
                 {
-                    var complementOption = thisValue.Complement(otherValue);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public BaseOptionCollection Complement(Opus.Core.BaseOptionCollection other)
+        {
+            // TODO: essentially need to check whether the two option collections share a base class other than BaseOptionCollection
+            // can this be done by going backward up the class hierarchy from BaseOptionCollection, since it's likely that the next
+            // subclass after that is common
+#if false
+            if (!(this.GetType().IsAssignableFrom(other.GetType()) || other.GetType().IsAssignableFrom(this.GetType())))
+            {
+                throw new Exception("Option collections have uncomparable types {0} & {1}", this.GetType().FullName, other.GetType().FullName);
+            }
+#endif
+
+            var complement = OptionCollectionFactory.CreateOptionCollection(this.GetType());
+            foreach (var optionKey in this.table.Keys)
+            {
+                var thisOption = this.table[optionKey];
+                if (!other.table.ContainsKey(optionKey))
+                {
+                    complement[optionKey] = thisOption.Clone() as Option;
+                    continue;
+                }
+                var otherOption = other.table[optionKey];
+                if (thisOption.GetType() != otherOption.GetType())
+                {
+                    throw new Exception("Option values for key {0} have different types: {1} & {2}",
+                                        optionKey, thisOption.GetType().ToString(), otherOption.GetType().ToString());
+                }
+
+                if (!thisOption.Equals(otherOption))
+                {
+                    var complementOption = thisOption.Complement(otherOption);
                     if (null == complementOption)
                     {
                         throw new Exception("Complement option collection for option '{0}' does not exist. Is there something wrong with the equivalence checks?", optionKey);
                     }
 
-                    if (null == complement)
-                    {
-                        complement = OptionCollectionFactory.CreateOptionCollection(this.GetType());
-                    }
                     complement[optionKey] = complementOption;
                 }
             }
 
             return complement;
+        }
+
+        public BaseOptionCollection Intersect(Opus.Core.BaseOptionCollection other)
+        {
+            // TODO: essentially need to check whether the two option collections share a base class other than BaseOptionCollection
+            // can this be done by going backward up the class hierarchy from BaseOptionCollection, since it's likely that the next
+            // subclass after that is common
+#if false
+            if (!(this.GetType().IsAssignableFrom(other.GetType()) || other.GetType().IsAssignableFrom(this.GetType())))
+            {
+                throw new Exception("Option collections have uncomparable types {0} & {1}", this.GetType().FullName, other.GetType().FullName);
+            }
+#endif
+
+            BaseOptionCollection intersect = null;
+            foreach (var optionKey in this.table.Keys)
+            {
+                var thisOption = this.table[optionKey];
+                if (!other.table.ContainsKey(optionKey))
+                {
+                    continue;
+                }
+                var otherOption = other.table[optionKey];
+                if (thisOption.GetType() != otherOption.GetType())
+                {
+                    throw new Exception("Option values for key {0} have different types: {1} & {2}",
+                                        optionKey, thisOption.GetType().ToString(), otherOption.GetType().ToString());
+                }
+
+                if (thisOption.Equals(otherOption))
+                {
+                    if (null == intersect)
+                    {
+                        intersect = OptionCollectionFactory.CreateOptionCollection(this.GetType());
+                    }
+                    intersect[optionKey] = thisOption.Clone() as Option;
+                }
+                else
+                {
+                    var intersectOption = thisOption.Intersect(otherOption);
+                    if (null != intersectOption)
+                    {
+                        if (null == intersect)
+                        {
+                            intersect = OptionCollectionFactory.CreateOptionCollection(this.GetType());
+                        }
+                        intersect[optionKey] = intersectOption;
+                    }
+                }
+            }
+
+            return intersect;
+        }
+
+        public bool Empty
+        {
+            get
+            {
+                return (0 == this.table.Count);
+            }
         }
     }
 }

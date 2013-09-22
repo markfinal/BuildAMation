@@ -16,5 +16,6 @@ namespace Opus.Core
         public abstract object Clone();
 
         public abstract Option Complement(Option other);
+        public abstract Option Intersect(Option other);
     }
 }

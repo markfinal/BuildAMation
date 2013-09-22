@@ -140,10 +140,11 @@ namespace Opus.Core
             Log.DebugMessage("Create option collections: START");
             Log.DebugMessage("--------------------------------");
 
-            // in increasing rank, generate option collections, so that child inherit their parent options
+            // in increasing rank, generate option collections, so that children inherit their parent options
             // if so desired
             foreach (var nodeCollection in this.rankList)
             {
+                // TODO: this could be parallelized within a rank
                 foreach (var node in nodeCollection)
                 {
                     // empty build functions do not equate to no option collection
@@ -164,6 +165,36 @@ namespace Opus.Core
                     if (null != node.Module.Options)
                     {
                         node.Module.Options.FinalizeOptions(node);
+
+                        if ((node.Module is ICommonOptionCollection) && (node.Children != null))
+                        {
+                            if (1 == node.Children.Count)
+                            {
+                                (node.Module as ICommonOptionCollection).CommonOptionCollection = node.Children[0].Module.Options;
+                            }
+                            else
+                            {
+                                BaseOptionCollection intersectedOptions = null;
+                                foreach (var child in node.Children)
+                                {
+                                    if (intersectedOptions == null)
+                                    {
+                                        intersectedOptions = child.Module.Options.Clone() as BaseOptionCollection;
+                                    }
+                                    else
+                                    {
+                                        intersectedOptions = intersectedOptions.Intersect(child.Module.Options);
+                                    }
+                                }
+
+                                if (null == intersectedOptions)
+                                {
+                                    throw new Exception("There were no intersecting options in both option collections. This is highly unlikely");
+                                }
+
+                                (node.Module as ICommonOptionCollection).CommonOptionCollection = intersectedOptions;
+                            }
+                        }
                     }
                 }
             }

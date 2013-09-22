@@ -8,5 +8,6 @@ namespace Opus.Core
     public interface IComplement<T>
     {
         T Complement(T other);
+        T Intersect(T other);
     }
 }

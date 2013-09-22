@@ -78,7 +78,7 @@ namespace Opus.Core
         public override Option Complement(Option other)
         {
             var thisValue = this.Value;
-            var otherValue = ((ReferenceTypeOption<T>)(other)).Value;
+            var otherValue = (other as ReferenceTypeOption<T>).Value;
 
             if (!typeof(IComplement<T>).IsAssignableFrom(thisValue.GetType()))
             {
@@ -93,6 +93,26 @@ namespace Opus.Core
             complementOption.PrivateData = this.PrivateData;
 
             return complementOption;
+        }
+
+        public override Option Intersect(Option other)
+        {
+            var thisValue = this.Value;
+            var otherValue = (other as ReferenceTypeOption<T>).Value;
+
+            if (!typeof(IComplement<T>).IsAssignableFrom(thisValue.GetType()))
+            {
+                throw new Exception("Type {0} does not implement the Opus.Core.IComplement<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+            }
+
+            var complementInterface = thisValue as IComplement<T>;
+            var intersectResult = complementInterface.Intersect(otherValue);
+
+            var intersectOption = new ReferenceTypeOption<T>(intersectResult);
+            // we can share private data
+            intersectOption.PrivateData = this.PrivateData;
+
+            return intersectOption;
         }
     }
 }
