@@ -9,7 +9,7 @@ namespace C
     /// C/C++ console application
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
-    public class Application : Opus.Core.BaseModule, Opus.Core.INestedDependents
+    public class Application : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.ICommonOptionCollection
     {
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
@@ -61,6 +61,12 @@ namespace C
                 var linkerOptions = module.Options as ILinkerOptions;
                 linkerOptions.SubSystem = C.ESubsystem.Console;
             }
+        }
+
+        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        {
+            get;
+            set;
         }
     }
 }

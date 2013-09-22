@@ -76,5 +76,13 @@ namespace C
             complementDefinesCollection.defines.AddRange(complementDefines);
             return complementDefinesCollection;
         }
+
+        DefineCollection Opus.Core.IComplement<DefineCollection>.Intersect(DefineCollection other)
+        {
+            var intersectDefines = this.defines.Intersect(other.defines);
+            var intersectDefinesCollection = new DefineCollection();
+            intersectDefinesCollection.defines.AddRange(intersectDefines);
+            return intersectDefinesCollection;
+        }
     }
 }
