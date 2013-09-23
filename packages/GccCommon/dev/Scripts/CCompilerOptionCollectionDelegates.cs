@@ -46,10 +46,15 @@ namespace GccCommon
         private static void SystemIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
-            if (!optionCollection.IgnoreStandardIncludePaths)
+            // TODO: this is a bit of a hack to cope with option collection deltas
+            // since SystemIncludePaths refers to IgnoreStandardIncludePaths, just the former cannot be in a delta
+            if ((sender as Opus.Core.BaseOptionCollection).Contains("IgnoreStandardIncludePaths"))
             {
-                Opus.Core.Log.Full("System include paths not explicitly added to the build");
-                return;
+                if (!optionCollection.IgnoreStandardIncludePaths)
+                {
+                    Opus.Core.Log.Full("System include paths not explicitly added to the build");
+                    return;
+                }
             }
             Opus.Core.IToolset toolset = target.Toolset;
             C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
