@@ -36,7 +36,7 @@ namespace XcodeBuilder
             builder.Append("{ ");
             foreach (var item in this.dictionary)
             {
-                if (item.Value.Count > 1)
+                if (item.Value.ToString().Contains(" "))
                 {
                     builder.AppendFormat("{0} = \"{1}\"; ", item.Key, item.Value.ToString());
                 }
