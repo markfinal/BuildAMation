@@ -92,6 +92,11 @@ namespace XcodeBuilder
                 {
                     // first add a dependency so that they are built in the right order
                     var dependentData = dependency.Data as PBXNativeTarget;
+                    if (null == dependentData)
+                    {
+                        continue;
+                    }
+
                     var targetDependency = new PBXTargetDependency(moduleName, dependentData);
                     this.Project.TargetDependencies.Add(targetDependency);
 
@@ -117,6 +122,11 @@ namespace XcodeBuilder
                 foreach (var dependency in node.RequiredDependents)
                 {
                     var dependentData = dependency.Data as PBXNativeTarget;
+                    if (null == dependentData)
+                    {
+                        continue;
+                    }
+
                     var targetDependency = new PBXTargetDependency(moduleName, dependentData);
                     this.Project.TargetDependencies.Add(targetDependency);
 

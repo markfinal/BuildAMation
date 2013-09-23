@@ -92,6 +92,11 @@ namespace XcodeBuilder
                 foreach (var dependency in node.RequiredDependents)
                 {
                     var dependentData = dependency.Data as PBXNativeTarget;
+                    if (null == dependentData)
+                    {
+                        continue;
+                    }
+
                     var targetDependency = new PBXTargetDependency(moduleName, dependentData);
                     this.Project.TargetDependencies.Add(targetDependency);
 
