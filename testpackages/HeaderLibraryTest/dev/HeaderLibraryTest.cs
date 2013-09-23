@@ -15,8 +15,6 @@ namespace HeaderLibraryTest
         {
             var options = module.Options as C.ICCompilerOptions;
             options.IncludePaths.Include(this.PackageLocation, "include");
-            var c = module.Options as GccCommon.ICCompilerOptions;
-            c.Pedantic = false;
         }
 
         [C.HeaderFiles]
