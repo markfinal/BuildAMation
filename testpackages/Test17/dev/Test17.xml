@@ -22,6 +22,9 @@
     <Opus:Package Name="VisualC">
       <Opus:Version Id="11.0" />
     </Opus:Package>
+    <Opus:Package Name="XcodeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
     <Opus:OpusAssembly Name="Opus.Core" />
