@@ -7,7 +7,10 @@ namespace XcodeProjectProcessor
 {
     public static class ToXcodeProject
     {
-        public static void Execute(object sender, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Target target)
+        public static void Execute(object sender,
+                                   XcodeBuilder.PBXProject project,
+                                   XcodeBuilder.XCBuildConfiguration configuration,
+                                   Opus.Core.Target target)
         {
             var optionCollection = sender as Opus.Core.BaseOptionCollection;
             var optionNames = optionCollection.OptionNames;
@@ -34,7 +37,7 @@ namespace XcodeProjectProcessor
                         // Not a requirement, but just a check
                         throw new Opus.Core.Exception("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString());
                     }
-                    xcodeProjectDelegate(sender, configuration, option, target);
+                    xcodeProjectDelegate(sender, project, configuration, option, target);
                 }
             }
         }

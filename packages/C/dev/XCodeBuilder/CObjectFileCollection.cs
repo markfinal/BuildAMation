@@ -20,11 +20,11 @@ namespace XcodeBuilder
             if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
             {
                 var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
-                XcodeProjectProcessor.ToXcodeProject.Execute(commonOptions, buildConfiguration, target);
+                XcodeProjectProcessor.ToXcodeProject.Execute(commonOptions, this.Project, buildConfiguration, target);
             }
             else
             {
-                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, buildConfiguration, target);
+                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, buildConfiguration, target);
             }
             // TODO: not sure where all these will come from
 #if true

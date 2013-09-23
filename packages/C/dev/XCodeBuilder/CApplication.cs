@@ -43,7 +43,7 @@ namespace XcodeBuilder
             }
 
             // fill out the build configuration
-            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, buildConfiguration, target);
+            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, buildConfiguration, target);
             Opus.Core.Log.MessageAll("Options");
             foreach (var o in buildConfiguration.Options)
             {
