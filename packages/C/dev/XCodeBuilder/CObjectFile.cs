@@ -44,7 +44,10 @@ namespace XcodeBuilder
                     CommandLineProcessor.ToCommandLine.Execute(complementOptions, commandLineBuilder, target, null);
                     Opus.Core.Log.MessageAll("Complement command line: {0}", commandLineBuilder.ToString(' '));
 
-                    data.Settings["COMPILER_FLAGS"].AddRangeUnique(commandLineBuilder);
+                    if (commandLineBuilder.Count > 0)
+                    {
+                        data.Settings["COMPILER_FLAGS"].AddRangeUnique(commandLineBuilder);
+                    }
                 }
             }
             else
