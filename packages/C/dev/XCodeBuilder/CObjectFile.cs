@@ -27,27 +27,26 @@ namespace XcodeBuilder
             sourcesBuildPhase.Files.Add(data);
             data.BuildPhase = sourcesBuildPhase;
 
-            // TODO: this was the original expression, but it does not quite seem correct
-            //if (null == node.Parent ||
-            //    (node.Parent.Module.GetType().BaseType.BaseType == typeof(C.ObjectFileCollectionBase) && null == node.Parent.Parent))
-            if (node.IsModuleNested && typeof(C.ObjectFileCollectionBase).IsAssignableFrom(node.Parent.Module.GetType()))
+            Opus.Core.BaseOptionCollection complementOptionCollection = null;
+            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
             {
-                var thisOptions = moduleToBuild.Options;
-                var parentOptions = node.Parent.Module.Options;
-                var complementOptions = thisOptions.Complement(parentOptions);
-
-                // if no complement options, then the source file uses the common parent options
-
-                if (null != complementOptions)
+                var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                if (commonOptions is C.ICCompilerOptions)
                 {
-                    Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
-                    CommandLineProcessor.ToCommandLine.Execute(complementOptions, commandLineBuilder, target, null);
-                    Opus.Core.Log.MessageAll("Complement command line: {0}", commandLineBuilder.ToString(' '));
+                    complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
+                }
+            }
 
-                    if (commandLineBuilder.Count > 0)
-                    {
-                        data.Settings["COMPILER_FLAGS"].AddRangeUnique(commandLineBuilder);
-                    }
+            if ((complementOptionCollection != null) && !complementOptionCollection.Empty)
+            {
+                // there is an option delta to write for this file
+                Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+                CommandLineProcessor.ToCommandLine.Execute(complementOptionCollection, commandLineBuilder, target, null);
+                Opus.Core.Log.MessageAll("Complement command line: '{0}'", commandLineBuilder.ToString(' '));
+
+                if (commandLineBuilder.Count > 0)
+                {
+                    data.Settings["COMPILER_FLAGS"].AddRangeUnique(commandLineBuilder);
                 }
             }
             else

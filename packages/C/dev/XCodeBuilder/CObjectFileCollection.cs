@@ -16,7 +16,16 @@ namespace XcodeBuilder
 
             // fill out the build configuration on behalf of all of it's children
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
-            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, buildConfiguration, target);
+
+            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+            {
+                var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                XcodeProjectProcessor.ToXcodeProject.Execute(commonOptions, buildConfiguration, target);
+            }
+            else
+            {
+                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, buildConfiguration, target);
+            }
             // TODO: not sure where all these will come from
 #if true
             // TODO: what to do when there are multiple configurations
