@@ -46,7 +46,7 @@ namespace XcodeBuilder
 
             if (this.Settings.Count > 0)
             {
-                writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; settings = {4}}};", this.UUID, this.FileReference.ShortPath, this.BuildPhase.Name, this.FileReference.UUID, this.Settings.ToString());
+                writer.WriteLine("\t\t{0} /* {1} in {2} */ = {{isa = PBXBuildFile; fileRef = {3} /* {1} */; settings = {4} }};", this.UUID, this.FileReference.ShortPath, this.BuildPhase.Name, this.FileReference.UUID, this.Settings.ToString());
             }
             else
             {
