@@ -4,6 +4,11 @@ namespace Test3
     // Define module classes here
     sealed class Library2 : C.StaticLibrary
     {
+        public Library2()
+        {
+            this.headerFiles.Include(this.PackageLocation, "include", "*.h");
+        }
+
         sealed class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -23,5 +28,8 @@ namespace Test3
 
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
+
+        [C.HeaderFiles]
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
     }
 }
