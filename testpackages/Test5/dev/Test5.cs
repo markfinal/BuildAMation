@@ -18,7 +18,8 @@ namespace Test5
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
-            typeof(Test4.MyDynamicLib)
+            typeof(Test4.MyDynamicLib),
+            typeof(Test4.MyStaticLib)
         );
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
