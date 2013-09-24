@@ -13,7 +13,8 @@ namespace XcodeBuilder
             DynamicLibrary,
             StaticLibrary,
             SourceFile,
-            HeaderFile
+            HeaderFile,
+            Framework,
         }
 
         public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
@@ -21,10 +22,19 @@ namespace XcodeBuilder
         {
             this.Type = type;
             this.ShortPath = System.IO.Path.GetFileName(path);
-
-            var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
-            this.RelativePath = relative;
-            Opus.Core.Log.MessageAll("path {0}: {1}", path, relative);
+            if (EType.Framework == type)
+            {
+                this.ShortPath += ".framework";
+                // TODO: this is a hack, as I don't know the SDK at this stage
+                // there might need to be more options added here
+                this.RelativePath = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/" + this.ShortPath;
+            }
+            else
+            {
+                var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
+                this.RelativePath = relative;
+            }
+            Opus.Core.Log.MessageAll("path {0}: {1}", path, this.RelativePath);
         }
 
         public string ShortPath
@@ -69,6 +79,10 @@ namespace XcodeBuilder
 
             case EType.HeaderFile:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            case EType.Framework:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = {1}; path = {2}; sourceTree = DEVELOPER_DIR; }};", this.UUID, this.ShortPath, this.RelativePath);
                 break;
 
             default:

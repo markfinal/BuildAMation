@@ -210,6 +210,19 @@ namespace GccCommon
         }
         private static void OSXFrameworksXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var frameworks = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (var framework in frameworks.Value)
+            {
+                var fileReference = new XcodeBuilder.PBXFileReference(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
+                project.FileReferences.Add(fileReference);
+
+                var buildFile = new XcodeBuilder.PBXBuildFile(framework);
+                buildFile.FileReference = fileReference;
+                buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", "CocoaTest1"); // TODO: hack
+                project.BuildFiles.Add(buildFile);
+
+                buildFile.BuildPhase.Files.Add(buildFile);
+            }
         }
         #endregion
         #region ILinkerOptions Option delegates
