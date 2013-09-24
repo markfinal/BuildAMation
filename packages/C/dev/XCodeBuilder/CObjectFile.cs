@@ -53,7 +53,7 @@ namespace XcodeBuilder
             {
                 // fill out the build configuration for the singular file
                 var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
-                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, buildConfiguration, target);
+                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
                 // TODO: not sure where all these will come from
 #if true
                 // TODO: what to do when there are multiple configurations
