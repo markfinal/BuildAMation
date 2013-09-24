@@ -108,6 +108,26 @@ namespace XcodeBuilder
                 }
             }
 
+            // find header files
+            var fieldBindingFlags = System.Reflection.BindingFlags.Instance |
+                                        System.Reflection.BindingFlags.Public |
+                                            System.Reflection.BindingFlags.NonPublic;
+            var fields = moduleToBuild.GetType().GetFields(fieldBindingFlags);
+            foreach (var field in fields)
+            {
+                var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
+                if (headerFileAttributes.Length > 0)
+                {
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    foreach (string headerPath in headerFileCollection)
+                    {
+                        var headerFileRef = new PBXFileReference(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.ProjectRootUri);
+                        this.Project.FileReferences.Add(headerFileRef);
+                        group.Children.Add(headerFileRef);
+                    }
+                }
+            }
+
             success = true;
             return data;
         }
