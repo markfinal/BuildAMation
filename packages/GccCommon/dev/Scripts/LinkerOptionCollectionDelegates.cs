@@ -213,8 +213,7 @@ namespace GccCommon
             var frameworks = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (var framework in frameworks.Value)
             {
-                var fileReference = new XcodeBuilder.PBXFileReference(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
-                project.FileReferences.Add(fileReference);
+                var fileReference = project.FileReferences.Get(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
 
                 var buildFile = new XcodeBuilder.PBXBuildFile(framework);
                 buildFile.FileReference = fileReference;

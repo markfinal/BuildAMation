@@ -18,14 +18,14 @@ namespace XcodeBuilder
             : base (name)
         {
             this.Type = type;
-            this.BuildPhases = new System.Collections.Generic.List<BuildPhase>();
-            this.Dependencies = new System.Collections.Generic.List<PBXTargetDependency>();
+            this.BuildPhases = new Opus.Core.Array<BuildPhase>();
+            this.Dependencies = new Opus.Core.Array<PBXTargetDependency>();
         }
 
-        private EType Type
+        public EType Type
         {
             get;
-            set;
+            private set;
         }
 
         public PBXFileReference ProductReference
@@ -40,13 +40,13 @@ namespace XcodeBuilder
             set;
         }
 
-        public System.Collections.Generic.List<BuildPhase> BuildPhases
+        public Opus.Core.Array<BuildPhase> BuildPhases
         {
             get;
             private set;
         }
 
-        public System.Collections.Generic.List<PBXTargetDependency> Dependencies
+        public Opus.Core.Array<PBXTargetDependency> Dependencies
         {
             get;
             private set;

@@ -16,8 +16,7 @@ namespace XcodeBuilder
 
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
 
-            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.SourceFile, sourceFile, this.ProjectRootUri);
-            this.Project.FileReferences.Add(fileRef);
+            var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.SourceFile, sourceFile, this.ProjectRootUri);
 
             var data = new PBXBuildFile(moduleName);
             data.FileReference = fileRef;

@@ -9,18 +9,28 @@ namespace XcodeBuilder
     {
         public PBXGroupSection()
         {
-            this.Groups = new System.Collections.Generic.List<PBXGroup>();
+            this.Groups = new Opus.Core.Array<PBXGroup>();
         }
 
-        public void Add(PBXGroup group)
+        public PBXGroup Get(string name)
         {
             lock (this.Groups)
             {
-                this.Groups.Add(group);
+                foreach (var group in this.Groups)
+                {
+                    if (group.Name == name)
+                    {
+                        return group;
+                    }
+                }
+
+                var newGroup = new PBXGroup(name);
+                this.Groups.Add(newGroup);
+                return newGroup;
             }
         }
 
-        private System.Collections.Generic.List<PBXGroup> Groups
+        private Opus.Core.Array<PBXGroup> Groups
         {
             get;
             set;

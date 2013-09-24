@@ -49,10 +49,10 @@ namespace XcodeBuilder
             set;
         }
 
-        private EType Type
+        public EType Type
         {
             get;
-            set;
+            private set;
         }
 
 #region IWriteableNode implementation

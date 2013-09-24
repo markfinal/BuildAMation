@@ -18,13 +18,11 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var fileRef = new PBXFileReference(moduleName, PBXFileReference.EType.DynamicLibrary, outputPath, this.ProjectRootUri);
-            this.Project.FileReferences.Add(fileRef);
-            this.Project.ProductsGroup.Children.Add(fileRef);
+            var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.DynamicLibrary, outputPath, this.ProjectRootUri);
+            this.Project.ProductsGroup.Children.AddUnique(fileRef);
 
-            var data = new PBXNativeTarget(moduleName, PBXNativeTarget.EType.DynamicLibrary);
+            var data = this.Project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.DynamicLibrary);
             data.ProductReference = fileRef;
-            this.Project.NativeTargets.Add(data);
 
             // build configuration target overrides to the project build configuration
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
@@ -51,7 +49,7 @@ namespace XcodeBuilder
             }
 
             // adding the group for the target
-            var group = new PBXGroup(moduleName);
+            var group = this.Project.Groups.Get(moduleName);
             group.SourceTree = "<group>";
             group.Path = moduleName;
             foreach (var source in node.Children)
@@ -64,27 +62,26 @@ namespace XcodeBuilder
                         Opus.Core.Log.MessageAll("\tsource; {0}", source2.UniqueModuleName);
                         var sourceData = source2.Data as PBXBuildFile;
                         Opus.Core.Log.MessageAll("\t{0}", sourceData.Name);
-                        group.Children.Add(sourceData.FileReference);
+                        group.Children.AddUnique(sourceData.FileReference);
                     }
                 }
                 else
                 {
                     Opus.Core.Log.MessageAll("source; {0}", source.UniqueModuleName);
                     var sourceData = source.Data as PBXBuildFile;
-                    group.Children.Add(sourceData.FileReference);
+                    group.Children.AddUnique(sourceData.FileReference);
                 }
             }
-            this.Project.Groups.Add(group);
-            this.Project.MainGroup.Children.Add(group);
+            this.Project.MainGroup.Children.AddUnique(group);
 
             var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleName);
-            data.BuildPhases.Add(sourcesBuildPhase);
+            data.BuildPhases.AddUnique(sourcesBuildPhase);
 
             var copyFilesBuildPhase = this.Project.CopyFilesBuildPhases.Get("CopyFiles", moduleName);
-            data.BuildPhases.Add(copyFilesBuildPhase);
+            data.BuildPhases.AddUnique(copyFilesBuildPhase);
 
             var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleName);
-            data.BuildPhases.Add(frameworksBuildPhase);
+            data.BuildPhases.AddUnique(frameworksBuildPhase);
 
             if (null != node.ExternalDependents)
             {
@@ -151,9 +148,8 @@ namespace XcodeBuilder
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        var headerFileRef = new PBXFileReference(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.ProjectRootUri);
-                        this.Project.FileReferences.Add(headerFileRef);
-                        group.Children.Add(headerFileRef);
+                        var headerFileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.ProjectRootUri);
+                        group.Children.AddUnique(headerFileRef);
                     }
                 }
             }

@@ -21,20 +21,17 @@ namespace XcodeBuilder
 
             this.Project = new PBXProject(mainPackage.Name);
 
+            // create a main group
+            var mainGroup = this.Project.Groups.Get(string.Empty);
+            mainGroup.SourceTree = "<group>";
+            this.Project.MainGroup = mainGroup;
+
             // create a products group
-            var productsGroup = new PBXGroup("Products");
+            var productsGroup = this.Project.Groups.Get("Products");
             productsGroup.SourceTree = "<group>";
             this.Project.ProductsGroup = productsGroup;
 
-            // create a main group
-            var mainGroup = new PBXGroup(string.Empty);
-            mainGroup.SourceTree = "<group>";
             mainGroup.Children.Add(productsGroup);
-            this.Project.MainGroup = mainGroup;
-
-            // add them in this order
-            this.Project.Groups.Add(mainGroup);
-            this.Project.Groups.Add(productsGroup);
 
             // create common build configurations for all targets
             // these settings are overriden by per-target build configurations

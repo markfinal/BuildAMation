@@ -10,7 +10,7 @@ namespace XcodeBuilder
         public PBXGroup(string name)
             : base(name)
         {
-            this.Children = new System.Collections.Generic.List<XCodeNodeData>();
+            this.Children = new Opus.Core.Array<XCodeNodeData>();
         }
 
         public string Path
@@ -25,7 +25,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public System.Collections.Generic.List<XCodeNodeData> Children
+        public Opus.Core.Array<XCodeNodeData> Children
         {
             get;
             private set;

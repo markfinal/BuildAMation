@@ -7,17 +7,26 @@ namespace XcodeBuilder
 {
     public sealed class PBXNativeTargetSection : IWriteableNode, System.Collections.IEnumerable
     {
-
         public PBXNativeTargetSection()
         {
             this.NativeTargets = new System.Collections.Generic.List<PBXNativeTarget>();
         }
 
-        public void Add(PBXNativeTarget target)
+        public PBXNativeTarget Get(string name, PBXNativeTarget.EType type)
         {
-            lock (this.NativeTargets)
+            lock(this.NativeTargets)
             {
-                this.NativeTargets.Add(target);
+                foreach (var target in this.NativeTargets)
+                {
+                    if ((target.Name == name) && (target.Type == type))
+                    {
+                        return target;
+                    }
+                }
+
+                var newTarget = new PBXNativeTarget(name, type);
+                this.NativeTargets.Add(newTarget);
+                return newTarget;
             }
         }
 
