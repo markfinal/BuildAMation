@@ -20,12 +20,10 @@ namespace XcodeBuilder
                 {
                     if ((fileRef.Name == name) && (fileRef.Type == type) && (fileRef.ShortPath == System.IO.Path.GetFileName(path)))
                     {
-                        Opus.Core.Log.MessageAll("Matched file ref {0} {1}", name, path);
                         return fileRef;
                     }
                 }
 
-                Opus.Core.Log.MessageAll("New file ref {0} {1}", name, path);
                 var newFileRef = new PBXFileReference(name, type, path, rootPath);
                 this.FileReferences.Add(newFileRef);
                 return newFileRef;

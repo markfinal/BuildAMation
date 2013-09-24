@@ -11,7 +11,7 @@ namespace XcodeBuilder
             : base(name)
         {
             this.ModuleName = moduleName;
-            this.Files = new System.Collections.Generic.List<PBXBuildFile>();
+            this.Files = new Opus.Core.Array<PBXBuildFile>();
         }
 
         public string ModuleName
@@ -20,7 +20,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public System.Collections.Generic.List<PBXBuildFile> Files
+        public Opus.Core.Array<PBXBuildFile> Files
         {
             get;
             private set;

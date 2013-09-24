@@ -215,12 +215,11 @@ namespace GccCommon
             {
                 var fileReference = project.FileReferences.Get(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
 
-                var buildFile = new XcodeBuilder.PBXBuildFile(framework);
+                var buildFile = project.BuildFiles.Get(framework);
                 buildFile.FileReference = fileReference;
                 buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
-                project.BuildFiles.Add(buildFile);
 
-                buildFile.BuildPhase.Files.Add(buildFile);
+                buildFile.BuildPhase.Files.AddUnique(buildFile);
             }
         }
         #endregion

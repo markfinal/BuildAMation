@@ -104,12 +104,11 @@ namespace XcodeBuilder
                     data.Dependencies.Add(targetDependency);
 
                     // now add a link dependency
-                    var buildFile = new PBXBuildFile(dependency.UniqueModuleName);
+                    var buildFile = this.Project.BuildFiles.Get(dependency.UniqueModuleName);
                     buildFile.FileReference = dependentData.ProductReference;
                     buildFile.BuildPhase = frameworksBuildPhase;
-                    this.Project.BuildFiles.Add(buildFile);
 
-                    frameworksBuildPhase.Files.Add(buildFile);
+                    frameworksBuildPhase.Files.AddUnique(buildFile);
                 }
             }
 

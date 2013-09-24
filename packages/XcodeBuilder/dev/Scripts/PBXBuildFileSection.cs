@@ -9,18 +9,28 @@ namespace XcodeBuilder
     {
         public PBXBuildFileSection()
         {
-            this.BuildFiles = new System.Collections.Generic.List<PBXBuildFile>();
+            this.BuildFiles = new Opus.Core.Array<PBXBuildFile>();
         }
 
-        public void Add(PBXBuildFile buildFile)
+        public PBXBuildFile Get(string name)
         {
             lock (this.BuildFiles)
             {
-                this.BuildFiles.Add(buildFile);
+                foreach (var buildFile in this.BuildFiles)
+                {
+                    if (buildFile.Name == name)
+                    {
+                        return buildFile;
+                    }
+                }
+
+                var newBuildFile = new PBXBuildFile(name);
+                this.BuildFiles.Add(newBuildFile);
+                return newBuildFile;
             }
         }
 
-        private System.Collections.Generic.List<PBXBuildFile> BuildFiles
+        private Opus.Core.Array<PBXBuildFile> BuildFiles
         {
             get;
             set;
