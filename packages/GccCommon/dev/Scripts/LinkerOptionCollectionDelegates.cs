@@ -218,7 +218,7 @@ namespace GccCommon
 
                 var buildFile = new XcodeBuilder.PBXBuildFile(framework);
                 buildFile.FileReference = fileReference;
-                buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", "CocoaTest1"); // TODO: hack
+                buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
                 project.BuildFiles.Add(buildFile);
 
                 buildFile.BuildPhase.Files.Add(buildFile);
