@@ -158,8 +158,8 @@ configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":[
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"],"Xcode":["llvm-gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                        osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
@@ -179,8 +179,8 @@ configs["Symlinks-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                     linux={"Native":None,"MakeFile":None},
                                     osx={"Native":None,"MakeFile":None})
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
-configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
-configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
+configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                      linux={"Native":None,"MakeFile":None},
                                      osx={"Native":None,"MakeFile":None})
