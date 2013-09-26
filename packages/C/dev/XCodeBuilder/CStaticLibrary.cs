@@ -94,8 +94,7 @@ namespace XcodeBuilder
                         continue;
                     }
 
-                    var targetDependency = new PBXTargetDependency(moduleName, dependentData);
-                    this.Project.TargetDependencies.Add(targetDependency);
+                    var targetDependency = this.Project.TargetDependencies.Get(moduleName, dependentData);
 
                     var containerItemProxy = new PBXContainerItemProxy(moduleName, dependentData, this.Project);
                     this.Project.ContainerItemProxies.Add(containerItemProxy);

@@ -13,10 +13,10 @@ namespace XcodeBuilder
             this.NativeTarget = nativeTarget;
         }
 
-        private PBXNativeTarget NativeTarget
+        public PBXNativeTarget NativeTarget
         {
             get;
-            set;
+            private set;
         }
 
         public PBXContainerItemProxy TargetProxy

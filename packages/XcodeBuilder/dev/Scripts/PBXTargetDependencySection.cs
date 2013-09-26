@@ -12,11 +12,21 @@ namespace XcodeBuilder
             this.TargetDependencies = new System.Collections.Generic.List<PBXTargetDependency>();
         }
 
-        public void Add(PBXTargetDependency dependency)
+        public PBXTargetDependency Get(string name, PBXNativeTarget nativeTarget)
         {
             lock (this.TargetDependencies)
             {
-                this.TargetDependencies.Add(dependency);
+                foreach (var dependency in this.TargetDependencies)
+                {
+                    if ((dependency.Name == name) && (dependency.NativeTarget == nativeTarget))
+                    {
+                        return dependency;
+                    }
+                }
+
+                var newDependency = new PBXTargetDependency(name, nativeTarget);
+                this.TargetDependencies.Add(newDependency);
+                return newDependency;
             }
         }
 

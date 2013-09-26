@@ -12,14 +12,6 @@ namespace XcodeBuilder
             this.SourcesBuildPhase = new System.Collections.Generic.List<PBXSourcesBuildPhase>();
         }
 
-        public void Add(PBXSourcesBuildPhase buildPhase)
-        {
-            lock (this.SourcesBuildPhase)
-            {
-                this.SourcesBuildPhase.Add(buildPhase);
-            }
-        }
-
         public PBXSourcesBuildPhase Get(string name, string moduleName)
         {
             lock (this.SourcesBuildPhase)
