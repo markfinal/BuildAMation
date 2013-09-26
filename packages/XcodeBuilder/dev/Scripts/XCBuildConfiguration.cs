@@ -13,6 +13,8 @@ namespace XcodeBuilder
             this.ModuleName = moduleName;
             this.Options = new OptionsDictionary();
             this.Options["PRODUCT_NAME"].AddUnique("\"$(TARGET_NAME)\"");
+            // http://meidell.dk/2010/05/xcode-header-map-files/
+            this.Options["USE_HEADERMAP"].AddUnique("NO");
             this.SourceFiles = new Opus.Core.Array<PBXBuildFile>();
         }
 
