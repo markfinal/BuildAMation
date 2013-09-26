@@ -22,7 +22,7 @@ namespace XcodeBuilder
             data.FileReference = fileRef;
 
             var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleName);
-            sourcesBuildPhase.Files.Add(data);
+            sourcesBuildPhase.Files.AddUnique(data);
             data.BuildPhase = sourcesBuildPhase;
 
             Opus.Core.BaseOptionCollection complementOptionCollection = null;
