@@ -185,6 +185,33 @@ namespace GccCommon
         }
         private static void OptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var optimization = option as Opus.Core.ValueTypeOption<C.EOptimization>;
+            var optimizationOption = configuration.Options["GCC_OPTIMIZATION_LEVEL"];
+            switch (optimization.Value)
+            {
+            case C.EOptimization.Off:
+                optimizationOption.AddUnique("0");
+                break;
+            case C.EOptimization.Size:
+                optimizationOption.AddUnique("s");
+                break;
+            case C.EOptimization.Speed:
+                optimizationOption.AddUnique("1");
+                break;
+            case C.EOptimization.Full:
+                optimizationOption.AddUnique("3");
+                break;
+            case C.EOptimization.Custom:
+                // nothing
+                break;
+            default:
+                throw new Opus.Core.Exception("Unrecognized optimization option");
+            }
+
+            if (optimizationOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one optimization option has been set");
+            }
         }
         private static void CustomOptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
