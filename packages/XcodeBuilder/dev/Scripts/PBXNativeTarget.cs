@@ -20,6 +20,7 @@ namespace XcodeBuilder
             this.Type = type;
             this.BuildPhases = new Opus.Core.Array<BuildPhase>();
             this.Dependencies = new Opus.Core.Array<PBXTargetDependency>();
+            this.SourceFilesToBuild = new Opus.Core.Array<PBXBuildFile>();
         }
 
         public EType Type
@@ -47,6 +48,12 @@ namespace XcodeBuilder
         }
 
         public Opus.Core.Array<PBXTargetDependency> Dependencies
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.Array<PBXBuildFile> SourceFilesToBuild
         {
             get;
             private set;

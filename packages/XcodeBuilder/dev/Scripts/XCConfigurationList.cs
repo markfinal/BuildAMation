@@ -11,7 +11,7 @@ namespace XcodeBuilder
             : base(owner.Name)
         {
             this.Owner = owner;
-            this.BuildConfigurations = new System.Collections.Generic.List<XCBuildConfiguration>();
+            this.BuildConfigurations = new Opus.Core.Array<XCBuildConfiguration>();
         }
 
         public XCodeNodeData Owner
@@ -31,10 +31,10 @@ namespace XcodeBuilder
             }
         }
 
-        private System.Collections.Generic.List<XCBuildConfiguration> BuildConfigurations
+        public Opus.Core.Array<XCBuildConfiguration> BuildConfigurations
         {
             get;
-            set;
+            private set;
         }
 
 #region IWriteableNode implementation

@@ -24,6 +24,22 @@ namespace XcodeBuilder
             var data = this.Project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.DynamicLibrary);
             data.ProductReference = fileRef;
 
+            // gather up all the source files for this target
+            foreach (var childNode in node.Children)
+            {
+                if (childNode.Module is C.ObjectFileCollectionBase)
+                {
+                    foreach (var objectFile in childNode.Children)
+                    {
+                        data.SourceFilesToBuild.AddUnique(objectFile.Data as PBXBuildFile);
+                    }
+                }
+                else
+                {
+                    data.SourceFilesToBuild.AddUnique(childNode.Data as PBXBuildFile);
+                }
+            }
+
             // build configuration target overrides to the project build configuration
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
             var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(data);
