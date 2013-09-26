@@ -215,8 +215,7 @@ namespace GccCommon
             {
                 var fileReference = project.FileReferences.Get(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
 
-                var buildFile = project.BuildFiles.Get(framework);
-                buildFile.FileReference = fileReference;
+                var buildFile = project.BuildFiles.Get(framework, fileReference);
                 buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
 
                 buildFile.BuildPhase.Files.AddUnique(buildFile);

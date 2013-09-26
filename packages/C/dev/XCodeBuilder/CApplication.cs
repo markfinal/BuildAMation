@@ -102,8 +102,7 @@ namespace XcodeBuilder
                     data.Dependencies.Add(targetDependency);
 
                     // now add a link dependency
-                    var buildFile = this.Project.BuildFiles.Get(dependency.UniqueModuleName);
-                    buildFile.FileReference = dependentData.ProductReference;
+                    var buildFile = this.Project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference);
                     buildFile.BuildPhase = frameworksBuildPhase;
 
                     frameworksBuildPhase.Files.AddUnique(buildFile);
