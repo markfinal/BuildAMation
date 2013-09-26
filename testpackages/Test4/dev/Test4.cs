@@ -5,6 +5,11 @@ namespace Test4
     // Define module classes here
     class MyDynamicLib : C.DynamicLibrary
     {
+        public MyDynamicLib()
+        {
+            this.headerFiles.Include(this.PackageLocation, "include", "dynamiclibrary.h");
+        }
+
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
@@ -36,6 +41,9 @@ namespace Test4
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
+        [C.HeaderFiles]
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyStaticLib));
 
@@ -53,10 +61,15 @@ namespace Test4
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "staticlibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
+
+            this.headerFiles.Include(this.PackageLocation, "include", "staticlibrary.h");
         }
 
         [Opus.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
+
+        [C.HeaderFiles]
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
         [C.ExportCompilerOptionsDelegate]
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
