@@ -7,7 +7,7 @@ namespace XcodeBuilder
 {
     public sealed class OptionsDictionary : System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
     {
-        private System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+        private System.Collections.Generic.SortedDictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.SortedDictionary<string, Opus.Core.StringArray>();
 
         public Opus.Core.StringArray this[string key]
         {
