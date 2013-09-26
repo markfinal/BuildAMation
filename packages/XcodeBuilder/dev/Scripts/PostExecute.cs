@@ -49,6 +49,11 @@ namespace XcodeBuilder
                 }
             }
 
+            if (!System.IO.Directory.Exists(this.ProjectRootUri.AbsoluteUri))
+            {
+                System.IO.Directory.CreateDirectory(this.ProjectRootUri.AbsoluteUri);
+            }
+
             // cannot write a Byte-Ordering-Mark (BOM) into the project file
             var encoding = new System.Text.UTF8Encoding(false);
             using (var projectFile = new System.IO.StreamWriter(this.ProjectPath, false, encoding) as System.IO.TextWriter)
