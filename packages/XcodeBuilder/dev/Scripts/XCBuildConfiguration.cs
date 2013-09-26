@@ -13,6 +13,7 @@ namespace XcodeBuilder
             this.ModuleName = moduleName;
             this.Options = new OptionsDictionary();
             this.Options["PRODUCT_NAME"].AddUnique("\"$(TARGET_NAME)\"");
+            this.SourceFiles = new Opus.Core.Array<PBXBuildFile>();
         }
 
         public string ModuleName
@@ -22,6 +23,12 @@ namespace XcodeBuilder
         }
 
         public OptionsDictionary Options
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.Array<PBXBuildFile> SourceFiles
         {
             get;
             private set;

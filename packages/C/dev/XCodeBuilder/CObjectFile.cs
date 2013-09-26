@@ -19,6 +19,7 @@ namespace XcodeBuilder
             var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.SourceFile, sourceFile, this.ProjectRootUri);
 
             var data = this.Project.BuildFiles.Get(moduleName, fileRef);
+            this.Project.SourceFilesToBuild.AddUnique(data);
 
             var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleName);
             sourcesBuildPhase.Files.AddUnique(data);
@@ -90,6 +91,10 @@ namespace XcodeBuilder
                     Opus.Core.Log.MessageAll("  {0} {1}", o.Key, o.Value);
                 }
             }
+
+            // add the source file to the configuration
+            var config = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
+            config.SourceFiles.AddUnique(data);
 
             success = true;
             return data;

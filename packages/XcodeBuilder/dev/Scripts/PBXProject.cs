@@ -21,6 +21,7 @@ namespace XcodeBuilder
             this.FrameworksBuildPhases = new PBXFrameworksBuildPhaseSection();
             this.TargetDependencies = new PBXTargetDependencySection();
             this.ContainerItemProxies = new PBXContainerItemProxySection();
+            this.SourceFilesToBuild = new Opus.Core.Array<PBXBuildFile>();
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -105,6 +106,12 @@ namespace XcodeBuilder
         {
             get;
             set;
+        }
+
+        public Opus.Core.Array<PBXBuildFile> SourceFilesToBuild
+        {
+            get;
+            private set;
         }
 
 #region IWriteableNode implementation

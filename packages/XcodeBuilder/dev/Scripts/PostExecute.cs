@@ -32,6 +32,23 @@ namespace XcodeBuilder
                 return;
             }
 
+            // handle any source file exclusions by diffing the source files attached to configurations
+            // which those in the project
+            foreach (var config in this.Project.BuildConfigurations)
+            {
+                var buildConfig = config as XCBuildConfiguration;
+                if (0 == buildConfig.SourceFiles.Count)
+                {
+                    continue;
+                }
+
+                var complement = this.Project.SourceFilesToBuild.Complement(buildConfig.SourceFiles);
+                foreach (var source in complement)
+                {
+                    buildConfig.Options["EXCLUDED_SOURCE_FILE_NAMES"].AddUnique(source.FileReference.ShortPath);
+                }
+            }
+
             // cannot write a Byte-Ordering-Mark (BOM) into the project file
             var encoding = new System.Text.UTF8Encoding(false);
             using (var projectFile = new System.IO.StreamWriter(this.ProjectPath, false, encoding) as System.IO.TextWriter)
