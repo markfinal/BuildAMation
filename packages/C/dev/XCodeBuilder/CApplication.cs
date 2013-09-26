@@ -96,8 +96,7 @@ namespace XcodeBuilder
 
                     var targetDependency = this.Project.TargetDependencies.Get(moduleName, dependentData);
 
-                    var containerItemProxy = new PBXContainerItemProxy(moduleName, dependentData, this.Project);
-                    this.Project.ContainerItemProxies.Add(containerItemProxy);
+                    var containerItemProxy = this.Project.ContainerItemProxies.Get(moduleName, dependentData, this.Project);
                     targetDependency.TargetProxy = containerItemProxy;
 
                     data.Dependencies.Add(targetDependency);
@@ -124,8 +123,7 @@ namespace XcodeBuilder
 
                     var targetDependency = this.Project.TargetDependencies.Get(moduleName, dependentData);
 
-                    var containerItemProxy = new PBXContainerItemProxy(moduleName, dependentData, this.Project);
-                    this.Project.ContainerItemProxies.Add(containerItemProxy);
+                    var containerItemProxy = this.Project.ContainerItemProxies.Get(moduleName, dependentData, this.Project);
                     targetDependency.TargetProxy = containerItemProxy;
 
                     data.Dependencies.Add(targetDependency);

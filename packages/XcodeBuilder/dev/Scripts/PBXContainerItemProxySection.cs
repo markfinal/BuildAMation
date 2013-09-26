@@ -12,11 +12,21 @@ namespace XcodeBuilder
             this.ContainerItemProxies = new System.Collections.Generic.List<PBXContainerItemProxy>();
         }
 
-        public void Add(PBXContainerItemProxy item)
+        public PBXContainerItemProxy Get(string name, XCodeNodeData remote, XCodeNodeData portal)
         {
             lock (this.ContainerItemProxies)
             {
-                this.ContainerItemProxies.Add(item);
+                foreach (var containerItem in this.ContainerItemProxies)
+                {
+                    if ((containerItem.Name == name) && (containerItem.Remote == remote) && (containerItem.Portal == portal))
+                    {
+                        return containerItem;
+                    }
+                }
+
+                var newContainerItem = new PBXContainerItemProxy(name, remote, portal);
+                this.ContainerItemProxies.Add(newContainerItem);
+                return newContainerItem;
             }
         }
 

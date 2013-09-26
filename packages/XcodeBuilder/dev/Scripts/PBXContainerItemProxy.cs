@@ -14,16 +14,16 @@ namespace XcodeBuilder
             this.Portal = portal;
         }
 
-        private XCodeNodeData Remote
+        public XCodeNodeData Remote
         {
             get;
-            set;
+            private set;
         }
 
-        private XCodeNodeData Portal
+        public XCodeNodeData Portal
         {
             get;
-            set;
+            private set;
         }
 
 #region IWriteableNode implementation
