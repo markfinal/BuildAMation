@@ -191,6 +191,17 @@ namespace GccCommon
         }
         private static void IgnoreStandardIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var ignoreStandardIncludePaths = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (ignoreStandardIncludePaths.Value)
+            {
+                otherCFlagsOption.AddUnique("-nostdinc");
+                var cOptions = sender as C.ICCompilerOptions;
+                if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
+                {
+                    otherCFlagsOption.AddUnique("-nostdinc++");
+                }
+            }
         }
         private static void OptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -253,6 +264,9 @@ namespace GccCommon
         }
         private static void CustomOptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var customOptimizations = option as Opus.Core.ReferenceTypeOption<string>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            otherCFlagsOption.AddUnique(customOptimizations.Value);
         }
         private static void TargetLanguageCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -318,6 +332,12 @@ namespace GccCommon
         }
         private static void ShowIncludesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var showIncludes = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (showIncludes.Value)
+            {
+                otherCFlagsOption.AddUnique("-H");
+            }
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -330,6 +350,13 @@ namespace GccCommon
         }
         private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var additionalOptions = option as Opus.Core.ReferenceTypeOption<string>;
+            var splitArguments = additionalOptions.Value.Split(' ');
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            foreach (var argument in splitArguments)
+            {
+                otherCFlagsOption.AddUnique(argument);
+            }
         }
         private static void OmitFramePointerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -345,6 +372,16 @@ namespace GccCommon
         }
         private static void OmitFramePointerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var omitFramePointer = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (omitFramePointer.Value)
+            {
+                otherCFlagsOption.AddUnique("-fomit-frame-pointer");
+            }
+            else
+            {
+                otherCFlagsOption.AddUnique("-fno-omit-frame-pointer");
+            }
         }
         private static void DisableWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
