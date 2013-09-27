@@ -122,6 +122,7 @@ namespace GccCommon
         }
         private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // TODO: not sure what this should do to preprocess files only
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -133,6 +134,21 @@ namespace GccCommon
         }
         private static void DebugSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var debugSymbols = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = configuration.Options["GCC_GENERATE_DEBUGGING_SYMBOLS"];
+            if (debugSymbols.Value)
+            {
+                debugSymbolsOption.AddUnique("YES");
+            }
+            else
+            {
+                debugSymbolsOption.AddUnique("NO");
+            }
+
+            if (debugSymbolsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one debug symbol generation option has been set");
+            }
         }
         private static void WarningsAsErrorsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
