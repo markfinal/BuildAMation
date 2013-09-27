@@ -160,6 +160,21 @@ namespace GccCommon
         }
         private static void WarningsAsErrorsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var warningsAsErrors = option as Opus.Core.ValueTypeOption<bool>;
+            var warningsAsErrorsOption = configuration.Options["GCC_TREAT_WARNINGS_AS_ERRORS"];
+            if (warningsAsErrors.Value)
+            {
+                warningsAsErrorsOption.AddUnique("YES");
+            }
+            else
+            {
+                warningsAsErrorsOption.AddUnique("NO");
+            }
+
+            if (warningsAsErrorsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one warnings as errors option has been set");
+            }
         }
         private static void IgnoreStandardIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
