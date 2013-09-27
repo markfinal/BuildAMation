@@ -399,7 +399,7 @@ namespace GccCommon
             {
                 // TODO: there are some named warnings, e.g.
                 // -Wno-shadow = GCC_WARN_SHADOW = NO
-                warningCFlagsOption.AddUnique(System.String.Format("-Wno-{0}", warning);
+                warningCFlagsOption.AddUnique(System.String.Format("-Wno-{0}", warning));
             }
         }
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -421,6 +421,20 @@ namespace GccCommon
         }
         private static void CharacterSetXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var characterSet = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            var cOptions = sender as C.ICCompilerOptions;
+            switch (characterSet.Value)
+            {
+                case C.ECharacterSet.NotSet:
+                        break;
+                case C.ECharacterSet.Unicode:
+                    cOptions.Defines.Add("_UNICODE");
+                    cOptions.Defines.Add("UNICODE");
+                break;
+                    case C.ECharacterSet.MultiByte:
+                    cOptions.Defines.Add("_MBCS");
+                break;
+            }
         }
         #endregion
         #region ICCompilerOptions Option delegates
