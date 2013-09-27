@@ -448,6 +448,12 @@ namespace GccCommon
         }
         private static void AllWarningsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var allWarnings = option as Opus.Core.ValueTypeOption<bool>;
+            var warningCFlagsOption = configuration.Options["WARNING_CFLAGS"];
+            if (allWarnings.Value)
+            {
+                warningCFlagsOption.AddUnique("-Wall");
+            }
         }
         private static void ExtraWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -459,6 +465,12 @@ namespace GccCommon
         }
         private static void ExtraWarningsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var extraWarnings = option as Opus.Core.ValueTypeOption<bool>;
+            var warningCFlagsOption = configuration.Options["WARNING_CFLAGS"];
+            if (extraWarnings.Value)
+            {
+                warningCFlagsOption.AddUnique("-Wextra");
+            }
         }
         private static void StrictAliasingCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
