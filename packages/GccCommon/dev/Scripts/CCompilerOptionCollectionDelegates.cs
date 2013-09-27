@@ -393,6 +393,14 @@ namespace GccCommon
         }
         private static void DisableWarningsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var disableWarnings = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var warningCFlagsOption = configuration.Options["WARNING_CFLAGS"];
+            foreach (var warning in disableWarnings.Value)
+            {
+                // TODO: there are some named warnings, e.g.
+                // -Wno-shadow = GCC_WARN_SHADOW = NO
+                warningCFlagsOption.AddUnique(System.String.Format("-Wno-{0}", warning);
+            }
         }
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
