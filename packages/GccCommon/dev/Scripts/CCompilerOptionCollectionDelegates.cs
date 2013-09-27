@@ -512,6 +512,22 @@ namespace GccCommon
         }
         private static void PositionIndependentCodeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var pic = option as Opus.Core.ValueTypeOption<bool>;
+            // note that the logic is reversed here
+            var noPICOption = configuration.Options["GCC_DYNAMIC_NO_PIC"];
+            if (pic.Value)
+            {
+                noPICOption.AddUnique("NO");
+            }
+            else
+            {
+                noPICOption.AddUnique("YES");
+            }
+
+            if (noPICOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one no position independent code option has been set");
+            }
         }
         private static void InlineFunctionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
