@@ -543,6 +543,16 @@ namespace GccCommon
         }
         private static void InlineFunctionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var inlineFunctions = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (inlineFunctions.Value)
+            {
+                otherCFlagsOption.AddUnique("-finline-functions");
+            }
+            else
+            {
+                otherCFlagsOption.AddUnique("-fno-inline-functions");
+            }
         }
         private static void PedanticCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
