@@ -486,6 +486,21 @@ namespace GccCommon
         }
         private static void StrictAliasingXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var strictAliasing = option as Opus.Core.ValueTypeOption<bool>;
+            var strictAliasingOption = configuration.Options["GCC_STRICT_ALIASING"];
+            if (strictAliasing.Value)
+            {
+                strictAliasingOption.AddUnique("YES");
+            }
+            else
+            {
+                strictAliasingOption.AddUnique("NO");
+            }
+
+            if (strictAliasingOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one strict aliasing option has been set");
+            }
         }
         private static void PositionIndependentCodeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
