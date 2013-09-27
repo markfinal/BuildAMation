@@ -564,6 +564,21 @@ namespace GccCommon
         }
         private static void PedanticXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var pedanticWarnings = option as Opus.Core.ValueTypeOption<bool>;
+            var pedanticWarningsOption = configuration.Options["GCC_WARN_PEDANTIC"];
+            if (pedanticWarnings.Value)
+            {
+                pedanticWarningsOption.AddUnique("YES");
+            }
+            else
+            {
+                pedanticWarningsOption.AddUnique("NO");
+            }
+
+            if (pedanticWarningsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one pedantic warnings option has been set");
+            }
         }
         private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
