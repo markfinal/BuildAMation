@@ -22,7 +22,7 @@ cCompiler_options = [
     "-c=CCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=GccCommon.PrivateData",
     "-e" # this option set derives from the GccCommon option set
 ]
@@ -38,7 +38,7 @@ cxxCompiler_options = [
     "-c=CxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=GccCommon.PrivateData",
     "-e" # this option set derives from the C option set
 ]
@@ -54,7 +54,7 @@ objcCompiler_options = [
     "-c=ObjCCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=GccCommon.PrivateData",
     "-e" # this option set derives from the GccCommon option set
 ]
@@ -70,7 +70,7 @@ objcxxCompiler_options = [
     "-c=ObjCxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=GccCommon.PrivateData",
     "-e" # this option set derives from the C option set
 ]
