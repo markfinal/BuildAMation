@@ -250,6 +250,13 @@ namespace GccCommon
         }
         private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            foreach (var argument in arguments)
+            {
+                otherLDOptions.AddUnique(argument);
+            }
         }
         private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
