@@ -83,10 +83,19 @@ namespace GccCommon
         private static void DoNotAutoIncludeStandardLibrariesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var ignoreStandardLibs = option as Opus.Core.ValueTypeOption<bool>;
-            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            var linkWithStandardLibsOption = configuration.Options["LINK_WITH_STANDARD_LIBRARIES"];
             if (ignoreStandardLibs.Value)
             {
-                otherLDOptions.AddUnique("-nostdlib");
+                linkWithStandardLibsOption.AddUnique("NO");
+            }
+            else
+            {
+                linkWithStandardLibsOption.AddUnique("YES");
+            }
+
+            if (linkWithStandardLibsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one ignore standard libraries option has been set");
             }
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -99,6 +108,12 @@ namespace GccCommon
         }
         private static void DebugSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var debugSymbols = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (debugSymbols.Value)
+            {
+                otherLDOptions.AddUnique("-g");
+            }
         }
         private static void SubSystemCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
