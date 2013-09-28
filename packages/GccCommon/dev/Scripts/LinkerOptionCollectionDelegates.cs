@@ -164,6 +164,19 @@ namespace GccCommon
         }
         private static void LibraryPathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            foreach (string libraryPath in libraryPathsOption.Value)
+            {
+                if (libraryPath.Contains(" "))
+                {
+                    otherLDOptions.AddUnique(System.String.Format("-L\"{0}\"", libraryPath));
+                }
+                else
+                {
+                    otherLDOptions.AddUnique(System.String.Format("-L{0}", libraryPath));
+                }
+            }
         }
         private static void StandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -171,6 +184,7 @@ namespace GccCommon
         }
         private static void StandardLibrariesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // empty
         }
         private static void LibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
