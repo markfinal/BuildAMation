@@ -121,6 +121,7 @@ namespace GccCommon
         }
         private static void SubSystemXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // empty
         }
         private static void DynamicLibraryCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -139,6 +140,12 @@ namespace GccCommon
         }
         private static void DynamicLibraryXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var dynamicLibrary = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (dynamicLibrary.Value)
+            {
+                otherLDOptions.AddUnique("-dynamiclib");
+            }
         }
         private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
