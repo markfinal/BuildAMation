@@ -34,7 +34,6 @@ namespace XcodeBuilder
                 var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
                 this.RelativePath = relative;
             }
-            Opus.Core.Log.MessageAll("path {0}: {1}", path, this.RelativePath);
         }
 
         public string ShortPath

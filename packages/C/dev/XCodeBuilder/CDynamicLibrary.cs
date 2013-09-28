@@ -14,7 +14,6 @@ namespace XcodeBuilder
             var target = node.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
-            Opus.Core.Log.MessageAll("DynamicLibrary {0}", moduleName);
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
@@ -58,11 +57,6 @@ namespace XcodeBuilder
 
             // fill out the build configuration
             XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
-            Opus.Core.Log.MessageAll("Options");
-            foreach (var o in buildConfiguration.Options)
-            {
-                Opus.Core.Log.MessageAll("  {0} {1}", o.Key, o.Value);
-            }
 
             // adding the group for the target
             var group = this.Project.Groups.Get(moduleName);
@@ -72,18 +66,14 @@ namespace XcodeBuilder
             {
                 if (source.Module is Opus.Core.IModuleCollection)
                 {
-                    Opus.Core.Log.MessageAll("Collective source; {0}", source.UniqueModuleName);
                     foreach (var source2 in source.Children)
                     {
-                        Opus.Core.Log.MessageAll("\tsource; {0}", source2.UniqueModuleName);
                         var sourceData = source2.Data as PBXBuildFile;
-                        Opus.Core.Log.MessageAll("\t{0}", sourceData.Name);
                         group.Children.AddUnique(sourceData.FileReference);
                     }
                 }
                 else
                 {
-                    Opus.Core.Log.MessageAll("source; {0}", source.UniqueModuleName);
                     var sourceData = source.Data as PBXBuildFile;
                     group.Children.AddUnique(sourceData.FileReference);
                 }

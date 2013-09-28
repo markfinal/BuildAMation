@@ -50,12 +50,6 @@ namespace XcodeBuilder
             }
 #endif
 
-            Opus.Core.Log.MessageAll("Common options for {0}", moduleName);
-            foreach (var o in buildConfiguration.Options)
-            {
-                Opus.Core.Log.MessageAll("  {0} {1}", o.Key, o.Value);
-            }
-
             success = true;
             return null;
         }

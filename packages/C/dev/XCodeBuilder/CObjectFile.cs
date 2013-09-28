@@ -39,7 +39,6 @@ namespace XcodeBuilder
                 // there is an option delta to write for this file
                 Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
                 CommandLineProcessor.ToCommandLine.Execute(complementOptionCollection, commandLineBuilder, target, null);
-                Opus.Core.Log.MessageAll("Complement command line: '{0}'", commandLineBuilder.ToString(' '));
 
                 if (commandLineBuilder.Count > 0)
                 {
@@ -74,12 +73,6 @@ namespace XcodeBuilder
                     throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
                 }
 #endif
-
-                Opus.Core.Log.MessageAll("Options");
-                foreach (var o in buildConfiguration.Options)
-                {
-                    Opus.Core.Log.MessageAll("  {0} {1}", o.Key, o.Value);
-                }
             }
 
             // add the source file to the configuration

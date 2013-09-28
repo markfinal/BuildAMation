@@ -7,6 +7,7 @@ namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder
     {
+        [Opus.Core.EmptyBuildFunction]
         public object Build(C.HeaderLibrary moduleToBuild, out bool success)
         {
             success = true;
