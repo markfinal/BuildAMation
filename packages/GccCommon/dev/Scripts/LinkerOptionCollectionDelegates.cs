@@ -140,6 +140,7 @@ namespace GccCommon
         }
         private static void DynamicLibraryXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // TODO: this looks like it might actually be MACH_O_TYPE=mh_dylib or mh_execute
             var dynamicLibrary = option as Opus.Core.ValueTypeOption<bool>;
             var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
             if (dynamicLibrary.Value)
