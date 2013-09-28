@@ -332,6 +332,17 @@ namespace GccCommon
         }
         private static void AllowUndefinedSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var allowUndefined = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (allowUndefined.Value)
+            {
+                // TODO: I did originally think suppress here, but there is an issue with that and 'two level namespaces'
+                otherLDOptions.AddUnique("-Wl,-undefined,dynamic_lookup");
+            }
+            else
+            {
+                otherLDOptions.AddUnique("-Wl,-undefined,error");
+            }
         }
         private static void RPathCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
