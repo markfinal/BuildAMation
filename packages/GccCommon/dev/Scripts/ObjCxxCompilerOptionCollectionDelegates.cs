@@ -25,6 +25,25 @@ namespace GccCommon
         }
         public static void ExceptionHandlerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var exceptionHandler = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionsOption = configuration.Options["GCC_ENABLE_CPP_EXCEPTIONS"];
+            switch (exceptionHandler.Value)
+            {
+                case C.Cxx.EExceptionHandler.Disabled:
+                    exceptionsOption.AddUnique("NO");
+                    break;
+                case C.Cxx.EExceptionHandler.Asynchronous:
+                case C.Cxx.EExceptionHandler.Synchronous:
+                    exceptionsOption.AddUnique("YES");
+                    break;
+                default:
+                    throw new Opus.Core.Exception("Unrecognized exception handler option");
+            }
+
+            if (exceptionsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one exceptions option has been set");
+            }
         }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
