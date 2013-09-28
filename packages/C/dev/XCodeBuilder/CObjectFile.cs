@@ -53,15 +53,6 @@ namespace XcodeBuilder
                 XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
                 // TODO: not sure where all these will come from
 #if true
-                // TODO: what to do when there are multiple configurations
-                if (target.HasPlatform(Opus.Core.EPlatform.OSX64))
-                {
-                    buildConfiguration.Options["ARCHS"].AddUnique("\"$(ARCHS_STANDARD_64_BIT)\"");
-                }
-                else
-                {
-                    buildConfiguration.Options["ARCHS"].AddUnique("\"$(ARCHS_STANDARD_32_BIT)\"");
-                }
                 buildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
                 buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique("10.8");
                 buildConfiguration.Options["SDKROOT"].AddUnique("macosx");

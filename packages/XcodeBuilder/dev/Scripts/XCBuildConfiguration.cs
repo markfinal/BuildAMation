@@ -12,7 +12,7 @@ namespace XcodeBuilder
         {
             this.ModuleName = moduleName;
             this.Options = new OptionsDictionary();
-            this.Options["PRODUCT_NAME"].AddUnique("\"$(TARGET_NAME)\"");
+            this.Options["PRODUCT_NAME"].AddUnique("$(TARGET_NAME)");
             // http://meidell.dk/2010/05/xcode-header-map-files/
             this.Options["USE_HEADERMAP"].AddUnique("NO");
             this.SourceFiles = new Opus.Core.Array<PBXBuildFile>();
@@ -47,13 +47,14 @@ namespace XcodeBuilder
             {
                 if (option.Value.Count == 1)
                 {
-                    if (option.Value.Contains("="))
+                    var theString = option.Value[0];
+                    if (theString.Contains("=") || theString.Contains("$"))
                     {
-                        writer.WriteLine("\t\t\t\t{0} = \"{1}\";", option.Key, option.Value);
+                        writer.WriteLine("\t\t\t\t{0} = \"{1}\";", option.Key, theString);
                     }
                     else
                     {
-                        writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, option.Value);
+                        writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, theString);
                     }
                 }
                 else
@@ -61,7 +62,7 @@ namespace XcodeBuilder
                     writer.WriteLine("\t\t\t\t{0} = (", option.Key);
                     foreach (var value in option.Value)
                     {
-                        if (value.Contains("="))
+                        if (value.Contains("=") || value.Contains("$"))
                         {
                             writer.WriteLine("\t\t\t\t\t\"{0}\",", value);
                         }

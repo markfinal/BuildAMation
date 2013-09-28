@@ -594,6 +594,21 @@ namespace GccCommon
         }
         private static void SixtyFourBitXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var sixtyFourBit = option as Opus.Core.ValueTypeOption<bool>;
+            var archOption = configuration.Options["ARCHS"];
+            if (sixtyFourBit.Value)
+            {
+                archOption.AddUnique("$(NATIVE_ARCH_64_BIT)");
+            }
+            else
+            {
+                archOption.AddUnique("$(NATIVE_ARCH_32_BIT)");
+            }
+
+            if (archOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one architecture option has been set");
+            }
         }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
