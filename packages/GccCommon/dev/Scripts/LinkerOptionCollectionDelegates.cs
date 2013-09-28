@@ -295,6 +295,12 @@ namespace GccCommon
         }
         private static void CanUseOriginXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var useOrigin = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (useOrigin.Value)
+            {
+                otherLDOptions.AddUnique("-Wl,-z,origin");
+            }
         }
         private static void AllowUndefinedSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
