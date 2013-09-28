@@ -82,6 +82,12 @@ namespace GccCommon
         }
         private static void DoNotAutoIncludeStandardLibrariesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var ignoreStandardLibs = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (ignoreStandardLibs.Value)
+            {
+                otherLDOptions.AddUnique("-nostdlib");
+            }
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
