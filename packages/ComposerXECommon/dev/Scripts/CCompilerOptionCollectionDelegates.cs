@@ -228,6 +228,9 @@ namespace ComposerXECommon
                     break;
             }
         }
+        private static void LanguageStandardCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         #region ICCompilerOptions Option delegates
         private static void AllWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -316,6 +319,7 @@ namespace ComposerXECommon
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLineProcessor);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor);
+            this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLineProcessor);
             this["StrictDiagnostics"].PrivateData = new PrivateData(StrictDiagnosticsCommandLineProcessor);
             this["EnableRemarks"].PrivateData = new PrivateData(EnableRemarksCommandLineProcessor);

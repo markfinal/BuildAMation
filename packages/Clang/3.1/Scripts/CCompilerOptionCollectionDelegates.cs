@@ -184,6 +184,9 @@ namespace Clang
                     break;
             }
         }
+        private static void LanguageStandardCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -202,6 +205,7 @@ namespace Clang
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLineProcessor);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor);
+            this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor);
         }
     }
 }

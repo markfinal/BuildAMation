@@ -141,5 +141,14 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// The language standard for C/C++ compilation
+        /// </summary>
+        C.ELanguageStandard LanguageStandard
+        {
+            get;
+            set;
+        }
     }
 }

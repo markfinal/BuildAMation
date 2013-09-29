@@ -144,7 +144,6 @@ namespace GccCommon
             {
                 debugSymbolsOption.AddUnique("NO");
             }
-
             if (debugSymbolsOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one debug symbol generation option has been set");
@@ -170,7 +169,6 @@ namespace GccCommon
             {
                 warningsAsErrorsOption.AddUnique("NO");
             }
-
             if (warningsAsErrorsOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one warnings as errors option has been set");
@@ -251,7 +249,6 @@ namespace GccCommon
             default:
                 throw new Opus.Core.Exception("Unrecognized optimization option");
             }
-
             if (optimizationOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one optimization option has been set");
@@ -316,7 +313,6 @@ namespace GccCommon
             default:
                 throw new Opus.Core.Exception("Unrecognized target language option");
             }
-
             if (inputFileType.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one target language option has been set");
@@ -436,6 +432,63 @@ namespace GccCommon
                 break;
             }
         }
+        private static void LanguageStandardCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
+            switch (languageStandard.Value)
+            {
+            case C.ELanguageStandard.NotSet:
+                break;
+
+            case C.ELanguageStandard.C89:
+                commandLineBuilder.Add("-std=c89");
+                break;
+
+            case C.ELanguageStandard.C99:
+                commandLineBuilder.Add("-std=c99");
+                break;
+
+            case C.ELanguageStandard.Cxx98:
+                commandLineBuilder.Add("-std=c++98");
+                break;
+
+            case C.ELanguageStandard.Cxx11:
+                commandLineBuilder.Add("-std=c++11");
+                break;
+
+            default:
+                throw new Opus.Core.Exception("Unknown language standard");
+            }
+        }
+        private static void LanguageStandardXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
+            var languageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
+            switch (languageStandard.Value)
+            {
+            case C.ELanguageStandard.NotSet:
+                break;
+
+            case C.ELanguageStandard.C89:
+                languageStandardOption.AddUnique("c89");
+                break;
+
+            case C.ELanguageStandard.C99:
+                languageStandardOption.AddUnique("c99");
+                break;
+
+            case C.ELanguageStandard.Cxx98:
+                // nothing corresponding
+                break;
+
+            case C.ELanguageStandard.Cxx11:
+                // nothing corresponding
+                break;
+
+            default:
+                throw new Opus.Core.Exception("Unknown language standard");
+            }
+        }
         #endregion
         #region ICCompilerOptions Option delegates
         private static void AllWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -496,7 +549,6 @@ namespace GccCommon
             {
                 strictAliasingOption.AddUnique("NO");
             }
-
             if (strictAliasingOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one strict aliasing option has been set");
@@ -523,7 +575,6 @@ namespace GccCommon
             {
                 noPICOption.AddUnique("YES");
             }
-
             if (noPICOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one no position independent code option has been set");
@@ -574,7 +625,6 @@ namespace GccCommon
             {
                 pedanticWarningsOption.AddUnique("NO");
             }
-
             if (pedanticWarningsOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one pedantic warnings option has been set");
@@ -604,7 +654,6 @@ namespace GccCommon
             {
                 archOption.AddUnique("$(NATIVE_ARCH_32_BIT)");
             }
-
             if (archOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one architecture option has been set");
@@ -628,6 +677,7 @@ namespace GccCommon
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLineProcessor,OmitFramePointerXcodeProjectProcessor);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor,DisableWarningsXcodeProjectProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor,CharacterSetXcodeProjectProcessor);
+            this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor,LanguageStandardXcodeProjectProcessor);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLineProcessor,AllWarningsXcodeProjectProcessor);
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLineProcessor,ExtraWarningsXcodeProjectProcessor);
             this["StrictAliasing"].PrivateData = new PrivateData(StrictAliasingCommandLineProcessor,StrictAliasingXcodeProjectProcessor);

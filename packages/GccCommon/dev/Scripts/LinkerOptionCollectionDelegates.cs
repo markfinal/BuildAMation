@@ -92,7 +92,6 @@ namespace GccCommon
             {
                 linkWithStandardLibsOption.AddUnique("YES");
             }
-
             if (linkWithStandardLibsOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one ignore standard libraries option has been set");
@@ -233,7 +232,6 @@ namespace GccCommon
                 var generateMapfileOption = configuration.Options["LD_MAP_FILE_PATH"];
                 var options = sender as LinkerOptionCollection;
                 generateMapfileOption.AddUnique(options.MapFilePath);
-
                 if (generateMapfileOption.Count != 1)
                 {
                     throw new Opus.Core.Exception("More than one map file location option has been set");
@@ -277,10 +275,8 @@ namespace GccCommon
             foreach (var framework in frameworks.Value)
             {
                 var fileReference = project.FileReferences.Get(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
-
                 var buildFile = project.BuildFiles.Get(framework, fileReference);
                 buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
-
                 buildFile.BuildPhase.Files.AddUnique(buildFile);
             }
         }
