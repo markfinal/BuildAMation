@@ -1,0 +1,8 @@
+*.pyc
+*.userprefs
+bin
+testpackages/*/dev/Opus
+testpackages/*/dev/build
+testpackages/Logs
+.DS_Store
+
