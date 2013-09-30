@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: this needs to be renamed to something corresponding to Set operations
     public interface IComplement<T>
     {
         T Complement(T other);
