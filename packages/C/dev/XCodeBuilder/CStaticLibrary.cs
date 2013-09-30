@@ -58,6 +58,10 @@ namespace XcodeBuilder
             // fill out the build configuration
             XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
 
+            var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+            var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
+            buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
+
             // adding the group for the target
             var group = this.Project.Groups.Get(moduleName);
             group.SourceTree = "<group>";
