@@ -57,7 +57,7 @@ namespace XcodeBuilder
                         writer.WriteLine("\t\t\t\t{0} = {1};", option.Key, theString);
                     }
                 }
-                else
+                else if (option.Value.Count > 1)
                 {
                     writer.WriteLine("\t\t\t\t{0} = (", option.Key);
                     foreach (var value in option.Value)
