@@ -195,9 +195,14 @@ namespace GccCommon
             {
                 otherCFlagsOption.AddUnique("-nostdinc");
                 var cOptions = sender as C.ICCompilerOptions;
-                if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
+                // TODO: this is a bit of a hack to cope with option collection deltas
+                // since SystemIncludePaths refers to IgnoreStandardIncludePaths, just the former cannot be in a delta
+                if ((sender as Opus.Core.BaseOptionCollection).Contains("TargetLanguage"))
                 {
-                    otherCFlagsOption.AddUnique("-nostdinc++");
+                    if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
+                    {
+                        otherCFlagsOption.AddUnique("-nostdinc++");
+                    }
                 }
             }
         }
