@@ -55,6 +55,7 @@ namespace XcodeBuilder
                 var options = moduleToBuild.Options as C.CompilerOptionCollection;
                 var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
                 buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
+                buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 
                 // TODO: not sure where all these will come from
 #if true
