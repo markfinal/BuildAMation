@@ -22,23 +22,32 @@ namespace XcodeBuilder
             : base(name)
         {
             this.Type = type;
-            this.ShortPath = System.IO.Path.GetFileName(path);
+            this.ShortPath = CalculateShortPath(type, path);
             if (EType.Framework == type)
             {
-                this.ShortPath += ".framework";
                 // TODO: this is a hack, as I don't know the SDK at this stage
                 // there might need to be more options added here
                 this.RelativePath = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/" + this.ShortPath;
-            }
-            else if (EType.ApplicationBundle == type)
-            {
-                this.ShortPath += ".app";
             }
             else
             {
                 var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
                 this.RelativePath = relative;
             }
+        }
+
+        public static string CalculateShortPath(EType type, string path)
+        {
+            var shortPath = System.IO.Path.GetFileName(path);
+            if (EType.Framework == type)
+            {
+                shortPath += ".framework";
+            }
+            else if (EType.ApplicationBundle == type)
+            {
+                shortPath += ".app";
+            }
+            return shortPath;
         }
 
         public string ShortPath

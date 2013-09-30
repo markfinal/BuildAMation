@@ -18,7 +18,8 @@ namespace XcodeBuilder
             {
                 foreach (var fileRef in this.FileReferences)
                 {
-                    if ((fileRef.Name == name) && (fileRef.Type == type) && (fileRef.ShortPath == System.IO.Path.GetFileName(path)))
+                    var shortPath = PBXFileReference.CalculateShortPath(type, path);
+                    if ((fileRef.Name == name) && (fileRef.Type == type) && (fileRef.ShortPath == shortPath))
                     {
                         return fileRef;
                     }
