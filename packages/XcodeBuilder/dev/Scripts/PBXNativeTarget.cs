@@ -9,6 +9,7 @@ namespace XcodeBuilder
     {
         public enum EType
         {
+            ApplicationBundle,
             Executable,
             DynamicLibrary,
             StaticLibrary
@@ -85,6 +86,10 @@ namespace XcodeBuilder
             writer.WriteLine("\t\t\tproductReference = {0} /* {1} */;", this.ProductReference.UUID, this.ProductReference.Name);
             switch (this.Type)
             {
+            case EType.ApplicationBundle:
+                writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.application\";");
+                break;
+
             case EType.Executable:
                 writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.tool\";");
                 break;

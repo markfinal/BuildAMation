@@ -9,12 +9,13 @@ namespace XcodeBuilder
     {
         public enum EType
         {
+            ApplicationBundle,
             Executable,
             DynamicLibrary,
             StaticLibrary,
             SourceFile,
             HeaderFile,
-            Framework,
+            Framework
         }
 
         public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
@@ -28,6 +29,10 @@ namespace XcodeBuilder
                 // TODO: this is a hack, as I don't know the SDK at this stage
                 // there might need to be more options added here
                 this.RelativePath = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/" + this.ShortPath;
+            }
+            else if (EType.ApplicationBundle == type)
+            {
+                this.ShortPath += ".app";
             }
             else
             {
@@ -60,6 +65,10 @@ namespace XcodeBuilder
         {
             switch (this.Type)
             {
+            case EType.ApplicationBundle:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
+                break;
+
             case EType.Executable:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
                 break;
