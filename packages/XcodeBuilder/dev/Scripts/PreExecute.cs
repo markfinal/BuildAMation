@@ -39,6 +39,7 @@ namespace XcodeBuilder
             foreach (var config in Opus.Core.State.BuildConfigurations)
             {
                 var genericBuildConfiguration = this.Project.BuildConfigurations.Get(config.ToString(), "Generic");
+                genericBuildConfiguration.Options["SYMROOT"].AddUnique(Opus.Core.State.BuildRoot);
                 projectConfigurationList.AddUnique(genericBuildConfiguration);
             }
         }
