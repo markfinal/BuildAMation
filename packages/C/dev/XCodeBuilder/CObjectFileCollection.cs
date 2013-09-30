@@ -17,6 +17,11 @@ namespace XcodeBuilder
             // fill out the build configuration on behalf of all of it's children
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
 
+            var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+            var options = moduleToBuild.Options as C.CompilerOptionCollection;
+            var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
+            buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
+
             if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
             {
                 var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
