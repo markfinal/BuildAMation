@@ -50,6 +50,12 @@ namespace XcodeBuilder
                 // fill out the build configuration for the singular file
                 var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
                 XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
+
+                var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+                var options = moduleToBuild.Options as C.CompilerOptionCollection;
+                var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
+                buildConfiguration.Options["OBJECT_FILE_DIR_"+baseTarget.ConfigurationName('=')].AddUnique("$SYMROOT/" + relPath);
+
                 // TODO: not sure where all these will come from
 #if true
                 buildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
