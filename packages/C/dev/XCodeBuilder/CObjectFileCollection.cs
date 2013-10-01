@@ -14,6 +14,17 @@ namespace XcodeBuilder
             var target = node.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
+            Opus.Core.BaseOptionCollection commonOptions = null;
+            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+            {
+                commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                if (null == commonOptions)
+                {
+                    success = true;
+                    return null;
+                }
+            }
+
             // fill out the build configuration on behalf of all of it's children
             var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
 
@@ -23,15 +34,15 @@ namespace XcodeBuilder
             buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
             buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 
-            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+            if (commonOptions != null)
             {
-                var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
                 XcodeProjectProcessor.ToXcodeProject.Execute(commonOptions, this.Project, null, buildConfiguration, target);
             }
             else
             {
                 XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, null, buildConfiguration, target);
             }
+
             // TODO: not sure where all these will come from
 #if true
             buildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");

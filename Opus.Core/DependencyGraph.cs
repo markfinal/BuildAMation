@@ -170,7 +170,15 @@ namespace Opus.Core
                         {
                             if (1 == node.Children.Count)
                             {
-                                (node.Module as ICommonOptionCollection).CommonOptionCollection = node.Children[0].Module.Options;
+                                var child = node.Children[0];
+                                if ((child is IModuleCollection) && (child.Children != null) && (child.Children.Count == 1))
+                                {
+                                    // there are no common options, because it is just the one module to build
+                                }
+                                else
+                                {
+                                    (node.Module as ICommonOptionCollection).CommonOptionCollection = child.Module.Options;
+                                }
                             }
                             else
                             {
