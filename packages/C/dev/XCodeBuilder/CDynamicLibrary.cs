@@ -116,6 +116,16 @@ namespace XcodeBuilder
                     buildFile.BuildPhase = frameworksBuildPhase;
 
                     frameworksBuildPhase.Files.AddUnique(buildFile);
+
+                    // now add linker search paths
+                    if (dependency.Module is C.DynamicLibrary)
+                    {
+                        buildConfiguration.Options["OTHER_LDFLAGS"].AddUnique(System.String.Format("-L{0}", System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable])));
+                    }
+                    else if (dependency.Module is C.StaticLibrary)
+                    {
+                        buildConfiguration.Options["OTHER_LDFLAGS"].AddUnique(System.String.Format("-L{0}", System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary])));
+                    }
                 }
             }
 
