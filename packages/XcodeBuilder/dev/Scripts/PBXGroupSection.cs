@@ -44,9 +44,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<PBXGroup>(this.Groups);
+            orderedList.Sort(
+                delegate(PBXGroup p1, PBXGroup p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXGroup section */");
-            foreach (var group in this.Groups)
+            foreach (var group in orderedList)
             {
                 (group as IWriteableNode).Write(writer);
             }

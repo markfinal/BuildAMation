@@ -52,9 +52,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<XCBuildConfiguration>(this.BuildConfigurations);
+            orderedList.Sort(
+                delegate(XCBuildConfiguration p1, XCBuildConfiguration p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin XCBuildConfiguration section */");
-            foreach (var buildConfiguration in this.BuildConfigurations)
+            foreach (var buildConfiguration in orderedList)
             {
                 (buildConfiguration as IWriteableNode).Write(writer);
             }

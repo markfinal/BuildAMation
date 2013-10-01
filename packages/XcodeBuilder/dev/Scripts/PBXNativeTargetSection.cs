@@ -44,9 +44,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<PBXNativeTarget>(this.NativeTargets);
+            orderedList.Sort(
+                delegate(PBXNativeTarget p1, PBXNativeTarget p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXNativeTarget section */");
-            foreach (var nativeTarget in this.NativeTargets)
+            foreach (var nativeTarget in orderedList)
             {
                 (nativeTarget as IWriteableNode).Write(writer);
             }

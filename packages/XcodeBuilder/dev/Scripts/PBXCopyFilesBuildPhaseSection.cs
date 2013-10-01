@@ -52,9 +52,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<PBXCopyFilesBuildPhase>(this.CopyFilesBuildPhases);
+            orderedList.Sort(
+                delegate(PBXCopyFilesBuildPhase p1, PBXCopyFilesBuildPhase p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXCopyFilesBuildPhase section */");
-            foreach (var buildPhase in this.CopyFilesBuildPhases)
+            foreach (var buildPhase in orderedList)
             {
                 (buildPhase as IWriteableNode).Write(writer);
             }

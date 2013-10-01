@@ -44,9 +44,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<PBXSourcesBuildPhase>(this.SourcesBuildPhase);
+            orderedList.Sort(
+                delegate(PBXSourcesBuildPhase p1, PBXSourcesBuildPhase p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXSourcesBuildPhase section */");
-            foreach (var buildPhase in this.SourcesBuildPhase)
+            foreach (var buildPhase in orderedList)
             {
                 (buildPhase as IWriteableNode).Write(writer);
             }

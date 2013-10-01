@@ -44,9 +44,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<PBXTargetDependency>(this.TargetDependencies);
+            orderedList.Sort(
+                delegate(PBXTargetDependency p1, PBXTargetDependency p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXTargetDependency section */");
-            foreach (var dependency in this.TargetDependencies)
+            foreach (var dependency in orderedList)
             {
                 (dependency as IWriteableNode).Write(writer);
             }

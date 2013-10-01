@@ -44,9 +44,17 @@ namespace XcodeBuilder
                 return;
             }
 
+            var orderedList = new System.Collections.Generic.List<PBXContainerItemProxy>(this.ContainerItemProxies);
+            orderedList.Sort(
+                delegate(PBXContainerItemProxy p1, PBXContainerItemProxy p2)
+                {
+                    return p1.UUID.CompareTo(p2.UUID);
+                }
+            );
+
             writer.WriteLine("");
             writer.WriteLine("/* Begin PBXContainerItemProxy section */");
-            foreach (var item in this.ContainerItemProxies)
+            foreach (var item in orderedList)
             {
                 (item as IWriteableNode).Write(writer);
             }
