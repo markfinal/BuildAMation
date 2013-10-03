@@ -33,7 +33,7 @@ namespace XcodeBuilder
         public override string ToString()
         {
             var builder = new System.Text.StringBuilder();
-            builder.Append("{ ");
+            builder.Append("{");
             foreach (var item in this.dictionary)
             {
                 if (item.Value.ToString().Contains(" ") || item.Value.ToString().Contains("$"))
