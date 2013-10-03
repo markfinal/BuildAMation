@@ -5,12 +5,12 @@ class TestSetup:
     _win = {}
     _linux = {}
     _osx = {}
-  
+
     def __init__(self, win={}, linux={}, osx={}):
         self._win = win
         self._linux = linux
         self._osx = osx
-        
+
     def GetBuilders(self):
         platform = sys.platform
         if platform.startswith("win"):

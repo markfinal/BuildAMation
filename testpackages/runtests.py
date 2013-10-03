@@ -14,7 +14,7 @@ class Package:
     root = None
     name = None
     version = None
-  
+
     def __init__(self, root, name, version):
         self.root = root
         self.name = name
@@ -82,7 +82,7 @@ def _runOpus(options, package, responseFile, extraArgs):
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
     (outputStream, errorStream) = p.communicate() # this should WAIT
     return (outputStream, errorStream, p.returncode, argList)
-   
+
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
     if options.verbose:
@@ -164,9 +164,9 @@ def CleanUp(options):
         print "Executing: ", argList
     p = subprocess.Popen(argList)
     p.wait()
-    
+
 # ----------
-    
+
 if __name__ == "__main__":
     optParser = OptionParser(description="Opus unittests")
     optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
@@ -183,17 +183,17 @@ if __name__ == "__main__":
     optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
     TestOptionSetup(optParser)
     (options,args) = optParser.parse_args()
-    
+
     if options.verbose:
         print "Options are ", options
         print "Args    are ", args
-        
+
     if not options.platforms:
         raise RuntimeError("No platforms were specified")
-        
+
     if not options.configurations:
         raise RuntimeError("No configurations were specified")
-        
+
     if not options.noInitialClean:
         CleanUp(options)
 
@@ -227,12 +227,12 @@ if __name__ == "__main__":
     if not options.keepFiles:
         # TODO: consider keeping track of all directories created instead
         CleanUp(options)
-        
+
     print "--------------------"
     print "| Results summary  |"
     print "--------------------"
     print outputBuffer.getvalue()
-    
+
     if not os.path.exists("Logs"):
         os.mkdir("Logs")
     logFileName = os.path.join("Logs", "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log")
@@ -240,5 +240,5 @@ if __name__ == "__main__":
     logFile.write(outputBuffer.getvalue())
     logFile.close()
     outputBuffer.close()
-    
+
     sys.exit(exitCode)
