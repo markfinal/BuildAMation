@@ -75,7 +75,6 @@ class TestSetup:
         return responseNames
 
     def GetResponseNames(self, builder, excludedResponseFiles):
-        platform = sys.platform
         responseFiles = []
         for i in self._GetListOfResponseNames(builder):
             if not i:
