@@ -5,7 +5,7 @@ import os
 import subprocess
 import StringIO
 import time
-from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
+from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath, GetBuilderDetails
 from optparse import OptionParser
 
 # ----------
@@ -54,6 +54,10 @@ def FindAllPackagesToTest(root, options):
                     tests.append(package)
     return tests
 
+def _preExecute(builder):
+    if builder.preAction:
+        builder.preAction()
+
 def _runOpus(options, package, responseFile, extraArgs):
     argList = []
     argList.append("Opus")
@@ -83,6 +87,10 @@ def _runOpus(options, package, responseFile, extraArgs):
     (outputStream, errorStream) = p.communicate() # this should WAIT
     return (outputStream, errorStream, p.returncode, argList)
 
+def _postExecute(builder):
+    if builder.postAction:
+        builder.postAction()
+
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
     if options.verbose:
@@ -101,6 +109,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Response filenames: ", responseNames
         if options.excludeResponseFiles:
           print " (excluding", options.excludeResponseFiles, ")"
+    theBuilder = GetBuilderDetails(options.builder)
     exitCode = 0
     for responseName in responseNames:
         currentDir = os.getcwd()
@@ -122,7 +131,9 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
             try:
+              _preExecute(theBuilder)
               outputStream, errorStream, returncode, argList = _runOpus(options, package, responseFile, extraArgs)
+              _postExecute(theBuilder)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise

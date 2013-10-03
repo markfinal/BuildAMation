@@ -84,6 +84,18 @@ class TestSetup:
                     responseFiles.append(i)
         return responseFiles
 
+class Builder(object):
+    def __init__(self, name, preAction, postAction):
+        self.name = name
+        self.preAction = preAction
+        self.postAction = postAction
+
+builder = {}
+builder["Native"] = Builder("Native", None, None)
+
+def GetBuilderDetails(builderName):
+    return builder[builderName]
+
 def GetResponsePath(responseName):
   return "%s.rsp" % responseName
 
