@@ -32,6 +32,10 @@ namespace XcodeBuilder
             else
             {
                 var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
+                if (relative.Contains("-"))
+                {
+                    relative = System.String.Format("\"{0}\"", relative);
+                }
                 this.RelativePath = relative;
             }
         }
