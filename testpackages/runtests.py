@@ -133,7 +133,8 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             try:
               _preExecute(theBuilder)
               outputStream, errorStream, returncode, argList = _runOpus(options, package, responseFile, extraArgs)
-              _postExecute(theBuilder)
+              if returncode == 0:
+                _postExecute(theBuilder)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise
@@ -142,7 +143,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 message = "Package '%s' with response file '%s'" % (package.GetDescription(), responseFile)
                 if extraArgs:
                   message += " with extra arguments '%s'" % " ".join(extraArgs)
-                if not returncode:
+                if returncode == 0:
                     outputBuffer.write("SUCCESS: %s\n" % message)
                     if options.verbose:
                         if outputStream and len(outputStream) > 0:
