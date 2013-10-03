@@ -92,8 +92,8 @@ class Builder(object):
         self.preAction = preAction
         self.postAction = postAction
 
-def XcodePost(buildRoot, configurations):
-    print "build root '%s'"%buildRoot
+def XcodePost(buildRoot, configurations, outputMessages, errorMessages):
+    exitCode = 0
     try:
         for config in configurations:
             argList = []
@@ -103,15 +103,18 @@ def XcodePost(buildRoot, configurations):
             # capitalize the first letter of the configuration
             config = config[0].upper() + config[1:]
             argList.append(config)
-            print "Running '%s'" % " ".join(argList)
+            print "Running '%s' in %s" % (" ".join(argList), buildRoot)
             p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=buildRoot)
             (outputStream, errorStream) = p.communicate() # this should WAIT
-            print outputStream
-            print errorStream
+            exitCode |= p.returncode
+            if outputStream:
+                outputMessages.write(outputStream)
+            if errorStream:
+                errorMessages.write(errorStream)
     except Exception, e:
-        print str(e)
-    finally:
-        pass
+        errorMessages.write(str(e))
+        return -1
+    return exitCode
 
 builder = {}
 builder["Native"] = Builder("Native", None, None)

@@ -58,7 +58,7 @@ def _preExecute(builder, options):
     if builder.preAction:
         builder.preAction()
 
-def _runOpus(options, package, responseFile, extraArgs):
+def _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages):
     argList = []
     argList.append("Opus")
     if responseFile:
@@ -85,11 +85,17 @@ def _runOpus(options, package, responseFile, extraArgs):
     print " ".join(argList)
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
     (outputStream, errorStream) = p.communicate() # this should WAIT
-    return (outputStream, errorStream, p.returncode, argList)
+    if outputStream:
+        outputMessages.write(outputStream)
+    if errorStream:
+        errorMessages.write(errorStream)
+    return (p.returncode, argList)
 
-def _postExecute(builder, options, package):
+def _postExecute(builder, options, package, outputMessages, errorMessages):
     if builder.postAction:
-        builder.postAction(os.path.join(package.GetPath(), options.buildRoot), options.configurations)
+        exitCode = builder.postAction(os.path.join(package.GetPath(), options.buildRoot), options.configurations, outputMessages, errorMessages)
+        return exitCode
+    return 0
 
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
@@ -131,10 +137,12 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
             try:
+              outputMessages = StringIO.StringIO()
+              errorMessages = StringIO.StringIO()
               _preExecute(theBuilder, options)
-              outputStream, errorStream, returncode, argList = _runOpus(options, package, responseFile, extraArgs)
+              returncode, argList = _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages)
               if returncode == 0:
-                _postExecute(theBuilder, options, package)
+                returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise
@@ -146,21 +154,21 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 if returncode == 0:
                     outputBuffer.write("SUCCESS: %s\n" % message)
                     if options.verbose:
-                        if outputStream and len(outputStream) > 0:
+                        if len(outputMessages.getvalue()) > 0:
                             outputBuffer.write("Messages:\n")
-                            outputBuffer.write(outputStream)
-                        if errorStream and len(errorStream) > 0:
+                            outputBuffer.write(outputMessages.getvalue())
+                        if len(errorMessages.getvalue()) > 0:
                             outputBuffer.write("Errors:\n")
-                            outputBuffer.write(errorStream)
+                            outputBuffer.write(errorMessages.getvalue())
                 else:
                     outputBuffer.write("* FAILURE *: %s\n" % message)
                     outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
-                    if outputStream and len(outputStream) > 0:
+                    if len(outputMessages.getvalue()) > 0:
                         outputBuffer.write("Messages:\n")
-                        outputBuffer.write(outputStream)
-                    if errorStream and len(errorStream) > 0:
+                        outputBuffer.write(outputMessages.getvalue())
+                    if len(errorMessages.getvalue()) > 0:
                         outputBuffer.write("Errors:\n")
-                        outputBuffer.write(errorStream)
+                        outputBuffer.write(errorMessages.getvalue())
                     outputBuffer.write("\n")
                     exitCode = exitCode - 1
     return exitCode
