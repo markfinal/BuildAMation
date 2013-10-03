@@ -54,7 +54,7 @@ def FindAllPackagesToTest(root, options):
                     tests.append(package)
     return tests
 
-def _preExecute(builder):
+def _preExecute(builder, options):
     if builder.preAction:
         builder.preAction()
 
@@ -87,9 +87,9 @@ def _runOpus(options, package, responseFile, extraArgs):
     (outputStream, errorStream) = p.communicate() # this should WAIT
     return (outputStream, errorStream, p.returncode, argList)
 
-def _postExecute(builder):
+def _postExecute(builder, options, package):
     if builder.postAction:
-        builder.postAction()
+        builder.postAction(os.path.join(package.GetPath(), options.buildRoot), options.configurations)
 
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
@@ -131,10 +131,10 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
             try:
-              _preExecute(theBuilder)
+              _preExecute(theBuilder, options)
               outputStream, errorStream, returncode, argList = _runOpus(options, package, responseFile, extraArgs)
               if returncode == 0:
-                _postExecute(theBuilder)
+                _postExecute(theBuilder, options, package)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise

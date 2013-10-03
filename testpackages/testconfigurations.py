@@ -1,4 +1,6 @@
 #!/usr/bin/python
+import os
+import subprocess
 import sys
 
 class TestSetup:
@@ -90,12 +92,33 @@ class Builder(object):
         self.preAction = preAction
         self.postAction = postAction
 
+def XcodePost(buildRoot, configurations):
+    print "build root '%s'"%buildRoot
+    try:
+        for config in configurations:
+            argList = []
+            argList.append("xcodebuild")
+            argList.append("-alltargets")
+            argList.append("-configuration")
+            # capitalize the first letter of the configuration
+            config = config[0].upper() + config[1:]
+            argList.append(config)
+            print "Running '%s'" % " ".join(argList)
+            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=buildRoot)
+            (outputStream, errorStream) = p.communicate() # this should WAIT
+            print outputStream
+            print errorStream
+    except Exception, e:
+        print str(e)
+    finally:
+        pass
+
 builder = {}
 builder["Native"] = Builder("Native", None, None)
 builder["VSSolution"] = Builder("VSSolution", None, None)
 builder["MakeFile"] = Builder("MakeFile", None, None)
 builder["QMake"] = Builder("QMake", None, None)
-builder["Xcode"] = Builder("Xcode", None, None)
+builder["Xcode"] = Builder("Xcode", None, XcodePost)
 
 def GetBuilderDetails(builderName):
     return builder[builderName]
