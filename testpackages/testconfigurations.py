@@ -92,6 +92,10 @@ class Builder(object):
 
 builder = {}
 builder["Native"] = Builder("Native", None, None)
+builder["VSSolution"] = Builder("VSSolution", None, None)
+builder["MakeFile"] = Builder("MakeFile", None, None)
+builder["QMake"] = Builder("QMake", None, None)
+builder["Xcode"] = Builder("Xcode", None, None)
 
 def GetBuilderDetails(builderName):
     return builder[builderName]
