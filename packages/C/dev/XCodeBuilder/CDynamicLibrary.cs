@@ -60,6 +60,12 @@ namespace XcodeBuilder
 
             buildConfiguration.Options["PRODUCT_NAME"].AddUnique(options.OutputName);
 
+            var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+            var outputPrefix = linkerTool.DynamicLibraryPrefix;
+            var outputSuffix = linkerTool.DynamicLibrarySuffix;
+            buildConfiguration.Options["EXECUTABLE_PREFIX"].AddUnique(outputPrefix);
+            buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
+
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
             var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
