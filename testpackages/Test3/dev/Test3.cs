@@ -7,6 +7,14 @@ namespace Test3
         public Library2()
         {
             this.headerFiles.Include(this.PackageLocation, "include", "*.h");
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                var options = module.Options as C.ArchiverOptionCollection;
+                if (null != options)
+                {
+                    options.OutputName = "FooBar";
+                }
+            };
         }
 
         sealed class SourceFiles : C.ObjectFileCollection
