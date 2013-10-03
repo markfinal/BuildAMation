@@ -41,7 +41,7 @@ namespace XcodeBuilder
             writer.WriteLine("\t\t{0} /* PBXTargetDependency */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXTargetDependency;");
             writer.WriteLine("\t\t\ttarget = {0} /* {1} */;", this.NativeTarget.UUID, this.NativeTarget.Name);
-            writer.WriteLine("\t\t\ttargetProxy = {0} /* {1} */;", this.TargetProxy.UUID, this.TargetProxy.GetType().ToString());
+            writer.WriteLine("\t\t\ttargetProxy = {0} /* {1} */;", this.TargetProxy.UUID, this.TargetProxy.GetType().Name);
             writer.WriteLine("\t\t};");
         }
 
