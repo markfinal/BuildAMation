@@ -66,6 +66,8 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_PREFIX"].AddUnique(outputPrefix);
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
+            buildConfiguration.Options["LD_DYLIB_INSTALL_NAME"].AddUnique("@executable/$(EXECUTABLE_PATH)");
+
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
             var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
