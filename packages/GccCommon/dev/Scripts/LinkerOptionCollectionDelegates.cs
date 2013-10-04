@@ -59,11 +59,11 @@ namespace GccCommon
                             var filename = System.IO.Path.GetFileName(outputPathName);
                             if (filename.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"@executable/{0}\"", filename));
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"@loader_path/{0}\"", filename));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable/{0}", filename));
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@loader_path/{0}", filename));
                             }
                         }
                     }
