@@ -129,11 +129,11 @@ namespace XcodeBuilder
                     // now add linker search paths
                     if (dependency.Module is C.DynamicLibrary)
                     {
-                        buildConfiguration.Options["OTHER_LDFLAGS"].AddUnique(System.String.Format("-L{0}", System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable])));
+                        buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
                     }
                     else if (dependency.Module is C.StaticLibrary)
                     {
-                        buildConfiguration.Options["OTHER_LDFLAGS"].AddUnique(System.String.Format("-L{0}", System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary])));
+                        buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
                     }
                 }
             }
