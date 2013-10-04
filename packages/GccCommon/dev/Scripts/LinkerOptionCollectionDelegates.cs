@@ -37,6 +37,8 @@ namespace GccCommon
                         {
                             commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                         }
+
+                        // TODO: this option needs to be pulled out of the common output type option
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
                         // see http://www.adp-gmbh.ch/cpp/gcc/create_lib.html
@@ -54,13 +56,14 @@ namespace GccCommon
                         }
                         else if (Opus.Core.OSUtilities.IsOSXHosting)
                         {
-                            if (outputPathName.Contains(" "))
+                            var filename = System.IO.Path.GetFileName(outputPathName);
+                            if (filename.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"{0}\"", outputPathName));
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"@executable/{0}\"", filename));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,{0}", outputPathName));
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable/{0}", filename));
                             }
                         }
                     }
