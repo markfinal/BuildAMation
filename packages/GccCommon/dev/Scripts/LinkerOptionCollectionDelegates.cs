@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
-// -i=../../../C/dev/Scripts/ILinkerOptions.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ILinkerOptions.cs:../../../C/dev/Scripts/ILinkerOptionsOSX.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
 
 namespace GccCommon
 {
@@ -37,7 +37,6 @@ namespace GccCommon
                         {
                             commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                         }
-
                         // TODO: this option needs to be pulled out of the common output type option
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
@@ -250,7 +249,9 @@ namespace GccCommon
                 otherLDOptions.AddUnique(argument);
             }
         }
-        private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        #endregion
+        #region C.ILinkerOptionsOSX Option delegates
+        private static void FrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             if (!Opus.Core.OSUtilities.IsOSXHosting)
             {
@@ -262,7 +263,7 @@ namespace GccCommon
                 commandLineBuilder.Add(System.String.Format("-framework {0}", framework));
             }
         }
-        private static void OSXFrameworksXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void FrameworksXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var frameworks = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (var framework in frameworks.Value)
@@ -372,8 +373,8 @@ namespace GccCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesXcodeProjectProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor,GenerateMapFileXcodeProjectProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);
-            // Property 'OSXApplicationBundle' is state only
-            this["OSXFrameworks"].PrivateData = new PrivateData(OSXFrameworksCommandLineProcessor,OSXFrameworksXcodeProjectProcessor);
+            // Property 'ApplicationBundle' is state only
+            this["Frameworks"].PrivateData = new PrivateData(FrameworksCommandLineProcessor,FrameworksXcodeProjectProcessor);
             this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCommandLineProcessor,CanUseOriginXcodeProjectProcessor);
             this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCommandLineProcessor,AllowUndefinedSymbolsXcodeProjectProcessor);
             this["RPath"].PrivateData = new PrivateData(RPathCommandLineProcessor,RPathXcodeProjectProcessor);

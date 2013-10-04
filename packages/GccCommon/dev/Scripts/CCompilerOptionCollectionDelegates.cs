@@ -444,23 +444,18 @@ namespace GccCommon
             {
             case C.ELanguageStandard.NotSet:
                 break;
-
             case C.ELanguageStandard.C89:
                 commandLineBuilder.Add("-std=c89");
                 break;
-
             case C.ELanguageStandard.C99:
                 commandLineBuilder.Add("-std=c99");
                 break;
-
             case C.ELanguageStandard.Cxx98:
                 commandLineBuilder.Add("-std=c++98");
                 break;
-
             case C.ELanguageStandard.Cxx11:
                 commandLineBuilder.Add("-std=c++11");
                 break;
-
             default:
                 throw new Opus.Core.Exception("Unknown language standard");
             }
@@ -473,23 +468,18 @@ namespace GccCommon
             {
             case C.ELanguageStandard.NotSet:
                 break;
-
             case C.ELanguageStandard.C89:
                 languageStandardOption.AddUnique("c89");
                 break;
-
             case C.ELanguageStandard.C99:
                 languageStandardOption.AddUnique("c99");
                 break;
-
             case C.ELanguageStandard.Cxx98:
                 // nothing corresponding
                 break;
-
             case C.ELanguageStandard.Cxx11:
                 // nothing corresponding
                 break;
-
             default:
                 throw new Opus.Core.Exception("Unknown language standard");
             }

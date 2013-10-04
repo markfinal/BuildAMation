@@ -17,12 +17,13 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var linkerOptions = options as C.ILinkerOptions;
-            var fileType = linkerOptions.OSXApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;
+            var osxLinkerOptions = options as C.ILinkerOptionsOSX;
+            var fileType = osxLinkerOptions.ApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;
             var fileRef = this.Project.FileReferences.Get(moduleName, fileType, outputPath, this.ProjectRootUri);
             this.Project.ProductsGroup.Children.AddUnique(fileRef);
 
-            var nativeType = linkerOptions.OSXApplicationBundle ? PBXNativeTarget.EType.ApplicationBundle : PBXNativeTarget.EType.Executable;
+            var osxOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
+            var nativeType = osxOptions.ApplicationBundle ? PBXNativeTarget.EType.ApplicationBundle : PBXNativeTarget.EType.Executable;
             var data = this.Project.NativeTargets.Get(moduleName, nativeType);
             data.ProductReference = fileRef;
 

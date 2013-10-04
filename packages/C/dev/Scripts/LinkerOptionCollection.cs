@@ -51,8 +51,14 @@ namespace C
             linkerOptions.GenerateMapFile = true;
             linkerOptions.Libraries = new Opus.Core.FileCollection();
             linkerOptions.StandardLibraries = new Opus.Core.FileCollection();
-            linkerOptions.OSXApplicationBundle = false;
-            linkerOptions.OSXFrameworks = new Opus.Core.StringArray();
+
+            var osxLinkerOptions = this as ILinkerOptionsOSX;
+            if (osxLinkerOptions != null)
+            {
+                osxLinkerOptions.ApplicationBundle = false;
+                osxLinkerOptions.Frameworks = new Opus.Core.StringArray();
+            }
+
             linkerOptions.AdditionalOptions = "";
         }
 
@@ -140,12 +146,16 @@ namespace C
                 }
 
                 var baseOutputPath = this.OutputDirectoryPath;
-                // TODO: define more output paths for the application wrapper (.app), the Contents folder etc
-                if (target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
+                var osxLinkerOptions = this as ILinkerOptionsOSX;
+                if (osxLinkerOptions != null)
                 {
-                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
-                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");
-                    baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOS");
+                    // TODO: define more output paths for the application wrapper (.app), the Contents folder etc
+                    if (target.HasPlatform(Opus.Core.EPlatform.OSX) && osxLinkerOptions.ApplicationBundle)
+                    {
+                        baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
+                        baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");
+                        baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOS");
+                    }
                 }
 
                 var outputPathName = System.IO.Path.Combine(baseOutputPath, outputPrefix + this.OutputName) + outputSuffix;

@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, GccCommon.ILinkerOptions
+    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, C.ILinkerOptionsOSX, GccCommon.ILinkerOptions
     {
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
