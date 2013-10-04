@@ -140,6 +140,7 @@ namespace C
                 }
 
                 var baseOutputPath = this.OutputDirectoryPath;
+                // TODO: define more output paths for the application wrapper (.app), the Contents folder etc
                 if (target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
                 {
                     baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
