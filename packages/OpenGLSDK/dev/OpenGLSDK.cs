@@ -63,7 +63,11 @@ namespace OpenGLSDK
             }
             else if (Opus.Core.TargetUtilities.MatchFilters(target, osxTarget))
             {
-                linkerOptions.OSXFrameworks.Add("OpenGL");
+                var osxLinkerOptions = module.Options as C.ILinkerOptionsOSX;
+                if (null != osxLinkerOptions)
+                {
+                    osxLinkerOptions.Frameworks.Add("OpenGL");
+                }
             }
             else
             {
