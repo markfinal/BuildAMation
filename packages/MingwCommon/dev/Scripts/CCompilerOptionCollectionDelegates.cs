@@ -230,6 +230,9 @@ namespace MingwCommon
                     break;
             }
         }
+        private static void LanguageStandardCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         #region ICCompilerOptions Option delegates
         private static void AllWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -310,6 +313,7 @@ namespace MingwCommon
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLineProcessor);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor);
+            this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLineProcessor);
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLineProcessor);
             this["StrictAliasing"].PrivateData = new PrivateData(StrictAliasingCommandLineProcessor);

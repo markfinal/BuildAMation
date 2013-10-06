@@ -1,6 +1,6 @@
 #include "library.h"
 
-char *libraryFunction()
+const char *libraryFunction()
 {
     return "Hello from Library";
 }

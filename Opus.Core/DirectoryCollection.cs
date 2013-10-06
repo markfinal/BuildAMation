@@ -5,9 +5,9 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable
+    public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable, IComplement<DirectoryCollection>
     {
-        private System.Collections.Generic.List<string> directoryPaths = new System.Collections.Generic.List<string>();
+        private StringArray directoryPaths = new StringArray();
 
         public object Clone()
         {
@@ -309,6 +309,38 @@ namespace Opus.Core
         {
             var array = new StringArray(this.directoryPaths);
             return array;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var otherCollection = obj as DirectoryCollection;
+            return (this.directoryPaths.Equals(otherCollection.directoryPaths));
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        DirectoryCollection IComplement<DirectoryCollection>.Complement(DirectoryCollection other)
+        {
+            var complementPaths = this.directoryPaths.Complement(other.directoryPaths);
+            if (0 == complementPaths.Count)
+            {
+                throw new Opus.Core.Exception("DirectoryCollection complement is empty");
+            }
+
+            var complementDirectoryCollection = new DirectoryCollection();
+            complementDirectoryCollection.directoryPaths.AddRange(complementPaths);
+            return complementDirectoryCollection;
+        }
+
+        DirectoryCollection IComplement<DirectoryCollection>.Intersect(DirectoryCollection other)
+        {
+            var intersectPaths = this.directoryPaths.Intersect(other.directoryPaths);
+            var intersectDirectoryCollection = new DirectoryCollection();
+            intersectDirectoryCollection.directoryPaths.AddRange(intersectPaths);
+            return intersectDirectoryCollection;
         }
     }
 }

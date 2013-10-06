@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
-// -i=../../../C/dev/Scripts/ILinkerOptions.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ILinkerOptions.cs:../../../C/dev/Scripts/ILinkerOptionsOSX.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
 namespace GccCommon
 {
     public partial class LinkerOptionCollection
@@ -126,28 +126,30 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
-        bool C.ILinkerOptions.OSXApplicationBundle
+        #endregion
+        #region C.ILinkerOptionsOSX Option properties
+        bool C.ILinkerOptionsOSX.ApplicationBundle
         {
             get
             {
-                return this.GetValueTypeOption<bool>("OSXApplicationBundle");
+                return this.GetValueTypeOption<bool>("ApplicationBundle");
             }
             set
             {
-                this.SetValueTypeOption<bool>("OSXApplicationBundle", value);
-                this.ProcessNamedSetHandler("OSXApplicationBundleSetHandler", this["OSXApplicationBundle"]);
+                this.SetValueTypeOption<bool>("ApplicationBundle", value);
+                this.ProcessNamedSetHandler("ApplicationBundleSetHandler", this["ApplicationBundle"]);
             }
         }
-        Opus.Core.StringArray C.ILinkerOptions.OSXFrameworks
+        Opus.Core.StringArray C.ILinkerOptionsOSX.Frameworks
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("OSXFrameworks");
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("Frameworks");
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("OSXFrameworks", value);
-                this.ProcessNamedSetHandler("OSXFrameworksSetHandler", this["OSXFrameworks"]);
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("Frameworks", value);
+                this.ProcessNamedSetHandler("FrameworksSetHandler", this["Frameworks"]);
             }
         }
         #endregion

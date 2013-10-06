@@ -52,6 +52,9 @@
       <Opus:Version Id="6.0A" Default="true" />
       <Opus:Version Id="7.1" />
     </Opus:Package>
+    <Opus:Package Name="XcodeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
     <Opus:OpusAssembly Name="Opus.Core" />

@@ -200,24 +200,60 @@ namespace VSSolutionBuilder
             {
                 var toolName = "VCCLCompilerTool";
 
-                // do not share the compiler tool in order to handle differences
+                // create a brand new compiler tool to set the compiler options for this object file
                 var vcCLCompilerTool = new ProjectTool(toolName);
 
-                // if the main configuration does not yet have an instance of this tool, add it (could happen if a single ObjectFile is added to a library or application)
-                configuration.AddToolIfMissing(vcCLCompilerTool);
-
-                // need to add each configuration a source file is applicable to in order to determine exclusions later
+                // need to add, each configuration a source file is applicable to, in order to determine exclusions later
                 var fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
-                if (objectFileOptions is VisualStudioProcessor.IVisualStudioSupport)
+                Opus.Core.BaseOptionCollection complementOptionCollection = null;
+                if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+                {
+                    var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                    if (commonOptions is C.ICCompilerOptions)
+                    {
+                        complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
+                    }
+                }
+
+                // TODO: the logic here needs reviewing, as it seems quite fragile currently
+                if ((complementOptionCollection != null) &&
+                    (complementOptionCollection is VisualStudioProcessor.IVisualStudioSupport) &&
+                    (!complementOptionCollection.Empty))
+                {
+                    var visualStudioProjectOption = complementOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+
+                    // this is ONLY setting the complement
+                    foreach (var setting in settingsDictionary)
+                    {
+                        vcCLCompilerTool[setting.Key] = setting.Value;
+                    }
+                }
+                else if (objectFileOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
                     var visualStudioProjectOption = objectFileOptions as VisualStudioProcessor.IVisualStudioSupport;
                     var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    foreach (var setting in settingsDictionary)
+                    // handle the case where a single source file is added to an encapsulating module
+                    // write to the configuration tool instead
+                    if (0 == configuration.Tools.Count)
                     {
-                        vcCLCompilerTool[setting.Key] = setting.Value;
+                        vcCLCompilerTool = new ProjectTool(toolName);
+                        configuration.AddToolIfMissing(vcCLCompilerTool);
+                    }
+                    else if ((complementOptionCollection != null) && complementOptionCollection.Empty)
+                    {
+                        vcCLCompilerTool = null;
+                    }
+
+                    if (null != vcCLCompilerTool)
+                    {
+                        foreach (var setting in settingsDictionary)
+                        {
+                            vcCLCompilerTool[setting.Key] = setting.Value;
+                        }
                     }
                 }
                 else

@@ -32,5 +32,30 @@ namespace Opus.Core
         {
             return System.String.Format("{0}", this.Value);
         }
+
+        public override bool Equals(object obj)
+        {
+            var thisValue = this.Value;
+            var otherValue = ((ValueTypeOption<T>)(obj)).Value;
+            var equals = thisValue.Equals(otherValue);
+            return equals;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override Option Complement(Option other)
+        {
+            // two value types will be singular value so if they are not equal, their complement is the first value
+            return this.Clone() as Option;
+        }
+
+        public override Option Intersect(Option other)
+        {
+            // two value types will be singular value so if they are not equal, they will not intersect
+            return null;
+        }
     }
 }

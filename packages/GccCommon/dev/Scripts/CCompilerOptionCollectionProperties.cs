@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptions.cs:ICCompilerOptions.cs -n=GccCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ICCompilerOptions.cs:ICCompilerOptions.cs -n=GccCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
 namespace GccCommon
 {
     public partial class CCompilerOptionCollection
@@ -184,6 +184,18 @@ namespace GccCommon
             {
                 this.SetValueTypeOption<C.ECharacterSet>("CharacterSet", value);
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
+            }
+        }
+        C.ELanguageStandard C.ICCompilerOptions.LanguageStandard
+        {
+            get
+            {
+                return this.GetValueTypeOption<C.ELanguageStandard>("LanguageStandard");
+            }
+            set
+            {
+                this.SetValueTypeOption<C.ELanguageStandard>("LanguageStandard", value);
+                this.ProcessNamedSetHandler("LanguageStandardSetHandler", this["LanguageStandard"]);
             }
         }
         #endregion

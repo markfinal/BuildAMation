@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
-// -i=ICCompilerOptions.cs -n=LLVMGcc -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=GccCommon.PrivateData -e
+// -i=ICCompilerOptions.cs -n=LLVMGcc -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=GccCommon.PrivateData -e
 
 namespace LLVMGcc
 {
@@ -28,11 +28,29 @@ namespace LLVMGcc
                     throw new Opus.Core.Exception("Unrecognized visibility option");
             }
         }
+        private static void VisibilityXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var visibility = option as Opus.Core.ValueTypeOption<EVisibility>;
+            var visibilityOption = configuration.Options["GCC_SYMBOLS_PRIVATE_EXTERN"];
+            if (visibility.Value == EVisibility.Default)
+            {
+                visibilityOption.AddUnique("NO");
+            }
+            else
+            {
+                visibilityOption.AddUnique("YES");
+            }
+
+            if (visibilityOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one visibility option has been set");
+            }
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
-            this["Visibility"].PrivateData = new GccCommon.PrivateData(VisibilityCommandLineProcessor);
+            this["Visibility"].PrivateData = new GccCommon.PrivateData(VisibilityCommandLineProcessor,VisibilityXcodeProjectProcessor);
         }
     }
 }

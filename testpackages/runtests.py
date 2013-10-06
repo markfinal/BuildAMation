@@ -5,7 +5,7 @@ import os
 import subprocess
 import StringIO
 import time
-from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
+from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath, GetBuilderDetails
 from optparse import OptionParser
 
 # ----------
@@ -14,7 +14,7 @@ class Package:
     root = None
     name = None
     version = None
-  
+
     def __init__(self, root, name, version):
         self.root = root
         self.name = name
@@ -54,7 +54,11 @@ def FindAllPackagesToTest(root, options):
                     tests.append(package)
     return tests
 
-def _runOpus(options, package, responseFile, extraArgs):
+def _preExecute(builder, options):
+    if builder.preAction:
+        builder.preAction()
+
+def _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages):
     argList = []
     argList.append("Opus")
     if responseFile:
@@ -81,8 +85,18 @@ def _runOpus(options, package, responseFile, extraArgs):
     print " ".join(argList)
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
     (outputStream, errorStream) = p.communicate() # this should WAIT
-    return (outputStream, errorStream, p.returncode, argList)
-   
+    if outputStream:
+        outputMessages.write(outputStream)
+    if errorStream:
+        errorMessages.write(errorStream)
+    return (p.returncode, argList)
+
+def _postExecute(builder, options, package, outputMessages, errorMessages):
+    if builder.postAction:
+        exitCode = builder.postAction(os.path.join(package.GetPath(), options.buildRoot), options.configurations, outputMessages, errorMessages)
+        return exitCode
+    return 0
+
 def ExecuteTests(package, configuration, options, outputBuffer):
     print "Package           : ", package.GetId()
     if options.verbose:
@@ -101,6 +115,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Response filenames: ", responseNames
         if options.excludeResponseFiles:
           print " (excluding", options.excludeResponseFiles, ")"
+    theBuilder = GetBuilderDetails(options.builder)
     exitCode = 0
     for responseName in responseNames:
         currentDir = os.getcwd()
@@ -122,7 +137,12 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
             try:
-              outputStream, errorStream, returncode, argList = _runOpus(options, package, responseFile, extraArgs)
+              outputMessages = StringIO.StringIO()
+              errorMessages = StringIO.StringIO()
+              _preExecute(theBuilder, options)
+              returncode, argList = _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages)
+              if returncode == 0:
+                returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise
@@ -131,24 +151,24 @@ def ExecuteTests(package, configuration, options, outputBuffer):
                 message = "Package '%s' with response file '%s'" % (package.GetDescription(), responseFile)
                 if extraArgs:
                   message += " with extra arguments '%s'" % " ".join(extraArgs)
-                if not returncode:
+                if returncode == 0:
                     outputBuffer.write("SUCCESS: %s\n" % message)
                     if options.verbose:
-                        if outputStream and len(outputStream) > 0:
+                        if len(outputMessages.getvalue()) > 0:
                             outputBuffer.write("Messages:\n")
-                            outputBuffer.write(outputStream)
-                        if errorStream and len(errorStream) > 0:
+                            outputBuffer.write(outputMessages.getvalue())
+                        if len(errorMessages.getvalue()) > 0:
                             outputBuffer.write("Errors:\n")
-                            outputBuffer.write(errorStream)
+                            outputBuffer.write(errorMessages.getvalue())
                 else:
                     outputBuffer.write("* FAILURE *: %s\n" % message)
                     outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
-                    if outputStream and len(outputStream) > 0:
+                    if len(outputMessages.getvalue()) > 0:
                         outputBuffer.write("Messages:\n")
-                        outputBuffer.write(outputStream)
-                    if errorStream and len(errorStream) > 0:
+                        outputBuffer.write(outputMessages.getvalue())
+                    if len(errorMessages.getvalue()) > 0:
                         outputBuffer.write("Errors:\n")
-                        outputBuffer.write(errorStream)
+                        outputBuffer.write(errorMessages.getvalue())
                     outputBuffer.write("\n")
                     exitCode = exitCode - 1
     return exitCode
@@ -164,9 +184,9 @@ def CleanUp(options):
         print "Executing: ", argList
     p = subprocess.Popen(argList)
     p.wait()
-    
+
 # ----------
-    
+
 if __name__ == "__main__":
     optParser = OptionParser(description="Opus unittests")
     optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
@@ -183,17 +203,17 @@ if __name__ == "__main__":
     optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
     TestOptionSetup(optParser)
     (options,args) = optParser.parse_args()
-    
+
     if options.verbose:
         print "Options are ", options
         print "Args    are ", args
-        
+
     if not options.platforms:
         raise RuntimeError("No platforms were specified")
-        
+
     if not options.configurations:
         raise RuntimeError("No configurations were specified")
-        
+
     if not options.noInitialClean:
         CleanUp(options)
 
@@ -227,12 +247,12 @@ if __name__ == "__main__":
     if not options.keepFiles:
         # TODO: consider keeping track of all directories created instead
         CleanUp(options)
-        
+
     print "--------------------"
     print "| Results summary  |"
     print "--------------------"
     print outputBuffer.getvalue()
-    
+
     if not os.path.exists("Logs"):
         os.mkdir("Logs")
     logFileName = os.path.join("Logs", "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log")
@@ -240,5 +260,5 @@ if __name__ == "__main__":
     logFile.write(outputBuffer.getvalue())
     logFile.close()
     outputBuffer.close()
-    
+
     sys.exit(exitCode)

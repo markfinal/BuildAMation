@@ -35,4 +35,13 @@ namespace C
         Unicode = 1,
         MultiByte = 2
     }
+
+    public enum ELanguageStandard
+    {
+        NotSet,
+        C89,
+        C99,
+        Cxx98,
+        Cxx11
+    }
 }

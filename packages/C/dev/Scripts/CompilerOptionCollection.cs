@@ -86,6 +86,16 @@ namespace C
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
 
             compilerOptions.DisableWarnings = new Opus.Core.StringArray();
+
+            if (this is ICxxCompilerOptions)
+            {
+                compilerOptions.LanguageStandard = ELanguageStandard.Cxx98;
+            }
+            else
+            {
+                compilerOptions.LanguageStandard = ELanguageStandard.C89;
+            }
+
             compilerOptions.AdditionalOptions = "";
         }
 

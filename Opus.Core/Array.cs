@@ -28,6 +28,14 @@ namespace Opus.Core
             this.list.Add(item);
         }
 
+        public void AddUnique(T item)
+        {
+            if (!this.list.Contains(item))
+            {
+                this.Add(item);
+            }
+        }
+
         public void AddRange(T[] itemsToAdd)
         {
             this.list.AddRange(itemsToAdd);
@@ -185,6 +193,30 @@ namespace Opus.Core
                 }
             }
             return complement;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Array<T>;
+            if (this.list.Count != other.list.Count)
+            {
+                return false;
+            }
+
+            foreach (var item in this.list)
+            {
+                if (!other.list.Contains(item))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

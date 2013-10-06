@@ -1,16 +1,18 @@
 #!/usr/bin/python
+import os
+import subprocess
 import sys
 
 class TestSetup:
     _win = {}
     _linux = {}
     _osx = {}
-  
+
     def __init__(self, win={}, linux={}, osx={}):
         self._win = win
         self._linux = linux
         self._osx = osx
-        
+
     def GetBuilders(self):
         platform = sys.platform
         if platform.startswith("win"):
@@ -75,7 +77,6 @@ class TestSetup:
         return responseNames
 
     def GetResponseNames(self, builder, excludedResponseFiles):
-        platform = sys.platform
         responseFiles = []
         for i in self._GetListOfResponseNames(builder):
             if not i:
@@ -84,6 +85,46 @@ class TestSetup:
                 if not excludedResponseFiles or i not in excludedResponseFiles:
                     responseFiles.append(i)
         return responseFiles
+
+class Builder(object):
+    def __init__(self, name, preAction, postAction):
+        self.name = name
+        self.preAction = preAction
+        self.postAction = postAction
+
+def XcodePost(buildRoot, configurations, outputMessages, errorMessages):
+    exitCode = 0
+    try:
+        for config in configurations:
+            argList = []
+            argList.append("xcodebuild")
+            argList.append("-alltargets")
+            argList.append("-configuration")
+            # capitalize the first letter of the configuration
+            config = config[0].upper() + config[1:]
+            argList.append(config)
+            print "Running '%s' in %s" % (" ".join(argList), buildRoot)
+            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=buildRoot)
+            (outputStream, errorStream) = p.communicate() # this should WAIT
+            exitCode |= p.returncode
+            if outputStream:
+                outputMessages.write(outputStream)
+            if errorStream:
+                errorMessages.write(errorStream)
+    except Exception, e:
+        errorMessages.write(str(e))
+        return -1
+    return exitCode
+
+builder = {}
+builder["Native"] = Builder("Native", None, None)
+builder["VSSolution"] = Builder("VSSolution", None, None)
+builder["MakeFile"] = Builder("MakeFile", None, None)
+builder["QMake"] = Builder("QMake", None, None)
+builder["Xcode"] = Builder("Xcode", None, XcodePost)
+
+def GetBuilderDetails(builderName):
+    return builder[builderName]
 
 def GetResponsePath(responseName):
   return "%s.rsp" % responseName
@@ -111,55 +152,55 @@ def TestOptionSetup(optParser):
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test4-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test5-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test6-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test7-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test8-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test9-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                 osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test10-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test11-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test12-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
 configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test15-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
+                                  osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                        osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})
@@ -179,11 +220,11 @@ configs["Symlinks-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                     linux={"Native":None,"MakeFile":None},
                                     osx={"Native":None,"MakeFile":None})
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
-configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"]})
-configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"]})
+configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
+configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"],"Xcode":["llvm-gcc"]})
 configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                      linux={"Native":None,"MakeFile":None},
                                      osx={"Native":None,"MakeFile":None})
-configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"]},
-                                     linux={"Native":["gcc"]},
-                                     osx={"Native":["gcc"]})
+configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
+                                     linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                     osx={"Native":["llvm-gcc"],"MakeFile":["llvm-gcc"]})

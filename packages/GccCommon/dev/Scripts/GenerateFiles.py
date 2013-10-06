@@ -17,12 +17,14 @@ opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe = GetOpusPaths()
 # C compiler options
 cCompiler_options = [
     opusCodeGeneratorExe,
-    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICCompilerOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "GccCommon", "dev", "Scripts", "ICCompilerOptions.cs")),
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICCompilerOptions.cs")) + os.pathsep + \
+            os.path.relpath(os.path.join(opusPackageDir, "GccCommon", "dev", "Scripts", "ICCompilerOptions.cs")),
     "-n=GccCommon",
     "-c=CCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
+             os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData"
 ]
 cCompiler_options.extend(extra_args)
@@ -37,7 +39,8 @@ cxxCompiler_options = [
     "-c=CxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
+             os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData",
     "-e", # this option set derives from the C option set
     "-b" # used as a base class
@@ -54,7 +57,8 @@ objCxxCompiler_options = [
     "-c=ObjCxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
+             os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData",
     "-e", # this option set derives from the C option set
     "-b" # used as a base class
@@ -66,12 +70,15 @@ print stdout
 # Linker options
 linker_options = [
     opusCodeGeneratorExe,
-    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ILinkerOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "GccCommon", "dev", "Scripts", "ILinkerOptions.cs")),
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ILinkerOptions.cs")) + os.pathsep + \
+            os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ILinkerOptionsOSX.cs")) + os.pathsep + \
+            os.path.relpath(os.path.join(opusPackageDir, "GccCommon", "dev", "Scripts", "ILinkerOptions.cs")),
     "-n=GccCommon",
     "-c=LinkerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
+             os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData"
 ]
 linker_options.extend(extra_args)
@@ -81,12 +88,14 @@ print stdout
 # Archiver options
 archiver_options = [
     opusCodeGeneratorExe,
-    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "IArchiverOptions.cs")) + os.pathsep + os.path.relpath(os.path.join(opusPackageDir, "GccCommon", "dev", "Scripts", "IArchiverOptions.cs")),
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "IArchiverOptions.cs")) + os.pathsep + \
+            os.path.relpath(os.path.join(opusPackageDir, "GccCommon", "dev", "Scripts", "IArchiverOptions.cs")),
     "-n=GccCommon",
     "-c=ArchiverOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
+             os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData"
 ]
 archiver_options.extend(extra_args)

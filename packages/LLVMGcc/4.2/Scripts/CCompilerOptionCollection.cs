@@ -24,6 +24,12 @@ namespace LLVMGcc
 
             // requires gcc 4.0
             (this as ICCompilerOptions).Visibility = EVisibility.Hidden;
+
+            // use C99 by default with llvm-gcc
+            if (!(this is C.ICxxCompilerOptions))
+            {
+                (this as C.ICCompilerOptions).LanguageStandard = C.ELanguageStandard.C99;
+            }
         }
     }
 }

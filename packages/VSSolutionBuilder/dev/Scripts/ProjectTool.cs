@@ -104,6 +104,7 @@ namespace VSSolutionBuilder
                     continue;
                 }
 
+                // TODO: need to fix the ObjectFileName reference so that it's per object file
                 string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
                 toolElement.SetAttribute(attribute.Key, value);
             }
@@ -250,29 +251,39 @@ namespace VSSolutionBuilder
             }
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
-                if ("Name" != attribute.Key)
+                if ("Name" == attribute.Key)
                 {
-                    string value = attribute.Value;
-                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                    continue;
+                }
 
-                    // this is necessary in case the parent (from the ProjectConfiguration) is
-                    // a C interface, while the ProjectFileConfiguration tool is C++
-                    if ((parentTool != null) && (parentTool.HasAttribute(attribute.Key)))
+                string value = attribute.Value;
+                value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
+
+                MSBuildMetaData metaData;
+                if (this.Name == "VCCLCompilerTool")
+                {
+                    // per-source file compiler options extend the defaults for some keys
+                    // TODO: find a better way to identify an extension, possibly marking attributes as absolute or delta
+                    switch (attribute.Key)
                     {
-                        string thisValue = attribute.Value;
-                        string parentValue = parentTool[attribute.Key];
+                        case "PreprocessorDefinitions":
+                        case "AdditionalIncludeDirectories":
+                            {
+                                metaData = toolItem.CreateMetaData(attribute.Key, value + ";%(" + attribute.Key + ")");
+                                metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+                            }
+                            break;
 
-                        if ("Name" == attribute.Key || "ObjectFileName" == attribute.Key || thisValue != parentValue)
-                        {
-                            MSBuildMetaData metaData = toolItem.CreateMetaData(attribute.Key, value);
+                        default:
+                            metaData = toolItem.CreateMetaData(attribute.Key, value);
                             metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
-                        }
+                            break;
                     }
-                    else
-                    {
-                        MSBuildMetaData metaData = toolItem.CreateMetaData(attribute.Key, value);
-                        metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
-                    }
+                }
+                else
+                {
+                    metaData = toolItem.CreateMetaData(attribute.Key, value);
+                    metaData.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
             }
         }

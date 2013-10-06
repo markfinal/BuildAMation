@@ -12,7 +12,7 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             foreach (string define in definesOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("/D{0}", define));
+                commandLineBuilder.Add(System.String.Format("-D{0}", define));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DefinesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -123,29 +123,29 @@ namespace VisualCCommon
             {
                 case C.ECompilerOutput.CompileOnly:
                     {
-                        commandLineBuilder.Add("/c");
+                        commandLineBuilder.Add("-c");
                         string objPathName = options.ObjectFilePath;
                         if (objPathName.Contains(" "))
                         {
-                            commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", objPathName));
+                            commandLineBuilder.Add(System.String.Format("-Fo\"{0}\"", objPathName));
                         }
                         else
                         {
-                            commandLineBuilder.Add(System.String.Format("/Fo{0}", objPathName));
+                            commandLineBuilder.Add(System.String.Format("-Fo{0}", objPathName));
                         }
                     }
                     break;
                 case C.ECompilerOutput.Preprocess: // with line numbers
                     {
-                        commandLineBuilder.Add("/P");
+                        commandLineBuilder.Add("-P");
                         string objPathName = options.PreprocessedFilePath;
                         if (objPathName.Contains(" "))
                         {
-                            commandLineBuilder.Add(System.String.Format("/Fo\"{0}\"", objPathName));
+                            commandLineBuilder.Add(System.String.Format("-Fo\"{0}\"", objPathName));
                         }
                         else
                         {
-                            commandLineBuilder.Add(System.String.Format("/Fo{0}", objPathName));
+                            commandLineBuilder.Add(System.String.Format("-Fo{0}", objPathName));
                         }
                     }
                     break;
@@ -220,7 +220,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (warningsAsErrorsOption.Value)
             {
-                commandLineBuilder.Add("/WX");
+                commandLineBuilder.Add("-WX");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary WarningsAsErrorsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -242,7 +242,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> includeStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (includeStandardIncludePathsOption.Value)
             {
-                commandLineBuilder.Add("/X");
+                commandLineBuilder.Add("-X");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary IgnoreStandardIncludePathsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -258,16 +258,16 @@ namespace VisualCCommon
             switch (optimizationOption.Value)
             {
                 case C.EOptimization.Off:
-                    commandLineBuilder.Add("/Od");
+                    commandLineBuilder.Add("-Od");
                     break;
                 case C.EOptimization.Size:
-                    commandLineBuilder.Add("/Os");
+                    commandLineBuilder.Add("-Os");
                     break;
                 case C.EOptimization.Speed:
-                    commandLineBuilder.Add("/O1");
+                    commandLineBuilder.Add("-O1");
                     break;
                 case C.EOptimization.Full:
-                    commandLineBuilder.Add("/Ox");
+                    commandLineBuilder.Add("-Ox");
                     break;
                 case C.EOptimization.Custom:
                     // do nothing
@@ -347,10 +347,10 @@ namespace VisualCCommon
                     // do nothing
                     break;
                 case C.ETargetLanguage.C:
-                    commandLineBuilder.Add("/TC");
+                    commandLineBuilder.Add("-TC");
                     break;
                 case C.ETargetLanguage.Cxx:
-                    commandLineBuilder.Add("/TP");
+                    commandLineBuilder.Add("-TP");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized target language option");
@@ -401,7 +401,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/showIncludes");
+                commandLineBuilder.Add("-showIncludes");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary ShowIncludesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -435,11 +435,11 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/Oy");
+                commandLineBuilder.Add("-Oy");
             }
             else
             {
-                commandLineBuilder.Add("/Oy-");
+                commandLineBuilder.Add("-Oy-");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary OmitFramePointerVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -461,7 +461,7 @@ namespace VisualCCommon
             Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (string warning in disableWarningsOption.Value)
             {
-                commandLineBuilder.Add(System.String.Format("/wd{0}", warning));
+                commandLineBuilder.Add(System.String.Format("-wd{0}", warning));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DisableWarningsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -508,6 +508,14 @@ namespace VisualCCommon
             }
             return returnVal;
         }
+        private static void LanguageStandardCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary LanguageStandardVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            return returnVal;
+        }
         #endregion
         #region ICCompilerOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -515,7 +523,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
-                commandLineBuilder.Add("/nologo");
+                commandLineBuilder.Add("-nologo");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -535,7 +543,7 @@ namespace VisualCCommon
                 (EManagedCompilation.NoCLR == vcOptionCollection.CompileAsManaged) &&
                 ((EDebugType.ProgramDatabase == vcOptionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == vcOptionCollection.DebugType)))
             {
-                commandLineBuilder.Add("/Gm");
+                commandLineBuilder.Add("-Gm");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary MinimalRebuildVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -561,7 +569,7 @@ namespace VisualCCommon
         private static void WarningLevelCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<EWarningLevel> enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
-            commandLineBuilder.Add(System.String.Format("/W{0}", (int)enumOption.Value));
+            commandLineBuilder.Add(System.String.Format("-W{0}", (int)enumOption.Value));
         }
         private static VisualStudioProcessor.ToolAttributeDictionary WarningLevelVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
@@ -585,11 +593,11 @@ namespace VisualCCommon
                 switch ((sender as ICCompilerOptions).DebugType)
                 {
                     case EDebugType.Embedded:
-                        commandLineBuilder.Add("/Z7");
+                        commandLineBuilder.Add("-Z7");
                         break;
                     case EDebugType.ProgramDatabase:
                         {
-                            commandLineBuilder.Add("/Zi");
+                            commandLineBuilder.Add("-Zi");
                             string pdbPathName = options.ProgramDatabaseFilePath;
                             if (null == pdbPathName)
                             {
@@ -597,17 +605,17 @@ namespace VisualCCommon
                             }
                             if (pdbPathName.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", pdbPathName));
+                                commandLineBuilder.Add(System.String.Format("-Fd\"{0}\"", pdbPathName));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd{0}", pdbPathName));
+                                commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbPathName));
                             }
                         }
                         break;
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
-                            commandLineBuilder.Add("/ZI");
+                            commandLineBuilder.Add("-ZI");
                             string pdbPathName = options.ProgramDatabaseFilePath;
                             if (null == pdbPathName)
                             {
@@ -615,11 +623,11 @@ namespace VisualCCommon
                             }
                             if (pdbPathName.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd\"{0}\"", pdbPathName));
+                                commandLineBuilder.Add(System.String.Format("-Fd\"{0}\"", pdbPathName));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("/Fd{0}", pdbPathName));
+                                commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbPathName));
                             }
                         }
                         break;
@@ -690,21 +698,21 @@ namespace VisualCCommon
                 case EBrowseInformation.Full:
                     if (browseDir.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/FR\"{0}\"", browseDir));
+                        commandLineBuilder.Add(System.String.Format("-FR\"{0}\"", browseDir));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("/FR{0}", browseDir));
+                        commandLineBuilder.Add(System.String.Format("-FR{0}", browseDir));
                     }
                     break;
                 case EBrowseInformation.NoLocalSymbols:
                     if (browseDir.Contains(" "))
                     {
-                        commandLineBuilder.Add(System.String.Format("/Fr\"{0}\"", browseDir));
+                        commandLineBuilder.Add(System.String.Format("-Fr\"{0}\"", browseDir));
                     }
                     else
                     {
-                        commandLineBuilder.Add(System.String.Format("/Fr{0}", browseDir));
+                        commandLineBuilder.Add(System.String.Format("-Fr{0}", browseDir));
                     }
                     break;
                 default:
@@ -717,7 +725,7 @@ namespace VisualCCommon
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             C.CompilerOptionCollection options = sender as C.CompilerOptionCollection;
             // the trailing directory separator is important, or unexpected rebuilds occur
-            string browseDir = options.OutputDirectoryPath + "\\";
+            string browseDir = !string.IsNullOrEmpty(options.OutputDirectoryPath) ? options.OutputDirectoryPath + "\\" : string.Empty;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 returnVal.Add("BrowseInformation", enumOption.Value.ToString("D"));
@@ -746,7 +754,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/GF");
+                commandLineBuilder.Add("-GF");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary StringPoolingVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -761,7 +769,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/Za");
+                commandLineBuilder.Add("-Za");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DisableLanguageExtensionsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -776,11 +784,11 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/Zc:forScope");
+                commandLineBuilder.Add("-Zc:forScope");
             }
             else
             {
-                commandLineBuilder.Add("/Zc:forScope-");
+                commandLineBuilder.Add("-Zc:forScope-");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary ForceConformanceInForLoopScopeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -795,7 +803,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/FC");
+                commandLineBuilder.Add("-FC");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary UseFullPathsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -813,16 +821,16 @@ namespace VisualCCommon
                 case EManagedCompilation.NoCLR:
                     break;
                 case EManagedCompilation.CLR:
-                    commandLineBuilder.Add("/clr");
+                    commandLineBuilder.Add("-clr");
                     break;
                 case EManagedCompilation.PureCLR:
-                    commandLineBuilder.Add("/clr:pure");
+                    commandLineBuilder.Add("-clr:pure");
                     break;
                 case EManagedCompilation.SafeCLR:
-                    commandLineBuilder.Add("/clr:safe");
+                    commandLineBuilder.Add("-clr:safe");
                     break;
                 case EManagedCompilation.OldSyntaxCLR:
-                    commandLineBuilder.Add("/clr:oldsyntax");
+                    commandLineBuilder.Add("-clr:oldsyntax");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized EManagedCompilation option");
@@ -874,13 +882,13 @@ namespace VisualCCommon
                 case EBasicRuntimeChecks.None:
                     break;
                 case EBasicRuntimeChecks.StackFrame:
-                    commandLineBuilder.Add("/RTCs");
+                    commandLineBuilder.Add("-RTCs");
                     break;
                 case EBasicRuntimeChecks.UninitializedVariables:
-                    commandLineBuilder.Add("/RTCu");
+                    commandLineBuilder.Add("-RTCu");
                     break;
                 case EBasicRuntimeChecks.StackFrameAndUninitializedVariables:
-                    commandLineBuilder.Add("/RTC1");
+                    commandLineBuilder.Add("-RTC1");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for VisualC.EBasicRuntimeChecks");
@@ -941,7 +949,7 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/RTCc");
+                commandLineBuilder.Add("-RTCc");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary SmallerTypeConversionRuntimeCheckVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -969,13 +977,13 @@ namespace VisualCCommon
             switch (enumOption.Value)
             {
                 case EInlineFunctionExpansion.None:
-                    commandLineBuilder.Add("/Ob0");
+                    commandLineBuilder.Add("-Ob0");
                     break;
                 case EInlineFunctionExpansion.OnlyInline:
-                    commandLineBuilder.Add("/Ob1");
+                    commandLineBuilder.Add("-Ob1");
                     break;
                 case EInlineFunctionExpansion.AnySuitable:
-                    commandLineBuilder.Add("/Ob2");
+                    commandLineBuilder.Add("-Ob2");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for VisualC.EInlineFunctionExpansion");
@@ -1022,11 +1030,11 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                commandLineBuilder.Add("/Oi");
+                commandLineBuilder.Add("-Oi");
             }
             else
             {
-                commandLineBuilder.Add("/Oi-");
+                commandLineBuilder.Add("-Oi-");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary EnableIntrinsicFunctionsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -1049,16 +1057,16 @@ namespace VisualCCommon
             switch (runtimeLibraryOption.Value)
             {
                 case ERuntimeLibrary.MultiThreaded:
-                    commandLineBuilder.Add("/MT");
+                    commandLineBuilder.Add("-MT");
                     break;
                 case ERuntimeLibrary.MultiThreadedDebug:
-                    commandLineBuilder.Add("/MTd");
+                    commandLineBuilder.Add("-MTd");
                     break;
                 case ERuntimeLibrary.MultiThreadedDLL:
-                    commandLineBuilder.Add("/MD");
+                    commandLineBuilder.Add("-MD");
                     break;
                 case ERuntimeLibrary.MultiThreadedDebugDLL:
-                    commandLineBuilder.Add("/MDd");
+                    commandLineBuilder.Add("-MDd");
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized runtime library option");
@@ -1107,6 +1115,7 @@ namespace VisualCCommon
             this["OmitFramePointer"].PrivateData = new PrivateData(OmitFramePointerCommandLineProcessor,OmitFramePointerVisualStudioProcessor);
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor,DisableWarningsVisualStudioProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor,CharacterSetVisualStudioProcessor);
+            this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor,LanguageStandardVisualStudioProcessor);
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLineProcessor,NoLogoVisualStudioProcessor);
             this["MinimalRebuild"].PrivateData = new PrivateData(MinimalRebuildCommandLineProcessor,MinimalRebuildVisualStudioProcessor);
             this["WarningLevel"].PrivateData = new PrivateData(WarningLevelCommandLineProcessor,WarningLevelVisualStudioProcessor);

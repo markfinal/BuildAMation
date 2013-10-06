@@ -9,6 +9,8 @@ namespace Test7
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dynamiclibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
+
+            this.headerFiles.Include(this.PackageLocation, "include", "*.h");
         }
 
         [C.ExportCompilerOptionsDelegate]
@@ -20,6 +22,9 @@ namespace Test7
 
         [Opus.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
+
+        [C.HeaderFiles]
+        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
 
         [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(

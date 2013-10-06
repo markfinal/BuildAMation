@@ -4,7 +4,7 @@
 
 #include "header.h"
 
-char *GetConfiguration()
+const char *GetConfiguration()
 {
     return "Optimized";
 }

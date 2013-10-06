@@ -1,6 +1,6 @@
 #ifndef LIBRARY_H
 #define LIBRARY_H
 
-extern char *libraryFunction();
+extern const char *libraryFunction();
 
 #endif /* LIBRARY_H */

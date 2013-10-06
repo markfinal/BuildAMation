@@ -70,8 +70,8 @@ namespace Test
                 Opus.Core.Log.MessageAll("Toolset for visualc in use");
 
                 compilerOptions.Optimization = C.EOptimization.Custom;
-                compilerOptions.CustomOptimization = "/Ox";
-                compilerOptions.AdditionalOptions = "/openmp";
+                compilerOptions.CustomOptimization = "-Ox";
+                compilerOptions.AdditionalOptions = "-openmp";
 
                 compilerOptions.DebugSymbols = true;
                 var vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;

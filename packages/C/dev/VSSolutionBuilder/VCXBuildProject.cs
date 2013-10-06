@@ -369,7 +369,16 @@ namespace VSSolutionBuilder
                         var subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
                         var relativeSubDir = Opus.Core.RelativePathUtilities.GetPath(subdir, this.PackageUri);
 
-                        var item = sourceFilesGroup.CreateItem("ClCompile", Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
+                        var toolName = "ClCompile";
+                        foreach (ProjectFileConfiguration config in file.FileConfigurations)
+                        {
+                            if (config.Tool.Name == "VCCustomBuildTool")
+                            {
+                                toolName = "CustomBuild";
+                                break;
+                            }
+                        }
+                        var item = sourceFilesGroup.CreateItem(toolName, Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, projectLocationUri));
                         item.CreateMetaData("Filter", System.IO.Path.Combine("Source Files", relativeSubDir));
                     }
                 }

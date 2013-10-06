@@ -120,7 +120,17 @@ namespace VSSolutionBuilder
                 vcCLCompilerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLCompilerTool);
 
-                if (objectFileCollectionOptions is VisualStudioProcessor.IVisualStudioSupport)
+                if ((node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection) && ((node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection is VisualStudioProcessor.IVisualStudioSupport))
+                {
+                    var visualStudioProjectOption = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+
+                    foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
+                    {
+                        vcCLCompilerTool[setting.Key] = setting.Value;
+                    }
+                }
+                else if (objectFileCollectionOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {
                     VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = objectFileCollectionOptions as VisualStudioProcessor.IVisualStudioSupport;
                     VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);

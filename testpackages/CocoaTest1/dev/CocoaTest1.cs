@@ -7,9 +7,9 @@ namespace CocoaTest1
         public CocoaTest()
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
-                var link = module.Options as C.ILinkerOptions;
-                link.OSXApplicationBundle = true;
-                link.OSXFrameworks.Add("cocoa");
+                var link = module.Options as C.ILinkerOptionsOSX;
+                link.ApplicationBundle = true;
+                link.Frameworks.Add("Cocoa");
             };
         }
 

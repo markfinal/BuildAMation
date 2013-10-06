@@ -186,6 +186,18 @@ namespace ComposerXECommon
                 this.ProcessNamedSetHandler("CharacterSetSetHandler", this["CharacterSet"]);
             }
         }
+        C.ELanguageStandard C.ICCompilerOptions.LanguageStandard
+        {
+            get
+            {
+                return this.GetValueTypeOption<C.ELanguageStandard>("LanguageStandard");
+            }
+            set
+            {
+                this.SetValueTypeOption<C.ELanguageStandard>("LanguageStandard", value);
+                this.ProcessNamedSetHandler("LanguageStandardSetHandler", this["LanguageStandard"]);
+            }
+        }
         #endregion
         #region ICCompilerOptions Option properties
         bool ICCompilerOptions.AllWarnings

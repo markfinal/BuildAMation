@@ -167,12 +167,14 @@ namespace Opus.Core
                     throw new Exception("No package found for '{0}'", packageName);
                 }
                 this.Package = package;
+                this.EncapsulatingNode = this;
                 this.ModuleName = moduleType.Name;
                 this.UniqueModuleName = moduleType.FullName;
             }
             else
             {
                 this.Package = parent.Package;
+                this.EncapsulatingNode = parent.EncapsulatingNode;
                 this.ModuleName = parent.ModuleName;
                 this.UniqueModuleName = parent.GetChildModuleName(moduleType, childIndex);
             }
@@ -234,6 +236,12 @@ namespace Opus.Core
         }
 
         public PackageInformation Package
+        {
+            get;
+            private set;
+        }
+
+        public DependencyNode EncapsulatingNode
         {
             get;
             private set;

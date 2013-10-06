@@ -37,6 +37,12 @@ namespace LLVMGcc
 #endif
 
             GccCommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
+
+            // disable long long as it won't compile on C++98 and -pedantic
+            if ((this as C.ICCompilerOptions).LanguageStandard != C.ELanguageStandard.Cxx11)
+            {
+                (this as C.ICCompilerOptions).DisableWarnings.AddUnique("long-long");
+            }
         }
 
         public CxxCompilerOptionCollection()

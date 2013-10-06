@@ -7,6 +7,10 @@ namespace Mingw
 {
     public class LinkerOptionCollection : MingwCommon.LinkerOptionCollection
     {
+        public LinkerOptionCollection()
+            : base()
+        {}
+
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

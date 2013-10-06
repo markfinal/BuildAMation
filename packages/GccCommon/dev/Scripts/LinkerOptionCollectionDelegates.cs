@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
-// -i=../../../C/dev/Scripts/ILinkerOptions.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ILinkerOptions.cs:../../../C/dev/Scripts/ILinkerOptionsOSX.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
 
 namespace GccCommon
 {
@@ -37,6 +37,7 @@ namespace GccCommon
                         {
                             commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                         }
+                        // TODO: this option needs to be pulled out of the common output type option
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
                         // see http://www.adp-gmbh.ch/cpp/gcc/create_lib.html
@@ -54,13 +55,14 @@ namespace GccCommon
                         }
                         else if (Opus.Core.OSUtilities.IsOSXHosting)
                         {
-                            if (outputPathName.Contains(" "))
+                            var filename = System.IO.Path.GetFileName(outputPathName);
+                            if (filename.Contains(" "))
                             {
-                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"{0}\"", outputPathName));
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,\"@loader_path/{0}\"", filename));
                             }
                             else
                             {
-                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,{0}", outputPathName));
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@loader_path/{0}", filename));
                             }
                         }
                     }
@@ -69,12 +71,32 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
         }
+        private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         private static void DoNotAutoIncludeStandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
                 commandLineBuilder.Add("-nostdlib");
+            }
+        }
+        private static void DoNotAutoIncludeStandardLibrariesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var ignoreStandardLibs = option as Opus.Core.ValueTypeOption<bool>;
+            var linkWithStandardLibsOption = configuration.Options["LINK_WITH_STANDARD_LIBRARIES"];
+            if (ignoreStandardLibs.Value)
+            {
+                linkWithStandardLibsOption.AddUnique("NO");
+            }
+            else
+            {
+                linkWithStandardLibsOption.AddUnique("YES");
+            }
+            if (linkWithStandardLibsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one ignore standard libraries option has been set");
             }
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -85,7 +107,20 @@ namespace GccCommon
                 commandLineBuilder.Add("-g");
             }
         }
+        private static void DebugSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var debugSymbols = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (debugSymbols.Value)
+            {
+                otherLDOptions.AddUnique("-g");
+            }
+        }
         private static void SubSystemCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // empty
+        }
+        private static void SubSystemXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             // empty
         }
@@ -104,6 +139,16 @@ namespace GccCommon
                 }
             }
         }
+        private static void DynamicLibraryXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // TODO: this looks like it might actually be MACH_O_TYPE=mh_dylib or mh_execute
+            var dynamicLibrary = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (dynamicLibrary.Value)
+            {
+                otherLDOptions.AddUnique("-dynamiclib");
+            }
+        }
         private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
@@ -119,11 +164,25 @@ namespace GccCommon
                 }
             }
         }
+        private static void LibraryPathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var librarySearchPathsOption = configuration.Options["LIBRARY_SEARCH_PATHS"];
+            librarySearchPathsOption.AddRangeUnique(libraryPathsOption.Value.ToStringArray());
+        }
         private static void StandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             // empty
         }
+        private static void StandardLibrariesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // empty
+        }
         private static void LibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // empty
+        }
+        private static void LibrariesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             // empty
         }
@@ -157,6 +216,20 @@ namespace GccCommon
                 }
             }
         }
+        private static void GenerateMapFileXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var generateMapfile = option as Opus.Core.ValueTypeOption<bool>;
+            if (generateMapfile.Value)
+            {
+                var generateMapfileOption = configuration.Options["LD_MAP_FILE_PATH"];
+                var options = sender as LinkerOptionCollection;
+                generateMapfileOption.AddUnique(options.MapFilePath);
+                if (generateMapfileOption.Count != 1)
+                {
+                    throw new Opus.Core.Exception("More than one map file location option has been set");
+                }
+            }
+        }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
@@ -166,17 +239,39 @@ namespace GccCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            foreach (var argument in arguments)
+            {
+                otherLDOptions.AddUnique(argument);
+            }
+        }
+        #endregion
+        #region C.ILinkerOptionsOSX Option delegates
+        private static void FrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             if (!Opus.Core.OSUtilities.IsOSXHosting)
             {
                 return;
             }
-
             Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (string framework in stringArrayOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-framework {0}", framework));
+            }
+        }
+        private static void FrameworksXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var frameworks = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (var framework in frameworks.Value)
+            {
+                var fileReference = project.FileReferences.Get(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
+                var buildFile = project.BuildFiles.Get(framework, fileReference);
+                buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
+                buildFile.BuildPhase.Files.AddUnique(buildFile);
             }
         }
         #endregion
@@ -187,6 +282,15 @@ namespace GccCommon
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wl,-z,origin");
+            }
+        }
+        private static void CanUseOriginXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var useOrigin = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (useOrigin.Value)
+            {
+                otherLDOptions.AddUnique("-Wl,-z,origin");
             }
         }
         private static void AllowUndefinedSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -216,6 +320,20 @@ namespace GccCommon
                 }
             }
         }
+        private static void AllowUndefinedSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var allowUndefined = option as Opus.Core.ValueTypeOption<bool>;
+            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
+            if (allowUndefined.Value)
+            {
+                // TODO: I did originally think suppress here, but there is an issue with that and 'two level namespaces'
+                otherLDOptions.AddUnique("-Wl,-undefined,dynamic_lookup");
+            }
+            else
+            {
+                otherLDOptions.AddUnique("-Wl,-undefined,error");
+            }
+        }
         private static void RPathCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
@@ -223,6 +341,9 @@ namespace GccCommon
             {
                 commandLineBuilder.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
             }
+        }
+        private static void RPathXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
         }
         private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -236,25 +357,28 @@ namespace GccCommon
                 commandLineBuilder.Add("-m32");
             }
         }
+        private static void SixtyFourBitXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
-            this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor);
-            this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor);
-            this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor);
-            this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor);
-            this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor);
-            this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor);
-            this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor);
-            this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);
-            this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
-            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
-            // Property 'OSXApplicationBundle' is state only
-            this["OSXFrameworks"].PrivateData = new PrivateData(OSXFrameworksCommandLineProcessor);
-            this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCommandLineProcessor);
-            this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCommandLineProcessor);
-            this["RPath"].PrivateData = new PrivateData(RPathCommandLineProcessor);
-            this["SixtyFourBit"].PrivateData = new PrivateData(SixtyFourBitCommandLineProcessor);
+            this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeXcodeProjectProcessor);
+            this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor,DoNotAutoIncludeStandardLibrariesXcodeProjectProcessor);
+            this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor,DebugSymbolsXcodeProjectProcessor);
+            this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor,SubSystemXcodeProjectProcessor);
+            this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor,DynamicLibraryXcodeProjectProcessor);
+            this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor,LibraryPathsXcodeProjectProcessor);
+            this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor,StandardLibrariesXcodeProjectProcessor);
+            this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesXcodeProjectProcessor);
+            this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor,GenerateMapFileXcodeProjectProcessor);
+            this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);
+            // Property 'ApplicationBundle' is state only
+            this["Frameworks"].PrivateData = new PrivateData(FrameworksCommandLineProcessor,FrameworksXcodeProjectProcessor);
+            this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCommandLineProcessor,CanUseOriginXcodeProjectProcessor);
+            this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCommandLineProcessor,AllowUndefinedSymbolsXcodeProjectProcessor);
+            this["RPath"].PrivateData = new PrivateData(RPathCommandLineProcessor,RPathXcodeProjectProcessor);
+            this["SixtyFourBit"].PrivateData = new PrivateData(SixtyFourBitCommandLineProcessor,SixtyFourBitXcodeProjectProcessor);
         }
     }
 }
