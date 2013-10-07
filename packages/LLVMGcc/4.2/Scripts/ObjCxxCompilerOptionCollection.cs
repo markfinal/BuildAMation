@@ -17,7 +17,9 @@ namespace LLVMGcc
             // TODO: think I can move this to GccCommon, but it misses out the C++ include paths for some reason (see Test9-dev)
             Opus.Core.Target target = node.Target;
             GccCommon.Toolset gccToolset = target.Toolset as GccCommon.Toolset;
+#if false
             string machineType = gccToolset.GccDetail.Target;
+#endif
             string cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
 
             if (!System.IO.Directory.Exists(cxxIncludePath))

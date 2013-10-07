@@ -27,8 +27,6 @@ namespace MakeFileBuilder
             }
 
             Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
-            string symlinkedDirectoryPath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink];
-
             Opus.Core.Target target = node.Target;
 
             var commandLineBuilder = new Opus.Core.StringArray();

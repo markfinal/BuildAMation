@@ -11,7 +11,6 @@ namespace MakeFileBuilder
         {
             var objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
             var node = objectFileCollectionModule.OwningNode;
-            var target = node.Target;
 
             var dependents = new MakeFileVariableDictionary();
             var childDataArray = new Opus.Core.Array<MakeFileData>();
