@@ -52,24 +52,33 @@ namespace VSSolutionBuilder
                 }
             }
 
-            System.Xml.XmlElement fileConfigurationElement = document.CreateElement("FileConfiguration");
-
-            fileConfigurationElement.SetAttribute("Name", this.Configuration.Name);
-            if (this.ExcludedFromBuild)
+            if (this.ExcludedFromBuild || (this.Tool.AttributeCount > 1))
             {
-                fileConfigurationElement.SetAttribute("ExcludedFromBuild", this.ExcludedFromBuild.ToString());
+                System.Xml.XmlElement fileConfigurationElement = document.CreateElement("FileConfiguration");
 
-                if (this.Tool.AttributeCount > 1) // always 1 because of the name
+                fileConfigurationElement.SetAttribute("Name", this.Configuration.Name);
+                if (this.ExcludedFromBuild)
                 {
-                    fileConfigurationElement.AppendChild(this.Tool.Serialize(document, this, projectUri, parentTool));
+                    fileConfigurationElement.SetAttribute("ExcludedFromBuild", this.ExcludedFromBuild.ToString());
+
+                    if (this.Tool.AttributeCount > 1) // always 1 because of the name
+                    {
+                        fileConfigurationElement.AppendChild(this.Tool.Serialize(document, this, projectUri, parentTool));
+                    }
                 }
+                else
+                {
+                    if (this.Tool.AttributeCount > 1) // always 1 because of the name
+                    {
+                        fileConfigurationElement.AppendChild(this.Tool.Serialize(document, this, projectUri, parentTool));
+                    }
+                }
+                return fileConfigurationElement;
             }
             else
             {
-                fileConfigurationElement.AppendChild(this.Tool.Serialize(document, this, projectUri, parentTool));
+                return null;
             }
-
-            return fileConfigurationElement;
         }
     }
 }
