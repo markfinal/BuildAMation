@@ -1,7 +1,7 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptions.cs -n=Clang -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
-namespace Clang
+// -i=../../../C/dev/Scripts/ICCompilerOptions.cs -n=ClangCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+namespace ClangCommon
 {
     public partial class CCompilerOptionCollection
     {

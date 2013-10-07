@@ -18,7 +18,7 @@ opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe = GetOpusPaths()
 cCompiler_options = [
     opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICCompilerOptions.cs")),
-    "-n=Clang",
+    "-n=ClangCommon",
     "-c=CCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
@@ -33,7 +33,7 @@ print stdout
 cxxCompiler_options = [
     opusCodeGeneratorExe,
     "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICxxCompilerOptions.cs")),
-    "-n=Clang",
+    "-n=ClangCommon",
     "-c=CxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates

@@ -1,9 +1,9 @@
 // <copyright file="Toolset.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Clang package</summary>
+// <summary>ClangCommon package</summary>
 // <author>Mark Final</author>
-namespace Clang
+namespace ClangCommon
 {
     public class Toolset : Opus.Core.IToolset
     {

@@ -1,9 +1,9 @@
 // <copyright file="CCompilerOptionCollection.cs" company="Mark Final">
 //  Opus package
 // </copyright>
-// <summary>Clang package</summary>
+// <summary>ClangCommon package</summary>
 // <author>Mark Final</author>
-namespace Clang
+namespace ClangCommon
 {
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions
     {
