@@ -105,6 +105,11 @@ namespace VSSolutionBuilder
                 }
 
                 // TODO: need to fix the ObjectFileName reference so that it's per object file
+                if ("ObjectFile" == attribute.Key)
+                {
+                    continue;
+                }
+
                 string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
                 toolElement.SetAttribute(attribute.Key, value);
             }
@@ -122,22 +127,17 @@ namespace VSSolutionBuilder
 
             foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
             {
-                // this is necessary in case the parent (from the ProjectConfiguration) is
-                // a C interface, while the ProjectFileConfiguration tool is C++
-                if ((parent != null) && (parent.HasAttribute(attribute.Key)))
+                if (System.String.IsNullOrEmpty(attribute.Value))
                 {
-                    string thisValue = attribute.Value;
-                    string parentValue = parent[attribute.Key];
-
-                    if ("Name" == attribute.Key || thisValue != parentValue)
-                    {
-                        thisValue = VSSolutionBuilder.RefactorPathForVCProj(thisValue, outputDirectory, intermediateDirectory, projectName, projectUri);
-                        toolElement.SetAttribute(attribute.Key, thisValue);
-                    }
+                    continue;
                 }
-                else
+
+                // No ObjectFile either, as this will be in the common area
+                if (("Name" != attribute.Key) &&
+                    ("ObjectFile" != attribute.Key))
                 {
-                    string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                    string value = attribute.Value;
+                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
                     toolElement.SetAttribute(attribute.Key, value);
                 }
             }
