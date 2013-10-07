@@ -132,14 +132,9 @@ namespace VSSolutionBuilder
                     continue;
                 }
 
-                // No ObjectFile either, as this will be in the common area
-                if (("Name" != attribute.Key) &&
-                    ("ObjectFile" != attribute.Key))
-                {
-                    string value = attribute.Value;
-                    value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
-                    toolElement.SetAttribute(attribute.Key, value);
-                }
+                string value = attribute.Value;
+                value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                toolElement.SetAttribute(attribute.Key, value);
             }
 
             return toolElement;
