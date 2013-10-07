@@ -10,6 +10,8 @@ namespace ClangCommon
         private string installPath;
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
+        protected abstract string SpecificInstallPath(Opus.Core.BaseTarget baseTarget);
+        protected abstract string SpecificVersion(Opus.Core.BaseTarget baseTarget);
 
         protected Toolset()
         {
@@ -45,17 +47,14 @@ namespace ClangCommon
                 return installPath;
             }
 
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            installPath = this.SpecificInstallPath(baseTarget);
+            if (null != installPath)
             {
-                installPath  = @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
-            }
-            else
-            {
-                installPath  = @"/usr/bin";
+                this.installPath = installPath;
+                return installPath;
             }
 
-            this.installPath = installPath;
-            return installPath;
+            throw new Opus.Core.Exception("Unable to locate clang toolchain");
         }
 
         bool Opus.Core.IToolset.HasTool(System.Type toolType)
@@ -85,7 +84,7 @@ namespace ClangCommon
 
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
-            return "3.1";
+            return this.SpecificVersion(baseTarget);
         }
 
         #endregion
