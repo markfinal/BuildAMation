@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator.
 // Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptions.cs -n=ClangCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ICCompilerOptions.cs:ICCompilerOptions.cs -n=ClangCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 
 namespace ClangCommon
 {
@@ -188,6 +188,16 @@ namespace ClangCommon
         {
         }
         #endregion
+        #region ICCompilerOptions Option delegates
+        private static void PositionIndependentCodeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var pic = option as Opus.Core.ValueTypeOption<bool>;
+            if (pic.Value)
+            {
+                commandLineBuilder.Add("-fPIC");
+            }
+        }
+        #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
             this["Defines"].PrivateData = new PrivateData(DefinesCommandLineProcessor);
@@ -206,6 +216,7 @@ namespace ClangCommon
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor);
             this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor);
+            this["PositionIndependentCode"].PrivateData = new PrivateData(PositionIndependentCodeCommandLineProcessor);
         }
     }
 }

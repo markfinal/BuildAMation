@@ -1,6 +1,6 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
 // Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptions.cs -n=ClangCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// -i=../../../C/dev/Scripts/ICCompilerOptions.cs:ICCompilerOptions.cs -n=ClangCommon -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
 namespace ClangCommon
 {
     public partial class CCompilerOptionCollection
@@ -196,6 +196,20 @@ namespace ClangCommon
             {
                 this.SetValueTypeOption<C.ELanguageStandard>("LanguageStandard", value);
                 this.ProcessNamedSetHandler("LanguageStandardSetHandler", this["LanguageStandard"]);
+            }
+        }
+        #endregion
+        #region ICCompilerOptions Option properties
+        bool ICCompilerOptions.PositionIndependentCode
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("PositionIndependentCode");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("PositionIndependentCode", value);
+                this.ProcessNamedSetHandler("PositionIndependentCodeSetHandler", this["PositionIndependentCode"]);
             }
         }
         #endregion

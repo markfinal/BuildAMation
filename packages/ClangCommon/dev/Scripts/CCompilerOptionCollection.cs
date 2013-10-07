@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace ClangCommon
 {
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions
+    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
     {
         public CCompilerOptionCollection()
         {
@@ -22,6 +22,9 @@ namespace ClangCommon
 
             // preferrable for Clang to find the include paths
             (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
+
+            var clangOptions = this as ICCompilerOptions;
+            clangOptions.PositionIndependentCode = false;
         }
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
