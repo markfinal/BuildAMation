@@ -23,7 +23,8 @@ cCompiler_options = [
     "-c=CCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) \
+           + os.path.pathsep + os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData"
 ]
 cCompiler_options.extend(extra_args)
@@ -38,7 +39,8 @@ cxxCompiler_options = [
     "-c=CxxCompilerOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) \
+           + os.path.pathsep + os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData",
     "-e" # this option set derives from the C option set
 ]
