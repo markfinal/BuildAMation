@@ -74,9 +74,12 @@ namespace XcodeBuilder
                         throw new Opus.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
                     }
                 }
+                else if (target.HasToolsetType(typeof(Clang.Toolset)))
+                {
+                    buildConfiguration.Options["GCC_VERSION"].AddUnique("com.apple.compilers.llvm.clang.1_0");
+                }
                 else
                 {
-                    // clang GCC_VERSION = com.apple.compilers.llvm.clang.1_0
                     throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
                 }
 #endif
