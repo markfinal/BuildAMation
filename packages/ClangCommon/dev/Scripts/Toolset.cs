@@ -5,13 +5,13 @@
 // <author>Mark Final</author>
 namespace ClangCommon
 {
-    public class Toolset : Opus.Core.IToolset
+    public abstract class Toolset : Opus.Core.IToolset
     {
         private string installPath;
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 
-        public Toolset()
+        protected Toolset()
         {
             this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
