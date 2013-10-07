@@ -323,6 +323,7 @@ namespace Opus.Core
             xmlWriterSettings.NewLineOnAttributes = false;
             xmlWriterSettings.NewLineChars = "\n";
             xmlWriterSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
+            xmlWriterSettings.Encoding = new System.Text.UTF8Encoding(false);
 
             using (var xmlWriter = System.Xml.XmlWriter.Create(this.xmlFilename, xmlWriterSettings))
             {
