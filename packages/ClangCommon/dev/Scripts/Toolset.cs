@@ -23,7 +23,7 @@ namespace ClangCommon
 
         string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
-            throw new System.NotImplementedException();
+            return (this as Opus.Core.IToolset).InstallPath (baseTarget);
         }
 
         Opus.Core.StringArray Opus.Core.IToolset.Environment

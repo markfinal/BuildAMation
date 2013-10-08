@@ -10,8 +10,8 @@ namespace Clang
         public Toolset()
             : base()
         {
-            this.toolConfig[typeof(C.ILinkerTool)]   = new Opus.Core.ToolAndOptionType(new Gcc.Linker(this), typeof(Gcc.LinkerOptionCollection));
-            this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new GccCommon.Archiver(this), typeof(Gcc.ArchiverOptionCollection));
+            this.toolConfig[typeof(C.ILinkerTool)]   = new Opus.Core.ToolAndOptionType(new Linker(this), typeof(GccCommon.LinkerOptionCollection));
+            this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new GccCommon.Archiver(this), typeof(GccCommon.ArchiverOptionCollection));
         }
 
         protected override string SpecificVersion (Opus.Core.BaseTarget baseTarget)
