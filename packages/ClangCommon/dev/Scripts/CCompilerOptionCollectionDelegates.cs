@@ -233,6 +233,12 @@ namespace ClangCommon
             case C.ETargetLanguage.Cxx:
                 commandLineBuilder.Add("-x c++");
                 break;
+            case C.ETargetLanguage.ObjectiveC:
+                commandLineBuilder.Add("-x objective-c");
+                break;
+            case C.ETargetLanguage.ObjectiveCxx:
+                commandLineBuilder.Add("-x objective-c++");
+                break;
             default:
                 throw new Opus.Core.Exception("Unrecognized target language option");
             }
