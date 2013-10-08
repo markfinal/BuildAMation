@@ -49,6 +49,9 @@ cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
 print stdout
 
+# ObjectiveC compiler options
+# there are no options at present
+
 # ObjectiveC++ compiler options
 objCxxCompiler_options = [
     opusCodeGeneratorExe,
