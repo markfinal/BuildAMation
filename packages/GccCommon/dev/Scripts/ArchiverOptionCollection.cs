@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
+    public partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
     {
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {

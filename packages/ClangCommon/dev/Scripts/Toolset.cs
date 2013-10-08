@@ -17,6 +17,8 @@ namespace ClangCommon
         {
             this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
+            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
+            this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
         #region IToolset Members
