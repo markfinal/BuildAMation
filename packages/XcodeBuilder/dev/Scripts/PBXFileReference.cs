@@ -13,7 +13,10 @@ namespace XcodeBuilder
             Executable,
             DynamicLibrary,
             StaticLibrary,
-            SourceFile,
+            CSourceFile,
+            CxxSourceFile,
+            ObjCSourceFile,
+            ObjCxxSourceFile,
             HeaderFile,
             Framework
         }
@@ -94,8 +97,20 @@ namespace XcodeBuilder
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
                 break;
 
-            case EType.SourceFile:
+            case EType.CSourceFile:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            case EType.CxxSourceFile:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            case EType.ObjCSourceFile:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            case EType.ObjCxxSourceFile:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = {1}; path = {2}; sourceTree = SOURCE_ROOT; }};", this.UUID, this.ShortPath, this.RelativePath);
                 break;
 
             case EType.HeaderFile:

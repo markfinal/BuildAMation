@@ -16,7 +16,20 @@ namespace XcodeBuilder
 
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
 
-            var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.SourceFile, sourceFile, this.ProjectRootUri);
+            PBXFileReference.EType fileType = PBXFileReference.EType.CSourceFile;
+            if (moduleToBuild is C.ObjCxx.ObjectFile)
+            {
+                fileType = PBXFileReference.EType.ObjCxxSourceFile;
+            }
+            else if (moduleToBuild is C.ObjC.ObjectFile)
+            {
+                fileType = PBXFileReference.EType.ObjCSourceFile;
+            }
+            else if (moduleToBuild is C.Cxx.ObjectFile)
+            {
+                fileType = PBXFileReference.EType.CxxSourceFile;
+            }
+            var fileRef = this.Project.FileReferences.Get(moduleName, fileType, sourceFile, this.ProjectRootUri);
 
             var data = this.Project.BuildFiles.Get(moduleName, fileRef);
 
