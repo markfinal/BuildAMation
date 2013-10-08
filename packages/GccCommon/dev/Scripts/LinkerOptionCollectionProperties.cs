@@ -152,6 +152,18 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("FrameworksSetHandler", this["Frameworks"]);
             }
         }
+        bool C.ILinkerOptionsOSX.SuppressReadOnlyRelocations
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("SuppressReadOnlyRelocations");
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("SuppressReadOnlyRelocations", value);
+                this.ProcessNamedSetHandler("SuppressReadOnlyRelocationsSetHandler", this["SuppressReadOnlyRelocations"]);
+            }
+        }
         #endregion
         #region ILinkerOptions Option properties
         bool ILinkerOptions.CanUseOrigin

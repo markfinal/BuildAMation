@@ -27,5 +27,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Suppress read only relocations
+        /// </summary>
+        /// <value><c>true</c> if read only relocations; otherwise, <c>false</c>.</value>
+        bool SuppressReadOnlyRelocations
+        {
+            get;
+            set;
+        }
     }
 }

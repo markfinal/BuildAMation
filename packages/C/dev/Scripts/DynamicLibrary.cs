@@ -23,6 +23,11 @@ namespace C
             var linkerOptions = module.Options as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.DynamicLibrary;
             linkerOptions.DynamicLibrary = true;
+
+            if (module.Options is ILinkerOptionsOSX)
+            {
+                (module.Options as ILinkerOptionsOSX).SuppressReadOnlyRelocations = true;
+            }
         }
     }
 }

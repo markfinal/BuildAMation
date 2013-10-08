@@ -1,3 +1,7 @@
+08-Oct-2013 Added SuppressReadOnlyRelocations to C.ILinkerOptionsOSX.
+
+08-Oct-2013 Split C.ILinkerOptions into platform independent settings, and C.ILinkerOptionsOSX for OSX specific options (e.g. frameworks, etc).
+
 06-Oct-2013 Added XcodeBuilder-dev builder.
 
 29-Sep-2013 Added C.ICCompilerOptions.LanguageStandard enumeration option. Usual mapping of C89/C99 or C++98/11.

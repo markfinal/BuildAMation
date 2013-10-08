@@ -57,6 +57,7 @@ namespace C
             {
                 osxLinkerOptions.ApplicationBundle = false;
                 osxLinkerOptions.Frameworks = new Opus.Core.StringArray();
+                osxLinkerOptions.SuppressReadOnlyRelocations = false;
             }
 
             linkerOptions.AdditionalOptions = "";
