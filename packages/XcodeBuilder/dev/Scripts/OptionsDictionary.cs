@@ -36,17 +36,19 @@ namespace XcodeBuilder
             builder.Append("{");
             foreach (var item in this.dictionary)
             {
-                if (item.Value.ToString().Contains(" ") || item.Value.ToString().Contains("$"))
-                {
-                    builder.AppendFormat("{0} = \"{1}\"; ", item.Key, item.Value.ToString());
-                }
-                else
-                {
-                    builder.AppendFormat("{0} = {1}; ", item.Key, item.Value.ToString());
-                }
+                builder.AppendFormat("{0} = {1}; ", item.Key, SafeOptionValue(item.Value.ToString()));
             }
             builder.Append("};");
             return builder.ToString();
+        }
+
+        public static string SafeOptionValue(string value)
+        {
+            if (value.Contains("=") || value.Contains("$") || value.Contains(",") || value.Contains("+") || value.Contains("-"))
+            {
+                return "\"" + value + "\"";
+            }
+            return value;
         }
 
         #region IEnumerable implementation
