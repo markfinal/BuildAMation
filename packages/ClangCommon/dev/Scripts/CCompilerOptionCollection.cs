@@ -25,6 +25,12 @@ namespace ClangCommon
 
             var clangOptions = this as ICCompilerOptions;
             clangOptions.PositionIndependentCode = false;
+
+            // use C99 by default with clang
+            if (!(this is C.ICxxCompilerOptions))
+            {
+                (this as C.ICCompilerOptions).LanguageStandard = C.ELanguageStandard.C99;
+            }
         }
 
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
