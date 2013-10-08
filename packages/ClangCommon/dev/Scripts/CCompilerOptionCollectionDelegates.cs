@@ -17,8 +17,8 @@ namespace ClangCommon
         }
         private static void DefinesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
-			configuration.Options["GCC_PREPROCESSOR_DEFINITIONS"].AddRangeUnique(definesOption.Value.ToStringArray());
+            var definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            configuration.Options["GCC_PREPROCESSOR_DEFINITIONS"].AddRangeUnique(definesOption.Value.ToStringArray());
         }
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -41,8 +41,8 @@ namespace ClangCommon
         }
         private static void IncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
-			configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
+            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
         }
         private static void SystemIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -50,8 +50,8 @@ namespace ClangCommon
         }
         private static void SystemIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
-			configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
+            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
         }
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -67,7 +67,7 @@ namespace ClangCommon
         }
         private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			// TODO: not sure what this should do to preprocess files only
+            // TODO: not sure what this should do to preprocess files only
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -83,20 +83,20 @@ namespace ClangCommon
         }
         private static void DebugSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var debugSymbols = option as Opus.Core.ValueTypeOption<bool>;
-			var debugSymbolsOption = configuration.Options["GCC_GENERATE_DEBUGGING_SYMBOLS"];
-			if (debugSymbols.Value)
-			{
-				debugSymbolsOption.AddUnique("YES");
-			}
-			else
-			{
-				debugSymbolsOption.AddUnique("NO");
-			}
-			if (debugSymbolsOption.Count != 1)
-			{
-				throw new Opus.Core.Exception("More than one debug symbol generation option has been set");
-			}
+            var debugSymbols = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = configuration.Options["GCC_GENERATE_DEBUGGING_SYMBOLS"];
+            if (debugSymbols.Value)
+            {
+                debugSymbolsOption.AddUnique("YES");
+            }
+            else
+            {
+                debugSymbolsOption.AddUnique("NO");
+            }
+            if (debugSymbolsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one debug symbol generation option has been set");
+            }
         }
         private static void WarningsAsErrorsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -108,20 +108,20 @@ namespace ClangCommon
         }
         private static void WarningsAsErrorsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var warningsAsErrors = option as Opus.Core.ValueTypeOption<bool>;
-			var warningsAsErrorsOption = configuration.Options["GCC_TREAT_WARNINGS_AS_ERRORS"];
-			if (warningsAsErrors.Value)
-			{
-				warningsAsErrorsOption.AddUnique("YES");
-			}
-			else
-			{
-				warningsAsErrorsOption.AddUnique("NO");
-			}
-			if (warningsAsErrorsOption.Count != 1)
-			{
-				throw new Opus.Core.Exception("More than one warnings as errors option has been set");
-			}
+            var warningsAsErrors = option as Opus.Core.ValueTypeOption<bool>;
+            var warningsAsErrorsOption = configuration.Options["GCC_TREAT_WARNINGS_AS_ERRORS"];
+            if (warningsAsErrors.Value)
+            {
+                warningsAsErrorsOption.AddUnique("YES");
+            }
+            else
+            {
+                warningsAsErrorsOption.AddUnique("NO");
+            }
+            if (warningsAsErrorsOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one warnings as errors option has been set");
+            }
         }
         private static void IgnoreStandardIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -138,22 +138,22 @@ namespace ClangCommon
         }
         private static void IgnoreStandardIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var ignoreStandardIncludePaths = option as Opus.Core.ValueTypeOption<bool>;
-			var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
-			if (ignoreStandardIncludePaths.Value)
-			{
-				otherCFlagsOption.AddUnique("-nostdinc");
-				var cOptions = sender as C.ICCompilerOptions;
-				// TODO: this is a bit of a hack to cope with option collection deltas
-				// since SystemIncludePaths refers to IgnoreStandardIncludePaths, just the former cannot be in a delta
-				if ((sender as Opus.Core.BaseOptionCollection).Contains("TargetLanguage"))
-				{
-					if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
-					{
-						otherCFlagsOption.AddUnique("-nostdinc++");
-					}
-				}
-			}
+            var ignoreStandardIncludePaths = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (ignoreStandardIncludePaths.Value)
+            {
+                otherCFlagsOption.AddUnique("-nostdinc");
+                var cOptions = sender as C.ICCompilerOptions;
+                // TODO: this is a bit of a hack to cope with option collection deltas
+                // since SystemIncludePaths refers to IgnoreStandardIncludePaths, just the former cannot be in a delta
+                if ((sender as Opus.Core.BaseOptionCollection).Contains("TargetLanguage"))
+                {
+                    if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
+                    {
+                        otherCFlagsOption.AddUnique("-nostdinc++");
+                    }
+                }
+            }
         }
         private static void OptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -181,32 +181,32 @@ namespace ClangCommon
         }
         private static void OptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var optimization = option as Opus.Core.ValueTypeOption<C.EOptimization>;
-			var optimizationOption = configuration.Options["GCC_OPTIMIZATION_LEVEL"];
-			switch (optimization.Value)
-			{
-			case C.EOptimization.Off:
-				optimizationOption.AddUnique("0");
-				break;
-			case C.EOptimization.Size:
-				optimizationOption.AddUnique("s");
-				break;
-			case C.EOptimization.Speed:
-				optimizationOption.AddUnique("1");
-				break;
-			case C.EOptimization.Full:
-				optimizationOption.AddUnique("3");
-				break;
-			case C.EOptimization.Custom:
-				// nothing
-				break;
-			default:
-				throw new Opus.Core.Exception("Unrecognized optimization option");
-			}
-			if (optimizationOption.Count != 1)
-			{
-				throw new Opus.Core.Exception("More than one optimization option has been set");
-			}
+            var optimization = option as Opus.Core.ValueTypeOption<C.EOptimization>;
+            var optimizationOption = configuration.Options["GCC_OPTIMIZATION_LEVEL"];
+            switch (optimization.Value)
+            {
+            case C.EOptimization.Off:
+                optimizationOption.AddUnique("0");
+                break;
+            case C.EOptimization.Size:
+                optimizationOption.AddUnique("s");
+                break;
+            case C.EOptimization.Speed:
+                optimizationOption.AddUnique("1");
+                break;
+            case C.EOptimization.Full:
+                optimizationOption.AddUnique("3");
+                break;
+            case C.EOptimization.Custom:
+                // nothing
+                break;
+            default:
+                throw new Opus.Core.Exception("Unrecognized optimization option");
+            }
+            if (optimizationOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one optimization option has been set");
+            }
         }
         private static void CustomOptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -215,9 +215,9 @@ namespace ClangCommon
         }
         private static void CustomOptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var customOptimizations = option as Opus.Core.ReferenceTypeOption<string>;
-			var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
-			otherCFlagsOption.AddUnique(customOptimizations.Value);
+            var customOptimizations = option as Opus.Core.ReferenceTypeOption<string>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            otherCFlagsOption.AddUnique(customOptimizations.Value);
         }
         private static void TargetLanguageCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -239,32 +239,32 @@ namespace ClangCommon
         }
         private static void TargetLanguageXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
-			var inputFileType = configuration.Options["GCC_INPUT_FILETYPE"];
-			switch (targetLanguageOption.Value)
-			{
-			case C.ETargetLanguage.Default:
-				inputFileType.AddUnique("automatic");
-				break;
-			case C.ETargetLanguage.C:
-				inputFileType.AddUnique("sourcecode.c.c");
-				break;
-			case C.ETargetLanguage.Cxx:
-				inputFileType.AddUnique("sourcecode.cpp.cpp");
-				break;
-			case C.ETargetLanguage.ObjectiveC:
-				inputFileType.AddUnique("sourcecode.c.objc");
-				break;
-			case C.ETargetLanguage.ObjectiveCxx:
-				inputFileType.AddUnique("sourcecode.cpp.objcpp");
-				break;
-			default:
-				throw new Opus.Core.Exception("Unrecognized target language option");
-			}
-			if (inputFileType.Count != 1)
-			{
-				throw new Opus.Core.Exception("More than one target language option has been set");
-			}
+            var targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
+            var inputFileType = configuration.Options["GCC_INPUT_FILETYPE"];
+            switch (targetLanguageOption.Value)
+            {
+            case C.ETargetLanguage.Default:
+                inputFileType.AddUnique("automatic");
+                break;
+            case C.ETargetLanguage.C:
+                inputFileType.AddUnique("sourcecode.c.c");
+                break;
+            case C.ETargetLanguage.Cxx:
+                inputFileType.AddUnique("sourcecode.cpp.cpp");
+                break;
+            case C.ETargetLanguage.ObjectiveC:
+                inputFileType.AddUnique("sourcecode.c.objc");
+                break;
+            case C.ETargetLanguage.ObjectiveCxx:
+                inputFileType.AddUnique("sourcecode.cpp.objcpp");
+                break;
+            default:
+                throw new Opus.Core.Exception("Unrecognized target language option");
+            }
+            if (inputFileType.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one target language option has been set");
+            }
         }
         private static void ShowIncludesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -276,12 +276,12 @@ namespace ClangCommon
         }
         private static void ShowIncludesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var showIncludes = option as Opus.Core.ValueTypeOption<bool>;
-			var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
-			if (showIncludes.Value)
-			{
-				otherCFlagsOption.AddUnique("-H");
-			}
+            var showIncludes = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (showIncludes.Value)
+            {
+                otherCFlagsOption.AddUnique("-H");
+            }
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -294,13 +294,13 @@ namespace ClangCommon
         }
         private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var additionalOptions = option as Opus.Core.ReferenceTypeOption<string>;
-			var splitArguments = additionalOptions.Value.Split(' ');
-			var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
-			foreach (var argument in splitArguments)
-			{
-				otherCFlagsOption.AddUnique(argument);
-			}
+            var additionalOptions = option as Opus.Core.ReferenceTypeOption<string>;
+            var splitArguments = additionalOptions.Value.Split(' ');
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            foreach (var argument in splitArguments)
+            {
+                otherCFlagsOption.AddUnique(argument);
+            }
         }
         private static void OmitFramePointerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -316,16 +316,16 @@ namespace ClangCommon
         }
         private static void OmitFramePointerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var omitFramePointer = option as Opus.Core.ValueTypeOption<bool>;
-			var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
-			if (omitFramePointer.Value)
-			{
-				otherCFlagsOption.AddUnique("-fomit-frame-pointer");
-			}
-			else
-			{
-				otherCFlagsOption.AddUnique("-fno-omit-frame-pointer");
-			}
+            var omitFramePointer = option as Opus.Core.ValueTypeOption<bool>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            if (omitFramePointer.Value)
+            {
+                otherCFlagsOption.AddUnique("-fomit-frame-pointer");
+            }
+            else
+            {
+                otherCFlagsOption.AddUnique("-fno-omit-frame-pointer");
+            }
         }
         private static void DisableWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -337,14 +337,14 @@ namespace ClangCommon
         }
         private static void DisableWarningsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var disableWarnings = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
-			var warningCFlagsOption = configuration.Options["WARNING_CFLAGS"];
-			foreach (var warning in disableWarnings.Value)
-			{
-				// TODO: there are some named warnings, e.g.
-				// -Wno-shadow = GCC_WARN_SHADOW = NO
-				warningCFlagsOption.AddUnique(System.String.Format("-Wno-{0}", warning));
-			}
+            var disableWarnings = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var warningCFlagsOption = configuration.Options["WARNING_CFLAGS"];
+            foreach (var warning in disableWarnings.Value)
+            {
+                // TODO: there are some named warnings, e.g.
+                // -Wno-shadow = GCC_WARN_SHADOW = NO
+                warningCFlagsOption.AddUnique(System.String.Format("-Wno-{0}", warning));
+            }
         }
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -365,67 +365,67 @@ namespace ClangCommon
         }
         private static void CharacterSetXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var characterSet = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
-			var cOptions = sender as C.ICCompilerOptions;
-			switch (characterSet.Value)
-			{
-				case C.ECharacterSet.NotSet:
-				break;
-				case C.ECharacterSet.Unicode:
-				cOptions.Defines.Add("_UNICODE");
-				cOptions.Defines.Add("UNICODE");
-				break;
-				case C.ECharacterSet.MultiByte:
-				cOptions.Defines.Add("_MBCS");
-				break;
-			}
+            var characterSet = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            var cOptions = sender as C.ICCompilerOptions;
+            switch (characterSet.Value)
+            {
+            case C.ECharacterSet.NotSet:
+                break;
+            case C.ECharacterSet.Unicode:
+                cOptions.Defines.Add("_UNICODE");
+                cOptions.Defines.Add("UNICODE");
+                break;
+            case C.ECharacterSet.MultiByte:
+                cOptions.Defines.Add("_MBCS");
+                break;
+            }
         }
         private static void LanguageStandardCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
-			switch (languageStandard.Value)
-			{
-			case C.ELanguageStandard.NotSet:
-				break;
-			case C.ELanguageStandard.C89:
-				commandLineBuilder.Add("-std=c89");
-				break;
-			case C.ELanguageStandard.C99:
-				commandLineBuilder.Add("-std=c99");
-				break;
-			case C.ELanguageStandard.Cxx98:
-				commandLineBuilder.Add("-std=c++98");
-				break;
-			case C.ELanguageStandard.Cxx11:
-				commandLineBuilder.Add("-std=c++11");
-				break;
-			default:
-				throw new Opus.Core.Exception("Unknown language standard");
-			}
+            var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
+            switch (languageStandard.Value)
+            {
+            case C.ELanguageStandard.NotSet:
+                break;
+            case C.ELanguageStandard.C89:
+                commandLineBuilder.Add("-std=c89");
+                break;
+            case C.ELanguageStandard.C99:
+                commandLineBuilder.Add("-std=c99");
+                break;
+            case C.ELanguageStandard.Cxx98:
+                commandLineBuilder.Add("-std=c++98");
+                break;
+            case C.ELanguageStandard.Cxx11:
+                commandLineBuilder.Add("-std=c++11");
+                break;
+            default:
+                throw new Opus.Core.Exception("Unknown language standard");
+            }
         }
         private static void LanguageStandardXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
-			var languageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
-			switch (languageStandard.Value)
-			{
-			case C.ELanguageStandard.NotSet:
-				break;
-			case C.ELanguageStandard.C89:
-				languageStandardOption.AddUnique("c89");
-				break;
-			case C.ELanguageStandard.C99:
-				languageStandardOption.AddUnique("c99");
-				break;
-			case C.ELanguageStandard.Cxx98:
-				// nothing corresponding
-				break;
-			case C.ELanguageStandard.Cxx11:
-				// nothing corresponding
-				break;
-			default:
-				throw new Opus.Core.Exception("Unknown language standard");
-			}
+            var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
+            var languageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
+            switch (languageStandard.Value)
+            {
+            case C.ELanguageStandard.NotSet:
+                break;
+            case C.ELanguageStandard.C89:
+                languageStandardOption.AddUnique("c89");
+                break;
+            case C.ELanguageStandard.C99:
+                languageStandardOption.AddUnique("c99");
+                break;
+            case C.ELanguageStandard.Cxx98:
+                // nothing corresponding
+                break;
+            case C.ELanguageStandard.Cxx11:
+                // nothing corresponding
+                break;
+            default:
+                throw new Opus.Core.Exception("Unknown language standard");
+            }
         }
         #endregion
         #region ICCompilerOptions Option delegates
@@ -439,21 +439,21 @@ namespace ClangCommon
         }
         private static void PositionIndependentCodeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-			var pic = option as Opus.Core.ValueTypeOption<bool>;
-			// note that the logic is reversed here
-			var noPICOption = configuration.Options["GCC_DYNAMIC_NO_PIC"];
-			if (pic.Value)
-			{
-				noPICOption.AddUnique("NO");
-			}
-			else
-			{
-				noPICOption.AddUnique("YES");
-			}
-			if (noPICOption.Count != 1)
-			{
-				throw new Opus.Core.Exception("More than one no position independent code option has been set");
-			}
+            var pic = option as Opus.Core.ValueTypeOption<bool>;
+            // note that the logic is reversed here
+            var noPICOption = configuration.Options["GCC_DYNAMIC_NO_PIC"];
+            if (pic.Value)
+            {
+                noPICOption.AddUnique("NO");
+            }
+            else
+            {
+                noPICOption.AddUnique("YES");
+            }
+            if (noPICOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one no position independent code option has been set");
+            }
         }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)

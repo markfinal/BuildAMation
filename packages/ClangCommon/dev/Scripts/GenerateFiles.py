@@ -47,3 +47,24 @@ cxxCompiler_options = [
 cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
 print stdout
+
+# ObjectiveC compiler options
+# there are no options at present
+
+# ObjectiveC++ compiler options
+objCxxCompiler_options = [
+    opusCodeGeneratorExe,
+    "-i=" + os.path.relpath(os.path.join(opusPackageDir, "C", "dev", "Scripts", "ICxxCompilerOptions.cs")),
+    "-n=ClangCommon",
+    "-c=ObjCxxCompilerOptionCollection",
+    "-p", # generate properties
+    "-d", # generate delegates
+    "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
+             os.path.relpath(os.path.join(opusPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
+    "-pv=PrivateData",
+    "-e", # this option set derives from the C option set
+    "-b" # used as a base class
+]
+objCxxCompiler_options.extend(extra_args)
+(stdout,stderr) = ExecuteProcess(objCxxCompiler_options, True, True)
+print stdout
