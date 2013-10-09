@@ -10,7 +10,7 @@ namespace LLVMGcc
         {
             get
             {
-                return this.GetValueTypeOption<LLVMGcc.EVisibility>("Visibility");
+                return this.GetValueTypeOption<LLVMGcc.EVisibility>("Visibility", this.SuperSetOptionCollection);
             }
             set
             {

@@ -10,7 +10,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleName");
+                return this.GetReferenceTypeOption<string>("CFBundleName", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleDisplayName");
+                return this.GetReferenceTypeOption<string>("CFBundleDisplayName", this.SuperSetOptionCollection);
             }
             set
             {
@@ -34,7 +34,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleIdentifier");
+                return this.GetReferenceTypeOption<string>("CFBundleIdentifier", this.SuperSetOptionCollection);
             }
             set
             {
@@ -46,7 +46,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleVersion");
+                return this.GetReferenceTypeOption<string>("CFBundleVersion", this.SuperSetOptionCollection);
             }
             set
             {
@@ -58,7 +58,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleSignature");
+                return this.GetReferenceTypeOption<string>("CFBundleSignature", this.SuperSetOptionCollection);
             }
             set
             {
@@ -70,7 +70,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleExecutable");
+                return this.GetReferenceTypeOption<string>("CFBundleExecutable", this.SuperSetOptionCollection);
             }
             set
             {
@@ -82,7 +82,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CFBundleShortVersionString");
+                return this.GetReferenceTypeOption<string>("CFBundleShortVersionString", this.SuperSetOptionCollection);
             }
             set
             {
@@ -94,7 +94,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("LSMinimumSystemVersion");
+                return this.GetReferenceTypeOption<string>("LSMinimumSystemVersion", this.SuperSetOptionCollection);
             }
             set
             {
@@ -106,7 +106,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("NSHumanReadableCopyright");
+                return this.GetReferenceTypeOption<string>("NSHumanReadableCopyright", this.SuperSetOptionCollection);
             }
             set
             {
@@ -118,7 +118,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("NSMainNibFile");
+                return this.GetReferenceTypeOption<string>("NSMainNibFile", this.SuperSetOptionCollection);
             }
             set
             {
@@ -130,7 +130,7 @@ namespace XmlUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("NSPrincipalClass");
+                return this.GetReferenceTypeOption<string>("NSPrincipalClass", this.SuperSetOptionCollection);
             }
             set
             {

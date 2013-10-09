@@ -10,7 +10,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.Cxx.EExceptionHandler>("ExceptionHandler");
+                return this.GetValueTypeOption<C.Cxx.EExceptionHandler>("ExceptionHandler", this.SuperSetOptionCollection);
             }
             set
             {

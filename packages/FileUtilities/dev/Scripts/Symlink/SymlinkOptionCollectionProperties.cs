@@ -10,7 +10,7 @@ namespace FileUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("TargetName");
+                return this.GetReferenceTypeOption<string>("TargetName", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace FileUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<System.Type>("DestinationModuleType");
+                return this.GetReferenceTypeOption<System.Type>("DestinationModuleType", this.SuperSetOptionCollection);
             }
             set
             {
@@ -34,7 +34,7 @@ namespace FileUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<System.Enum>("DestinationModuleOutputEnum");
+                return this.GetReferenceTypeOption<System.Enum>("DestinationModuleOutputEnum", this.SuperSetOptionCollection);
             }
             set
             {
@@ -46,7 +46,7 @@ namespace FileUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<System.Type>("SourceModuleType");
+                return this.GetReferenceTypeOption<System.Type>("SourceModuleType", this.SuperSetOptionCollection);
             }
             set
             {
@@ -58,7 +58,7 @@ namespace FileUtilities
         {
             get
             {
-                return this.GetReferenceTypeOption<System.Enum>("SourceModuleOutputEnum");
+                return this.GetReferenceTypeOption<System.Enum>("SourceModuleOutputEnum", this.SuperSetOptionCollection);
             }
             set
             {

@@ -10,7 +10,7 @@ namespace QtCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("MocOutputPath");
+                return this.GetReferenceTypeOption<string>("MocOutputPath", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace QtCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths");
+                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
@@ -34,7 +34,7 @@ namespace QtCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<C.DefineCollection>("Defines");
+                return this.GetReferenceTypeOption<C.DefineCollection>("Defines", this.SuperSetOptionCollection);
             }
             set
             {
@@ -46,7 +46,7 @@ namespace QtCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DoNotGenerateIncludeStatement");
+                return this.GetValueTypeOption<bool>("DoNotGenerateIncludeStatement", this.SuperSetOptionCollection);
             }
             set
             {
@@ -58,7 +58,7 @@ namespace QtCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DoNotDisplayWarnings");
+                return this.GetValueTypeOption<bool>("DoNotDisplayWarnings", this.SuperSetOptionCollection);
             }
             set
             {
@@ -70,7 +70,7 @@ namespace QtCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("PathPrefix");
+                return this.GetReferenceTypeOption<string>("PathPrefix", this.SuperSetOptionCollection);
             }
             set
             {

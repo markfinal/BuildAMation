@@ -10,7 +10,7 @@ namespace ComposerXE
         {
             get
             {
-                return this.GetValueTypeOption<ComposerXE.EVisibility>("Visibility");
+                return this.GetValueTypeOption<ComposerXE.EVisibility>("Visibility", this.SuperSetOptionCollection);
             }
             set
             {

@@ -10,7 +10,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<C.DefineCollection>("Defines");
+                return this.GetReferenceTypeOption<C.DefineCollection>("Defines", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths");
+                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
@@ -34,7 +34,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("SystemIncludePaths");
+                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("SystemIncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
@@ -46,7 +46,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.ECompilerOutput>("OutputType");
+                return this.GetValueTypeOption<C.ECompilerOutput>("OutputType", this.SuperSetOptionCollection);
             }
             set
             {
@@ -58,7 +58,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DebugSymbols");
+                return this.GetValueTypeOption<bool>("DebugSymbols", this.SuperSetOptionCollection);
             }
             set
             {
@@ -70,7 +70,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("WarningsAsErrors");
+                return this.GetValueTypeOption<bool>("WarningsAsErrors", this.SuperSetOptionCollection);
             }
             set
             {
@@ -82,7 +82,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("IgnoreStandardIncludePaths");
+                return this.GetValueTypeOption<bool>("IgnoreStandardIncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
@@ -94,7 +94,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.EOptimization>("Optimization");
+                return this.GetValueTypeOption<C.EOptimization>("Optimization", this.SuperSetOptionCollection);
             }
             set
             {
@@ -106,7 +106,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("CustomOptimization");
+                return this.GetReferenceTypeOption<string>("CustomOptimization", this.SuperSetOptionCollection);
             }
             set
             {
@@ -118,7 +118,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.ETargetLanguage>("TargetLanguage");
+                return this.GetValueTypeOption<C.ETargetLanguage>("TargetLanguage", this.SuperSetOptionCollection);
             }
             set
             {
@@ -130,7 +130,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("ShowIncludes");
+                return this.GetValueTypeOption<bool>("ShowIncludes", this.SuperSetOptionCollection);
             }
             set
             {
@@ -142,7 +142,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("AdditionalOptions");
+                return this.GetReferenceTypeOption<string>("AdditionalOptions", this.SuperSetOptionCollection);
             }
             set
             {
@@ -154,7 +154,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("OmitFramePointer");
+                return this.GetValueTypeOption<bool>("OmitFramePointer", this.SuperSetOptionCollection);
             }
             set
             {
@@ -166,7 +166,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("DisableWarnings");
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("DisableWarnings", this.SuperSetOptionCollection);
             }
             set
             {
@@ -178,7 +178,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.ECharacterSet>("CharacterSet");
+                return this.GetValueTypeOption<C.ECharacterSet>("CharacterSet", this.SuperSetOptionCollection);
             }
             set
             {
@@ -190,7 +190,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.ELanguageStandard>("LanguageStandard");
+                return this.GetValueTypeOption<C.ELanguageStandard>("LanguageStandard", this.SuperSetOptionCollection);
             }
             set
             {
@@ -204,7 +204,7 @@ namespace ClangCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("PositionIndependentCode");
+                return this.GetValueTypeOption<bool>("PositionIndependentCode", this.SuperSetOptionCollection);
             }
             set
             {

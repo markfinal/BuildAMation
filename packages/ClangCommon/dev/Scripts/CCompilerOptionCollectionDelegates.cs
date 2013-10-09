@@ -144,14 +144,9 @@ namespace ClangCommon
             {
                 otherCFlagsOption.AddUnique("-nostdinc");
                 var cOptions = sender as C.ICCompilerOptions;
-                // TODO: this is a bit of a hack to cope with option collection deltas
-                // since SystemIncludePaths refers to IgnoreStandardIncludePaths, just the former cannot be in a delta
-                if ((sender as Opus.Core.BaseOptionCollection).Contains("TargetLanguage"))
+                if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
                 {
-                    if (cOptions.TargetLanguage == C.ETargetLanguage.Cxx)
-                    {
-                        otherCFlagsOption.AddUnique("-nostdinc++");
-                    }
+                    otherCFlagsOption.AddUnique("-nostdinc++");
                 }
             }
         }

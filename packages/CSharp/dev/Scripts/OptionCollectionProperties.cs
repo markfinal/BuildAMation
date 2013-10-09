@@ -10,7 +10,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<CSharp.ETarget>("Target");
+                return this.GetValueTypeOption<CSharp.ETarget>("Target", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<bool>("NoLogo");
+                return this.GetValueTypeOption<bool>("NoLogo", this.SuperSetOptionCollection);
             }
             set
             {
@@ -34,7 +34,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<CSharp.EPlatform>("Platform");
+                return this.GetValueTypeOption<CSharp.EPlatform>("Platform", this.SuperSetOptionCollection);
             }
             set
             {
@@ -46,7 +46,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<CSharp.EDebugInformation>("DebugInformation");
+                return this.GetValueTypeOption<CSharp.EDebugInformation>("DebugInformation", this.SuperSetOptionCollection);
             }
             set
             {
@@ -58,7 +58,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<bool>("Checked");
+                return this.GetValueTypeOption<bool>("Checked", this.SuperSetOptionCollection);
             }
             set
             {
@@ -70,7 +70,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<bool>("Unsafe");
+                return this.GetValueTypeOption<bool>("Unsafe", this.SuperSetOptionCollection);
             }
             set
             {
@@ -82,7 +82,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<CSharp.EWarningLevel>("WarningLevel");
+                return this.GetValueTypeOption<CSharp.EWarningLevel>("WarningLevel", this.SuperSetOptionCollection);
             }
             set
             {
@@ -94,7 +94,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<bool>("WarningsAsErrors");
+                return this.GetValueTypeOption<bool>("WarningsAsErrors", this.SuperSetOptionCollection);
             }
             set
             {
@@ -106,7 +106,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetValueTypeOption<bool>("Optimize");
+                return this.GetValueTypeOption<bool>("Optimize", this.SuperSetOptionCollection);
             }
             set
             {
@@ -118,7 +118,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("References");
+                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("References", this.SuperSetOptionCollection);
             }
             set
             {
@@ -130,7 +130,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Modules");
+                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Modules", this.SuperSetOptionCollection);
             }
             set
             {
@@ -142,7 +142,7 @@ namespace CSharp
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("Defines");
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("Defines", this.SuperSetOptionCollection);
             }
             set
             {

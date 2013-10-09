@@ -10,7 +10,7 @@ namespace Gcc
         {
             get
             {
-                return this.GetValueTypeOption<Gcc.EVisibility>("Visibility");
+                return this.GetValueTypeOption<Gcc.EVisibility>("Visibility", this.SuperSetOptionCollection);
             }
             set
             {
