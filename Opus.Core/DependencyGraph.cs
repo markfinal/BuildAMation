@@ -183,11 +183,13 @@ namespace Opus.Core
                             else
                             {
                                 BaseOptionCollection intersectedOptions = null;
+                                BaseOptionCollection firstChildOptions = null;
                                 foreach (var child in node.Children)
                                 {
                                     if (intersectedOptions == null)
                                     {
-                                        intersectedOptions = child.Module.Options.Clone() as BaseOptionCollection;
+                                        firstChildOptions = child.Module.Options;
+                                        intersectedOptions = firstChildOptions.Clone() as BaseOptionCollection;
                                     }
                                     else
                                     {
@@ -199,6 +201,8 @@ namespace Opus.Core
                                 {
                                     throw new Exception("There were no intersecting options in both option collections. This is highly unlikely");
                                 }
+
+                                intersectedOptions.SuperSetOptionCollection = firstChildOptions;
 
                                 (node.Module as ICommonOptionCollection).CommonOptionCollection = intersectedOptions;
                             }

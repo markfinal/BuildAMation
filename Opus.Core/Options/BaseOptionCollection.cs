@@ -131,6 +131,22 @@ namespace Opus.Core
             return (this[optionName] as Core.ValueTypeOption<Type>).Value;
         }
 
+        protected Type GetValueTypeOption<Type>(string optionName, BaseOptionCollection superSetOptionCollection) where Type : struct
+        {
+            if (this.Contains(optionName))
+            {
+                return (this[optionName] as Core.ValueTypeOption<Type>).Value;
+            }
+            else
+            {
+                if (null == superSetOptionCollection)
+                {
+                    throw new Exception("Unable to locate option '{0}'", optionName);
+                }
+                return (superSetOptionCollection[optionName] as Core.ValueTypeOption<Type>).Value;
+            }
+        }
+
         protected void SetValueTypeOption<Type>(string optionName, Type value) where Type : struct
         {
             if (this.Contains(optionName))
@@ -146,6 +162,22 @@ namespace Opus.Core
         protected Type GetReferenceTypeOption<Type>(string optionName) where Type : class
         {
             return (this[optionName] as Core.ReferenceTypeOption<Type>).Value;
+        }
+
+        protected Type GetReferenceTypeOption<Type>(string optionName, BaseOptionCollection superSetOptionCollection) where Type : class
+        {
+            if (this.Contains(optionName))
+            {
+                return (this[optionName] as Core.ReferenceTypeOption<Type>).Value;
+            }
+            else
+            {
+                if (null == superSetOptionCollection)
+                {
+                    throw new Exception("Unable to locate option '{0}'", optionName);
+                }
+                return (superSetOptionCollection[optionName] as Core.ReferenceTypeOption<Type>).Value;
+            }
         }
 
         protected void SetReferenceTypeOption<Type>(string optionName, Type value) where Type : class
@@ -278,6 +310,11 @@ namespace Opus.Core
                 }
             }
 
+            if (complement != null)
+            {
+                complement.SuperSetOptionCollection = this;
+            }
+
             return complement;
         }
 
@@ -339,6 +376,17 @@ namespace Opus.Core
             {
                 return (0 == this.table.Count);
             }
+        }
+
+        /// <summary>
+        /// When two BaseOptionCollections are operated on, the resulting BaseOptionCollection may still need
+        /// to refer to the source, so this reference is kept.
+        /// </summary>
+        /// <value>The complement parent.</value>
+        public BaseOptionCollection SuperSetOptionCollection
+        {
+            get;
+            set;
         }
     }
 }

@@ -1,3 +1,5 @@
+09-Oct-2013 Extending Opus.Core.BaseOptionCollection so delta option collections are aware of their super set option collections. This is essential for being able to reference any valid option in the delegates, without fear of it not being in a delta.
+
 08-Oct-2013 Added SuppressReadOnlyRelocations to C.ILinkerOptionsOSX.
 
 08-Oct-2013 Split C.ILinkerOptions into platform independent settings, and C.ILinkerOptionsOSX for OSX specific options (e.g. frameworks, etc).
