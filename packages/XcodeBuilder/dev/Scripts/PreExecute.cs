@@ -40,6 +40,11 @@ namespace XcodeBuilder
             {
                 var genericBuildConfiguration = this.Project.BuildConfigurations.Get(config.ToString(), "Generic");
                 genericBuildConfiguration.Options["SYMROOT"].AddUnique(Opus.Core.State.BuildRoot);
+                if (config == Opus.Core.EConfiguration.Debug)
+                {
+                    // Xcode 5 wants this setting for build performance in debug
+                    genericBuildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
+                }
                 projectConfigurationList.AddUnique(genericBuildConfiguration);
             }
         }
