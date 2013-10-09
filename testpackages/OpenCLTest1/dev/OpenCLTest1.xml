@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
   <Opus:RequiredPackages>
     <Opus:Package Name="AMDAPPSDK">
@@ -31,6 +31,9 @@
     <Opus:Package Name="WindowsSDK">
       <Opus:Version Id="6.0A" Default="true" />
       <Opus:Version Id="7.1" />
+    </Opus:Package>
+    <Opus:Package Name="XcodeBuilder">
+      <Opus:Version Id="dev" />
     </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
