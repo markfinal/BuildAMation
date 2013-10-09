@@ -10,7 +10,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.ELinkerOutput>("OutputType");
+                return this.GetValueTypeOption<C.ELinkerOutput>("OutputType", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DoNotAutoIncludeStandardLibraries");
+                return this.GetValueTypeOption<bool>("DoNotAutoIncludeStandardLibraries", this.SuperSetOptionCollection);
             }
             set
             {
@@ -34,7 +34,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DebugSymbols");
+                return this.GetValueTypeOption<bool>("DebugSymbols", this.SuperSetOptionCollection);
             }
             set
             {
@@ -46,7 +46,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.ESubsystem>("SubSystem");
+                return this.GetValueTypeOption<C.ESubsystem>("SubSystem", this.SuperSetOptionCollection);
             }
             set
             {
@@ -58,7 +58,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DynamicLibrary");
+                return this.GetValueTypeOption<bool>("DynamicLibrary", this.SuperSetOptionCollection);
             }
             set
             {
@@ -70,7 +70,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths");
+                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
             }
             set
             {
@@ -82,7 +82,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries");
+                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
             }
             set
             {
@@ -94,7 +94,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Libraries");
+                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
             }
             set
             {
@@ -106,7 +106,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("GenerateMapFile");
+                return this.GetValueTypeOption<bool>("GenerateMapFile", this.SuperSetOptionCollection);
             }
             set
             {
@@ -118,7 +118,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("AdditionalOptions");
+                return this.GetReferenceTypeOption<string>("AdditionalOptions", this.SuperSetOptionCollection);
             }
             set
             {
@@ -132,7 +132,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("EnableAutoImport");
+                return this.GetValueTypeOption<bool>("EnableAutoImport", this.SuperSetOptionCollection);
             }
             set
             {

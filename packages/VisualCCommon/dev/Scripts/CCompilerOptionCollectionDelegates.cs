@@ -553,25 +553,16 @@ namespace VisualCCommon
             Opus.Core.ValueTypeOption<bool> minimalRebuildOption = option as Opus.Core.ValueTypeOption<bool>;
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             string attributeName = "MinimalRebuild";
-            // TODO: hack around having delta option collections
-            if (!((sender as Opus.Core.BaseOptionCollection).Contains("CompileAsManaged") &&
-                  (sender as Opus.Core.BaseOptionCollection).Contains("DebugType")))
+            if (minimalRebuildOption.Value &&
+                optionCollection.DebugSymbols &&
+                (EManagedCompilation.NoCLR == vcOptionCollection.CompileAsManaged) &&
+                ((EDebugType.ProgramDatabase == vcOptionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == vcOptionCollection.DebugType)))
             {
-                returnVal.Add(attributeName, "false");
+                returnVal.Add(attributeName, "true");
             }
             else
             {
-                if (minimalRebuildOption.Value &&
-                    optionCollection.DebugSymbols &&
-                    (EManagedCompilation.NoCLR == vcOptionCollection.CompileAsManaged) &&
-                    ((EDebugType.ProgramDatabase == vcOptionCollection.DebugType) || (EDebugType.ProgramDatabaseEditAndContinue == vcOptionCollection.DebugType)))
-                {
-                    returnVal.Add(attributeName, "true");
-                }
-                else
-                {
-                    returnVal.Add(attributeName, "false");
-                }
+                returnVal.Add(attributeName, "false");
             }
             return returnVal;
         }
@@ -907,13 +898,9 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             ICCompilerOptions optionCollection = sender as ICCompilerOptions;
-            // TODO: hack for delta option collections
-            if ((sender as Opus.Core.BaseOptionCollection).Contains("CompileAsManaged"))
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
-                if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
-                {
-                    return returnVal;
-                }
+                return returnVal;
             }
             Opus.Core.ValueTypeOption<EBasicRuntimeChecks> enumOption = option as Opus.Core.ValueTypeOption<EBasicRuntimeChecks>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
@@ -955,13 +942,9 @@ namespace VisualCCommon
         private static void SmallerTypeConversionRuntimeCheckCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             ICCompilerOptions optionCollection = sender as ICCompilerOptions;
-            // TODO: hack for delta option collections
-            if ((sender as Opus.Core.BaseOptionCollection).Contains("CompileAsManaged"))
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
-                if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
-                {
-                    return;
-                }
+                return;
             }
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
@@ -973,13 +956,9 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             ICCompilerOptions optionCollection = sender as ICCompilerOptions;
-            // TODO: hack for delta option collections
-            if ((sender as Opus.Core.BaseOptionCollection).Contains("CompileAsManaged"))
+            if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
             {
-                if (EManagedCompilation.NoCLR != optionCollection.CompileAsManaged)
-                {
-                    return returnVal;
-                }
+                return returnVal;
             }
             Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)

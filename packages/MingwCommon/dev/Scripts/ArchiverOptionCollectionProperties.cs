@@ -10,7 +10,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.EArchiverOutput>("OutputType");
+                return this.GetValueTypeOption<C.EArchiverOutput>("OutputType", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("AdditionalOptions");
+                return this.GetReferenceTypeOption<string>("AdditionalOptions", this.SuperSetOptionCollection);
             }
             set
             {
@@ -36,7 +36,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<MingwCommon.EArchiverCommand>("Command");
+                return this.GetValueTypeOption<MingwCommon.EArchiverCommand>("Command", this.SuperSetOptionCollection);
             }
             set
             {
@@ -48,7 +48,7 @@ namespace MingwCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("DoNotWarnIfLibraryCreated");
+                return this.GetValueTypeOption<bool>("DoNotWarnIfLibraryCreated", this.SuperSetOptionCollection);
             }
             set
             {

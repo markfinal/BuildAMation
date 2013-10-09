@@ -10,7 +10,7 @@ namespace Mingw
         {
             get
             {
-                return this.GetValueTypeOption<Mingw.EVisibility>("Visibility");
+                return this.GetValueTypeOption<Mingw.EVisibility>("Visibility", this.SuperSetOptionCollection);
             }
             set
             {

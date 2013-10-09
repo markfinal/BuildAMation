@@ -10,7 +10,7 @@ namespace VisualCCommon
         {
             get
             {
-                return this.GetValueTypeOption<C.EArchiverOutput>("OutputType");
+                return this.GetValueTypeOption<C.EArchiverOutput>("OutputType", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +22,7 @@ namespace VisualCCommon
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("AdditionalOptions");
+                return this.GetReferenceTypeOption<string>("AdditionalOptions", this.SuperSetOptionCollection);
             }
             set
             {
@@ -36,7 +36,7 @@ namespace VisualCCommon
         {
             get
             {
-                return this.GetValueTypeOption<bool>("NoLogo");
+                return this.GetValueTypeOption<bool>("NoLogo", this.SuperSetOptionCollection);
             }
             set
             {
