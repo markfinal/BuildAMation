@@ -323,14 +323,6 @@ namespace VisualCCommon
             returnVal.Add("AdditionalOptions", stringOption.Value);
             return returnVal;
         }
-        private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-        }
-        private static VisualStudioProcessor.ToolAttributeDictionary OSXFrameworksVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
-        {
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            return returnVal;
-        }
         #endregion
         #region ILinkerOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

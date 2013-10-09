@@ -131,9 +131,6 @@ namespace MingwCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static void OSXFrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-        }
         #endregion
         #region ILinkerOptions Option delegates
         private static void EnableAutoImportCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
