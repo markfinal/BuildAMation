@@ -1,3 +1,5 @@
+09-Oct-2013 Modified OpusOptionCodeGenerator so that option property gets are now aware of the super set option collections.
+
 09-Oct-2013 Extending Opus.Core.BaseOptionCollection so delta option collections are aware of their super set option collections. This is essential for being able to reference any valid option in the delegates, without fear of it not being in a delta.
 
 08-Oct-2013 Added SuppressReadOnlyRelocations to C.ILinkerOptionsOSX.

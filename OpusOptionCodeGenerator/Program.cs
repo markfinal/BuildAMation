@@ -554,20 +554,21 @@ namespace OpusOptionCodeGenerator
                     WriteLine(writer, 2, "#region {0} Option properties", propertyList.InterfaceName);
                     foreach (var property in propertyList)
                     {
+                        var typeString = property.IsValueType ? "ValueType" : "ReferenceType";
                         WriteLine(writer, 2, "{0} {1}.{2}", property.Type, propertyList.InterfaceName, property.Name);
                         WriteLine(writer, 2, "{");
                         if (property.HasGet)
                         {
                             WriteLine(writer, 3, "get");
                             WriteLine(writer, 3, "{");
-                            WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\");", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                            WriteLine(writer, 4, "return this.Get{0}Option<{1}>(\"{2}\", this.SuperSetOptionCollection);", typeString, property.Type, property.Name);
                             WriteLine(writer, 3, "}");
                         }
                         if (property.HasSet)
                         {
                             WriteLine(writer, 3, "set");
                             WriteLine(writer, 3, "{");
-                            WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", property.IsValueType ? "ValueType" : "ReferenceType", property.Type, property.Name);
+                            WriteLine(writer, 4, "this.Set{0}Option<{1}>(\"{2}\", value);", typeString, property.Type, property.Name);
                             WriteLine(writer, 4, "this.ProcessNamedSetHandler(\"{0}SetHandler\", this[\"{0}\"]);", property.Name);
                             WriteLine(writer, 3, "}");
                         }
