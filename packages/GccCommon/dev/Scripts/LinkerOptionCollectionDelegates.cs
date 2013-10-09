@@ -276,6 +276,10 @@ namespace GccCommon
         }
         private static void SuppressReadOnlyRelocationsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            if (!target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                return;
+            }
             var readOnlyRelocations = option as Opus.Core.ValueTypeOption<bool>;
             if (readOnlyRelocations.Value)
             {
