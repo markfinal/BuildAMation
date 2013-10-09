@@ -60,6 +60,9 @@ namespace XcodeBuilder
 
             buildConfiguration.Options["PRODUCT_NAME"].AddUnique(options.OutputName);
 
+            // Xcode 4 complains this is missing for target configurations
+            buildConfiguration.Options["COMBINE_HIDPI_IMAGES"].AddUnique("YES");
+
             var archiverTool = target.Toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
             var outputPrefix = archiverTool.StaticLibraryPrefix;
             var outputSuffix = archiverTool.StaticLibrarySuffix;
