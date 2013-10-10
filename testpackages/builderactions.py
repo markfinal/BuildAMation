@@ -39,6 +39,11 @@ def XcodePost(package, options, outputMessages, errorMessages):
     """Post action for testing the Xcode builder"""
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
+    xcodeProjectPath = os.path.join(buildRoot, package.GetName() + ".xcodeproj")
+    if not os.path.exists(xcodeProjectPath):
+        # TODO: really need something different here - an invalid test result, rather than a failure
+        outputMessages.write("Xcode project expected at %s did not exist" % xcodeProjectPath)
+        return 0
     try:
         for config in options.configurations:
             argList = []

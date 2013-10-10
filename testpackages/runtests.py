@@ -28,7 +28,10 @@ class Package:
         return os.path.join(self.root, self.name, self.version)
 
     def GetId(self):
-        return "-".join([self.name, self.version]) 
+        return "-".join([self.name, self.version])
+
+    def GetName(self):
+        return self.name
 
 # ----------
 
