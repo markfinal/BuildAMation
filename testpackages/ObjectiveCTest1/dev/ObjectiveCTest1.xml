@@ -14,6 +14,9 @@
     <Opus:Package Name="LLVMGcc">
       <Opus:Version Id="4.2" Default="true" />
     </Opus:Package>
+    <Opus:Package Name="MakeFileBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
