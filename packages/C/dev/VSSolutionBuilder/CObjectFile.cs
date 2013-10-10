@@ -207,58 +207,35 @@ namespace VSSolutionBuilder
                 var fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
-                Opus.Core.BaseOptionCollection complementOptionCollection = null;
+                Opus.Core.BaseOptionCollection deltaOptionCollection = null;
                 if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
                 {
                     var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
                     if (commonOptions is C.ICCompilerOptions)
                     {
-                        complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
+                        deltaOptionCollection = moduleToBuild.Options.Complement(commonOptions);
                     }
                 }
 
-                // TODO: the logic here needs reviewing, as it seems quite fragile currently
-                if ((complementOptionCollection != null) &&
-                    (complementOptionCollection is VisualStudioProcessor.IVisualStudioSupport) &&
-                    (!complementOptionCollection.Empty))
+                // only need to write the delta options if they exist
+                // the super-set of options are written by the objectfilecollection
+                if ((deltaOptionCollection != null) && !deltaOptionCollection.Empty)
                 {
-                    var visualStudioProjectOption = complementOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
-                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+                    if (deltaOptionCollection is VisualStudioProcessor.IVisualStudioSupport)
+                    {
+                        var visualStudioProjectOption = deltaOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
+                        var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    // this is ONLY setting the complement
-                    foreach (var setting in settingsDictionary)
-                    {
-                        vcCLCompilerTool[setting.Key] = setting.Value;
-                    }
-                }
-                else if (objectFileOptions is VisualStudioProcessor.IVisualStudioSupport)
-                {
-                    var visualStudioProjectOption = objectFileOptions as VisualStudioProcessor.IVisualStudioSupport;
-                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
-
-                    // handle the case where a single source file is added to an encapsulating module
-                    // write to the configuration tool instead
-                    if (0 == configuration.Tools.Count)
-                    {
-                        vcCLCompilerTool = new ProjectTool(toolName);
-                        configuration.AddToolIfMissing(vcCLCompilerTool);
-                    }
-                    else if ((complementOptionCollection != null) && complementOptionCollection.Empty)
-                    {
-                        vcCLCompilerTool = null;
-                    }
-
-                    if (null != vcCLCompilerTool)
-                    {
+                        // this is ONLY setting the delta
                         foreach (var setting in settingsDictionary)
                         {
                             vcCLCompilerTool[setting.Key] = setting.Value;
                         }
                     }
-                }
-                else
-                {
-                    throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                    else
+                    {
+                        throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                    }
                 }
             }
 
