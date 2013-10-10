@@ -367,6 +367,15 @@ namespace Opus.Core
                 }
             }
 
+            if (null != intersect)
+            {
+                // only set it once, as Intersect may be called iteratively
+                if (null == intersect.SuperSetOptionCollection)
+                {
+                    intersect.SuperSetOptionCollection = this;
+                }
+            }
+
             return intersect;
         }
 
@@ -386,7 +395,7 @@ namespace Opus.Core
         public BaseOptionCollection SuperSetOptionCollection
         {
             get;
-            set;
+            private set;
         }
     }
 }
