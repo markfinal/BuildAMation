@@ -94,7 +94,7 @@ def _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMes
 
 def _postExecute(builder, options, package, outputMessages, errorMessages):
     if builder.postAction:
-        exitCode = builder.postAction(os.path.join(package.GetPath(), options.buildRoot), options.configurations, outputMessages, errorMessages)
+        exitCode = builder.postAction(package, options, outputMessages, errorMessages)
         return exitCode
     return 0
 

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 import subprocess
 
 class Builder(object):
@@ -8,11 +9,34 @@ class Builder(object):
         self.preAction = preAction
         self.postAction = postAction
 
-def XcodePost(buildRoot, configurations, outputMessages, errorMessages):
+def MakeFilePost(package, options, outputMessages, errorMessages):
+    """Post action for testing the MakeFile builder"""
+    exitCode = 0
+    buildRoot = os.path.join(package.GetPath(), options.buildRoot)
+    makeFileDir = os.path.join(buildRoot, package.GetId())
+    try:
+        # currently do not support building configurations separately
+        argList = []
+        argList.append("make")
+        print "Running '%s' in %s" % (" ".join(argList), makeFileDir)
+        p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makeFileDir)
+        (outputStream, errorStream) = p.communicate() # this should WAIT
+        exitCode |= p.returncode
+        if outputStream:
+            outputMessages.write(outputStream)
+        if errorStream:
+            errorMessages.write(errorStream)
+    except Exception, e:
+        errorMessages.write(str(e))
+        return -1
+    return exitCode
+
+def XcodePost(package, options, outputMessages, errorMessages):
     """Post action for testing the Xcode builder"""
     exitCode = 0
+    buildRoot = os.path.join(package.GetPath(), options.buildRoot)
     try:
-        for config in configurations:
+        for config in options.configurations:
             argList = []
             argList.append("xcodebuild")
             argList.append("-alltargets")
@@ -36,7 +60,7 @@ def XcodePost(buildRoot, configurations, outputMessages, errorMessages):
 builder = {}
 builder["Native"] = Builder("Native", None, None)
 builder["VSSolution"] = Builder("VSSolution", None, None)
-builder["MakeFile"] = Builder("MakeFile", None, None)
+builder["MakeFile"] = Builder("MakeFile", None, MakeFilePost)
 builder["QMake"] = Builder("QMake", None, None)
 builder["Xcode"] = Builder("Xcode", None, XcodePost)
 
