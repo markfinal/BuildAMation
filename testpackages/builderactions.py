@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import subprocess
+import sys
 
 class Builder(object):
     """Class that represents the actions for a builder"""
@@ -11,6 +12,9 @@ class Builder(object):
 
 def MakeFilePost(package, options, outputMessages, errorMessages):
     """Post action for testing the MakeFile builder"""
+    if sys.platform.startswith("win"):
+        # TODO: allow configuring where make is
+        return 0
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
     makeFileDir = os.path.join(buildRoot, package.GetId())
