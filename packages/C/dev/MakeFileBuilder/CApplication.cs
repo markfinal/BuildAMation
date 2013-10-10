@@ -95,6 +95,10 @@ namespace MakeFileBuilder
                 {
                     dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", (linkerTool as C.IWinImportLibrary).ImportLibrarySuffix));
                 }
+                else
+                {
+                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.DynamicLibrarySuffix));
+                }
                 C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
             }
 
