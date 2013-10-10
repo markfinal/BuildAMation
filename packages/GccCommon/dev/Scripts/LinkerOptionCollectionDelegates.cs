@@ -365,6 +365,8 @@ namespace GccCommon
         }
         private static void RPathXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var rpathOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            configuration.Options["LD_RUNPATH_SEARCH_PATHS"].AddRangeUnique(rpathOption.Value);
         }
         private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
