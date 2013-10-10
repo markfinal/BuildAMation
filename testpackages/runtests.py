@@ -5,7 +5,8 @@ import os
 import subprocess
 import StringIO
 import time
-from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath, GetBuilderDetails
+from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
+from builderactions import GetBuilderDetails
 from optparse import OptionParser
 
 # ----------

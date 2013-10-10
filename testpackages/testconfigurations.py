@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import os
-import subprocess
 import sys
 
 class TestSetup:
@@ -85,46 +84,6 @@ class TestSetup:
                 if not excludedResponseFiles or i not in excludedResponseFiles:
                     responseFiles.append(i)
         return responseFiles
-
-class Builder(object):
-    def __init__(self, name, preAction, postAction):
-        self.name = name
-        self.preAction = preAction
-        self.postAction = postAction
-
-def XcodePost(buildRoot, configurations, outputMessages, errorMessages):
-    exitCode = 0
-    try:
-        for config in configurations:
-            argList = []
-            argList.append("xcodebuild")
-            argList.append("-alltargets")
-            argList.append("-configuration")
-            # capitalize the first letter of the configuration
-            config = config[0].upper() + config[1:]
-            argList.append(config)
-            print "Running '%s' in %s" % (" ".join(argList), buildRoot)
-            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=buildRoot)
-            (outputStream, errorStream) = p.communicate() # this should WAIT
-            exitCode |= p.returncode
-            if outputStream:
-                outputMessages.write(outputStream)
-            if errorStream:
-                errorMessages.write(errorStream)
-    except Exception, e:
-        errorMessages.write(str(e))
-        return -1
-    return exitCode
-
-builder = {}
-builder["Native"] = Builder("Native", None, None)
-builder["VSSolution"] = Builder("VSSolution", None, None)
-builder["MakeFile"] = Builder("MakeFile", None, None)
-builder["QMake"] = Builder("QMake", None, None)
-builder["Xcode"] = Builder("Xcode", None, XcodePost)
-
-def GetBuilderDetails(builderName):
-    return builder[builderName]
 
 def GetResponsePath(responseName):
   return "%s.rsp" % responseName
