@@ -43,6 +43,12 @@ namespace MakeFileBuilder
         {
             Opus.Core.Log.DebugMessage("PostExecute for MakeFiles");
 
+            if (0 == executedNodes.Count)
+            {
+                Opus.Core.Log.Info("No MakeFile written as there were no targets generated");
+                return;
+            }
+
             string targetList = null;
             UniquePathCollection environmentPaths = new UniquePathCollection(); // TODO: redundant
             System.Collections.Generic.Dictionary<string, UniquePathCollection> environment = new System.Collections.Generic.Dictionary<string, UniquePathCollection>();
