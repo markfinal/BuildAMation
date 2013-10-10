@@ -10,6 +10,38 @@ class Builder(object):
         self.preAction = preAction
         self.postAction = postAction
 
+def VSSolutionPost(package, options, outputMessages, errorMessages):
+    """Post action for testing the VSSolution builder"""
+    exitCode = 0
+    buildRoot = os.path.join(package.GetPath(), options.buildRoot)
+    slnPath = os.path.join(buildRoot, package.GetId(), package.GetId() + ".sln")
+    if not os.path.exists(slnPath):
+        # TODO: really need something different here - an invalid test result, rather than a failure
+        outputMessages.write("ViisualStudio solution expected at %s did not exist" % slnPath)
+        return 0
+    try:
+        for config in options.configurations:
+            argList = []
+            # TODO: Version of MSBuild.exe (which .NET framework) differs as to which version is needed to build a specific version of a .sln
+            # TODO: this also builds relative to the solution, whereas it should build relative to the projects referenced
+            argList.append(r"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe")
+            argList.append(slnPath)
+            # capitalize the first letter of the configuration
+            config = config[0].upper() + config[1:]
+            argList.append("/p:Configuration=%s" % config)
+            print "Running '%s' in %s" % (" ".join(argList), buildRoot)
+            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            (outputStream, errorStream) = p.communicate() # this should WAIT
+            exitCode |= p.returncode
+            if outputStream:
+                outputMessages.write(outputStream)
+            if errorStream:
+                errorMessages.write(errorStream)
+    except Exception, e:
+        errorMessages.write(str(e))
+        return -1
+    return exitCode
+
 def MakeFilePost(package, options, outputMessages, errorMessages):
     """Post action for testing the MakeFile builder"""
     if sys.platform.startswith("win"):
