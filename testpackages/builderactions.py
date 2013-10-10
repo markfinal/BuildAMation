@@ -2,6 +2,7 @@
 import subprocess
 
 class Builder(object):
+    """Class that represents the actions for a builder"""
     def __init__(self, name, preAction, postAction):
         self.name = name
         self.preAction = preAction
@@ -40,4 +41,5 @@ builder["QMake"] = Builder("QMake", None, None)
 builder["Xcode"] = Builder("Xcode", None, XcodePost)
 
 def GetBuilderDetails(builderName):
+    """Return the Builder associated with the name passed in"""
     return builder[builderName]
