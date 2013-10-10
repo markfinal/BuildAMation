@@ -14,6 +14,10 @@ def MakeFilePost(package, options, outputMessages, errorMessages):
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
     makeFileDir = os.path.join(buildRoot, package.GetId())
+    if not os.path.exists(makeFileDir):
+        # TODO: really need something different here - an invalid test result, rather than a failure
+        outputMessages.write("Expected folder containing MakeFile %s did not exist" % makeFileDir)
+        return 0
     try:
         # currently do not support building configurations separately
         argList = []
