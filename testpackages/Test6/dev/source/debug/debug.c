@@ -1,3 +1,7 @@
+#ifdef MAIN_C
+#error MAIN_C has been defined
+#endif
+
 #ifndef D_OPUS_CONFIGURATION_DEBUG
 #error This file can only be compiled in Opus debug configuration builds
 #endif
