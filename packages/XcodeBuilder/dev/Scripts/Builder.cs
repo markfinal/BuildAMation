@@ -12,11 +12,5 @@ namespace XcodeBuilder
             get;
             private set;
         }
-
-        public PBXProject Project
-        {
-            get;
-            private set;
-        }
     }
 }

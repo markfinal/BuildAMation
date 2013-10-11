@@ -17,7 +17,7 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var project = this.Project;
+            var project = this.Workspace.Projects[0];
 
             var osxLinkerOptions = options as C.ILinkerOptionsOSX;
             var fileType = osxLinkerOptions.ApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;

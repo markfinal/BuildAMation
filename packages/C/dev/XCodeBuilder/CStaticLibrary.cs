@@ -17,7 +17,7 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.StaticLibrary];
 
-            var project = this.Project;
+            var project = this.Workspace.Projects[0];
 
             var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, project.RootUri);
             project.ProductsGroup.Children.AddUnique(fileRef);

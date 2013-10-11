@@ -14,7 +14,7 @@ namespace XcodeBuilder
             var target = node.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
-            var project = this.Project;
+            var project = this.Workspace.Projects[0];
 
             Opus.Core.BaseOptionCollection commonOptions = null;
             if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)

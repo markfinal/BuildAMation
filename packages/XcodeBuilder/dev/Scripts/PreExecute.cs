@@ -19,8 +19,8 @@ namespace XcodeBuilder
             var projectRootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
             var projectPath = System.IO.Path.Combine(rootDirectory, projectFilename);
 
-            this.Project = new PBXProject(mainPackage.Name, projectRootUri, projectPath);
-            this.Workspace.Projects.Add(this.Project);
+            var project = new PBXProject(mainPackage.Name, projectRootUri, projectPath);
+            this.Workspace.Projects.Add(project);
         }
 
 #endregion
