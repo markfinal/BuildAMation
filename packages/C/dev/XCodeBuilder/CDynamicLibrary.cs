@@ -17,10 +17,12 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.DynamicLibrary, outputPath, this.Project.RootUri);
-            this.Project.ProductsGroup.Children.AddUnique(fileRef);
+            var project = this.Project;
 
-            var data = this.Project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.DynamicLibrary);
+            var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.DynamicLibrary, outputPath, project.RootUri);
+            project.ProductsGroup.Children.AddUnique(fileRef);
+
+            var data = project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.DynamicLibrary);
             data.ProductReference = fileRef;
 
             // gather up all the source files for this target
@@ -40,8 +42,8 @@ namespace XcodeBuilder
             }
 
             // build configuration target overrides to the project build configuration
-            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
-            var nativeTargetConfigurationList = this.Project.ConfigurationLists.Get(data);
+            var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
+            var nativeTargetConfigurationList = project.ConfigurationLists.Get(data);
             nativeTargetConfigurationList.AddUnique(buildConfiguration);
             if (null == data.BuildConfigurationList)
             {
@@ -56,7 +58,7 @@ namespace XcodeBuilder
             }
 
             // fill out the build configuration
-            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
+            XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
             buildConfiguration.Options["PRODUCT_NAME"].AddUnique(options.OutputName);
 
@@ -76,7 +78,7 @@ namespace XcodeBuilder
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
 
             // adding the group for the target
-            var group = this.Project.Groups.Get(moduleName);
+            var group = project.Groups.Get(moduleName);
             group.SourceTree = "<group>";
             group.Path = moduleName;
             foreach (var source in node.Children)
@@ -95,15 +97,15 @@ namespace XcodeBuilder
                     group.Children.AddUnique(sourceData.FileReference);
                 }
             }
-            this.Project.MainGroup.Children.AddUnique(group);
+            project.MainGroup.Children.AddUnique(group);
 
-            var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleName);
+            var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);
             data.BuildPhases.AddUnique(sourcesBuildPhase);
 
-            var copyFilesBuildPhase = this.Project.CopyFilesBuildPhases.Get("CopyFiles", moduleName);
+            var copyFilesBuildPhase = project.CopyFilesBuildPhases.Get("CopyFiles", moduleName);
             data.BuildPhases.AddUnique(copyFilesBuildPhase);
 
-            var frameworksBuildPhase = this.Project.FrameworksBuildPhases.Get("Frameworks", moduleName);
+            var frameworksBuildPhase = project.FrameworksBuildPhases.Get("Frameworks", moduleName);
             data.BuildPhases.AddUnique(frameworksBuildPhase);
 
             if (null != node.ExternalDependents)
@@ -117,15 +119,15 @@ namespace XcodeBuilder
                         continue;
                     }
 
-                    var targetDependency = this.Project.TargetDependencies.Get(moduleName, dependentData);
+                    var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
 
-                    var containerItemProxy = this.Project.ContainerItemProxies.Get(moduleName, dependentData, this.Project);
+                    var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
                     targetDependency.TargetProxy = containerItemProxy;
 
                     data.Dependencies.Add(targetDependency);
 
                     // now add a link dependency
-                    var buildFile = this.Project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference);
+                    var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference);
                     buildFile.BuildPhase = frameworksBuildPhase;
 
                     frameworksBuildPhase.Files.AddUnique(buildFile);
@@ -153,9 +155,9 @@ namespace XcodeBuilder
                         continue;
                     }
 
-                    var targetDependency = this.Project.TargetDependencies.Get(moduleName, dependentData);
+                    var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
 
-                    var containerItemProxy = this.Project.ContainerItemProxies.Get(moduleName, dependentData, this.Project);
+                    var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
                     targetDependency.TargetProxy = containerItemProxy;
 
                     data.Dependencies.Add(targetDependency);
@@ -175,7 +177,7 @@ namespace XcodeBuilder
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        var headerFileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.Project.RootUri);
+                        var headerFileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, project.RootUri);
                         group.Children.AddUnique(headerFileRef);
                     }
                 }

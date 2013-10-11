@@ -14,6 +14,8 @@ namespace XcodeBuilder
             var target = node.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
+            var project = this.Project;
+
             Opus.Core.BaseOptionCollection commonOptions = null;
             if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
             {
@@ -26,7 +28,7 @@ namespace XcodeBuilder
             }
 
             // fill out the build configuration on behalf of all of it's children
-            var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
+            var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
             var options = moduleToBuild.Options as C.CompilerOptionCollection;
@@ -36,11 +38,11 @@ namespace XcodeBuilder
 
             if (commonOptions != null)
             {
-                XcodeProjectProcessor.ToXcodeProject.Execute(commonOptions, this.Project, null, buildConfiguration, target);
+                XcodeProjectProcessor.ToXcodeProject.Execute(commonOptions, project, null, buildConfiguration, target);
             }
             else
             {
-                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, null, buildConfiguration, target);
+                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, null, buildConfiguration, target);
             }
 
             // TODO: not sure where all these will come from

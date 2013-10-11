@@ -16,6 +16,8 @@ namespace XcodeBuilder
 
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
 
+            var project = this.Project;
+
             PBXFileReference.EType fileType = PBXFileReference.EType.CSourceFile;
             if (moduleToBuild is C.ObjCxx.ObjectFile)
             {
@@ -29,11 +31,11 @@ namespace XcodeBuilder
             {
                 fileType = PBXFileReference.EType.CxxSourceFile;
             }
-            var fileRef = this.Project.FileReferences.Get(moduleName, fileType, sourceFile, this.Project.RootUri);
+            var fileRef = project.FileReferences.Get(moduleName, fileType, sourceFile, project.RootUri);
 
-            var data = this.Project.BuildFiles.Get(moduleName, fileRef);
+            var data = project.BuildFiles.Get(moduleName, fileRef);
 
-            var sourcesBuildPhase = this.Project.SourceBuildPhases.Get("Sources", moduleName);
+            var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);
             sourcesBuildPhase.Files.AddUnique(data);
             data.BuildPhase = sourcesBuildPhase;
 
@@ -61,8 +63,8 @@ namespace XcodeBuilder
             else
             {
                 // fill out the build configuration for the singular file
-                var buildConfiguration = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
-                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, this.Project, data, buildConfiguration, target);
+                var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
+                XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
                 var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
                 var options = moduleToBuild.Options as C.CompilerOptionCollection;
@@ -99,7 +101,7 @@ namespace XcodeBuilder
             }
 
             // add the source file to the configuration
-            var config = this.Project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
+            var config = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
             config.SourceFiles.AddUnique(data);
 
             success = true;
