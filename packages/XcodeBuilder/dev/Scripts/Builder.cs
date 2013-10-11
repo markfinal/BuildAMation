@@ -7,6 +7,12 @@ namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder : Opus.Core.IBuilder
     {
+        public Workspace Workspace
+        {
+            get;
+            private set;
+        }
+
         public PBXProject Project
         {
             get;

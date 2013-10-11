@@ -67,6 +67,14 @@ namespace XcodeBuilder
             }
 
             Opus.Core.Log.MessageAll("Xcode project written to '{0}'", this.ProjectRootUri.AbsolutePath);
+
+            System.IO.Directory.CreateDirectory(this.Workspace.BundlePath);
+            using (var workspaceWriter = new System.IO.StreamWriter(this.Workspace.WorkspaceDataPath, false, encoding))
+            {
+                (this.Workspace as IWriteableNode).Write(workspaceWriter);
+            }
+
+            Opus.Core.Log.MessageAll("Xcode workspace written to '{0}'", this.Workspace.BundlePath);
         }
 
 #endregion
