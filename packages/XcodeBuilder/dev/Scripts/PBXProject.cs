@@ -24,6 +24,39 @@ namespace XcodeBuilder
             this.FrameworksBuildPhases = new PBXFrameworksBuildPhaseSection();
             this.TargetDependencies = new PBXTargetDependencySection();
             this.ContainerItemProxies = new PBXContainerItemProxySection();
+
+            this.InitializeGroups();
+        }
+
+        private void InitializeGroups()
+        {
+            // create a main group
+            var mainGroup = this.Groups.Get(string.Empty);
+            mainGroup.SourceTree = "<group>";
+            this.MainGroup = mainGroup;
+
+            // create a products group
+            var productsGroup = this.Groups.Get("Products");
+            productsGroup.SourceTree = "<group>";
+            this.ProductsGroup = productsGroup;
+
+            mainGroup.Children.Add(productsGroup);
+
+            // create common build configurations for all targets
+            // these settings are overriden by per-target build configurations
+            var projectConfigurationList = this.ConfigurationLists.Get(this);
+            this.BuildConfigurationList = projectConfigurationList;
+            foreach (var config in Opus.Core.State.BuildConfigurations)
+            {
+                var genericBuildConfiguration = this.BuildConfigurations.Get(config.ToString(), "Generic");
+                genericBuildConfiguration.Options["SYMROOT"].AddUnique(Opus.Core.State.BuildRoot);
+                if (config == Opus.Core.EConfiguration.Debug)
+                {
+                    // Xcode 5 wants this setting for build performance in debug
+                    genericBuildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
+                }
+                projectConfigurationList.AddUnique(genericBuildConfiguration);
+            }
         }
 
         public System.Uri RootUri
