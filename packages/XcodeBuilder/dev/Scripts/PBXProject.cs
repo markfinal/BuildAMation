@@ -7,9 +7,12 @@ namespace XcodeBuilder
 {
     public sealed class PBXProject : XCodeNodeData, IWriteableNode
     {
-        public PBXProject(string name)
+        public PBXProject(string name, System.Uri rootUri, string path)
             : base(name)
         {
+            this.RootUri = rootUri;
+            this.Path = path;
+
             this.NativeTargets = new PBXNativeTargetSection();
             this.FileReferences = new PBXFileReferenceSection();
             this.BuildFiles = new PBXBuildFileSection();
@@ -21,6 +24,18 @@ namespace XcodeBuilder
             this.FrameworksBuildPhases = new PBXFrameworksBuildPhaseSection();
             this.TargetDependencies = new PBXTargetDependencySection();
             this.ContainerItemProxies = new PBXContainerItemProxySection();
+        }
+
+        public System.Uri RootUri
+        {
+            get;
+            private set;
+        }
+
+        public string Path
+        {
+            get;
+            private set;
         }
 
         public PBXNativeTargetSection NativeTargets

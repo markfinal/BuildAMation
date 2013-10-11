@@ -19,7 +19,7 @@ namespace XcodeBuilder
 
             var osxLinkerOptions = options as C.ILinkerOptionsOSX;
             var fileType = osxLinkerOptions.ApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;
-            var fileRef = this.Project.FileReferences.Get(moduleName, fileType, outputPath, this.ProjectRootUri);
+            var fileRef = this.Project.FileReferences.Get(moduleName, fileType, outputPath, this.Project.RootUri);
             this.Project.ProductsGroup.Children.AddUnique(fileRef);
 
             var osxOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
@@ -175,7 +175,7 @@ namespace XcodeBuilder
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        var headerFileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.ProjectRootUri);
+                        var headerFileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.Project.RootUri);
                         group.Children.AddUnique(headerFileRef);
                     }
                 }

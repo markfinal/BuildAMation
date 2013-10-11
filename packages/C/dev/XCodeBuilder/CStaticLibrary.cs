@@ -17,7 +17,7 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.StaticLibrary];
 
-            var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, this.ProjectRootUri);
+            var fileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, this.Project.RootUri);
             this.Project.ProductsGroup.Children.AddUnique(fileRef);
 
             var data = this.Project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.StaticLibrary);
@@ -137,7 +137,7 @@ namespace XcodeBuilder
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (string headerPath in headerFileCollection)
                     {
-                        var headerFileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.ProjectRootUri);
+                        var headerFileRef = this.Project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, this.Project.RootUri);
                         group.Children.AddUnique(headerFileRef);
                     }
                 }

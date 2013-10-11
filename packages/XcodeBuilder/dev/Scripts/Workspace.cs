@@ -55,7 +55,8 @@ namespace XcodeBuilder
                 {
                     var fileRef = document.CreateElement("FileRef");
                     var locationAttr = document.CreateAttribute("location");
-                    locationAttr.Value = "group:"+project.Name + ".xcodeproj"; // TODO could do with a path property
+                    var relativeProjectPath = Opus.Core.RelativePathUtilities.GetPath(project.RootUri.AbsoluteUri, this.BundlePath);
+                    locationAttr.Value = "group:" + relativeProjectPath;
                     fileRef.Attributes.Append(locationAttr);
                     root.AppendChild(fileRef);
                 }

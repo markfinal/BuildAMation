@@ -29,7 +29,7 @@ namespace XcodeBuilder
             {
                 fileType = PBXFileReference.EType.CxxSourceFile;
             }
-            var fileRef = this.Project.FileReferences.Get(moduleName, fileType, sourceFile, this.ProjectRootUri);
+            var fileRef = this.Project.FileReferences.Get(moduleName, fileType, sourceFile, this.Project.RootUri);
 
             var data = this.Project.BuildFiles.Get(moduleName, fileRef);
 

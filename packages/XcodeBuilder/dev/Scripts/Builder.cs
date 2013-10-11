@@ -18,17 +18,5 @@ namespace XcodeBuilder
             get;
             private set;
         }
-
-        public System.Uri ProjectRootUri
-        {
-            get;
-            private set;
-        }
-
-        public string ProjectPath
-        {
-            get;
-            private set;
-        }
     }
 }

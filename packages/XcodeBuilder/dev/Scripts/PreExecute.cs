@@ -16,11 +16,10 @@ namespace XcodeBuilder
             var mainPackage = Opus.Core.State.PackageInfo[0];
             var projectFilename = "project.pbxproj";
             var rootDirectory = System.IO.Path.Combine(Opus.Core.State.BuildRoot, mainPackage.Name) + ".xcodeproj";
-            this.ProjectRootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
+            var projectRootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
             var projectPath = System.IO.Path.Combine(rootDirectory, projectFilename);
-            this.ProjectPath = projectPath;
 
-            this.Project = new PBXProject(mainPackage.Name);
+            this.Project = new PBXProject(mainPackage.Name, projectRootUri, projectPath);
             this.Workspace.Projects.Add(this.Project);
 
             // create a main group
