@@ -131,6 +131,14 @@ namespace XcodeBuilder
                 throw new Opus.Core.Exception("Project build configuration list not assigned");
             }
 
+            writer.WriteLine("// !$*UTF8*$!");
+            writer.WriteLine("{");
+            writer.WriteLine("\tarchiveVersion = 1;");
+            writer.WriteLine("\tclasses = {");
+            writer.WriteLine("\t};");
+            writer.WriteLine("\tobjectVersion = 46;");
+            writer.WriteLine("\tobjects = {");
+
             (this.BuildFiles as IWriteableNode).Write(writer);
             (this.ContainerItemProxies as IWriteableNode).Write(writer);
             (this.CopyFilesBuildPhases as IWriteableNode).Write(writer);
@@ -171,6 +179,10 @@ namespace XcodeBuilder
             (this.TargetDependencies as IWriteableNode).Write(writer);
             (this.BuildConfigurations as IWriteableNode).Write(writer);
             (this.ConfigurationLists as IWriteableNode).Write(writer);
+
+            writer.WriteLine("\t};");
+            writer.WriteLine("\trootObject = {0} /* Project object */;", this.UUID);
+            writer.WriteLine("}");
         }
 #endregion
     }

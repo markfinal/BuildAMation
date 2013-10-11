@@ -7,21 +7,6 @@ namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder : Opus.Core.IBuilderPostExecute
     {
-        private void WriteRoot(System.IO.TextWriter writer)
-        {
-            writer.WriteLine("// !$*UTF8*$!");
-            writer.WriteLine("{");
-            writer.WriteLine("\tarchiveVersion = 1;");
-            writer.WriteLine("\tclasses = {");
-            writer.WriteLine("\t};");
-            writer.WriteLine("\tobjectVersion = 46;");
-            writer.WriteLine("\tobjects = {");
-            (this.Project as IWriteableNode).Write(writer);
-            writer.WriteLine("\t};");
-            writer.WriteLine("\trootObject = {0} /* Project object */;", this.Project.UUID);
-            writer.WriteLine("}");
-        }
-
 #region IBuilderPostExecute Members
 
         void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
@@ -63,7 +48,7 @@ namespace XcodeBuilder
             var encoding = new System.Text.UTF8Encoding(false);
             using (var projectFile = new System.IO.StreamWriter(this.Project.Path, false, encoding) as System.IO.TextWriter)
             {
-                this.WriteRoot(projectFile);
+                (this.Project as IWriteableNode).Write(projectFile);
             }
 
             Opus.Core.Log.MessageAll("Xcode project written to '{0}'", this.Project.RootUri.AbsolutePath);
