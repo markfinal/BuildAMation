@@ -39,19 +39,23 @@ namespace XcodeBuilder
                 }
             }
 
-            if (!System.IO.Directory.Exists(this.Project.RootUri.AbsolutePath))
-            {
-                System.IO.Directory.CreateDirectory(this.Project.RootUri.AbsolutePath);
-            }
-
             // cannot write a Byte-Ordering-Mark (BOM) into the project file
             var encoding = new System.Text.UTF8Encoding(false);
-            using (var projectFile = new System.IO.StreamWriter(this.Project.Path, false, encoding) as System.IO.TextWriter)
-            {
-                (this.Project as IWriteableNode).Write(projectFile);
-            }
 
-            Opus.Core.Log.MessageAll("Xcode project written to '{0}'", this.Project.RootUri.AbsolutePath);
+            foreach (var project in this.Workspace.Projects)
+            {
+                if (!System.IO.Directory.Exists(project.RootUri.AbsolutePath))
+                {
+                    System.IO.Directory.CreateDirectory(project.RootUri.AbsolutePath);
+                }
+
+                using (var projectFileWriter = new System.IO.StreamWriter(project.Path, false, encoding) as System.IO.TextWriter)
+                {
+                    (project as IWriteableNode).Write(projectFileWriter);
+                }
+
+                Opus.Core.Log.MessageAll("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
+            }
 
             System.IO.Directory.CreateDirectory(this.Workspace.BundlePath);
             using (var workspaceWriter = new System.IO.StreamWriter(this.Workspace.WorkspaceDataPath, false, encoding))
