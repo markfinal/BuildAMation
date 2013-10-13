@@ -81,6 +81,9 @@ def XcodePost(package, options, outputMessages, errorMessages):
         outputMessages.write("Xcode project expected at %s did not exist" % xcodeProjectPath)
         return 0
     try:
+        # TODO: to execute this on a workspace, do something like this
+        # This is because Opus generated projects do not build their "default" setup and must resort to legacy (which doesn't really sound that legacy)
+        # xcodebuild -workspace Test5.xcworkspace -scheme MyDynamicLibTestApp BuildLocationStyle=UseTargetSettings
         for config in options.configurations:
             argList = []
             argList.append("xcodebuild")
