@@ -17,7 +17,7 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 
-            var project = this.Workspace.Projects[0];
+            var project = this.Workspace.GetProject(node);
 
             var osxLinkerOptions = options as C.ILinkerOptionsOSX;
             var fileType = osxLinkerOptions.ApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;
@@ -26,7 +26,7 @@ namespace XcodeBuilder
 
             var osxOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
             var nativeType = osxOptions.ApplicationBundle ? PBXNativeTarget.EType.ApplicationBundle : PBXNativeTarget.EType.Executable;
-            var data = project.NativeTargets.Get(moduleName, nativeType);
+            var data = project.NativeTargets.Get(moduleName, nativeType, project);
             data.ProductReference = fileRef;
 
             // gather up all the source files for this target
@@ -112,34 +112,72 @@ namespace XcodeBuilder
             {
                 foreach (var dependency in node.ExternalDependents)
                 {
-                    // first add a dependency so that they are built in the right order
                     var dependentData = dependency.Data as PBXNativeTarget;
                     if (null == dependentData)
                     {
                         continue;
                     }
 
-                    var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
+                    if (dependentData.Project == project)
+                    {
+                        // first add a dependency so that they are built in the right order
+                        // this is only required within the same project
+                        var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
 
-                    var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
-                    targetDependency.TargetProxy = containerItemProxy;
+                        var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
+                        targetDependency.TargetProxy = containerItemProxy;
 
-                    data.Dependencies.Add(targetDependency);
+                        data.Dependencies.Add(targetDependency);
+                    }
 
                     // now add a link dependency
-                    var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference);
-                    buildFile.BuildPhase = frameworksBuildPhase;
-
-                    frameworksBuildPhase.Files.AddUnique(buildFile);
-
-                    // now add linker search paths
-                    if (dependency.Module is C.DynamicLibrary)
+                    if (dependentData.Project == project)
                     {
-                        buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference);
+                        buildFile.BuildPhase = frameworksBuildPhase;
+
+                        frameworksBuildPhase.Files.AddUnique(buildFile);
+
+                        // now add linker search paths
+                        if (dependency.Module is C.DynamicLibrary)
+                        {
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                        }
+                        else if (dependency.Module is C.StaticLibrary)
+                        {
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                        }
                     }
-                    else if (dependency.Module is C.StaticLibrary)
+                    else
                     {
-                        buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                        var type = dependentData.ProductReference.Type;
+                        if (type == PBXFileReference.EType.StaticLibrary)
+                        {
+                            type = PBXFileReference.EType.ReferencedStaticLibrary;
+                        }
+                        if (type == PBXFileReference.EType.DynamicLibrary)
+                        {
+                            type = PBXFileReference.EType.ReferencedDynamicLibrary;
+                        }
+
+                        var relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);
+                        var dependentFileRef = project.FileReferences.Get(dependency.UniqueModuleName, type, relativePath, project.RootUri);
+                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentFileRef);
+                        buildFile.BuildPhase = frameworksBuildPhase;
+                        frameworksBuildPhase.Files.AddUnique(buildFile);
+
+                        project.MainGroup.Children.AddUnique(dependentFileRef);
+
+                        // now add linker search paths
+                        buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
+                        if (dependency.Module is C.DynamicLibrary)
+                        {
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                        }
+                        else if (dependency.Module is C.StaticLibrary)
+                        {
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                        }
                     }
                 }
             }
@@ -155,12 +193,16 @@ namespace XcodeBuilder
                         continue;
                     }
 
-                    var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
+                    // this is only required within the same project
+                    if (dependentData.Project == project)
+                    {
+                        var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
 
-                    var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
-                    targetDependency.TargetProxy = containerItemProxy;
+                        var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
+                        targetDependency.TargetProxy = containerItemProxy;
 
-                    data.Dependencies.Add(targetDependency);
+                        data.Dependencies.Add(targetDependency);
+                    }
                 }
             }
 

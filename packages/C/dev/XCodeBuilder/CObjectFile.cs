@@ -16,7 +16,7 @@ namespace XcodeBuilder
 
             var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
 
-            var project = this.Workspace.Projects[0];
+            var project = this.Workspace.GetProject(node);
 
             PBXFileReference.EType fileType = PBXFileReference.EType.CSourceFile;
             if (moduleToBuild is C.ObjCxx.ObjectFile)

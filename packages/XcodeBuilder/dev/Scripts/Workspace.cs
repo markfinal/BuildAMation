@@ -34,6 +34,24 @@ namespace XcodeBuilder
             private set;
         }
 
+        public PBXProject GetProject(Opus.Core.DependencyNode node)
+        {
+            lock(this.Projects)
+            {
+                foreach (var project in this.Projects)
+                {
+                    if (project.Name == node.ModuleName)
+                    {
+                        return project;
+                    }
+                }
+
+                var newProject = new PBXProject(node);
+                this.Projects.Add(newProject);
+                return newProject;
+            }
+        }
+
         #region IWriteableNode implementation
 
         void IWriteableNode.Write (System.IO.TextWriter writer)

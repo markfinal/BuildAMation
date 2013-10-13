@@ -54,7 +54,7 @@ namespace XcodeBuilder
                     (project as IWriteableNode).Write(projectFileWriter);
                 }
 
-                Opus.Core.Log.MessageAll("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
+                Opus.Core.Log.DebugMessage("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
             }
 
             System.IO.Directory.CreateDirectory(this.Workspace.BundlePath);

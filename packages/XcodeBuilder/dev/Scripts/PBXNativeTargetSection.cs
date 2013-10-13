@@ -12,19 +12,19 @@ namespace XcodeBuilder
             this.NativeTargets = new System.Collections.Generic.List<PBXNativeTarget>();
         }
 
-        public PBXNativeTarget Get(string name, PBXNativeTarget.EType type)
+        public PBXNativeTarget Get(string name, PBXNativeTarget.EType type, PBXProject project)
         {
             lock(this.NativeTargets)
             {
                 foreach (var target in this.NativeTargets)
                 {
-                    if ((target.Name == name) && (target.Type == type))
+                    if ((target.Name == name) && (target.Type == type) && (target.Project == project))
                     {
                         return target;
                     }
                 }
 
-                var newTarget = new PBXNativeTarget(name, type);
+                var newTarget = new PBXNativeTarget(name, type, project);
                 this.NativeTargets.Add(newTarget);
                 return newTarget;
             }

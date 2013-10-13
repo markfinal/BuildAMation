@@ -17,12 +17,12 @@ namespace XcodeBuilder
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
             var outputPath = options.OutputPaths[C.OutputFileFlags.StaticLibrary];
 
-            var project = this.Workspace.Projects[0];
+            var project = this.Workspace.GetProject(node);
 
             var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, project.RootUri);
             project.ProductsGroup.Children.AddUnique(fileRef);
 
-            var data = project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.StaticLibrary);
+            var data = project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.StaticLibrary, project);
             data.ProductReference = fileRef;
 
             // gather up all the source files for this target

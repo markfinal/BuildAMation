@@ -12,7 +12,9 @@ namespace XcodeBuilder
             ApplicationBundle,
             Executable,
             DynamicLibrary,
+            ReferencedDynamicLibrary,
             StaticLibrary,
+            ReferencedStaticLibrary,
             CSourceFile,
             CxxSourceFile,
             ObjCSourceFile,
@@ -24,6 +26,7 @@ namespace XcodeBuilder
         public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
             : base(name)
         {
+            this.FullPath = path;
             this.Type = type;
             this.ShortPath = CalculateShortPath(type, path);
             if (EType.Framework == type)
@@ -57,16 +60,22 @@ namespace XcodeBuilder
             return shortPath;
         }
 
+        public string FullPath
+        {
+            get;
+            private set;
+        }
+
         public string ShortPath
         {
             get;
             private set;
         }
 
-        private string RelativePath
+        public string RelativePath
         {
             get;
-            set;
+            private set;
         }
 
         public EType Type
@@ -93,8 +102,16 @@ namespace XcodeBuilder
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.dylib\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
                 break;
 
+            case EType.ReferencedDynamicLibrary:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = \"compiled.mach-o.dylib\"; name = {1}; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
             case EType.StaticLibrary:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
+                break;
+
+            case EType.ReferencedStaticLibrary:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = archive.ar; name = {1}; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
                 break;
 
             case EType.CSourceFile:

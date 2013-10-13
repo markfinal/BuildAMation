@@ -15,13 +15,14 @@ namespace XcodeBuilder
             StaticLibrary
         }
 
-        public PBXNativeTarget(string name, EType type)
+        public PBXNativeTarget(string name, EType type, PBXProject project)
             : base (name)
         {
             this.Type = type;
             this.BuildPhases = new Opus.Core.Array<BuildPhase>();
             this.Dependencies = new Opus.Core.Array<PBXTargetDependency>();
             this.SourceFilesToBuild = new Opus.Core.Array<PBXBuildFile>();
+            this.Project = project;
         }
 
         public EType Type
@@ -55,6 +56,12 @@ namespace XcodeBuilder
         }
 
         public Opus.Core.Array<PBXBuildFile> SourceFilesToBuild
+        {
+            get;
+            private set;
+        }
+
+        public PBXProject Project
         {
             get;
             private set;

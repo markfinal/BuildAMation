@@ -7,11 +7,15 @@ namespace XcodeBuilder
 {
     public sealed class PBXProject : XCodeNodeData, IWriteableNode
     {
-        public PBXProject(string name, System.Uri rootUri, string path)
-            : base(name)
+        public PBXProject(Opus.Core.DependencyNode node)
+            : base(node.ModuleName)
         {
-            this.RootUri = rootUri;
-            this.Path = path;
+            var package = node.Package;
+            var projectFilename = "project.pbxproj";
+            var rootDirectory = System.IO.Path.Combine(Opus.Core.State.BuildRoot, package.FullName);
+            rootDirectory = System.IO.Path.Combine(rootDirectory, node.ModuleName) + ".xcodeproj";
+            this.RootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
+            this.Path = System.IO.Path.Combine(rootDirectory, projectFilename);
 
             this.NativeTargets = new PBXNativeTargetSection();
             this.FileReferences = new PBXFileReferenceSection();
