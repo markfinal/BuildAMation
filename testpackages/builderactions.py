@@ -72,21 +72,6 @@ def MakeFilePost(package, options, outputMessages, errorMessages):
         return -1
     return exitCode
 
-def _openXcodeWorkspaceInIDE(workspacePath, outputMessages, errorMessages):
-    """Open the Xcode workspace into the IDE. This will cache all of the project data, allowing xcodebuild command line invocations to function."""
-    argList = []
-    argList.append("open")
-    argList.append("-a")
-    argList.append("xcode")
-    argList.append(workspacePath)
-    # Note: the pid of this is not the pid of Xcode! Sigh!
-    p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    import time
-    time.sleep(5) # TODO: this is bad, need to find a better way - Popen only waits for Xcode to start up, not for it to finish parsing the project
-    (outputStream, errorStream) = p.communicate() # this should WAIT
-    outputMessages.write(outputStream)
-    errorMessages.write(errorStream)
-
 def XcodePost(package, options, outputMessages, errorMessages):
     """Post action for testing the Xcode builder"""
     exitCode = 0
@@ -102,7 +87,6 @@ def XcodePost(package, options, outputMessages, errorMessages):
         outputMessages.write("More than one Xcode workspace was found")
         return -1
     try:
-        _openXcodeWorkspaceInIDE(workspaces[0], outputMessages, errorMessages)
         # first, list all the schemes available
         argList = []
         argList.append("xcodebuild")

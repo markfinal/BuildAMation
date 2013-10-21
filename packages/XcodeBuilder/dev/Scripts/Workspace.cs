@@ -59,6 +59,7 @@ namespace XcodeBuilder
             var settings = new System.Xml.XmlWriterSettings();
             settings.OmitXmlDeclaration = false;
             settings.NewLineChars = "\n";
+            settings.Indent = true;
             using (var xmlWriter = System.Xml.XmlWriter.Create(writer, settings))
             {
                 var document = new System.Xml.XmlDocument();

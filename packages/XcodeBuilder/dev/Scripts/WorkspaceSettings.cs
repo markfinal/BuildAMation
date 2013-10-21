@@ -13,7 +13,11 @@ namespace XcodeBuilder
             this.Path = System.IO.Path.Combine(this.Path, "xcuserdata");
             this.Path = System.IO.Path.Combine(this.Path, System.Environment.GetEnvironmentVariable("USER") + ".xcuserdatad");
             this.Path = System.IO.Path.Combine(this.Path, "WorkspaceSettings.xcsettings");
+            this.CreatePlist();
+        }
 
+        private void CreatePlist()
+        {
             this.Document = new System.Xml.XmlDocument();
 
             {
@@ -64,6 +68,7 @@ namespace XcodeBuilder
                 var settings = new System.Xml.XmlWriterSettings();
                 settings.OmitXmlDeclaration = false;
                 settings.NewLineChars = "\n";
+                settings.Indent = true;
                 using (var xmlWriter = System.Xml.XmlWriter.Create(writer, settings))
                 {
                     this.Document.WriteTo(xmlWriter);

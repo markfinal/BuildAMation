@@ -30,10 +30,26 @@ namespace XcodeBuilder
             }
         }
 
+        public PBXNativeTarget this[int index]
+        {
+            get
+            {
+                return this.NativeTargets[index];
+            }
+        }
+
         private System.Collections.Generic.List<PBXNativeTarget> NativeTargets
         {
             get;
             set;
+        }
+
+        public int Count
+        {
+            get
+            {
+                return this.NativeTargets.Count;
+            }
         }
 
 #region IWriteableNode implementation
