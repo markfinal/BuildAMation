@@ -2,6 +2,7 @@
 import os
 import subprocess
 import sys
+import traceback
 
 class Builder(object):
     """Class that represents the actions for a builder"""
@@ -78,6 +79,7 @@ def _openXcodeWorkspaceInIDE(workspacePath, outputMessages, errorMessages):
     argList.append("-a")
     argList.append("xcode")
     argList.append(workspacePath)
+    # Note: the pid of this is not the pid of Xcode! Sigh!
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     import time
     time.sleep(5) # TODO: this is bad, need to find a better way - Popen only waits for Xcode to start up, not for it to finish parsing the project
@@ -166,6 +168,7 @@ def XcodePost(package, options, outputMessages, errorMessages):
                     errorMessages.write(errorStream)
     except Exception, e:
         errorMessages.write(str(e))
+        errorMessages.write(traceback.format_exc())
         return -1
     return exitCode
 
