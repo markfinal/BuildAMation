@@ -62,6 +62,8 @@ namespace XcodeBuilder
             {
                 (this.Workspace as IWriteableNode).Write(workspaceWriter);
             }
+            var workspaceSettings = new WorkspaceSettings(this.Workspace);
+            workspaceSettings.Serialize();
 
             Opus.Core.Log.MessageAll("Xcode workspace written to '{0}'", this.Workspace.BundlePath);
         }

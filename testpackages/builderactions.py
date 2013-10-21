@@ -87,26 +87,6 @@ def _openXcodeWorkspaceInIDE(workspacePath, outputMessages, errorMessages):
     outputMessages.write(outputStream)
     errorMessages.write(errorStream)
 
-def _writeXcodeWorkspaceSettings(workspacePath, outputMessages, errorMessages):
-    """Write the default settings for the current user for the workspace."""
-    realSettingsFilePath = os.path.join(workspacePath, "xcuserdata", "%s.xcuserdatad"%os.environ["USER"],"WorkspaceSettings.xcsettings")
-    tempSettingsFilePath = realSettingsFilePath + ".plist"
-    argList = []
-    argList.append("defaults")
-    argList.append("write")
-    argList.append(tempSettingsFilePath)
-    # build location style must use legacy settings currently, in order to locate dependents
-    argList.append("BuildLocationStyle")
-    argList.append("UseTargetSettings")
-    p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (outputStream, errorStream) = p.communicate() # this should WAIT
-    outputMessages.write(outputStream)
-    errorMessages.write(errorStream)
-    import shutil
-    shutil.copyfile(tempSettingsFilePath, realSettingsFilePath)
-    # TODO: this next statement causes failures with subsequent builds of the same package
-    #os.remove(tempSettingsFilePath)
-
 def XcodePost(package, options, outputMessages, errorMessages):
     """Post action for testing the Xcode builder"""
     exitCode = 0
@@ -122,7 +102,6 @@ def XcodePost(package, options, outputMessages, errorMessages):
         outputMessages.write("More than one Xcode workspace was found")
         return -1
     try:
-        _writeXcodeWorkspaceSettings(workspaces[0], outputMessages, errorMessages)
         _openXcodeWorkspaceInIDE(workspaces[0], outputMessages, errorMessages)
         # first, list all the schemes available
         argList = []
