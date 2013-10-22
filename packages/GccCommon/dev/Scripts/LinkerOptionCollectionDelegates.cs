@@ -269,9 +269,12 @@ namespace GccCommon
             foreach (var framework in frameworks.Value)
             {
                 var fileReference = project.FileReferences.Get(framework, XcodeBuilder.PBXFileReference.EType.Framework, framework, null);
-                var buildFile = project.BuildFiles.Get(framework, fileReference);
-                buildFile.BuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
-                buildFile.BuildPhase.Files.AddUnique(buildFile);
+                var frameworksBuildPhase = project.FrameworksBuildPhases.Get("Frameworks", currentObject.Name);
+                var buildFile = project.BuildFiles.Get(framework, fileReference, frameworksBuildPhase);
+                if (null == buildFile)
+                {
+                    throw new Opus.Core.Exception("Build file not available");
+                }
             }
         }
         private static void SuppressReadOnlyRelocationsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

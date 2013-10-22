@@ -102,9 +102,6 @@ namespace XcodeBuilder
             var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);
             data.BuildPhases.AddUnique(sourcesBuildPhase);
 
-            var copyFilesBuildPhase = project.CopyFilesBuildPhases.Get("CopyFiles", moduleName);
-            data.BuildPhases.AddUnique(copyFilesBuildPhase);
-
             var frameworksBuildPhase = project.FrameworksBuildPhases.Get("Frameworks", moduleName);
             data.BuildPhases.AddUnique(frameworksBuildPhase);
 
@@ -133,10 +130,11 @@ namespace XcodeBuilder
                     // now add a link dependency
                     if (dependentData.Project == project)
                     {
-                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference);
-                        buildFile.BuildPhase = frameworksBuildPhase;
-
-                        frameworksBuildPhase.Files.AddUnique(buildFile);
+                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference, frameworksBuildPhase);
+                        if (null == buildFile)
+                        {
+                            throw new Opus.Core.Exception("Build file not available");
+                        }
 
                         // now add linker search paths
                         if (dependency.Module is C.DynamicLibrary)
@@ -162,9 +160,11 @@ namespace XcodeBuilder
 
                         var relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);
                         var dependentFileRef = project.FileReferences.Get(dependency.UniqueModuleName, type, relativePath, project.RootUri);
-                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentFileRef);
-                        buildFile.BuildPhase = frameworksBuildPhase;
-                        frameworksBuildPhase.Files.AddUnique(buildFile);
+                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentFileRef, frameworksBuildPhase);
+                        if (null == buildFile)
+                        {
+                            throw new Opus.Core.Exception("Build file not available");
+                        }
 
                         project.MainGroup.Children.AddUnique(dependentFileRef);
 

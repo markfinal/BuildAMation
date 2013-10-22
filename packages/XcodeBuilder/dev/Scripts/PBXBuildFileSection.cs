@@ -12,20 +12,23 @@ namespace XcodeBuilder
             this.BuildFiles = new Opus.Core.Array<PBXBuildFile>();
         }
 
-        public PBXBuildFile Get(string name, PBXFileReference fileRef)
+        public PBXBuildFile Get(string name, PBXFileReference fileRef, BuildPhase buildPhase)
         {
             lock (this.BuildFiles)
             {
                 foreach (var buildFile in this.BuildFiles)
                 {
-                    if ((buildFile.Name == name) && (buildFile.FileReference == fileRef))
+                    if ((buildFile.Name == name) &&
+                        (buildFile.FileReference == fileRef) &&
+                        (buildFile.BuildPhase == buildPhase))
                     {
                         return buildFile;
                     }
                 }
 
-                var newBuildFile = new PBXBuildFile(name, fileRef);
+                var newBuildFile = new PBXBuildFile(name, fileRef, buildPhase);
                 this.BuildFiles.Add(newBuildFile);
+                buildPhase.Files.AddUnique(newBuildFile);
                 return newBuildFile;
             }
         }

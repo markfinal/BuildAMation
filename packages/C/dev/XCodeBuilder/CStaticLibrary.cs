@@ -100,12 +100,6 @@ namespace XcodeBuilder
             var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);
             data.BuildPhases.AddUnique(sourcesBuildPhase);
 
-            var copyFilesBuildPhase = project.CopyFilesBuildPhases.Get("CopyFiles", moduleName);
-            data.BuildPhases.AddUnique(copyFilesBuildPhase);
-
-            var frameworksBuildPhase = project.FrameworksBuildPhases.Get("Frameworks", moduleName);
-            data.BuildPhases.AddUnique(frameworksBuildPhase);
-
             if (null != node.RequiredDependents)
             {
                 // no link dependency

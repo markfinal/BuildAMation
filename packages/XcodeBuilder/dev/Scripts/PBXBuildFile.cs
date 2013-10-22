@@ -7,11 +7,12 @@ namespace XcodeBuilder
 {
     public sealed class PBXBuildFile : XCodeNodeData, IWriteableNode
     {
-        public PBXBuildFile(string name, PBXFileReference fileRef)
+        public PBXBuildFile(string name, PBXFileReference fileRef, BuildPhase buildPhase)
             : base(name)
         {
             this.FileReference = fileRef;
             this.Settings = new OptionsDictionary();
+            this.BuildPhase = buildPhase;
         }
 
         public PBXFileReference FileReference
@@ -23,7 +24,7 @@ namespace XcodeBuilder
         public BuildPhase BuildPhase
         {
             get;
-            set;
+            private set;
         }
 
         public OptionsDictionary Settings

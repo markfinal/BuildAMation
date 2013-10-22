@@ -33,11 +33,12 @@ namespace XcodeBuilder
             }
             var fileRef = project.FileReferences.Get(moduleName, fileType, sourceFile, project.RootUri);
 
-            var data = project.BuildFiles.Get(moduleName, fileRef);
-
             var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);
-            sourcesBuildPhase.Files.AddUnique(data);
-            data.BuildPhase = sourcesBuildPhase;
+            var data = project.BuildFiles.Get(moduleName, fileRef, sourcesBuildPhase);
+            if (null == data)
+            {
+                throw new Opus.Core.Exception("Build file not available");
+            }
 
             Opus.Core.BaseOptionCollection complementOptionCollection = null;
             if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
