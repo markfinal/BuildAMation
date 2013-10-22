@@ -56,8 +56,13 @@ namespace XcodeBuilder
 
                 if (project.NativeTargets.Count > 0)
                 {
-                    var projectSchemeCache = new ProjectSchemeCache(project);
-                    projectSchemeCache.Serialize();
+                    if ((bool)Opus.Core.State.Get("XcodeBuilder", "WarmSchemeCache"))
+                    {
+                        var projectSchemeCache = new ProjectSchemeCache(project);
+                        projectSchemeCache.Serialize();
+
+                        Opus.Core.Log.DebugMessage("Xcode project scheme caches have been warmed");
+                    }
                 }
 
                 Opus.Core.Log.DebugMessage("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
@@ -68,6 +73,9 @@ namespace XcodeBuilder
             {
                 (this.Workspace as IWriteableNode).Write(workspaceWriter);
             }
+
+            // the workspace settings is always written out, due to the location in which targets are expected
+            // to be built
             var workspaceSettings = new WorkspaceSettings(this.Workspace);
             workspaceSettings.Serialize();
 

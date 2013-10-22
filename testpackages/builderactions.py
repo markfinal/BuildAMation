@@ -99,15 +99,20 @@ def XcodePost(package, options, outputMessages, errorMessages):
         outputMessages.write(outputStream)
         errorMessages.write(errorStream)
         # parse the output to get the schemes
-        lines = outputStream.split()
+        lines = outputStream.split('\n')
+        if len(lines) < 3:
+            raise RuntimeError("Unable to parse workspace for schemes. Has the project scheme cache been warmed?")
         schemes = []
         hasSchemes = False
         for line in lines:
             trimmed = line.strip()
             if hasSchemes:
-                schemes.append(trimmed)
+                if trimmed:
+                    schemes.append(trimmed)
             elif trimmed.startswith('Schemes:'):
                 hasSchemes = True
+        if not hasSchemes or len(schemes) == 0:
+            raise RuntimeError("No schemes were extracted from the workspace. Has the project scheme cache been warmed?")
         # iterate over all the schemes and configurations
         for scheme in schemes:
             for config in options.configurations:
@@ -130,7 +135,7 @@ def XcodePost(package, options, outputMessages, errorMessages):
                 if errorStream:
                     errorMessages.write(errorStream)
     except Exception, e:
-        errorMessages.write(str(e))
+        errorMessages.write("%s\n" % str(e))
         errorMessages.write(traceback.format_exc())
         return -1
     return exitCode

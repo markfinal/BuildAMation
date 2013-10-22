@@ -1,2 +1,3 @@
 -C.toolchain=clang
 -clang.version=Apple425
+-warmschemecache

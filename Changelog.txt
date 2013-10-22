@@ -1,3 +1,5 @@
+22-Oct-2013 Added an action to XcodeBuilder, -warmschemecaches, that will warm the per-project cache of Xcode schemes, enabling the use of the commandline tool 'xcodebuild' to be used on a workspace, without having to load it into the Xcode UI. This action is disabled by default. It is useful for automated testing.
+
 09-Oct-2013 Modified OpusOptionCodeGenerator so that option property gets are now aware of the super set option collections.
 
 09-Oct-2013 Extending Opus.Core.BaseOptionCollection so delta option collections are aware of their super set option collections. This is essential for being able to reference any valid option in the delegates, without fear of it not being in a delta.
