@@ -54,8 +54,11 @@ namespace XcodeBuilder
                     (project as IWriteableNode).Write(projectFileWriter);
                 }
 
-                var projectSchemeCache = new ProjectSchemeCache(project);
-                projectSchemeCache.Serialize();
+                if (project.NativeTargets.Count > 0)
+                {
+                    var projectSchemeCache = new ProjectSchemeCache(project);
+                    projectSchemeCache.Serialize();
+                }
 
                 Opus.Core.Log.DebugMessage("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
             }
