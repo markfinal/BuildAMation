@@ -212,6 +212,18 @@ namespace ClangCommon
                 this.ProcessNamedSetHandler("PositionIndependentCodeSetHandler", this["PositionIndependentCode"]);
             }
         }
+        bool ICCompilerOptions.SixtyFourBit
+        {
+            get
+            {
+                return this.GetValueTypeOption<bool>("SixtyFourBit", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetValueTypeOption<bool>("SixtyFourBit", value);
+                this.ProcessNamedSetHandler("SixtyFourBitSetHandler", this["SixtyFourBit"]);
+            }
+        }
         #endregion
     }
 }

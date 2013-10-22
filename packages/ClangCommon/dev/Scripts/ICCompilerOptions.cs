@@ -12,5 +12,11 @@ namespace ClangCommon
             get;
             set;
         }
-	}
+
+        bool SixtyFourBit
+        {
+            get;
+            set;
+        }
+    }
 }

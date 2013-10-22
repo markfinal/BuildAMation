@@ -26,6 +26,9 @@ namespace ClangCommon
             var clangOptions = this as ICCompilerOptions;
             clangOptions.PositionIndependentCode = false;
 
+            var target = node.Target;
+            clangOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
+
             // use C99 by default with clang
             if (!(this is C.ICxxCompilerOptions))
             {

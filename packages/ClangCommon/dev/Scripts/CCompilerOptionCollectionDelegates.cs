@@ -456,6 +456,35 @@ namespace ClangCommon
                 throw new Opus.Core.Exception("More than one no position independent code option has been set");
             }
         }
+        private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var sixtyFourBit = option as Opus.Core.ValueTypeOption<bool>;
+            if (sixtyFourBit.Value)
+            {
+                commandLineBuilder.Add("-arch x86_64");
+            }
+            else
+            {
+                commandLineBuilder.Add("-arch i386");
+            }
+        }
+        private static void SixtyFourBitXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var sixtyFourBit = option as Opus.Core.ValueTypeOption<bool>;
+            var archOption = configuration.Options["ARCHS"];
+            if (sixtyFourBit.Value)
+            {
+                archOption.AddUnique("$(NATIVE_ARCH_64_BIT)");
+            }
+            else
+            {
+                archOption.AddUnique("$(NATIVE_ARCH_32_BIT)");
+            }
+            if (archOption.Count != 1)
+            {
+                throw new Opus.Core.Exception("More than one architecture option has been set");
+            }
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -476,6 +505,7 @@ namespace ClangCommon
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor,CharacterSetXcodeProjectProcessor);
             this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor,LanguageStandardXcodeProjectProcessor);
             this["PositionIndependentCode"].PrivateData = new PrivateData(PositionIndependentCodeCommandLineProcessor,PositionIndependentCodeXcodeProjectProcessor);
+            this["SixtyFourBit"].PrivateData = new PrivateData(SixtyFourBitCommandLineProcessor,SixtyFourBitXcodeProjectProcessor);
         }
     }
 }
