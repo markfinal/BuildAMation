@@ -218,5 +218,16 @@ namespace Opus.Core
         {
             return base.GetHashCode();
         }
+
+        public Array<T> SubArray(int firstIndex, int count)
+        {
+            var newArray = new Array<T>();
+            int lastIndex = firstIndex + count;
+            for (int index = firstIndex; index < lastIndex; ++index)
+            {
+                newArray.Add(this[index]);
+            }
+            return newArray;
+        }
     }
 }

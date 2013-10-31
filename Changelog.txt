@@ -1,3 +1,5 @@
+31-Oct-2013 Added Opus.Core.Array<T>.SubArray, taking the index of the first element, and a count.
+
 23-Oct-2013 Release 0.50 Alpha 5
 
 22-Oct-2013 Added an action to XcodeBuilder, -warmschemecaches, that will warm the per-project cache of Xcode schemes, enabling the use of the commandline tool 'xcodebuild' to be used on a workspace, without having to load it into the Xcode UI. This action is disabled by default. It is useful for automated testing.
