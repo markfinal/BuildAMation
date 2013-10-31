@@ -217,8 +217,15 @@ namespace XcodeBuilder
                 if (headerFileAttributes.Length > 0)
                 {
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
-                    foreach (string headerPath in headerFileCollection)
+                    foreach (Opus.Core.Location location in headerFileCollection)
                     {
+                        var locations = location.GetLocations();
+                        if (locations.Count > 1)
+                        {
+                            throw new Opus.Core.Exception("Location resolves to more than one file");
+                        }
+
+                        var headerPath = locations[0].AbsolutePath;
                         var headerFileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, project.RootUri);
                         group.Children.AddUnique(headerFileRef);
                     }

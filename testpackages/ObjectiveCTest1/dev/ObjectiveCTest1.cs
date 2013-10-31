@@ -26,7 +26,7 @@ namespace ObjectiveCTest1
                     {
                         if (target.HasPlatform(Opus.Core.EPlatform.Unix))
                         {
-                            compileOptions.IncludePaths.AddAbsoluteDirectory("/usr/include/GNUstep", true);
+                            compileOptions.IncludePaths.Add("/usr/include/GNUstep");
                         }
                     }
                 };
