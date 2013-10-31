@@ -105,13 +105,13 @@ namespace VisualCCommon
             if (this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
             {
                 string objPathName = this.ObjectFilePath;
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(objPathName));
             }
 
             if (this.OutputPaths.Has(C.OutputFileFlags.CompilerProgramDatabase))
             {
                 string pdbPathName = this.ProgramDatabaseFilePath;
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(pdbPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(pdbPathName));
             }
 
             return directoriesToCreate;

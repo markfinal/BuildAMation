@@ -45,7 +45,7 @@ namespace Opus
             {
                 var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(packageRoot);
 
-                Core.State.PackageRoots.Add(absolutePackageRoot);
+                Core.State.PackageRoots.Add(Core.DirectoryLocation.Get(absolutePackageRoot));
             }
 
             return true;

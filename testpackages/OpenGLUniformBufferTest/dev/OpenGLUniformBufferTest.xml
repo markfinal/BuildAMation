@@ -10,6 +10,9 @@
     <Opus:Package Name="GLEW">
       <Opus:Version Id="1.5.7" />
     </Opus:Package>
+    <Opus:Package Name="LLVMGcc">
+      <Opus:Version Id="4.2" />
+    </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>

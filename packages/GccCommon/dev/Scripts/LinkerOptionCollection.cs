@@ -70,13 +70,13 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             string outputPathName = this.OutputFilePath;
             if (null != outputPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(outputPathName));
             }
 
             string libraryPathName = this.StaticImportLibraryFilePath;
             if (null != libraryPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(libraryPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(libraryPathName));
             }
 
             return directoriesToCreate;

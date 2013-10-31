@@ -72,7 +72,7 @@ namespace AMDAPPSDK
                 return;
             }
 
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(IncludePath, true);
+            compilerOptions.IncludePaths.Add(IncludePath);
         }
 
         [C.ExportLinkerOptionsDelegate]
@@ -98,7 +98,7 @@ namespace AMDAPPSDK
             {
                 throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
             }
-            linkerOptions.LibraryPaths.AddAbsoluteDirectory(platformLibraryPath, true);
+            linkerOptions.LibraryPaths.Add(platformLibraryPath);
 
             // libraries to link against
             linkerOptions.Libraries.Add("OpenCL.lib");

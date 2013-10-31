@@ -25,7 +25,7 @@ namespace VisualCCommon
 
             foreach (string libPath in linkerTool.LibPaths((Opus.Core.BaseTarget)target))
             {
-                (this as C.ILinkerOptions).LibraryPaths.AddAbsoluteDirectory(libPath, true);
+                (this as C.ILinkerOptions).LibraryPaths.Add(libPath);
             }
         }
 
@@ -136,19 +136,19 @@ namespace VisualCCommon
             if (this.OutputPaths.Has(C.OutputFileFlags.Executable))
             {
                 string outputPathName = this.OutputFilePath;
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(outputPathName));
             }
 
             if (this.OutputPaths.Has(C.OutputFileFlags.StaticImportLibrary))
             {
                 string libraryPathName = this.StaticImportLibraryFilePath;
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(libraryPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(libraryPathName));
             }
 
             if (this.OutputPaths.Has(C.OutputFileFlags.LinkerProgramDatabase))
             {
                 string programDatabasePathName = this.ProgramDatabaseFilePath;
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(programDatabasePathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(programDatabasePathName));
             }
 
             return directoriesToCreate;

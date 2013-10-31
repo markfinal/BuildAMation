@@ -10,15 +10,18 @@ namespace GLEW
     {
         public GLEWStatic()
         {
-            var glIncludeDir = this.PackageLocation.SubDirectory("glew-1.5.7", "include", "GL");
-            this.headerFiles.Include(glIncludeDir, "*.h");
+            var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
+            var includeDir = glewDir.SubDirectory("include");
+            var GLDir = includeDir.SubDirectory("GL");
+            this.headerFiles.Include(GLDir, "*.h");
         }
 
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
             {
-                var sourceDir = this.PackageLocation.SubDirectory("glew-1.5.7", "src");
+                var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
+                var sourceDir = glewDir.SubDirectory("src");
                 this.Include(sourceDir, "glew.c");
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
                 //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));
@@ -50,7 +53,8 @@ namespace GLEW
             void GLEW_IncludePathAndStaticDefine(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.PackageLocation, "glew-1.5.7", "include");
+                var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
+                compilerOptions.IncludePaths.Include(glewDir, "include");
                 compilerOptions.Defines.Add("GLEW_STATIC");
             }
         }

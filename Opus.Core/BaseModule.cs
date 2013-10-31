@@ -23,7 +23,7 @@ namespace Opus.Core
             var package = State.PackageInfo[packageName];
             if (null != package)
             {
-                var root = new LocationDirectory(package.Identifier.Location, this.ProxyPath);
+                var root = new ScaffoldLocation(package.Identifier.Location, this.ProxyPath, ScaffoldLocation.ETypeHint.Directory);
                 this.Locations = new LocationMap();
                 this.PackageLocation = root;
             }

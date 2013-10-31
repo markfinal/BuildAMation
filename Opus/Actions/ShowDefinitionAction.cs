@@ -33,7 +33,7 @@ namespace Opus
             {
                 var platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
 
-                Core.Log.MessageAll("{0}{1}{2} (filter: {3}) (root: '{4}')", new string('\t', depth), (null != id.Root) ? id.ToString("-") : id.ToString("-").ToUpper(), id.IsDefaultVersion ? "*" : System.String.Empty, platformFilter, (null != id.Root) ? id.Root : "UNKNOWN");
+                Core.Log.MessageAll("{0}{1}{2} (filter: {3}) (root: '{4}')", new string('\t', depth), (null != id.Root) ? id.ToString("-") : id.ToString("-").ToUpper(), id.IsDefaultVersion ? "*" : System.String.Empty, platformFilter, (null != id.Root) ? id.Root.AbsolutePath : "UNKNOWN");
 
                 if ((null != id.Definition) && (id.Definition.PackageIdentifiers.Count > 0))
                 {

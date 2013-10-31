@@ -27,14 +27,14 @@ namespace Mingw
 
             // using [0] as we want the one in the root include folder
             string cppIncludePath = System.IO.Path.Combine(mingwToolset.MingwDetail.IncludePaths[0], "c++");
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cppIncludePath);
 
             string cppIncludePath2 = System.IO.Path.Combine(cppIncludePath, mingwToolset.MingwDetail.Version);
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath2, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cppIncludePath2);
 
             // TODO: commenting these two lines out reveals an error on Mingw Test9-dev
             string cppIncludePath3 = System.IO.Path.Combine(cppIncludePath2, mingwToolset.MingwDetail.Target);
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cppIncludePath3, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cppIncludePath3);
         }
     }
 }

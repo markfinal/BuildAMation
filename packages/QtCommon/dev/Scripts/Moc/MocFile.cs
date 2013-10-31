@@ -33,14 +33,9 @@ namespace QtCommon
         }
 
 #if true
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            if (this.ProxyPath != null)
-            {
-                root = this.ProxyPath.Combine(root);
-            }
-
-            this.SourceFile.Include(root, pathSegments);
+            this.SourceFile.Include(baseLocation, pattern);
         }
 #else
         public void SetAbsolutePath(string absolutePath)

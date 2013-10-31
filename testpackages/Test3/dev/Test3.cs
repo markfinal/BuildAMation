@@ -6,7 +6,8 @@ namespace Test3
     {
         public Library2()
         {
-            this.headerFiles.Include(this.PackageLocation, "include", "*.h");
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.headerFiles.Include(includeDir, "*.h");
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var options = module.Options as C.ArchiverOptionCollection;
@@ -30,7 +31,7 @@ namespace Test3
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
         }
 

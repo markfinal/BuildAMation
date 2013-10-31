@@ -7,6 +7,9 @@
     <Opus:Package Name="DirectXSDK">
       <Opus:Version Id="06.2010" />
     </Opus:Package>
+    <Opus:Package Name="LLVMGcc">
+      <Opus:Version Id="4.2" />
+    </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>

@@ -61,7 +61,7 @@ namespace CodeGenTest
             ICodeGenOptions options = this as ICodeGenOptions;
             if (null != options.OutputSourceDirectory)
             {
-                dirsToCreate.AddAbsoluteDirectory(options.OutputSourceDirectory, false);
+                dirsToCreate.Add(options.OutputSourceDirectory);
             }
 
             return dirsToCreate;
@@ -80,7 +80,8 @@ namespace CodeGenTest
 
         public CodeGeneratorTool()
         {
-            var codeGenToolSourceDir = this.PackageLocation.SubDirectory("source", "codegentool");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            var codeGenToolSourceDir = sourceDir.SubDirectory("codegentool");
             this.source.Include(codeGenToolSourceDir, "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CodeGeneratorTool_UpdateOptions);
         }
@@ -115,7 +116,7 @@ namespace CodeGenTest
             var options = module.Options as ICodeGenOptions;
             var outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
             var injectedFile = new C.ObjectFile();
-            injectedFile.SourceFile.AbsolutePath = outputPath;
+            injectedFile.SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
 
             var moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);

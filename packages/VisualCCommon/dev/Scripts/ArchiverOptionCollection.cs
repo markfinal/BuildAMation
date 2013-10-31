@@ -27,7 +27,7 @@ namespace VisualCCommon
 
             if (null != this.LibraryFilePath)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.LibraryFilePath), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.LibraryFilePath));
             }
 
             return directoriesToCreate;

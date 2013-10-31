@@ -97,8 +97,15 @@ namespace VSSolutionBuilder
             }
 
             // references
-            foreach (string reference in (options as CSharp.IOptions).References)
+            foreach (Opus.Core.Location location in (options as CSharp.IOptions).References)
             {
+                var locations = location.GetLocations();
+                if (locations.Count > 1)
+                {
+                    throw new Opus.Core.Exception("Location resolves to more than one file");
+                }
+
+                var reference = locations[0].AbsolutePath;
                 projectData.References.Add(reference);
             }
 
@@ -157,8 +164,15 @@ namespace VSSolutionBuilder
                         else if (sourceField is Opus.Core.FileCollection)
                         {
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
-                            foreach (string absolutePath in sourceCollection)
+                            foreach (Opus.Core.Location location in sourceCollection)
                             {
+                                var locations = location.GetLocations();
+                                if (locations.Count > 1)
+                                {
+                                    throw new Opus.Core.Exception("Location resolves to more than one file");
+                                }
+                                var absolutePath = locations[0].AbsolutePath;
+
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
                                     throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);

@@ -26,8 +26,9 @@ namespace C
                 }
 
                 // TODO: replace with 'var'
-                foreach (string libraryPath in linkerOptions.Libraries)
+                foreach (Opus.Core.Location library in linkerOptions.Libraries)
                 {
+                    var libraryPath = library.AbsolutePath;
                     if (libraryPath.Contains(" "))
                     {
                         commandLineBuilder.Add(System.String.Format("\"{0}\"", libraryPath));

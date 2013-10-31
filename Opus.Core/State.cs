@@ -56,9 +56,9 @@ namespace Opus.Core
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
 
             var opusPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(opusDirectory).FullName).FullName, "packages");
-            var packageRoots = new StringArray();
-            packageRoots.Add(opusPackageRoot);
-            Add<StringArray>("System", "PackageRoots", packageRoots);
+            var packageRoots = new Array<DirectoryLocation>();
+            packageRoots.Add(DirectoryLocation.Get(opusPackageRoot));
+            Add<Array<DirectoryLocation>>("System", "PackageRoots", packageRoots);
 
             var packageInfoCollection = new PackageInformationCollection();
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
@@ -70,7 +70,7 @@ namespace Opus.Core
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
-            Add<LocationDirectory>("System", "BuildRootLocation", null);
+            Add<DirectoryLocation>("System", "BuildRootLocation", null);
             Add<DependencyGraph>("System", "Graph", null);
             Add<BuildManager>("System", "BuildManager", null);
             Add<System.Threading.ManualResetEvent>("System", "BuildStartedEvent", new System.Threading.ManualResetEvent(false));
@@ -278,7 +278,7 @@ namespace Opus.Core
             }
         }
 
-        public static StringArray PackageRoots
+        public static Array<DirectoryLocation> PackageRoots
         {
             set
             {
@@ -286,7 +286,7 @@ namespace Opus.Core
             }
             get
             {
-                return Get("System", "PackageRoots") as StringArray;
+                return Get("System", "PackageRoots") as Array<DirectoryLocation>;
             }
         }
        
@@ -357,7 +357,7 @@ namespace Opus.Core
                 var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
 
                 Set("System", "BuildRoot", absoluteBuildRootPath);
-                Set("System", "BuildRootLocation", new LocationDirectory(absoluteBuildRootPath));
+                Set("System", "BuildRootLocation", DirectoryLocation.Get(absoluteBuildRootPath, Location.EExists.WillExist));
             }
             get
             {
@@ -365,11 +365,11 @@ namespace Opus.Core
             }
         }
 
-        public static LocationDirectory BuildRootLocation
+        public static DirectoryLocation BuildRootLocation
         {
             get
             {
-                return Get("System", "BuildRootLocation") as LocationDirectory;
+                return Get("System", "BuildRootLocation") as DirectoryLocation;
             }
         }
         

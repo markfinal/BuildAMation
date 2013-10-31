@@ -146,13 +146,13 @@ namespace CSharp
             string outputPathName = this.OutputFilePath;
             if (null != outputPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(outputPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(outputPathName));
             }
 
             string pdbPathName = this.ProgramDatabaseFilePath;
             if (null != pdbPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(pdbPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(pdbPathName));
             }
 
             return directoriesToCreate;

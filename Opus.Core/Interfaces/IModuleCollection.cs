@@ -8,7 +8,9 @@ namespace Opus.Core
     public interface IModuleCollection : INestedDependents
     {
 #if true
-        void RegisterUpdateOptions(UpdateOptionCollectionDelegateArray delegateArray, Location root, params string[] pathSegments);
+        void RegisterUpdateOptions(UpdateOptionCollectionDelegateArray delegateArray,
+                                   Location root,
+                                   string pattern);
 #else
         IModule GetChildModule(object owner, params string[] pathSegments);
 #endif

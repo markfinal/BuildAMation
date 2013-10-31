@@ -27,11 +27,11 @@ namespace QtCommon
         {
             var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType) as Toolset;
             string includePath = toolset.GetIncludePath((Opus.Core.BaseTarget)target);
-            options.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            options.IncludePaths.Add(includePath);
             if (includeModuleName)
             {
                 includePath = System.IO.Path.Combine(includePath, moduleName);
-                options.IncludePaths.AddAbsoluteDirectory(includePath, true);
+                options.IncludePaths.Add(includePath);
             }
         }
 
@@ -41,7 +41,7 @@ namespace QtCommon
         {
             var toolset = Opus.Core.ToolsetFactory.GetInstance (toolsetType) as Toolset;
             string libraryPath = toolset.GetLibraryPath((Opus.Core.BaseTarget)target);
-            options.LibraryPaths.AddAbsoluteDirectory(libraryPath, true);
+            options.LibraryPaths.Add(libraryPath);
         }
 
         protected void AddModuleLibrary(C.ILinkerOptions options,

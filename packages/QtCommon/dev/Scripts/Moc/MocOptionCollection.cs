@@ -85,7 +85,7 @@ namespace QtCommon
             {
                 var options = this as IMocOptions;
                 string mocDir = System.IO.Path.GetDirectoryName(options.MocOutputPath);
-                dirsToCreate.AddAbsoluteDirectory(mocDir, false);
+                dirsToCreate.Add(mocDir);
             }
 
             return dirsToCreate;

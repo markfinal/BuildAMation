@@ -56,7 +56,7 @@ namespace MingwCommon
             if (this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
             {
                 string objPathName = this.ObjectFilePath;
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(objPathName));
             }
 
             return directoriesToCreate;

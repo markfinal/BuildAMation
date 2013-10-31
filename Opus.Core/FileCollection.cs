@@ -7,7 +7,7 @@ namespace Opus.Core
 {
     public sealed class FileCollection : System.ICloneable, System.Collections.IEnumerable
     {
-        private System.Collections.Generic.List<string> filePaths = new System.Collections.Generic.List<string>();
+        private Array<Location> fileLocations = new Array<Location>();
 
         public FileCollection()
         {
@@ -19,7 +19,7 @@ namespace Opus.Core
             {
                 foreach (string path in collection)
                 {
-                    this.Add(path);
+                    this.fileLocations.Add(FileLocation.Get(path, Location.EExists.Exists));
                 }
             }
         }
@@ -27,28 +27,45 @@ namespace Opus.Core
         public object Clone()
         {
             var clone = new FileCollection();
-            clone.filePaths.AddRange(this.filePaths);
+            clone.fileLocations.AddRange(this.fileLocations);
             return clone;
         }
 
+#if true
+        public void Add(string path)
+        {
+            this.fileLocations.AddUnique(FileLocation.Get(path, Location.EExists.WillExist));
+        }
+
+        public void AddRange(StringArray paths)
+        {
+            foreach (var path in paths)
+            {
+                this.Add(path);
+            }
+        }
+#else
         public void Add(string absolutePath)
         {
-            this.filePaths.Add(absolutePath);
+            // TODO: claim that it will exist, as these paths may not be exact
+            this.fileLocations.Add(FileLocation.Get(absolutePath, Location.EExists.WillExist));
         }
 
         public void AddRange(StringArray absolutePathArray)
         {
             foreach (var path in absolutePathArray)
             {
-                this.filePaths.Add(path);
+                // TODO: claim that it will exist, as these paths may not be exact
+                this.fileLocations.Add(FileLocation.Get(path, Location.EExists.WillExist));
             }
         }
+#endif
 
-        public string this[int index]
+        public Location this[int index]
         {
             get
             {
-                return this.filePaths[index];
+                return this.fileLocations[index];
             }
         }
 
@@ -56,37 +73,48 @@ namespace Opus.Core
         {
             get
             {
-                return this.filePaths.Count;
+                return this.fileLocations.Count;
             }
         }
 
         public System.Collections.IEnumerator GetEnumerator()
         {
-            return this.filePaths.GetEnumerator();
+            return this.fileLocations.GetEnumerator();
         }
 
+#if true
+        public void Include(Location baseLocation, string pattern)
+        {
+            var scaffold = new ScaffoldLocation(baseLocation, pattern, ScaffoldLocation.ETypeHint.File);
+            // TODO: this should be deferred until much later
+            var files = scaffold.GetLocations();
+            foreach (var file in files)
+            {
+                this.fileLocations.Add(file);
+            }
+        }
+#else
+#if true
         // Note: this no longer applies a module's proxy path
         public void Include(Location root, params string[] pathSegments)
         {
-            // TODO: replace with Location
-            var paths = File.GetFiles(root.CachedPath, pathSegments);
+            var paths = File.GetFiles(root, pathSegments);
             foreach (var path in paths)
             {
-                this.filePaths.Add(path);
+                this.fileLocations.Add(path);
             }
         }
 
         // Note: this no longer applies a module's proxy path
         public void Exclude(Location root, params string[] pathSegments)
         {
-            // TODO: replace with the Location
-            var paths = File.GetFiles(root.CachedPath, pathSegments);
+            var paths = File.GetFiles(root, pathSegments);
             foreach (var path in paths)
             {
-                this.filePaths.Remove(path);
+                this.fileLocations.Remove(path);
             }
         }
-
+#else
         // deprecated
         public void Include(object module, params string[] pathSegments)
         {
@@ -106,7 +134,7 @@ namespace Opus.Core
             var paths = File.GetFiles(packagePath, pathSegments);
             foreach (var path in paths)
             {
-                this.filePaths.Add(path);
+                this.fileLocations.Add(path);
             }
         }
 
@@ -129,7 +157,7 @@ namespace Opus.Core
             var paths = File.GetFiles(packagePath, pathSegments);
             foreach (var path in paths)
             {
-                this.filePaths.Remove(path);
+                this.fileLocations.Remove(path);
             }
         }
 
@@ -143,13 +171,24 @@ namespace Opus.Core
             var paths = File.GetFiles(baseDirectory, relativePath);
             foreach (var path in paths)
             {
-                this.filePaths.Add(path);
+                this.fileLocations.Add(path);
             }
         }
+#endif
+#endif
 
-        public Opus.Core.StringArray ToStringArray()
+        public StringArray ToStringArray()
         {
-            return new Opus.Core.StringArray(this.filePaths.ToArray());
+            var array = new StringArray();
+            foreach (var location in this.fileLocations)
+            {
+                var locations = location.GetLocations();
+                foreach (var loc in locations)
+                {
+                    array.Add(loc.AbsolutePath);
+                }
+            }
+            return array;
         }
     }
 }

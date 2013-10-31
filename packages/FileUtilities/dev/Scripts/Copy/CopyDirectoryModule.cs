@@ -9,28 +9,41 @@ namespace FileUtilities
     public class CopyDirectory : Opus.Core.BaseModule, Opus.Core.IModuleCollection
     {
         private System.Collections.Generic.List<CopyFile> copyFiles = new System.Collections.Generic.List<CopyFile>();
-        private string commonBaseDirectory;
+        //private string commonBaseDirectory = null;
 
-        public string CommonBaseDirectory
+        public Opus.Core.Location CommonBaseDirectory
         {
+#if true
+            get;
+            private set;
+#else
             get
             {
                 return this.commonBaseDirectory;
             }
+#endif
         }
 
-        public void Include(Opus.Core.Location root, Opus.Core.Target target, params string[] pathSegments)
+        public void Include(Opus.Core.Location baseLocation, string pattern, Opus.Core.Target target)
         {
-            if (null != this.ProxyPath)
-            {
-                root = this.ProxyPath.Combine(root);
-            }
-
             // each file to copy needs to know where the parent was set to copy next to
             BesideModuleAttribute besideModule;
             System.Type dependentModule;
             Utilities.GetBesideModule(this, target, out besideModule, out dependentModule);
 
+#if true
+            this.CommonBaseDirectory = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            // copy recursively
+            var allFilesRecursiveScaffold = new Opus.Core.ScaffoldLocation(this.CommonBaseDirectory, "**", Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var locations = allFilesRecursiveScaffold.GetLocations();
+            foreach (var location in locations)
+            {
+                CopyFile file = new CopyFile(besideModule, dependentModule);
+                file.ProxyPath.Assign(this.ProxyPath);
+                file.SourceFile.AbsoluteLocation = location;
+                this.copyFiles.Add(file);
+            }
+#else
             string commonBaseDirectory;
             // TODO: replace with Location
             Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(out commonBaseDirectory, root.CachedPath, pathSegments);
@@ -56,15 +69,17 @@ namespace FileUtilities
 
                 this.commonBaseDirectory = commonRoot;
             }
+#endif
         }
 
-        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
+        public void Exclude(Opus.Core.Location baseLocation, string pattern)
         {
-            if (null != this.ProxyPath)
-            {
-                root = this.ProxyPath.Combine(root);
-            }
-            
+#if true
+            var scaffold = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var locations = scaffold.GetLocations();
+
+            throw new System.NotImplementedException();
+#else
             // TODO: replace with Location
             Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
             System.Collections.Generic.List<CopyFile> toRemove = new System.Collections.Generic.List<CopyFile>();
@@ -83,8 +98,10 @@ namespace FileUtilities
             {
                 this.copyFiles.Remove(file);
             }
+#endif
         }
 
+#if false
         // deprecated
         public void Include(object owner, Opus.Core.Target target, params string[] pathSegments)
         {
@@ -166,12 +183,15 @@ namespace FileUtilities
                 this.copyFiles.Remove(file);
             }
         }
+#endif
 
         
         #region IModuleCollection implementation
 
 #if true
-        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray, Opus.Core.Location root, params string[] pathSegments)
+        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
+                                          Opus.Core.Location baseLocation,
+                                          string pattern)
         {
             throw new System.NotImplementedException();
         }

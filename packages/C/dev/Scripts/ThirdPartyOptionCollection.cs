@@ -37,7 +37,7 @@ namespace C
                 var proxyPath = (node.Module as Opus.Core.BaseModule).ProxyPath;
                 if (null != proxyPath)
                 {
-                    packagePath = proxyPath.Combine(node.Package.Identifier.Location).CachedPath;
+                    packagePath = proxyPath.Combine(node.Package.Identifier.Location).AbsolutePath;
                 }
 
                 thirdPartyModule.RegisterOutputFiles(this, node.Target, packagePath);

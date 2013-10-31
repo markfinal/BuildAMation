@@ -23,22 +23,24 @@ namespace VSSolutionBuilder
         {
             this.ProjectName = moduleName;
             this.PathName = projectPathName;
-            this.PackageDirectory = packageId.Path;
+            this.PackageDirectory = packageId.Location;
             if (null != proxyPath)
             {
-                this.PackageDirectory = proxyPath.Combine(packageId.Location).CachedPath;
+                this.PackageDirectory = proxyPath.Combine(packageId.Location);
             }
 
-            bool isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(this.PackageDirectory);
+            var packagePath = this.PackageDirectory.GetLocations()[0].AbsolutePath;
+
+            bool isPackageDirAbsolute = Opus.Core.RelativePathUtilities.IsPathAbsolute(packagePath);
             System.UriKind kind = isPackageDirAbsolute ? System.UriKind.Absolute : System.UriKind.Relative;
 
-            if (this.PackageDirectory[this.PackageDirectory.Length - 1] == System.IO.Path.DirectorySeparatorChar)
+            if (packagePath[packagePath.Length - 1] == System.IO.Path.DirectorySeparatorChar)
             {
-                this.PackageUri = new System.Uri(this.PackageDirectory, kind);
+                this.PackageUri = new System.Uri(packagePath, kind);
             }
             else
             {
-                this.PackageUri = new System.Uri(this.PackageDirectory + System.IO.Path.DirectorySeparatorChar, kind);
+                this.PackageUri = new System.Uri(packagePath + System.IO.Path.DirectorySeparatorChar, kind);
             }
 
             this.ProjectGuid = new DeterministicGuid(this.PathName).Guid;
@@ -68,7 +70,7 @@ namespace VSSolutionBuilder
             }
         }
 
-        public string PackageDirectory
+        public Opus.Core.DirectoryLocation PackageDirectory
         {
             get;
             private set;

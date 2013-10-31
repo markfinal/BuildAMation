@@ -29,7 +29,7 @@ namespace MingwCommon
 
             if (this.OutputPaths.Has(C.OutputFileFlags.StaticLibrary))
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(this.LibraryFilePath), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.LibraryFilePath));
             }
 
             return directoriesToCreate;

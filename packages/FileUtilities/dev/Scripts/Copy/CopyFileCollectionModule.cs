@@ -25,76 +25,73 @@ namespace FileUtilities
             }
         }
 
-        protected System.Collections.Generic.List<Opus.Core.DeferredLocations> Includes
+        protected Opus.Core.Array<Opus.Core.Location> Includes
         {
             get;
             set;
         }
 
-        protected System.Collections.Generic.List<Opus.Core.DeferredLocations> Excludes
+        protected Opus.Core.Array<Opus.Core.Location> Excludes
         {
             get;
             set;
         }
 
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        public void Include(Opus.Core.Location baseLocation, string pattern)
         {
             if (null == this.Includes)
             {
-                this.Includes = new System.Collections.Generic.List<Opus.Core.DeferredLocations>();
+                this.Includes = new Opus.Core.Array<Opus.Core.Location>();
             }
 
-            this.Includes.Add(new Opus.Core.DeferredLocations(root, pathSegments));
+            this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
         }
 
-        public void Exclude(Opus.Core.Location root, params string[] pathSegments)
+        public void Exclude(Opus.Core.Location baseLocation, string pattern)
         {
             if (null == this.Excludes)
             {
-                this.Excludes = new System.Collections.Generic.List<Opus.Core.DeferredLocations>();
+                this.Excludes = new Opus.Core.Array<Opus.Core.Location>();
             }
 
-            this.Excludes.Add(new Opus.Core.DeferredLocations(root, pathSegments));
+            this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
         }
 
-        private Opus.Core.StringArray EvaluatePaths()
+        private Opus.Core.Array<Opus.Core.Location> EvaluatePaths()
         {
-            if (this.Includes == null)
+            if (null == this.Includes)
             {
                 return null;
             }
 
-            // TODO: Remove Cached Path and remove ToArray
-            var includePathList = new Opus.Core.StringArray();
+            var includePathList = new Opus.Core.Array<Opus.Core.Location>();
             foreach (var include in this.Includes)
             {
-                var pathList = Opus.Core.File.GetFiles(include.Deferred.CachedPath);
-                includePathList.AddRange(pathList);
+                includePathList.AddRangeUnique(include.GetLocations());
             }
             if (null == this.Excludes)
             {
                 return includePathList;
             }
 
-            var excludePathList = new Opus.Core.StringArray();
+            var excludePathList = new Opus.Core.Array<Opus.Core.Location>();
             foreach (var exclude in this.Excludes)
             {
-                var pathList = Opus.Core.File.GetFiles(exclude.Deferred.CachedPath);
-                excludePathList.AddRange(pathList);
+                excludePathList.AddRangeUnique(exclude.GetLocations());
             }
 
-            var remainingPathList = new Opus.Core.StringArray(includePathList.Complement(excludePathList));
-            return remainingPathList;
+            var complement = includePathList.Complement(excludePathList);
+            return complement;
         }
 
-        private System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.StringArray pathList)
+        private System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.Array<Opus.Core.Location> locationList)
         {
             var moduleCollection = new System.Collections.Generic.List<Opus.Core.IModule>();
-            foreach (var path in pathList)
+            foreach (var location in locationList)
             {
                 var copyFile = new CopyFile();
                 copyFile.ProxyPath.Assign(this.ProxyPath);
-                copyFile.SourceFile.AbsolutePath = path;
+                copyFile.SourceFile.AbsoluteLocation = location;
                 moduleCollection.Add(copyFile);
             }
             return moduleCollection;
@@ -166,20 +163,22 @@ namespace FileUtilities
         #region IModuleCollection implementation
 
 #if true
-        private System.Collections.Generic.Dictionary<Opus.Core.DeferredLocations, Opus.Core.UpdateOptionCollectionDelegateArray> DeferredUpdates
+        private System.Collections.Generic.Dictionary<Opus.Core.Location, Opus.Core.UpdateOptionCollectionDelegateArray> DeferredUpdates
         {
             get;
             set;
         }
 
-        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray, Opus.Core.Location root, params string[] pathSegments)
+        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
+                                          Opus.Core.Location baseLocation,
+                                          string pattern)
         {
             if (null == this.DeferredUpdates)
             {
-                this.DeferredUpdates = new System.Collections.Generic.Dictionary<Opus.Core.DeferredLocations, Opus.Core.UpdateOptionCollectionDelegateArray>(new Opus.Core.DeferredLocationsComparer());
+                this.DeferredUpdates = new System.Collections.Generic.Dictionary<Opus.Core.Location, Opus.Core.UpdateOptionCollectionDelegateArray>(new Opus.Core.LocationComparer());
             }
 
-            this.DeferredUpdates[new Opus.Core.DeferredLocations(root, new Opus.Core.StringArray(pathSegments))] = delegateArray;
+            this.DeferredUpdates[new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File)] = delegateArray;
         }
 #else
         Opus.Core.IModule Opus.Core.IModuleCollection.GetChildModule(object owner, params string[] pathSegments)
@@ -227,18 +226,18 @@ namespace FileUtilities
                 collection.Add(module);
             }
 
-            var pathList = this.EvaluatePaths();
-            if (null == pathList)
+            var locationList = this.EvaluatePaths();
+            if (null == locationList)
             {
                 return collection;
             }
 
-            var childModules = this.MakeChildModules(pathList);
+            var childModules = this.MakeChildModules(locationList);
             if (null != this.DeferredUpdates)
             {
                 foreach (var objectFile in childModules)
                 {
-                    var objectFileDeferredLocation = new Opus.Core.DeferredLocations((objectFile as CopyFile).SourceFile.AbsolutePath);
+                    var objectFileDeferredLocation = (objectFile as CopyFile).SourceFile.AbsoluteLocation;
                     if (this.DeferredUpdates.ContainsKey(objectFileDeferredLocation))
                     {
                         foreach (var updateDelegate in this.DeferredUpdates[objectFileDeferredLocation])

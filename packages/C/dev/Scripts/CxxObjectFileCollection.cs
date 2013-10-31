@@ -16,7 +16,7 @@ namespace C.Cxx
             this.list.Add(objectFile);
         }
 
-        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.StringArray pathList)
+        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.Array<Opus.Core.Location> pathList)
         {
             var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
 
@@ -24,7 +24,7 @@ namespace C.Cxx
             {
                 var objectFile = new ObjectFile();
                 objectFile.ProxyPath.Assign(this.ProxyPath);
-                objectFile.SourceFile.AbsolutePath = path;
+                objectFile.SourceFile.AbsoluteLocation = path;
                 objectFileList.Add(objectFile);
             }
 

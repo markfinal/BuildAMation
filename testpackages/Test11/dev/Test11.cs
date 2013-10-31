@@ -8,9 +8,12 @@ namespace Test11
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.commonSourceFile.Include(sourceDir, "main.c");
-            this.winSourceFile.Include(sourceDir, "win", "win.c");
-            this.unixSourceFile.Include(sourceDir, "unix", "unix.c");
-            this.osxSourceFile.Include(sourceDir, "osx", "osx.c");
+            var winDir = sourceDir.SubDirectory("win");
+            var unixDir = sourceDir.SubDirectory("unix");
+            var osxDir = sourceDir.SubDirectory("osx");
+            this.winSourceFile.Include(winDir, "win.c");
+            this.unixSourceFile.Include(unixDir, "unix.c");
+            this.osxSourceFile.Include(osxDir, "osx.c");
         }
 
         [Opus.Core.SourceFiles]

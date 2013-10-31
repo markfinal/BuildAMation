@@ -7,7 +7,8 @@ namespace Test4
     {
         public MyDynamicLib()
         {
-            this.headerFiles.Include(this.PackageLocation, "include", "dynamiclibrary.h");
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.headerFiles.Include(includeDir, "dynamiclibrary.h");
         }
 
         class SourceFiles : C.ObjectFileCollection
@@ -24,7 +25,7 @@ namespace Test4
             private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
 
             [C.ExportCompilerOptionsDelegate]
@@ -62,7 +63,8 @@ namespace Test4
             this.sourceFile.Include(sourceDir, "staticlibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
 
-            this.headerFiles.Include(this.PackageLocation, "include", "staticlibrary.h");
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.headerFiles.Include(includeDir, "staticlibrary.h");
         }
 
         [Opus.Core.SourceFiles]
@@ -75,7 +77,7 @@ namespace Test4
         private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
+            compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
         }
     }
 }

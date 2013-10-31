@@ -81,7 +81,7 @@ namespace C
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.ToolsetName('u')));
 
             compilerOptions.IncludePaths = new Opus.Core.DirectoryCollection();
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(".", true); // explicitly add the one that is assumed
+            compilerOptions.IncludePaths.Add("."); // explicitly add the one that is assumed
 
             compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
 
@@ -114,7 +114,25 @@ namespace C
             var objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)
             {
+#if false
+                // TODO: this doesn't NEED to resolve the location just to get the filename, it could just grab the end of the Location
                 var sourcePathName = (node.Module as ObjectFile).SourceFile.AbsolutePath;
+#else
+                var location = (node.Module as ObjectFile).SourceFile.AbsoluteLocation;
+                var sourcePathName = string.Empty;
+                if (location is Opus.Core.FileLocation)
+                {
+                    sourcePathName = location.AbsolutePath;
+                }
+                else if (location is Opus.Core.DirectoryLocation)
+                {
+                    throw new Opus.Core.Exception("Cannot use a directory for compiler options");
+                }
+                else
+                {
+                    sourcePathName = (location as Opus.Core.ScaffoldLocation).Pattern;
+                }
+#endif
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
             else

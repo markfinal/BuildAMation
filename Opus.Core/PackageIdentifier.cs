@@ -22,7 +22,7 @@ namespace Opus.Core
             this.Version = version;
             this.Root = this.LocateRoot();
             this.PlatformFilter = EPlatform.All;
-            this.Location = new LocationDirectory(this.Path);
+            this.Location = DirectoryLocation.Get(this.Path);
         }
 
         public string Name
@@ -37,7 +37,7 @@ namespace Opus.Core
             private set;
         }
 
-        public string Root
+        public DirectoryLocation Root
         {
             get;
             private set;
@@ -132,7 +132,7 @@ namespace Opus.Core
             return this.ToString("-");
         }
 
-        public LocationDirectory Location
+        public DirectoryLocation Location
         {
             get;
             private set;
@@ -142,7 +142,7 @@ namespace Opus.Core
         {
             get
             {
-                var rootedPath = System.IO.Path.Combine(this.Root, this.Name);
+                var rootedPath = System.IO.Path.Combine(this.Root.AbsolutePath, this.Name);
                 rootedPath = System.IO.Path.Combine(rootedPath, this.Version);
                 return rootedPath;
             }
@@ -157,12 +157,12 @@ namespace Opus.Core
             return compared;
         }
 
-        private string LocateRoot()
+        private DirectoryLocation LocateRoot()
         {
             var rootContainingPackage = false;
             foreach (var root in State.PackageRoots)
             {
-                var packageDirectory = System.IO.Path.Combine(root, this.Name);
+                var packageDirectory = System.IO.Path.Combine(root.AbsolutePath, this.Name);
                 if (System.IO.Directory.Exists(packageDirectory))
                 {
                     rootContainingPackage = true;
@@ -177,7 +177,13 @@ namespace Opus.Core
 
             if (!rootContainingPackage)
             {
-                throw new Exception("Unable to locate package '{0}' in any registered package roots:\n{1}", this.ToString("-"), State.PackageRoots.ToString('\n'));
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Unable to locate package '{0}' in any registered package roots:\n", this.ToString("-"));
+                foreach (var root in State.PackageRoots)
+                {
+                    message.AppendFormat("{0}\n", root);
+                }
+                throw new Exception(message.ToString());
             }
             else
             {

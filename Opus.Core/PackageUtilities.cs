@@ -81,10 +81,8 @@ namespace Opus.Core
                 Core.Log.DebugMessage("Path '{0}' is not a package, but can be a package directory.", path);
             }
 
-            if (!State.PackageRoots.Contains(packageRoot))
-            {
-                State.PackageRoots.Add(packageRoot);
-            }
+            var packageRootLocation = DirectoryLocation.Get(packageRoot);
+            State.PackageRoots.AddUnique(packageRootLocation);
 
             var id = new PackageIdentifier(packageName, packageVersion);
             return id;

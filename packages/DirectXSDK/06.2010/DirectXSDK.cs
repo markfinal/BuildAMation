@@ -63,7 +63,7 @@ namespace DirectXSDK
             {
                 throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
             }
-            linkerOptions.LibraryPaths.AddAbsoluteDirectory(platformLibraryPath, true);
+            linkerOptions.LibraryPaths.Add(platformLibraryPath);
 
             // add libraries
             Opus.Core.StringArray libraries = new Opus.Core.StringArray();
@@ -88,7 +88,7 @@ namespace DirectXSDK
                 return;
             }
 
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            compilerOptions.IncludePaths.Add(includePath);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace CopyTest1
     {
         public CopyDirectoryTest(Opus.Core.Target target)
         {
-            this.Include(this.PackageLocation, target, "data");
+            this.Include(this.PackageLocation, "data", target);
         }
     }
 }

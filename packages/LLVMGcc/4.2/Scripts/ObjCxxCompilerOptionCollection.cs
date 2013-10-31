@@ -26,7 +26,7 @@ namespace LLVMGcc
             {
                 throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath);
             }
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddAbsoluteDirectory(cxxIncludePath, false);
+            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cxxIncludePath);
 
             // TODO: not sure if this is necessary
 #if false

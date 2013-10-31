@@ -7,11 +7,11 @@ namespace FileUtilities
 {
     public class SymlinkDirectory : SymlinkBase
     {
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        public void Include(Opus.Core.Location baseLocation, string pattern)
         {
+            // TODO: is this right now?
             // don't want to recursively search for files, so just evaluate the Location
-            var resolvedLocation = new Opus.Core.LocationDirectory(root, pathSegments);
-            this.SourceFile.AbsolutePath = resolvedLocation.CachedPath;
+            this.SourceFile.Include(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         }
     }
 }

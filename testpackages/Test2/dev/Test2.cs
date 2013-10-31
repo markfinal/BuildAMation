@@ -6,7 +6,9 @@ namespace Test2
     {
         public Library()
         {
-            this.headerFiles.Include(this.PackageLocation, "include", "*.h");
+            // TODO: want to share the LocationMap between all related modules
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.headerFiles.Include(includeDir, "*.h");
         }
 
         sealed class SourceFiles : C.ObjectFileCollection
@@ -22,7 +24,7 @@ namespace Test2
             public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
+                compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
         }
 

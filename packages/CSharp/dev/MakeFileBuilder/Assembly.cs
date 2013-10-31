@@ -58,8 +58,14 @@ namespace MakeFileBuilder
                         else if (sourceField is Opus.Core.FileCollection)
                         {
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
-                            foreach (string absolutePath in sourceCollection)
+                            foreach (Opus.Core.Location location in sourceCollection)
                             {
+                                var locations = location.GetLocations();
+                                if (locations.Count > 1)
+                                {
+                                    throw new Opus.Core.Exception("Location expands to more than one file");
+                                }
+                                string absolutePath = locations[0].AbsolutePath;
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
                                     throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);

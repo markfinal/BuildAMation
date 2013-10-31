@@ -256,8 +256,15 @@ namespace VisualCCommon
             {
                 // this stops any other libraries from being inherited
                 libraryPaths.Append("$(NOINHERIT) ");
-                foreach (string standardLibraryPath in libraryPathsOption.Value)
+                foreach (Opus.Core.Location location in libraryPathsOption.Value)
                 {
+                    var locations = location.GetLocations();
+                    if (locations.Count > 1)
+                    {
+                        throw new Opus.Core.Exception("Location resolves to more than one file");
+                    }
+
+                    var standardLibraryPath = locations[0].AbsolutePath;
                     if (standardLibraryPath.Contains(" "))
                     {
                         libraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
@@ -270,8 +277,15 @@ namespace VisualCCommon
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
             {
-                foreach (string standardLibraryPath in libraryPathsOption.Value)
+                foreach (Opus.Core.Location location in libraryPathsOption.Value)
                 {
+                    var locations = location.GetLocations();
+                    if (locations.Count > 1)
+                    {
+                        throw new Opus.Core.Exception("Location resolves to more than one file");
+                    }
+
+                    var standardLibraryPath = locations[0].AbsolutePath;
                     libraryPaths.Append(System.String.Format("{0};", standardLibraryPath));
                 }
             }

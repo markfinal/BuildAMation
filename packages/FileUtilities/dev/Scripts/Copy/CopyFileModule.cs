@@ -46,9 +46,9 @@ namespace FileUtilities
         }
 
 #if true
-        public void Include(Opus.Core.Location root, params string[] pathSegments)
+        public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            this.SourceFile.Include(root, pathSegments);
+            this.SourceFile.Include(baseLocation, pattern);
         }
 #else
         public void SetRelativePath(object owner, params string[] pathSegments)

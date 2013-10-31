@@ -45,7 +45,7 @@ namespace FileUtilities
                                                   options.SourceModuleType.ToString(),
                                                   options.SourceModuleOutputEnum.ToString());
                 }
-                (node.Module as SymlinkBase).SourceFile.AbsolutePath = sourceModuleOutputPath;
+                (node.Module as SymlinkBase).SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(sourceModuleOutputPath, Opus.Core.Location.EExists.WillExist);
             }
 
             if (null == this.OutputPaths[OutputFileFlags.Symlink])
@@ -64,7 +64,7 @@ namespace FileUtilities
                 {
                     destinationDirectory = node.GetModuleBuildDirectory();
                 }
-                this.directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
+                this.directoriesToCreate.Add(destinationDirectory);
 
                 string targetName;
                 if (null != options.TargetName)

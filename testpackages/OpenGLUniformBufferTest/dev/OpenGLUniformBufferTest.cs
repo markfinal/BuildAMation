@@ -6,7 +6,8 @@ namespace OpenGLUniformBufferTest
     {
         public GLUniformBufferTest()
         {
-            this.headerFiles.Include(this, "source", "*.h");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.headerFiles.Include(sourceDir, "*.h");
         }
 
         class SourceFiles : C.Cxx.ObjectFileCollection

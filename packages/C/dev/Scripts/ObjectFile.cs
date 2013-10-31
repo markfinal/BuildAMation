@@ -23,8 +23,15 @@ namespace C
         }
 
 #if true
+        public void Include(Opus.Core.Location baseLocation, string pattern)
+        {
+            this.SourceFile.Include(baseLocation, pattern);
+        }
+#else
+#if true
         public void Include(Opus.Core.Location root, params string[] pathSegments)
         {
+            // TODO: is this needed, since the proxy is incorporated into the root already in BaseModule?
             if (this.ProxyPath != null)
             {
                 root = this.ProxyPath.Combine(root);
@@ -52,6 +59,7 @@ namespace C
         {
             this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
         }
+#endif
 #endif
     }
 }

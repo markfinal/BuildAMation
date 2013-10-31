@@ -24,7 +24,7 @@ namespace Opus.Core
                 {
                     var id = package.Identifier;
                     string name = id.ToString("_");
-                    string value = id.Root;
+                    string value = id.Root.AbsolutePath;
 
                     writer.AddResource(name, value);
                 }
@@ -91,7 +91,7 @@ namespace Opus.Core
                 var data = resourceFile.CreateElement("data");
                 data.SetAttribute("name", package.Identifier.ToString("_"));
                 var value = resourceFile.CreateElement("value");
-                value.InnerText = package.Identifier.Root;
+                value.InnerText = package.Identifier.Root.AbsolutePath;
                 data.AppendChild(value);
                 root.AppendChild(data);
             }

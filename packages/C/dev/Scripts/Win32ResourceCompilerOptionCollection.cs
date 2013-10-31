@@ -88,7 +88,7 @@ namespace C
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
         {
             var directories = new Opus.Core.DirectoryCollection();
-            directories.Add(System.IO.Path.GetDirectoryName(this.CompiledResourceFilePath), false);
+            directories.Add(System.IO.Path.GetDirectoryName(this.CompiledResourceFilePath));
             return directories;
         }
     }

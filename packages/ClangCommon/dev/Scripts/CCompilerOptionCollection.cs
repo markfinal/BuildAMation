@@ -43,7 +43,7 @@ namespace ClangCommon
             var objPathName = this.ObjectFilePath;
             if (null != objPathName)
             {
-                directoriesToCreate.AddAbsoluteDirectory(System.IO.Path.GetDirectoryName(objPathName), false);
+                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(objPathName));
             }
 
             return directoriesToCreate;

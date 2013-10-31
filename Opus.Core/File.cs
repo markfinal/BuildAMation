@@ -10,7 +10,15 @@ namespace Opus.Core
         static private readonly string DirectorySeparatorString = new string(System.IO.Path.DirectorySeparatorChar, 1);
         static private readonly string AltDirectorySeparatorString = new string(System.IO.Path.AltDirectorySeparatorChar, 1);
 
+#if true
+        public Location AbsoluteLocation
+        {
+            get;
+            set;
+        }
+#else
         private string absolutePath = null;
+#endif
 
         private static bool ContainsDirectorySeparators(string pathSegment)
         {
@@ -65,6 +73,7 @@ namespace Opus.Core
             return canonicalPath;
         }
 
+#if false
         private void Initialize(string basePath, bool checkExists, params string[] pathSegments)
         {
             string absolutePath;
@@ -89,7 +98,20 @@ namespace Opus.Core
 
             this.AbsolutePath = absolutePath;
         }
+#endif
 
+#if true
+        public void Include(Location baseLocation, string pattern, ScaffoldLocation.ETypeHint typeHint)
+        {
+            var location = new ScaffoldLocation(baseLocation, pattern, typeHint);
+            this.AbsoluteLocation = location;
+        }
+
+        public void Include(Location baseLocation, string pattern)
+        {
+            this.Include(baseLocation, pattern, ScaffoldLocation.ETypeHint.File);
+        }
+#else
 #if true
         private Location Root
         {
@@ -105,18 +127,17 @@ namespace Opus.Core
 
         private string EvaluateExpression()
         {
-            // TODO: yuck, ToArray()
-            var files = GetFiles(this.Root.CachedPath, this.PathSegments.ToArray());
+            var files = GetFiles(this.Root, this.PathSegments);
             if (0 == files.Count)
             {
-                throw new Exception("Include expression does not relate to any existing files.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.CachedPath, this.PathSegments.ToString('\n'));
+                throw new Exception("Include expression does not relate to any existing files.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.ToString(), this.PathSegments.ToString('\n'));
             }
             else if (files.Count != 1)
             {
-                throw new Exception("Include expression resolves to more than one file.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.CachedPath, this.PathSegments.ToString('\n'));
+                throw new Exception("Include expression resolves to more than one file.\n\tRoot: {0}\n\tPath segments: {1}", this.Root.ToString(), this.PathSegments.ToString('\n'));
             }
 
-            var path = CanonicalPath(files[0]);
+            var path = CanonicalPath(files[0].Resolve().AbsolutePath);
             return path;
         }
 
@@ -124,6 +145,7 @@ namespace Opus.Core
         public void Include(Location root, params string[] pathSegments)
         {
 #if true
+            this.AbsoluteLocation = new ScaffoldLocation(root, pathSegments).Resolve();
             this.Root = root;
             this.PathSegments = new StringArray(pathSegments);
 #else
@@ -175,6 +197,7 @@ namespace Opus.Core
             this.Initialize(absolutePath, false);
         }
 #endif
+#endif
 
         private static bool IsFileInHiddenHierarchy(System.IO.FileInfo file, string rootDir)
         {
@@ -197,6 +220,73 @@ namespace Opus.Core
             return false;
         }
 
+#if false
+#if true
+        public static Array<DirectoryLocation> GetFiles(out Location combinedBaseDirectory, Location root, StringArray pathSegments)
+        {
+            // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
+            // cannot use GetFiles with a pattern containing directories
+            // this is also useful for getting wildcarded recursive file searches from a directory
+
+            var newPathSegments = new StringArray();
+            if (root.Type == Location.EType.File)
+            {
+                if (pathSegments.Count > 0)
+                {
+                    throw new Exception("Cannot extend a file with more path segments");
+                }
+
+                combinedBaseDirectory = root.ParentDirectory;
+                return new Array<LocationFile>(root as LocationFile);
+            }
+            else if (root.Type == Location.EType.Directory)
+            {
+                combinedBaseDirectory = root;
+                newPathSegments.AddRange(pathSegments);
+            }
+            else // if (root.Type == Location.EType.Unresolved)
+            {
+                combinedBaseDirectory = root.ParentDirectory;
+                newPathSegments.AddRange(root.Segments);
+                newPathSegments.AddRange(pathSegments);
+            }
+
+            if (combinedBaseDirectory.Type != Location.EType.Directory)
+            {
+                throw new Exception("Unable to locate base directory");
+            }
+
+            if (newPathSegments.Count > 1)
+            {
+                for (int i = 0; i < newPathSegments.Count - 1; ++i)
+                {
+                    combinedBaseDirectory = combinedBaseDirectory.SubDirectory(newPathSegments[i]);
+                }
+            }
+
+            var cached = combinedBaseDirectory.Resolve();
+            try
+            {
+                var dirInfo = new System.IO.DirectoryInfo(cached);
+                var wildcard = newPathSegments[newPathSegments.Count - 1];
+                var files = dirInfo.GetFiles(wildcard, System.IO.SearchOption.AllDirectories);
+                var nonHiddenFiles = new Array<FileLocation>();
+                foreach (var file in files)
+                {
+                    if (!IsFileInHiddenHierarchy(file, cached))
+                    {
+                        nonHiddenFiles.Add(new LocationFile(file.FullName));
+                    }
+                }
+                return nonHiddenFiles;
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                Log.Detail("Warning: No files match the pattern {0}{1}{2} for all subdirectory", combinedBaseDirectory, System.IO.Path.DirectorySeparatorChar, "*");
+                return new Array<FileLocation>();
+            }
+        }
+#else
         public static StringArray GetFiles(out string combinedBaseDirectory, string baseDirectory, params string[] pathSegments)
         {
             // workaround for this Mono bug http://www.mail-archive.com/mono-bugs@lists.ximian.com/msg71506.html
@@ -293,7 +383,43 @@ namespace Opus.Core
             string commonBaseDirectory;
             return GetFiles(out commonBaseDirectory, baseDirectory, pathSegments);
         }
+#endif
+#endif
 
+#if true
+#else
+        public static Array<FileLocation> GetFiles(Location root, params string[] pathSegments)
+        {
+            Location commonBaseDirectory;
+            return GetFiles(out commonBaseDirectory, root, new StringArray(pathSegments));
+        }
+
+        public static Array<FileLocation> GetFiles(Location root, StringArray pathSegments)
+        {
+            Location commonBaseDirectory;
+            return GetFiles(out commonBaseDirectory, root, pathSegments);
+        }
+#endif
+
+#if true
+        public string AbsolutePath
+        {
+            get
+            {
+                var locations = this.AbsoluteLocation.GetLocations();
+                if (locations.Count > 1)
+                {
+                    throw new Exception("Expands to more than one location");
+                }
+                return locations[0].AbsolutePath;
+            }
+
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+#else
         public string AbsolutePath
         {
             get
@@ -318,10 +444,11 @@ namespace Opus.Core
                 this.absolutePath = value;
             }
         }
+#endif
 
         public override string ToString()
         {
-            return this.AbsolutePath;
+            return this.AbsoluteLocation.ToString();
         }
     }
 }

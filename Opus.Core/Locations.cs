@@ -7,260 +7,352 @@ namespace Opus.Core
 {
     public abstract class Location
     {
-        protected Location(Location root, StringArray segments)
+        public enum EExists
         {
-            if (root.IsFile && segments.Count > 0)
-            {
-                throw new Exception("Cannot root a location from a file and with additional path segments");
-            }
-
-            this.Root = root;
-            this.Module = null;
-            this.Segments = segments;
-            this.CachedPath = null;
-            this.Proxy = null;
+            Exists,
+            WillExist
         }
 
-        protected Location(Location root, ProxyModulePath proxy)
-        {
-            this.Root = root;
-            this.Module = null;
-            this.Segments = null;
-            this.CachedPath = null;
-            this.Proxy = proxy;
-        }
+        public abstract Location SubDirectory(string subDirName);
 
-        protected Location(BaseModule module, StringArray segments)
-        {
-            this.Root = null;
-            this.Module = module;
-            this.Segments = segments;
-            this.CachedPath = null;
-            this.Proxy = null;
-        }
-
-        protected Location(string absolutePath)
-        {
-            this.Root = null;
-            this.Module = null;
-            this.Segments = null;
-            this.CachedPath = absolutePath;
-            this.Proxy = null;
-        }
-
-        public abstract bool IsFile
+        public virtual string AbsolutePath
         {
             get;
+            protected set;
         }
 
-        public bool MayContainWildcards
-        {
-            get;
-            set;
-        }
+        public abstract Array<Location> GetLocations();
 
-        private string CalculatePathFromRoot()
+        // TODO: not sure how to do this for all the different types present
+        static protected System.Collections.Generic.Dictionary<string, Location> HashMap = new System.Collections.Generic.Dictionary<string, Location>();
+    }
+
+    public sealed class DirectoryLocation : Location
+    {
+        private static System.Collections.Generic.Dictionary<int, DirectoryLocation> cache = new System.Collections.Generic.Dictionary<int, DirectoryLocation>();
+
+        private DirectoryLocation(string absolutePath, Location.EExists exists)
         {
-            if (null != this.Segments)
+            var hash = absolutePath.GetHashCode();
+            if (exists == EExists.Exists)
             {
-                var combinedPath = this.Root.CachedPath;
-                foreach (var segment in this.Segments)
+                if (!System.IO.Directory.Exists(absolutePath))
                 {
-                    combinedPath = System.IO.Path.Combine(combinedPath, segment);
-                }
-                if (this.MayContainWildcards)
-                {
-                    return combinedPath;
-                }
-                else
-                {
-                    return System.IO.Path.GetFullPath(combinedPath);
+                    throw new Exception("Directory '{0}' does not exist", absolutePath);
                 }
             }
-            else if (null != this.Proxy)
+            this.AbsolutePath = absolutePath;
+        }
+
+        public static DirectoryLocation Get(string absolutePath, Location.EExists exists)
+        {
+            var hash = absolutePath.GetHashCode();
+            if (cache.ContainsKey(hash))
             {
-                var newLocation = this.Proxy.Combine(this.Root);
-                return newLocation.CachedPath;
+                return cache[hash];
             }
-            else
-            {
-                throw new Exception("Do not know how to evaluate the path in this Location");
-            }
+            var instance = new DirectoryLocation(absolutePath, exists);
+            cache[hash] = instance;
+            return instance;
         }
 
-        private string cachedPath = null;
-        public string CachedPath
+        public static DirectoryLocation Get(string absolutePath)
         {
-            get
-            {
-                if (null == this.cachedPath)
-                {
-                    if (null != this.Root)
-                    {
-                        this.cachedPath = this.CalculatePathFromRoot();
-                    }
-                    else
-                    {
-                        throw new Exception("Need to calculate cached path");
-                    }
-                }
-
-                return this.cachedPath;
-            }
-
-            private set
-            {
-                this.cachedPath = value;
-            }
+            return Get(absolutePath, EExists.Exists);
         }
 
-        private Location Root
+        public override Location SubDirectory(string subDirName)
         {
-            get;
-            set;
-        }
-
-#if false
-        public string Path
-        {
-            get
-            {
-                if (null != this.CachedPath)
-                {
-                    return this.CachedPath;
-                }
-
-                var package = Opus.Core.PackageUtilities.GetOwningPackage(this.Module);
-                if (null == package)
-                {
-                    throw new Opus.Core.Exception("Unable to locate package '{0}'", this.Module.GetType().Namespace);
-                }
-
-                var packagePath = package.Identifier.Path;
-                var proxyPath = this.Module.ProxyPath;
-                if (null != proxyPath)
-                {
-                    packagePath = proxyPath.Combine(package.Identifier);
-                }
-
-                var filePaths = Opus.Core.File.GetFiles(packagePath, this.Segments.ToArray());
-                foreach (var path in filePaths)
-                {
-                    var objectFile = new ObjectFile();
-                    (objectFile as Opus.Core.BaseModule).ProxyPath = (this as Opus.Core.BaseModule).ProxyPath;
-                    objectFile.SourceFile.SetAbsolutePath(path);
-                    this.list.Add(objectFile);
-                }
-
-            }
-        }
-
-        public abstract bool Exists
-        {
-            get;
-        }
-#endif
-
-        private BaseModule Module
-        {
-            get;
-            set;
-        }
-
-        private StringArray Segments
-        {
-            get;
-            set;
-        }
-
-        private ProxyModulePath Proxy
-        {
-            get;
-            set;
+            var subDirectoryPath = System.IO.Path.Combine(this.AbsolutePath, subDirName);
+            return Get(subDirectoryPath) as Location;
         }
 
         public override string ToString()
         {
-            return this.cachedPath;
+            return System.String.Format("Directory '{0}'", this.AbsolutePath);
         }
 
-        public abstract LocationDirectory SubDirectory(params string[] segments);
-    }
-
-    public sealed class LocationFile : Location
-    {
-        public LocationFile(LocationDirectory root, params string[] segments)
-            : base(root, new StringArray(segments))
+        public override Array<Location> GetLocations()
         {
-        }
-
-        public LocationFile(Location root, ProxyModulePath proxy)
-            : base(root, proxy)
-        {
-        }
-
-        public LocationFile(BaseModule module, params string[] segments)
-            : base(module, new StringArray(segments))
-        {
-        }
-
-        public LocationFile(string absolutePath)
-            : base(absolutePath)
-        {
-        }
-
-        public override bool IsFile
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public override LocationDirectory SubDirectory(params string[] segments)
-        {
-            throw new Exception("Cannot make a child directory from a file");
+            return new Array<Location>(this);
         }
     }
 
-    public sealed class LocationDirectory : Location
+    public sealed class FileLocation : Location
     {
-        public LocationDirectory(Location root, params string[] segments)
-            : base(root, new StringArray(segments))
-        {
-        }
+        private static System.Collections.Generic.Dictionary<int, FileLocation> cache = new System.Collections.Generic.Dictionary<int, FileLocation>();
 
-        public LocationDirectory(Location root, StringArray segments)
-            : base(root, segments)
+        private FileLocation(string absolutePath, Location.EExists exists)
         {
-        }
-
-        public LocationDirectory(Location root, ProxyModulePath proxy)
-            : base(root, proxy)
-        {
-        }
-
-        public LocationDirectory(BaseModule module, params string[] segments)
-            : base(module, new StringArray(segments))
-        {
-        }
-
-        public LocationDirectory(string absolutePath)
-            : base(absolutePath)
-        {
-        }
-
-        public override bool IsFile
-        {
-            get
+            if (exists == EExists.Exists)
             {
-                return false;
+                if (!System.IO.File.Exists(absolutePath))
+                {
+                    throw new Exception("File '{0}' does not exist", absolutePath);
+                }
+            }
+            this.AbsolutePath = absolutePath;
+        }
+
+        public static FileLocation Get(string absolutePath, Location.EExists exists)
+        {
+            var hash = absolutePath.GetHashCode();
+            if (cache.ContainsKey(hash))
+            {
+                return cache[hash];
+            }
+            var instance = new FileLocation(absolutePath, exists);
+            cache[hash] = instance;
+            return instance;
+        }
+
+        public static FileLocation Get(string absolutePath)
+        {
+            return Get(absolutePath, EExists.Exists);
+        }
+
+        public static FileLocation Get(Location baseLocation, string nonWildcardedFilename)
+        {
+            var locations = baseLocation.GetLocations();
+            if (locations.Count > 1)
+            {
+                throw new Exception("Cannot resolve source Location to a single path");
+            }
+            var path = System.IO.Path.Combine(locations[0].AbsolutePath, nonWildcardedFilename);
+            var hash = path.GetHashCode();
+            if (cache.ContainsKey(hash))
+            {
+                return cache[hash];
+            }
+            var instance = new FileLocation(path, EExists.Exists);
+            cache[hash] = instance;
+            return instance;
+        }
+
+        public override Location SubDirectory(string subDirName)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            return System.String.Format("File '{0}'", this.AbsolutePath);
+        }
+
+        public override Array<Location> GetLocations()
+        {
+            return new Array<Location>(this);
+        }
+    }
+
+    public sealed class ScaffoldLocation : Location
+    {
+        public enum ETypeHint
+        {
+            Directory,
+            File
+        }
+
+        private ScaffoldLocation(ETypeHint typeHint)
+        {
+            this.TypeHint = typeHint;
+            this.Results = new Array<Location>();
+        }
+
+        public ScaffoldLocation(Location baseLocation, string pattern, ETypeHint typeHint)
+            : this(typeHint)
+        {
+            this.Base = baseLocation;
+            this.Pattern = pattern;
+        }
+
+        public ScaffoldLocation(Location baseLocation, ProxyModulePath proxyPath, ETypeHint typeHint)
+            : this(typeHint)
+        {
+            this.Base = baseLocation;
+            this.ProxyPath = proxyPath;
+        }
+
+        public ETypeHint TypeHint
+        {
+            get;
+            private set;
+        }
+
+        public Location Base
+        {
+            get;
+            private set;
+        }
+
+        public string Pattern
+        {
+            get;
+            private set;
+        }
+
+        private ProxyModulePath ProxyPath
+        {
+            get;
+            set;
+        }
+
+        private void ResolveDirectory(Location directory)
+        {
+            if (null == this.Pattern)
+            {
+                if ((null == this.ProxyPath) || this.ProxyPath.Empty)
+                {
+                    this.Results.AddUnique(directory);
+                    return;
+                }
+
+                var proxiedBase = this.ProxyPath.Combine(directory);
+                this.Results.AddUnique(proxiedBase);
+                return;
+            }
+            else
+            {
+                var path = directory.AbsolutePath;
+                if ((null != this.ProxyPath) && !this.ProxyPath.Empty)
+                {
+                    var newLocation = this.ProxyPath.Combine(directory);
+                    path = newLocation.AbsolutePath;
+                }
+
+                var fullPath = System.IO.Path.Combine(path, this.Pattern);
+                if (this.TypeHint == ETypeHint.File)
+                {
+                    if (this.Pattern.Contains("*"))
+                    {
+                        var pattern = this.Pattern;
+                        var searchType = System.IO.SearchOption.TopDirectoryOnly;
+
+                        // is it a recursive search?
+                        if (this.Pattern.Equals("**"))
+                        {
+                            pattern = "*";
+                            searchType = System.IO.SearchOption.AllDirectories;
+                        }
+                        var dirInfo = new System.IO.DirectoryInfo(path);
+                        var files = dirInfo.GetFiles(pattern, searchType);
+                        foreach (var file in files)
+                        {
+                            this.Results.AddUnique(FileLocation.Get(file.FullName));
+                        }
+                    }
+                    else
+                    {
+                        this.Results.AddUnique(FileLocation.Get(fullPath));
+                    }
+                }
+                else
+                {
+                    this.Results.AddUnique(DirectoryLocation.Get(fullPath));
+                }
             }
         }
 
-        public override LocationDirectory SubDirectory(params string[] segments)
+        private void Resolve()
         {
-            return new LocationDirectory(this, segments);
+#if true
+            if (this.Base is ScaffoldLocation)
+            {
+                var baseScaffold = this.Base as ScaffoldLocation;
+                baseScaffold.Resolve();
+                foreach (var result in baseScaffold.Results)
+                {
+                    if (result is DirectoryLocation)
+                    {
+                        this.ResolveDirectory(result);
+                    }
+                    else
+                    {
+                        throw new System.NotImplementedException();
+                    }
+                }
+            }
+            else if (this.Base is DirectoryLocation)
+            {
+                this.ResolveDirectory(this.Base);
+            }
+#else
+            var baseLocation = this.Base.Resolve();
+            var path = baseLocation.AbsolutePath;
+            if (baseLocation is DirectoryLocation)
+            {
+                if (null == this.Pattern)
+                {
+                    if ((null == this.ProxyPath) || this.ProxyPath.Empty)
+                    {
+                        return baseLocation;
+                    }
+
+                    var newLocation = this.ProxyPath.Combine(baseLocation);
+                    return newLocation;
+                }
+
+                if ((null != this.ProxyPath) && !this.ProxyPath.Empty)
+                {
+                    var newLocation = this.ProxyPath.Combine(baseLocation);
+                    path = newLocation.Resolve().AbsolutePath;
+                }
+
+                path = System.IO.Path.Combine(path, this.Pattern);
+                if (this.Pattern.Contains(".")) // TODO: perhaps an indication of a file
+                {
+                    return FileLocation.Get(path);
+                }
+                else
+                {
+                    return DirectoryLocation.Get(path);
+                }
+            }
+            else if (baseLocation is FileLocation)
+            {
+                if (null != this.Pattern)
+                {
+                    throw new Exception("Cannot subdivide a file further");
+                }
+
+                return baseLocation;
+            }
+            else
+            {
+                throw new Exception("Not supported");
+            }
+#endif
+        }
+
+        public override Location SubDirectory(string subDirName)
+        {
+            return new ScaffoldLocation(this, subDirName, ETypeHint.Directory);
+        }
+
+        private Array<Location> Results
+        {
+            get;
+            set;
+        }
+
+        public override string AbsolutePath
+        {
+            get
+            {
+                throw new Exception("Getting scaffold absolute path");
+                //return base.AbsolutePath;
+            }
+            protected set
+            {
+                throw new Exception("Setting scaffold absolute path");
+                //base.AbsolutePath = value;
+            }
+        }
+
+        public override Array<Location> GetLocations()
+        {
+            this.Resolve();
+            return this.Results;
         }
     }
 
@@ -298,46 +390,38 @@ namespace Opus.Core
         }
     }
 
-    public class DeferredLocations
+    public class LocationComparer : System.Collections.Generic.IEqualityComparer<Location>
     {
-        public DeferredLocations(Location root, params string[] pathSegments)
+        #region IEqualityComparer<Location> Members
+
+        bool System.Collections.Generic.IEqualityComparer<Location>.Equals(Location x, Location y)
         {
-            this.Deferred = new LocationDirectory(root, pathSegments);
-            this.Deferred.MayContainWildcards = true;
+            var xLocations = x.GetLocations();
+            var yLocations = y.GetLocations();
+            if (xLocations.Count != yLocations.Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < xLocations.Count; ++i)
+            {
+                bool equals = (xLocations[i].AbsolutePath.Equals(yLocations[i].AbsolutePath));
+                if (!equals)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
-        public DeferredLocations(Location root, StringArray pathSegments)
+        int System.Collections.Generic.IEqualityComparer<Location>.GetHashCode(Location obj)
         {
-            this.Deferred = new LocationDirectory(root, pathSegments);
-            this.Deferred.MayContainWildcards = true;
-        }
-
-        public DeferredLocations(string absolutePath)
-        {
-            this.Deferred = new LocationDirectory(absolutePath);
-            this.Deferred.MayContainWildcards = true;
-        }
-
-        public Location Deferred
-        {
-            get;
-            private set;
-        }
-    }
-
-    public class DeferredLocationsComparer : System.Collections.Generic.IEqualityComparer<DeferredLocations>
-    {
-        #region IEqualityComparer<DeferredLocations> Members
-
-        bool System.Collections.Generic.IEqualityComparer<DeferredLocations>.Equals(DeferredLocations x, DeferredLocations y)
-        {
-            bool equals = (x.Deferred.CachedPath.Equals(y.Deferred.CachedPath));
-            return equals;
-        }
-
-        int System.Collections.Generic.IEqualityComparer<DeferredLocations>.GetHashCode(DeferredLocations obj)
-        {
-            return obj.Deferred.CachedPath.GetHashCode();
+            var locations = obj.GetLocations();
+            var combinedPaths = new System.Text.StringBuilder();
+            foreach (var location in locations)
+            {
+                combinedPaths.Append(location.AbsolutePath);
+            }
+            return combinedPaths.ToString().GetHashCode();
         }
 
         #endregion

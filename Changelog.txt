@@ -1,3 +1,5 @@
+31-Oct-2013 Reworked the Opus.Core.Location API and usage. Location is an abstract base class. FileLocation is a subclass, and represents a single file. DirectoryLocation is a subclass, and represents a single directory. ScaffoldLocation is a subclass, and represents an ambiguous number of files or directories. Calling GetLocations() on a ScaffoldLocation returns a resolved list of Locations. Many File and Directory storage cases have been revised to use Locations, and some APIs have been broken in the process. Particularly, the Include/Exclude mechanism now only accepts a single pattern string, rather than a variable length array of subpaths.
+
 31-Oct-2013 Added Opus.Core.Array<T>.SubArray, taking the index of the first element, and a count.
 
 23-Oct-2013 Release 0.50 Alpha 5

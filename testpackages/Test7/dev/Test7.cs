@@ -10,7 +10,8 @@ namespace Test7
             this.sourceFile.Include(sourceDir, "dynamiclibrary.c");
             this.sourceFile.UpdateOptions += SetIncludePaths;
 
-            this.headerFiles.Include(this.PackageLocation, "include", "*.h");
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.headerFiles.Include(includeDir, "*.h");
         }
 
         [C.ExportCompilerOptionsDelegate]

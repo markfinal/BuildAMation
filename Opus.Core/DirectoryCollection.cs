@@ -7,15 +7,29 @@ namespace Opus.Core
 {
     public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable, IComplement<DirectoryCollection>
     {
-        private StringArray directoryPaths = new StringArray();
+        private Array<Location> directoryLocations = new Array<Location>();
 
         public object Clone()
         {
             var clone = new DirectoryCollection();
-            clone.directoryPaths.AddRange(this.directoryPaths);
+            clone.directoryLocations.AddRange(this.directoryLocations);
             return clone;
         }
 
+#if true
+        public void Add(string path)
+        {
+            this.directoryLocations.AddUnique(DirectoryLocation.Get(path, Location.EExists.WillExist));
+        }
+
+        public void AddRange(StringArray paths)
+        {
+            foreach (var path in paths)
+            {
+                this.Add(path);
+            }
+        }
+#else
         public void Add(string absoluteDirectoryPath, bool checkForExistence)
         {
             if (checkForExistence && !System.IO.Directory.Exists(absoluteDirectoryPath))
@@ -23,9 +37,9 @@ namespace Opus.Core
                 throw new Exception("The directory '{0}' does not exist", absoluteDirectoryPath);
             }
 
-            if (!this.directoryPaths.Contains(absoluteDirectoryPath))
+            if (!this.directoryLocations.Contains(absoluteDirectoryPath))
             {
-                this.directoryPaths.Add(absoluteDirectoryPath);
+                this.directoryLocations.Add(absoluteDirectoryPath);
             }
             else
             {
@@ -37,7 +51,10 @@ namespace Opus.Core
         {
             this.Add(absoluteDirectoryPath, checkForExistence);
         }
+#endif
 
+#if true
+#else
         private static StringArray GetDirectories(string baseDirectory, params string[] pathSegments)
         {
             if (0 == pathSegments.Length)
@@ -134,18 +151,31 @@ namespace Opus.Core
                 }
             }
         }
+#endif
 
+#if true
+        public void Include(Location baseLocation)
+        {
+            var locations = baseLocation.GetLocations();
+            this.directoryLocations.AddRangeUnique(locations);
+        }
+
+        public void Include(Location baseLocation, string pattern)
+        {
+            var locations = baseLocation.SubDirectory(pattern).GetLocations();
+            this.directoryLocations.AddRangeUnique(locations);
+        }
+#else
 #if true
         // Note that this no longer applies a module's proxy path
         public void Include(Location root, params string[] pathSegments)
         {
-            // TODO: replace with Location
-            var paths = GetDirectories(root.CachedPath, pathSegments);
+            var paths = GetDirectories(root, pathSegments);
             foreach (var path in paths)
             {
-                if (!this.directoryPaths.Contains(path))
+                if (!this.directoryLocations.Contains(path))
                 {
-                    this.directoryPaths.Add(path);
+                    this.directoryLocations.Add(path);
                 }
             }
         }
@@ -153,13 +183,12 @@ namespace Opus.Core
         // Note that this no longer applies a module's proxy path
         public void Exclude(Location root, params string[] pathSegments)
         {
-            // TODO: replace with Location
-            var paths = GetDirectories(root.CachedPath, pathSegments);
+            var paths = GetDirectories(root, pathSegments);
             foreach (var path in paths)
             {
-                if (!this.directoryPaths.Contains(path))
+                if (!this.directoryLocations.Contains(path))
                 {
-                    this.directoryPaths.Remove(path);
+                    this.directoryLocations.Remove(path);
                 }
             }
         }
@@ -183,9 +212,9 @@ namespace Opus.Core
             var paths = GetDirectories(packagePath, pathSegments);
             foreach (var path in paths)
             {
-                if (!this.directoryPaths.Contains(path))
+                if (!this.directoryLocations.Contains(path))
                 {
-                    this.directoryPaths.Add(path);
+                    this.directoryLocations.Add(path);
                 }
             }
         }
@@ -209,14 +238,16 @@ namespace Opus.Core
             var paths = GetDirectories(packagePath, pathSegments);
             foreach (var path in paths)
             {
-                if (!this.directoryPaths.Contains(path))
+                if (!this.directoryLocations.Contains(path))
                 {
-                    this.directoryPaths.Remove(path);
+                    this.directoryLocations.Remove(path);
                 }
             }
         }
 #endif
+#endif
 
+#if false
         public void AddRange(string[] absolutePaths)
         {
             foreach (var absolutePath in absolutePaths)
@@ -232,6 +263,7 @@ namespace Opus.Core
                 this.Add(absolutePath, false);
             }
         }
+#endif
 
         // TODO: no longer possible?
 #if false
@@ -288,7 +320,7 @@ namespace Opus.Core
         {
             get
             {
-                return this.directoryPaths[index];
+                return this.directoryLocations[index].AbsolutePath;
             }
         }
 
@@ -296,7 +328,7 @@ namespace Opus.Core
         {
             get
             {
-                return this.directoryPaths.Count;
+                return this.directoryLocations.Count;
             }
         }
 
@@ -307,14 +339,23 @@ namespace Opus.Core
 
         public StringArray ToStringArray()
         {
-            var array = new StringArray(this.directoryPaths);
+#if true
+            var array = new StringArray();
+            foreach (var location in this.directoryLocations)
+            {
+                array.AddUnique(location.AbsolutePath);
+            }
             return array;
+#else
+            var array = new StringArray(this.directoryLocations);
+            return array;
+#endif
         }
 
         public override bool Equals(object obj)
         {
             var otherCollection = obj as DirectoryCollection;
-            return (this.directoryPaths.Equals(otherCollection.directoryPaths));
+            return (this.directoryLocations.Equals(otherCollection.directoryLocations));
         }
 
         public override int GetHashCode()
@@ -324,22 +365,22 @@ namespace Opus.Core
 
         DirectoryCollection IComplement<DirectoryCollection>.Complement(DirectoryCollection other)
         {
-            var complementPaths = this.directoryPaths.Complement(other.directoryPaths);
+            var complementPaths = this.directoryLocations.Complement(other.directoryLocations);
             if (0 == complementPaths.Count)
             {
                 throw new Opus.Core.Exception("DirectoryCollection complement is empty");
             }
 
             var complementDirectoryCollection = new DirectoryCollection();
-            complementDirectoryCollection.directoryPaths.AddRange(complementPaths);
+            complementDirectoryCollection.directoryLocations.AddRange(complementPaths);
             return complementDirectoryCollection;
         }
 
         DirectoryCollection IComplement<DirectoryCollection>.Intersect(DirectoryCollection other)
         {
-            var intersectPaths = this.directoryPaths.Intersect(other.directoryPaths);
+            var intersectPaths = this.directoryLocations.Intersect(other.directoryLocations);
             var intersectDirectoryCollection = new DirectoryCollection();
-            intersectDirectoryCollection.directoryPaths.AddRange(intersectPaths);
+            intersectDirectoryCollection.directoryLocations.AddRange(intersectPaths);
             return intersectDirectoryCollection;
         }
     }

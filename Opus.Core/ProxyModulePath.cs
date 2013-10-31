@@ -7,22 +7,29 @@ namespace Opus.Core
 {
     public class ProxyModulePath
     {
-        private string[] pathSegments;
+        private StringArray pathSegments;
 
         public ProxyModulePath()
         {
-            this.pathSegments = null;
         }
 
         public ProxyModulePath(params string[] segments)
         {
-            this.pathSegments = segments;
+            this.pathSegments = new StringArray(segments);
+        }
+
+        public bool Empty
+        {
+            get
+            {
+                return this.pathSegments == null;
+            }
         }
 
 #if true
         public void Assign(params string[] segments)
         {
-            this.pathSegments = segments;
+            this.pathSegments = new StringArray(segments);
         }
 
         public void Assign(ProxyModulePath proxy)
@@ -32,12 +39,7 @@ namespace Opus.Core
                 return;
             }
 
-            this.pathSegments = new string[proxy.pathSegments.Length];
-            var index = 0;
-            foreach (var a in proxy.pathSegments)
-            {
-                this.pathSegments[index++] = a;
-            }
+            this.pathSegments = new StringArray(proxy.pathSegments);
         }
 #else
         public ProxyModulePath(params string[] segments)
@@ -46,15 +48,28 @@ namespace Opus.Core
         }
 #endif
 
-        public Location Combine(Location root)
+        public DirectoryLocation Combine(Location baseLocation)
         {
             if (null == this.pathSegments)
             {
-                return root;
+                return baseLocation as DirectoryLocation;
             }
 
-            var combinedRoot = new LocationDirectory(root, this.pathSegments);
-            return combinedRoot;
+#if true
+            var offset = this.pathSegments.ToString(System.IO.Path.DirectorySeparatorChar);
+            var basePath = baseLocation.AbsolutePath;
+            var combined = System.IO.Path.Combine(basePath, offset);
+            return DirectoryLocation.Get(System.IO.Path.GetFullPath(combined));
+#else
+            var lastLocation = root;
+            foreach (var pattern in this.pathSegments)
+            {
+                var location = new ScaffoldLocation(lastLocation, pattern);
+                lastLocation = location;
+            }
+
+            return lastLocation;
+#endif
         }
     }
 }

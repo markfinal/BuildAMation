@@ -31,12 +31,7 @@ namespace Opus.Core
             }
 
             this.list.Add(item);
-
-            var root = item.Identifier.Root;
-            if (!State.PackageRoots.Contains(root))
-            {
-                State.PackageRoots.Add(root);
-            }
+            State.PackageRoots.AddUnique(item.Identifier.Root);
         }
 
         public void Add(PackageInformation item)
@@ -77,7 +72,7 @@ namespace Opus.Core
                         int versionComparison = package.Identifier.MatchVersion(item.Identifier, ignoreCase);
                         if (0 == versionComparison)
                         {
-                            if (0 == System.String.Compare(package.Identifier.Root, item.Identifier.Root, ignoreCase))
+                            if (0 == System.String.Compare(package.Identifier.Root.AbsolutePath, item.Identifier.Root.AbsolutePath, ignoreCase))
                             {
                                 return true;
                             }
