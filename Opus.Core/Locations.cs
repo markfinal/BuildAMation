@@ -33,7 +33,6 @@ namespace Opus.Core
 
         private DirectoryLocation(string absolutePath, Location.EExists exists)
         {
-            var hash = absolutePath.GetHashCode();
             if (exists == EExists.Exists)
             {
                 if (!System.IO.Directory.Exists(absolutePath))
