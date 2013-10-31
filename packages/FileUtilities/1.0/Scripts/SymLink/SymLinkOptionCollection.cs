@@ -54,7 +54,7 @@ namespace FileUtilities
         Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-            directoriesToCreate.AddAbsoluteDirectory((this as ISymLinkOptions).LinkDirectory, false);
+            directoriesToCreate.Add((this as ISymLinkOptions).LinkDirectory);
             return directoriesToCreate;
         }
     }

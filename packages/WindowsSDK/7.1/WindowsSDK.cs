@@ -58,11 +58,11 @@ namespace WindowsSDK
 
             if (target.HasPlatform(Opus.Core.EPlatform.Win32))
             {
-                linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib32Path, true);
+                linkerOptions.LibraryPaths.Add(lib32Path);
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
             {
-                linkerOptions.LibraryPaths.AddAbsoluteDirectory(lib64Path, true);
+                linkerOptions.LibraryPaths.Add(lib64Path);
             }
             else
             {
@@ -79,7 +79,7 @@ namespace WindowsSDK
                 return;
             }
 
-            compilerOptions.IncludePaths.AddAbsoluteDirectory(includePath, true);
+            compilerOptions.IncludePaths.Add(includePath);
         }
 
         public static string BinPath(Opus.Core.BaseTarget baseTarget)

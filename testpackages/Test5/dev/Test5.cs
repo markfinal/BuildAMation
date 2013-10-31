@@ -74,7 +74,7 @@ namespace Test5
     {
         public PublishPDBs()
         {
-            this.destinationDirectory.AddAbsoluteDirectory(@"c:\PDBs", false);
+            this.destinationDirectory.Add(@"c:\PDBs");
         }
 
         [FileUtilities.SourceModules(C.OutputFileFlags.LinkerProgramDatabase)]

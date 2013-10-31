@@ -86,7 +86,7 @@ namespace MakeFileBuilder
             recipes.Add(recipe);
 
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-            directoriesToCreate.AddAbsoluteDirectory(destinationDirectory, false);
+            directoriesToCreate.Add(destinationDirectory);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
