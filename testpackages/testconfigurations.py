@@ -151,13 +151,13 @@ configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visua
 configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
-configs["Test15-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
+configs["Test15-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
-configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
+configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
-configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
+configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                   osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
