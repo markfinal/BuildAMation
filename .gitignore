@@ -1,6 +1,8 @@
+*~
 *.pyc
 *.csproj.user
 *.userprefs
+*.pidb
 bin
 testpackages/*/dev/Opus
 testpackages/*/dev/build
