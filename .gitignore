@@ -1,4 +1,5 @@
 *.pyc
+*.csproj.user
 *.userprefs
 bin
 testpackages/*/dev/Opus
