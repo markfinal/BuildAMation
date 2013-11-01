@@ -8,7 +8,7 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
     public class CopyDirectory : Opus.Core.BaseModule, Opus.Core.IModuleCollection
     {
-        private System.Collections.Generic.List<CopyFile> copyFiles = new System.Collections.Generic.List<CopyFile>();
+        private Opus.Core.Array<CopyFile> copyFiles = new Opus.Core.Array<CopyFile>();
         //private string commonBaseDirectory = null;
 
         public Opus.Core.Location CommonBaseDirectory
@@ -75,10 +75,26 @@ namespace FileUtilities
         public void Exclude(Opus.Core.Location baseLocation, string pattern)
         {
 #if true
-            var scaffold = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-            var locations = scaffold.GetLocations();
+            // copy recursively
+            var dirs = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var allFilesRecursiveScaffold = new Opus.Core.ScaffoldLocation(dirs, "**", Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var locations = allFilesRecursiveScaffold.GetLocations();
+            var toRemove = new Opus.Core.Array<CopyFile>();
+            foreach (var location in locations)
+            {
+                foreach (var copyFile in this.copyFiles)
+                {
+                    if (copyFile.SourceFile.AbsoluteLocation == location)
+                    {
+                        toRemove.Add(copyFile);
+                    }
+                }
+            }
 
-            throw new System.NotImplementedException();
+            foreach (var file in toRemove)
+            {
+                this.copyFiles.Remove(file);
+            }
 #else
             // TODO: replace with Location
             Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(root.CachedPath, pathSegments);
