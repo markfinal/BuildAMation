@@ -237,6 +237,28 @@ namespace VSSolutionBuilder
                         throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
                     }
                 }
+                else if ((node.Parent != null) && !(node.Parent.Module is C.ObjectFileCollectionBase))
+                {
+                    // this is a child object, but not part of an object collection
+                    vcCLCompilerTool = new ProjectTool(toolName);
+                    configuration.AddToolIfMissing(vcCLCompilerTool);
+
+                    if (moduleToBuild.Options is VisualStudioProcessor.IVisualStudioSupport)
+                    {
+                        var visualStudioProjectOption = moduleToBuild.Options as VisualStudioProcessor.IVisualStudioSupport;
+                        var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+
+                        // this is ONLY setting the delta
+                        foreach (var setting in settingsDictionary)
+                        {
+                            vcCLCompilerTool[setting.Key] = setting.Value;
+                        }
+                    }
+                    else
+                    {
+                        throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                    }
+                }
             }
 
             success = true;
