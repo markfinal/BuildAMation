@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Help : Base
     {
-        public Help(bool includeModule)
+        public Help()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtHelp_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtHelp_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtHelp_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtHelp", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtHelp");
             }
         }
     }

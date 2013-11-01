@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class OpenVG : Base
     {
-        public OpenVG(bool includeModule)
+        public OpenVG()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenVG_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenVG_VisualCWarningLevel);
         }
@@ -32,7 +30,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtOpenVG", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtOpenVG");
             }
         }
     }

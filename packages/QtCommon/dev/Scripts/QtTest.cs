@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Test : Base
     {
-        public Test(bool includeModule)
+        public Test()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtTest_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtTest_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtTest_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtTest", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtTest");
             }
         }
     }

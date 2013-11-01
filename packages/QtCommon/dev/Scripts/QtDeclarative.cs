@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Declarative : Base
     {
-        public Declarative(bool includeModule)
+        public Declarative()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtDeclarative", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtDeclarative");
             }
         }
     }

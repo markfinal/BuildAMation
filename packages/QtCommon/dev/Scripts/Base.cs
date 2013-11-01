@@ -18,22 +18,15 @@ namespace QtCommon
             set;
         }
 
-        protected bool IncludeModule
-        {
-            get;
-            set;
-        }
-
         protected void AddIncludePath(C.ICCompilerOptions options,
                                       Opus.Core.Target target,
-                                      string moduleName,
-                                      bool includeModuleName)
+                                      string moduleName)
         {
             string includePath = this.QtToolset.GetIncludePath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(includePath))
             {
                 options.IncludePaths.Add(includePath);
-                if (includeModuleName)
+                if (this.QtToolset.IncludePathIncludesQtModuleName)
                 {
                     includePath = System.IO.Path.Combine(includePath, moduleName);
                     options.IncludePaths.Add(includePath);

@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class XmlPatterns : Base
     {
-        public XmlPatterns(bool includeModule)
+        public XmlPatterns()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXmlPatternsPatterns_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXmlPatternsPatterns_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXmlPatternsPatterns_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtXmlPatternsPatterns", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtXmlPatternsPatterns");
             }
         }
     }

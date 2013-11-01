@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Phonon : Base
     {
-        public Phonon(bool includeModule)
+        public Phonon()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Phonon_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Phonon_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Phonon_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "Phonon", this.IncludeModule);
+                this.AddIncludePath(options, target, "Phonon");
             }
         }
     }

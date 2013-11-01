@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Core : Base
     {
-        public Core(bool includeModule)
+        public Core()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCore_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCore_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCore_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtCore", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtCore");
             }
         }
     }

@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Designer : Base
     {
-        public Designer(bool includeModule)
+        public Designer()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDesigner_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDesigner_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDesigner_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtDesigner", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtDesigner");
             }
         }
     }

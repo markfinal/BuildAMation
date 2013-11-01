@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Svg : Base
     {
-        public Svg(bool includeModule)
+        public Svg()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtSvg_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtSvg_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtSvg_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtSvg", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtSvg");
             }
         }
     }

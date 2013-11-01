@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Network : Base
     {
-        public Network(bool includeModule)
+        public Network()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtNetwork_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtNetwork_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtNetwork_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtNetwork", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtNetwork");
             }
         }
     }

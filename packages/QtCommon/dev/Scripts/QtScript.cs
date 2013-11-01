@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Script : Base
     {
-        public Script(bool includeModule)
+        public Script()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScript_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScript_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScript_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtScript", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtScript");
             }
         }
     }

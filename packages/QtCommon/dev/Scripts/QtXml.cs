@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Xml : Base
     {
-        public Xml(bool includeModule)
+        public Xml()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXml_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXml_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXml_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtXml", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtXml");
             }
         }
     }

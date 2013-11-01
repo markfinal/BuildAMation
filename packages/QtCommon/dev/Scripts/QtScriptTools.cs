@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class ScriptTools : Base
     {
-        public ScriptTools(bool includeModule)
+        public ScriptTools()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScriptTools_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScriptTools_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScriptTools_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtScriptTools", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtScriptTools");
             }
         }
     }

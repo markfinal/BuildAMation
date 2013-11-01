@@ -50,6 +50,13 @@ namespace QtCommon
                 return string.Empty;
             }
         }
+        public virtual bool IncludePathIncludesQtModuleName
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 

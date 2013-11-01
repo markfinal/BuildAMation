@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class OpenGL : Base
     {
-        public OpenGL(bool includeModule)
+        public OpenGL()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenGL_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenGL_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenGL_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtOpenGL", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtOpenGL");
             }
         }
     }

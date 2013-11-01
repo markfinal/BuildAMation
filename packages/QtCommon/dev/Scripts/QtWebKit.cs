@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class WebKit : Base
     {
-        public WebKit(bool includeModule)
+        public WebKit()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtWebKit_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtWebKit_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtWebKit_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtWebKit", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtWebKit");
             }
         }
     }

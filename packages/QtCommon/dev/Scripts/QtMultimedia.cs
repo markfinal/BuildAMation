@@ -7,10 +7,8 @@ namespace QtCommon
 {
     public abstract class Multimedia : Base
     {
-        public Multimedia(bool includeModule)
+        public Multimedia()
         {
-            this.IncludeModule = includeModule;
-
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtMultimedia_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtMultimedia_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtMultimedia_LinkerOptions);
@@ -50,7 +48,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(options, target, "QtMultimedia", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtMultimedia");
             }
         }
     }
