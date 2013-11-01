@@ -27,11 +27,14 @@ namespace QtCommon
         {
             var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType) as Toolset;
             string includePath = toolset.GetIncludePath((Opus.Core.BaseTarget)target);
-            options.IncludePaths.Add(includePath);
-            if (includeModuleName)
+            if (!string.IsNullOrEmpty(includePath))
             {
-                includePath = System.IO.Path.Combine(includePath, moduleName);
                 options.IncludePaths.Add(includePath);
+                if (includeModuleName)
+                {
+                    includePath = System.IO.Path.Combine(includePath, moduleName);
+                    options.IncludePaths.Add(includePath);
+                }
             }
         }
 
@@ -41,7 +44,10 @@ namespace QtCommon
         {
             var toolset = Opus.Core.ToolsetFactory.GetInstance (toolsetType) as Toolset;
             string libraryPath = toolset.GetLibraryPath((Opus.Core.BaseTarget)target);
-            options.LibraryPaths.Add(libraryPath);
+            if (!string.IsNullOrEmpty(libraryPath))
+            {
+                options.LibraryPaths.Add(libraryPath);
+            }
         }
 
         protected void AddModuleLibrary(C.ILinkerOptions options,
@@ -62,6 +68,11 @@ namespace QtCommon
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 options.Libraries.Add(System.String.Format("-l{0}", moduleName));
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                var osxLinkerOptions = options as C.ILinkerOptionsOSX;
+                osxLinkerOptions.Frameworks.Add(moduleName);
             }
             else
             {
@@ -91,6 +102,10 @@ namespace QtCommon
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 dynamicLibraryName = System.String.Format("{0}.so", moduleName);
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                dynamicLibraryName = moduleName;
             }
             else
             {

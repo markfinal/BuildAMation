@@ -12,20 +12,43 @@ namespace QtCommon
         protected virtual string GetBinPath(Opus.Core.BaseTarget baseTarget)
         {
             string installPath = this.GetInstallPath(baseTarget);
-            string binPath = System.IO.Path.Combine(installPath, "bin");
-            return binPath;
+            if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                string binPath = System.IO.Path.Combine(installPath, "bin");
+                return binPath;
+            }
+            else
+            {
+                return installPath;
+            }
         }
         public virtual string GetIncludePath(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.GetInstallPath(baseTarget);
-            string includePath = System.IO.Path.Combine(installPath, "include");
-            return includePath;
+            if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                string installPath = this.GetInstallPath(baseTarget);
+                string includePath = System.IO.Path.Combine(installPath, "include");
+                return includePath;
+            }
+            else
+            {
+                // frameworks are used on OSX
+                return string.Empty;
+            }
         }
         public virtual string GetLibraryPath(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.GetInstallPath(baseTarget);
-            string libPath = System.IO.Path.Combine(installPath, "lib");
-            return libPath;
+            if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                string installPath = this.GetInstallPath(baseTarget);
+                string libPath = System.IO.Path.Combine(installPath, "lib");
+                return libPath;
+            }
+            else
+            {
+                // frameworks are used on OSX
+                return string.Empty;
+            }
         }
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
