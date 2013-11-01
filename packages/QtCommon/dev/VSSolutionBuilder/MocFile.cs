@@ -13,7 +13,6 @@ namespace VSSolutionBuilder
             Opus.Core.DependencyNode node = mocFileModule.OwningNode;
             Opus.Core.Target target = node.Target;
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
-            QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
 
             Opus.Core.DependencyNode parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
