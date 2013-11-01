@@ -11,6 +11,15 @@ class Builder(object):
         self.preAction = preAction
         self.postAction = postAction
 
+# the version of MSBuild.exe to use, depends on which version of VisualStudio was used to build the solution and projects
+# by default, VS2008 is assumed
+msBuildVersion = {\
+  None:"v3.5",
+  "9.0":"v3.5",
+  "10.0":"v4.0.30319",
+  "11.0":"v4.0.30319",
+}
+
 def VSSolutionPost(package, options, outputMessages, errorMessages):
     """Post action for testing the VSSolution builder"""
     exitCode = 0
@@ -21,16 +30,15 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         outputMessages.write("ViisualStudio solution expected at %s did not exist" % slnPath)
         return 0
     try:
+        msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersion[options.visualcversion[0]]
         for config in options.configurations:
             argList = []
-            # TODO: Version of MSBuild.exe (which .NET framework) differs as to which version is needed to build a specific version of a .sln
-            # TODO: this also builds relative to the solution, whereas it should build relative to the projects referenced
-            argList.append(r"C:\Windows\Microsoft.NET\Framework\v3.5\MSBuild.exe")
+            argList.append(msBuildPath)
             argList.append(slnPath)
             # capitalize the first letter of the configuration
             config = config[0].upper() + config[1:]
             argList.append("/p:Configuration=%s" % config)
-            print "Running '%s' in %s" % (" ".join(argList), buildRoot)
+            print "Running '%s'\n" % ' '.join(argList)
             p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             (outputStream, errorStream) = p.communicate() # this should WAIT
             exitCode |= p.returncode
@@ -59,7 +67,7 @@ def MakeFilePost(package, options, outputMessages, errorMessages):
         # currently do not support building configurations separately
         argList = []
         argList.append("make")
-        print "Running '%s' in %s" % (" ".join(argList), makeFileDir)
+        print "Running '%s' in %s\n" % ' '.join(argList), makeFileDir
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makeFileDir)
         (outputStream, errorStream) = p.communicate() # this should WAIT
         exitCode |= p.returncode
@@ -93,9 +101,9 @@ def XcodePost(package, options, outputMessages, errorMessages):
         argList.append("-workspace")
         argList.append(workspaces[0])
         argList.append("-list")
+        print "Running '%s'\n" % ' '.join(argList)
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (outputStream, errorStream) = p.communicate() # this should WAIT
-        outputMessages.write("executing %s\n" % ' '.join(argList))
         outputMessages.write(outputStream)
         errorMessages.write(errorStream)
         # parse the output to get the schemes
@@ -142,7 +150,7 @@ def XcodePost(package, options, outputMessages, errorMessages):
 
 builder = {}
 builder["Native"] = Builder("Native", None, None)
-builder["VSSolution"] = Builder("VSSolution", None, None)
+builder["VSSolution"] = Builder("VSSolution", None, VSSolutionPost)
 builder["MakeFile"] = Builder("MakeFile", None, MakeFilePost)
 builder["QMake"] = Builder("QMake", None, None)
 builder["Xcode"] = Builder("Xcode", None, XcodePost)

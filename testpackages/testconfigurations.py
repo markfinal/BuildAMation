@@ -104,7 +104,8 @@ def TestOptionSetup(optParser):
         allResponseNames.update(results)
     for response in allResponseNames:
       longName = "--%s.version" % response
-      dest = "%s.version" % response
+      dest = "%sversion" % response
+      # TODO: what sort of data is this? is it a single value, or can multiple versions be specified?
       optParser.add_option(longName, dest=dest, action="append", default=None, help="Versions to test for '%s'" % response)
 
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of an Opus command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
