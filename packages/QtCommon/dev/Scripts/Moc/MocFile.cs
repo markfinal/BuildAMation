@@ -69,7 +69,7 @@ namespace QtCommon
             IMocOptions options = module.Options as IMocOptions;
             string outputPath = options.MocOutputPath;
             C.Cxx.ObjectFile injectedFile = new C.Cxx.ObjectFile();
-            injectedFile.SourceFile.AbsolutePath = outputPath;
+            injectedFile.SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
 
             Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);
