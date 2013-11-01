@@ -5,6 +5,9 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    /// <summary>
+    /// Location is the abstract base class that can represent any of the higher form of Locations.
+    /// </summary>
     public abstract class Location
     {
         public enum EExists
@@ -22,11 +25,13 @@ namespace Opus.Core
         }
 
         public abstract Array<Location> GetLocations();
-
-        // TODO: not sure how to do this for all the different types present
-        static protected System.Collections.Generic.Dictionary<string, Location> HashMap = new System.Collections.Generic.Dictionary<string, Location>();
     }
 
+    /// <summary>
+    /// DirectoryLocation represents a single directory on disk.
+    /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
+    /// DirectoryLocations are cached internally, so only a single instance of a directory path exists.
+    /// </summary>
     public sealed class DirectoryLocation : Location
     {
         private static System.Collections.Generic.Dictionary<int, DirectoryLocation> cache = new System.Collections.Generic.Dictionary<int, DirectoryLocation>();
@@ -77,6 +82,11 @@ namespace Opus.Core
         }
     }
 
+    /// <summary>
+    /// FileLocation represents a single file on disk.
+    /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
+    /// FileLocations are cached internally, so only a single instance of a file path exists.
+    /// </summary>
     public sealed class FileLocation : Location
     {
         private static System.Collections.Generic.Dictionary<int, FileLocation> cache = new System.Collections.Generic.Dictionary<int, FileLocation>();
@@ -144,6 +154,11 @@ namespace Opus.Core
         }
     }
 
+    /// <summary>
+    /// ScaffoldLocation is an abstract representation of many real Locations on disk.
+    /// ScaffoldLocations are constructed from a base Location, with a pattern added to it. This pattern may be wildcarded.
+    /// Calling GetLocations() on a ScaffoldLocation will resolve the pattern to a list of real Locations.
+    /// </summary>
     public sealed class ScaffoldLocation : Location
     {
         public enum ETypeHint
