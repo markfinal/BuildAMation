@@ -10,6 +10,9 @@ namespace Test14
             this.source.Include(sourceDir, "dynamicLibraryA.c");
             this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_UpdateOptions);
+
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.header.Include(includeDir, "dynamicLibraryA.h");
         }
 
         [C.ExportCompilerOptionsDelegate]
@@ -28,6 +31,9 @@ namespace Test14
         [Opus.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
+        [C.HeaderFiles]
+        Opus.Core.FileCollection header = new Opus.Core.FileCollection();
+
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
@@ -40,6 +46,9 @@ namespace Test14
             this.source.Include(sourceDir, "dynamicLibraryB.c");
             this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_UpdateOptions);
+
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.header.Include(includeDir, "dynamicLibraryB.h");
         }
 
         void DynamicLibraryB_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
@@ -56,6 +65,9 @@ namespace Test14
 
         [Opus.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
+
+        [C.HeaderFiles]
+        Opus.Core.FileCollection header = new Opus.Core.FileCollection();
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(DynamicLibraryA));
