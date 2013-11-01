@@ -38,7 +38,7 @@
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="Qt">
-      <Opus:Version Id="4.7.1" />
+      <Opus:Version Id="4.8.5" />
     </Opus:Package>
     <Opus:Package Name="VisualC">
       <Opus:Version Id="10.0" />
