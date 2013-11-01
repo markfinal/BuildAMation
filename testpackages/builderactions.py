@@ -34,6 +34,7 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         for config in options.configurations:
             argList = []
             argList.append(msBuildPath)
+            argList.append("/verbosity:detailed");
             argList.append(slnPath)
             # capitalize the first letter of the configuration
             config = config[0].upper() + config[1:]
