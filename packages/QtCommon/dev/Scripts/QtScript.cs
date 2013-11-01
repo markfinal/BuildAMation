@@ -7,9 +7,8 @@ namespace QtCommon
 {
     public abstract class Script : Base
     {
-        public Script(System.Type toolsetType, bool includeModule)
+        public Script(bool includeModule)
         {
-            this.ToolsetType = toolsetType;
             this.IncludeModule = includeModule;
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtScript_IncludePaths);
@@ -19,7 +18,7 @@ namespace QtCommon
 
         public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
-            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(this.ToolsetType, target, "QtScript");
+            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtScript");
             base.RegisterOutputFiles(options, target, modulePath);
         }
 
@@ -29,7 +28,7 @@ namespace QtCommon
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
             {
-                this.AddLibraryPath(this.ToolsetType, options, target);
+                this.AddLibraryPath(options, target);
                 this.AddModuleLibrary(options, target, "QtScript");
             }
         }
@@ -51,7 +50,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(this.ToolsetType, options, target, "QtScript", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtScript", this.IncludeModule);
             }
         }
     }

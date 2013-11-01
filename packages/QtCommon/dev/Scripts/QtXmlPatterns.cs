@@ -7,9 +7,8 @@ namespace QtCommon
 {
     public abstract class XmlPatterns : Base
     {
-        public XmlPatterns(System.Type toolsetType, bool includeModule)
+        public XmlPatterns(bool includeModule)
         {
-            this.ToolsetType = toolsetType;
             this.IncludeModule = includeModule;
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtXmlPatternsPatterns_IncludePaths);
@@ -19,7 +18,7 @@ namespace QtCommon
 
         public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
-            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(this.ToolsetType, target, "QtXmlPatternsPatterns");
+            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtXmlPatternsPatterns");
             base.RegisterOutputFiles(options, target, modulePath);
         }
 
@@ -29,7 +28,7 @@ namespace QtCommon
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
             {
-                this.AddLibraryPath(this.ToolsetType, options, target);
+                this.AddLibraryPath(options, target);
                 this.AddModuleLibrary(options, target, "QtXmlPatternsPatterns");
             }
         }
@@ -51,7 +50,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(this.ToolsetType, options, target, "QtXmlPatternsPatterns", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtXmlPatternsPatterns", this.IncludeModule);
             }
         }
     }

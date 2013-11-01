@@ -7,9 +7,8 @@ namespace QtCommon
 {
     public abstract class UiTools : Base
     {
-        public UiTools(System.Type toolsetType, bool includeModule)
+        public UiTools(bool includeModule)
         {
-            this.ToolsetType = toolsetType;
             this.IncludeModule = includeModule;
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtUiTools_IncludePaths);
@@ -33,7 +32,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(this.ToolsetType, options, target, "QtUiTools", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtUiTools", this.IncludeModule);
             }
         }
     }

@@ -7,9 +7,8 @@ namespace QtCommon
 {
     public abstract class DBus : Base
     {
-        public DBus(System.Type toolsetType, bool includeModule)
+        public DBus(bool includeModule)
         {
-            this.ToolsetType = toolsetType;
             this.IncludeModule = includeModule;
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDBus_IncludePaths);
@@ -33,7 +32,7 @@ namespace QtCommon
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)
             {
-                this.AddIncludePath(this.ToolsetType, options, target, "QtDBus", this.IncludeModule);
+                this.AddIncludePath(options, target, "QtDBus", this.IncludeModule);
             }
         }
     }

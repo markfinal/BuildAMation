@@ -7,7 +7,12 @@ namespace QtCommon
 {
     public abstract class Base : ThirdPartyModule
     {
-        protected System.Type ToolsetType
+        protected Base()
+        {
+            this.QtToolset = Opus.Core.State.Get("Toolset", "Qt") as Toolset;
+        }
+
+        private Toolset QtToolset
         {
             get;
             set;
@@ -19,14 +24,12 @@ namespace QtCommon
             set;
         }
 
-        protected void AddIncludePath(System.Type toolsetType,
-                                      C.ICCompilerOptions options,
+        protected void AddIncludePath(C.ICCompilerOptions options,
                                       Opus.Core.Target target,
                                       string moduleName,
                                       bool includeModuleName)
         {
-            var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType) as Toolset;
-            string includePath = toolset.GetIncludePath((Opus.Core.BaseTarget)target);
+            string includePath = this.QtToolset.GetIncludePath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(includePath))
             {
                 options.IncludePaths.Add(includePath);
@@ -38,12 +41,10 @@ namespace QtCommon
             }
         }
 
-        protected void AddLibraryPath(System.Type toolsetType,
-                                      C.ILinkerOptions options,
+        protected void AddLibraryPath(C.ILinkerOptions options,
                                       Opus.Core.Target target)
         {
-            var toolset = Opus.Core.ToolsetFactory.GetInstance (toolsetType) as Toolset;
-            string libraryPath = toolset.GetLibraryPath((Opus.Core.BaseTarget)target);
+            string libraryPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(libraryPath))
             {
                 options.LibraryPaths.Add(libraryPath);
@@ -81,12 +82,10 @@ namespace QtCommon
             }
         }
 
-        protected string GetModuleDynamicLibrary(System.Type toolsetType,
-                                                 Opus.Core.Target target,
+        protected string GetModuleDynamicLibrary(Opus.Core.Target target,
                                                  string moduleName)
         {
-            var toolset = Opus.Core.ToolsetFactory.GetInstance(toolsetType);
-            string binPath = toolset.BinPath((Opus.Core.BaseTarget)target);
+            string binPath = (this.QtToolset as Opus.Core.IToolset).BinPath((Opus.Core.BaseTarget)target);
             string dynamicLibraryName = null;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
