@@ -78,10 +78,10 @@ namespace QtCommon
         protected string GetModuleDynamicLibrary(Opus.Core.Target target,
                                                  string moduleName)
         {
-            string binPath = (this.QtToolset as Opus.Core.IToolset).BinPath((Opus.Core.BaseTarget)target);
             string dynamicLibraryName = null;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
+                string binPath = (this.QtToolset as Opus.Core.IToolset).BinPath((Opus.Core.BaseTarget)target);
                 if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
                     dynamicLibraryName = System.String.Format("{0}d4.dll", moduleName);
@@ -90,22 +90,25 @@ namespace QtCommon
                 {
                     dynamicLibraryName = System.String.Format("{0}4.dll", moduleName);
                 }
+                string dynamicLibraryPath = System.IO.Path.Combine(binPath, dynamicLibraryName);
+                return dynamicLibraryPath;
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
-                dynamicLibraryName = System.String.Format("{0}.so", moduleName);
+                string libPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
+                dynamicLibraryName = System.String.Format("lib{0}.so", moduleName);
+                string dynamicLibraryPath = System.IO.Path.Combine(libPath, dynamicLibraryName);
+                return dynamicLibraryPath;
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
             {
-                dynamicLibraryName = moduleName;
+                // TODO: this probably needs some rework
+                return moduleName;
             }
             else
             {
-                // TODO: framework
                 throw new System.NotImplementedException();
             }
-            string dynamicLibraryPath = System.IO.Path.Combine(binPath, dynamicLibraryName);
-            return dynamicLibraryPath;
         }
     }
 }
