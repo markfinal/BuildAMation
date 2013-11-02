@@ -23,9 +23,7 @@ namespace C
             foreach (var location in locationList)
             {
                 var objectFile = new ObjectFile();
-                // TODO: the proxypath should have already been taken into account by now?
-                objectFile.ProxyPath.Assign(this.ProxyPath);
-                objectFile.SourceFile.AbsoluteLocation = location;
+                objectFile.SourceFileLocation = location;
                 objectFileList.Add(objectFile);
             }
 

@@ -278,7 +278,7 @@ namespace Test
             public Win32Resources()
             {
                 var resourcesDir = this.PackageLocation.SubDirectory("resources");
-                this.ResourceFile.Include(resourcesDir, "win32.rc");
+                this.Include(resourcesDir, "win32.rc");
             }
         }
 

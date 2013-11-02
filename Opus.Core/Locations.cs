@@ -25,6 +25,20 @@ namespace Opus.Core
         }
 
         public abstract Array<Location> GetLocations();
+
+        /// <summary>
+        /// This is a special case of GetLocations. It requires a Location resolves to a single path, which is returned
+        /// </summary>
+        /// <returns>Single path of the resolved Location</returns>
+        public string GetSinglePath()
+        {
+            var resolvedLocations = this.GetLocations();
+            if (resolvedLocations.Count > 1)
+            {
+                throw new Exception("Location '{0}' resolved to more than one path", this.ToString());
+            }
+            return resolvedLocations[0].AbsolutePath;
+        }
     }
 
     /// <summary>

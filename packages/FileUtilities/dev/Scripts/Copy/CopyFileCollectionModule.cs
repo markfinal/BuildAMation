@@ -90,8 +90,7 @@ namespace FileUtilities
             foreach (var location in locationList)
             {
                 var copyFile = new CopyFile();
-                copyFile.ProxyPath.Assign(this.ProxyPath);
-                copyFile.SourceFile.AbsoluteLocation = location;
+                copyFile.SourceFileLocation = location;
                 moduleCollection.Add(copyFile);
             }
             return moduleCollection;
@@ -142,7 +141,7 @@ namespace FileUtilities
             {
                 foreach (var objectFile in childModules)
                 {
-                    var objectFileDeferredLocation = (objectFile as CopyFile).SourceFile.AbsoluteLocation;
+                    var objectFileDeferredLocation = (objectFile as CopyFile).SourceFileLocation;
                     if (this.DeferredUpdates.ContainsKey(objectFileDeferredLocation))
                     {
                         foreach (var updateDelegate in this.DeferredUpdates[objectFileDeferredLocation])

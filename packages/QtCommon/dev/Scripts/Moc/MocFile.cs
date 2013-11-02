@@ -19,11 +19,6 @@ namespace QtCommon
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
     public class MocFile : Opus.Core.BaseModule, Opus.Core.IInjectModules
     {
-        public MocFile()
-        {
-            this.SourceFile = new Opus.Core.File();
-        }
-
         public static string Prefix
         {
             get
@@ -34,13 +29,13 @@ namespace QtCommon
 
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            this.SourceFile.Include(baseLocation, pattern);
+            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }
 
-        public Opus.Core.File SourceFile
+        public Opus.Core.Location SourceFileLocation
         {
             get;
-            private set;
+            set;
         }
 
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
@@ -49,7 +44,7 @@ namespace QtCommon
             IMocOptions options = module.Options as IMocOptions;
             string outputPath = options.MocOutputPath;
             C.Cxx.ObjectFile injectedFile = new C.Cxx.ObjectFile();
-            injectedFile.SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
+            injectedFile.SourceFileLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
 
             Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);

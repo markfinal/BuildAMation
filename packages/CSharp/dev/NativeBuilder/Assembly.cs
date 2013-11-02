@@ -33,10 +33,10 @@ namespace NativeBuilder
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -71,10 +71,10 @@ namespace NativeBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
@@ -125,10 +125,10 @@ namespace NativeBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);

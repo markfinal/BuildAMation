@@ -71,7 +71,7 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            string sourceDirectoryPath = moduleToBuild.SourceFile.AbsolutePath;
+            string sourceDirectoryPath = moduleToBuild.SourceFileLocation.GetSinglePath();
             MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
                                                  FileUtilities.OutputFileFlags.Symlink,
                                                  node.UniqueModuleName,

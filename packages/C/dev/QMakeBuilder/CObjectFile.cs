@@ -9,7 +9,7 @@ namespace QMakeBuilder
     {
         public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             // any source file that is derived from a moc step should not be listed
             // explicitly, because QMake handles this via searching for Q_OBJECT classes

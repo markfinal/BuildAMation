@@ -33,7 +33,21 @@ namespace C
             var resourceModule = node.Module as Win32Resource;
             if (null != resourceModule)
             {
-                var sourcePathName = resourceModule.ResourceFile.AbsolutePath;
+                // this only requires the end path - so grab it from the Location without resolving it
+                var location = resourceModule.ResourceFileLocation;
+                var sourcePathName = string.Empty;
+                if (location is Opus.Core.FileLocation)
+                {
+                    sourcePathName = location.AbsolutePath;
+                }
+                else if (location is Opus.Core.DirectoryLocation)
+                {
+                    throw new Opus.Core.Exception("Cannot use a directory for compiler options");
+                }
+                else
+                {
+                    sourcePathName = (location as Opus.Core.ScaffoldLocation).Pattern;
+                }
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
 

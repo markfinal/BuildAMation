@@ -9,7 +9,7 @@ namespace QMakeBuilder
     {
         public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
         {
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             var node = moduleToBuild.OwningNode;
             var target = node.Target;
 

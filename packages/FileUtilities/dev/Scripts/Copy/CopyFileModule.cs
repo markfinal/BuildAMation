@@ -8,10 +8,10 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
     public class CopyFile : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
-        public Opus.Core.File SourceFile
+        public Opus.Core.Location SourceFileLocation
         {
             get;
-            private set;
+            set;
         }
 
         public BesideModuleAttribute BesideModuleAttribute
@@ -34,7 +34,6 @@ namespace FileUtilities
 
         public CopyFile()
         {
-            this.SourceFile = new Opus.Core.File();
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 
@@ -47,7 +46,7 @@ namespace FileUtilities
 
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            this.SourceFile.Include(baseLocation, pattern);
+            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }
 
         public void Set(System.Type moduleType, object outputFileEnum)
@@ -127,7 +126,7 @@ namespace FileUtilities
         public override string ToString()
         {
             var description = new System.Text.StringBuilder();
-            description.AppendFormat("{0} -> ", this.SourceFile.ToString());
+            description.AppendFormat("{0} -> ", this.SourceFileLocation.GetSinglePath().ToString());
             if (null != this.BesideModuleType)
             {
                 description.AppendFormat("{0} {1}", this.BesideModuleType.ToString(), this.BesideModuleAttribute.OutputFileFlag);

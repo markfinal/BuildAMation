@@ -11,7 +11,7 @@ namespace FileUtilities
         {
             // TODO: is this right now?
             // don't want to recursively search for files, so just evaluate the Location
-            this.SourceFile.Include(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         }
     }
 }

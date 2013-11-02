@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         public object Build(FileUtilities.SymlinkDirectory moduleToBuild, out bool success)
         {
-            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             if (!System.IO.Directory.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source directory '{0}' does not exist", sourceFilePath);

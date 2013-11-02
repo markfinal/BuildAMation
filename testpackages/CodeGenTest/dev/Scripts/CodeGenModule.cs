@@ -116,7 +116,7 @@ namespace CodeGenTest
             var options = module.Options as ICodeGenOptions;
             var outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
             var injectedFile = new C.ObjectFile();
-            injectedFile.SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
+            injectedFile.SourceFileLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
 
             var moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);

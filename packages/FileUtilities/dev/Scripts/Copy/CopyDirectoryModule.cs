@@ -30,8 +30,7 @@ namespace FileUtilities
             foreach (var location in locations)
             {
                 CopyFile file = new CopyFile(besideModule, dependentModule);
-                file.ProxyPath.Assign(this.ProxyPath);
-                file.SourceFile.AbsoluteLocation = location;
+                file.SourceFileLocation = location;
                 this.copyFiles.Add(file);
             }
         }
@@ -47,7 +46,7 @@ namespace FileUtilities
             {
                 foreach (var copyFile in this.copyFiles)
                 {
-                    if (copyFile.SourceFile.AbsoluteLocation == location)
+                    if (copyFile.SourceFileLocation == location)
                     {
                         toRemove.Add(copyFile);
                     }

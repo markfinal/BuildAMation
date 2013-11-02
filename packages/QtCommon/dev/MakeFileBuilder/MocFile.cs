@@ -15,7 +15,7 @@ namespace MakeFileBuilder
             Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
             QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
 
-            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);

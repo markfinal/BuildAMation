@@ -9,7 +9,7 @@ namespace MakeFileBuilder
     {
         public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            var resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
+            var resourceFilePath = moduleToBuild.ResourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);

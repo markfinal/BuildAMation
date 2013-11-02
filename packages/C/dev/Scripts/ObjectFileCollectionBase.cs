@@ -92,7 +92,7 @@ namespace C
             {
                 foreach (var objectFile in childModules)
                 {
-                    var objectFileDeferredLocation = (objectFile as ObjectFile).SourceFile.AbsoluteLocation;
+                    var objectFileDeferredLocation = (objectFile as ObjectFile).SourceFileLocation;
                     if (this.DeferredUpdates.ContainsKey(objectFileDeferredLocation))
                     {
                         foreach (var updateDelegate in this.DeferredUpdates[objectFileDeferredLocation])

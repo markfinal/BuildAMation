@@ -9,7 +9,7 @@ namespace FileUtilities
     {
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            this.SourceFile.Include(baseLocation, pattern);
+            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }
     }
 }

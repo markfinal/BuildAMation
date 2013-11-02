@@ -20,7 +20,7 @@ namespace Test13
             public Win32ResourceFile()
             {
                 var resourcesDir = this.PackageLocation.SubDirectory("resources");
-                this.ResourceFile.Include(resourcesDir, "QtApplication.rc");
+                this.Include(resourcesDir, "QtApplication.rc");
             }
         }
 

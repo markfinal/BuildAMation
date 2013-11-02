@@ -45,7 +45,7 @@ namespace FileUtilities
                                                   options.SourceModuleType.ToString(),
                                                   options.SourceModuleOutputEnum.ToString());
                 }
-                (node.Module as SymlinkBase).SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(sourceModuleOutputPath, Opus.Core.Location.EExists.WillExist);
+                (node.Module as SymlinkBase).SourceFileLocation = Opus.Core.FileLocation.Get(sourceModuleOutputPath, Opus.Core.Location.EExists.WillExist);
             }
 
             if (null == this.OutputPaths[OutputFileFlags.Symlink])
@@ -74,7 +74,7 @@ namespace FileUtilities
                 else
                 {
                     var module = node.Module as SymlinkBase;
-                    string filename = System.IO.Path.GetFileName(module.SourceFile.AbsolutePath);
+                    string filename = System.IO.Path.GetFileName(module.SourceFileLocation.GetSinglePath());
                     targetName = filename;
                 }
 

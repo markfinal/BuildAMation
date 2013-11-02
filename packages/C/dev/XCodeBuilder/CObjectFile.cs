@@ -14,7 +14,7 @@ namespace XcodeBuilder
             var target = node.Target;
             var baseTarget = (Opus.Core.BaseTarget)target;
 
-            var sourceFile = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFile = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             var project = this.Workspace.GetProject(node);
 

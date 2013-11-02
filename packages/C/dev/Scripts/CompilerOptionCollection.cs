@@ -115,7 +115,7 @@ namespace C
             if (null != objectFileModule)
             {
                 // this only requires the end path - so grab it from the Location without resolving it
-                var location = (node.Module as ObjectFile).SourceFile.AbsoluteLocation;
+                var location = objectFileModule.SourceFileLocation;
                 var sourcePathName = string.Empty;
                 if (location is Opus.Core.FileLocation)
                 {

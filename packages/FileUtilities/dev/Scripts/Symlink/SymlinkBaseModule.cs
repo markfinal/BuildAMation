@@ -8,10 +8,10 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ISymlinkTool))]
     public abstract class SymlinkBase : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
-        public Opus.Core.File SourceFile
+        public Opus.Core.Location SourceFileLocation
         {
             get;
-            private set;
+            set;
         }
 
         public System.Type BesideModuleType
@@ -28,7 +28,6 @@ namespace FileUtilities
 
         public SymlinkBase()
         {
-            this.SourceFile = new Opus.Core.File();
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 

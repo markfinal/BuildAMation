@@ -52,7 +52,7 @@ namespace QMakeBuilder
                 }
             }
 
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             var makeDirCommand = new System.Text.StringBuilder();
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))

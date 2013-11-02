@@ -19,11 +19,11 @@ namespace CSharpTest1
         public SimpleExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source.Include(sourceDir, "simpleexecutable.cs");
+            this.source = Opus.Core.FileLocation.Get(sourceDir, "simpleexecutable.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
     }
 
     class SimpleWindowExecutable : CSharp.WindowsExecutable
@@ -31,11 +31,11 @@ namespace CSharpTest1
         public SimpleWindowExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source.Include(sourceDir, "simplewindowsexecutable.cs");
+            this.source = Opus.Core.FileLocation.Get(sourceDir, "simplewindowsexecutable.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
     }
 
     class SimpleModule : CSharp.Module
@@ -43,11 +43,11 @@ namespace CSharpTest1
         public SimpleModule()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source.Include(sourceDir, "simplemodule.cs");
+            this.source = Opus.Core.FileLocation.Get(sourceDir, "simplemodule.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
     }
 
     class Executable2 : CSharp.Executable
@@ -55,11 +55,11 @@ namespace CSharpTest1
         public Executable2()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source.Include(sourceDir, "executable2.cs");
+            this.source = Opus.Core.FileLocation.Get(sourceDir, "executable2.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SimpleLibrary));
@@ -94,7 +94,7 @@ namespace CSharpTest1
         public ExecutableReferences()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source.Include(sourceDir, "executablexml.cs");
+            this.source = Opus.Core.FileLocation.Get(sourceDir, "executablexml.cs");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(ExecutableReferences_UpdateOptions);
         }
@@ -106,6 +106,6 @@ namespace CSharpTest1
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
     }
 }

@@ -82,11 +82,11 @@ namespace CodeGenTest2
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             var codegentoolSourceDir = sourceDir.SubDirectory("codegentool");
-            this.source.Include(codegentoolSourceDir, "main.cs");
+            this.source = Opus.Core.FileLocation.Get(codegentoolSourceDir, "main.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace CodeGenTest2
             var options = module.Options as ICodeGenOptions;
             var outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
             var injectedFile = new C.ObjectFile();
-            injectedFile.SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
+            injectedFile.SourceFileLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
 
             var moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);

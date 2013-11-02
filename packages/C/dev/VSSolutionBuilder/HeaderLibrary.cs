@@ -89,13 +89,7 @@ namespace VSSolutionBuilder
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
                     foreach (Opus.Core.Location location in headerFileCollection)
                     {
-                        var locations = location.GetLocations();
-                        if (locations.Count > 1)
-                        {
-                            throw new Opus.Core.Exception("Location resolves to more than one file");
-                        }
-
-                        var headerPath = locations[0].AbsolutePath;
+                        var headerPath = location.GetSinglePath();
                         var cProject = projectData as ICProject;
                         lock (cProject.HeaderFiles)
                         {

@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);

@@ -95,7 +95,7 @@ namespace VSSolutionBuilder
 #endif
             }
 
-            var resourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
+            var resourceFilePath = moduleToBuild.ResourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);

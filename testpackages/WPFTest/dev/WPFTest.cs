@@ -7,8 +7,8 @@ namespace WPFTest
         public WPFExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.applicationDefinition.Include(sourceDir, "App.xaml");
-            this.page.Include(sourceDir, "MainWindow.xaml");
+            this.applicationDefinition = Opus.Core.FileLocation.Get(sourceDir, "App.xaml");
+            this.page = Opus.Core.FileLocation.Get(sourceDir, "MainWindow.xaml");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WPFExecutable_UpdateOptions);
         }
@@ -25,9 +25,9 @@ namespace WPFTest
         }
 
         [CSharp.ApplicationDefinition]
-        Opus.Core.File applicationDefinition = new Opus.Core.File();
+        Opus.Core.Location applicationDefinition;
 
         [CSharp.Pages]
-        Opus.Core.File page = new Opus.Core.File();
+        Opus.Core.Location page;
     }
 }

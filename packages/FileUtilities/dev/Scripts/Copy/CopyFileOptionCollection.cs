@@ -24,12 +24,7 @@ namespace FileUtilities
             options.DestinationDirectory = null;
             if (typeof(CopyDirectory).IsInstanceOfType(owningNode.Module))
             {
-                var locations = (owningNode.Module as CopyDirectory).CommonBaseDirectory.GetLocations();
-                if (locations.Count > 1)
-                {
-                    throw new Opus.Core.Exception("Common base location resolves to more than one directory");
-                }
-                options.CommonBaseDirectory = locations[0].AbsolutePath;
+                options.CommonBaseDirectory = (owningNode.Module as CopyDirectory).CommonBaseDirectory.GetSinglePath();
             }
             else
             {
@@ -65,10 +60,10 @@ namespace FileUtilities
                                                       options.SourceModuleType.ToString(),
                                                       options.SourceModuleOutputEnum.ToString());
                     }
-                    (node.Module as CopyFile).SourceFile.AbsoluteLocation = Opus.Core.FileLocation.Get(sourceModuleOutputPath, Opus.Core.Location.EExists.WillExist);
+                    (node.Module as CopyFile).SourceFileLocation = Opus.Core.FileLocation.Get(sourceModuleOutputPath, Opus.Core.Location.EExists.WillExist);
                 }
 
-                string sourcePath = (node.Module as CopyFile).SourceFile.AbsolutePath;
+                string sourcePath = (node.Module as CopyFile).SourceFileLocation.GetSinglePath();
 
                 string destinationDirectory;
                 if (options.DestinationDirectory != null)

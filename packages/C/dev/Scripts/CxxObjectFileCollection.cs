@@ -16,15 +16,14 @@ namespace C.Cxx
             this.list.Add(objectFile);
         }
 
-        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.Array<Opus.Core.Location> pathList)
+        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.Array<Opus.Core.Location> locationList)
         {
             var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
 
-            foreach (var path in pathList)
+            foreach (var location in locationList)
             {
                 var objectFile = new ObjectFile();
-                objectFile.ProxyPath.Assign(this.ProxyPath);
-                objectFile.SourceFile.AbsoluteLocation = path;
+                objectFile.SourceFileLocation = location;
                 objectFileList.Add(objectFile);
             }
 

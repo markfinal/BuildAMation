@@ -48,7 +48,7 @@ namespace QtCommon
             string mocPath;
             if (null != mocFile)
             {
-                string sourceFilePath = mocFile.SourceFile.AbsolutePath;
+                string sourceFilePath = mocFile.SourceFileLocation.GetSinglePath();
                 string filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
                 mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
             }

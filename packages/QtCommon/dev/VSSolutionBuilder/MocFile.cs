@@ -86,7 +86,7 @@ namespace VSSolutionBuilder
                 }
             }
 
-            string sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             ProjectFile sourceFile;
             ICProject cProject = projectData as ICProject;

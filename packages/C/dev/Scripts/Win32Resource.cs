@@ -11,15 +11,15 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
     public class Win32Resource : Opus.Core.BaseModule
     {
-        public Win32Resource()
-        {
-            this.ResourceFile = new Opus.Core.File();
-        }
-
-        public Opus.Core.File ResourceFile
+        public Opus.Core.Location ResourceFileLocation
         {
             get;
-            private set;
+            set;
+        }
+
+        public void Include(Opus.Core.Location baseLocation, string pattern)
+        {
+            this.ResourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace MakeFileBuilder
             var objectFileOptions = objectFileModule.Options;
             var compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             var inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);

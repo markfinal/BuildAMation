@@ -87,7 +87,6 @@
     <Compile Include="Factory\ModuleFactory.cs" />
     <Compile Include="Factory\OptionCollectionFactory.cs" />
     <Compile Include="Factory\ToolsetFactory.cs" />
-    <Compile Include="File.cs" />
     <Compile Include="FileCollection.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\IActionCommandComparison.cs" />

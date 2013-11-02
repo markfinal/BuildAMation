@@ -110,7 +110,7 @@ namespace VSSolutionBuilder
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;
             }
 
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             ProjectFile sourceFile;
             lock (projectData.SourceFiles)

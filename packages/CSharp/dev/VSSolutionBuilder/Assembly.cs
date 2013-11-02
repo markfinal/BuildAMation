@@ -99,13 +99,7 @@ namespace VSSolutionBuilder
             // references
             foreach (Opus.Core.Location location in (options as CSharp.IOptions).References)
             {
-                var locations = location.GetLocations();
-                if (locations.Count > 1)
-                {
-                    throw new Opus.Core.Exception("Location resolves to more than one file");
-                }
-
-                var reference = locations[0].AbsolutePath;
+                var reference = location.GetSinglePath();
                 projectData.References.Add(reference);
             }
 
@@ -137,10 +131,10 @@ namespace VSSolutionBuilder
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -166,13 +160,7 @@ namespace VSSolutionBuilder
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
                             foreach (Opus.Core.Location location in sourceCollection)
                             {
-                                var locations = location.GetLocations();
-                                if (locations.Count > 1)
-                                {
-                                    throw new Opus.Core.Exception("Location resolves to more than one file");
-                                }
-                                var absolutePath = locations[0].AbsolutePath;
-
+                                var absolutePath = location.GetSinglePath();
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
                                     throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -207,10 +195,10 @@ namespace VSSolutionBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
@@ -267,10 +255,10 @@ namespace VSSolutionBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);

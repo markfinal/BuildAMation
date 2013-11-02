@@ -44,10 +44,10 @@ namespace MakeFileBuilder
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -60,12 +60,7 @@ namespace MakeFileBuilder
                             Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
                             foreach (Opus.Core.Location location in sourceCollection)
                             {
-                                var locations = location.GetLocations();
-                                if (locations.Count > 1)
-                                {
-                                    throw new Opus.Core.Exception("Location expands to more than one file");
-                                }
-                                string absolutePath = locations[0].AbsolutePath;
+                                string absolutePath = location.GetSinglePath();
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
                                     throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -87,10 +82,10 @@ namespace MakeFileBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
@@ -141,10 +136,10 @@ namespace MakeFileBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.File)
+                        if (sourceField is Opus.Core.Location)
                         {
-                            Opus.Core.File file = sourceField as Opus.Core.File;
-                            string absolutePath = file.AbsolutePath;
+                            var file = sourceField as Opus.Core.Location;
+                            string absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);

@@ -7,11 +7,11 @@ namespace MixedTest
         public CSharpTest()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source.Include(sourceDir, "main.cs");
+            this.source = Opus.Core.FileLocation.Get(sourceDir, "main.cs");
         }
 
         [Opus.Core.SourceFiles]
-        Opus.Core.File source = new Opus.Core.File();
+        Opus.Core.Location source;
     }
 
     class CApp : C.Application

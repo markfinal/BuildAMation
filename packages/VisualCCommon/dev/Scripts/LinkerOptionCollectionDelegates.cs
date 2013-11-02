@@ -258,13 +258,7 @@ namespace VisualCCommon
                 libraryPaths.Append("$(NOINHERIT) ");
                 foreach (Opus.Core.Location location in libraryPathsOption.Value)
                 {
-                    var locations = location.GetLocations();
-                    if (locations.Count > 1)
-                    {
-                        throw new Opus.Core.Exception("Location resolves to more than one file");
-                    }
-
-                    var standardLibraryPath = locations[0].AbsolutePath;
+                    var standardLibraryPath = location.GetSinglePath();
                     if (standardLibraryPath.Contains(" "))
                     {
                         libraryPaths.Append(System.String.Format("\"{0}\" ", standardLibraryPath));
@@ -279,13 +273,7 @@ namespace VisualCCommon
             {
                 foreach (Opus.Core.Location location in libraryPathsOption.Value)
                 {
-                    var locations = location.GetLocations();
-                    if (locations.Count > 1)
-                    {
-                        throw new Opus.Core.Exception("Location resolves to more than one file");
-                    }
-
-                    var standardLibraryPath = locations[0].AbsolutePath;
+                    var standardLibraryPath = location.GetSinglePath();
                     libraryPaths.Append(System.String.Format("{0};", standardLibraryPath));
                 }
             }

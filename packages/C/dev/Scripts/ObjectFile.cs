@@ -11,20 +11,15 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFile : Opus.Core.BaseModule
     {
-        public Opus.Core.File SourceFile
+        public Opus.Core.Location SourceFileLocation
         {
             get;
-            private set;
-        }
-
-        public ObjectFile()
-        {
-            this.SourceFile = new Opus.Core.File();
+            set;
         }
 
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            this.SourceFile.Include(baseLocation, pattern);
+            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }
     }
 }

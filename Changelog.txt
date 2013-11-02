@@ -1,3 +1,5 @@
+02-Nov-2013 Removed Opus.Core.File. Use Opus.Core.Location or FileLocation as a replacement.
+
 02-Nov-2013 Removed deprecated Opus.Core.Exception(string,System.Exception)
 
 01-Nov-2013 Added Qt-4.8.5 package.

@@ -75,10 +75,9 @@ namespace QtCommon
             var moduleCollection = new System.Collections.Generic.List<Opus.Core.IModule>();
             foreach (var location in locationList)
             {
-                var copyFile = new MocFile();
-                copyFile.ProxyPath.Assign(this.ProxyPath);
-                copyFile.SourceFile.AbsoluteLocation = location;
-                moduleCollection.Add(copyFile);
+                var mocFile = new MocFile();
+                mocFile.SourceFileLocation = location;
+                moduleCollection.Add(mocFile);
             }
             return moduleCollection;
         }
@@ -104,7 +103,7 @@ namespace QtCommon
             {
                 foreach (var objectFile in childModules)
                 {
-                    var location = (objectFile as MocFile).SourceFile.AbsoluteLocation;
+                    var location = (objectFile as MocFile).SourceFileLocation;
                     if (this.DeferredUpdates.ContainsKey(location))
                     {
                         foreach (var updateDelegate in this.DeferredUpdates[location])

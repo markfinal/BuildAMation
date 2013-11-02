@@ -59,7 +59,7 @@ namespace VSSolutionBuilder
 
         public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
         {
-            var sourceFilePath = moduleToBuild.SourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             var baseOptions = moduleToBuild.Options;
             var copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
             var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);

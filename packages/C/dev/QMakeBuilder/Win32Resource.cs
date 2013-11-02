@@ -9,13 +9,13 @@ namespace QMakeBuilder
     {
         public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            var sourceFilePath = moduleToBuild.ResourceFile.AbsolutePath;
+            var sourceFilePath = moduleToBuild.ResourceFileLocation;
             var node = moduleToBuild.OwningNode;
             var options = moduleToBuild.Options as C.Win32ResourceCompilerOptionCollection;
 
             var data = new QMakeData(node);
             data.PriPaths.Add(this.EmptyConfigPriPath);
-            data.WinRCFiles.Add(sourceFilePath);
+            data.WinRCFiles.Add(sourceFilePath.GetSinglePath());
             data.Output = QMakeData.OutputType.WinResource;
             data.DestDir = options.OutputDirectoryPath;
 
