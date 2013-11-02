@@ -126,7 +126,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         iterations = 1
         if responseName:
             responseFile = GetResponsePath(responseName)
-            versionName = "%s.version" % responseName
+            versionName = "%s-version" % responseName
             versionArgs = None
             if hasattr(options, versionName):
               versionArgs = getattr(options, versionName)
