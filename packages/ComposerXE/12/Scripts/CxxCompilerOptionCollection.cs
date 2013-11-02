@@ -13,27 +13,6 @@ namespace ComposerXE
         protected override void InitializeDefaults(Opus.Core.DependencyNode node)
         {
             base.InitializeDefaults(node);
-
-#if false
-            Opus.Core.Target target = node.Target;
-
-            CCompiler compilerInstance = C.CompilerFactory.GetTargetInstance(target, C.ClassNames.CCompilerTool) as CCompiler;
-
-            string cppIncludePath = compilerInstance.GxxIncludePath(target);
-            if (!System.IO.Directory.Exists(cppIncludePath))
-            {
-                throw new Opus.Core.Exception("ComposerXE C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath);
-            }
-            string cppIncludePath2 = System.String.Format("{0}/{1}", cppIncludePath, compilerInstance.MachineType(target));
-            if (!System.IO.Directory.Exists(cppIncludePath2))
-            {
-                throw new Opus.Core.Exception("ComposerXE C++ include path '{0}' does not exist. Is g++ installed?", cppIncludePath2);
-            }
-
-            this.SystemIncludePaths.Add(null, cppIncludePath);
-            this.SystemIncludePaths.Add(null, cppIncludePath2);
-#endif
-
             ComposerXECommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
 

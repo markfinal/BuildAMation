@@ -174,42 +174,7 @@ namespace ComposerXECommon
                 }
 
                 // C include paths (http://gcc.gnu.org/onlinedocs/cpp/Search-Path.html)
-#if false
-                if (null == libDir)
-                {
-                    throw new Opus.Core.Exception("Unable to locate lib dir for gcc");
-                }
-#endif
-
                 includePaths.Add("/usr/local/include");
-#if false
-                string gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libDir, gccTarget, gccVersion);
-                string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
-                string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
-    
-                if (!System.IO.Directory.Exists(gccIncludeFolder))
-                {
-                    throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
-                }
-                includePaths.Add(gccIncludeFolder);
-
-                // OSX does not have this path
-                if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
-                {
-                    // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
-                    if (!System.IO.Directory.Exists(gccIncludeFixedFolder))
-                    {
-                        throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFixedFolder);
-                    }
-                    includePaths.Add(gccIncludeFixedFolder);
-                }
-
-                string targetIncludeFolder = System.String.Format("/usr/{0}/include", gccTarget);
-                if (System.IO.Directory.Exists(targetIncludeFolder))
-                {
-                    includePaths.Add(targetIncludeFolder);
-                }
-#endif
                 includePaths.Add("/usr/include");
 
                 // TODO: this looks like the targetIncludeFolder, and has been necessary

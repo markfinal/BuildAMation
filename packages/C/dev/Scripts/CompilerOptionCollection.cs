@@ -114,10 +114,7 @@ namespace C
             var objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)
             {
-#if false
-                // TODO: this doesn't NEED to resolve the location just to get the filename, it could just grab the end of the Location
-                var sourcePathName = (node.Module as ObjectFile).SourceFile.AbsolutePath;
-#else
+                // this only requires the end path - so grab it from the Location without resolving it
                 var location = (node.Module as ObjectFile).SourceFile.AbsoluteLocation;
                 var sourcePathName = string.Empty;
                 if (location is Opus.Core.FileLocation)
@@ -132,7 +129,6 @@ namespace C
                 {
                     sourcePathName = (location as Opus.Core.ScaffoldLocation).Pattern;
                 }
-#endif
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
             else

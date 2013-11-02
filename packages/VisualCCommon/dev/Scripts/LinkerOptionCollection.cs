@@ -70,65 +70,6 @@ namespace VisualCCommon
             base.FinalizeOptions(node);
         }
 
-#if false
-        // TODO: this function is not called by anything... I think that the user should be responsible for adding runtime libraries if they have overridden the default
-        private static void RuntimeLibraryCommandLine(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            C.ILinkerOptions options = sender as C.ILinkerOptions;
-            Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
-            switch (runtimeLibraryOption.Value)
-            {
-                case ERuntimeLibrary.MultiThreaded:
-                    options.StandardLibraries.Add("LIBCMT.lib");
-                    break;
-
-                case ERuntimeLibrary.MultiThreadedDebug:
-                    options.StandardLibraries.Add("LIBCMTD.lib");
-                    break;
-
-                case ERuntimeLibrary.MultiThreadedDLL:
-                    options.StandardLibraries.Add("MSVCRT.lib");
-                    break;
-
-                case ERuntimeLibrary.MultiThreadedDebugDLL:
-                    options.StandardLibraries.Add("MSVCRTD.lib");
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized ERuntimeLibrary option");
-            }
-        }
-
-        // TODO: this function is not called by anything... I think that the user should be responsible for adding runtime libraries if they have overridden the default
-        private static VisualStudioProcessor.ToolAttributeDictionary RuntimeLibraryVisualStudio(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
-        {
-            C.ILinkerOptions options = sender as C.ILinkerOptions;
-            Opus.Core.ValueTypeOption<ERuntimeLibrary> runtimeLibraryOption = option as Opus.Core.ValueTypeOption<ERuntimeLibrary>;
-            switch (runtimeLibraryOption.Value)
-            {
-                case ERuntimeLibrary.MultiThreaded:
-                    options.StandardLibraries.Add("LIBCMT.lib");
-                    break;
-
-                case ERuntimeLibrary.MultiThreadedDebug:
-                    options.StandardLibraries.Add("LIBCMTD.lib");
-                    break;
-
-                case ERuntimeLibrary.MultiThreadedDLL:
-                    options.StandardLibraries.Add("MSVCRT.lib");
-                    break;
-
-                case ERuntimeLibrary.MultiThreadedDebugDLL:
-                    options.StandardLibraries.Add("MSVCRTD.lib");
-                    break;
-
-                default:
-                    throw new Opus.Core.Exception("Unrecognized ERuntimeLibrary option");
-            }
-            return null;
-        }
-#endif
-
         public override Opus.Core.DirectoryCollection DirectoriesToCreate()
         {
             Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();

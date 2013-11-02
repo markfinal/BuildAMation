@@ -17,9 +17,6 @@ namespace LLVMGcc
             // TODO: think I can move this to GccCommon, but it misses out the C++ include paths for some reason (see Test9-dev)
             Opus.Core.Target target = node.Target;
             GccCommon.Toolset gccToolset = target.Toolset as GccCommon.Toolset;
-#if false
-            string machineType = gccToolset.GccDetail.Target;
-#endif
             string cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
 
             if (!System.IO.Directory.Exists(cxxIncludePath))
@@ -27,16 +24,6 @@ namespace LLVMGcc
                 throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath);
             }
             (this as C.ICCompilerOptions).SystemIncludePaths.Add(cxxIncludePath);
-
-            // TODO: not sure if this is necessary
-#if false
-            string cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
-            if (!System.IO.Directory.Exists(cxxIncludePath2))
-            {
-                throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath2);
-            }
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cxxIncludePath2);
-#endif
 
             GccCommon.ObjCxxCompilerOptionCollection.ExportedDefaults(this, node);
         }

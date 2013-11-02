@@ -32,28 +32,6 @@ namespace FileUtilities
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 
-#if false
-        public void SetRelativePath(object owner, params string[] pathSegments)
-        {
-            this.SourceFile.SetRelativePath(owner, pathSegments);
-        }
-
-        public void SetPackageRelativePath(Opus.Core.PackageInformation package, params string[] pathSegments)
-        {
-            this.SourceFile.SetPackageRelativePath(package, pathSegments);
-        }
-
-        public void SetAbsolutePath(string absolutePath)
-        {
-            this.SourceFile.SetAbsolutePath(absolutePath);
-        }
-
-        public void SetGuaranteedAbsolutePath(string absolutePath)
-        {
-            this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
-        }
-#endif
-
         public void Set(System.Type moduleType, object outputFileEnum)
         {
             this.AdditionalDependentModules.Add(moduleType);
