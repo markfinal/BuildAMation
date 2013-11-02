@@ -1,3 +1,5 @@
+02-Nov-2013 Removed deprecated Opus.Core.Exception(string,System.Exception)
+
 01-Nov-2013 Added Qt-4.8.5 package.
 
 31-Oct-2013 Reworked the Opus.Core.Location API and usage. Location is an abstract base class. FileLocation is a subclass, and represents a single file. DirectoryLocation is a subclass, and represents a single directory. ScaffoldLocation is a subclass, and represents an ambiguous number of files or directories. Calling GetLocations() on a ScaffoldLocation returns a resolved list of Locations. Many File and Directory storage cases have been revised to use Locations, and some APIs have been broken in the process. Particularly, the Include/Exclude mechanism now only accepts a single pattern string, rather than a variable length array of subpaths.

@@ -50,18 +50,6 @@ namespace Opus.Core
 
         /// <summary>
         /// Initializes a new instance of the Exception class.
-        /// DEPRECATED
-        /// </summary>
-        /// <param name="message">Exception message.</param>
-        /// <param name="innerException">Inner exception.</param>
-        public Exception(string message, System.Exception innerException)
-            : this(innerException, message)
-        {
-            // TODO: remove this and fix what breaks
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the Exception class.
         /// </summary>
         /// <param name="serializationInfo">Serialization information.</param>
         /// <param name="streamingContext">Streaming context.</param>
