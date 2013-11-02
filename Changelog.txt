@@ -1,3 +1,5 @@
+02-Nov-2013 Release 0.50 Alpha 6
+
 02-Nov-2013 Removed Opus.Core.File. Use Opus.Core.Location or FileLocation as a replacement.
 
 02-Nov-2013 Removed deprecated Opus.Core.Exception(string,System.Exception)
