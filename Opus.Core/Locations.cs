@@ -269,6 +269,8 @@ namespace Opus.Core
 
         private void Resolve()
         {
+            // TODO: if this scaffold has been resolved already, don't do it again
+
             if (this.Base is ScaffoldLocation)
             {
                 var baseScaffold = this.Base as ScaffoldLocation;
@@ -307,13 +309,11 @@ namespace Opus.Core
         {
             get
             {
-                throw new Exception("Getting scaffold absolute path");
-                //return base.AbsolutePath;
+                throw new Exception("Scaffold locations do not have an absolute path. Use GetLocations()");
             }
             protected set
             {
-                throw new Exception("Setting scaffold absolute path");
-                //base.AbsolutePath = value;
+                throw new Exception("Scaffold locations cannot have their absolute path set. Use a FileLocation or DirectoryLocation");
             }
         }
 

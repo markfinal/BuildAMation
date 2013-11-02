@@ -5,11 +5,9 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: this class is now redundant, and should just use a ScaffoldLocation or a FileLocation
     public class File
     {
-        static private readonly string DirectorySeparatorString = new string(System.IO.Path.DirectorySeparatorChar, 1);
-        static private readonly string AltDirectorySeparatorString = new string(System.IO.Path.AltDirectorySeparatorChar, 1);
-
         public Location AbsoluteLocation
         {
             get;
