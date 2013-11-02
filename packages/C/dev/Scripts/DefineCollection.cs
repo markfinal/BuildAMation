@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public sealed class DefineCollection : System.ICloneable, Opus.Core.IComplement<DefineCollection>
+    public sealed class DefineCollection : System.ICloneable, Opus.Core.ISetOperations<DefineCollection>
     {
         private Opus.Core.StringArray defines = new Opus.Core.StringArray();
 
@@ -64,7 +64,7 @@ namespace C
             return base.GetHashCode();
         }
 
-        DefineCollection Opus.Core.IComplement<DefineCollection>.Complement(DefineCollection other)
+        DefineCollection Opus.Core.ISetOperations<DefineCollection>.Complement(DefineCollection other)
         {
             var complementDefines = this.defines.Complement(other.defines);
             if (0 == complementDefines.Count)
@@ -77,7 +77,7 @@ namespace C
             return complementDefinesCollection;
         }
 
-        DefineCollection Opus.Core.IComplement<DefineCollection>.Intersect(DefineCollection other)
+        DefineCollection Opus.Core.ISetOperations<DefineCollection>.Intersect(DefineCollection other)
         {
             var intersectDefines = this.defines.Intersect(other.defines);
             var intersectDefinesCollection = new DefineCollection();
