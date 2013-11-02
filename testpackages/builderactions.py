@@ -71,7 +71,7 @@ def MakeFilePost(package, options, outputMessages, errorMessages):
         # currently do not support building configurations separately
         argList = []
         argList.append("make")
-        print "Running '%s' in %s\n" % ' '.join(argList), makeFileDir
+        print "Running '%s' in %s\n" % (' '.join(argList), makeFileDir)
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makeFileDir)
         (outputStream, errorStream) = p.communicate() # this should WAIT
         exitCode |= p.returncode
