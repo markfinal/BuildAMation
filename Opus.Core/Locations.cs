@@ -269,7 +269,6 @@ namespace Opus.Core
 
         private void Resolve()
         {
-#if true
             if (this.Base is ScaffoldLocation)
             {
                 var baseScaffold = this.Base as ScaffoldLocation;
@@ -282,6 +281,7 @@ namespace Opus.Core
                     }
                     else
                     {
+                        // TODO: what does this mean exactly?
                         throw new System.NotImplementedException();
                     }
                 }
@@ -290,52 +290,6 @@ namespace Opus.Core
             {
                 this.ResolveDirectory(this.Base);
             }
-#else
-            var baseLocation = this.Base.Resolve();
-            var path = baseLocation.AbsolutePath;
-            if (baseLocation is DirectoryLocation)
-            {
-                if (null == this.Pattern)
-                {
-                    if ((null == this.ProxyPath) || this.ProxyPath.Empty)
-                    {
-                        return baseLocation;
-                    }
-
-                    var newLocation = this.ProxyPath.Combine(baseLocation);
-                    return newLocation;
-                }
-
-                if ((null != this.ProxyPath) && !this.ProxyPath.Empty)
-                {
-                    var newLocation = this.ProxyPath.Combine(baseLocation);
-                    path = newLocation.Resolve().AbsolutePath;
-                }
-
-                path = System.IO.Path.Combine(path, this.Pattern);
-                if (this.Pattern.Contains(".")) // TODO: perhaps an indication of a file
-                {
-                    return FileLocation.Get(path);
-                }
-                else
-                {
-                    return DirectoryLocation.Get(path);
-                }
-            }
-            else if (baseLocation is FileLocation)
-            {
-                if (null != this.Pattern)
-                {
-                    throw new Exception("Cannot subdivide a file further");
-                }
-
-                return baseLocation;
-            }
-            else
-            {
-                throw new Exception("Not supported");
-            }
-#endif
         }
 
         public override Location SubDirectory(string subDirName)

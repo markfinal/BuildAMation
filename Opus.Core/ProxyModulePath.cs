@@ -26,7 +26,6 @@ namespace Opus.Core
             }
         }
 
-#if true
         public void Assign(params string[] segments)
         {
             this.pathSegments = new StringArray(segments);
@@ -41,12 +40,6 @@ namespace Opus.Core
 
             this.pathSegments = new StringArray(proxy.pathSegments);
         }
-#else
-        public ProxyModulePath(params string[] segments)
-        {
-            this.pathSegments = segments;
-        }
-#endif
 
         public DirectoryLocation Combine(Location baseLocation)
         {
@@ -55,21 +48,10 @@ namespace Opus.Core
                 return baseLocation as DirectoryLocation;
             }
 
-#if true
             var offset = this.pathSegments.ToString(System.IO.Path.DirectorySeparatorChar);
             var basePath = baseLocation.AbsolutePath;
             var combined = System.IO.Path.Combine(basePath, offset);
             return DirectoryLocation.Get(System.IO.Path.GetFullPath(combined));
-#else
-            var lastLocation = root;
-            foreach (var pattern in this.pathSegments)
-            {
-                var location = new ScaffoldLocation(lastLocation, pattern);
-                lastLocation = location;
-            }
-
-            return lastLocation;
-#endif
         }
     }
 }
