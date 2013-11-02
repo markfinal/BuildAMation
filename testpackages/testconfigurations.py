@@ -104,7 +104,7 @@ def TestOptionSetup(optParser):
         allResponseNames.update(results)
     for response in allResponseNames:
       longName = "--%s.version" % response
-      dest = "%s-version" % response
+      dest = "%s_version" % response
       # TODO: what sort of data is this? is it a single value, or can multiple versions be specified?
       optParser.add_option(longName, dest=dest, action="append", default=None, help="Versions to test for '%s'" % response)
 

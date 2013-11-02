@@ -30,7 +30,10 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         outputMessages.write("ViisualStudio solution expected at %s did not exist" % slnPath)
         return 0
     try:
-        msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersion[options.visualc-version[0]]
+        vcVersion = options.visualc_version
+        if vcVersion:
+          vcVersion = vcVersion[0]
+        msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersion[vcVersion]
         for config in options.configurations:
             argList = []
             argList.append(msBuildPath)
