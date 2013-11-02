@@ -150,16 +150,8 @@ namespace Test
             this.UpdateOptions += OverrideOptionCollection;
 
             // override the options on one specific file
-#if true
             this.RegisterUpdateOptions(new Opus.Core.UpdateOptionCollectionDelegateArray(mainObjFile_UpdateOptions),
                                        sourceDir, "main.c");
-#else
-            var mainObjFile = this.GetChildModule(sourceDir, "main.c");
-            if (null != mainObjFile)
-            {
-                mainObjFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(mainObjFile_UpdateOptions);
-            }
-#endif
         }
 
         void mainObjFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)

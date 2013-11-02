@@ -32,30 +32,10 @@ namespace QtCommon
             }
         }
 
-#if true
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
             this.SourceFile.Include(baseLocation, pattern);
         }
-#else
-        public void SetAbsolutePath(string absolutePath)
-        {
-            this.SourceFile = new Opus.Core.File();
-            this.SourceFile.SetAbsolutePath(absolutePath);
-        }
-
-        public void SetRelativePath(object owner, params string[] pathSegments)
-        {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
-            }
-
-            this.SourceFile = new Opus.Core.File();
-            this.SourceFile.SetPackageRelativePath(package, pathSegments);
-        }
-#endif
 
         public Opus.Core.File SourceFile
         {

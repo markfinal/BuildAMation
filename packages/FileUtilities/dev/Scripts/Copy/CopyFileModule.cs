@@ -45,32 +45,10 @@ namespace FileUtilities
             this.BesideModuleType = besideModuleType;
         }
 
-#if true
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
             this.SourceFile.Include(baseLocation, pattern);
         }
-#else
-        public void SetRelativePath(object owner, params string[] pathSegments)
-        {
-            this.SourceFile.SetRelativePath(owner, pathSegments);
-        }
-
-        public void SetPackageRelativePath(Opus.Core.PackageInformation package, params string[] pathSegments)
-        {
-            this.SourceFile.SetPackageRelativePath(package, pathSegments);
-        }
-
-        public void SetAbsolutePath(string absolutePath)
-        {
-            this.SourceFile.SetAbsolutePath(absolutePath);
-        }
-
-        public void SetGuaranteedAbsolutePath(string absolutePath)
-        {
-            this.SourceFile.SetGuaranteedAbsolutePath(absolutePath);
-        }
-#endif
 
         public void Set(System.Type moduleType, object outputFileEnum)
         {

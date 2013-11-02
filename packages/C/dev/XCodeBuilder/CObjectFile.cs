@@ -73,7 +73,7 @@ namespace XcodeBuilder
                 buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
                 buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 
-                // TODO: not sure where all these will come from
+                // TODO: these should really be options in their own rights
 #if true
                 buildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
                 buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique("10.8");

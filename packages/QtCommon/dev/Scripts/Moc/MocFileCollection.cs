@@ -13,7 +13,6 @@ namespace QtCommon
     {
         private Opus.Core.Array<MocFile> list = new Opus.Core.Array<MocFile>();
 
-#if true
         protected Opus.Core.Array<Opus.Core.Location> Includes
         {
             get;
@@ -126,86 +125,9 @@ namespace QtCommon
             }
             return collection;
         }
-#else
-        Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
-        {
-            Opus.Core.ModuleCollection collection = new Opus.Core.ModuleCollection();
-
-            foreach (MocFile mocFile in this.list)
-            {
-                collection.Add(mocFile as Opus.Core.IModule);
-            }
-
-            return collection;
-        }
-#endif
-
-#if false
-        // deprecated
-        public void Include(object owner, params string[] pathSegments)
-        {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
-            }
-
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
-            }
-
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            foreach (string path in filePaths)
-            {
-                MocFile mocFile = new MocFile();
-                mocFile.ProxyPath.Assign(this.ProxyPath);
-                mocFile.SourceFile.AbsolutePath = path;
-                this.list.Add(mocFile);
-            }
-        }
-
-        // deprecated
-        public void Exclude(object owner, params string[] pathSegments)
-        {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
-            }
-
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier.Location).CachedPath;
-            }
-
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            System.Collections.Generic.List<MocFile> toRemove = new System.Collections.Generic.List<MocFile>();
-            foreach (string path in filePaths)
-            {
-                foreach (MocFile file in this.list)
-                {
-                    if (file.SourceFile.AbsolutePath == path)
-                    {
-                        toRemove.Add(file);
-                    }
-                }
-            }
-
-            foreach (MocFile file in toRemove)
-            {
-                this.list.Remove(file);
-            }
-        }
-#endif
 
         #region IModuleCollection Members
 
-#if true
         private System.Collections.Generic.Dictionary<Opus.Core.Location, Opus.Core.UpdateOptionCollectionDelegateArray> DeferredUpdates
         {
             get;
@@ -223,41 +145,7 @@ namespace QtCommon
 
             this.DeferredUpdates[new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File)] = delegateArray;
         }
-#else
-        public Opus.Core.IModule GetChildModule(object owner, params string[] pathSegments)
-        {
-            Opus.Core.PackageInformation package = Opus.Core.PackageUtilities.GetOwningPackage(owner);
-            if (null == package)
-            {
-                throw new Opus.Core.Exception("Unable to locate package '{0}'", owner.GetType().Namespace);
-            }
 
-            string packagePath = package.Identifier.Path;
-            Opus.Core.ProxyModulePath proxyPath = (owner as Opus.Core.BaseModule).ProxyPath;
-            if (null != proxyPath)
-            {
-                packagePath = proxyPath.Combine(package.Identifier);
-            }
-
-            Opus.Core.StringArray filePaths = Opus.Core.File.GetFiles(packagePath, pathSegments);
-            if (filePaths.Count != 1)
-            {
-                throw new Opus.Core.Exception("Path segments resolve to more than one file:\n{0}", filePaths.ToString('\n'));
-            }
-
-            string pathToFind = filePaths[0];
-
-            foreach (MocFile mocFile in this.list)
-            {
-                if (mocFile.SourceFile.AbsolutePath == pathToFind)
-                {
-                    return mocFile;
-                }
-            }
-
-            return null;
-        }
-#endif
         #endregion
     }
 }
