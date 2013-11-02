@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable, IComplement<DirectoryCollection>
+    public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable, ISetOperations<DirectoryCollection>
     {
         private Array<Location> directoryLocations = new Array<Location>();
 
@@ -84,7 +84,7 @@ namespace Opus.Core
             return base.GetHashCode();
         }
 
-        DirectoryCollection IComplement<DirectoryCollection>.Complement(DirectoryCollection other)
+        DirectoryCollection ISetOperations<DirectoryCollection>.Complement(DirectoryCollection other)
         {
             var complementPaths = this.directoryLocations.Complement(other.directoryLocations);
             if (0 == complementPaths.Count)
@@ -97,7 +97,7 @@ namespace Opus.Core
             return complementDirectoryCollection;
         }
 
-        DirectoryCollection IComplement<DirectoryCollection>.Intersect(DirectoryCollection other)
+        DirectoryCollection ISetOperations<DirectoryCollection>.Intersect(DirectoryCollection other)
         {
             var intersectPaths = this.directoryLocations.Intersect(other.directoryLocations);
             var intersectDirectoryCollection = new DirectoryCollection();

@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class StringArray : Array<string>, System.ICloneable, Opus.Core.IComplement<StringArray>
+    public sealed class StringArray : Array<string>, System.ICloneable, Opus.Core.ISetOperations<StringArray>
     {
         public StringArray()
             : base()
@@ -116,14 +116,14 @@ namespace Opus.Core
             return clone;
         }
 
-        #region IComplement implementation
+        #region ISetOperations implementation
 
-        StringArray IComplement<StringArray>.Complement (StringArray other)
+        StringArray ISetOperations<StringArray>.Complement (StringArray other)
         {
             return new StringArray((this as Array<string>).Complement(other as Array<string>));
         }
 
-        StringArray IComplement<StringArray>.Intersect (StringArray other)
+        StringArray ISetOperations<StringArray>.Intersect (StringArray other)
         {
             return new StringArray((this as Array<string>).Intersect(other as Array<string>));
         }
