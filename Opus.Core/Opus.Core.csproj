@@ -97,7 +97,6 @@
     <Compile Include="Interfaces\IBuilderPreExecute.cs" />
     <Compile Include="Interfaces\IBuildScheduler.cs" />
     <Compile Include="Interfaces\ICommonOptionCollection.cs" />
-    <Compile Include="Interfaces\IComplement.cs" />
     <Compile Include="Interfaces\IFieldAttributeProcessor.cs" />
     <Compile Include="Interfaces\IForwardDependenciesOn.cs" />
     <Compile Include="Interfaces\IGlobalOptionCollectionOverride.cs" />
@@ -106,6 +105,7 @@
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IModuleCollection.cs" />
     <Compile Include="Interfaces\INestedDependents.cs" />
+    <Compile Include="Interfaces\ISetOperations.cs" />
     <Compile Include="Interfaces\ITargetFilters.cs" />
     <Compile Include="Interfaces\ITool.cs" />
     <Compile Include="Interfaces\IToolEnvironmentVariables.cs" />
