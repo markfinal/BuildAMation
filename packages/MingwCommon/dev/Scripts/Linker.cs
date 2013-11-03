@@ -27,7 +27,7 @@ namespace MingwCommon
         {
             get
             {
-                return string.Empty;
+                return ".exe";
             }
         }
 
