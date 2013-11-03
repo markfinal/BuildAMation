@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <new>
+#include <cstddef> // for size_t
 
 struct TextureHeader;
 

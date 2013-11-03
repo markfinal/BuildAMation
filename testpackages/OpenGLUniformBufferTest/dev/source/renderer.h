@@ -9,6 +9,7 @@ typedef uint64_t uint64;
 #endif
 
 #include <new>
+#include <cstddef> // for size_t
 
 class Renderer
 {
