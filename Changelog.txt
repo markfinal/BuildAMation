@@ -1,3 +1,5 @@
+03-Nov-2013 Added Mingw-4.8.1
+
 02-Nov-2013 Release 0.50 Alpha 6
 
 02-Nov-2013 Removed Opus.Core.File. Use Opus.Core.Location or FileLocation as a replacement.
