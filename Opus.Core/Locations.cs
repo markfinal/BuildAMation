@@ -201,6 +201,12 @@ namespace Opus.Core
             this.ProxyPath = proxyPath;
         }
 
+        private bool Resolved
+        {
+            get;
+            set;
+        }
+
         public ETypeHint TypeHint
         {
             get;
@@ -283,7 +289,10 @@ namespace Opus.Core
 
         private void Resolve()
         {
-            // TODO: if this scaffold has been resolved already, don't do it again
+            if (this.Resolved)
+            {
+                return;
+            }
 
             if (this.Base is ScaffoldLocation)
             {
@@ -306,6 +315,8 @@ namespace Opus.Core
             {
                 this.ResolveDirectory(this.Base);
             }
+
+            this.Resolved = true;
         }
 
         public override Location SubDirectory(string subDirName)
