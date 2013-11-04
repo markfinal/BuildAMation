@@ -10,6 +10,18 @@ namespace FileUtilities
     {
         private System.Collections.Generic.List<Opus.Core.IModule> copyFiles = new System.Collections.Generic.List<Opus.Core.IModule>();
 
+        protected Opus.Core.Array<Opus.Core.Location> Includes
+        {
+            get;
+            set;
+        }
+
+        protected Opus.Core.Array<Opus.Core.Location> Excludes
+        {
+            get;
+            set;
+        }
+
         public void Include(Opus.Core.Target target, object outputFileEnum, params System.Type[] moduleTypes)
         {
             // each file to copy needs to know where the parent was set to copy next to
@@ -23,18 +35,6 @@ namespace FileUtilities
                 file.Set(moduleType, outputFileEnum);
                 this.copyFiles.Add(file);
             }
-        }
-
-        protected Opus.Core.Array<Opus.Core.Location> Includes
-        {
-            get;
-            set;
-        }
-
-        protected Opus.Core.Array<Opus.Core.Location> Excludes
-        {
-            get;
-            set;
         }
 
         public void Include(Opus.Core.Location baseLocation, string pattern)
@@ -124,7 +124,7 @@ namespace FileUtilities
         {
             var collection = new Opus.Core.ModuleCollection();
 
-            // add in modules obtained through mechanisms other than paths
+            // add in modules that were inserted other than by an Include() call
             foreach (var module in this.copyFiles)
             {
                 collection.Add(module);

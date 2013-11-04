@@ -18,6 +18,10 @@ namespace C
 
         CompilerProgramDatabase = (1 << 7),
         LinkerProgramDatabase = (1 << 8),
-        Win32CompiledResource = (1 << 9)
+        Win32CompiledResource = (1 << 9),
+
+        OSXBundle = (1 << 10),
+        OSXBundleContents = (1 << 11),
+        OSXBundleMacOS = (1 << 12)
     }
 }

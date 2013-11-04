@@ -75,7 +75,7 @@ namespace C
         {
             var collection = new Opus.Core.ModuleCollection();
 
-            // add in modules obtained through mechanisms other than paths
+            // add in modules that were inserted other than by an Include() call
             foreach (var module in this.list)
             {
                 collection.Add(module);

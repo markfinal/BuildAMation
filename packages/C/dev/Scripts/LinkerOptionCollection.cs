@@ -154,8 +154,11 @@ namespace C
                     if (target.HasPlatform(Opus.Core.EPlatform.OSX) && osxLinkerOptions.ApplicationBundle)
                     {
                         baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
+                        this.OutputPaths[OutputFileFlags.OSXBundle] = baseOutputPath;
                         baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");
+                        this.OutputPaths[OutputFileFlags.OSXBundleContents] = baseOutputPath;
                         baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOS");
+                        this.OutputPaths[OutputFileFlags.OSXBundleMacOS] = baseOutputPath;
                     }
                 }
 

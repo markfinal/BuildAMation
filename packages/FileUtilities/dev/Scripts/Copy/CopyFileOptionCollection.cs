@@ -24,7 +24,15 @@ namespace FileUtilities
             options.DestinationDirectory = null;
             if (typeof(CopyDirectory).IsInstanceOfType(owningNode.Module))
             {
-                options.CommonBaseDirectory = (owningNode.Module as CopyDirectory).CommonBaseDirectory.GetSinglePath();
+                var copyDirectory = owningNode.Module as CopyDirectory;
+                if (copyDirectory.CommonBaseDirectory != null)
+                {
+                    options.CommonBaseDirectory = copyDirectory.CommonBaseDirectory.GetSinglePath();
+                }
+                else
+                {
+                    options.CommonBaseDirectory = null;
+                }
             }
             else
             {
