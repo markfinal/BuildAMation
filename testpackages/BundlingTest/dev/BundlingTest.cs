@@ -98,4 +98,26 @@ namespace BundlingTest
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
     }
+
+    class BundlingApplicationForDebugger : FileUtilities.CopyFileCollection
+    {
+        public BundlingApplicationForDebugger(Opus.Core.Target target)
+        {
+            this.Include(target, C.OutputFileFlags.Executable, typeof(DynamicLibrary));
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(Application);
+    }
+
+    class BundlingWindowedApplicationForDebugger : FileUtilities.CopyFileCollection
+    {
+        public BundlingWindowedApplicationForDebugger(Opus.Core.Target target)
+        {
+            this.Include(target, C.OutputFileFlags.Executable, typeof(DynamicLibrary));
+        }
+
+        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
+        System.Type nextTo = typeof(WindowedApplication);
+    }
 }
