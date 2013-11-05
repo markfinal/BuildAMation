@@ -106,6 +106,7 @@ namespace BundlingTest
             this.Include(target, C.OutputFileFlags.Executable, typeof(DynamicLibrary));
         }
 
+        // TODO: would be nice to have a TypeArray here
         [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
         System.Type nextTo = typeof(Application);
     }
