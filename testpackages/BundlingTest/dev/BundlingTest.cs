@@ -121,4 +121,60 @@ namespace BundlingTest
         [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
         System.Type nextTo = typeof(WindowedApplication);
     }
+
+    class BundleApplicationToFolder : FileUtilities.CopyFileCollection
+    {
+        public BundleApplicationToFolder(Opus.Core.Target target)
+        {
+            this.Include(target, C.OutputFileFlags.Executable, typeof(DynamicLibrary));
+            this.Include(target, C.OutputFileFlags.Executable, typeof(Application));
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
+                var options = module.Options as FileUtilities.ICopyFileOptions;
+                if (null != options)
+                {
+                    var baseTarget = (Opus.Core.BaseTarget)delegateTarget;
+                    var bundleDir = Opus.Core.State.BuildRootLocation.SubDirectory("Bundle" + baseTarget.ConfigurationName('='), Opus.Core.Location.EExists.WillExist);
+                    options.DestinationDirectory = bundleDir.AbsolutePath;
+                }
+            };
+        }
+    }
+
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.NotOSX)]
+    class BundleWindowedApplicationToFolder : FileUtilities.CopyFileCollection
+    {
+        public BundleWindowedApplicationToFolder(Opus.Core.Target target)
+        {
+            this.Include(target, C.OutputFileFlags.Executable, typeof(DynamicLibrary));
+            this.Include(target, C.OutputFileFlags.Executable, typeof(WindowedApplication));
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
+                var options = module.Options as FileUtilities.ICopyFileOptions;
+                if (null != options)
+                {
+                    var baseTarget = (Opus.Core.BaseTarget)delegateTarget;
+                    var bundleDir = Opus.Core.State.BuildRootLocation.SubDirectory("Bundle" + baseTarget.ConfigurationName('='), Opus.Core.Location.EExists.WillExist);
+                    options.DestinationDirectory = bundleDir.AbsolutePath;
+                }
+            };
+        }
+    }
+
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
+    class BundleWindowedApplicationToFolderOSX : FileUtilities.CopyDirectory
+    {
+        public BundleWindowedApplicationToFolderOSX(Opus.Core.Target target)
+        {
+            // TODO: this does not compile yet
+            this.Include(target, C.OutputFileFlags.OSXBundle, typeof(WindowedApplication));
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
+                var options = module.Options as FileUtilities.ICopyFileOptions;
+                if (null != options)
+                {
+                    var baseTarget = (Opus.Core.BaseTarget)delegateTarget;
+                    var bundleDir = Opus.Core.State.BuildRootLocation.SubDirectory("Bundle" + baseTarget.ConfigurationName('='), Opus.Core.Location.EExists.WillExist);
+                    options.DestinationDirectory = bundleDir.AbsolutePath;
+                }
+            };
+        }
+    }
 }
