@@ -1,3 +1,5 @@
+05-Nov-2013 RequiredModule dependencies in Xcode projects are now represented as an optional link dependency. Deadstripping ought to resolve the extra size, and optional means that dyld will not attempt to load it at executable launch.
+
 04-Nov-2013 Added new C OutputFileFlags, OSXBundle, OSXBundleContents and OSXBundleMacOS, for OSX application bundle builds, referring to the .app, .app/Contents, and .app/Contents/MacOS folders, respectively.
 
 03-Nov-2013 Added Mingw-4.8.1

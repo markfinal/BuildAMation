@@ -44,7 +44,7 @@ namespace XcodeBuilder
 
         public static string SafeOptionValue(string value)
         {
-            if (value.Contains("=") || value.Contains("$") || value.Contains(",") || value.Contains("+") || value.Contains("-"))
+            if (!value.StartsWith("(") && (value.Contains("=") || value.Contains("$") || value.Contains(",") || value.Contains("+") || value.Contains("-")))
             {
                 return "\"" + value + "\"";
             }
