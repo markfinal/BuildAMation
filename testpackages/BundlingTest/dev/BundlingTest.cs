@@ -18,6 +18,11 @@ namespace BundlingTest
 
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
+
+        [Opus.Core.DependentModules]
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+            typeof(DynamicLibrary)
+            );
     }
 
     /// <summary>
@@ -49,6 +54,11 @@ namespace BundlingTest
 
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
+
+        [Opus.Core.DependentModules]
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+            typeof(DynamicLibrary)
+            );
     }
 
     class DynamicLibrary : C.DynamicLibrary
