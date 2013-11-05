@@ -4,8 +4,14 @@
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Clang">
+      <Opus:Version Id="Apple425" />
+    </Opus:Package>
     <Opus:Package Name="FileUtilities">
       <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="Gcc">
+      <Opus:Version Id="4.6" />
     </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
@@ -15,6 +21,9 @@
     </Opus:Package>
     <Opus:Package Name="QMakeBuilder">
       <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="VisualC">
+      <Opus:Version Id="10.0" />
     </Opus:Package>
     <Opus:Package Name="VSSolutionBuilder">
       <Opus:Version Id="dev" />
