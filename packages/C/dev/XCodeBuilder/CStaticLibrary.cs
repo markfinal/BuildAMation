@@ -134,6 +134,9 @@ namespace XcodeBuilder
                             type = PBXFileReference.EType.ReferencedDynamicLibrary;
                         }
 
+                        var frameworksBuildPhase = project.FrameworksBuildPhases.Get("Frameworks", moduleName);
+                        data.BuildPhases.AddUnique(frameworksBuildPhase);
+
                         var relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);
                         var dependentFileRef = project.FileReferences.Get(dependency.UniqueModuleName, type, relativePath, project.RootUri);
                         var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentFileRef, frameworksBuildPhase);
