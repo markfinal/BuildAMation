@@ -50,4 +50,42 @@ namespace BundlingTest
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
     }
+
+    class DynamicLibrary : C.DynamicLibrary
+    {
+        public DynamicLibrary()
+        {
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            var dynLibDir = includeDir.SubDirectory("dynlib");
+            this.headers.Include(dynLibDir, "*.h");
+        }
+
+        class SourceFiles : C.Cxx.ObjectFileCollection
+        {
+            public SourceFiles()
+            {
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                var dynLibDir = sourceDir.SubDirectory("dynlib");
+                this.Include(dynLibDir, "*.cpp");
+
+                this.UpdateOptions += IncludePaths;
+            }
+        }
+
+        [C.ExportCompilerOptionsDelegate]
+        public static void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            var options = module.Options as C.ICCompilerOptions;
+            if (null != options)
+            {
+                options.IncludePaths.Include((module as Opus.Core.BaseModule).PackageLocation.SubDirectory("include"));
+            }
+        }
+
+        [C.HeaderFiles]
+        Opus.Core.FileCollection headers = new Opus.Core.FileCollection();
+
+        [Opus.Core.SourceFiles]
+        SourceFiles source = new SourceFiles();
+    }
 }
