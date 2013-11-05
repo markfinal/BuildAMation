@@ -1,3 +1,5 @@
+05-Nov-2013 Added new version of Location.SubDirectory which takes a Location.EExists flag. This can be useful to build up paths that will be created eventually.
+
 05-Nov-2013 Added Opus.Core.EPlatform.NotWindows, NotUnix, and NotOSX, to allow exclusions of a single platform in target attributes.
 
 05-Nov-2013 RequiredModule dependencies in Xcode projects are now represented as an optional link dependency. Deadstripping ought to resolve the extra size, and optional means that dyld will not attempt to load it at executable launch.

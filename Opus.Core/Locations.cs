@@ -17,6 +17,7 @@ namespace Opus.Core
         }
 
         public abstract Location SubDirectory(string subDirName);
+        public abstract Location SubDirectory(string subDirName, EExists exists);
 
         public virtual string AbsolutePath
         {
@@ -81,8 +82,13 @@ namespace Opus.Core
 
         public override Location SubDirectory(string subDirName)
         {
+            return this.SubDirectory(subDirName, EExists.Exists);
+        }
+
+        public override Location SubDirectory(string subDirName, EExists exists)
+        {
             var subDirectoryPath = System.IO.Path.Combine(this.AbsolutePath, subDirName);
-            return Get(subDirectoryPath) as Location;
+            return Get(subDirectoryPath, exists) as Location;
         }
 
         public override string ToString()
@@ -153,6 +159,11 @@ namespace Opus.Core
         }
 
         public override Location SubDirectory(string subDirName)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Location SubDirectory(string subDirName, EExists exists)
         {
             throw new System.NotImplementedException();
         }
@@ -321,6 +332,12 @@ namespace Opus.Core
 
         public override Location SubDirectory(string subDirName)
         {
+            return new ScaffoldLocation(this, subDirName, ETypeHint.Directory);
+        }
+
+        public override Location SubDirectory(string subDirName, EExists exists)
+        {
+            // exists variable is unused as these will get resolved later
             return new ScaffoldLocation(this, subDirName, ETypeHint.Directory);
         }
 
