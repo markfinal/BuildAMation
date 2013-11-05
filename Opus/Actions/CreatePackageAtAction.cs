@@ -108,7 +108,7 @@ namespace Opus
                 scriptWriter.Close();
             }
 
-            Core.Log.Info("Successfully created package '{0}' in '{1}'", id.ToString("-"), id.Root);
+            Core.Log.Info("Successfully created package '{0}' in '{1}'", id.ToString("-"), id.Root.AbsolutePath);
 
             return true;
         }
