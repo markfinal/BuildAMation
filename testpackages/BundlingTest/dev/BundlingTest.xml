@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
+  <Opus:RequiredPackages>
+    <Opus:Package Name="C">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="FileUtilities">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="MakeFileBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="NativeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="VSSolutionBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="XcodeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+  </Opus:RequiredPackages>
+  <Opus:RequiredOpusAssemblies>
+    <Opus:OpusAssembly Name="Opus.Core" />
+  </Opus:RequiredOpusAssemblies>
+  <Opus:RequiredDotNetAssemblies>
+    <Opus:DotNetAssembly Name="System" RequiredTargetFramework="2.0.50727" />
+    <Opus:DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
+  </Opus:RequiredDotNetAssemblies>
+  <Opus:SupportedPlatforms>
+    <Opus:Platform Name="Windows" />
+    <Opus:Platform Name="Unix" />
+    <Opus:Platform Name="OSX" />
+  </Opus:SupportedPlatforms>
+</Opus:PackageDefinition>
