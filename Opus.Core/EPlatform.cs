@@ -20,7 +20,11 @@ namespace Opus.Core
         Unix    = Unix32 | Unix64,
         OSX     = OSX32 | OSX64,
 
-        All     = Windows | Unix | OSX
+        NotWindows = !Windows,
+        NotUnix    = !Unix,
+        NotOSX     = !OSX,
+
+        All        = Windows | Unix | OSX
     }
 
     public static class Platform
