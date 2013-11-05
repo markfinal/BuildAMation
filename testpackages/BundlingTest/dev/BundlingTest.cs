@@ -2,4 +2,19 @@
 namespace BundlingTest
 {
     // Add modules here
+    class Application : C.Application
+    {
+        class SourceFiles : C.Cxx.ObjectFileCollection
+        {
+            public SourceFiles()
+            {
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                var appDir = sourceDir.SubDirectory("app");
+                this.Include(appDir, "*.cpp");
+            }
+        }
+
+        [Opus.Core.SourceFiles]
+        SourceFiles source = new SourceFiles();
+    }
 }
