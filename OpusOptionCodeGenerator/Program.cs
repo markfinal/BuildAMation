@@ -288,11 +288,11 @@ namespace OpusOptionCodeGenerator
                 }
 
                 // delegate
-                line = ReadLine(reader);
+                line = ReadLine(reader, true);
                 var delegateStrings = line.Split(new char[] { ' ' });
                 if ("public" != delegateStrings[0] || "delegate" != delegateStrings[1])
                 {
-                    throw new Exception("No public delegate found");
+                    throw new Exception("No public delegate found in '{0}'", filename);
                 }
                 Log("Delegate found is '{0}'", line);
                 var returnType = delegateStrings[2];
