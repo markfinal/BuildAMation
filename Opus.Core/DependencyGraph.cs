@@ -508,6 +508,7 @@ namespace Opus.Core
         private void AddInjectedDependents()
         {
             int currentRank = 0;
+            Array<DependencyNode> injectedNodes = new Array<DependencyNode>();
             do
             {
                 var nodeCollection = this.rankList[currentRank];
@@ -576,16 +577,26 @@ namespace Opus.Core
                             var newNode = new DependencyNode(module as BaseModule, sourceOfDependency, sourceOfDependency.Target, childIndex, true);
                             newNode.AddExternalDependent(node);
                             this.AddDependencyNodeToCollection(newNode, node.Rank - 1);
+                            injectedNodes.Add(newNode);
 
                             // module inherits the options from the source of the dependency
                             newNode.CreateOptionCollection();
-                            newNode.PostCreateOptionCollection();
                         }
                     }
                 }
                 ++currentRank;
             }
             while (currentRank < this.RankCount);
+
+            // now finalize the options on the nodes in reverse order to their addition
+            if (injectedNodes.Count > 0)
+            {
+                for (int i = injectedNodes.Count - 1; i >= 0; --i)
+                {
+                    var node = injectedNodes[i];
+                    node.PostCreateOptionCollection();
+                }
+            }
         }
     }
 }
