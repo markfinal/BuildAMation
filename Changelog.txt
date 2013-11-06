@@ -1,3 +1,5 @@
+06-Nov-2013 Added Opus.Core.DependencyNode.PostCreateOptionCollection, that wraps the extended logic of BaseOptionCollection.FinalizeOptions.
+
 05-Nov-2013 Added new version of Location.SubDirectory which takes a Location.EExists flag. This can be useful to build up paths that will be created eventually.
 
 05-Nov-2013 Added Opus.Core.EPlatform.NotWindows, NotUnix, and NotOSX, to allow exclusions of a single platform in target attributes.

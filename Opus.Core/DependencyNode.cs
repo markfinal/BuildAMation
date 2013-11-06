@@ -89,7 +89,10 @@ namespace Opus.Core
 
             this.Children.Add(childNode);
         }
-        
+
+        /// <summary>
+        /// Creating option collections are called on each node, iterated by the graph from top to bottom.
+        /// </summary>
         public void CreateOptionCollection()
         {
             var toolset = this.Target.Toolset;
@@ -144,6 +147,55 @@ namespace Opus.Core
             var method = typeof(OptionUtilities).GetMethod("CreateOptionCollection", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
             var genericMethod = method.MakeGenericMethod(new System.Type[] { optionCollectionType, exportType, localType });
             genericMethod.Invoke(null, new object[] { this });
+        }
+
+        /// <summary>
+        /// Post creation of option collections are called on each node, iterated from the graph in a bottom to top motion.
+        /// </summary>
+        public void PostCreateOptionCollection()
+        {
+            if (null != this.Module.Options)
+            {
+                this.Module.Options.FinalizeOptions(this);
+
+                if ((this.Module is ICommonOptionCollection) && (this.Children != null))
+                {
+                    if (1 == this.Children.Count)
+                    {
+                        var child = this.Children[0];
+                        if ((child.Module is IModuleCollection) && (child.Children != null) && (child.Children.Count == 1))
+                        {
+                            // there are no common options, because it is just the one module to build
+                        }
+                        else
+                        {
+                            (this.Module as ICommonOptionCollection).CommonOptionCollection = child.Module.Options;
+                        }
+                    }
+                    else
+                    {
+                        BaseOptionCollection intersectedOptions = null;
+                        foreach (var child in this.Children)
+                        {
+                            if (intersectedOptions == null)
+                            {
+                                intersectedOptions = child.Module.Options.Clone() as BaseOptionCollection;
+                            }
+                            else
+                            {
+                                intersectedOptions = intersectedOptions.Intersect(child.Module.Options);
+                            }
+                        }
+
+                        if (null == intersectedOptions)
+                        {
+                            throw new Exception("There were no intersecting options in both option collections. This is highly unlikely");
+                        }
+
+                        (this.Module as ICommonOptionCollection).CommonOptionCollection = intersectedOptions;
+                    }
+                }
+            }
         }
 
         public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)

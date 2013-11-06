@@ -162,48 +162,7 @@ namespace Opus.Core
                 var nodeCollection = this.rankList[rank];
                 foreach (var node in nodeCollection)
                 {
-                    if (null != node.Module.Options)
-                    {
-                        node.Module.Options.FinalizeOptions(node);
-
-                        if ((node.Module is ICommonOptionCollection) && (node.Children != null))
-                        {
-                            if (1 == node.Children.Count)
-                            {
-                                var child = node.Children[0];
-                                if ((child.Module is IModuleCollection) && (child.Children != null) && (child.Children.Count == 1))
-                                {
-                                    // there are no common options, because it is just the one module to build
-                                }
-                                else
-                                {
-                                    (node.Module as ICommonOptionCollection).CommonOptionCollection = child.Module.Options;
-                                }
-                            }
-                            else
-                            {
-                                BaseOptionCollection intersectedOptions = null;
-                                foreach (var child in node.Children)
-                                {
-                                    if (intersectedOptions == null)
-                                    {
-                                        intersectedOptions = child.Module.Options.Clone() as BaseOptionCollection;
-                                    }
-                                    else
-                                    {
-                                        intersectedOptions = intersectedOptions.Intersect(child.Module.Options);
-                                    }
-                                }
-
-                                if (null == intersectedOptions)
-                                {
-                                    throw new Exception("There were no intersecting options in both option collections. This is highly unlikely");
-                                }
-
-                                (node.Module as ICommonOptionCollection).CommonOptionCollection = intersectedOptions;
-                            }
-                        }
-                    }
+                    node.PostCreateOptionCollection();
                 }
             }
 
@@ -620,7 +579,7 @@ namespace Opus.Core
 
                             // module inherits the options from the source of the dependency
                             newNode.CreateOptionCollection();
-                            newNode.Module.Options.FinalizeOptions(newNode);
+                            newNode.PostCreateOptionCollection();
                         }
                     }
                 }
