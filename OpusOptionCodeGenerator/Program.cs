@@ -692,7 +692,7 @@ namespace OpusOptionCodeGenerator
                 // find functions
                 for (;;)
                 {
-                    Log("C: '{0}'", line);
+                    Log("\nDelegate source line: '{0}'", line);
                     // done reading - it's the end of the class
                     if (line.StartsWith("}"))
                     {
@@ -702,9 +702,11 @@ namespace OpusOptionCodeGenerator
                     // look for function signatures
                     if (line.EndsWith(")"))
                     {
-                        Log("Found function '{0}'", line);
-                        layout.functions[line] = new System.Collections.Generic.List<IndentedString>();
-                        var body = layout.functions[line];
+                        // use a key that will not change if the signature changes
+                        var functionName = line.Substring(0, line.IndexOf('('));
+                        functionName = functionName.Substring(functionName.LastIndexOf(' ') + 1);
+                        Log("\tFound function '{0}'", functionName);
+                        var body = layout.functions[functionName] = new System.Collections.Generic.List<IndentedString>();
                         int braceCount = 0;
                         int baselineIndentation = -1;
                         for (;;)
@@ -736,7 +738,7 @@ namespace OpusOptionCodeGenerator
                     }
                     else if (line.StartsWith("#region") || line.StartsWith("#endregion"))
                     {
-                        Log("Ignored preprocessor");
+                        Log("\tIgnored preprocessor line");
                         line = ReadLine(reader);
                     }
                 }
@@ -860,10 +862,10 @@ namespace OpusOptionCodeGenerator
                             var propertyDelegate = new System.Text.StringBuilder();
                             propertyDelegate.AppendFormat("{0} static {1} {2}{3}", parameters.isBaseClass ? "public" : "private", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
                             WriteLine(writer, 2, propertyDelegate.ToString());
-                            if (null != layout && layout.functions.ContainsKey(propertyDelegate.ToString()))
+                            if (null != layout && layout.functions.ContainsKey(delegateName))
                             {
-                                Log("Function '{0}' reusing from file", propertyDelegate.ToString());
-                                foreach (var line in layout.functions[propertyDelegate.ToString()])
+                                Log("\tFunction '{0}' reusing from file", delegateName);
+                                foreach (var line in layout.functions[delegateName])
                                 {
                                     // TODO: magic number
                                     WriteLine(writer, 2 + line.NumSpaces / 4, line.Line);
@@ -871,7 +873,7 @@ namespace OpusOptionCodeGenerator
                             }
                             else
                             {
-                                Log("Function '{0}' generating code for", propertyDelegate.ToString());
+                                Log("\tFunction '{0}' generating empty code for", propertyDelegate.ToString());
                                 WriteLine(writer, 2, "{");
                                 if (null != delegateSig.Body)
                                 {
