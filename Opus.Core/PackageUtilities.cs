@@ -683,7 +683,13 @@ namespace Opus.Core
 
             try
             {
+#if true
+                byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
+                scriptAssembly = System.Reflection.Assembly.Load(asmBytes);
+#else
+                // this does not work when loading from an untrusted location, e.g. a network drive
                 scriptAssembly = System.Reflection.Assembly.LoadFile(State.ScriptAssemblyPathname);
+#endif
             }
             catch (System.IO.FileNotFoundException exception)
             {

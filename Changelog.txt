@@ -1,3 +1,5 @@
+22-Nov-2013 Loading the package assembly uses a different mechanism that should allow reflection over a semi-trusted source, e.g. a network drive.
+
 06-Nov-2013 Added Opus.Core.DependencyNode.PostCreateOptionCollection, that wraps the extended logic of BaseOptionCollection.FinalizeOptions.
 
 05-Nov-2013 Added new version of Location.SubDirectory which takes a Location.EExists flag. This can be useful to build up paths that will be created eventually.
