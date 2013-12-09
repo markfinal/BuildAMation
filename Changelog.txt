@@ -1,3 +1,5 @@
+09-Dec-2013 Modification to the package assembly load. When debugging is enabled, the assembly must be from a trusted location.
+
 09-Dec-2013 Raise an exception if a specific package version is not found in the registered roots. This can happen if package versions are spread across several roots.
 
 22-Nov-2013 Loading the package assembly uses a different mechanism that should allow reflection over a semi-trusted source, e.g. a network drive.
