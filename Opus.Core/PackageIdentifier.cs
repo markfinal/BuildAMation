@@ -175,20 +175,25 @@ namespace Opus.Core
                 }
             }
 
+            var message = new System.Text.StringBuilder();
             if (!rootContainingPackage)
             {
-                var message = new System.Text.StringBuilder();
                 message.AppendFormat("Unable to locate package '{0}' in any registered package roots:\n", this.ToString("-"));
                 foreach (var root in State.PackageRoots)
                 {
                     message.AppendFormat("{0}\n", root);
                 }
-                throw new Exception(message.ToString());
             }
             else
             {
-                return null;
+                message.AppendFormat("Package '{0}' found in registered roots below, but not the specific version '{1}':\n",
+                                     this.Name, this.Version);
+                foreach (var root in State.PackageRoots)
+                {
+                    message.AppendFormat("{0}\n", root);
+                }
             }
+            throw new Exception(message.ToString());
         }
 
         public bool IsDefaultVersion
