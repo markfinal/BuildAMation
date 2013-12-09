@@ -13,6 +13,24 @@ namespace VSSolutionBuilder
         {
             var sourceModuleNode = (moduleForPostEvents as Opus.Core.BaseModule).OwningNode;
             var nodeProjectData = sourceModuleNode.Data as IProject;
+            if (null == nodeProjectData)
+            {
+                // there is no VCProj data to know which project to write the build event onto
+                // try looking what this is a dependent for
+                foreach (var dependeeNodes in sourceModuleNode.ExternalDependentFor)
+                {
+                    nodeProjectData = dependeeNodes.Data as IProject;
+                    if (null != nodeProjectData)
+                    {
+                        break;
+                    }
+                }
+
+                if (null == nodeProjectData)
+                {
+                    throw new Opus.Core.Exception("Cannot locate any vcproj data to write the post-build event for");
+                }
+            }
 
             var configCollection = nodeProjectData.Configurations;
             var configurationName = configCollection.GetConfigurationNameForTarget(sourceModuleNode.Target);
