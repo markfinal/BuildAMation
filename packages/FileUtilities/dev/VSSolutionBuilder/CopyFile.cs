@@ -26,7 +26,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                if (null == nodeProjectData)
+                if ((null == nodeProjectData) && (null != sourceModuleNode.RequiredDependentFor))
                 {
                     // try looking what this a requirement for
                     foreach (var requireeNodes in sourceModuleNode.RequiredDependentFor)
@@ -37,11 +37,11 @@ namespace VSSolutionBuilder
                             break;
                         }
                     }
+                }
 
-                    if (null == nodeProjectData)
-                    {
-                        throw new Opus.Core.Exception("Cannot locate any vcproj data to write the post-build event for");
-                    }
+                if (null == nodeProjectData)
+                {
+                    throw new Opus.Core.Exception("Cannot locate any vcproj data to write the post-build event for");
                 }
             }
 
