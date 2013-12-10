@@ -1,3 +1,5 @@
+10-Dec-2013 Opus.Core.DependencyNode now also has a bi-direction link for required modules, similar to external dependencies.
+
 09-Dec-2013 Modification to the package assembly load. When debugging is enabled, the assembly must be from a trusted location.
 
 09-Dec-2013 Raise an exception if a specific package version is not found in the registered roots. This can happen if package versions are spread across several roots.

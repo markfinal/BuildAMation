@@ -329,6 +329,12 @@ namespace Opus.Core
             private set;
         }
 
+        public DependencyNodeCollection RequiredDependentFor
+        {
+            get;
+            private set;
+        }
+
         public BaseModule Module
         {
             get;
@@ -412,8 +418,13 @@ namespace Opus.Core
             {
                 this.RequiredDependents = new DependencyNodeCollection();
             }
-
             this.RequiredDependents.Add(required);
+
+            if (null == required.RequiredDependentFor)
+            {
+                required.RequiredDependentFor = new DependencyNodeCollection();
+            }
+            required.RequiredDependentFor.Add(this);
         }
         
         public EBuildState BuildState
