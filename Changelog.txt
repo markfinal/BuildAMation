@@ -1,3 +1,5 @@
+10-Dec-2013 Another modification to the package assembly load, which now also reads in program database byte data, for untrusted locations, if -debugsymbols is passed on the command line.
+
 10-Dec-2013 Opus.Core.DependencyNode now also has a bi-direction link for required modules, similar to external dependencies.
 
 09-Dec-2013 Modification to the package assembly load. When debugging is enabled, the assembly must be from a trusted location.

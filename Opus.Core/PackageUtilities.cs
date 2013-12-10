@@ -683,18 +683,29 @@ namespace Opus.Core
 
             try
             {
+#if true
+                // this code works from an untrusted location, and debugging IS available when
+                // the pdb resides beside the assembly
+                byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
                 if (State.CompileWithDebugSymbols)
                 {
-                    // this does not work when loading from an untrusted location, e.g. a network drive, but
-                    // is necessary for debugging
-                    scriptAssembly = System.Reflection.Assembly.LoadFile(State.ScriptAssemblyPathname);
+                    var pdbFilename = System.IO.Path.ChangeExtension(State.ScriptAssemblyPathname, ".pdb");
+                    if (System.IO.File.Exists(pdbFilename))
+                    {
+                        byte[] pdbBytes = System.IO.File.ReadAllBytes(pdbFilename);
+                        scriptAssembly = System.Reflection.Assembly.Load(asmBytes, pdbBytes);
+                    }
                 }
-                else
+
+                if (null == scriptAssembly)
                 {
-                    // this does work from an untruste location but debugging is not available
-                    byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
                     scriptAssembly = System.Reflection.Assembly.Load(asmBytes);
                 }
+#else
+                // this does not work when loading from an untrusted location, e.g. a network drive, but
+                // is necessary for debugging
+                scriptAssembly = System.Reflection.Assembly.LoadFile(State.ScriptAssemblyPathname);
+#endif
             }
             catch (System.IO.FileNotFoundException exception)
             {
