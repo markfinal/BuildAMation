@@ -243,6 +243,13 @@ namespace VSSolutionBuilder
                 var headerSubDirectories = new Opus.Core.StringArray();
                 var resourceSubDirectories = new Opus.Core.StringArray();
 
+                if ((0 == this.SourceFileCollection.Count) &&
+                    (0 == this.HeaderFileCollection.Count) &&
+                    (0 == this.ResourceFileCollection.Count))
+                {
+                    throw new Opus.Core.Exception("There are no source, header or resource files for the project '{0}'", this.ProjectName);
+                }
+
                 if (this.SourceFileCollection.Count > 0)
                 {
                     {
