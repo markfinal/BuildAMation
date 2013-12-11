@@ -203,7 +203,7 @@ namespace VSSolutionBuilder
             catch (Opus.Core.Exception exception)
             {
                 var message = System.String.Format("Xml construction error from project '{0}'", this.PathName);
-                throw new Opus.Core.Exception(message, exception);
+                throw new Opus.Core.Exception(exception, message);
             }
 
             // write XML to disk
@@ -225,7 +225,7 @@ namespace VSSolutionBuilder
             catch (Opus.Core.Exception exception)
             {
                 var message = System.String.Format("Serialization error from project '{0}'", this.PathName);
-                throw new Opus.Core.Exception(message, exception);
+                throw new Opus.Core.Exception(exception, message);
             }
         }
 

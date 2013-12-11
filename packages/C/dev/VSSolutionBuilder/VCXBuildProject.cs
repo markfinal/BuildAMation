@@ -196,7 +196,7 @@ namespace VSSolutionBuilder
             catch (Opus.Core.Exception exception)
             {
                 var message = System.String.Format("Xml construction error from project '{0}'", this.PathName);
-                throw new Opus.Core.Exception(message, exception);
+                throw new Opus.Core.Exception(exception, message);
             }
 
             // write XML to disk
@@ -218,7 +218,7 @@ namespace VSSolutionBuilder
             catch (Opus.Core.Exception exception)
             {
                 var message = System.String.Format("Serialization error from project '{0}'", this.PathName);
-                throw new Opus.Core.Exception(message, exception);
+                throw new Opus.Core.Exception(exception, message);
             }
         }
 
@@ -242,6 +242,7 @@ namespace VSSolutionBuilder
                 var sourceSubDirectories = new Opus.Core.StringArray();
                 var headerSubDirectories = new Opus.Core.StringArray();
                 var resourceSubDirectories = new Opus.Core.StringArray();
+
                 if (this.SourceFileCollection.Count > 0)
                 {
                     {
@@ -423,7 +424,7 @@ namespace VSSolutionBuilder
             catch (Opus.Core.Exception exception)
             {
                 var message = System.String.Format("Xml construction error from project '{0}'", filtersPath);
-                throw new Opus.Core.Exception(message, exception);
+                throw new Opus.Core.Exception(exception, message);
             }
 
             // write XML to disk
@@ -445,7 +446,7 @@ namespace VSSolutionBuilder
             catch (Opus.Core.Exception exception)
             {
                 var message = System.String.Format("Serialization error from project '{0}'", filtersPath);
-                throw new Opus.Core.Exception(message, exception);
+                throw new Opus.Core.Exception(exception, message);
             }
         }
 
