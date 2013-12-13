@@ -581,7 +581,14 @@ namespace VisualCCommon
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
             {
-                returnVal.Add("WarningLevel", System.String.Format("Level{0}", enumOption.Value.ToString("D")));
+                if (enumOption.Value == EWarningLevel.Level0)
+                {
+                    returnVal.Add("WarningLevel", "TurnOffAllWarnings");
+                }
+                else
+                {
+                    returnVal.Add("WarningLevel", System.String.Format("Level{0}", enumOption.Value.ToString("D")));
+                }
             }
             return returnVal;
         }
