@@ -198,6 +198,18 @@ namespace ClangCommon
                 this.ProcessNamedSetHandler("LanguageStandardSetHandler", this["LanguageStandard"]);
             }
         }
+        C.DefineCollection C.ICCompilerOptions.Undefines
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<C.DefineCollection>("Undefines", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<C.DefineCollection>("Undefines", value);
+                this.ProcessNamedSetHandler("UndefinesSetHandler", this["Undefines"]);
+            }
+        }
         #endregion
         #region ICCompilerOptions Option properties
         bool ICCompilerOptions.PositionIndependentCode

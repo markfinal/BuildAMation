@@ -39,7 +39,6 @@ namespace GccCommon
                 default:
                     throw new Opus.Core.Exception("Unrecognized exception handler option");
             }
-
             if (exceptionsOption.Count != 1)
             {
                 throw new Opus.Core.Exception("More than one exceptions option has been set");

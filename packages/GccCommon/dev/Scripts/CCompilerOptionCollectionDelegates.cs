@@ -474,6 +474,12 @@ namespace GccCommon
                 throw new Opus.Core.Exception("Unknown language standard");
             }
         }
+        private static void UndefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static void UndefinesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         #region ICCompilerOptions Option delegates
         private static void AllWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -663,6 +669,7 @@ namespace GccCommon
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor,DisableWarningsXcodeProjectProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor,CharacterSetXcodeProjectProcessor);
             this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor,LanguageStandardXcodeProjectProcessor);
+            this["Undefines"].PrivateData = new PrivateData(UndefinesCommandLineProcessor,UndefinesXcodeProjectProcessor);
             this["AllWarnings"].PrivateData = new PrivateData(AllWarningsCommandLineProcessor,AllWarningsXcodeProjectProcessor);
             this["ExtraWarnings"].PrivateData = new PrivateData(ExtraWarningsCommandLineProcessor,ExtraWarningsXcodeProjectProcessor);
             this["StrictAliasing"].PrivateData = new PrivateData(StrictAliasingCommandLineProcessor,StrictAliasingXcodeProjectProcessor);
