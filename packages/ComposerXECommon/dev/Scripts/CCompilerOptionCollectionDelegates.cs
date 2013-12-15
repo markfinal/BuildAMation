@@ -233,6 +233,11 @@ namespace ComposerXECommon
         }
         private static void UndefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            var undefinesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            foreach (string undefine in undefinesOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-U{0}", undefine));
+            }
         }
         #endregion
         #region ICCompilerOptions Option delegates
