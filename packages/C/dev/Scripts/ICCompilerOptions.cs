@@ -150,5 +150,14 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Preprocessor definitions to be undefined
+        /// </summary>
+        C.DefineCollection Undefines
+        {
+            get;
+            set;
+        }
     }
 }

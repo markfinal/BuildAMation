@@ -44,6 +44,7 @@ namespace C
             compilerOptions.ShowIncludes = false;
 
             compilerOptions.Defines = new DefineCollection();
+            compilerOptions.Undefines = new DefineCollection();
 
             // TODO: deprecate this in 0.60
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Opus.Core.BaseTarget)target).PlatformName('u')));

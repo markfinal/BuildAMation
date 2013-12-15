@@ -516,6 +516,26 @@ namespace VisualCCommon
             VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             return returnVal;
         }
+        private static void UndefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var undefinesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            foreach (string undefine in undefinesOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-U{0}", undefine));
+            }
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary UndefinesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            var undefinesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            var undefines = new System.Text.StringBuilder();
+            foreach (string define in undefinesOption.Value)
+            {
+                undefines.AppendFormat("{0};", define);
+            }
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            returnVal.Add("UndefinePreprocessorDefinitions", undefines.ToString());
+            return returnVal;
+        }
         #endregion
         #region ICCompilerOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -1123,6 +1143,7 @@ namespace VisualCCommon
             this["DisableWarnings"].PrivateData = new PrivateData(DisableWarningsCommandLineProcessor,DisableWarningsVisualStudioProcessor);
             this["CharacterSet"].PrivateData = new PrivateData(CharacterSetCommandLineProcessor,CharacterSetVisualStudioProcessor);
             this["LanguageStandard"].PrivateData = new PrivateData(LanguageStandardCommandLineProcessor,LanguageStandardVisualStudioProcessor);
+            this["Undefines"].PrivateData = new PrivateData(UndefinesCommandLineProcessor,UndefinesVisualStudioProcessor);
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLineProcessor,NoLogoVisualStudioProcessor);
             this["MinimalRebuild"].PrivateData = new PrivateData(MinimalRebuildCommandLineProcessor,MinimalRebuildVisualStudioProcessor);
             this["WarningLevel"].PrivateData = new PrivateData(WarningLevelCommandLineProcessor,WarningLevelVisualStudioProcessor);

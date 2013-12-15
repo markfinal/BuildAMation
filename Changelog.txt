@@ -1,3 +1,5 @@
+15-Dec-2013 Adding C.ICCompilerOptions.Undefines
+
 13-Dec-2013 Fixing error writing out .vcxproj files with a compiler warning level set to zero.
 
 10-Dec-2013 Another modification to the package assembly load, which now also reads in program database byte data, for untrusted locations, if -debugsymbols is passed on the command line.
