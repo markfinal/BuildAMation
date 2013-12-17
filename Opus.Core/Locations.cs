@@ -47,9 +47,16 @@ namespace Opus.Core
     /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
     /// DirectoryLocations are cached internally, so only a single instance of a directory path exists.
     /// </summary>
-    public sealed class DirectoryLocation : Location
+    public sealed class DirectoryLocation : Location, System.ICloneable
     {
         private static System.Collections.Generic.Dictionary<int, DirectoryLocation> cache = new System.Collections.Generic.Dictionary<int, DirectoryLocation>();
+
+        // TODO: this might have to migrate to the base class, if more subclasses need to be cloneable
+        private EExists Exists
+        {
+            get;
+            set;
+        }
 
         private DirectoryLocation(string absolutePath, Location.EExists exists)
         {
@@ -61,6 +68,7 @@ namespace Opus.Core
                 }
             }
             this.AbsolutePath = absolutePath;
+            this.Exists = exists;
         }
 
         public static DirectoryLocation Get(string absolutePath, Location.EExists exists)
@@ -100,6 +108,17 @@ namespace Opus.Core
         {
             return new Array<Location>(this);
         }
+
+        #region ICloneable Members
+
+        object System.ICloneable.Clone()
+        {
+            // Note, this is not using the hash location, as this really needs to be a separate instance
+            var clone = new DirectoryLocation(this.AbsolutePath, this.Exists);
+            return clone;
+        }
+
+        #endregion
     }
 
     /// <summary>

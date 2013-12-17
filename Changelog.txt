@@ -1,3 +1,5 @@
+17-Dec-2013 Made Opus.Core.Array and Opus.Core.DirectoryLocation cloneable for use in option collections.
+
 15-Dec-2013 Adding C.ICCompilerOptions.Undefines
 
 13-Dec-2013 Fixing error writing out .vcxproj files with a compiler warning level set to zero.
