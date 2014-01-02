@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("OpusOptionCodeGenerator")]
-[assembly: AssemblyCopyright("Copyright 2011-2013")]
+[assembly: AssemblyCopyright("Copyright 2011-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
