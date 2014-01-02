@@ -1,3 +1,5 @@
+22-Dec-2013 Fixing new lines in generated .vcproj files for custom builds that can affect VisualStudio deciding whether to rebuild or not (MSB8015).
+
 17-Dec-2013 Made Opus.Core.Array and Opus.Core.DirectoryLocation cloneable for use in option collections.
 
 15-Dec-2013 Adding C.ICCompilerOptions.Undefines

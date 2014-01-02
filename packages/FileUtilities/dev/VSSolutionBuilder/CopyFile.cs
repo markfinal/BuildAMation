@@ -58,8 +58,8 @@ namespace VSSolutionBuilder
             }
 
             var commandLine = new System.Text.StringBuilder();
-            commandLine.AppendFormat("IF NOT EXIST \"{0}\" MKDIR \"{0}\"\n\r", destinationDirectory);
-            commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"\n\r", sourceFile, destinationDirectory);
+            commandLine.AppendFormat("IF NOT EXIST \"{0}\" MKDIR \"{0}\"{1}", destinationDirectory, System.Environment.NewLine);
+            commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"{2}", sourceFile, destinationDirectory, System.Environment.NewLine);
 
             {
                 string attributeName = null;

@@ -135,7 +135,7 @@ namespace VSSolutionBuilder
 
                 string mocPathName = mocFileOptions.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
                 string outputPathname = mocPathName;
-                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}\n\r{1}", System.IO.Path.GetDirectoryName(mocPathName), commandLineBuilder.ToString(' '));
+                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}{1}{2}", System.IO.Path.GetDirectoryName(mocPathName), System.Environment.NewLine, commandLineBuilder.ToString(' '));
                 customTool.AddAttribute("CommandLine", commandLine);
 
                 customTool.AddAttribute("Outputs", outputPathname);
@@ -151,7 +151,7 @@ namespace VSSolutionBuilder
 
                 string mocPathName = mocFileOptions.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
                 string outputPathname = mocPathName;
-                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}\n\r{1}", System.IO.Path.GetDirectoryName(mocPathName), commandLineBuilder.ToString(' '));
+                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}{1}{2}", System.IO.Path.GetDirectoryName(mocPathName), System.Environment.NewLine, commandLineBuilder.ToString(' '));
                 customTool.AddAttribute("Command", commandLine);
 
                 customTool.AddAttribute("Outputs", outputPathname);
