@@ -124,8 +124,9 @@ namespace VSSolutionBuilder
                 vcCLLibrarianTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLibrarianTool);
 
-                var outputDirectory = (staticLibraryOptions as C.ArchiverOptionCollection).OutputDirectoryPath;
-                configuration.OutputDirectory = outputDirectory;
+                var archiverOptions = staticLibraryOptions as C.ArchiverOptionCollection;
+                configuration.OutputDirectory = archiverOptions.OutputDirectoryPath;
+                configuration.TargetName = archiverOptions.OutputName;
 
                 if (staticLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {

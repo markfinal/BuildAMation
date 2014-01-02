@@ -127,6 +127,12 @@ namespace VSSolutionBuilder
                     MSBuildProperty intDirProperty = dirGroup.CreateProperty("IntDir", intermediateDir);
                     intDirProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
+
+                if (null != configuration.TargetName)
+                {
+                    MSBuildProperty targetNameProperty = dirGroup.CreateProperty("TargetName", configuration.TargetName);
+                    targetNameProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
+                }
             }
 
             // tools

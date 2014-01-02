@@ -143,8 +143,9 @@ namespace VSSolutionBuilder
                 vcCLLinkerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
-                var outputDirectory = (dynamicLibraryOptions as C.LinkerOptionCollection).OutputDirectoryPath;
-                configuration.OutputDirectory = outputDirectory;
+                var dynamicLibOptions = dynamicLibraryOptions as C.LinkerOptionCollection;
+                configuration.OutputDirectory = dynamicLibOptions.OutputDirectoryPath;
+                configuration.TargetName = dynamicLibOptions.OutputName;
 
                 if (dynamicLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {

@@ -144,8 +144,9 @@ namespace VSSolutionBuilder
                 vcCLLinkerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
-                var outputDirectory = (applicationOptions as C.LinkerOptionCollection).OutputDirectoryPath;
-                configuration.OutputDirectory = outputDirectory;
+                var linkerOptions = applicationOptions as C.LinkerOptionCollection;
+                configuration.OutputDirectory = linkerOptions.OutputDirectoryPath;
+                configuration.TargetName = linkerOptions.OutputName;
 
                 if (applicationOptions is VisualStudioProcessor.IVisualStudioSupport)
                 {

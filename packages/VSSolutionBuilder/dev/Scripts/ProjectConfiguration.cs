@@ -71,6 +71,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        public string TargetName
+        {
+            get;
+            set;
+        }
+
         public EProjectConfigurationType Type
         {
             get
