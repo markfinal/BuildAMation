@@ -1,3 +1,5 @@
+04-Jan-2014 Added C.ICCompilerOptionsOSX interface, with a FrameworkSearchDirectories property to add a search folder containing frameworks for the compiler to find. Implemented this for the Clang-Apple425 compiler.
+
 02-Jan-2014 Modules with an overriden OutputName now generate .vcxproj files for VS10+ that do not generate MSBuild warnings for mismatched names.
 
 22-Dec-2013 Fixing new lines in generated .vcproj files for custom builds that can affect VisualStudio deciding whether to rebuild or not (MSB8015).

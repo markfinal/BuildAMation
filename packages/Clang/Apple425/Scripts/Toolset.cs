@@ -10,6 +10,8 @@ namespace Clang
         public Toolset()
             : base()
         {
+            this.toolConfig[typeof(C.ICompilerTool)]       = new Opus.Core.ToolAndOptionType(new ClangCommon.CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)]    = new Opus.Core.ToolAndOptionType(new ClangCommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
             this.toolConfig[typeof(C.IObjCCompilerTool)]   = new Opus.Core.ToolAndOptionType(new ClangCommon.CCompiler(this), typeof(ClangCommon.ObjCCompilerOptionCollection));
             this.toolConfig[typeof(C.IObjCxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new ClangCommon.CxxCompiler(this), typeof(ClangCommon.ObjCxxCompilerOptionCollection));
             this.toolConfig[typeof(C.ILinkerTool)]         = new Opus.Core.ToolAndOptionType(new Linker(this), typeof(GccCommon.LinkerOptionCollection));
