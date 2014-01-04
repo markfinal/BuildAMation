@@ -277,6 +277,27 @@ namespace GccCommon
                 }
             }
         }
+        private static void FrameworkSearchDirectoriesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var switchPrefix = "-F";
+            var frameworkIncludePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            // TODO: convert to 'var'
+            foreach (string includePath in frameworkIncludePathsOption.Value)
+            {
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", switchPrefix, includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("{0}{1}", switchPrefix, includePath));
+                }
+            }
+        }
+        private static void FrameworkSearchDirectoriesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            // TODO
+        }
         private static void SuppressReadOnlyRelocationsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             if (!target.HasPlatform(Opus.Core.EPlatform.OSX))
@@ -401,6 +422,7 @@ namespace GccCommon
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);
             // Property 'ApplicationBundle' is state only
             this["Frameworks"].PrivateData = new PrivateData(FrameworksCommandLineProcessor,FrameworksXcodeProjectProcessor);
+            this["FrameworkSearchDirectories"].PrivateData = new PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
             this["SuppressReadOnlyRelocations"].PrivateData = new PrivateData(SuppressReadOnlyRelocationsCommandLineProcessor,SuppressReadOnlyRelocationsXcodeProjectProcessor);
             this["CanUseOrigin"].PrivateData = new PrivateData(CanUseOriginCommandLineProcessor,CanUseOriginXcodeProjectProcessor);
             this["AllowUndefinedSymbols"].PrivateData = new PrivateData(AllowUndefinedSymbolsCommandLineProcessor,AllowUndefinedSymbolsXcodeProjectProcessor);

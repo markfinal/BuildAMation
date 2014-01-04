@@ -152,6 +152,18 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("FrameworksSetHandler", this["Frameworks"]);
             }
         }
+        Opus.Core.DirectoryCollection C.ILinkerOptionsOSX.FrameworkSearchDirectories
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("FrameworkSearchDirectories", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("FrameworkSearchDirectories", value);
+                this.ProcessNamedSetHandler("FrameworkSearchDirectoriesSetHandler", this["FrameworkSearchDirectories"]);
+            }
+        }
         bool C.ILinkerOptionsOSX.SuppressReadOnlyRelocations
         {
             get

@@ -1,3 +1,5 @@
+04-Jan-2014 Added C.ILinkerOptionsOSX property FrameworkSearchDirectories, that affects the linker search paths. Added to GccCommon's linker options.
+
 04-Jan-2014 Added C.ICCompilerOptionsOSX interface, with a FrameworkSearchDirectories property to add a search folder containing frameworks for the compiler to find. Implemented this for the Clang-Apple425 compiler.
 
 02-Jan-2014 Modules with an overriden OutputName now generate .vcxproj files for VS10+ that do not generate MSBuild warnings for mismatched names.

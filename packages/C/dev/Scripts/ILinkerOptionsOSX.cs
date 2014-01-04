@@ -29,6 +29,16 @@ namespace C
         }
 
         /// <summary>
+        /// List of directories the linker searches for Frameworks
+        /// </summary>
+        /// <value>The OSX frameworks.</value>
+        Opus.Core.DirectoryCollection FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Suppress read only relocations
         /// </summary>
         /// <value><c>true</c> if read only relocations; otherwise, <c>false</c>.</value>

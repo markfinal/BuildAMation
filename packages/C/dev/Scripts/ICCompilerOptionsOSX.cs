@@ -8,7 +8,7 @@ namespace C
     public interface ICCompilerOptionsOSX
     {
         /// <summary>
-        /// List of directories to search for Frameworks
+        /// List of directories the compiler searches for Frameworks
         /// </summary>
         /// <value>The OSX frameworks.</value>
         Opus.Core.DirectoryCollection FrameworkSearchDirectories
