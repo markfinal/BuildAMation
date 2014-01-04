@@ -9,8 +9,6 @@ namespace Clang
         #region C.ICCompilerOptionsOSX Option delegates
         private static void FrameworkSearchDirectoriesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            var toolset = target.Toolset;
-            var compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             var switchPrefix = "-F";
             var frameworkIncludePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             // TODO: convert to 'var'
