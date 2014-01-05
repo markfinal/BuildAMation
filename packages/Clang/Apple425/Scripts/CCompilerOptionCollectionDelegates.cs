@@ -26,7 +26,8 @@ namespace Clang
         }
         private static void FrameworkSearchDirectoriesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // TODO
+            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
         }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)

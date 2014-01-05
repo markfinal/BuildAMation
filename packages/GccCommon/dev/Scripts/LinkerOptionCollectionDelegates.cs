@@ -296,7 +296,8 @@ namespace GccCommon
         }
         private static void FrameworkSearchDirectoriesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // TODO
+            var frameworkPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            configuration.Options["FRAMEWORK_SEARCH_PATHS"].AddRangeUnique(frameworkPathsOption.Value.ToStringArray());
         }
         private static void SuppressReadOnlyRelocationsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
