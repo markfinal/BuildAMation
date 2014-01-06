@@ -24,6 +24,7 @@ namespace VSSolutionBuilder
 
                     case "10.0":
                     case "11.0":
+                    case "12.0":
                         projectClassTypeName = "VSSolutionBuilder.VCXBuildProject";
                         break;
 
