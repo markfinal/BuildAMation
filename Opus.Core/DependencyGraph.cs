@@ -491,6 +491,12 @@ namespace Opus.Core
             {
                 foreach (var dependentNode in node.ExternalDependents)
                 {
+                    // if the dependent is already far enough ahead, don't move it
+                    if (dependentNode.Rank >= (targetRank + rankDelta))
+                    {
+                        continue;
+                    }
+
                     int dependentTargetRank = dependentNode.Rank + rankDelta;
                     this.FlattenHierarchy(dependentNode, dependentTargetRank, flattenedList, depth + 1);
                 }
@@ -499,6 +505,12 @@ namespace Opus.Core
             {
                 foreach (var requiredNode in node.RequiredDependents)
                 {
+                    // if the requirement is already far enough ahead, don't move it
+                    if (requiredNode.Rank >= (targetRank + rankDelta))
+                    {
+                        continue;
+                    }
+
                     int requiredTargetRank = requiredNode.Rank + rankDelta;
                     this.FlattenHierarchy(requiredNode, requiredTargetRank, flattenedList, depth + 1);
                 }
