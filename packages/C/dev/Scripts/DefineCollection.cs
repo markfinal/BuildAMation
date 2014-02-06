@@ -12,6 +12,10 @@ namespace C
         public void Add(object toAdd)
         {
             var define = toAdd as string;
+            if (define.Contains(" "))
+            {
+                throw new Opus.Core.Exception("Preprocessor definitions cannot contain a space: '{0}'", define);
+            }
             lock (this.defines)
             {
                 if (!this.defines.Contains(define))
