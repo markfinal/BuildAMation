@@ -1,3 +1,5 @@
+06-Mar-2014 Added DxErr.lib to the Direct3D9 libraries to link against.
+
 06-Feb-2014 Throw an exception if a C preprocessor definition contains a space. This can disable tools such as VisualStudio Intellisense.
 
 25-Jan-2014 Fixing the dependency graph population. Don't move nodes further down the graph, if they are already offset enough from their dependee. Otherwise, empty ranks appear in the graph.

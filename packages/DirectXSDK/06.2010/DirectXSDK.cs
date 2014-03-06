@@ -71,6 +71,7 @@ namespace DirectXSDK
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
                 libraries.Add("d3dx9d.lib");
+                libraries.Add("dxerr.lib");
             }
             else
             {
