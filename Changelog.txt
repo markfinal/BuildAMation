@@ -1,3 +1,5 @@
+09-Mar-2014 Speculative fix for bad dependency graph generation, when dependents increase rank, but don't need to maintain the same "delta" between themselves and their dependees because other dependees have not moved.
+
 06-Mar-2014 Added DxErr.lib to the Direct3D9 libraries to link against.
 
 06-Feb-2014 Throw an exception if a C preprocessor definition contains a space. This can disable tools such as VisualStudio Intellisense.

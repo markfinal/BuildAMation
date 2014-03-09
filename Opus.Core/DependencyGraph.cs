@@ -277,6 +277,19 @@ namespace Opus.Core
             return node;
         }
 
+        private void CheckForEmptyRanks()
+        {
+            int currentRank = 0;
+            while (currentRank < this.RankCount)
+            {
+                if (0 == this[currentRank].Count)
+                {
+                    throw new Exception("Internal error: Dependency node rank {0} is unexpectedly empty", currentRank);
+                }
+                ++currentRank;
+            }
+        }
+
         private void AddChildAndExternalDependents()
         {
             var nodesWithForwardedDependencies = new DependencyNodeCollection();
@@ -284,6 +297,7 @@ namespace Opus.Core
             int currentRank = 0;
             while (currentRank < this.RankCount)
             {
+                this.CheckForEmptyRanks();
                 var nodesToMove = new System.Collections.Generic.Dictionary<DependencyNode,int>();
                 var rankNodes = this[currentRank];
                 foreach (var node in rankNodes)
@@ -495,6 +509,20 @@ namespace Opus.Core
                     if (dependentNode.Rank >= (targetRank + rankDelta))
                     {
                         continue;
+                    }
+
+                    // cap the delta if it goes too far ahead
+                    // TODO: this may not be right, as the delta might be to satisfy other dependees that have also moved?
+                    if (dependentNode.Module is IInjectModules)
+                    {
+                        if (rankDelta > 2)
+                        {
+                            rankDelta = 2;
+                        }
+                    }
+                    else if (rankDelta > 1)
+                    {
+                        rankDelta = 1;
                     }
 
                     int dependentTargetRank = dependentNode.Rank + rankDelta;
