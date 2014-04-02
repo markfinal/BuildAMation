@@ -13,6 +13,7 @@ namespace VisualCCommon
         public Linker(Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
+            // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
             this.requiredEnvironmentVariables.Add("TEMP");
             this.requiredEnvironmentVariables.Add("TMP");
         }

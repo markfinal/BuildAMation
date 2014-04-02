@@ -1,3 +1,5 @@
+02-Apr-2014 Exporting TMP and TEMP environment variables with the VisualC tools, to avoid generation of _CL_<hexdigits> temporary files in the current directory.
+
 09-Mar-2014 Speculative fix for bad dependency graph generation, when dependents increase rank, but don't need to maintain the same "delta" between themselves and their dependees because other dependees have not moved.
 
 06-Mar-2014 Added DxErr.lib to the Direct3D9 libraries to link against.
