@@ -1,4 +1,5 @@
 #!/bin/bash
 
-grep -IUrl --color '^M' . --include=*.cs | xargs -ifile fromdos 'file'
+grep -IUrl --color '
+' . --include=*.cs | xargs -ifile fromdos 'file'
 
