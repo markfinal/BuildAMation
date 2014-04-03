@@ -101,7 +101,7 @@ namespace VisualCCommon
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
 
-            var compilerTool = this as C.ICompilerTool;
+            var compilerTool = this as C.ICompilerTool;
             dictionary["INCLUDE"] = compilerTool.IncludePaths (baseTarget);
 
             return dictionary;
