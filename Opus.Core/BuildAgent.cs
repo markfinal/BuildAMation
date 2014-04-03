@@ -14,19 +14,19 @@ namespace Opus.Core
             this.IsAvailable = new System.Threading.ManualResetEvent(true);
             this.ReportFailure = reportFailure;
         }
-        
+
         public string Name
         {
             get;
             private set;
         }
-        
+
         private object Builder
         {
             get;
             set;
         }
-        
+
         private DependencyNode Node
         {
             get;
@@ -90,7 +90,7 @@ namespace Opus.Core
             agent.Node = null;
             agent.IsAvailable.Set();
         }
-        
+
         public void Execute(DependencyNode node)
         {
             node.BuildState = EBuildState.Pending;

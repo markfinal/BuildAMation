@@ -33,7 +33,7 @@ namespace WindowsSDK
                     }
 
                     var platformSDKPath = System.IO.Path.Combine(toolset.InstallPath((Opus.Core.BaseTarget)target), "PlatformSDK");
-                    
+
                     if (System.IO.Directory.Exists(platformSDKPath))
                     {
                         installPath = platformSDKPath;
@@ -43,11 +43,11 @@ namespace WindowsSDK
                         throw new Opus.Core.Exception("WindowsSDK 6.0A was not installed");
                     }
                     Opus.Core.Log.DebugMessage("Windows SDK installation folder is from the MSVC PlatformSDK: {0}", installPath);
-                    
+
                     bin32Path = System.IO.Path.Combine(installPath, "bin");
                     bin64Path = System.IO.Path.Combine(bin32Path, "win64");
                     bin64Path = System.IO.Path.Combine(bin64Path, "AMD64");
-                    
+
                     lib32Path = System.IO.Path.Combine(installPath, "lib");
                     lib64Path = System.IO.Path.Combine(lib32Path, "AMD64");
                 }

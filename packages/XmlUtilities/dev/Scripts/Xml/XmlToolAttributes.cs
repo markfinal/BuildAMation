@@ -10,7 +10,7 @@ namespace XmlUtilities
     public class ExportXmlWriterOptionsDelegateAttribute : System.Attribute
     {
     }
-    
+
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class LocalXmlWriterOptionsDelegateAttribute : System.Attribute
     {

@@ -78,11 +78,11 @@ namespace FileUtilities
 
             this.DeferredUpdates[new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File)] = delegateArray;
         }
-        
+
         #endregion
-        
+
         #region INestedDependents implementation
-        
+
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             Opus.Core.ModuleCollection collection = new Opus.Core.ModuleCollection();
@@ -92,7 +92,7 @@ namespace FileUtilities
             }
             return collection;
         }
-        
+
         #endregion
     }
 }

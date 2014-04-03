@@ -42,7 +42,7 @@ namespace Test12
                 this.Include(osxSourceDir, "osx.cpp");
             }
         }
-    
+
         [Opus.Core.SourceFiles]
         CommonSourceFiles commonSourceFiles = new CommonSourceFiles();
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]

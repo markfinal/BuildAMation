@@ -34,7 +34,7 @@ namespace Opus.Core
                 return this.Identifier.Name;
             }
         }
-        
+
         public string Version
         {
             get
@@ -42,13 +42,13 @@ namespace Opus.Core
                 return this.Identifier.Version;
             }
         }
-                
+
         public bool IsBuilder
         {
             get;
             set;
         }
-        
+
         private string ScriptsDirectory
         {
             get
@@ -57,7 +57,7 @@ namespace Opus.Core
                 return scriptsDirectory;
             }
         }
-        
+
         public string OpusDirectory
         {
             get
@@ -66,7 +66,7 @@ namespace Opus.Core
                 return opusDirectory;
             }
         }
-        
+
         public string DebugProjectFilename
         {
             get
@@ -75,7 +75,7 @@ namespace Opus.Core
                 return debugProjectFilename;
             }
         }
-        
+
         public StringArray Scripts
         {
             get
@@ -96,7 +96,7 @@ namespace Opus.Core
                 return scripts;
             }
         }
-        
+
         public StringArray BuilderScripts
         {
             get

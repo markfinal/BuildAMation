@@ -14,7 +14,7 @@ namespace CodeGenTest2
         {
             this.CommandLineDelegate = commandLineDelegate;
         }
-    
+
 
         public CommandLineProcessor.Delegate CommandLineDelegate
         {

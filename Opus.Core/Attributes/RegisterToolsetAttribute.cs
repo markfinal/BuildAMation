@@ -24,7 +24,7 @@ namespace Opus.Core
         public static void RegisterAll()
         {
             // need to use inheritence here as the base class is abstract
-            var array = State.ScriptAssembly.GetCustomAttributes(typeof(RegisterToolsetAttribute), 
+            var array = State.ScriptAssembly.GetCustomAttributes(typeof(RegisterToolsetAttribute),
 true);
             if (null == array || 0 == array.Length)
             {

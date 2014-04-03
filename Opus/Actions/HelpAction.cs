@@ -36,7 +36,7 @@ namespace Opus
             Core.Log.MessageAll("There can be only one response file.");
 
             var actions = Core.ActionManager.Actions;
-            
+
             // first loop over these to determine the command length
             int maximumLength = 0;
             foreach (var actionAttribute in actions)

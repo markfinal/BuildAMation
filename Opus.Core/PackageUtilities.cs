@@ -569,7 +569,7 @@ namespace Opus.Core
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
-                var results = State.CompileWithDebugSymbols ? 
+                var results = State.CompileWithDebugSymbols ?
                     provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :
                     provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
 

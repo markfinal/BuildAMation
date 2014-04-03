@@ -87,7 +87,7 @@ namespace Opus.Core
             get;
             set;
         }
-        
+
         private BuildAgent AvailableAgent()
         {
             // wait indefinitely for an available agent
@@ -114,7 +114,7 @@ namespace Opus.Core
                 return false;
             }
         }
-        
+
         public bool Execute()
         {
             Log.Info("Build started");

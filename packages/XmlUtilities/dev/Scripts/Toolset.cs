@@ -17,24 +17,24 @@ namespace XmlUtilities
             this.toolConfig[typeof(IXmlWriterTool)] = new Opus.Core.ToolAndOptionType(new XmlWriterTool(), typeof(XmlWriterOptionCollection));
             this.toolConfig[typeof(IOSXPlistWriterTool)] = new Opus.Core.ToolAndOptionType(new XmlWriterTool(), typeof(OSXPlistWriterOptionCollection));
         }
-        
+
         #region IToolset Members
-        
+
         string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
-        
+
         Opus.Core.StringArray Opus.Core.IToolset.Environment
         {
             get { throw new System.NotImplementedException(); }
         }
-        
+
         string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
-        
+
         string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
         {
             return "dev";
@@ -51,20 +51,20 @@ namespace XmlUtilities
             {
                 throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
-            
+
             return this.toolConfig[toolType].Tool;
         }
-        
+
         System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
                 throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
-            
+
             return this.toolConfig[toolType].OptionsType;
         }
-        
+
         #endregion
     }
 }

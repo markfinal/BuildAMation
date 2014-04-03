@@ -209,7 +209,7 @@ namespace Test
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
-    
+
     sealed class BuildTerminalApplicationWithUpdatedOptions : C.Application
     {
         sealed class SourceFiles : C.ObjectFileCollection

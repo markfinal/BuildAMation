@@ -34,7 +34,7 @@ namespace GccCommon
                         break;
                     }
                 }
-    
+
                 // we use gcc as the link - if there is ObjectiveC code included, link against -lobjc
                 foreach (Opus.Core.DependencyNode child in node.Children)
                 {

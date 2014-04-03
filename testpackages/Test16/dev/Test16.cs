@@ -31,7 +31,7 @@ namespace Test16
 
         [C.HeaderFiles]
         Opus.Core.FileCollection headers = new Opus.Core.FileCollection();
-        
+
         [Opus.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
 

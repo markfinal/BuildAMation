@@ -12,7 +12,7 @@ namespace Opus.Core
         }
 
         private static System.Collections.Generic.Dictionary<string, Category> s = new System.Collections.Generic.Dictionary<string, Category>();
-                
+
         static State()
         {
             ReadOnly = false;
@@ -99,7 +99,7 @@ namespace Opus.Core
 
             AddCategory("Toolset");
         }
-        
+
         [System.Diagnostics.Conditional("DEBUG")]
         public static void Print()
         {
@@ -112,13 +112,13 @@ namespace Opus.Core
                 }
             }
         }
-        
+
         public static bool ReadOnly
         {
             get;
             set;
         }
-        
+
         public static void AddCategory(string category)
         {
             if (ReadOnly)
@@ -127,7 +127,7 @@ namespace Opus.Core
             }
             s.Add(category, new Category());
         }
-        
+
         public static bool HasCategory(string category)
         {
             var hasCategory = s.ContainsKey(category);
@@ -159,7 +159,7 @@ namespace Opus.Core
 
             return true;
         }
-        
+
         // TODO: how can I cast this correctly?
         public static object Get(string category, string key)
         {
@@ -213,7 +213,7 @@ namespace Opus.Core
                 return Get("Opus", "Version") as System.Version;
             }
         }
- 
+
         public static string OpusVersionString
         {
             get
@@ -269,7 +269,7 @@ namespace Opus.Core
                 return (bool)Get("System", "IsLittleEndian");
             }
         }
-        
+
         public static string WorkingDirectory
         {
             get
@@ -289,7 +289,7 @@ namespace Opus.Core
                 return Get("System", "PackageRoots") as Array<DirectoryLocation>;
             }
         }
-       
+
         public static PackageInformationCollection PackageInfo
         {
            set
@@ -313,7 +313,7 @@ namespace Opus.Core
                 return Get("System", "DependentPackageList") as UniqueList<PackageIdentifier>;
             }
         }
-        
+
         public static string ScriptAssemblyPathname
         {
             set
@@ -325,7 +325,7 @@ namespace Opus.Core
                 return Get("System", "ScriptAssemblyPathname") as string;
             }
         }
-        
+
         public static System.Reflection.Assembly ScriptAssembly
         {
             set
@@ -337,7 +337,7 @@ namespace Opus.Core
                 return Get("System", "ScriptAssembly") as System.Reflection.Assembly;
             }
         }
-        
+
         public static string BuilderName
         {
             set
@@ -349,7 +349,7 @@ namespace Opus.Core
                 return Get("System", "BuilderName") as string;
             }
         }
-        
+
         public static string BuildRoot
         {
             set
@@ -372,7 +372,7 @@ namespace Opus.Core
                 return Get("System", "BuildRootLocation") as DirectoryLocation;
             }
         }
-        
+
         public static StringArray PackageCreationDependents
         {
             set
@@ -477,7 +477,7 @@ namespace Opus.Core
             {
                 Set("Build", "InvokedActions", value);
             }
-            
+
             get
             {
                 return Get("Build", "InvokedActions") as System.Collections.Generic.List<IAction>;

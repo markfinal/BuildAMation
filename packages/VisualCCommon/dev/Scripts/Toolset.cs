@@ -110,7 +110,7 @@ namespace VisualCCommon
                     }
                     else
                     {
-                        // now try latest 
+                        // now try latest
                         platformName = "VC";
                         editionName = "CompilerCore";
                         vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);

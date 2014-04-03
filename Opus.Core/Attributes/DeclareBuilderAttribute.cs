@@ -13,13 +13,13 @@ namespace Opus.Core
             this.Name = name;
             this.Type = type;
         }
-        
+
         public string Name
         {
             get;
             set;
         }
-        
+
         public System.Type Type
         {
             get;

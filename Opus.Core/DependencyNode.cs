@@ -64,7 +64,7 @@ namespace Opus.Core
         }
 
         private EBuildState buildState;
-        
+
         public delegate void CompleteEventHandler(DependencyNode node);
         public event CompleteEventHandler CompletedEvent;
 
@@ -426,14 +426,14 @@ namespace Opus.Core
             }
             required.RequiredDependentFor.Add(this);
         }
-        
+
         public EBuildState BuildState
         {
             get
             {
                 return this.buildState;
             }
-            
+
             set
             {
                 this.buildState = value;
@@ -446,13 +446,13 @@ namespace Opus.Core
                 }
             }
         }
-        
+
         public object Data
         {
             get;
             set;
         }
-        
+
         public System.Reflection.MethodInfo BuildFunction
         {
             get;

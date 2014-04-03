@@ -24,7 +24,7 @@ namespace Test11
 
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
         C.ObjectFile unixSourceFile = new C.ObjectFile();
-        
+
         [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.OSX)]
         C.ObjectFile osxSourceFile = new C.ObjectFile();
 

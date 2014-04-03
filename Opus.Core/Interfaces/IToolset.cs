@@ -12,7 +12,7 @@ namespace Opus.Core
         string InstallPath(Opus.Core.BaseTarget baseTarget);
 
         string BinPath(Opus.Core.BaseTarget baseTarget);
-        
+
         Opus.Core.StringArray Environment
         {
             get;

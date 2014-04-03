@@ -42,7 +42,7 @@ namespace WindowsSDK
             lib64Path = System.IO.Path.Combine(lib32Path, "AMD64");
 
             includePath = System.IO.Path.Combine(installPath, "include");
-            
+
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
         }

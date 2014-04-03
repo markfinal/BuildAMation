@@ -38,7 +38,7 @@ namespace XmlUtilities
             element.AppendChild(text);
             dict.AppendChild(element);
         }
-        
+
         private static void AddStringToDict(System.Xml.XmlDocument doc, System.Xml.XmlElement dict, string value)
         {
             System.Xml.XmlElement element = doc.CreateElement("string");

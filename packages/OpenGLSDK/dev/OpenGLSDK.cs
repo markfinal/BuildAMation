@@ -28,7 +28,7 @@ namespace OpenGLSDK
 
             unixTarget = new TargetFilter();
             unixTarget.Platform = Opus.Core.EPlatform.Unix;
-            
+
             osxTarget = new TargetFilter();
             osxTarget.Platform = Opus.Core.EPlatform.OSX;
         }

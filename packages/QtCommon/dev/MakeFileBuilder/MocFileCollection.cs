@@ -38,7 +38,7 @@ namespace MakeFileBuilder
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
-                makeFile.Write(makeFileWriter);        
+                makeFile.Write(makeFileWriter);
             }
 
             success = true;

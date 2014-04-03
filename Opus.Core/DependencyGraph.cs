@@ -37,7 +37,7 @@ namespace Opus.Core
                 return this.rankList.Count;
             }
         }
-        
+
         public DependencyNodeCollection this[int rank]
         {
             get
@@ -59,12 +59,12 @@ namespace Opus.Core
             get;
             private set;
         }
-        
+
         public void AddTopLevelModule(System.Type moduleType, BaseTarget baseTarget)
         {
             AddModule(moduleType, 0, null, baseTarget);
         }
-        
+
         public int TotalNodeCount
         {
             get
@@ -77,7 +77,7 @@ namespace Opus.Core
                 return totalNodeCount;
             }
         }
-        
+
         private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, BaseTarget baseTarget)
         {
             var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
@@ -100,7 +100,7 @@ namespace Opus.Core
 
             return moduleNode;
         }
-        
+
         private void AddDependencyNodeToCollection(DependencyNode moduleNode, int rank)
         {
             while (this.rankList.Count <= rank)

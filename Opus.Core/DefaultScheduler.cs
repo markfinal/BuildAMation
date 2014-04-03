@@ -58,7 +58,7 @@ namespace Opus.Core
                 }
             }
         }
-        
+
         public bool AreNodesAvailable
         {
             get
@@ -72,7 +72,7 @@ namespace Opus.Core
             var rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.AllNodesCompletedEvent, 0);
             return rankCollectionComplete;
         }
-        
+
         public DependencyNode GetNextNodeToBuild()
         {
             for (int rank = this.highestRankToBuild; rank >= 0; --rank)

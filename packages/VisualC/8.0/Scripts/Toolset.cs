@@ -28,7 +28,7 @@ namespace VisualC
             this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Archiver(this), typeof(ArchiverOptionCollection));
             this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ResourceCompiler(this), typeof(VisualCCommon.Win32ResourceCompilerOptionCollection));
         }
-        
+
         protected override void GetInstallPath()
         {
             if (null != this.installPath)
@@ -41,7 +41,7 @@ namespace VisualC
                 this.installPath = Opus.Core.State.Get("VisualC", "InstallPath") as string;
                 Opus.Core.Log.DebugMessage("VisualC 2005 install path set from command line to '{0}'", this.installPath);
             }
-            
+
             if (null == this.installPath)
             {
                 using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VisualStudio\SxS\VC7"))
@@ -50,22 +50,22 @@ namespace VisualC
                     {
                         throw new Opus.Core.Exception("VisualStudio was not installed");
                     }
-                    
+
                     this.installPath = key.GetValue("8.0") as string;
                     if (null == this.installPath)
                     {
                         throw new Opus.Core.Exception("VisualStudio 2005 was not installed");
                     }
-                    
+
                     this.installPath = this.installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
                     Opus.Core.Log.DebugMessage("VisualStudio 2005: Installation path from registry '{0}'", this.installPath);
                 }
             }
-            
+
             this.bin32Folder = System.IO.Path.Combine(this.installPath, "bin");
             this.bin64Folder = System.IO.Path.Combine(this.bin32Folder, "amd64");
             this.bin6432Folder = System.IO.Path.Combine(this.bin32Folder, "x86_amd64");
-            
+
             this.lib32Folder.Add(System.IO.Path.Combine(this.installPath, "lib"));
             this.lib64Folder.Add(System.IO.Path.Combine(this.lib32Folder[0], "amd64"));
 

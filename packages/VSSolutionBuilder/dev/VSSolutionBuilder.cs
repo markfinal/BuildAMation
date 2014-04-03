@@ -98,7 +98,7 @@ namespace VSSolutionBuilder
         private static string UseProjectMacro(string path, string projectName)
         {
             string updatedPath = path.Replace(projectName, "$(ProjectName)");
-            return updatedPath; 
+            return updatedPath;
         }
 
         // semi-colons are the splitter in arguments

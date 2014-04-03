@@ -52,7 +52,7 @@ namespace Opus
             {
                 Core.Log.DebugMessage("Command '{0}' value '{1}' has been overwritten with '{2}'", command, argDict[command], value);
             }
-            
+
             argDict[command] = value;
         }
 
@@ -173,7 +173,7 @@ namespace Opus
 
             return argList;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the Application class.
         /// </summary>
@@ -188,7 +188,7 @@ namespace Opus
 
             profile.StopProfile();
         }
-        
+
         /// <summary>
         /// Runs the application.
         /// </summary>

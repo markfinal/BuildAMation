@@ -25,7 +25,7 @@ namespace XmlUtilities
                 versionAttr.Value = "1.0";
                 plistEl.Attributes.Append(versionAttr);
             }
-            
+
             System.Xml.XmlElement dictEl = this.Document.CreateElement("dict");
             plistEl.AppendChild(dictEl);
             this.Document.AppendChild(plistEl);

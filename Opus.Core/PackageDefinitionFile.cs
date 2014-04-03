@@ -95,7 +95,7 @@ namespace Opus.Core
     {
         private string xmlFilename;
         private bool validate;
-        
+
         private static void ValidationCallBack(object sender, System.Xml.Schema.ValidationEventArgs args)
         {
             if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
@@ -126,7 +126,7 @@ namespace Opus.Core
                 throw new System.Xml.XmlException(message);
             }
         }
-        
+
         private void Validate()
         {
             var settings = new System.Xml.XmlReaderSettings();
@@ -139,11 +139,11 @@ namespace Opus.Core
 
             // Create the XmlReader object.
             var reader = System.Xml.XmlReader.Create(this.xmlFilename, settings);
-    
-            // Parse the file. 
+
+            // Parse the file.
             while (reader.Read());
         }
-        
+
         public PackageDefinitionFile(string xmlFilename, bool validate)
         {
             this.validate = validate;
@@ -232,7 +232,7 @@ namespace Opus.Core
                                 }
                                 conditionText += System.String.Format("'$(Platform)' == '{0}'", platform);
                             }
-                            
+
                             packageVersionElement.SetAttribute("Condition", conditionText);
                         }
 
@@ -914,7 +914,7 @@ namespace Opus.Core
                       systemXmlDesc
                     });
             }
-            
+
             // supported on all platforms
             this.SupportedPlatforms = EPlatform.All;
 

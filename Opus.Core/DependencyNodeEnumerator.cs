@@ -11,7 +11,7 @@ namespace Opus.Core
         private int currentRank;
         private DependencyNodeCollection currentRankCollection;
         private int currentNodeIndex;
-        
+
         public DependencyNodeEnumerator(DependencyGraph graph)
         {
             this.graph = graph;
@@ -25,7 +25,7 @@ namespace Opus.Core
                 return this.currentRankCollection[this.currentNodeIndex];
             }
         }
-        
+
         public bool MoveNext()
         {
             if (null == this.currentRankCollection)
@@ -43,7 +43,7 @@ namespace Opus.Core
                     {
                         return false;
                     }
-                    
+
                     this.currentRankCollection = this.graph[this.currentRank];
                     if (0 != this.currentRankCollection.Count)
                     {
@@ -54,10 +54,10 @@ namespace Opus.Core
                 }
                 this.currentNodeIndex = 0;
             }
-            
+
             return true;
         }
-        
+
         public void Reset()
         {
             this.currentRank = 0;
