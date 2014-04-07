@@ -70,10 +70,21 @@
     </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="package-roots">
+    <xs:sequence>
+        <xs:element name="RootDirectory" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+                <xs:attribute name="Path" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:sequence>
+</xs:complexType>
+
 <!-- root node -->
 <xs:element name="PackageDefinition">
     <xs:complexType>
         <xs:all>
+            <xs:element name="PackageRoots" type="Opus:package-roots" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredPackages" type="Opus:required-package-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredOpusAssemblies" type="Opus:required-opus-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredDotNetAssemblies" type="Opus:required-dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />

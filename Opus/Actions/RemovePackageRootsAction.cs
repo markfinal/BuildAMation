@@ -1,21 +1,21 @@
-﻿// <copyright file="AddPackageRootsAction.cs" company="Mark Final">
+﻿// <copyright file="RemovePackageRootsAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.AddPackageRootsAction))]
+[assembly: Opus.Core.RegisterAction(typeof(Opus.RemovePackageRootsAction))]
 
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class AddPackageRootsAction : Core.IActionWithArguments
+    internal class RemovePackageRootsAction : Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
             get
             {
-                return "-addpackageroots";
+                return "-removepackageroots";
             }
         }
 
@@ -23,7 +23,7 @@ namespace Opus
         {
             get
             {
-                return "Add package roots (separated by " + System.IO.Path.PathSeparator + ")";
+                return "Remove package roots (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
@@ -63,20 +63,20 @@ namespace Opus
             foreach (var packageRoot in this.PackageRoots)
             {
                 var standardPackageRoot = packageRoot.Replace('\\', '/');
-                if (!xmlFile.PackageRoots.Contains(standardPackageRoot))
+                if (xmlFile.PackageRoots.Contains(standardPackageRoot))
                 {
                     // note: adding the relative path, so this package can be moved around
-                    xmlFile.PackageRoots.Add(standardPackageRoot);
-                    Core.Log.MessageAll("Added package root '{0}' to package '{1}'", standardPackageRoot, mainPackageId.ToString());
+                    xmlFile.PackageRoots.Remove(standardPackageRoot);
+                    Core.Log.MessageAll("Removed package root '{0}' from package '{1}'", standardPackageRoot, mainPackageId.ToString());
                     success = true;
                 }
                 else
                 {
-                    Core.Log.MessageAll("Package root '{0}' already used by package '{1}'", standardPackageRoot, mainPackageId.ToString());
+                    Core.Log.MessageAll("Package root '{0}' was not used by package '{1}'", standardPackageRoot, mainPackageId.ToString());
                 }
 
                 var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(standardPackageRoot);
-                Core.State.PackageRoots.Add(Core.DirectoryLocation.Get(absolutePackageRoot));
+                Core.State.PackageRoots.Remove(Core.DirectoryLocation.Get(absolutePackageRoot));
             }
 
             if (success)

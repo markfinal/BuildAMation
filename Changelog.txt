@@ -1,3 +1,5 @@
+07-Apr-2014 Package definition files can now contain an Opus:PackageRoots element, providing additional package search paths. Removed -packageroots command line argument. Added -addpackageroots and -removepackageroots command line arguments.
+
 02-Apr-2014 Exporting TMP and TEMP environment variables with the VisualC tools, to avoid generation of _CL_<hexdigits> temporary files in the current directory.
 
 09-Mar-2014 Speculative fix for bad dependency graph generation, when dependents increase rank, but don't need to maintain the same "delta" between themselves and their dependees because other dependees have not moved.

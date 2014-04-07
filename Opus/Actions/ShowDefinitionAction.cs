@@ -82,6 +82,17 @@ namespace Opus
                 }
             }
 
+            if (definitionFile.PackageRoots.Count > 0)
+            {
+                Core.Log.MessageAll("\nExtra package search directories:");
+                foreach (var rootPath in definitionFile.PackageRoots)
+                {
+                    var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(rootPath);
+
+                    Core.Log.MessageAll("\t'{0}'\t(absolute path '{1}')", rootPath, absolutePackageRoot);
+                }
+            }
+
             if (definitionFile.PackageIdentifiers.Count > 0)
             {
                 Core.Log.MessageAll("\nDependent packages (* = default version):", mainPackageId.ToString());

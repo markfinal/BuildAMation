@@ -8,6 +8,10 @@ namespace Opus.Core
     public class PackageIdentifier : System.IComparable
     {
         public PackageIdentifier(string name, string version)
+            : this(name, version, true)
+        { }
+
+        public PackageIdentifier(string name, string version, bool validatePackageLocation)
         {
             if (null == name)
             {
@@ -20,9 +24,12 @@ namespace Opus.Core
 
             this.Name = name;
             this.Version = version;
-            this.Root = this.LocateRoot();
             this.PlatformFilter = EPlatform.All;
-            this.Location = DirectoryLocation.Get(this.Path);
+            if (validatePackageLocation)
+            {
+                this.Root = this.LocateRoot();
+                this.Location = DirectoryLocation.Get(this.Path);
+            }
         }
 
         public string Name

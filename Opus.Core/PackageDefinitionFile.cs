@@ -153,6 +153,7 @@ namespace Opus.Core
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
+            this.PackageRoots = new StringArray();
         }
 
         public void Write()
@@ -179,6 +180,21 @@ namespace Opus.Core
                 packageDefinition.Attributes.Append(schemaAttribute);
             }
             document.AppendChild(packageDefinition);
+
+            // package roots
+            if (this.PackageRoots.Count > 0)
+            {
+                var packageRootsElement = document.CreateElement(targetNamespace, "PackageRoots", namespaceURI);
+
+                foreach (string rootPath in this.PackageRoots)
+                {
+                    var rootElement = document.CreateElement(targetNamespace, "RootDirectory", namespaceURI);
+                    rootElement.SetAttribute("Path", rootPath);
+                    packageRootsElement.AppendChild(rootElement);
+                }
+
+                packageDefinition.AppendChild(packageRootsElement);
+            }
 
             if (this.PackageIdentifiers.Count > 0)
             {
@@ -338,6 +354,11 @@ namespace Opus.Core
 
         public void Read(bool validateSchemaLocation)
         {
+            this.Read(validateSchemaLocation, true);
+        }
+
+        public void Read(bool validateSchemaLocation, bool validatePackageLocations)
+        {
             var xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = true;
             xmlReaderSettings.CloseInput = true;
@@ -352,7 +373,7 @@ namespace Opus.Core
             xmlReaderSettings.XmlResolver = new OpusXmlResolver();
 
             // try reading the current schema version first
-            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation))
+            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations))
             {
                 if (State.ForceDefinitionFileUpdate)
                 {
@@ -476,7 +497,7 @@ namespace Opus.Core
             return supportedPlatforms;
         }
 
-        private bool ReadRequiredPackages(System.Xml.XmlReader xmlReader)
+        private bool ReadRequiredPackages(System.Xml.XmlReader xmlReader, bool validatePackageLocations)
         {
             var requiredPackagesElementName = "Opus:RequiredPackages";
             if (requiredPackagesElementName != xmlReader.Name)
@@ -538,7 +559,7 @@ namespace Opus.Core
                                     isDefaultVersion = isDefault;
                                 }
 
-                                var id = new PackageIdentifier(packageName, packageVersion);
+                                var id = new PackageIdentifier(packageName, packageVersion, validatePackageLocations);
                                 id.PlatformFilter = platformFilter;
                                 id.IsDefaultVersion = isDefaultVersion;
                                 this.PackageIdentifiers.Add(id);
@@ -552,7 +573,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("Unexpected child element of '{0}'", requiredPackagesElementName);
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredPackagesElementName, xmlReader.Name);
                 }
             }
 
@@ -592,7 +613,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("Unexpected child element of '{0}'", requiredOpusAssembliesElementName);
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredOpusAssembliesElementName, xmlReader.Name);
                 }
             }
 
@@ -640,7 +661,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("Unexpected child element of '{0}'", requiredDotNetAssembliesElementName);
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredDotNetAssembliesElementName, xmlReader.Name);
                 }
             }
 
@@ -692,7 +713,7 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("Unexpected child element of '{0}'", supportedPlatformsElementName);
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", supportedPlatformsElementName, xmlReader.Name);
                 }
             }
 
@@ -733,14 +754,57 @@ namespace Opus.Core
                 }
                 else
                 {
-                    throw new Exception("Unexpected child element of '{0}'", definitionsElementName);
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", definitionsElementName, xmlReader.Name);
                 }
             }
 
             return true;
         }
 
-        protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings, bool validateSchemaLocation)
+        private bool ReadPackageRoots(System.Xml.XmlReader xmlReader)
+        {
+            var packageRootsElementName = "Opus:PackageRoots";
+            if (packageRootsElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            var rootDirElementName = "Opus:RootDirectory";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == packageRootsElementName) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (rootDirElementName == xmlReader.Name)
+                {
+                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
+                    {
+                        var pathAttribute = "Path";
+                        if (!xmlReader.MoveToAttribute(pathAttribute))
+                        {
+                            throw new Exception("Required '{0}' attribute of '{1}' node missing", pathAttribute, pathAttribute, rootDirElementName);
+                        }
+
+                        var path = xmlReader.Value;
+                        this.PackageRoots.Add(path);
+
+                        var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(path);
+                        Core.State.PackageRoots.Add(Core.DirectoryLocation.Get(absolutePackageRoot));
+                    }
+                }
+                else
+                {
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", packageRootsElementName, xmlReader.Name);
+                }
+            }
+
+            return true;
+        }
+
+        protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings, bool validateSchemaLocation, bool validatePackageLocations)
         {
             try
             {
@@ -766,7 +830,11 @@ namespace Opus.Core
 
                     while (xmlReader.Read())
                     {
-                        if (ReadRequiredPackages(xmlReader))
+                        if (ReadPackageRoots(xmlReader))
+                        {
+                            // all done
+                        }
+                        else if (ReadRequiredPackages(xmlReader, validatePackageLocations))
                         {
                             // all done
                         }
@@ -985,6 +1053,12 @@ namespace Opus.Core
         }
 
         public StringArray Definitions
+        {
+            get;
+            set;
+        }
+
+        public StringArray PackageRoots
         {
             get;
             set;

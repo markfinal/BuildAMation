@@ -85,6 +85,7 @@
     <Compile Include="Actions\RemoveDependencyAction.cs" />
     <Compile Include="Actions\RemoveDotNetAssemblyAction.cs" />
     <Compile Include="Actions\RemoveOpusAssemblyAction.cs" />
+    <Compile Include="Actions\RemovePackageRootsAction.cs" />
     <Compile Include="Actions\RemovePlatformFilterAction.cs" />
     <Compile Include="Actions\RemoveSupportedPlatformAction.cs" />
     <Compile Include="Actions\SchedulerAction.cs" />
