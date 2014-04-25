@@ -15,16 +15,18 @@ namespace Opus.Core
     /// </summary>
     public abstract class BaseModule : IModule
     {
+        private readonly LocationKey PackageDirKey = new LocationKey("PackageDir");
+
         protected BaseModule()
         {
             this.ProxyPath = new ProxyModulePath();
+            this.Locations = new LocationMap();
 
             var packageName = this.GetType().Namespace;
             var package = State.PackageInfo[packageName];
             if (null != package)
             {
                 var root = new ScaffoldLocation(package.Identifier.Location, this.ProxyPath, ScaffoldLocation.ETypeHint.Directory);
-                this.Locations = new LocationMap();
                 this.PackageLocation = root;
             }
         }
@@ -42,12 +44,12 @@ namespace Opus.Core
         {
             get
             {
-                return this.Locations["PackageDir"];
+                return this.Locations[PackageDirKey];
             }
 
             private set
             {
-                this.Locations["PackageDir"] = value;
+                this.Locations[PackageDirKey] = value;
             }
         }
 

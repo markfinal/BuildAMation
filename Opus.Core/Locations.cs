@@ -385,26 +385,48 @@ namespace Opus.Core
         }
     }
 
+    /// <summary>
+    /// Abstraction of the key to the LocationMap
+    /// </summary>
+    public sealed class LocationKey
+    {
+        public LocationKey(string identifier)
+        {
+            this.Identifier = identifier;
+        }
+
+        private string Identifier
+        {
+            get;
+            set;
+        }
+
+        public override string ToString()
+        {
+            return this.Identifier;
+        }
+    }
+
     public sealed class LocationMap
     {
-        private System.Collections.Generic.Dictionary<string, Location> map = new System.Collections.Generic.Dictionary<string, Location>();
+        private System.Collections.Generic.Dictionary<LocationKey, Location> map = new System.Collections.Generic.Dictionary<LocationKey, Location>();
 
-        public Location this[string locationName]
+        public Location this[LocationKey key]
         {
             get
             {
-                return this.map[locationName];
+                return this.map[key];
             }
 
             set
             {
-                this.map[locationName] = value;
+                this.map[key] = value;
             }
         }
 
-        public bool Contains(string locationName)
+        public bool Contains(LocationKey key)
         {
-            return this.map.ContainsKey(locationName);
+            return this.map.ContainsKey(key);
         }
 
         public override string ToString()
@@ -412,8 +434,7 @@ namespace Opus.Core
             var repr = new System.Text.StringBuilder();
             foreach (var key in this.map.Keys)
             {
-                // TODO: add the value too
-                repr.AppendFormat("{0} ", key);
+                repr.AppendFormat("{0}:{1} ", key.ToString(), this.map[key].ToString());
             }
             return repr.ToString();
         }
