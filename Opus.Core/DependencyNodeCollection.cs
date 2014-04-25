@@ -45,7 +45,7 @@ namespace Opus.Core
             }
             else
             {
-                Log.DebugMessage("Not duplicating already present Node in the collection: '{0}'", item.ToString());
+                //Log.DebugMessage("Not duplicating already present Node in the collection: '{0}'", item.ToString());
             }
         }
 
@@ -163,7 +163,7 @@ namespace Opus.Core
         public override string ToString()
         {
             var description = new System.Text.StringBuilder();
-            description.AppendFormat("DependencyNode: rank {0} with {1} nodes", this.Rank, this.list.Count);
+            description.AppendFormat("DependencyNodeCollection: rank {0} with {1} nodes", this.Rank, this.list.Count);
             return description.ToString();
         }
     }
