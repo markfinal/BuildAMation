@@ -13,11 +13,11 @@ namespace Opus.Core
             while (type != null)
             {
                 // get the type of the tool associated with the module
-                var t = type.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), false);
+                // the type may be set on any of it's base classes
+                var t = type.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
                 if (0 == t.Length)
                 {
-                    type = type.BaseType;
-                    continue;
+                    throw new Exception("Unable to determine tool assignment to module type '{0}'", moduleType.ToString());
                 }
 
                 if (t.Length > 1)
@@ -50,7 +50,7 @@ namespace Opus.Core
                 }
 
                 var toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
-                Opus.Core.Log.DebugMessage("\tToolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
+                //Opus.Core.Log.DebugMessage("\tToolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
                 return toolset;
             }
 
