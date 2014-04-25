@@ -33,7 +33,7 @@ namespace Opus.Core
             {
                 if (target.HasToolsetType(toolsetType))
                 {
-                    Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), target.ToString());
+                    //Log.DebugMessage("Target filter '{0}' matches target '{1}'", filterInterface.ToString(), target.ToString());
                     return true;
                 }
             }
