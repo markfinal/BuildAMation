@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import sys
 
 def convert_line_endings(file):
   if '\r\n' in open(file, 'rb').read():
@@ -12,6 +13,9 @@ def convert_line_endings(file):
       outfile.write(text)
 
 def main():
+  if len(sys.argv) > 1:
+    convert_line_endings(sys.argv[1])
+    return
   for dirpath, dirnames, filenames in os.walk('.'):
     for file in filenames:
       if os.path.splitext(file)[1] == '.cs':
