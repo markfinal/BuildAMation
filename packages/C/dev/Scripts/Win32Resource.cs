@@ -11,6 +11,8 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
     public class Win32Resource : Opus.Core.BaseModule
     {
+        public static readonly Opus.Core.LocationKey Win32ResourceLocationKey = new Opus.Core.LocationKey("Win32Resource");
+
         public Opus.Core.Location ResourceFileLocation
         {
             get;

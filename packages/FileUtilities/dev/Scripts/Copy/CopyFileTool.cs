@@ -27,6 +27,17 @@ namespace FileUtilities
             return executable;
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    CopyFile.CopyLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
     }
 }

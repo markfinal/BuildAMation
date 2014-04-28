@@ -68,6 +68,17 @@ namespace VisualCCommon
             return System.IO.Path.Combine(platformBinFolder, "cl.exe");
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.ObjectFileLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
 
         #region IToolSupportsResponseFile Members

@@ -56,11 +56,22 @@ namespace ComposerXECommon
         #endregion
 
         #region ITool implementation
-        string Opus.Core.ITool.Executable (Opus.Core.BaseTarget baseTarget)
+        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
             string installPath = this.toolset.BinPath(baseTarget);
             string executablePath = System.IO.Path.Combine(installPath, "icc");
             return executablePath;
+        }
+
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.ObjectFileLocationKey
+                    );
+                return array;
+            }
         }
         #endregion
     }

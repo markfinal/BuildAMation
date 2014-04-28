@@ -37,6 +37,17 @@ namespace DotNetFramework
             return CscPath;
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    CSharp.Assembly.AssemblyLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
 
         #region IToolForwardedEnvironmentVariables Members

@@ -27,6 +27,17 @@ namespace QtCommon
             return mocExePath;
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    MocFile.MocdSourceFileLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
     }
 }

@@ -120,6 +120,17 @@ namespace GccCommon
             return executablePath;
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.Application.ExecutableLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
 
         #region IToolEnvironmentVariables implementation

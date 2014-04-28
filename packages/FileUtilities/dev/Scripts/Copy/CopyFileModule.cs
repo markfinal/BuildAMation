@@ -8,6 +8,8 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
     public class CopyFile : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
+        public static readonly Opus.Core.LocationKey CopyLocationKey = new Opus.Core.LocationKey("Copy");
+
         public Opus.Core.Location SourceFileLocation
         {
             get;

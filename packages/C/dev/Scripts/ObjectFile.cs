@@ -11,10 +11,20 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFile : Opus.Core.BaseModule
     {
+        private static readonly Opus.Core.LocationKey SourceFileLocationKey = new Opus.Core.LocationKey("SourceFile");
+        public static readonly Opus.Core.LocationKey ObjectFileLocationKey = new Opus.Core.LocationKey("ObjectFile");
+
         public Opus.Core.Location SourceFileLocation
         {
-            get;
-            set;
+            get
+            {
+                return this.Locations[SourceFileLocationKey];
+            }
+
+            set
+            {
+                this.Locations[SourceFileLocationKey] = value;
+            }
         }
 
         public void Include(Opus.Core.Location baseLocation, string pattern)

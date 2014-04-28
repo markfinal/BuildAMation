@@ -11,6 +11,8 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
     public class Application : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.ICommonOptionCollection
     {
+        public static readonly Opus.Core.LocationKey ExecutableLocationKey = new Opus.Core.LocationKey("Executable");
+
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();

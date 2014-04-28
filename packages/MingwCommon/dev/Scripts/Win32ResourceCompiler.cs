@@ -52,6 +52,17 @@ namespace MingwCommon
             return System.IO.Path.Combine(platformBinFolder, "windres.exe");
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.Win32Resource.Win32ResourceLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
 
         #region IToolEnvironmentVariables Members

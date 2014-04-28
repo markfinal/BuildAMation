@@ -32,6 +32,17 @@ namespace CodeGenTest2
             return options.OutputFilePath;
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    CodeGenModule.GeneratedSourceFileLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
     }
 }

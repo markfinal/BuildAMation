@@ -8,5 +8,10 @@ namespace Opus.Core
     public interface ITool
     {
         string Executable(BaseTarget baseTarget);
+
+        Array<LocationKey> OutputLocationKeys
+        {
+            get;
+        }
     }
 }

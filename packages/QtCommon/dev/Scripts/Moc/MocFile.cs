@@ -19,6 +19,8 @@ namespace QtCommon
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
     public class MocFile : Opus.Core.BaseModule, Opus.Core.IInjectModules
     {
+        public static readonly Opus.Core.LocationKey MocdSourceFileLocationKey = new Opus.Core.LocationKey("MocdSource");
+
         public static string Prefix
         {
             get

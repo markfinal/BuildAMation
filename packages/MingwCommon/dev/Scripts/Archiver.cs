@@ -52,6 +52,17 @@ namespace MingwCommon
             return System.IO.Path.Combine(binPath, "ar.exe");
         }
 
+        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        {
+            get
+            {
+                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.StaticLibrary.StaticLibraryLocationKey
+                    );
+                return array;
+            }
+        }
+
         #endregion
 
         #region IToolEnvironmentVariables Members

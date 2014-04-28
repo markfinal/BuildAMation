@@ -8,6 +8,8 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ISymlinkTool))]
     public abstract class SymlinkBase : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
+        public static readonly Opus.Core.LocationKey SymlinkLocationKey = new Opus.Core.LocationKey("Symlink");
+
         public Opus.Core.Location SourceFileLocation
         {
             get;

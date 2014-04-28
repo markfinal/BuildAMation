@@ -95,6 +95,8 @@ namespace CodeGenTest2
     [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
     public abstract class CodeGenModule : Opus.Core.BaseModule, Opus.Core.IInjectModules
     {
+        public static readonly Opus.Core.LocationKey GeneratedSourceFileLocationKey = new Opus.Core.LocationKey("GeneratedSource");
+
         [Opus.Core.RequiredModules]
         protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CodeGeneratorTool));
 
