@@ -17,12 +17,32 @@ namespace Opus.Core
     {
         private readonly LocationKey PackageDirKey = new LocationKey("PackageDir");
 
+        private void StubOutputLocations(System.Type moduleType)
+        {
+            var toolAssignment = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
+            // this is duplicating work, as the toolset is in the Target.Toolset, but passing a Target down to
+            // the BaseModule constructor will break a lot of existing scripts, and their simplicity
+            // TODO: it may be considered a change in a future version
+            var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+            var tool = toolset.Tool((toolAssignment[0] as ModuleToolAssignmentAttribute).ToolType);
+            if (null != tool)
+            {
+                foreach (var locationKey in tool.OutputLocationKeys)
+                {
+                    this.Locations[locationKey] = new ScaffoldLocation(ScaffoldLocation.ETypeHint.File);
+                }
+            }
+        }
+
         protected BaseModule()
         {
             this.ProxyPath = new ProxyModulePath();
             this.Locations = new LocationMap();
 
-            var packageName = this.GetType().Namespace;
+            var moduleType = this.GetType();
+            this.StubOutputLocations(moduleType);
+
+            var packageName = moduleType.Namespace;
             var package = State.PackageInfo[packageName];
             if (null != package)
             {

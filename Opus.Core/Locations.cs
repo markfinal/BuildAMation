@@ -211,7 +211,7 @@ namespace Opus.Core
             File
         }
 
-        private ScaffoldLocation(ETypeHint typeHint)
+        public ScaffoldLocation(ETypeHint typeHint)
         {
             this.TypeHint = typeHint;
             this.Results = new Array<Location>();
