@@ -105,7 +105,7 @@ namespace C
         {
         }
 
-        public override void SetNodeOwnership(Opus.Core.DependencyNode node)
+        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
             var objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)

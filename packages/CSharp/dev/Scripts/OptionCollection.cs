@@ -86,7 +86,7 @@ namespace CSharp
             }
         }
 
-        public override void SetNodeOwnership(Opus.Core.DependencyNode node)
+        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
             this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory("bin");

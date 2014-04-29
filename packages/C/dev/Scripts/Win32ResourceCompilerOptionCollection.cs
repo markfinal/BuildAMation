@@ -23,7 +23,7 @@ namespace C
             // do nothing
         }
 
-        public override void SetNodeOwnership(Opus.Core.DependencyNode node)
+        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
             var resourceModule = node.Module as Win32Resource;
             if (null != resourceModule)

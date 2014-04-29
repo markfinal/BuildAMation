@@ -35,7 +35,7 @@ namespace QtCommon
             set;
         }
 
-        public override void SetNodeOwnership(Opus.Core.DependencyNode node)
+        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
             string mocDir = node.GetTargettedModuleBuildDirectory("src");
             this.OutputDirectoryPath = mocDir;

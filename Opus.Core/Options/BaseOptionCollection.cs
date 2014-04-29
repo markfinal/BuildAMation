@@ -27,7 +27,7 @@ namespace Opus.Core
             this.OwningNode = owningNode;
             if (null != owningNode)
             {
-                this.SetNodeOwnership(owningNode);
+                this.SetNodeSpecificData(owningNode);
             }
         }
 
@@ -44,7 +44,7 @@ namespace Opus.Core
             {
                 // TODO: this conditional is only present because an option collection has an output path in it's interface
                 // this the IMocFile in QtCommon
-                // when SetNodeOwnership is called, the output path is set
+                // when SetNodeSpecificData is called, the output path is set
                 // when CopyExistingOPtions is called, the option is already present in the target table so that Add() will fail
                 // since SetDelegates has not been called on a child, the PrivateData is not set, so needs copying.
                 if (!this.table.ContainsKey(option.Key))
@@ -58,11 +58,11 @@ namespace Opus.Core
             }
         }
 
+        // TODO: this needs to be SetDefaults
         protected abstract void InitializeDefaults(DependencyNode owningNode);
         protected abstract void SetDelegates(DependencyNode owningNode);
 
-        // TODO: this can be made protected
-        public virtual void SetNodeOwnership(DependencyNode node)
+        protected virtual void SetNodeSpecificData(DependencyNode node)
         {
             // do nothing by default
         }
