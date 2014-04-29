@@ -8,11 +8,6 @@ namespace ComposerXE
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : ComposerXECommon.CCompilerOptionCollection, ICCompilerOptions
     {
-        public CCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

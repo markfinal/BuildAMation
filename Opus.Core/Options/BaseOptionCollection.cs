@@ -21,23 +21,47 @@ namespace Opus.Core
             set;
         }
 
-        protected BaseOptionCollection()
+        protected BaseOptionCollection(DependencyNode owningNode)
         {
             this.OutputPaths = new OutputPaths();
+            this.OwningNode = owningNode;
+            if (null != owningNode)
+            {
+                this.SetNodeOwnership(owningNode);
+            }
         }
 
-        protected BaseOptionCollection(DependencyNode owningNode)
-            : this()
+        public void SetupNewOptions()
         {
-            this.OwningNode = owningNode;
-            this.SetNodeOwnership(owningNode);
-            this.InitializeDefaults(owningNode);
-            this.SetDelegates(owningNode);
+            this.InitializeDefaults(this.OwningNode);
+            this.SetDelegates(this.OwningNode);
+        }
+
+        public void CopyExistingOptions(BaseOptionCollection other)
+        {
+            // TODO: can I use var here? check in Mono
+            foreach (System.Collections.Generic.KeyValuePair<string, Option> option in other.table)
+            {
+                // TODO: this conditional is only present because an option collection has an output path in it's interface
+                // this the IMocFile in QtCommon
+                // when SetNodeOwnership is called, the output path is set
+                // when CopyExistingOPtions is called, the option is already present in the target table so that Add() will fail
+                // since SetDelegates has not been called on a child, the PrivateData is not set, so needs copying.
+                if (!this.table.ContainsKey(option.Key))
+                {
+                    this.table.Add(option.Key, option.Value.Clone() as Option);
+                }
+                else
+                {
+                    this.table[option.Key].PrivateData = option.Value.PrivateData;
+                }
+            }
         }
 
         protected abstract void InitializeDefaults(DependencyNode owningNode);
         protected abstract void SetDelegates(DependencyNode owningNode);
 
+        // TODO: this can be made protected
         public virtual void SetNodeOwnership(DependencyNode node)
         {
             // do nothing by default
@@ -72,12 +96,7 @@ namespace Opus.Core
         {
             var optionsType = this.GetType();
             var clonedOptions = OptionCollectionFactory.CreateOptionCollection(optionsType);
-
-            // TODO: can I use var here? check in Mono
-            foreach (System.Collections.Generic.KeyValuePair<string, Option> option in this.table)
-            {
-                clonedOptions.table.Add(option.Key, option.Value.Clone() as Option);
-            }
+            clonedOptions.CopyExistingOptions(this);
             return clonedOptions;
         }
 

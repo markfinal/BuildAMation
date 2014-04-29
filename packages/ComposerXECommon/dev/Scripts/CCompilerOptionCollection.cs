@@ -42,11 +42,6 @@ namespace ComposerXECommon
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
         }
 
-        public CCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

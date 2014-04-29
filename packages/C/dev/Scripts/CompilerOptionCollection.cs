@@ -100,11 +100,6 @@ namespace C
             compilerOptions.AdditionalOptions = "";
         }
 
-        public CompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

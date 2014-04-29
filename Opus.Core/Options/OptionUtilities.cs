@@ -171,21 +171,17 @@ namespace Opus.Core
 
             ProcessFieldAttributes(module, target);
 
-            OptionCollectionType options;
+            OptionCollectionType options = OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
             if (null != node.Parent && node.Parent.Module.Options is OptionCollectionType)
             {
                 Log.DebugMessage("\tCloning option collection for node '{0}' from '{1}'", node.UniqueModuleName, node.Parent.UniqueModuleName);
-
-                options = (node.Parent.Module.Options as OptionCollectionType).Clone() as OptionCollectionType;
-
-                // claim ownership
-                options.SetNodeOwnership(node);
+                options.CopyExistingOptions(node.Parent.Module.Options);
             }
             else
             {
                 Log.DebugMessage("\tCreating new collection", node.UniqueModuleName);
 
-                options = OptionCollectionFactory.CreateOptionCollection<OptionCollectionType>(node);
+                options.SetupNewOptions();
 
                 // apply export and local
                 AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(module, node, 0);

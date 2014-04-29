@@ -7,10 +7,6 @@ namespace Clang
 {
     public partial class CCompilerOptionCollection : ClangCommon.CCompilerOptionCollection, C.ICCompilerOptionsOSX
     {
-        public CCompilerOptionCollection()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode owningNode)
             : base(owningNode)
         {

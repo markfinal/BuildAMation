@@ -18,11 +18,6 @@ namespace VisualCCommon
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
-        public CxxCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

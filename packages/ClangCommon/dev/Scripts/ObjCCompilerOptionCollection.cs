@@ -19,11 +19,6 @@ namespace ClangCommon
             ExportedDefaults(this, node);
         }
 
-        public ObjCCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public ObjCCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

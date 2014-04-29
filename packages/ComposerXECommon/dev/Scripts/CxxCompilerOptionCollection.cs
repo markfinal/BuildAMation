@@ -21,11 +21,6 @@ namespace ComposerXECommon
             ExportedDefaults(this, node);
         }
 
-        public CxxCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

@@ -8,11 +8,6 @@ namespace LLVMGcc
     // Not sealed since the ObjC++ compiler inherits from it
     public partial class ObjCCompilerOptionCollection : GccCommon.ObjCCompilerOptionCollection, ICCompilerOptions
     {
-        public ObjCCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public ObjCCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

@@ -7,10 +7,6 @@ namespace Gcc
 {
     public sealed partial class LinkerOptionCollection : GccCommon.LinkerOptionCollection
     {
-        public LinkerOptionCollection()
-            : base()
-        {}
-
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

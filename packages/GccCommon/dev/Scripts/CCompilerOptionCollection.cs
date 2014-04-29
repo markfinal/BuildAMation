@@ -55,11 +55,6 @@ namespace GccCommon
             }
         }
 
-        public CCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

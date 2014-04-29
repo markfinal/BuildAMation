@@ -7,11 +7,6 @@ namespace QtCommon
 {
     public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, IMocOptions
     {
-        public MocOptionCollection()
-            : base()
-        {
-        }
-
         public MocOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

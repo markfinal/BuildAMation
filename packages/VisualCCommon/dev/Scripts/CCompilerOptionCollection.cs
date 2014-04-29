@@ -56,11 +56,6 @@ namespace VisualCCommon
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
         }
 
-        public CCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

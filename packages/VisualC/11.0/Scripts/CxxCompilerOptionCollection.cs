@@ -7,11 +7,6 @@ namespace VisualC
 {
     public sealed partial class CxxCompilerOptionCollection : VisualCCommon.CxxCompilerOptionCollection
     {
-        public CxxCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

@@ -7,11 +7,6 @@ namespace C
 {
     public class ThirdPartyOptionCollection : Opus.Core.BaseOptionCollection
     {
-        public ThirdPartyOptionCollection()
-            : base()
-        {
-        }
-
         public ThirdPartyOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

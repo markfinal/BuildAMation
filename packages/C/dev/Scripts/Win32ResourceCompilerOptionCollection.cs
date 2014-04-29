@@ -13,11 +13,6 @@ namespace C
             // do nothing yet
         }
 
-        public Win32ResourceCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public Win32ResourceCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

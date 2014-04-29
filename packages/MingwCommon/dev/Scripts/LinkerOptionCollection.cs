@@ -31,10 +31,6 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
              */
         }
 
-        public LinkerOptionCollection()
-            : base()
-        {}
-
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

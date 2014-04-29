@@ -39,11 +39,6 @@ namespace MingwCommon
             compilerInterface.Pedantic = true;
         }
 
-        public CCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

@@ -10,11 +10,6 @@ namespace Mingw
     // C option collection
     public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        public CxxCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

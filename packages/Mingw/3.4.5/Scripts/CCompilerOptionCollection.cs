@@ -7,11 +7,6 @@ namespace Mingw
 {
     public partial class CCompilerOptionCollection : MingwCommon.CCompilerOptionCollection
     {
-        public CCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

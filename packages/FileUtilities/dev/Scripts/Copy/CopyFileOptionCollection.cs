@@ -7,11 +7,6 @@ namespace FileUtilities
 {
     public partial class CopyFileOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICopyFileOptions
     {
-        public CopyFileOptionCollection()
-            : base()
-        {
-        }
-
         public CopyFileOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {

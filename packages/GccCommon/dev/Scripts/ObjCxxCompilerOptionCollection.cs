@@ -21,11 +21,6 @@ namespace GccCommon
             ExportedDefaults(this, node);
         }
 
-        public ObjCxxCompilerOptionCollection()
-            : base()
-        {
-        }
-
         public ObjCxxCompilerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
