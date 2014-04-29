@@ -24,7 +24,12 @@ namespace Opus.Core
             // the BaseModule constructor will break a lot of existing scripts, and their simplicity
             // TODO: it may be considered a change in a future version
             var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
-            var tool = toolset.Tool((toolAssignment[0] as ModuleToolAssignmentAttribute).ToolType);
+            var toolAttr = toolAssignment[0] as ModuleToolAssignmentAttribute;
+            if (!toolset.HasTool(toolAttr.ToolType))
+            {
+                return;
+            }
+            var tool = toolset.Tool(toolAttr.ToolType);
             if (null != tool)
             {
                 foreach (var locationKey in tool.OutputLocationKeys)
