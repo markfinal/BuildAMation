@@ -13,9 +13,9 @@ namespace Gcc
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             // requires gcc 4.0
             (this as ICCompilerOptions).Visibility = EVisibility.Hidden;

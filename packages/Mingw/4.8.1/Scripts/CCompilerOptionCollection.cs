@@ -12,9 +12,9 @@ namespace Mingw
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             // requires gcc 4.0, and only works on ELFs, but doesn't seem to do any harm
             (this as ICCompilerOptions).Visibility = EVisibility.Hidden;

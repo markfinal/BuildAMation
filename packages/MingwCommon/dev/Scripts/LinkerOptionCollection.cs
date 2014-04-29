@@ -7,9 +7,9 @@ namespace MingwCommon
 {
     public partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
             (this as ILinkerOptions).EnableAutoImport = false;

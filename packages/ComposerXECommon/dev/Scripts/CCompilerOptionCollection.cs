@@ -8,14 +8,14 @@ namespace ComposerXECommon
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
             ICCompilerOptions compilerInterface = this as ICCompilerOptions;
             compilerInterface.AllWarnings = true;
             compilerInterface.StrictDiagnostics = true;
             compilerInterface.EnableRemarks = true;
 
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             // there is too much of a headache with include paths to enable this!
             (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;

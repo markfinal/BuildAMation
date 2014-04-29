@@ -10,9 +10,9 @@ namespace LLVMGcc
     // C option collection
     public sealed partial class ObjCxxCompilerOptionCollection : ObjCCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             // TODO: think I can move this to GccCommon, but it misses out the C++ include paths for some reason (see Test9-dev)
             Opus.Core.Target target = node.Target;

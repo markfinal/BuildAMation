@@ -15,9 +15,9 @@ namespace ClangCommon
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
             ExportedDefaults(this, node);
         }
 

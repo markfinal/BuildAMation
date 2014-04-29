@@ -13,9 +13,9 @@ namespace ComposerXE
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             (this as ICCompilerOptions).Visibility = EVisibility.Hidden;
         }

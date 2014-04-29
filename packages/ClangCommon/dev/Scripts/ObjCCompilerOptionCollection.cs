@@ -13,9 +13,9 @@ namespace ClangCommon
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
             ExportedDefaults(this, node);
         }
 

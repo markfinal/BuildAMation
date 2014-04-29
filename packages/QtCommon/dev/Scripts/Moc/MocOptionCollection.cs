@@ -12,7 +12,7 @@ namespace QtCommon
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
             IMocOptions options = this as IMocOptions;
             options.MocOutputPath = null;

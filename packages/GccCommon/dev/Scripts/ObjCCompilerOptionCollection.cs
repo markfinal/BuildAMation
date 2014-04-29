@@ -15,9 +15,9 @@ namespace GccCommon
             gccInterfaceOptions.StrictAliasing = false; // causes type-punning warnings with 'super' in 4.0
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
             ExportedDefaults(this, node);
         }
 

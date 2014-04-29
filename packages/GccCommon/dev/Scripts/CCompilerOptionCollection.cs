@@ -8,13 +8,13 @@ namespace GccCommon
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
             ICCompilerOptions compilerInterface = this as ICCompilerOptions;
             compilerInterface.AllWarnings = true;
             compilerInterface.ExtraWarnings = true;
 
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             Opus.Core.Target target = node.Target;
             compilerInterface.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);

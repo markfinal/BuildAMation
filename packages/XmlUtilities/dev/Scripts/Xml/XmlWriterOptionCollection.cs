@@ -13,7 +13,7 @@ namespace XmlUtilities
         }
 
         #region implemented abstract members of BaseOptionCollection
-        protected override void InitializeDefaults (Opus.Core.DependencyNode owningNode)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
         {
         }
         protected override void SetDelegates (Opus.Core.DependencyNode owningNode)

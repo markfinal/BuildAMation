@@ -7,9 +7,9 @@ namespace VisualCCommon
 {
     public abstract partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
             C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;

@@ -10,9 +10,9 @@ namespace ComposerXE
     // C option collection
     public sealed partial class CxxCompilerOptionCollection : CCompilerOptionCollection, C.ICxxCompilerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
             ComposerXECommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
 

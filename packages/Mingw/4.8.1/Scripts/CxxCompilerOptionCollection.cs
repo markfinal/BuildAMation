@@ -15,9 +15,9 @@ namespace Mingw
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             // TODO: can this be moved to MingwCommon? (difference in root C folders)
             Opus.Core.Target target = node.Target;

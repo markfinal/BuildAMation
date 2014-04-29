@@ -12,9 +12,9 @@ namespace Clang
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             var cInterfaceOptions = this as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;

@@ -12,9 +12,9 @@ namespace ClangCommon
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             // preferrable for Clang to find the include paths
             (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;

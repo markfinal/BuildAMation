@@ -33,7 +33,7 @@ namespace Opus.Core
 
         public void SetupNewOptions()
         {
-            this.InitializeDefaults(this.OwningNode);
+            this.SetDefaultOptionValues(this.OwningNode);
             this.SetDelegates(this.OwningNode);
         }
 
@@ -58,8 +58,7 @@ namespace Opus.Core
             }
         }
 
-        // TODO: this needs to be SetDefaults
-        protected abstract void InitializeDefaults(DependencyNode owningNode);
+        protected abstract void SetDefaultOptionValues(DependencyNode owningNode);
         protected abstract void SetDelegates(DependencyNode owningNode);
 
         protected virtual void SetNodeSpecificData(DependencyNode node)

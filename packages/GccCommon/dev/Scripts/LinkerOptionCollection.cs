@@ -7,9 +7,9 @@ namespace GccCommon
 {
     public partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, C.ILinkerOptionsOSX, GccCommon.ILinkerOptions
     {
-        protected override void InitializeDefaults(Opus.Core.DependencyNode node)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            base.InitializeDefaults(node);
+            base.SetDefaultOptionValues(node);
 
             Opus.Core.Target target = node.Target;
 

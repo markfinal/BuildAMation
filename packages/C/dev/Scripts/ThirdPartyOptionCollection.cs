@@ -12,7 +12,7 @@ namespace C
         {
         }
 
-        protected override void InitializeDefaults(Opus.Core.DependencyNode owningNode)
+        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
         {
             // no defaults, as there are no options
         }
