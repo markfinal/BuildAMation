@@ -8,6 +8,8 @@ namespace XmlUtilities
     [Opus.Core.ModuleToolAssignment(typeof(IXmlWriterTool))]
     public class XmlModule : Opus.Core.BaseModule
     {
+        public static readonly Opus.Core.LocationKey XmlOutputFile = new Opus.Core.LocationKey("XmlFile");
+
         public XmlModule()
         {
             this.Document = new System.Xml.XmlDocument();
