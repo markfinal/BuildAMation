@@ -27,3 +27,8 @@ if __name__ == "__main__":
         strip_trailing_whitespace(sys.argv[1])
     else:
         processPath('.', '.cs')
+        processPath('testpackages', '.h')
+        processPath('testpackages', '.c')
+        processPath('testpackages', '.cpp')
+        processPath('testpackages', '.m')
+        processPath('testpackages', '.mm')
