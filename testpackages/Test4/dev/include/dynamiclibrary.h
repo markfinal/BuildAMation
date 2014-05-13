@@ -23,7 +23,7 @@
 
 #else
 
-#error "Unsupported platform" 
+#error "Unsupported platform"
 
 #endif
 

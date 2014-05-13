@@ -14,12 +14,12 @@ main(int argc, char* argv[])
     /*fprintf(stdout, "Tool is '%s'\n", argv[0]);*/
     /*fprintf(stdout, "Arg1 is '%s'\n", argv[1]);*/
     /*fprintf(stdout, "Arg2 is '%s'\n", argv[2]);*/
- 
+
     {
         char path[256];
         char body[256];
         FILE *file;
-        
+
 #ifdef WIN32
         sprintf(path, "%s\\%s.c", argv[1], argv[2]);
 #else
@@ -31,13 +31,13 @@ main(int argc, char* argv[])
             fprintf(stderr, "Unable to open '%s' for writing", path);
             return -2;
         }
-        
+
         sprintf(body, "#include <stdio.h>\n\nvoid MyGeneratedFunction(){ printf(\"Hello world\\n\"); }\n");
         fwrite(body, 1, strlen(body), file);
-        
+
         fclose(file);
         fprintf(stdout, "Generated source file written to '%s'\n", path);
     }
-    
+
     return 0;
 }

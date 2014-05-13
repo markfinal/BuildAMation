@@ -40,7 +40,7 @@ void Renderer::Initialize()
     unsigned int threadId;
     this->mhThread = reinterpret_cast<HANDLE>(_beginthreadex(
         0,
-        0, 
+        0,
         (unsigned (__stdcall *)(void *))threadFunction,
         this,
         0,
@@ -71,7 +71,7 @@ bool Renderer::CreateDevice()
         REPORTERROR2("GetDeviceCaps failed: 0x%x '%s'", lResult, ::DXGetErrorString(lResult));
         return false;
     }
- 
+
     ::DWORD lu32BehaviourFlags = 0;
     if (D3DDEVCAPS_HWTRANSFORMANDLIGHT == (lCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT))
     {

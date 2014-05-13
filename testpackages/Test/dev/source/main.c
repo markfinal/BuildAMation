@@ -18,7 +18,7 @@ public:
             throw;
         }
     }
-    
+
     int returnValue() const
     {
         return 0;

@@ -6,16 +6,16 @@
 class MyClass2 : public QObject
 {
     Q_OBJECT
-    
+
 public:
     MyClass2(QObject *parent = 0);
     ~MyClass2();
 
     void DoSomething();
-    
+
 signals:
     void mySignal();
-    
+
 public slots:
     void mySlot();
 };

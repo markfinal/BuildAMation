@@ -25,7 +25,7 @@ typedef int (*ExportedFunction_t)(int);
 
 #else
 
-#error "Unsupported platform" 
+#error "Unsupported platform"
 
 #endif
 
