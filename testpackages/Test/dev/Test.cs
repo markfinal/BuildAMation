@@ -97,15 +97,15 @@ namespace Test
                 GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
                 gccCompilerOptions.PositionIndependentCode = true;
             }
-			else if (target.HasToolsetType(typeof(Clang.Toolset)))
-			{
-				Opus.Core.Log.MessageAll("Toolset for clang in use");
+            else if (target.HasToolsetType(typeof(Clang.Toolset)))
+            {
+                Opus.Core.Log.MessageAll("Toolset for clang in use");
 
-				compilerOptions.AdditionalOptions = "-Wall";
+                compilerOptions.AdditionalOptions = "-Wall";
 
-				var clangCompilerOptions = compilerOptions as ClangCommon.ICCompilerOptions;
-				clangCompilerOptions.PositionIndependentCode = true;
-			}
+                var clangCompilerOptions = compilerOptions as ClangCommon.ICCompilerOptions;
+                clangCompilerOptions.PositionIndependentCode = true;
+            }
             else
             {
                 Opus.Core.Log.MessageAll("Unrecognized toolset, '{0}'", target.ToolsetName('='));

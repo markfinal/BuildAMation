@@ -5,20 +5,20 @@
 class MyClass
 {
 public:
-	MyClass()
-	{
-	}
+    MyClass()
+    {
+    }
 
-	~MyClass()
-	{
-	}
+    ~MyClass()
+    {
+    }
 };
 
 int main()
 {
-	try
-	{
-		MyClass instance;
+    try
+    {
+        MyClass instance;
         std::string hello("Hello");
         std::cout << hello;
         std::vector<int> *a = new std::vector<int>;
@@ -28,10 +28,10 @@ int main()
             std::cout << *i;
         }
         delete a;
-	}
-	catch (...)
-	{
-		return -1;
-	}
-	return 0;
+    }
+    catch (...)
+    {
+        return -1;
+    }
+    return 0;
 }
