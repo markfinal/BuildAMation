@@ -12,15 +12,18 @@ def convert_line_endings(file):
     with open(file, 'wb') as outfile:
       outfile.write(text)
 
-def main():
-  if len(sys.argv) > 1:
-    convert_line_endings(sys.argv[1])
-    return
-  for dirpath, dirnames, filenames in os.walk('.'):
+def processPath(dirPath, ext):
+  for dirpath, dirnames, filenames in os.walk(dirPath):
     for file in filenames:
-      if os.path.splitext(file)[1] == '.cs':
+      if os.path.splitext(file)[1] == ext:
         csPath = os.path.join(dirpath, file)
         convert_line_endings(csPath)
 
 if __name__ == "__main__":
-  main()
+  if len(sys.argv) > 1:
+    convert_line_endings(sys.argv[1])
+    return
+  processPath('.', '.cs')
+  processPath('testpackages', '.h')
+  processPath('testpackages', '.c')
+  processPath('testpackages', '.cpp')
