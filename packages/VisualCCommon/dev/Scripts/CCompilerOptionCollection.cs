@@ -12,9 +12,9 @@ namespace VisualCCommon
         {
             base.SetDefaultOptionValues(node);
 
-            Opus.Core.Target target = node.Target;
+            var target = node.Target;
 
-            ICCompilerOptions compilerInterface = this as ICCompilerOptions;
+            var compilerInterface = this as ICCompilerOptions;
             compilerInterface.NoLogo = true;
 
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
@@ -34,7 +34,7 @@ namespace VisualCCommon
                 compilerInterface.EnableIntrinsicFunctions = true;
             }
 
-            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            var compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)target));
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
@@ -53,7 +53,11 @@ namespace VisualCCommon
             compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
             compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
 
+#if true
+            // TODO
+#else
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
+#endif
         }
 
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)
@@ -67,6 +71,8 @@ namespace VisualCCommon
             set;
         }
 
+#if true
+#else
         public string ProgramDatabaseFilePath
         {
             get
@@ -79,42 +85,29 @@ namespace VisualCCommon
                 this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = value;
             }
         }
+#endif
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            ICCompilerOptions options = this as ICCompilerOptions;
+#if true
+            // TODO: come back to this
+            base.FinalizeOptions(node);
+#else
+            var options = this as ICCompilerOptions;
 
             if (options.DebugType != EDebugType.Embedded)
             {
-                string pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
+                var pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
                 this.ProgramDatabaseFilePath = pdbPathName;
             }
 
             base.FinalizeOptions(node);
-        }
-
-        public override Opus.Core.DirectoryCollection DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
-            {
-                string objPathName = this.ObjectFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(objPathName));
-            }
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.CompilerProgramDatabase))
-            {
-                string pdbPathName = this.ProgramDatabaseFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(pdbPathName));
-            }
-
-            return directoriesToCreate;
+#endif
         }
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
-            VisualStudioProcessor.EVisualStudioTarget vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
+            var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
@@ -124,7 +117,7 @@ namespace VisualCCommon
                 default:
                     throw new Opus.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
             }
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
+            var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;
         }
     }

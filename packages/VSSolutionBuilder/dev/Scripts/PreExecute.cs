@@ -13,8 +13,8 @@ namespace VSSolutionBuilder
         {
             Opus.Core.Log.DebugMessage("PreExecute for VSSolutionBuilder");
 
-            Opus.Core.PackageInformation mainPackage = Opus.Core.State.PackageInfo[0];
-            string solutionPathName = System.IO.Path.Combine(mainPackage.BuildDirectory, mainPackage.FullName + ".sln");
+            var mainPackage = Opus.Core.State.PackageInfo[0];
+            var solutionPathName = System.IO.Path.Combine(mainPackage.BuildDirectory, mainPackage.FullName + ".sln");
             Opus.Core.Log.DebugMessage("Solution pathname is '{0}'", solutionPathName);
 
             this.solutionFile = new SolutionFile(solutionPathName);

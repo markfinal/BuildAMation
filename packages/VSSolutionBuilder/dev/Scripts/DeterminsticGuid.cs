@@ -12,12 +12,12 @@ namespace VSSolutionBuilder
             // ref: http://geekswithblogs.net/EltonStoneman/archive/2008/06/26/generating-deterministic-guids.aspx
 
             // use MD5 hash to get a 16-byte hash of the string
-            System.Security.Cryptography.MD5CryptoServiceProvider provider = new System.Security.Cryptography.MD5CryptoServiceProvider();
-            byte[] inputBytes = System.Text.Encoding.Default.GetBytes(input);
-            byte[] hashBytes = provider.ComputeHash(inputBytes);
+            var provider = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            var inputBytes = System.Text.Encoding.Default.GetBytes(input);
+            var hashBytes = provider.ComputeHash(inputBytes);
 
             // generate a guid from the hash
-            System.Guid hashGuid = new System.Guid(hashBytes);
+            var hashGuid = new System.Guid(hashBytes);
 
             this.Guid = hashGuid;
         }

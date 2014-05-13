@@ -15,10 +15,12 @@ namespace Opus.Core
     /// </summary>
     public abstract class BaseModule : IModule
     {
-        private readonly LocationKey PackageDirKey = new LocationKey("PackageDir");
+        private readonly LocationKey PackageDirKey = new LocationKey("PackageDirectory", ScaffoldLocation.ETypeHint.Directory);
 
         private void StubOutputLocations(System.Type moduleType)
         {
+            this.Locations[State.ModuleBuildDirLocationKey] = new ScaffoldLocation(ScaffoldLocation.ETypeHint.Directory);
+
             var toolAssignment = moduleType.GetCustomAttributes(typeof(ModuleToolAssignmentAttribute), true);
             // this is duplicating work, as the toolset is in the Target.Toolset, but passing a Target down to
             // the BaseModule constructor will break a lot of existing scripts, and their simplicity
@@ -34,7 +36,7 @@ namespace Opus.Core
             {
                 foreach (var locationKey in tool.OutputLocationKeys)
                 {
-                    this.Locations[locationKey] = new ScaffoldLocation(ScaffoldLocation.ETypeHint.File);
+                    this.Locations[locationKey] = new ScaffoldLocation(locationKey.Type);
                 }
             }
         }
@@ -43,6 +45,7 @@ namespace Opus.Core
         {
             this.ProxyPath = new ProxyModulePath();
             this.Locations = new LocationMap();
+            this.Locations[State.BuildRootLocationKey] = State.BuildRootLocation;
 
             var moduleType = this.GetType();
             this.StubOutputLocations(moduleType);
@@ -51,7 +54,7 @@ namespace Opus.Core
             var package = State.PackageInfo[packageName];
             if (null != package)
             {
-                var root = new ScaffoldLocation(package.Identifier.Location, this.ProxyPath, ScaffoldLocation.ETypeHint.Directory);
+                var root = new ScaffoldLocation(package.Identifier.Location, this.ProxyPath, ScaffoldLocation.ETypeHint.Directory, Location.EExists.Exists);
                 this.PackageLocation = root;
             }
         }

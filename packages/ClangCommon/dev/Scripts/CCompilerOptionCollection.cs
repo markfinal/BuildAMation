@@ -31,18 +31,5 @@ namespace ClangCommon
                 (this as C.ICCompilerOptions).LanguageStandard = C.ELanguageStandard.C99;
             }
         }
-
-        public override Opus.Core.DirectoryCollection DirectoriesToCreate()
-        {
-            var directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            var objPathName = this.ObjectFilePath;
-            if (null != objPathName)
-            {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(objPathName));
-            }
-
-            return directoriesToCreate;
-        }
     }
 }

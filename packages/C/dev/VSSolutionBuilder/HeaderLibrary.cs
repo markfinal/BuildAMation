@@ -87,6 +87,7 @@ namespace VSSolutionBuilder
                 if (headerFileAttributes.Length > 0)
                 {
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    // TODO: change to var
                     foreach (Opus.Core.Location location in headerFileCollection)
                     {
                         var headerPath = location.GetSinglePath();

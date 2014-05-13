@@ -57,7 +57,7 @@ namespace VSSolutionBuilder
                         {
                             if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
                             {
-                                IProject dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                                var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
                                 projectData.DependentProjects.Add(dependentProject);
                             }
                         }
@@ -145,7 +145,11 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
                 var linkerOptions = applicationOptions as C.LinkerOptionCollection;
+#if true
+                configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+#else
                 configuration.OutputDirectory = linkerOptions.OutputDirectoryPath;
+#endif
                 configuration.TargetName = linkerOptions.OutputName;
 
                 if (applicationOptions is VisualStudioProcessor.IVisualStudioSupport)

@@ -122,7 +122,7 @@ namespace VisualCCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string binPath = this.toolset.BinPath(baseTarget);
+            var binPath = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(binPath, "link.exe");
         }
 
@@ -131,7 +131,10 @@ namespace VisualCCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.ExecutableLocationKey
+                    C.Application.OutputFileLocKey,
+                    C.Application.OutputDirLocKey,
+                    C.DynamicLibrary.StaticImportLibraryDirectoryLKey,
+                    C.DynamicLibrary.StaticImportLibraryLocationKey
                     );
                 return array;
             }
@@ -167,7 +170,7 @@ namespace VisualCCommon
 
         System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
         {
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(baseTarget);
             environmentVariables["PATH"] = this.toolset.Environment;
             return environmentVariables;

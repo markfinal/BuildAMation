@@ -15,17 +15,20 @@ namespace XcodeBuilder
             var baseTarget = (Opus.Core.BaseTarget)target;
 
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
+#if true
+            var executableLocation = moduleToBuild.Locations[C.Application.OutputFileLocKey];
+#else
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
+#endif
 
             var project = this.Workspace.GetProject(node);
 
-            var osxLinkerOptions = options as C.ILinkerOptionsOSX;
+            var osxLinkerOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
             var fileType = osxLinkerOptions.ApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;
-            var fileRef = project.FileReferences.Get(moduleName, fileType, outputPath, project.RootUri);
+            var fileRef = project.FileReferences.Get(moduleName, fileType, executableLocation, project.RootUri);
             project.ProductsGroup.Children.AddUnique(fileRef);
 
-            var osxOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
-            var nativeType = osxOptions.ApplicationBundle ? PBXNativeTarget.EType.ApplicationBundle : PBXNativeTarget.EType.Executable;
+            var nativeType = osxLinkerOptions.ApplicationBundle ? PBXNativeTarget.EType.ApplicationBundle : PBXNativeTarget.EType.Executable;
             var data = project.NativeTargets.Get(moduleName, nativeType, project);
             data.ProductReference = fileRef;
 
@@ -74,7 +77,12 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+#if true
+            var outputDirLoc = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+            var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
+#else
             var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
+#endif
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
 
             // adding the group for the target

@@ -27,14 +27,16 @@ namespace MakeFileBuilder
             Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
             node.FilterOutputPaths(QtCommon.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
 
+            // at this point, we know the node outputs need building
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {

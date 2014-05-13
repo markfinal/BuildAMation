@@ -71,19 +71,5 @@ namespace QtCommon
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
-
-        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection dirsToCreate = new Opus.Core.DirectoryCollection();
-
-            if (this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
-            {
-                var options = this as IMocOptions;
-                string mocDir = System.IO.Path.GetDirectoryName(options.MocOutputPath);
-                dirsToCreate.Add(mocDir);
-            }
-
-            return dirsToCreate;
-        }
     }
 }

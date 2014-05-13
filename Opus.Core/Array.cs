@@ -148,12 +148,19 @@ namespace Opus.Core
 
         public override string ToString()
         {
-            string message = null;
+            return this.ToString(" ");
+        }
+
+        public virtual string ToString(string separator)
+        {
+            var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
             {
-                message += item.ToString() + " ";
+                builder.AppendFormat("{0}{1}", item.ToString(), separator);
             }
-            return message;
+            // remove the trailing separator
+            var output = builder.ToString().TrimEnd(separator.ToCharArray());
+            return output;
         }
 
         public void Sort()

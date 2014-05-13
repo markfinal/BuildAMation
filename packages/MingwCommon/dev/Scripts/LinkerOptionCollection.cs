@@ -35,24 +35,5 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
             : base(node)
         {
         }
-
-        public override Opus.Core.DirectoryCollection DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.Executable))
-            {
-                string outputPathName = this.OutputFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(outputPathName));
-            }
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.StaticImportLibrary))
-            {
-                string libraryPathName = this.StaticImportLibraryFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(libraryPathName));
-            }
-
-            return directoriesToCreate;
-        }
     }
 }

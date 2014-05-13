@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace C
 {
+#if false
     [System.Flags]
     public enum OutputFileFlags
     {
@@ -24,4 +25,5 @@ namespace C
         OSXBundleContents = (1 << 11),
         OSXBundleMacOS = (1 << 12)
     }
+#endif
 }

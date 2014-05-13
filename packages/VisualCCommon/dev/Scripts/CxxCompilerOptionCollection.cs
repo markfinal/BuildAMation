@@ -11,8 +11,8 @@ namespace VisualCCommon
         {
             base.SetDefaultOptionValues(node);
 
-            C.ICCompilerOptions cInterfaceOptions = this as C.ICCompilerOptions;
-            C.ICxxCompilerOptions cxxInterfaceOptions = this as C.ICxxCompilerOptions;
+            var cInterfaceOptions = this as C.ICCompilerOptions;
+            var cxxInterfaceOptions = this as C.ICxxCompilerOptions;
 
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;

@@ -15,7 +15,7 @@ namespace MakeFileBuilder
         {
             Opus.Core.Log.DebugMessage("PreExecute for MakeFiles");
 
-            Opus.Core.PackageInformation mainPackage = Opus.Core.State.PackageInfo[0];
+            var mainPackage = Opus.Core.State.PackageInfo[0];
             this.topLevelMakeFilePath = System.IO.Path.Combine(mainPackage.BuildDirectory, "Makefile");
         }
 

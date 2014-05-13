@@ -13,20 +13,6 @@ namespace C
 
             var target = node.Target;
 
-            var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(linkerTool.BinaryOutputSubDirectory);
-
-            // special case here of the QMakeBuilder
-            // it does not support writing import libraries to a separate location to the dll
-            if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
-            {
-                this.LibraryDirectoryPath = node.GetTargettedModuleBuildDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
-            }
-            else
-            {
-                this.LibraryDirectoryPath = this.OutputDirectoryPath;
-            }
-
             var linkerOptions = this as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.Executable;
             linkerOptions.SubSystem = ESubsystem.NotSet;
@@ -64,6 +50,40 @@ namespace C
             linkerOptions.AdditionalOptions = "";
         }
 
+        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        {
+            var locationMap = this.OwningNode.Module.Locations;
+            var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
+
+            var linkerTool = node.Target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
+
+            var outputDir = locationMap[C.Application.OutputDirLocKey];
+            if (!outputDir.IsValid)
+            {
+                var linkerOutputDir = moduleBuildDir.SubDirectory(linkerTool.BinaryOutputSubDirectory);
+                (outputDir as Opus.Core.ScaffoldLocation).SetReference(linkerOutputDir);
+            }
+
+            // TODO: move to Windows specific LinkerOptionCollections?
+            // special case here of the QMakeBuilder
+            // it does not support writing import libraries to a separate location to the dll
+            var importLibDir = node.Module.Locations[C.DynamicLibrary.StaticImportLibraryDirectoryLKey];
+            if (!importLibDir.IsValid)
+            {
+                if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
+                {
+                    var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
+                    (importLibDir as Opus.Core.ScaffoldLocation).SetReference(moduleDir);
+                }
+                else
+                {
+                    (importLibDir as Opus.Core.ScaffoldLocation).SetReference(outputDir);
+                }
+            }
+
+            base.SetNodeSpecificData(node);
+        }
+
         public LinkerOptionCollection(Opus.Core.DependencyNode node)
             : base(node)
         {
@@ -75,18 +95,26 @@ namespace C
             set;
         }
 
+#if true
+#else
         public string OutputDirectoryPath
         {
             get;
             set;
         }
+#endif
 
+#if true
+#else
         public string LibraryDirectoryPath
         {
             get;
             set;
         }
+#endif
 
+#if true
+#else
         public string OutputFilePath
         {
             get
@@ -98,7 +126,10 @@ namespace C
                 this.OutputPaths[C.OutputFileFlags.Executable] = value;
             }
         }
+#endif
 
+#if true
+#else
         public string StaticImportLibraryFilePath
         {
             get
@@ -110,7 +141,10 @@ namespace C
                 this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
             }
         }
+#endif
 
+#if true
+#else
         public string MapFilePath
         {
             get
@@ -122,9 +156,46 @@ namespace C
                 this.OutputPaths[C.OutputFileFlags.MapFile] = value;
             }
         }
+#endif
+        private static void GetBinaryPrefixAndSuffix(ILinkerOptions options, ILinkerTool tool, out string prefix, out string suffix)
+        {
+            switch (options.OutputType)
+            {
+                case ELinkerOutput.Executable:
+                    prefix = string.Empty;
+                    suffix = tool.ExecutableSuffix;
+                    break;
+
+                case ELinkerOutput.DynamicLibrary:
+                    prefix = tool.DynamicLibraryPrefix;
+                    suffix = tool.DynamicLibrarySuffix;
+                    break;
+
+                default:
+                    throw new Opus.Core.Exception("Unknown output type");
+            }
+        }
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
+#if true
+            var target = node.Target;
+            var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
+            var options = this as ILinkerOptions;
+            
+            var outputFile = node.Module.Locations[C.Application.OutputFileLocKey];
+            if (!outputFile.IsValid)
+            {
+                string prefix;
+                string suffix;
+                GetBinaryPrefixAndSuffix(options, linkerTool, out prefix, out suffix);
+                var filename = prefix + this.OutputName + suffix;
+
+                (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[C.Application.OutputDirLocKey], filename, Opus.Core.Location.EExists.WillExist);
+            }
+
+            // TODO: move DLLs into vendor specific FinalizeOptions
+#else
             var target = node.Target;
             var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             var options = this as ILinkerOptions;
@@ -186,13 +257,12 @@ namespace C
             }
 
             base.FinalizeOptions(node);
+#endif
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
-
-        public abstract Opus.Core.DirectoryCollection DirectoriesToCreate();
     }
 }

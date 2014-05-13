@@ -5,17 +5,17 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    public sealed class MakeFileVariableDictionary : System.Collections.Generic.Dictionary<System.Enum, Opus.Core.StringArray>
+    public sealed class MakeFileVariableDictionary : System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
     {
         public void Append(MakeFileVariableDictionary dictionary)
         {
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> itemPair in dictionary)
+            foreach (var itemPair in dictionary)
             {
                 this.Add(itemPair.Key, itemPair.Value);
             }
         }
 
-        public new void Add(System.Enum key, Opus.Core.StringArray value)
+        public new void Add(Opus.Core.LocationKey key, Opus.Core.StringArray value)
         {
             if (this.ContainsKey(key))
             {
@@ -31,8 +31,8 @@ namespace MakeFileBuilder
         {
             get
             {
-                Opus.Core.StringArray variables = new Opus.Core.StringArray();
-                foreach (Opus.Core.StringArray item in this.Values)
+                var variables = new Opus.Core.StringArray();
+                foreach (var item in this.Values)
                 {
                     variables.AddRange(item);
                 }
@@ -41,6 +41,8 @@ namespace MakeFileBuilder
             }
         }
 
+#if true
+#else
         public MakeFileVariableDictionary Filter(System.Enum filterKeys)
         {
             int filterKeysAsInt = System.Convert.ToInt32(filterKeys);
@@ -63,5 +65,6 @@ namespace MakeFileBuilder
 
             return filtered;
         }
+#endif
     }
 }

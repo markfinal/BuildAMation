@@ -133,6 +133,26 @@ namespace Opus.Core
             private set;
         }
 
+#if true
+        public void FilterOutputLocations(Array<LocationKey> filterKeys, LocationArray filteredLocations)
+        {
+            foreach (var node in this.list)
+            {
+                if (node.Module is IModuleCollection)
+                {
+                    var childNodes = node.Children;
+                    if (null != childNodes)
+                    {
+                        childNodes.FilterOutputLocations(filterKeys, filteredLocations);
+                    }
+                }
+                else
+                {
+                    node.FilterOutputLocations(filterKeys, filteredLocations);
+                }
+            }
+        }
+#else
         public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
             foreach (var node in this.list)
@@ -151,6 +171,7 @@ namespace Opus.Core
                 }
             }
         }
+#endif
 
         public object Clone()
         {

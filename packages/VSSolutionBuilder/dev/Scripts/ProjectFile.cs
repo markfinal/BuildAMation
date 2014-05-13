@@ -28,15 +28,16 @@ namespace VSSolutionBuilder
         {
             if (index == splitFileDirs.Length - 1)
             {
-                string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
 
-                System.Xml.XmlElement fileElement = document.CreateElement("File");
+                var fileElement = document.CreateElement("File");
                 fileElement.SetAttribute("RelativePath", relativePath);
                 if (null != this.FileConfigurations)
                 {
+                    // TODO: convert to var
                     foreach (ProjectFileConfiguration configuration in this.FileConfigurations)
                     {
-                        System.Xml.XmlElement configurationElement = configuration.Serialize(document, projectUri);
+                        var configurationElement = configuration.Serialize(document, projectUri);
                         if (null != configurationElement)
                         {
                             fileElement.AppendChild(configurationElement);
@@ -48,17 +49,17 @@ namespace VSSolutionBuilder
             }
             else
             {
-                string dirName = splitFileDirs[index];
+                var dirName = splitFileDirs[index];
 
                 System.Xml.XmlElement directoryElement = null;
                 foreach (System.Xml.XmlElement child in parentElement.ChildNodes)
                 {
                     if ("Filter" == child.Name)
                     {
-                        bool hasFilterAttribute = child.HasAttribute("Name");
+                        var hasFilterAttribute = child.HasAttribute("Name");
                         if (hasFilterAttribute)
                         {
-                            string filterAttributeValue = child.GetAttribute("Name");
+                            var filterAttributeValue = child.GetAttribute("Name");
                             if (dirName == filterAttributeValue)
                             {
                                 directoryElement = child;
@@ -83,11 +84,12 @@ namespace VSSolutionBuilder
         {
             if (null == this.FileConfigurations)
             {
-                string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
                 fileCollectionGroup.CreateItem(name, relativePath);
             }
             else
             {
+                // TODO: convert to var
                 foreach (ProjectFileConfiguration configuration in this.FileConfigurations)
                 {
                     ProjectTool parentTool = null;
@@ -100,7 +102,7 @@ namespace VSSolutionBuilder
                         }
                     }
 
-                    string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                    var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
                     configuration.Tool.SerializeMSBuild(fileCollectionGroup, configuration, projectUri, relativePath, parentTool);
                 }
             }
@@ -108,10 +110,10 @@ namespace VSSolutionBuilder
 
         public void SerializeCSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri, System.Uri packageDirectoryUri)
         {
-            string relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
-            MSBuildItem compileItem = fileCollectionGroup.CreateItem("Compile", relativePath);
+            var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+            var compileItem = fileCollectionGroup.CreateItem("Compile", relativePath);
 
-            string relativeToPackage = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, packageDirectoryUri);
+            var relativeToPackage = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, packageDirectoryUri);
             if (relativePath != relativeToPackage)
             {
                 compileItem.CreateMetaData("Link", relativeToPackage);

@@ -30,7 +30,7 @@ namespace VSSolutionBuilder
         public bool Contains(string name)
         {
             bool containsName = false;
-            foreach (ProjectFileConfiguration fileConfiguration in this.list)
+            foreach (var fileConfiguration in this.list)
             {
                 if (fileConfiguration.Configuration.Name == name)
                 {

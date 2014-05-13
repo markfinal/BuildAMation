@@ -106,8 +106,12 @@ namespace VSSolutionBuilder
                     projectData.Configurations.AddExistingForTarget(target, configuration);
                 }
 
+#if true
+                configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+#else
                 var options = objectFileOptions as C.CompilerOptionCollection;
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;
+#endif
             }
 
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();

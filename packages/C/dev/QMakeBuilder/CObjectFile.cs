@@ -27,7 +27,11 @@ namespace QMakeBuilder
             data.PriPaths.Add(this.EmptyConfigPriPath);
             data.Sources.Add(sourceFilePath);
             data.Output = QMakeData.OutputType.ObjectFile;
+#if true
+            data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+#else
             data.ObjectsDir = options.OutputDirectoryPath;
+#endif
             data.IncludePaths.AddRangeUnique(optionInterface.IncludePaths.ToStringArray());
             if (optionInterface.IgnoreStandardIncludePaths)
             {

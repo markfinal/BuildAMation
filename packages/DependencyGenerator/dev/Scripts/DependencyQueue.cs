@@ -31,6 +31,7 @@ namespace DependencyGenerator
         {
             lock (this.data)
             {
+                // TODO: change to var?
                 foreach (Data value in values)
                 {
                     this.data.Enqueue(value);

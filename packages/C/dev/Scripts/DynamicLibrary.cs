@@ -10,6 +10,9 @@ namespace C
     /// </summary>
     public partial class DynamicLibrary : Application
     {
+        public static readonly Opus.Core.LocationKey StaticImportLibraryLocationKey = new Opus.Core.LocationKey("ImportLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey StaticImportLibraryDirectoryLKey = new Opus.Core.LocationKey("ImportLibraryDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        
         [LocalCompilerOptionsDelegate]
         protected static void DynamicLibrarySetOpusDLLPreprocessor(Opus.Core.IModule module, Opus.Core.Target target)
         {

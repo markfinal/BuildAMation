@@ -25,28 +25,28 @@ namespace VSSolutionBuilder
 
         public MSBuildPropertyGroup CreatePropertyGroup()
         {
-            MSBuildPropertyGroup propertyGroup = new MSBuildPropertyGroup(this.XmlDocument);
+            var propertyGroup = new MSBuildPropertyGroup(this.XmlDocument);
             this.AppendChild(propertyGroup);
             return propertyGroup;
         }
 
         public MSBuildItemGroup CreateItemGroup()
         {
-            MSBuildItemGroup itemGroup = new MSBuildItemGroup(this.XmlDocument);
+            var itemGroup = new MSBuildItemGroup(this.XmlDocument);
             this.AppendChild(itemGroup);
             return itemGroup;
         }
 
         public MSBuildItemDefinitionGroup CreateItemDefinitionGroup()
         {
-            MSBuildItemDefinitionGroup itemDefGroup = new MSBuildItemDefinitionGroup(this.XmlDocument);
+            var itemDefGroup = new MSBuildItemDefinitionGroup(this.XmlDocument);
             this.AppendChild(itemDefGroup);
             return itemDefGroup;
         }
 
         public MSBuildImport CreateImport(string projectFile)
         {
-            MSBuildImport import = new MSBuildImport(this.XmlDocument, projectFile);
+            var import = new MSBuildImport(this.XmlDocument, projectFile);
             this.AppendChild(import);
             return import;
         }

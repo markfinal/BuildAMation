@@ -14,16 +14,17 @@ namespace VSSolutionBuilder
 
         public MSBuildItem CreateItem(string name, string include)
         {
-            MSBuildItem item = new MSBuildItem(this.XmlDocument, name, include);
+            var item = new MSBuildItem(this.XmlDocument, name, include);
             this.AppendChild(item);
             return item;
         }
 
         public MSBuildItem FindItem(string name, string include)
         {
+            // TODO: convert to var
             foreach (System.Xml.XmlElement element in this.XmlElement.ChildNodes)
             {
-                MSBuildItem b = this.childElements[element] as MSBuildItem;
+                var b = this.childElements[element] as MSBuildItem;
                 if ((b.Name == name) && (b.Include == include))
                 {
                     return b;

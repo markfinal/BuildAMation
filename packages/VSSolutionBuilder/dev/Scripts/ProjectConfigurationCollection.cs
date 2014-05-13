@@ -23,7 +23,7 @@ namespace VSSolutionBuilder
 
         public void AddExistingForTarget(Opus.Core.Target target, ProjectConfiguration configuration)
         {
-            string targetString = target.ToString();
+            var targetString = target.ToString();
 
             if (!this.targetToConfig.ContainsKey(targetString))
             {
@@ -33,13 +33,13 @@ namespace VSSolutionBuilder
 
         public string GetConfigurationNameForTarget(Opus.Core.Target target)
         {
-            string configurationName = this.targetToConfig[target.ToString()];
+            var configurationName = this.targetToConfig[target.ToString()];
             return configurationName;
         }
 
         public bool Contains(string configurationName)
         {
-            foreach (ProjectConfiguration configuration in this.list)
+            foreach (var configuration in this.list)
             {
                 if (configurationName == configuration.Name)
                 {
@@ -54,7 +54,7 @@ namespace VSSolutionBuilder
         {
             get
             {
-                foreach (ProjectConfiguration configuration in this.list)
+                foreach (var configuration in this.list)
                 {
                     if (configurationName == configuration.Name)
                     {
@@ -70,28 +70,28 @@ namespace VSSolutionBuilder
         {
             // ProjectConfigurations item group
             {
-                MSBuildItemGroup configurationsGroup = project.CreateItemGroup();
+                var configurationsGroup = project.CreateItemGroup();
                 configurationsGroup.Label = "ProjectConfigurations";
-                foreach (ProjectConfiguration configuration in this.list)
+                foreach (var configuration in this.list)
                 {
                     configuration.SerializeMSBuild(configurationsGroup, projectUri);
                 }
             }
 
             // configuration type and character set
-            foreach (ProjectConfiguration configuration in this.list)
+            foreach (var configuration in this.list)
             {
-                string[] split = configuration.ConfigurationPlatform();
+                var split = configuration.ConfigurationPlatform();
 
-                MSBuildPropertyGroup configurationGroup = project.CreatePropertyGroup();
+                var configurationGroup = project.CreatePropertyGroup();
                 configurationGroup.Label = "Configuration";
                 configurationGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 configurationGroup.CreateProperty("ConfigurationType", configuration.Type.ToString());
 
                 {
-                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
-                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                    System.Reflection.PropertyInfo PlatformToolsetProperty = solutionType.GetProperty("PlatformToolset");
+                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    var PlatformToolsetProperty = solutionType.GetProperty("PlatformToolset");
                     if (null != PlatformToolsetProperty)
                     {
                         configurationGroup.CreateProperty("PlatformToolset", PlatformToolsetProperty.GetGetMethod().Invoke(SolutionInstance, null) as string);
@@ -107,36 +107,46 @@ namespace VSSolutionBuilder
             project.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.props");
 
             // output and intermediate directories
-            foreach (ProjectConfiguration configuration in this.list)
+            foreach (var configuration in this.list)
             {
-                string[] split = configuration.ConfigurationPlatform();
+                var split = configuration.ConfigurationPlatform();
 
-                MSBuildPropertyGroup dirGroup = project.CreatePropertyGroup();
+                var dirGroup = project.CreatePropertyGroup();
                 dirGroup.CreateProperty("_ProjectFileVersion", "10.0.40219.1"); // TODO, and this means what?
 
                 if (null != configuration.OutputDirectory)
                 {
-                    string outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
-                    MSBuildProperty outDirProperty = dirGroup.CreateProperty("OutDir", outputDir);
+                    var outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
+                    // MSBuild complains if the output directory does not end with a trailing slash
+                    if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                    {
+                        outputDir += System.IO.Path.DirectorySeparatorChar;
+                    }
+                    var outDirProperty = dirGroup.CreateProperty("OutDir", outputDir);
                     outDirProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
 
                 if (null != configuration.IntermediateDirectory)
                 {
-                    string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
-                    MSBuildProperty intDirProperty = dirGroup.CreateProperty("IntDir", intermediateDir);
+                    var intermediateDir = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
+                    // MSBuild complains if the intermediate directory does not end with a trailing slash
+                    if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                    {
+                        intermediateDir += System.IO.Path.DirectorySeparatorChar;
+                    }
+                    var intDirProperty = dirGroup.CreateProperty("IntDir", intermediateDir);
                     intDirProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
 
                 if (null != configuration.TargetName)
                 {
-                    MSBuildProperty targetNameProperty = dirGroup.CreateProperty("TargetName", configuration.TargetName);
+                    var targetNameProperty = dirGroup.CreateProperty("TargetName", configuration.TargetName);
                     targetNameProperty.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
                 }
             }
 
             // tools
-            foreach (ProjectConfiguration configuration in this.list)
+            foreach (var configuration in this.list)
             {
                 configuration.Tools.SerializeMSBuild(project, configuration, projectUri);
             }

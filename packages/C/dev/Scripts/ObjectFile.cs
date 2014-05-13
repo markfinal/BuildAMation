@@ -11,8 +11,9 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFile : Opus.Core.BaseModule
     {
-        private static readonly Opus.Core.LocationKey SourceFileLocationKey = new Opus.Core.LocationKey("SourceFile");
-        public static readonly Opus.Core.LocationKey ObjectFileLocationKey = new Opus.Core.LocationKey("ObjectFile");
+        private static readonly Opus.Core.LocationKey SourceFileLocationKey = new Opus.Core.LocationKey("SourceFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey ObjectFileDirLocationKey = new Opus.Core.LocationKey("ObjectFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Opus.Core.LocationKey ObjectFileLocationKey = new Opus.Core.LocationKey("ObjectFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
 
         public Opus.Core.Location SourceFileLocation
         {

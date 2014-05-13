@@ -42,7 +42,7 @@ namespace VSSolutionBuilder
 
         public bool HasAttribute(string name)
         {
-            bool hasAttribute = this.attributes.ContainsKey(name);
+            var hasAttribute = this.attributes.ContainsKey(name);
             return hasAttribute;
         }
 
@@ -57,7 +57,7 @@ namespace VSSolutionBuilder
 
         public override bool Equals(object o)
         {
-            ProjectTool tool = o as ProjectTool;
+            var tool = o as ProjectTool;
 
             if (this.attributes.Count != tool.attributes.Count)
             {
@@ -65,7 +65,7 @@ namespace VSSolutionBuilder
                 return false;
             }
 
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            foreach (var attribute in this.attributes)
             {
                 if (!tool.HasAttribute(attribute.Key))
                 {
@@ -91,13 +91,13 @@ namespace VSSolutionBuilder
 
         public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, ProjectConfiguration configuration, System.Uri projectUri)
         {
-            string projectName = configuration.Project.Name;
-            string outputDirectory = configuration.OutputDirectory;
-            string intermediateDirectory = configuration.IntermediateDirectory;
+            var projectName = configuration.Project.Name;
+            var outputDirectory = configuration.OutputDirectory;
+            var intermediateDirectory = configuration.IntermediateDirectory;
 
-            System.Xml.XmlElement toolElement = document.CreateElement("Tool");
+            var toolElement = document.CreateElement("Tool");
 
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            foreach (var attribute in this.attributes)
             {
                 if (System.String.IsNullOrEmpty(attribute.Value))
                 {
@@ -110,7 +110,7 @@ namespace VSSolutionBuilder
                     continue;
                 }
 
-                string value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
+                var value = VSSolutionBuilder.RefactorPathForVCProj(attribute.Value, outputDirectory, intermediateDirectory, projectName, projectUri);
                 toolElement.SetAttribute(attribute.Key, value);
             }
 
@@ -119,20 +119,20 @@ namespace VSSolutionBuilder
 
         public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, ProjectFileConfiguration configuration, System.Uri projectUri, ProjectTool parent)
         {
-            string projectName = configuration.Configuration.Project.Name;
-            string outputDirectory = configuration.Configuration.OutputDirectory;
-            string intermediateDirectory = configuration.Configuration.IntermediateDirectory;
+            var projectName = configuration.Configuration.Project.Name;
+            var outputDirectory = configuration.Configuration.OutputDirectory;
+            var intermediateDirectory = configuration.Configuration.IntermediateDirectory;
 
-            System.Xml.XmlElement toolElement = document.CreateElement("Tool");
+            var toolElement = document.CreateElement("Tool");
 
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            foreach (var attribute in this.attributes)
             {
                 if (System.String.IsNullOrEmpty(attribute.Value))
                 {
                     continue;
                 }
 
-                string value = attribute.Value;
+                var value = attribute.Value;
                 value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
                 toolElement.SetAttribute(attribute.Key, value);
             }
@@ -142,9 +142,9 @@ namespace VSSolutionBuilder
 
         public void SerializeMSBuild(MSBuildItemDefinitionGroup itemDefGroup, ProjectConfiguration configuration, System.Uri projectUri)
         {
-            string projectName = configuration.Project.Name;
-            string outputDirectory = configuration.OutputDirectory;
-            string intermediateDirectory = configuration.IntermediateDirectory;
+            var projectName = configuration.Project.Name;
+            var outputDirectory = configuration.OutputDirectory;
+            var intermediateDirectory = configuration.IntermediateDirectory;
 
             string toolElementName = null;
             switch (this.Name)
@@ -177,8 +177,8 @@ namespace VSSolutionBuilder
                     throw new Opus.Core.Exception("Unsupported VisualStudio tool name, '{0}'", this.Name);
             }
 
-            MSBuildItem toolItem = itemDefGroup.CreateItem(toolElementName);
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            var toolItem = itemDefGroup.CreateItem(toolElementName);
+            foreach (var attribute in this.attributes)
             {
                 if (System.String.IsNullOrEmpty(attribute.Value))
                 {
@@ -189,7 +189,7 @@ namespace VSSolutionBuilder
                 if (("Name" != attribute.Key) &&
                     ("ObjectFileName" != attribute.Key))
                 {
-                    string value = attribute.Value;
+                    var value = attribute.Value;
                     value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
                     toolItem.CreateMetaData(attribute.Key, value);
                 }
@@ -198,9 +198,9 @@ namespace VSSolutionBuilder
 
         public void SerializeMSBuild(MSBuildItemGroup itemGroup, ProjectFileConfiguration configuration, System.Uri projectUri, string relativePath, ProjectTool parentTool)
         {
-            string projectName = configuration.Configuration.Project.Name;
-            string outputDirectory = configuration.Configuration.OutputDirectory;
-            string intermediateDirectory = configuration.Configuration.IntermediateDirectory;
+            var projectName = configuration.Configuration.Project.Name;
+            var outputDirectory = configuration.Configuration.OutputDirectory;
+            var intermediateDirectory = configuration.Configuration.IntermediateDirectory;
 
             string toolElementName = null;
             switch (this.Name)
@@ -233,25 +233,25 @@ namespace VSSolutionBuilder
                     throw new Opus.Core.Exception("Unsupported VisualStudio tool name, '{0}'", this.Name);
             }
 
-            MSBuildItem toolItem = itemGroup.FindItem(toolElementName, relativePath);
+            var toolItem = itemGroup.FindItem(toolElementName, relativePath);
             if (null == toolItem)
             {
                 toolItem = itemGroup.CreateItem(toolElementName, relativePath);
             }
-            string[] split = configuration.Configuration.ConfigurationPlatform();
+            var split = configuration.Configuration.ConfigurationPlatform();
             if (configuration.ExcludedFromBuild)
             {
-                MSBuildMetaData excluded = toolItem.CreateMetaData("ExcludedFromBuild", "true");
+                var excluded = toolItem.CreateMetaData("ExcludedFromBuild", "true");
                 excluded.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
             }
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            foreach (var attribute in this.attributes)
             {
                 if ("Name" == attribute.Key)
                 {
                     continue;
                 }
 
-                string value = attribute.Value;
+                var value = attribute.Value;
                 value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, intermediateDirectory, projectName, projectUri);
 
                 MSBuildMetaData metaData;
@@ -285,14 +285,14 @@ namespace VSSolutionBuilder
 
         public void SerializeCSBuild(MSBuildPropertyGroup configurationGroup, ProjectConfiguration configuration, System.Uri projectUri)
         {
-            string projectName = configuration.Project.Name;
-            string outputDirectory = configuration.OutputDirectory;
+            var projectName = configuration.Project.Name;
+            var outputDirectory = configuration.OutputDirectory;
 
-            foreach (System.Collections.Generic.KeyValuePair<string, string> attribute in this.attributes)
+            foreach (var attribute in this.attributes)
             {
                 if ("Name" != attribute.Key)
                 {
-                    string value = attribute.Value;
+                    var value = attribute.Value;
                     // no intermediate directory
                     value = VSSolutionBuilder.RefactorPathForVCProj(value, outputDirectory, projectName, projectUri);
                     configurationGroup.CreateProperty(attribute.Key, value);

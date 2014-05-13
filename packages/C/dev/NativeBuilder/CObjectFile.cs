@@ -9,7 +9,8 @@ namespace NativeBuilder
     {
         public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+            var sourceLoc = moduleToBuild.SourceFileLocation;
+            var sourceFilePath = sourceLoc.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
@@ -25,16 +26,19 @@ namespace NativeBuilder
 
             var compilerOptions = objectFileOptions as C.CompilerOptionCollection;
 
-            var depFilePath = DependencyGenerator.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, compilerOptions.OutputDirectoryPath);
+            var depFilePath = DependencyGenerator.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey]);
 
             var headerDependencyGeneration = (bool)Opus.Core.State.Get("C", "HeaderDependencyGeneration");
 
             // dependency checking, source against output files
             {
-                var inputFiles = new Opus.Core.StringArray();
-                inputFiles.Add(sourceFilePath);
-                var outputFiles = compilerOptions.OutputPaths.Paths;
-                var doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceFilePath);
+                var inputFiles = new Opus.Core.LocationArray();
+                inputFiles.Add(sourceLoc);
+                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.ObjectFileLocationKey
+                    );
+                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
+                var doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceLoc);
                 if (FileRebuildStatus.UpToDate == doesSourceFileNeedRebuilding)
                 {
                     // now try the header dependencies
@@ -43,18 +47,23 @@ namespace NativeBuilder
                         using (var depFileReader = new System.IO.StreamReader(depFilePath))
                         {
                             var deps = depFileReader.ReadToEnd();
-                            var depsArray = new Opus.Core.StringArray(deps.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries));
+                            var splitDeps = deps.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
+                            var depLocArray = new Opus.Core.LocationArray();
+                            foreach (var depPath in splitDeps)
+                            {
+                                depLocArray.Add(Opus.Core.FileLocation.Get(depPath));
+                            }
 #if OPUS_ENABLE_FILE_HASHING
-                            DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(depsArray);
+                            DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(depLocArray);
 #endif
-                            if (!RequiresBuilding(outputFiles, depsArray))
+                            if (!RequiresBuilding(outputFiles, depLocArray))
                             {
                                 Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                                 success = true;
                                 return null;
                             }
 
-                            inputFiles.AddRange(depsArray);
+                            inputFiles.AddRange(depLocArray);
                         }
                     }
                     else
@@ -78,6 +87,14 @@ namespace NativeBuilder
 #endif
             }
 
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
             var target = node.Target;
 
             var commandLineBuilder = new Opus.Core.StringArray();
@@ -85,12 +102,6 @@ namespace NativeBuilder
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                Opus.Core.DirectoryCollection directoriesToCreate = commandLineOption.DirectoriesToCreate();
-                foreach (string directoryPath in directoriesToCreate)
-                {
-                    NativeBuilder.MakeDirectory(directoryPath);
-                }
             }
             else
             {
@@ -125,16 +136,9 @@ namespace NativeBuilder
                 DependencyGenerator.IncludeDependencyGeneration.FileProcessQueue.Enqueue(dependencyData);
             }
 
-            if (sourceFilePath.Contains(" "))
-            {
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
-            }
-            else
-            {
-                commandLineBuilder.Add(sourceFilePath);
-            }
+            commandLineBuilder.Add(sourceFilePath);
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(node, toolInterface, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

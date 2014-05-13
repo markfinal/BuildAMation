@@ -10,7 +10,5 @@ namespace CommandLineProcessor
         void ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder,
                                     Opus.Core.Target target,
                                     Opus.Core.StringArray excludedOptionNames);
-
-        Opus.Core.DirectoryCollection DirectoriesToCreate();
     }
 }

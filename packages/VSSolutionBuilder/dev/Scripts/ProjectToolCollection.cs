@@ -18,14 +18,14 @@ namespace VSSolutionBuilder
         {
             get
             {
-                int count = this.list.Count;
+                var count = this.list.Count;
                 return count;
             }
         }
 
         public bool Contains(string toolName)
         {
-            foreach (ProjectTool tool in this.list)
+            foreach (var tool in this.list)
             {
                 if (toolName == tool.Name)
                 {
@@ -45,7 +45,7 @@ namespace VSSolutionBuilder
         {
             get
             {
-                foreach (ProjectTool tool in this.list)
+                foreach (var tool in this.list)
                 {
                     if (toolName == tool.Name)
                     {
@@ -59,11 +59,11 @@ namespace VSSolutionBuilder
 
         public void SerializeMSBuild(MSBuildProject project, ProjectConfiguration configuration, System.Uri projectUri)
         {
-            MSBuildItemDefinitionGroup toolItemGroup = project.CreateItemDefinitionGroup();
-            string[] split = configuration.ConfigurationPlatform();
+            var toolItemGroup = project.CreateItemDefinitionGroup();
+            var split = configuration.ConfigurationPlatform();
             toolItemGroup.Condition = System.String.Format("'$(Configuration)|$(Platform)'=='{0}|{1}'", split[0], split[1]);
 
-            foreach (ProjectTool tool in this.list)
+            foreach (var tool in this.list)
             {
                 tool.SerializeMSBuild(toolItemGroup, configuration, projectUri);
             }

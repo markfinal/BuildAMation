@@ -83,18 +83,6 @@ namespace Opus.Core
             return output;
         }
 
-        public string ToString(string separator)
-        {
-            var builder = new System.Text.StringBuilder();
-            foreach (var item in this.list)
-            {
-                builder.AppendFormat("{0}{1}", item.ToString(), separator);
-            }
-            // remove the trailing separator
-            var output = builder.ToString().TrimEnd(separator.ToCharArray());
-            return output;
-        }
-
         public void RemoveDuplicates()
         {
             var newList = new System.Collections.Generic.List<string>();

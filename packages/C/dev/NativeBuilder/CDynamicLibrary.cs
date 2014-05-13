@@ -15,21 +15,22 @@ namespace NativeBuilder
             var dynamicLibraryOptions = dynamicLibraryModule.Options;
             var linkerOptions = dynamicLibraryOptions as C.ILinkerOptions;
 
-            var objectFileFlags = C.OutputFileFlags.ObjectFile;
+            // find dependent object files
+            var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                C.ObjectFile.ObjectFileLocationKey
+                );
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                objectFileFlags |= C.OutputFileFlags.Win32CompiledResource;
+                keysToFilter.Add(C.Win32Resource.OutputFileLKey);
             }
-
-            // find dependent object files
-            var dependentObjectFiles = new Opus.Core.StringArray();
+            var dependentObjectFiles = new Opus.Core.LocationArray();
             if (null != node.Children)
             {
-                node.Children.FilterOutputPaths(objectFileFlags, dependentObjectFiles);
+                node.Children.FilterOutputLocations(keysToFilter, dependentObjectFiles);
             }
             if (null != node.ExternalDependents)
             {
-                node.ExternalDependents.FilterOutputPaths(objectFileFlags, dependentObjectFiles);
+                node.ExternalDependents.FilterOutputLocations(keysToFilter, dependentObjectFiles);
             }
             if (0 == dependentObjectFiles.Count)
             {
@@ -39,16 +40,22 @@ namespace NativeBuilder
             }
 
             // find dependent library files
-            Opus.Core.StringArray dependentLibraryFiles = null;
+            Opus.Core.LocationArray dependentLibraryFiles = null;
             if (null != node.ExternalDependents)
             {
-                dependentLibraryFiles = new Opus.Core.StringArray();
-                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
+                dependentLibraryFiles = new Opus.Core.LocationArray();
+
+                var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.StaticLibrary.OutputFileLocKey,
+                    C.DynamicLibrary.StaticImportLibraryLocationKey
+                    );
+
+                node.ExternalDependents.FilterOutputLocations(libraryKeysToFilter, dependentLibraryFiles);
             }
 
             // dependency checking
             {
-                var inputFiles = new Opus.Core.StringArray();
+                var inputFiles = new Opus.Core.LocationArray();
                 inputFiles.AddRange(dependentObjectFiles);
                 if (null != dependentLibraryFiles)
                 {
@@ -57,11 +64,11 @@ namespace NativeBuilder
 
                 // don't dependency check against the static import library, since it is generally not rewritten
                 // when code changes
-                // note that a copy is taken here as we do not want to remove the static import library from the original outputs
-                var filteredOutputPaths = new Opus.Core.OutputPaths(dynamicLibraryOptions.OutputPaths);
-                filteredOutputPaths.Remove(C.OutputFileFlags.StaticImportLibrary);
-
-                var outputFiles = filteredOutputPaths.Paths;
+                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.Application.OutputFileLocKey
+                    // TODO pdbs, maps, etc
+                    );
+                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -70,17 +77,21 @@ namespace NativeBuilder
                 }
             }
 
+            // at this point, we know the node outputs need building
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
             var commandLineBuilder = new Opus.Core.StringArray();
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
-                foreach (string directoryPath in directoriesToCreate)
-                {
-                    NativeBuilder.MakeDirectory(directoryPath);
-                }
             }
             else
             {
@@ -88,13 +99,13 @@ namespace NativeBuilder
             }
 
             // object files must come before everything else, for some compilers
-            commandLineBuilder.Insert(0, dependentObjectFiles.ToString(' '));
+            commandLineBuilder.Insert(0, dependentObjectFiles.ToString(" "));
 
             // then libraries
             var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
             C.LinkerUtilities.AppendLibrariesToCommandLine(commandLineBuilder, linkerTool, linkerOptions, dependentLibraryFiles);
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(node, linkerTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

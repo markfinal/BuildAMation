@@ -267,6 +267,9 @@ namespace Opus.Core
             // assign the module to the node, and the node to the module
             this.Module = module;
             module.OwningNode = this;
+
+            var moduleBuildDir = this.GetTargettedModuleBuildDirectoryLocation();
+            (module.Locations[State.ModuleBuildDirLocationKey] as ScaffoldLocation).SetReference(moduleBuildDir);
         }
 
         public Target Target
@@ -466,6 +469,13 @@ namespace Opus.Core
             return moduleBuildDirectory;
         }
 
+        public Location GetModuleBuildDirectoryLocation()
+        {
+            var packageBuildDirectory = this.Package.BuildDirectoryLocation;
+            var moduleBuildDirectory = packageBuildDirectory.SubDirectory(this.ModuleName);
+            return moduleBuildDirectory;
+        }
+
         public string GetTargettedModuleBuildDirectory(string subDirectory)
         {
             var moduleBuildDirectory = this.GetModuleBuildDirectory();
@@ -475,6 +485,20 @@ namespace Opus.Core
                 targettedModuleBuildDirectory = System.IO.Path.Combine(targettedModuleBuildDirectory, subDirectory);
             }
 
+            return targettedModuleBuildDirectory;
+        }
+
+        private Location GetTargettedModuleBuildDirectoryLocation()
+        {
+            var moduleBuildDirectory = this.GetModuleBuildDirectoryLocation();
+            var targettedModuleBuildDirectory = moduleBuildDirectory.SubDirectory(TargetUtilities.DirectoryName(this.Target));
+            return targettedModuleBuildDirectory;
+        }
+
+        public Location GetTargettedModuleBuildDirectoryLocation(string subDirectory)
+        {
+            var targettedModuleBuildDirectory = this.GetTargettedModuleBuildDirectoryLocation();
+            targettedModuleBuildDirectory = targettedModuleBuildDirectory.SubDirectory(subDirectory);
             return targettedModuleBuildDirectory;
         }
 
@@ -535,6 +559,13 @@ namespace Opus.Core
             return childModuleName;
         }
 
+#if true
+        public void FilterOutputLocations(Array<LocationKey> filterKeys, LocationArray filteredLocations)
+        {
+            var locationMap = this.Module.Locations;
+            filteredLocations.AddRange(locationMap.FilterByKey(filterKeys));
+        }
+#else
         public void FilterOutputPaths(System.Enum filter, StringArray paths)
         {
             var options = this.Module.Options;
@@ -545,6 +576,7 @@ namespace Opus.Core
 
             options.FilterOutputPaths(filter, paths);
         }
+#endif
 
         public bool IsReadyToBuild()
         {

@@ -33,27 +33,34 @@ namespace DependencyGenerator
         {
             FileProcessQueue = new DependencyQueue<Data>();
 
-            System.Threading.ParameterizedThreadStart threadStart = new System.Threading.ParameterizedThreadStart(ProcessFileQueue);
+            var threadStart = new System.Threading.ParameterizedThreadStart(ProcessFileQueue);
             dependencyThread = new System.Threading.Thread(threadStart);
             dependencyThread.Start(FileProcessQueue);
         }
 
         public static string HeaderDependencyPathName(string sourceFile, string outputDirectory)
         {
-            string depPathName = System.IO.Path.Combine(outputDirectory, System.IO.Path.GetFileNameWithoutExtension(sourceFile)) + ".d";
+            var depPathName = System.IO.Path.Combine(outputDirectory, System.IO.Path.GetFileNameWithoutExtension(sourceFile)) + ".d";
             return depPathName;
+        }
+
+        public static string HeaderDependencyPathName(string filename, Opus.Core.Location directory)
+        {
+            var depLeafname = System.IO.Path.GetFileNameWithoutExtension(filename) + ".d";
+            var headerDependencyLocation = new Opus.Core.ScaffoldLocation(directory, depLeafname, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            return headerDependencyLocation.GetSinglePath();
         }
 
         private static void GenerateDepFile(Data entry, Style style)
         {
-            System.Collections.Generic.Queue<string> filesToSearch = new System.Collections.Generic.Queue<string>();
+            var filesToSearch = new System.Collections.Generic.Queue<string>();
             filesToSearch.Enqueue(entry.sourcePath);
 
-            Opus.Core.StringArray headerPathsFound = new Opus.Core.StringArray();
+            var headerPathsFound = new Opus.Core.StringArray();
 
             while (filesToSearch.Count > 0)
             {
-                string fileToSearch = filesToSearch.Dequeue();
+                var fileToSearch = filesToSearch.Dequeue();
 #if OPUS_ENABLE_FILE_HASHING
                 FileHashGeneration.FileProcessQueue.Enqueue(fileToSearch);
 #endif
@@ -64,7 +71,7 @@ namespace DependencyGenerator
                     fileContents = reader.ReadToEnd();
                 }
 
-                System.Text.RegularExpressions.MatchCollection matches =
+                var matches =
                     System.Text.RegularExpressions.Regex.Matches(fileContents,
                                                                  "^\\s*#include \"(.*)\"",
                                                                  System.Text.RegularExpressions.RegexOptions.Multiline);
@@ -75,15 +82,16 @@ namespace DependencyGenerator
                     continue;
                 }
 
+                // TODO: change to var?
                 foreach (System.Text.RegularExpressions.Match match in matches)
                 {
                     bool exists = false;
                     // search for the file on the include paths the compiler uses
-                    foreach (string includePath in entry.includePaths)
+                    foreach (var includePath in entry.includePaths)
                     {
                         try
                         {
-                            string potentialPath = System.IO.Path.Combine(includePath, match.Groups[1].Value);
+                            var potentialPath = System.IO.Path.Combine(includePath, match.Groups[1].Value);
                             if (System.IO.File.Exists(potentialPath))
                             {
                                 potentialPath = System.IO.Path.GetFullPath(potentialPath);
@@ -118,7 +126,7 @@ namespace DependencyGenerator
                 {
                     if (Style.Opus == style)
                     {
-                        foreach (string headerPath in headerPathsFound)
+                        foreach (var headerPath in headerPathsFound)
                         {
                             depWriter.WriteLine(headerPath);
                         }
@@ -126,7 +134,7 @@ namespace DependencyGenerator
                     else
                     {
                         depWriter.WriteLine("{0}:", entry.sourcePath);
-                        foreach (string headerPath in headerPathsFound)
+                        foreach (var headerPath in headerPathsFound)
                         {
                             depWriter.WriteLine("\t{0}", headerPath);
                         }
@@ -139,15 +147,14 @@ namespace DependencyGenerator
         {
             // wait for the build to start
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Opus.Core.State.BuildStartedEvent }, -1);
-            Opus.Core.BuildManager buildManager = Opus.Core.State.BuildManager;
+            var buildManager = Opus.Core.State.BuildManager;
             buildManager.AdditionalThreadCompletionEvents.Add(completedEvent);
 
-            DependencyQueue<Data> data = obj as DependencyQueue<Data>;
+            var data = obj as DependencyQueue<Data>;
             for (; ; )
             {
                 // wake up when there is data to be processed
-                int waitResult = System.Threading.WaitHandle.WaitAny(new System.Threading.WaitHandle[] { data.IsAlive, buildManager.Finished }, -1);
-
+                var waitResult = System.Threading.WaitHandle.WaitAny(new System.Threading.WaitHandle[] { data.IsAlive, buildManager.Finished }, -1);
                 if (1 == waitResult)
                 {
                     break;
@@ -156,7 +163,7 @@ namespace DependencyGenerator
                 // do work while it's available
                 do
                 {
-                    Data entry = data.Dequeue();
+                    var entry = data.Dequeue();
                     GenerateDepFile(entry, Style.Opus);
                 }
                 while (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, 0));

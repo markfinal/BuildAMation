@@ -32,7 +32,12 @@ namespace XcodeBuilder
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
             var options = moduleToBuild.Options as C.CompilerOptionCollection;
+#if true
+            var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+            var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
+#else
             var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
+#endif
             buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
             buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 

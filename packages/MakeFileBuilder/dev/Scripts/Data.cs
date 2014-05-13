@@ -19,7 +19,7 @@ namespace MakeFileBuilder
             {
                 // TODO: better way to do a copy?
                 this.Environment = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-                foreach (string key in environment.Keys)
+                foreach (var key in environment.Keys)
                 {
                     this.Environment[key] = environment[key];
                 }

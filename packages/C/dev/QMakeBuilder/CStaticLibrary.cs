@@ -50,7 +50,11 @@ namespace QMakeBuilder
 
             data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.StaticLibrary;
+#if true
+            data.DestDir = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey];
+#else
             data.DestDir = options.OutputDirectoryPath;
+#endif
 
             success = true;
             return data;

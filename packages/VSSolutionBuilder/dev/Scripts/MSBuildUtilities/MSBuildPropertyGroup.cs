@@ -14,7 +14,7 @@ namespace VSSolutionBuilder
 
         public MSBuildProperty CreateProperty(string name, string value)
         {
-            MSBuildProperty property = new MSBuildProperty(this.XmlDocument, name, value);
+            var property = new MSBuildProperty(this.XmlDocument, name, value);
             this.AppendChild(property);
             return property;
         }

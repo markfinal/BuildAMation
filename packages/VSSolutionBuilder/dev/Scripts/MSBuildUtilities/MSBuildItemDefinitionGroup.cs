@@ -14,7 +14,7 @@ namespace VSSolutionBuilder
 
         public MSBuildItem CreateItem(string name)
         {
-            MSBuildItem item = new MSBuildItem(this.XmlDocument, name, null);
+            var item = new MSBuildItem(this.XmlDocument, name, null);
             this.AppendChild(item);
             return item;
         }

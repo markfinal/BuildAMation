@@ -28,8 +28,8 @@ namespace MakeFileBuilder
             {
                 // TODO: check whether the separator needs to be different on Linux and OSX?
 
-                System.Text.StringBuilder builder = new System.Text.StringBuilder();
-                foreach (string environmentPath in this.pathList)
+                var builder = new System.Text.StringBuilder();
+                foreach (var environmentPath in this.pathList)
                 {
                     builder.AppendFormat("{0};", environmentPath);
                 }
@@ -50,11 +50,11 @@ namespace MakeFileBuilder
             }
 
             string targetList = null;
-            UniquePathCollection environmentPaths = new UniquePathCollection(); // TODO: redundant
-            System.Collections.Generic.Dictionary<string, UniquePathCollection> environment = new System.Collections.Generic.Dictionary<string, UniquePathCollection>();
-            foreach (Opus.Core.DependencyNode node in executedNodes)
+            var environmentPaths = new UniquePathCollection(); // TODO: redundant
+            var environment = new System.Collections.Generic.Dictionary<string, UniquePathCollection>();
+            foreach (var node in executedNodes)
             {
-                MakeFileData data = node.Data as MakeFileData;
+                var data = node.Data as MakeFileData;
                 if (data != null)
                 {
                     // if a node has no parent, then it is a good choice for exposing the
@@ -63,9 +63,9 @@ namespace MakeFileBuilder
                     // modules (e.g. code generators)
                     if (null == node.Parent)
                     {
-                        foreach (Opus.Core.StringArray targetNames in data.TargetDictionary.Values)
+                        foreach (var targetNames in data.TargetDictionary.Values)
                         {
-                            foreach (string targetName in targetNames)
+                            foreach (var targetName in targetNames)
                             {
                                 targetList += targetName + " ";
                             }
@@ -74,14 +74,14 @@ namespace MakeFileBuilder
 
                     if (data.Environment != null)
                     {
-                        foreach (string key in data.Environment.Keys)
+                        foreach (var key in data.Environment.Keys)
                         {
                             if (!environment.ContainsKey(key))
                             {
                                 environment[key] = new UniquePathCollection();
                             }
 
-                            foreach (string path in data.Environment[key])
+                            foreach (var path in data.Environment[key])
                             {
                                 environment[key].Add(path);
                             }
@@ -126,7 +126,7 @@ namespace MakeFileBuilder
                     if (null != environment && environment.Count > 0)
                     {
                         makeFileWriter.WriteLine("# Environment variables for all tools");
-                        foreach (string key in environment.Keys)
+                        foreach (var key in environment.Keys)
                         {
                             makeFileWriter.WriteLine("INITIAL{0} := $({0})", key);
                             makeFileWriter.WriteLine("export {0} := {1}$(INITIAL{0})", key, environment[key].ToString());
@@ -135,12 +135,12 @@ namespace MakeFileBuilder
                     }
 
                     makeFileWriter.WriteLine("# include all sub-makefiles");
-                    foreach (Opus.Core.DependencyNode node in executedNodes)
+                    foreach (var node in executedNodes)
                     {
-                        MakeFileData data = node.Data as MakeFileData;
+                        var data = node.Data as MakeFileData;
                         if (data != null)
                         {
-                            string relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
+                            var relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
                             makeFileWriter.WriteLine("include {0}", relativeDataFile);
                         }
                     }
@@ -173,7 +173,7 @@ namespace MakeFileBuilder
                 }
             }
 
-            Opus.Core.Log.MessageAll("Top level MakeFile written to '{0}'", this.topLevelMakeFilePath);
+            Opus.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, this.topLevelMakeFilePath);
         }
 
         #endregion

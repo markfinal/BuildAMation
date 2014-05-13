@@ -14,14 +14,17 @@ namespace NativeBuilder
             var target = node.Target;
 
             // find dependent object files
-            var dependentObjectFiles = new Opus.Core.StringArray();
+            var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                C.ObjectFile.ObjectFileLocationKey
+                );
+            var dependentObjectFiles = new Opus.Core.LocationArray();
             if (null != node.Children)
             {
-                node.Children.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
+                node.Children.FilterOutputLocations(keysToFilter, dependentObjectFiles);
             }
             if (null != node.ExternalDependents)
             {
-                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.ObjectFile, dependentObjectFiles);
+                node.ExternalDependents.FilterOutputLocations(keysToFilter, dependentObjectFiles);
             }
             if (0 == dependentObjectFiles.Count)
             {
@@ -34,9 +37,12 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                var inputFiles = new Opus.Core.StringArray();
+                var inputFiles = new Opus.Core.LocationArray();
                 inputFiles.AddRange(dependentObjectFiles);
-                var outputFiles = staticLibraryOptions.OutputPaths.Paths;
+                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.StaticLibrary.OutputFileLocKey
+                    );
+                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
@@ -45,17 +51,21 @@ namespace NativeBuilder
                 }
             }
 
+            // at this point, we know the node outputs need building
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
             var commandLineBuilder = new Opus.Core.StringArray();
             if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
-                foreach (string directoryPath in directoriesToCreate)
-                {
-                    NativeBuilder.MakeDirectory(directoryPath);
-                }
             }
             else
             {
@@ -64,11 +74,11 @@ namespace NativeBuilder
 
             foreach (var dependentObjectFile in dependentObjectFiles)
             {
-                commandLineBuilder.Add(dependentObjectFile);
+                commandLineBuilder.Add(dependentObjectFile.GetSinglePath());
             }
 
             var archiverTool = target.Toolset.Tool(typeof(C.IArchiverTool));
-            int exitCode = CommandLineProcessor.Processor.Execute(node, archiverTool, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(node, archiverTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

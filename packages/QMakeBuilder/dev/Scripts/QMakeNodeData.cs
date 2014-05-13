@@ -29,14 +29,15 @@ namespace QMakeBuilder
             this.CCFlags = new Opus.Core.StringArray();
             this.CXXFlags = new Opus.Core.StringArray();
             this.Defines = new Opus.Core.StringArray();
-            this.DestDir = string.Empty;
+            this.DestDir = null;
             this.Headers = new Opus.Core.StringArray();
             this.IncludePaths = new Opus.Core.StringArray();
-            this.Libraries = new Opus.Core.StringArray();
+            this.Libraries = new Opus.Core.LocationArray();
+            this.ExternalLibraries = new Opus.Core.StringArray();
             this.LinkFlags = new Opus.Core.StringArray();
             this.Merged = false;
             this.MocDir = string.Empty;
-            this.ObjectsDir = string.Empty;
+            this.ObjectsDir = null;
             this.Output = OutputType.Undefined;
             this.PostLink = new Opus.Core.StringArray();
             this.PriPaths = new Opus.Core.StringArray();
@@ -70,11 +71,19 @@ namespace QMakeBuilder
             private set;
         }
 
+#if true
+        public Opus.Core.Location DestDir
+        {
+            get;
+            set;
+        }
+#else
         public string DestDir
         {
             get;
             set;
         }
+#endif
 
         public Opus.Core.StringArray Headers
         {
@@ -88,7 +97,13 @@ namespace QMakeBuilder
             private set;
         }
 
-        public Opus.Core.StringArray Libraries
+        public Opus.Core.LocationArray Libraries
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.StringArray ExternalLibraries
         {
             get;
             private set;
@@ -112,7 +127,7 @@ namespace QMakeBuilder
             set;
         }
 
-        public string ObjectsDir
+        public Opus.Core.Location ObjectsDir
         {
             get;
             set;
@@ -381,20 +396,21 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
-                WriteString(array[0].DestDir, "DESTDIR=", null, writer);
+                WriteString(array[0].DestDir.GetSinglePath(), "DESTDIR=", null, writer);
             }
             else
             {
                 var values = new Values<string>();
                 foreach (var data in array)
                 {
+                    var destDir = data.DestDir.GetSinglePath();
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                     {
-                        values.Debug = data.DestDir;
+                        values.Debug = destDir;
                     }
                     else
                     {
-                        values.Release = data.DestDir;
+                        values.Release = destDir;
                     }
                 }
 
@@ -435,20 +451,21 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
-                WriteString(array[0].ObjectsDir, "OBJECTS_DIR=", null, writer);
+                WriteString(array[0].ObjectsDir.GetSinglePath(), "OBJECTS_DIR=", null, writer);
             }
             else
             {
                 var values = new Values<string>();
                 foreach (var data in array)
                 {
+                    var objDir = data.ObjectsDir.GetSinglePath();
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                     {
-                        values.Debug = data.ObjectsDir;
+                        values.Debug = objDir;
                     }
                     else
                     {
-                        values.Release = data.ObjectsDir;
+                        values.Release = objDir;
                     }
                 }
 
@@ -629,6 +646,61 @@ namespace QMakeBuilder
             }
         }
 
+        private static void WriteLocationArray(Opus.Core.LocationArray locArray,
+                                               string format,
+                                               string proFilePath,
+                                               System.IO.StreamWriter writer)
+        {
+            WriteLocationArray(locArray, format, proFilePath, false, true, false, writer);
+        }
+
+        private static void WriteLocationArray(Opus.Core.LocationArray locArray,
+                                               string format,
+                                               string proFilePath,
+                                               bool verbose,
+                                               bool useContinuation,
+                                               bool escaped,
+                                               System.IO.StreamWriter writer)
+        {
+            if (0 == locArray.Count)
+            {
+                return;
+            }
+            else if (1 == locArray.Count)
+            {
+                WriteString(locArray[0].GetSinglePath(), format, proFilePath, verbose, writer);
+            }
+            else
+            {
+                var builder = new System.Text.StringBuilder();
+                if (useContinuation)
+                {
+                    builder.Append(format);
+                    foreach (var value in locArray)
+                    {
+                        if (escaped)
+                        {
+                            builder.Append(@"$$escape_expand(\n\t)");
+                        }
+                        builder.AppendFormat("\\\n\t{0}", FormatPath(value.GetSinglePath(), proFilePath, verbose));
+                    }
+                }
+                else
+                {
+                    foreach (var value in locArray)
+                    {
+                        builder.AppendFormat("{0}{1}", format, FormatPath(value.GetSinglePath(), proFilePath, verbose));
+                        if (escaped)
+                        {
+                            builder.Append(@"$$escape_expand(\n\t)");
+                        }
+                        builder.Append("\n");
+                    }
+                }
+                writer.WriteLine(builder.ToString());
+            }
+        }
+
         private static void WriteString(Values<string> values, string format, string proFilePath, System.IO.StreamWriter writer)
         {
             if (values.Debug == values.Release)
@@ -671,6 +743,36 @@ namespace QMakeBuilder
             {
                 var releaseOnly = new Opus.Core.StringArray(values.Release.Complement(intersect));
                 WriteStringArray(releaseOnly, "CONFIG(release,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
+            }
+        }
+
+        private static void WriteLocationArrays(Values<Opus.Core.LocationArray> values, string format, string proFilePath, System.IO.StreamWriter writer)
+        {
+            WriteLocationArrays(values, format, proFilePath, false, true, false, writer);
+        }
+
+        private static void WriteLocationArrays(Values<Opus.Core.LocationArray> values,
+                                                string format,
+                                                string proFilePath,
+                                                bool verbose,
+                                                bool useContinuation,
+                                                bool escaped,
+                                                System.IO.StreamWriter writer)
+        {
+            var intersect = new Opus.Core.LocationArray(values.Debug.Intersect(values.Release));
+            WriteLocationArray(intersect, format, proFilePath, verbose, useContinuation, escaped, writer);
+
+            // see the following for an explanation of this syntax
+            // http://qt-project.org/faq/answer/what_does_the_syntax_configdebugdebugrelease_mean_what_does_the_1st_argumen
+            if (intersect.Count != values.Debug.Count)
+            {
+                var debugOnly = new Opus.Core.LocationArray(values.Debug.Complement(intersect));
+                WriteLocationArray(debugOnly, "CONFIG(debug,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
+            }
+            if (intersect.Count != values.Release.Count)
+            {
+                var releaseOnly = new Opus.Core.LocationArray(values.Release.Complement(intersect));
+                WriteLocationArray(releaseOnly, "CONFIG(release,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
         }
 
@@ -734,11 +836,11 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
-                WriteStringArray(array[0].Libraries, "LIBS+=", null, writer);
+                WriteLocationArray(array[0].Libraries, "LIBS+=", null, writer);
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Opus.Core.LocationArray>();
                 foreach (var data in array)
                 {
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
@@ -751,7 +853,7 @@ namespace QMakeBuilder
                     }
                 }
 
-                WriteStringArrays(values, "LIBS+=", null, writer);
+                WriteLocationArrays(values, "LIBS+=", null, writer);
             }
         }
 
@@ -827,7 +929,7 @@ namespace QMakeBuilder
             this.CCFlags.AddRangeUnique(data.CCFlags);
             this.CXXFlags.AddRangeUnique(data.CXXFlags);
             this.Defines.AddRangeUnique(data.Defines);
-            if (data.DestDir.Length > 0)
+            if ((null != data.DestDir) && data.DestDir.IsValid)
             {
                 this.DestDir = data.DestDir;
             }
@@ -838,7 +940,7 @@ namespace QMakeBuilder
             {
                 this.MocDir = data.MocDir;
             }
-            if (data.ObjectsDir.Length > 0)
+            if ((null != data.ObjectsDir) && data.ObjectsDir.IsValid)
             {
                 this.ObjectsDir = data.ObjectsDir;
             }
@@ -916,6 +1018,7 @@ namespace QMakeBuilder
                 WriteHeaders(array, proFilePath, proWriter);
                 WriteWinRCFiles(array, proFilePath, proWriter);
                 WriteLibraries(array, proFilePath, proWriter);
+                // TODO: WriteExternalLibraries
                 WriteLinkFlags(array, proFilePath, proWriter);
                 WritePostLinkCommands(array, proFilePath, proWriter);
             }

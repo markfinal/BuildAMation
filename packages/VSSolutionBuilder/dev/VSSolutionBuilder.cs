@@ -11,7 +11,7 @@ namespace VSSolutionBuilder
     {
         private static System.Type GetProjectClassType()
         {
-            Opus.Core.PackageInformation toolchainPackage = Opus.Core.State.PackageInfo["VisualC"];
+            var toolchainPackage = Opus.Core.State.PackageInfo["VisualC"];
             if (null != toolchainPackage)
             {
                 string projectClassTypeName = null;
@@ -32,7 +32,7 @@ namespace VSSolutionBuilder
                         throw new Opus.Core.Exception("Unrecognized VisualStudio version: '{0}'", toolchainPackage.Version);
                 }
 
-                System.Type projectClassType = System.Type.GetType(projectClassTypeName);
+                var projectClassType = System.Type.GetType(projectClassTypeName);
                 return projectClassType;
             }
             else
@@ -40,8 +40,8 @@ namespace VSSolutionBuilder
                 toolchainPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
                 if (null != toolchainPackage)
                 {
-                    string projectClassTypeName = "VSSolutionBuilder.CSBuildProject";
-                    System.Type projectClassType = System.Type.GetType(projectClassTypeName);
+                    var projectClassTypeName = "VSSolutionBuilder.CSBuildProject";
+                    var projectClassType = System.Type.GetType(projectClassTypeName);
                     return projectClassType;
                 }
                 else
@@ -53,14 +53,14 @@ namespace VSSolutionBuilder
 
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target)
         {
-            string platform = GetPlatformNameFromTarget(target);
-            string configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platform);
+            var platform = GetPlatformNameFromTarget(target);
+            var configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platform);
             return configurationName;
         }
 
         private static string GetConfigurationNameFromTarget(Opus.Core.Target target, string platformName)
         {
-            string configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platformName);
+            var configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platformName);
             return configurationName;
         }
 
@@ -85,19 +85,19 @@ namespace VSSolutionBuilder
 
         private static string UseOutDirMacro(string path, string outputDirectory)
         {
-            string updatedPath = path.Replace(outputDirectory, "$(OutDir)");
+            var updatedPath = path.Replace(outputDirectory, "$(OutDir)");
             return updatedPath;
         }
 
         private static string UseIntDirMacro(string path, string intermediateDirectory)
         {
-            string updatedPath = path.Replace(intermediateDirectory, "$(IntDir)");
+            var updatedPath = path.Replace(intermediateDirectory, "$(IntDir)");
             return updatedPath;
         }
 
         private static string UseProjectMacro(string path, string projectName)
         {
-            string updatedPath = path.Replace(projectName, "$(ProjectName)");
+            var updatedPath = path.Replace(projectName, "$(ProjectName)");
             return updatedPath;
         }
 
@@ -111,14 +111,14 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception("Path should not contain splitter");
             }
 
-            string quote = new string(new char[] { '\"' });
+            var quote = new string(new char[] { '\"' });
             if (path.StartsWith(quote) && path.EndsWith(quote))
             {
                 return path;
             }
 
             // remove any stray quotes
-            string quotedPath = path.Trim(new char[] { '\"' });
+            var quotedPath = path.Trim(new char[] { '\"' });
 
             // only interested in paths
             if (quotedPath.Length < 2)
@@ -126,9 +126,9 @@ namespace VSSolutionBuilder
                 return quotedPath;
             }
             // need to test local drives as well as network paths
-            bool isLocalDrive = (quotedPath[1] == System.IO.Path.VolumeSeparatorChar);
-            bool isNetworkDrive = (quotedPath[0] == System.IO.Path.AltDirectorySeparatorChar &&
-                                   quotedPath[1] == System.IO.Path.AltDirectorySeparatorChar);
+            var isLocalDrive = (quotedPath[1] == System.IO.Path.VolumeSeparatorChar);
+            var isNetworkDrive = (quotedPath[0] == System.IO.Path.AltDirectorySeparatorChar &&
+                                  quotedPath[1] == System.IO.Path.AltDirectorySeparatorChar);
             if (!isLocalDrive && !isNetworkDrive)
             {
                 return quotedPath;
@@ -151,17 +151,17 @@ namespace VSSolutionBuilder
                 return path;
             }
 
-            string[] splitPath = path.Split(PathSplitter);
+            var splitPath = path.Split(PathSplitter);
 
-            System.Text.StringBuilder joinedPath = new System.Text.StringBuilder();
-            foreach (string split in splitPath)
+            var joinedPath = new System.Text.StringBuilder();
+            foreach (var split in splitPath)
             {
                 if (0 == split.Length)
                 {
                     continue;
                 }
 
-                string refactoredPath = split;
+                var refactoredPath = split;
                 if (null != outputDirectoryPath)
                 {
                     refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
@@ -176,6 +176,13 @@ namespace VSSolutionBuilder
             return joinedPath.ToString().TrimEnd(PathSplitter);
         }
 
+        internal static string RefactorPathForVCProj(string path, Opus.Core.Location outputDirectory, Opus.Core.Location intermediateDirectory, string projectName, System.Uri projectUri)
+        {
+            var outputDirectoryPath = outputDirectory.GetSinglePath();
+            var intermediateDirectoryPath = intermediateDirectory.GetSinglePath();
+            return RefactorPathForVCProj(path, outputDirectoryPath, intermediateDirectoryPath, projectName, projectUri);
+        }
+
         // no intermediate directory
         internal static string RefactorPathForVCProj(string path, string outputDirectoryPath, string projectName, System.Uri projectUri)
         {
@@ -185,12 +192,12 @@ namespace VSSolutionBuilder
                 return path;
             }
 
-            string[] splitPath = path.Split(PathSplitter);
+            var splitPath = path.Split(PathSplitter);
 
-            System.Text.StringBuilder joinedPath = new System.Text.StringBuilder();
-            foreach (string split in splitPath)
+            var joinedPath = new System.Text.StringBuilder();
+            foreach (var split in splitPath)
             {
-                string refactoredPath = split;
+                var refactoredPath = split;
                 refactoredPath = UseOutDirMacro(refactoredPath, outputDirectoryPath);
                 refactoredPath = UseProjectMacro(refactoredPath, projectName);
                 refactoredPath = QuotePathsWithSpaces(refactoredPath, projectUri);
@@ -199,6 +206,13 @@ namespace VSSolutionBuilder
             }
 
             return joinedPath.ToString().TrimEnd(PathSplitter);
+        }
+
+        // no intermediate directory
+        internal static string RefactorPathForVCProj(string path, Opus.Core.Location outputDirectory, string projectName, System.Uri projectUri)
+        {
+            var outputDirectoryPath = outputDirectory.GetSinglePath();
+            return RefactorPathForVCProj(path, outputDirectoryPath, projectName, projectUri);
         }
 
         private SolutionFile solutionFile;

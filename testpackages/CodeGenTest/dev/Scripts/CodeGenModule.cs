@@ -53,19 +53,6 @@ namespace CodeGenTest
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target, excludedOptionNames);
         }
-
-        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection dirsToCreate = new Opus.Core.DirectoryCollection();
-
-            ICodeGenOptions options = this as ICodeGenOptions;
-            if (null != options.OutputSourceDirectory)
-            {
-                dirsToCreate.Add(options.OutputSourceDirectory);
-            }
-
-            return dirsToCreate;
-        }
     }
 
     class CodeGeneratorTool : C.Application

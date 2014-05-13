@@ -35,6 +35,7 @@ namespace VSSolutionBuilder
         public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, System.Uri projectUri)
         {
             ProjectTool parentTool = null;
+            // TODO: convert to var
             foreach (ProjectTool tool in this.Configuration.Tools)
             {
                 if (tool.Name == this.Tool.Name)
@@ -54,7 +55,7 @@ namespace VSSolutionBuilder
 
             if (this.ExcludedFromBuild || (this.Tool.AttributeCount > 1))
             {
-                System.Xml.XmlElement fileConfigurationElement = document.CreateElement("FileConfiguration");
+                var fileConfigurationElement = document.CreateElement("FileConfiguration");
 
                 fileConfigurationElement.SetAttribute("Name", this.Configuration.Name);
                 if (this.ExcludedFromBuild)

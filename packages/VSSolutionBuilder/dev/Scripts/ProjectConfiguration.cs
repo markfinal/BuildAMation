@@ -9,8 +9,6 @@ namespace VSSolutionBuilder
     {
         private EProjectConfigurationType type;
         private EProjectCharacterSet characterSet = EProjectCharacterSet.Undefined;
-        private string outputDirectory = null;
-        private string intermediateDirectory = null;
 
         public ProjectConfiguration(string name, IProject project)
         {
@@ -33,42 +31,16 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public string OutputDirectory
+        public Opus.Core.Location OutputDirectory
         {
-            get
-            {
-                return this.outputDirectory;
-            }
-
-            set
-            {
-                string directory = value;
-                if (!directory.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                {
-                    directory += System.IO.Path.DirectorySeparatorChar;
-                }
-
-                this.outputDirectory = directory;
-            }
+            get;
+            set;
         }
 
-        public string IntermediateDirectory
+        public Opus.Core.Location IntermediateDirectory
         {
-            get
-            {
-                return this.intermediateDirectory;
-            }
-
-            set
-            {
-                string directory = value;
-                if (!directory.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
-                {
-                    directory += System.IO.Path.DirectorySeparatorChar;
-                }
-
-                this.intermediateDirectory = directory;
-            }
+            get;
+            set;
         }
 
         public string TargetName
@@ -137,7 +109,7 @@ namespace VSSolutionBuilder
 
         public bool HasTool(string toolName)
         {
-            bool hasTool = this.Tools.Contains(toolName);
+            var hasTool = this.Tools.Contains(toolName);
             return hasTool;
         }
 
@@ -169,17 +141,27 @@ namespace VSSolutionBuilder
             }
 #endif
 
-            System.Xml.XmlElement configurationElement = document.CreateElement("Configuration");
+            var configurationElement = document.CreateElement("Configuration");
 
             configurationElement.SetAttribute("Name", this.Name);
             if (null != this.OutputDirectory)
             {
-                string outputDir = Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
+                var outputDir = Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
+                // MSBuild complains if the output directory does not end with a trailing slash - not strictly necessary here, but consistent
+                if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    outputDir += System.IO.Path.DirectorySeparatorChar;
+                }
                 configurationElement.SetAttribute("OutputDirectory", outputDir);
             }
             if (null != this.IntermediateDirectory)
             {
-                string intermediateDir = Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
+                var intermediateDir = Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
+                // MSBuild complains if the intermediate directory does not end with a trailing slash - not strictly necessary here, but consistent
+                if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+                {
+                    intermediateDir += System.IO.Path.DirectorySeparatorChar;
+                }
                 configurationElement.SetAttribute("IntermediateDirectory", intermediateDir);
             }
             configurationElement.SetAttribute("ConfigurationType", this.Type.ToString("D"));
@@ -189,6 +171,7 @@ namespace VSSolutionBuilder
 
             if (this.Tools.Count > 0)
             {
+                // TODO: convert to var
                 foreach (ProjectTool tool in this.Tools)
                 {
                     configurationElement.AppendChild(tool.Serialize(document, this, projectUri));
@@ -200,7 +183,7 @@ namespace VSSolutionBuilder
 
         public string[] ConfigurationPlatform()
         {
-            string[] split = this.Name.Split('|');
+            var split = this.Name.Split('|');
             return split;
         }
 
@@ -217,9 +200,9 @@ namespace VSSolutionBuilder
             }
 #endif
 
-            MSBuildItem projectConfiguration = configurationGroup.CreateItem("ProjectConfiguration", this.Name);
+            var projectConfiguration = configurationGroup.CreateItem("ProjectConfiguration", this.Name);
 
-            string[] split = this.Name.Split('|');
+            var split = this.Name.Split('|');
 
             projectConfiguration.CreateMetaData("Configuration", split[0]);
             projectConfiguration.CreateMetaData("Platform", split[1]);
@@ -236,13 +219,14 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception("Project character set is undefined");
             }
 
-            MSBuildPropertyGroup configurationGroup = project.CreatePropertyGroup();
+            var configurationGroup = project.CreatePropertyGroup();
 
-            string[] split = this.Name.Split('|');
+            var split = this.Name.Split('|');
             configurationGroup.Condition = System.String.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", split[0], split[1]);
 
             configurationGroup.CreateProperty("OutputPath", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
 
+            // TODO: convert to var
             foreach (ProjectTool tool in this.Tools)
             {
                 tool.SerializeCSBuild(configurationGroup, this, projectUri);

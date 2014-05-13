@@ -121,11 +121,6 @@ namespace FileUtilities
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
-        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
-        {
-            return this.directoriesToCreate;
-        }
-
         #endregion
     }
 }

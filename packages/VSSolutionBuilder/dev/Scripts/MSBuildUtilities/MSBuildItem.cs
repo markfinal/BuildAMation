@@ -32,7 +32,7 @@ namespace VSSolutionBuilder
 
         public MSBuildMetaData CreateMetaData(string name, string value)
         {
-            MSBuildMetaData metaData = new MSBuildMetaData(this.XmlDocument, name, value);
+            var metaData = new MSBuildMetaData(this.XmlDocument, name, value);
             this.AppendChild(metaData);
             return metaData;
         }

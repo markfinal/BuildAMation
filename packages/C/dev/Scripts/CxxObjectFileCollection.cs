@@ -16,7 +16,7 @@ namespace C.Cxx
             this.list.Add(objectFile);
         }
 
-        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.Array<Opus.Core.Location> locationList)
+        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.LocationArray locationList)
         {
             var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
 

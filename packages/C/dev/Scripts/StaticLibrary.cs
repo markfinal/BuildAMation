@@ -11,7 +11,8 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(IArchiverTool))]
     public class StaticLibrary : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.IForwardDependenciesOn, Opus.Core.ICommonOptionCollection
     {
-        public static readonly Opus.Core.LocationKey StaticLibraryLocationKey = new Opus.Core.LocationKey("StaticLibrary");
+        public static readonly Opus.Core.LocationKey OutputFileLocKey = new Opus.Core.LocationKey("StaticLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey OutputDirLocKey = new Opus.Core.LocationKey("StaticLibraryOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {

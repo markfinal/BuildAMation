@@ -9,13 +9,13 @@ namespace C
     {
         protected Opus.Core.Array<ObjectFile> list = new Opus.Core.Array<ObjectFile>();
 
-        protected Opus.Core.Array<Opus.Core.Location> Includes
+        protected Opus.Core.LocationArray Includes
         {
             get;
             set;
         }
 
-        protected Opus.Core.Array<Opus.Core.Location> Excludes
+        protected Opus.Core.LocationArray Excludes
         {
             get;
             set;
@@ -25,7 +25,7 @@ namespace C
         {
             if (null == this.Includes)
             {
-                this.Includes = new Opus.Core.Array<Opus.Core.Location>();
+                this.Includes = new Opus.Core.LocationArray();
             }
             this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
         }
@@ -34,19 +34,19 @@ namespace C
         {
             if (null == this.Excludes)
             {
-                this.Excludes = new Opus.Core.Array<Opus.Core.Location>();
+                this.Excludes = new Opus.Core.LocationArray();
             }
             this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
         }
 
-        private Opus.Core.Array<Opus.Core.Location> EvaluatePaths()
+        private Opus.Core.LocationArray EvaluatePaths()
         {
             if (null == this.Includes)
             {
                 return null;
             }
 
-            var includePathList = new Opus.Core.Array<Opus.Core.Location>();
+            var includePathList = new Opus.Core.LocationArray();
             foreach (var include in this.Includes)
             {
                 includePathList.AddRangeUnique(include.GetLocations());
@@ -56,17 +56,17 @@ namespace C
                 return includePathList;
             }
 
-            var excludePathList = new Opus.Core.Array<Opus.Core.Location>();
+            var excludePathList = new Opus.Core.LocationArray();
             foreach (var exclude in this.Excludes)
             {
                 excludePathList.AddRangeUnique(exclude.GetLocations());
             }
 
-            var complement = includePathList.Complement(excludePathList);
+            var complement = includePathList.Complement(excludePathList) as Opus.Core.LocationArray;
             return complement;
         }
 
-        protected virtual System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.Array<Opus.Core.Location> locationList)
+        protected virtual System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.LocationArray locationList)
         {
             throw new Opus.Core.Exception("Derived classes should implement this function");
         }

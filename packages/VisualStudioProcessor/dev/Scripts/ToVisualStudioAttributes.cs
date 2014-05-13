@@ -9,14 +9,15 @@ namespace VisualStudioProcessor
     {
         public static VisualStudioProcessor.ToolAttributeDictionary Execute(object sender, Opus.Core.Target target, EVisualStudioTarget vsTarget)
         {
-            Opus.Core.BaseOptionCollection optionCollection = sender as Opus.Core.BaseOptionCollection;
+            var optionCollection = sender as Opus.Core.BaseOptionCollection;
 
-            VisualStudioProcessor.ToolAttributeDictionary optionsDictionary = new VisualStudioProcessor.ToolAttributeDictionary();
+            var optionsDictionary = new VisualStudioProcessor.ToolAttributeDictionary();
 
+            // TODO: can I use a var here? especially on Mono
             foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.Option> optionKeyValue in optionCollection)
             {
-                string optionName = optionKeyValue.Key;
-                Opus.Core.Option option = optionKeyValue.Value;
+                var optionName = optionKeyValue.Key;
+                var option = optionKeyValue.Value;
 
                 if (null == option.PrivateData)
                 {
@@ -24,13 +25,13 @@ namespace VisualStudioProcessor
                     continue;
                 }
 
-                IVisualStudioDelegate data = option.PrivateData as IVisualStudioDelegate;
+                var data = option.PrivateData as IVisualStudioDelegate;
                 if (null == data)
                 {
                     throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString());
                 }
 
-                Delegate visualStudioDelegate = data.VisualStudioProjectDelegate;
+                var visualStudioDelegate = data.VisualStudioProjectDelegate;
                 if (null != visualStudioDelegate)
                 {
                     if (null != visualStudioDelegate.Target)
@@ -39,7 +40,7 @@ namespace VisualStudioProcessor
                         throw new Opus.Core.Exception("Delegate for '{0}' should be static", optionName);
                     }
 
-                    VisualStudioProcessor.ToolAttributeDictionary dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);
+                    var dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);
                     if (null != dictionary)
                     {
                         optionsDictionary.Merge(dictionary);

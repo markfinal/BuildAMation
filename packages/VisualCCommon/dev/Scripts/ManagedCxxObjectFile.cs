@@ -13,7 +13,7 @@ namespace VisualCCommon
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.CLR;
         }
     }
@@ -26,7 +26,7 @@ namespace VisualCCommon
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.PureCLR;
         }
     }
@@ -39,7 +39,7 @@ namespace VisualCCommon
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.SafeCLR;
         }
     }
@@ -52,7 +52,7 @@ namespace VisualCCommon
         [C.LocalCompilerOptionsDelegate]
         private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            ICCompilerOptions compilerOptions = module.Options as ICCompilerOptions;
+            var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.OldSyntaxCLR;
         }
     }

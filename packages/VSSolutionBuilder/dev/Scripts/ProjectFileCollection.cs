@@ -29,7 +29,7 @@ namespace VSSolutionBuilder
 
         public bool Contains(string sourcePathName)
         {
-            foreach (ProjectFile projectFile in this.list)
+            foreach (var projectFile in this.list)
             {
                 if (sourcePathName == projectFile.RelativePath)
                 {
@@ -44,7 +44,7 @@ namespace VSSolutionBuilder
         {
             get
             {
-                foreach (ProjectFile projectFile in this.list)
+                foreach (var projectFile in this.list)
                 {
                     if (sourcePathName == projectFile.RelativePath)
                     {
@@ -58,13 +58,13 @@ namespace VSSolutionBuilder
 
         public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, string filterName, System.Uri projectUri, System.Uri packageDirectoryUri)
         {
-            System.Xml.XmlElement sourceFilesFilterElement = document.CreateElement("Filter");
+            var sourceFilesFilterElement = document.CreateElement("Filter");
             sourceFilesFilterElement.SetAttribute("Name", filterName);
 
-            foreach (ProjectFile file in this.list)
+            foreach (var file in this.list)
             {
-                string fileRelativeToPackage = Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, packageDirectoryUri);
-                string[] splitFileDirs = fileRelativeToPackage.Split(System.IO.Path.DirectorySeparatorChar);
+                var fileRelativeToPackage = Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, packageDirectoryUri);
+                var splitFileDirs = fileRelativeToPackage.Split(System.IO.Path.DirectorySeparatorChar);
                 file.Serialize(document, sourceFilesFilterElement, projectUri, splitFileDirs, 0);
             }
 
@@ -73,8 +73,8 @@ namespace VSSolutionBuilder
 
         public void SerializeMSBuild(MSBuildProject project, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri)
         {
-            MSBuildItemGroup fileItemGroup = project.CreateItemGroup();
-            foreach (ProjectFile file in this.list)
+            var fileItemGroup = project.CreateItemGroup();
+            foreach (var file in this.list)
             {
                 file.SerializeMSBuild(fileItemGroup, projectUri, childElementName);
             }
@@ -82,8 +82,8 @@ namespace VSSolutionBuilder
 
         public void SerializeCSBuild(MSBuildProject project, System.Uri projectUri, System.Uri packageDirectoryUri)
         {
-            MSBuildItemGroup fileItemGroup = project.CreateItemGroup();
-            foreach (ProjectFile file in this.list)
+            var fileItemGroup = project.CreateItemGroup();
+            foreach (var file in this.list)
             {
                 file.SerializeCSBuild(fileItemGroup, projectUri, packageDirectoryUri);
             }

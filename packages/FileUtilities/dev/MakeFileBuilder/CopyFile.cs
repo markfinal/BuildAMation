@@ -26,17 +26,20 @@ namespace MakeFileBuilder
                 }
             }
 
+            // at this point, we know the node outputs need building
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+
             Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
 
             Opus.Core.Target target = node.Target;
 
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate;
             if (baseOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = baseOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {

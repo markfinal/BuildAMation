@@ -26,26 +26,30 @@ namespace MakeFileBuilder
             var node = resourceFileModule.OwningNode;
             var target = node.Target;
 
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            // add output path
-            commandLineBuilder.Add(System.String.Format("/fo {0}", compilerOptions.CompiledResourceFilePath));
-
             var toolset = target.Toolset;
-            var compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool));
-            string executablePath = compilerTool.Executable((Opus.Core.BaseTarget)target);
+            var compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
+
+            // add output path
+            var outputPath = moduleToBuild.Locations[C.Win32Resource.OutputFileLKey].GetSinglePath();
+            commandLineBuilder.Add(System.String.Format("{0}{1}",
+                                                        compilerTool.OutputFileSwitch,
+                                                        outputPath));
+
+            var executablePath = compilerTool.Executable((Opus.Core.BaseTarget)target);
 
             string recipe = null;
             if (executablePath.Contains(" "))
@@ -58,7 +62,7 @@ namespace MakeFileBuilder
             }
             recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
             // replace target with $@
-            recipe = recipe.Replace(resourceFileOptions.OutputPaths[C.OutputFileFlags.Win32CompiledResource], "$@");
+            recipe = recipe.Replace(outputPath, "$@");
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
@@ -68,7 +72,7 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(resourceFileOptions.OutputPaths, C.OutputFileFlags.Win32CompiledResource, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.Win32Resource.OutputFileLKey, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))

@@ -20,37 +20,39 @@ namespace MakeFileBuilder
             {
                 foreach (var childNode in node.Children)
                 {
-                    if (null != childNode.Data)
+                    if (null == childNode.Data)
                     {
-                        var data = childNode.Data as MakeFileData;
-                        inputVariables.Append(data.VariableDictionary);
-                        dataArray.Add(data);
+                        continue;
                     }
+                    var data = childNode.Data as MakeFileData;
+                    inputVariables.Append(data.VariableDictionary);
+                    dataArray.Add(data);
                 }
             }
             if (null != node.ExternalDependents)
             {
                 foreach (var dependentNode in node.ExternalDependents)
                 {
-                    if (null != dependentNode.Data)
+                    if (null == dependentNode.Data)
                     {
-                        var data = dependentNode.Data as MakeFileData;
-                        inputVariables.Append(data.VariableDictionary);
-                        dataArray.Add(data);
+                        continue;
                     }
+                    var data = dependentNode.Data as MakeFileData;
+                    inputVariables.Append(data.VariableDictionary);
+                    dataArray.Add(data);
                 }
             }
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
 
             var dynamicLibraryOptions = dynamicLibraryModule.Options;
 
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (dynamicLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = dynamicLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
@@ -75,12 +77,15 @@ namespace MakeFileBuilder
             {
                 var compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
 
-                recipeBuilder.AppendFormat(" {0} $(filter %{1},$^) ", commandLineBuilder.ToString(' '), compilerTool.ObjectFileSuffix);
+                recipeBuilder.AppendFormat(" {0} ", commandLineBuilder.ToString(' '));
+
+                var extensionFilters = new Opus.Core.StringArray();
+                extensionFilters.AddUnique(compilerTool.ObjectFileSuffix);
 
                 if (toolset.HasTool(typeof(C.IWinResourceCompilerTool)))
                 {
                     var winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-                    recipeBuilder.AppendFormat("$(filter %{0},$^) ", winResourceCompilerTool.CompiledResourceSuffix);
+                    extensionFilters.AddUnique(winResourceCompilerTool.CompiledResourceSuffix);
                 }
 
                 // TODO: don't want to access the archiver tool here really, as creating
@@ -90,24 +95,51 @@ namespace MakeFileBuilder
                 var archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
 
                 var dependentLibraries = new Opus.Core.StringArray();
-                dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", archiverTool.StaticLibrarySuffix));
+                extensionFilters.AddUnique(archiverTool.StaticLibrarySuffix);
                 if (linkerTool is C.IWinImportLibrary)
                 {
-                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", (linkerTool as C.IWinImportLibrary).ImportLibrarySuffix));
+                    extensionFilters.AddUnique((linkerTool as C.IWinImportLibrary).ImportLibrarySuffix);
                 }
                 else
                 {
-                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", linkerTool.DynamicLibrarySuffix));
+                    extensionFilters.AddUnique(linkerTool.DynamicLibrarySuffix);
                 }
+
+                foreach (var ext in extensionFilters)
+                {
+                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", ext));
+                }
+
                 C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, dynamicLibraryOptions as C.ILinkerOptions, dependentLibraries);
             }
 
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             var recipe = recipeBuilder.ToString();
             // replace primary target with $@
-            var primaryOutput = C.OutputFileFlags.Executable;
-            recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[primaryOutput], "$@");
+            var primaryOutputKey = C.Application.OutputFileLocKey;
+            var outputPath = moduleToBuild.Locations[primaryOutputKey].GetSinglePath();
+            recipe = recipe.Replace(outputPath, "$@");
             var instanceName = MakeFile.InstanceName(node);
+#if true
+            // replace non-primary outputs with their variable names
+            foreach (var outputKey in moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist))
+            {
+                if (outputKey == primaryOutputKey)
+                {
+                    continue;
+                }
+
+                var outputLoc = moduleToBuild.Locations[outputKey];
+                if (!outputLoc.IsValid)
+                {
+                    continue;
+                }
+
+                var variableName = System.String.Format("$({0}_{1}_Variable)", instanceName, outputKey.ToString());
+                var outputLocPath = outputLoc.GetSinglePath();
+                recipe = recipe.Replace(outputLocPath, variableName);
+            }
+#else
             // TODO: due to the foreach causing this exception in Mono
             // '(System.InvalidCastException) Cannot cast from source type to destination type.'
             if (Opus.Core.State.RunningMono)
@@ -132,13 +164,14 @@ namespace MakeFileBuilder
                     }
                 }
             }
+#endif
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(dynamicLibraryOptions.OutputPaths, C.OutputFileFlags.Executable, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.Application.OutputFileLocKey, node.UniqueModuleName, dirsToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

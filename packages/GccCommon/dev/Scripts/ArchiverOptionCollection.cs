@@ -22,17 +22,5 @@ namespace GccCommon
             : base(node)
         {
         }
-
-        public override Opus.Core.DirectoryCollection DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            if (null != this.LibraryFilePath)
-            {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(this.LibraryFilePath));
-            }
-
-            return directoriesToCreate;
-        }
     }
 }

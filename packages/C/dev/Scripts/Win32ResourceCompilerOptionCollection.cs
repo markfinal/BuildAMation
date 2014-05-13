@@ -25,6 +25,18 @@ namespace C
 
         protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
+            var locationMap = node.Module.Locations;
+            var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
+
+            var outputFileDir = locationMap[C.Win32Resource.OutputDirLKey];
+            if (!outputFileDir.IsValid)
+            {
+                var target = node.Target;
+                var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+                var objBuildDir = moduleBuildDir.SubDirectory(compilerTool.ObjectFileOutputSubDirectory);
+                (outputFileDir as Opus.Core.ScaffoldLocation).SetReference(objBuildDir);
+            }
+
             var resourceModule = node.Module as Win32Resource;
             if (null != resourceModule)
             {
@@ -45,14 +57,13 @@ namespace C
                 }
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
-
-            var target = node.Target;
-            var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
         }
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
+#if true
+            throw new System.NotImplementedException();
+#else
             if (!this.OutputPaths.Has(C.OutputFileFlags.Win32CompiledResource))
             {
                 var target = node.Target;
@@ -62,6 +73,7 @@ namespace C
             }
 
             base.FinalizeOptions(node);
+#endif
         }
 
         public string OutputName
@@ -70,12 +82,17 @@ namespace C
             set;
         }
 
+#if true
+#else
         public string OutputDirectoryPath
         {
             get;
             set;
         }
+#endif
 
+#if true
+#else
         public string CompiledResourceFilePath
         {
             get
@@ -88,17 +105,11 @@ namespace C
                 this.OutputPaths[C.OutputFileFlags.Win32CompiledResource] = value;
             }
         }
+#endif
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
-        }
-
-        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
-        {
-            var directories = new Opus.Core.DirectoryCollection();
-            directories.Add(System.IO.Path.GetDirectoryName(this.CompiledResourceFilePath));
-            return directories;
         }
     }
 }

@@ -11,7 +11,8 @@ namespace C
     [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
     public class Application : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.ICommonOptionCollection
     {
-        public static readonly Opus.Core.LocationKey ExecutableLocationKey = new Opus.Core.LocationKey("Executable");
+        public static readonly Opus.Core.LocationKey OutputFileLocKey = new Opus.Core.LocationKey("ExecutableBinaryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey OutputDirLocKey = new Opus.Core.LocationKey("BinaryOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {

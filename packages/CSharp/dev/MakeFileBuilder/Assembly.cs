@@ -190,14 +190,16 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("There were no source files specified for the module '{0}'", node.ModuleName);
             }
 
+            // at this point, we know the node outputs need building
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {

@@ -15,11 +15,15 @@ namespace XcodeBuilder
             var baseTarget = (Opus.Core.BaseTarget)target;
 
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
+#if true
+            var libraryLocation = moduleToBuild.Locations[C.StaticLibrary.OutputFileLocKey];
+#else
             var outputPath = options.OutputPaths[C.OutputFileFlags.StaticLibrary];
+#endif
 
             var project = this.Workspace.GetProject(node);
 
-            var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.StaticLibrary, outputPath, project.RootUri);
+            var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.StaticLibrary, libraryLocation, project.RootUri);
             project.ProductsGroup.Children.AddUnique(fileRef);
 
             var data = project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.StaticLibrary, project);

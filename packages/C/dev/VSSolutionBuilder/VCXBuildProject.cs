@@ -258,6 +258,7 @@ namespace VSSolutionBuilder
                         sourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
+                    // TODO: change to var
                     foreach (ProjectFile file in this.SourceFileCollection)
                     {
                         var subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
@@ -336,6 +337,7 @@ namespace VSSolutionBuilder
                         resourceFilesItem.CreateMetaData("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper());
                     }
 
+                    // TODO: change to var
                     foreach (ProjectFile file in this.ResourceFileCollection)
                     {
                         var subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
@@ -372,12 +374,14 @@ namespace VSSolutionBuilder
                 if (this.SourceFileCollection.Count > 0)
                 {
                     var sourceFilesGroup = project.CreateItemGroup();
+                    // TODO: change to var
                     foreach (ProjectFile file in this.SourceFileCollection)
                     {
                         var subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
                         var relativeSubDir = Opus.Core.RelativePathUtilities.GetPath(subdir, this.PackageUri);
 
                         var toolName = "ClCompile";
+                        // TODO: change to var
                         foreach (ProjectFileConfiguration config in file.FileConfigurations)
                         {
                             if (config.Tool.Name == "VCCustomBuildTool")
@@ -393,6 +397,7 @@ namespace VSSolutionBuilder
                 if (this.HeaderFileCollection.Count > 0)
                 {
                     var headerFilesGroup = project.CreateItemGroup();
+                    // TODO: change to var
                     foreach (ProjectFile file in this.HeaderFileCollection)
                     {
                         var subdir = System.IO.Path.GetDirectoryName(file.RelativePath);
@@ -418,6 +423,7 @@ namespace VSSolutionBuilder
                 if (this.ResourceFileCollection.Count > 0)
                 {
                     var resourceFilesGroup = project.CreateItemGroup();
+                    // TODO: change to var
                     foreach (ProjectFile file in this.ResourceFileCollection)
                     {
                         var subdir = System.IO.Path.GetDirectoryName(file.RelativePath);

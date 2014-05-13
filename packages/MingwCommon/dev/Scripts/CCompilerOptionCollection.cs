@@ -43,18 +43,5 @@ namespace MingwCommon
             : base(node)
         {
         }
-
-        public override Opus.Core.DirectoryCollection DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
-            {
-                string objPathName = this.ObjectFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(objPathName));
-            }
-
-            return directoriesToCreate;
-        }
     }
 }

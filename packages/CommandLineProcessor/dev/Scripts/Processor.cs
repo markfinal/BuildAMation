@@ -11,15 +11,15 @@ namespace CommandLineProcessor
 
         public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder)
         {
-            return Execute (node, tool, commandLineBuilder, null);
+            return Execute(node, tool, commandLineBuilder, null);
         }
 
         public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder, string hostApplication)
         {
-            Opus.Core.Target target = node.Target;
-            string executablePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var target = node.Target;
+            var executablePath = tool.Executable((Opus.Core.BaseTarget)target);
 
-            System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
             if (null != hostApplication)
             {
                 processStartInfo.Arguments = executablePath + " ";
@@ -32,7 +32,7 @@ namespace CommandLineProcessor
             processStartInfo.FileName = executablePath;
             processStartInfo.ErrorDialog = true;
 
-            System.Collections.Generic.Dictionary<string, string> requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
+            var requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
             if (tool is Opus.Core.IToolForwardedEnvironmentVariables)
             {
                 foreach (string requiredEnvVar in (tool as Opus.Core.IToolForwardedEnvironmentVariables).VariableNames)
@@ -44,6 +44,7 @@ namespace CommandLineProcessor
 
             processStartInfo.EnvironmentVariables.Clear();
 
+            // TODO: change to var? on mono?
             foreach (System.Collections.Generic.KeyValuePair<string, string> requiredEnvVar in requiredEnvironmentVariables)
             {
                 processStartInfo.EnvironmentVariables[requiredEnvVar.Key] = requiredEnvVar.Value;
@@ -56,7 +57,7 @@ namespace CommandLineProcessor
 
             if (tool is Opus.Core.IToolEnvironmentVariables)
             {
-                System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                var variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
                 foreach (string key in variables.Keys)
                 {
                     // values - assume when there are multiple values that they are paths
@@ -66,18 +67,22 @@ namespace CommandLineProcessor
 
             if ((tool is Opus.Core.IToolSupportsResponseFile) && !disableResponseFiles)
             {
-                string responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;
-
-                Opus.Core.IModule module = node.Module;
-                Opus.Core.BaseOptionCollection options = module.Options;
-                string firstOutputPath = options.OutputPaths.Paths[0];
-                string responseFile = System.IO.Path.ChangeExtension(firstOutputPath, "rsp");
+                var module = node.Module;
+                var options = module.Options;
+                var moduleBuildDir = module.Locations[Opus.Core.State.ModuleBuildDirLocationKey];
+                var responseFileLoc = new Opus.Core.ScaffoldLocation(
+                    moduleBuildDir,
+                    node.UniqueModuleName + ".rsp",
+                    Opus.Core.ScaffoldLocation.ETypeHint.File,
+                    Opus.Core.Location.EExists.WillExist);
+                var responseFile = responseFileLoc.GetSinglePath();
 
                 using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFile))
                 {
                     writer.WriteLine(commandLineBuilder.ToString('\n'));
                 }
 
+                var responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;
                 processStartInfo.Arguments += System.String.Format("{0}{1}", responseFileOption, responseFile);
             }
             else
@@ -106,7 +111,7 @@ namespace CommandLineProcessor
 
                 // TODO: need to poll for an external cancel op? this currently waits forever
                 process.WaitForExit();
-                int exitCode = process.ExitCode;
+                var exitCode = process.ExitCode;
                 //Opus.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
 
                 return exitCode;

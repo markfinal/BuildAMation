@@ -44,8 +44,8 @@ namespace VisualCCommon
 
         Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.toolset.InstallPath(baseTarget);
-            Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+            var installPath = this.toolset.InstallPath(baseTarget);
+            var includePaths = new Opus.Core.StringArray();
             includePaths.Add(System.IO.Path.Combine(installPath, "include"));
             return includePaths;
         }
@@ -64,7 +64,7 @@ namespace VisualCCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string platformBinFolder = this.toolset.BinPath(baseTarget);
+            var platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "cl.exe");
         }
 
@@ -109,7 +109,7 @@ namespace VisualCCommon
 
         System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
         {
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
 
             var compilerTool = this as C.ICompilerTool;

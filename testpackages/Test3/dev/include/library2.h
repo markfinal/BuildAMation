@@ -3,4 +3,4 @@
 
 extern int library2Function();
 
-#endif /* LIBRARY_H */
+#endif /* LIBRARY2_H */

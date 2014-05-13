@@ -99,6 +99,7 @@ namespace VSSolutionBuilder
                 if (headerFileAttributes.Length > 0)
                 {
                     var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    // TODO: change to var
                     foreach (Opus.Core.Location location in headerFileCollection)
                     {
                         var headerPath = location.GetSinglePath();
@@ -125,7 +126,11 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcCLLibrarianTool);
 
                 var archiverOptions = staticLibraryOptions as C.ArchiverOptionCollection;
+#if true
+                configuration.OutputDirectory = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey];
+#else
                 configuration.OutputDirectory = archiverOptions.OutputDirectoryPath;
+#endif
                 configuration.TargetName = archiverOptions.OutputName;
 
                 if (staticLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)

@@ -7,16 +7,21 @@ namespace MakeFileBuilder
 {
     public sealed class MakeFileRule
     {
-        public MakeFileRule(Opus.Core.OutputPaths outputPaths,
-                            System.Enum primaryOutputType,
+        public MakeFileRule(Opus.Core.BaseModule moduleToBuild,
+                            Opus.Core.LocationKey primaryOutputLocationKey,
                             string target,
-                            Opus.Core.DirectoryCollection directoriesToCreate,
+                            Opus.Core.LocationArray directoriesToCreate,
                             MakeFileVariableDictionary inputVariables,
                             Opus.Core.StringArray inputFiles,
                             Opus.Core.StringArray recipes)
         {
+#if true
+            this.ModuleToBuild = moduleToBuild;
+            this.PrimaryOutputLocationKey = primaryOutputLocationKey;
+#else
             this.OutputPaths = outputPaths;
             this.PrimaryOutputType = primaryOutputType;
+#endif
             this.Target = target;
             this.DirectoriesToCreate = directoriesToCreate;
             this.InputVariables = inputVariables;
@@ -27,6 +32,19 @@ namespace MakeFileBuilder
             this.TargetIsPhony = false;
         }
 
+#if true
+        public Opus.Core.BaseModule ModuleToBuild
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.LocationKey PrimaryOutputLocationKey
+        {
+            get;
+            private set;
+        }
+#else
         public Opus.Core.OutputPaths OutputPaths
         {
             get;
@@ -38,6 +56,7 @@ namespace MakeFileBuilder
             get;
             private set;
         }
+#endif
 
         public string Target
         {
@@ -45,7 +64,7 @@ namespace MakeFileBuilder
             private set;
         }
 
-        public Opus.Core.DirectoryCollection DirectoriesToCreate
+        public Opus.Core.LocationArray DirectoriesToCreate
         {
             get;
             private set;

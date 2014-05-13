@@ -47,7 +47,7 @@ namespace VisualCCommon
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
             // TODO: would like a better way of doing this
-            string platformBinFolder = WindowsSDK.WindowsSDK.BinPath(baseTarget);
+            var platformBinFolder = WindowsSDK.WindowsSDK.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "rc.exe");
         }
 
@@ -56,7 +56,7 @@ namespace VisualCCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Win32Resource.Win32ResourceLocationKey
+                    C.Win32Resource.OutputFileLKey
                     );
                 return array;
             }

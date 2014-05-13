@@ -9,7 +9,7 @@ namespace NativeBuilder
     {
         static NativeBuilder()
         {
-            Opus.Core.EVerboseLevel level = Opus.Core.EVerboseLevel.Full;
+            var level = Opus.Core.EVerboseLevel.Full;
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
                 if ((bool)Opus.Core.State.Get("NativeBuilder", "Explain"))
@@ -45,10 +45,10 @@ namespace NativeBuilder
                 }
             }
 
-            System.DateTime inputFileDate = System.IO.File.GetLastWriteTime(inputPath);
+            var inputFileDate = System.IO.File.GetLastWriteTime(inputPath);
             if (System.IO.File.Exists(outputPath))
             {
-                System.DateTime outputFileDate = System.IO.File.GetLastWriteTime(outputPath);
+                var outputFileDate = System.IO.File.GetLastWriteTime(outputPath);
                 if (inputFileDate.CompareTo(outputFileDate) > 0)
                 {
                     Opus.Core.Log.Message(Verbosity, "Building '{1}' since input file '{0}' is newer.", inputPath, outputPath);
@@ -74,10 +74,10 @@ namespace NativeBuilder
                 }
             }
 
-            System.DateTime inputDirDate = System.IO.Directory.GetLastWriteTime(sourceDir);
+            var inputDirDate = System.IO.Directory.GetLastWriteTime(sourceDir);
             if (System.IO.Directory.Exists(destinationDir))
             {
-                System.DateTime outputDirDate = System.IO.Directory.GetLastWriteTime(destinationDir);
+                var outputDirDate = System.IO.Directory.GetLastWriteTime(destinationDir);
                 if (inputDirDate.CompareTo(outputDirDate) > 0)
                 {
                     Opus.Core.Log.Message(Verbosity, "Building directory '{1}' since source directory '{0}' is newer.", sourceDir, destinationDir);
@@ -116,13 +116,13 @@ namespace NativeBuilder
                 return FileRebuildStatus.AlwaysBuild;
             }
 
-            System.DateTime newestInputFileDate = System.IO.File.GetLastWriteTime(inputFile);
+            var newestInputFileDate = System.IO.File.GetLastWriteTime(inputFile);
 
-            foreach (string outputFile in outputFiles)
+            foreach (var outputFile in outputFiles)
             {
                 if (System.IO.File.Exists(outputFile))
                 {
-                    System.DateTime outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
+                    var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
                         Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer.", inputFile, outputFile);
@@ -132,6 +132,47 @@ namespace NativeBuilder
                 else
                 {
                     Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFile);
+                    return FileRebuildStatus.AlwaysBuild;
+                }
+            }
+
+            return FileRebuildStatus.UpToDate;
+        }
+
+        public static FileRebuildStatus IsSourceTimeStampNewer(Opus.Core.LocationArray outputFiles, Opus.Core.Location inputFile)
+        {
+            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            {
+                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                {
+                    return FileRebuildStatus.AlwaysBuild;
+                }
+            }
+
+            if (0 == outputFiles.Count)
+            {
+                Opus.Core.Log.Message(Verbosity, "No output files - always build");
+                return FileRebuildStatus.AlwaysBuild;
+            }
+
+            var inputFilePath = inputFile.GetSinglePath();
+            var newestInputFileDate = System.IO.File.GetLastWriteTime(inputFilePath);
+
+            foreach (var outputFile in outputFiles)
+            {
+                var outputFilePath = outputFile.GetSinglePath();
+                if (System.IO.File.Exists(outputFilePath))
+                {
+                    var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFilePath);
+                    if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
+                    {
+                        Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer.", inputFilePath, outputFilePath);
+                        return FileRebuildStatus.TimeStampOutOfDate;
+                    }
+                }
+                else
+                {
+                    Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFilePath);
                     return FileRebuildStatus.AlwaysBuild;
                 }
             }
@@ -161,11 +202,11 @@ namespace NativeBuilder
                 return true;
             }
 
-            System.DateTime newestInputFileDate = new System.DateTime(2000, 1, 1);
+            var newestInputFileDate = new System.DateTime(2000, 1, 1);
             string newestInputFile = null;
-            foreach (string inputFile in inputFiles)
+            foreach (var inputFile in inputFiles)
             {
-                System.DateTime inputFileLastWriteTime = System.IO.File.GetLastWriteTime(inputFile);
+                var inputFileLastWriteTime = System.IO.File.GetLastWriteTime(inputFile);
                 if (inputFileLastWriteTime.CompareTo(newestInputFileDate) > 0)
                 {
                     newestInputFileDate = inputFileLastWriteTime;
@@ -173,11 +214,11 @@ namespace NativeBuilder
                 }
             }
 
-            foreach (string outputFile in outputFiles)
+            foreach (var outputFile in outputFiles)
             {
                 if (System.IO.File.Exists(outputFile))
                 {
-                    System.DateTime outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
+                    var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
                         Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer", newestInputFile, outputFile);
@@ -187,6 +228,63 @@ namespace NativeBuilder
                 else
                 {
                     Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFile);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // TODO: what if some of the paths passed in are directories? And what if they don't exist?
+        public static bool RequiresBuilding(Opus.Core.LocationArray outputFiles, Opus.Core.LocationArray inputFiles)
+        {
+            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            {
+                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                {
+                    return true;
+                }
+            }
+
+            if (0 == outputFiles.Count)
+            {
+                Opus.Core.Log.Message(Verbosity, "No output files - always build");
+                return true;
+            }
+            if (0 == inputFiles.Count)
+            {
+                Opus.Core.Log.Message(Verbosity, "No input files - always build");
+                return true;
+            }
+
+            var newestInputFileDate = new System.DateTime(2000, 1, 1);
+            string newestInputFile = null;
+            foreach (var inputFile in inputFiles)
+            {
+                var inputFilePath = inputFile.GetSinglePath();
+                var inputFileLastWriteTime = System.IO.File.GetLastWriteTime(inputFilePath);
+                if (inputFileLastWriteTime.CompareTo(newestInputFileDate) > 0)
+                {
+                    newestInputFileDate = inputFileLastWriteTime;
+                    newestInputFile = inputFilePath;
+                }
+            }
+
+            foreach (var outputFile in outputFiles)
+            {
+                var outputFilePath = outputFile.GetSinglePath();
+                if (System.IO.File.Exists(outputFilePath))
+                {
+                    var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFilePath);
+                    if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
+                    {
+                        Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer", newestInputFile, outputFilePath);
+                        return true;
+                    }
+                }
+                else
+                {
+                    Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFilePath);
                     return true;
                 }
             }

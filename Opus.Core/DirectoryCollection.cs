@@ -7,7 +7,7 @@ namespace Opus.Core
 {
     public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable, ISetOperations<DirectoryCollection>
     {
-        private Array<Location> directoryLocations = new Array<Location>();
+        private LocationArray directoryLocations = new LocationArray();
 
         public object Clone()
         {

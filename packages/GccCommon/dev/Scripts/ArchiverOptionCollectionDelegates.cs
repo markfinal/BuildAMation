@@ -13,15 +13,10 @@ namespace GccCommon
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
-                    ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                    if (options.LibraryFilePath.Contains(" "))
-                    {
-                        commandLineBuilder.Add(System.String.Format("\"{0}\"", options.LibraryFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(options.LibraryFilePath);
-                    }
+                    var options = sender as ArchiverOptionCollection;
+                    var libraryLocation = options.OwningNode.Module.Locations[C.StaticLibrary.StaticLibraryLocationKey];
+                    var libraryFilePath = libraryLocation.GetSinglePath();
+                    commandLineBuilder.Add(libraryFilePath);
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");

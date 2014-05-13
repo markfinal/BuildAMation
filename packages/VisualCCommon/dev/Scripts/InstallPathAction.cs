@@ -42,7 +42,7 @@ namespace VisualCCommon
         {
             if (!System.IO.Directory.Exists(this.InstallPath))
             {
-                string absolutePath = System.IO.Path.Combine(Opus.Core.State.WorkingDirectory, this.InstallPath);
+                var absolutePath = System.IO.Path.Combine(Opus.Core.State.WorkingDirectory, this.InstallPath);
                 if (!System.IO.Directory.Exists(absolutePath))
                 {
                     throw new Opus.Core.Exception("Path '{0}' does not exist and is not relative to the working directory '{1}", this.InstallPath, Opus.Core.State.WorkingDirectory);

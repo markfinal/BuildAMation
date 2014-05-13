@@ -35,31 +35,40 @@ namespace QMakeBuilder
 
             data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.Application;
+#if true
+            data.DestDir = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+#else
             data.DestDir = options.OutputDirectoryPath;
+#endif
 
             // find dependent library files
             if (null != node.ExternalDependents)
             {
-                var dependentLibraryFiles = new Opus.Core.StringArray();
-                node.ExternalDependents.FilterOutputPaths(C.OutputFileFlags.StaticLibrary | C.OutputFileFlags.StaticImportLibrary, dependentLibraryFiles);
+                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.StaticLibrary.OutputFileLocKey,
+                    C.DynamicLibrary.StaticImportLibraryLocationKey
+                    );
+
+                var dependentLibraryFiles = new Opus.Core.LocationArray();
+                node.ExternalDependents.FilterOutputLocations(keysToFilter, dependentLibraryFiles);
                 data.Libraries.AddRangeUnique(dependentLibraryFiles);
             }
 
             var optionsInterface = moduleToBuild.Options as C.ILinkerOptions;
 
             // find static library files
-            data.Libraries.AddRangeUnique(optionsInterface.Libraries.ToStringArray());
+            data.ExternalLibraries.AddRangeUnique(optionsInterface.Libraries.ToStringArray());
 
             // find library paths
             foreach (string libPath in optionsInterface.LibraryPaths)
             {
                 if (libPath.Contains(" "))
                 {
-                    data.Libraries.Add("-L$$quote(" + libPath + ")");
+                    data.ExternalLibraries.Add("-L$$quote(" + libPath + ")");
                 }
                 else
                 {
-                    data.Libraries.Add("-L" + libPath);
+                    data.ExternalLibraries.Add("-L" + libPath);
                 }
             }
 

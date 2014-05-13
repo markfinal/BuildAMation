@@ -23,14 +23,14 @@ namespace MakeFileBuilder
             var inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
@@ -50,7 +50,8 @@ namespace MakeFileBuilder
             }
             recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
             // replace target with $@
-            recipe = recipe.Replace(objectFileOptions.OutputPaths[C.OutputFileFlags.ObjectFile], "$@");
+            var outputPath = moduleToBuild.Locations[C.ObjectFile.ObjectFileLocationKey].GetSinglePath();
+            recipe = recipe.Replace(outputPath, "$@");
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
@@ -60,7 +61,7 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(objectFileOptions.OutputPaths, C.OutputFileFlags.ObjectFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.ObjectFile.ObjectFileLocationKey, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))

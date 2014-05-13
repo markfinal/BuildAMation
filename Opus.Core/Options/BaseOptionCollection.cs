@@ -9,13 +9,15 @@ namespace Opus.Core
     {
         protected System.Collections.Generic.Dictionary<string, Option> table = new System.Collections.Generic.Dictionary<string, Option>();
 
+#if false
         public OutputPaths OutputPaths
         {
             get;
             private set;
         }
+#endif
 
-        private DependencyNode OwningNode
+        public DependencyNode OwningNode
         {
             get;
             set;
@@ -23,7 +25,9 @@ namespace Opus.Core
 
         protected BaseOptionCollection(DependencyNode owningNode)
         {
+#if false
             this.OutputPaths = new OutputPaths();
+#endif
             this.OwningNode = owningNode;
             if (null != owningNode)
             {
@@ -210,6 +214,7 @@ namespace Opus.Core
             }
         }
 
+#if false
         public void FilterOutputPaths(System.Enum filter, StringArray outPaths)
         {
             var filterType = filter.GetType();
@@ -256,6 +261,7 @@ namespace Opus.Core
                 }
             }
         }
+#endif
 
         public override bool Equals(object obj)
         {

@@ -107,6 +107,19 @@ namespace C
 
         protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
+            var locationMap = this.OwningNode.Module.Locations;
+            var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
+
+            var outputFileDir = locationMap[C.ObjectFile.ObjectFileDirLocationKey];
+            if (!outputFileDir.IsValid)
+            {
+                var target = node.Target;
+                var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+                var objBuildDir = moduleBuildDir.SubDirectory(compilerTool.ObjectFileOutputSubDirectory);
+                (outputFileDir as Opus.Core.ScaffoldLocation).SetReference(objBuildDir);
+            }
+
+            // don't operate on collections of modules
             var objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)
             {
@@ -131,10 +144,6 @@ namespace C
             {
                 this.OutputName = null;
             }
-
-            var target = node.Target;
-            var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory(compilerTool.ObjectFileOutputSubDirectory);
         }
 
         public string OutputName
@@ -143,12 +152,17 @@ namespace C
             set;
         }
 
+#if true
+#else
         public string OutputDirectoryPath
         {
             get;
             set;
         }
+#endif
 
+#if true
+#else
         public string ObjectFilePath
         {
             get
@@ -161,7 +175,10 @@ namespace C
                 this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
             }
         }
-
+#endif
+        
+#if true
+#else
         public string PreprocessedFilePath
         {
             get
@@ -174,9 +191,28 @@ namespace C
                 this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
             }
         }
+#endif
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
+#if true
+            // don't operate on collections of modules
+            var objectFileModule = node.Module as ObjectFile;
+            if (null != objectFileModule)
+            {
+                var outputFileLocation = node.Module.Locations[C.ObjectFile.ObjectFileLocationKey] as Opus.Core.ScaffoldLocation;
+                if (!outputFileLocation.IsValid)
+                {
+                    var target = node.Target;
+                    var tool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+                    var options = this as ICCompilerOptions;
+                    var suffix = (options.OutputType == ECompilerOutput.Preprocess) ?
+                        tool.PreprocessedOutputSuffix :
+                        tool.ObjectFileSuffix;
+                    outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.ObjectFileDirLocationKey], this.OutputName + suffix, Opus.Core.Location.EExists.WillExist);
+                }
+            }
+#else
             if (null != this.OutputName)
             {
                 var target = node.Target;
@@ -195,13 +231,12 @@ namespace C
             }
 
             base.FinalizeOptions(node);
+#endif
         }
 
         void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
-
-        public abstract Opus.Core.DirectoryCollection DirectoriesToCreate();
     }
 }

@@ -139,25 +139,6 @@ namespace CSharp
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
-        Opus.Core.DirectoryCollection CommandLineProcessor.ICommandLineSupport.DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            string outputPathName = this.OutputFilePath;
-            if (null != outputPathName)
-            {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(outputPathName));
-            }
-
-            string pdbPathName = this.ProgramDatabaseFilePath;
-            if (null != pdbPathName)
-            {
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(pdbPathName));
-            }
-
-            return directoriesToCreate;
-        }
-
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
             VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, VisualStudioProcessor.EVisualStudioTarget.MSBUILD);

@@ -11,19 +11,23 @@ namespace VisualCCommon
         {
             base.SetDefaultOptionValues(node);
 
-            ILinkerOptions linkerInterface = this as ILinkerOptions;
+            var linkerInterface = this as ILinkerOptions;
 
             linkerInterface.NoLogo = true;
             linkerInterface.StackReserveAndCommit = null;
             linkerInterface.IgnoredLibraries = new Opus.Core.StringArray();
+#if true
+            // TODO: pdb later
+#else
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
+#endif
 
-            Opus.Core.Target target = node.Target;
+            var target = node.Target;
             linkerInterface.IncrementalLink = target.HasConfiguration(Opus.Core.EConfiguration.Debug);
 
-            C.ILinkerTool linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
+            var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
 
-            foreach (string libPath in linkerTool.LibPaths((Opus.Core.BaseTarget)target))
+            foreach (var libPath in linkerTool.LibPaths((Opus.Core.BaseTarget)target))
             {
                 (this as C.ILinkerOptions).LibraryPaths.Add(libPath);
             }
@@ -34,12 +38,17 @@ namespace VisualCCommon
         {
         }
 
+#if true
+#else
         public string ProgamDatabaseDirectoryPath
         {
             get;
             set;
         }
+#endif
 
+#if true
+#else
         public string ProgramDatabaseFilePath
         {
             get
@@ -52,10 +61,15 @@ namespace VisualCCommon
                 this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = value;
             }
         }
+#endif
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            C.ILinkerOptions options = this as C.ILinkerOptions;
+#if true
+            // TODO: handle the pdbs later
+            base.FinalizeOptions(node);
+#else
+            var options = this as C.ILinkerOptions;
 
             if (options.DebugSymbols && !this.OutputPaths.Has(C.OutputFileFlags.LinkerProgramDatabase))
             {
@@ -64,36 +78,12 @@ namespace VisualCCommon
             }
 
             base.FinalizeOptions(node);
-        }
-
-        public override Opus.Core.DirectoryCollection DirectoriesToCreate()
-        {
-            Opus.Core.DirectoryCollection directoriesToCreate = new Opus.Core.DirectoryCollection();
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.Executable))
-            {
-                string outputPathName = this.OutputFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(outputPathName));
-            }
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.StaticImportLibrary))
-            {
-                string libraryPathName = this.StaticImportLibraryFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(libraryPathName));
-            }
-
-            if (this.OutputPaths.Has(C.OutputFileFlags.LinkerProgramDatabase))
-            {
-                string programDatabasePathName = this.ProgramDatabaseFilePath;
-                directoriesToCreate.Add(System.IO.Path.GetDirectoryName(programDatabasePathName));
-            }
-
-            return directoriesToCreate;
+#endif
         }
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
-            VisualStudioProcessor.EVisualStudioTarget vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
+            var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)
             {
                 case VisualStudioProcessor.EVisualStudioTarget.VCPROJ:
@@ -103,7 +93,7 @@ namespace VisualCCommon
                 default:
                     throw new Opus.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
             }
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
+            var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;
         }
     }

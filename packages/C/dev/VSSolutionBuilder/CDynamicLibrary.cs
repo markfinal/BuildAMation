@@ -144,7 +144,11 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
                 var dynamicLibOptions = dynamicLibraryOptions as C.LinkerOptionCollection;
+#if true
+                configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+#else
                 configuration.OutputDirectory = dynamicLibOptions.OutputDirectoryPath;
+#endif
                 configuration.TargetName = dynamicLibOptions.OutputName;
 
                 if (dynamicLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)

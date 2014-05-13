@@ -9,7 +9,8 @@ namespace NativeBuilder
     {
         public object Build(C.Win32Resource moduleToBuild, out bool success)
         {
-            var resourceFilePath = moduleToBuild.ResourceFileLocation.GetSinglePath();
+            var resourceLoc = moduleToBuild.ResourceFileLocation;
+            var resourceFilePath = resourceLoc.GetSinglePath();
             if (!System.IO.File.Exists(resourceFilePath))
             {
                 throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
@@ -22,15 +23,28 @@ namespace NativeBuilder
 
             // dependency checking, source against output files
             {
-                var inputFiles = new Opus.Core.StringArray();
-                inputFiles.Add(resourceFilePath);
-                var outputFiles = compilerOptions.OutputPaths.Paths;
+                var inputFiles = new Opus.Core.LocationArray();
+                inputFiles.Add(resourceLoc);
+                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.Win32Resource.OutputFileLKey
+                    );
+                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", resourceFileModule.OwningNode.UniqueModuleName);
                     success = true;
                     return null;
                 }
+            }
+
+            // at this point, we know the node outputs need building
+
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
             }
 
             var target = resourceFileModule.OwningNode.Target;
@@ -40,12 +54,6 @@ namespace NativeBuilder
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                var directoriesToCreate = commandLineOption.DirectoriesToCreate();
-                foreach (string directoryPath in directoriesToCreate)
-                {
-                    NativeBuilder.MakeDirectory(directoryPath);
-                }
             }
             else
             {
@@ -55,18 +63,14 @@ namespace NativeBuilder
             var compilerTool = target.Toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
 
             // add output path
-            commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.OutputFileSwitch, compilerOptions.CompiledResourceFilePath));
+            commandLineBuilder.Add(System.String.Format("{0}{1}",
+                                                        compilerTool.OutputFileSwitch,
+                                                        moduleToBuild.Locations[C.Win32Resource.OutputFileLKey].GetSinglePath()));
 
-            if (resourceFilePath.Contains(" "))
-            {
-                commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", compilerTool.InputFileSwitch, resourceFilePath));
-            }
-            else
-            {
-                commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.InputFileSwitch, resourceFilePath));
-            }
+            // add input path
+            commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.InputFileSwitch, resourceFilePath));
 
-            int exitCode = CommandLineProcessor.Processor.Execute(resourceFileModule.OwningNode, compilerTool, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(resourceFileModule.OwningNode, compilerTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

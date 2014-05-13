@@ -20,24 +20,26 @@ namespace MakeFileBuilder
             {
                 foreach (var childNode in node.Children)
                 {
-                    if (null != childNode.Data)
+                    if (null == childNode.Data)
                     {
-                        var data = childNode.Data as MakeFileData;
-                        inputVariables.Append(data.VariableDictionary);
-                        dataArray.Add(data);
+                        continue;
                     }
+                    var data = childNode.Data as MakeFileData;
+                    inputVariables.Append(data.VariableDictionary);
+                    dataArray.Add(data);
                 }
             }
             if (null != node.ExternalDependents)
             {
                 foreach (var dependentNode in node.ExternalDependents)
                 {
-                    if (null != dependentNode.Data)
+                    if (null == dependentNode.Data)
                     {
-                        var data = dependentNode.Data as MakeFileData;
-                        inputVariables.Append(data.VariableDictionary);
-                        dataArray.Add(data);
+                        continue;
                     }
+                    var data = dependentNode.Data as MakeFileData;
+                    inputVariables.Append(data.VariableDictionary);
+                    dataArray.Add(data);
                 }
             }
 
@@ -47,15 +49,15 @@ namespace MakeFileBuilder
             var archiverTool = toolset.Tool(typeof(C.IArchiverTool));
             var executable = archiverTool.Executable((Opus.Core.BaseTarget)target);
 
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+
             var commandLineBuilder = new Opus.Core.StringArray();
-            Opus.Core.DirectoryCollection directoriesToCreate = null;
             if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 // TODO: pass in a map of path translations, e.g. outputfile > $@
                 var commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
-
-                directoriesToCreate = commandLineOption.DirectoriesToCreate();
             }
             else
             {
@@ -81,13 +83,13 @@ namespace MakeFileBuilder
             }
 
             // replace primary target with $@
-            var primaryOutput = C.OutputFileFlags.StaticLibrary;
-            recipe = recipe.Replace(staticLibraryOptions.OutputPaths[primaryOutput], "$@");
+            var outputPath = moduleToBuild.Locations[C.StaticLibrary.OutputFileLocKey].GetSinglePath();
+            recipe = recipe.Replace(outputPath, "$@");
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
-            var rule = new MakeFileRule(staticLibraryOptions.OutputPaths, primaryOutput, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.StaticLibrary.OutputFileLocKey, node.UniqueModuleName, dirsToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

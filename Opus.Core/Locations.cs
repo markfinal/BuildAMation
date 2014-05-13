@@ -25,20 +25,62 @@ namespace Opus.Core
             protected set;
         }
 
-        public abstract Array<Location> GetLocations();
+        public abstract LocationArray GetLocations();
+        public abstract bool IsValid
+        {
+            get;
+        }
+
+        // TODO: this might have to migrate to the base class, if more subclasses need to be cloneable
+        public EExists Exists
+        {
+            get;
+            protected set;
+        }
 
         /// <summary>
-        /// This is a special case of GetLocations. It requires a Location resolves to a single path, which is returned
+        /// This is a special case of GetLocations. It requires a Location resolves to a single path, which is returned.
+        /// If the path contains a space, it will be returned quoted.
         /// </summary>
         /// <returns>Single path of the resolved Location</returns>
         public string GetSinglePath()
         {
             var resolvedLocations = this.GetLocations();
-            if (resolvedLocations.Count > 1)
+            if (resolvedLocations.Count != 1)
             {
-                throw new Exception("Location '{0}' resolved to more than one path", this.ToString());
+                throw new Exception("Location '{0}' did not resolve just one path, but {1}", this.ToString(), resolvedLocations.Count);
             }
-            return resolvedLocations[0].AbsolutePath;
+            var path = resolvedLocations[0].AbsolutePath;
+            if (path.Contains(" "))
+            {
+                path = System.String.Format("\"{0}\"", path);
+            }
+            return path;
+        }
+    }
+
+    public sealed class LocationArray : Array<Location>
+    {
+        public LocationArray(params Location[] input)
+        {
+            this.AddRange(input);
+        }
+
+        public LocationArray(Array<Location> input)
+        {
+            this.AddRange(input);
+        }
+
+        public override string ToString(string separator)
+        {
+            var builder = new System.Text.StringBuilder();
+            foreach (var item in this.list)
+            {
+                builder.AppendFormat("{0}{1}", item.GetSinglePath(), separator);
+            }
+            // remove the trailing separator
+            var output = builder.ToString().TrimEnd(separator.ToCharArray());
+            return output;
         }
     }
 
@@ -50,13 +92,6 @@ namespace Opus.Core
     public sealed class DirectoryLocation : Location, System.ICloneable
     {
         private static System.Collections.Generic.Dictionary<int, DirectoryLocation> cache = new System.Collections.Generic.Dictionary<int, DirectoryLocation>();
-
-        // TODO: this might have to migrate to the base class, if more subclasses need to be cloneable
-        private EExists Exists
-        {
-            get;
-            set;
-        }
 
         private DirectoryLocation(string absolutePath, Location.EExists exists)
         {
@@ -78,9 +113,14 @@ namespace Opus.Core
             {
                 return cache[hash];
             }
-            var instance = new DirectoryLocation(absolutePath, exists);
-            cache[hash] = instance;
-            return instance;
+
+            // because the cache might be written into by multiple threads
+            lock (cache)
+            {
+                var instance = new DirectoryLocation(absolutePath, exists);
+                cache[hash] = instance;
+                return instance;
+            }
         }
 
         public static DirectoryLocation Get(string absolutePath)
@@ -90,7 +130,7 @@ namespace Opus.Core
 
         public override Location SubDirectory(string subDirName)
         {
-            return this.SubDirectory(subDirName, EExists.Exists);
+            return this.SubDirectory(subDirName, this.Exists);
         }
 
         public override Location SubDirectory(string subDirName, EExists exists)
@@ -104,9 +144,17 @@ namespace Opus.Core
             return System.String.Format("Directory '{0}'", this.AbsolutePath);
         }
 
-        public override Array<Location> GetLocations()
+        public override LocationArray GetLocations()
         {
-            return new Array<Location>(this);
+            return new LocationArray(this);
+        }
+
+        public override bool IsValid
+        {
+            get
+            {
+                return true;
+            }
         }
 
         #region ICloneable Members
@@ -149,9 +197,14 @@ namespace Opus.Core
             {
                 return cache[hash];
             }
-            var instance = new FileLocation(absolutePath, exists);
-            cache[hash] = instance;
-            return instance;
+
+            // because the cache might be written into by multiple threads
+            lock (cache)
+            {
+                var instance = new FileLocation(absolutePath, exists);
+                cache[hash] = instance;
+                return instance;
+            }
         }
 
         public static FileLocation Get(string absolutePath)
@@ -162,7 +215,7 @@ namespace Opus.Core
         public static FileLocation Get(Location baseLocation, string nonWildcardedFilename)
         {
             var locations = baseLocation.GetLocations();
-            if (locations.Count > 1)
+            if (locations.Count != 1)
             {
                 throw new Exception("Cannot resolve source Location to a single path");
             }
@@ -192,16 +245,24 @@ namespace Opus.Core
             return System.String.Format("File '{0}'", this.AbsolutePath);
         }
 
-        public override Array<Location> GetLocations()
+        public override LocationArray GetLocations()
         {
-            return new Array<Location>(this);
+            return new LocationArray(this);
+        }
+
+        public override bool IsValid
+        {
+            get
+            {
+                return true;
+            }
         }
     }
 
     /// <summary>
     /// ScaffoldLocation is an abstract representation of many real Locations on disk.
-    /// ScaffoldLocations are constructed from a base Location, with a pattern added to it. This pattern may be wildcarded.
-    /// Calling GetLocations() on a ScaffoldLocation will resolve the pattern to a list of real Locations.
+    /// ScaffoldLocations are constructed from a base Location, with a search pattern added to it. This pattern may be wildcarded.
+    /// Calling GetLocations() on a ScaffoldLocation will resolve the pattern to a list of real Locations, be they file or directory.
     /// </summary>
     public sealed class ScaffoldLocation : Location
     {
@@ -214,7 +275,8 @@ namespace Opus.Core
         public ScaffoldLocation(ETypeHint typeHint)
         {
             this.TypeHint = typeHint;
-            this.Results = new Array<Location>();
+            this.Exists = EExists.WillExist; // make no assumptions that a stub will exist
+            this.Results = new LocationArray();
         }
 
         public ScaffoldLocation(Location baseLocation, string pattern, ETypeHint typeHint)
@@ -224,11 +286,23 @@ namespace Opus.Core
             this.Pattern = pattern;
         }
 
+        public ScaffoldLocation(Location baseLocation, string pattern, ETypeHint typeHint, EExists exists)
+            : this(baseLocation, pattern, typeHint)
+        {
+            this.Exists = exists;
+        }
+
         public ScaffoldLocation(Location baseLocation, ProxyModulePath proxyPath, ETypeHint typeHint)
             : this(typeHint)
         {
             this.Base = baseLocation;
             this.ProxyPath = proxyPath;
+        }
+
+        public ScaffoldLocation(Location baseLocation, ProxyModulePath proxyPath, ETypeHint typeHint, EExists exists)
+            : this(baseLocation, proxyPath, typeHint)
+        {
+            this.Exists = exists;
         }
 
         private bool Resolved
@@ -259,6 +333,29 @@ namespace Opus.Core
         {
             get;
             set;
+        }
+
+        public void SetReference(Location reference)
+        {
+            if (this.IsValid)
+            {
+                throw new Exception("Cannot set a reference on a Location that is not a stub");
+            }
+
+            this.Base = reference;
+            this.Exists = reference.Exists;
+        }
+
+        public void SpecifyStub(Location baseLocation, string pattern, Location.EExists exists)
+        {
+            if (!baseLocation.IsValid)
+            {
+                throw new Exception("Cannot specify a stub scaffold with an invalid base location");
+            }
+
+            this.Base    = baseLocation;
+            this.Pattern = pattern;
+            this.Exists  = exists;
         }
 
         private void ResolveDirectory(Location directory)
@@ -302,17 +399,17 @@ namespace Opus.Core
                         var files = dirInfo.GetFiles(pattern, searchType);
                         foreach (var file in files)
                         {
-                            this.Results.AddUnique(FileLocation.Get(file.FullName));
+                            this.Results.AddUnique(FileLocation.Get(file.FullName, this.Exists));
                         }
                     }
                     else
                     {
-                        this.Results.AddUnique(FileLocation.Get(fullPath));
+                        this.Results.AddUnique(FileLocation.Get(fullPath, this.Exists));
                     }
                 }
                 else
                 {
-                    this.Results.AddUnique(DirectoryLocation.Get(fullPath));
+                    this.Results.AddUnique(DirectoryLocation.Get(fullPath, this.Exists));
                 }
             }
         }
@@ -351,16 +448,15 @@ namespace Opus.Core
 
         public override Location SubDirectory(string subDirName)
         {
-            return new ScaffoldLocation(this, subDirName, ETypeHint.Directory);
+            return new ScaffoldLocation(this, subDirName, ETypeHint.Directory, this.Exists);
         }
 
         public override Location SubDirectory(string subDirName, EExists exists)
         {
-            // exists variable is unused as these will get resolved later
-            return new ScaffoldLocation(this, subDirName, ETypeHint.Directory);
+            return new ScaffoldLocation(this, subDirName, ETypeHint.Directory, exists);
         }
 
-        private Array<Location> Results
+        private LocationArray Results
         {
             get;
             set;
@@ -378,10 +474,19 @@ namespace Opus.Core
             }
         }
 
-        public override Array<Location> GetLocations()
+        public override LocationArray GetLocations()
         {
             this.Resolve();
             return this.Results;
+        }
+
+        public override bool IsValid
+        {
+            get
+            {
+                bool valid = (null != this.Base);
+                return valid;
+            }
         }
     }
 
@@ -390,15 +495,22 @@ namespace Opus.Core
     /// </summary>
     public sealed class LocationKey
     {
-        public LocationKey(string identifier)
+        public LocationKey(string identifier, ScaffoldLocation.ETypeHint type)
         {
             this.Identifier = identifier;
+            this.Type = type;
         }
 
         private string Identifier
         {
             get;
             set;
+        }
+
+        public ScaffoldLocation.ETypeHint Type
+        {
+            get;
+            private set;
         }
 
         public override string ToString()
@@ -420,6 +532,28 @@ namespace Opus.Core
 
             set
             {
+                // TODO: validate the key type is what is to be stored
+                if (value is ScaffoldLocation)
+                {
+                    if ((value as ScaffoldLocation).TypeHint != key.Type)
+                    {
+                        throw new Exception("Location and LocationKey differ on type hints");
+                    }
+                }
+                else if (key.Type == ScaffoldLocation.ETypeHint.File)
+                {
+                    if (!(value is FileLocation))
+                    {
+                        throw new Exception("LocationKey wants a file, but doesn't have one");
+                    }
+                }
+                else if (key.Type == ScaffoldLocation.ETypeHint.Directory)
+                {
+                    if (!(value is DirectoryLocation))
+                    {
+                        throw new Exception("LocationKey wants a directory, but doesn't have one");
+                    }
+                }
                 this.map[key] = value;
             }
         }
@@ -427,6 +561,53 @@ namespace Opus.Core
         public bool Contains(LocationKey key)
         {
             return this.map.ContainsKey(key);
+        }
+
+        public Array<LocationKey> Keys(ScaffoldLocation.ETypeHint type, Location.EExists exists)
+        {
+            var keys = new Array<LocationKey>();
+            foreach (var key in this.map.Keys)
+            {
+                if (key.Type == type)
+                {
+                    var location = this.map[key];
+                    if (location.Exists == exists)
+                    {
+                        keys.Add(key);
+                    }
+                }
+            }
+            return keys;
+        }
+
+        public LocationArray FilterByKey(Array<LocationKey> filterKeys)
+        {
+            var filteredLocations = new LocationArray();
+            foreach (var key in filterKeys)
+            {
+                if (this.map.ContainsKey(key))
+                {
+                    filteredLocations.Add(this.map[key]);
+                }
+            }
+            return filteredLocations;
+        }
+
+        public LocationArray FilterByType(ScaffoldLocation.ETypeHint type, Location.EExists exists)
+        {
+            var filteredLocations = new LocationArray();
+            foreach (var key in this.map.Keys)
+            {
+                if (key.Type == type)
+                {
+                    var location = this.map[key];
+                    if (location.Exists == exists)
+                    {
+                        filteredLocations.Add(this.map[key]);
+                    }
+                }
+            }
+            return filteredLocations;
         }
 
         public override string ToString()

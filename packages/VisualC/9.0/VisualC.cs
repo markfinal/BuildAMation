@@ -16,7 +16,7 @@ namespace VisualC
         static Solution()
         {
             // try the VS Express version first, since it's free
-            string registryKey = @"Microsoft\VCExpress\9.0\Projects";
+            var registryKey = @"Microsoft\VCExpress\9.0\Projects";
             if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
             {
                 vsEdition = "Express";
@@ -34,19 +34,19 @@ namespace VisualC
                 }
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKey))
+            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKey))
             {
                 if (null == key)
                 {
                     throw new Opus.Core.Exception("VisualStudio C++ {0} 2008 was not installed", vsEdition);
                 }
 
-                string[] subKeyNames = key.GetSubKeyNames();
-                foreach (string subKeyName in subKeyNames)
+                var subKeyNames = key.GetSubKeyNames();
+                foreach (var subKeyName in subKeyNames)
                 {
-                    using (Microsoft.Win32.RegistryKey subKey = key.OpenSubKey(subKeyName))
+                    using (var subKey = key.OpenSubKey(subKeyName))
                     {
-                        string projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
+                        var projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
                         if (null != projectExtension)
                         {
                             if (projectExtension == "vcproj")
@@ -55,7 +55,7 @@ namespace VisualC
                                 break;
                             }
                         }
-                        string defaultValue = subKey.GetValue("") as string;
+                        var defaultValue = subKey.GetValue("") as string;
                         if (null != defaultValue)
                         {
                             if ("Solution Folder Project" == defaultValue)
@@ -86,7 +86,7 @@ namespace VisualC
         {
             get
             {
-                System.Text.StringBuilder header = new System.Text.StringBuilder();
+                var header = new System.Text.StringBuilder();
                 header.AppendLine("Microsoft Visual Studio Solution File, Format Version 10.00");
                 header.AppendLine("# Visual C++ Express 2008");
                 return header.ToString();

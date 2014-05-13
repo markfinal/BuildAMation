@@ -7,6 +7,9 @@ namespace Opus.Core
 {
     public static class State
     {
+        public static readonly LocationKey BuildRootLocationKey = new LocationKey("BuildRoot", ScaffoldLocation.ETypeHint.Directory);
+        public static readonly LocationKey ModuleBuildDirLocationKey = new LocationKey("ModuleBuildDirectory", ScaffoldLocation.ETypeHint.Directory);
+
         public class Category : System.Collections.Generic.Dictionary<string, object>
         {
         }

@@ -12,8 +12,9 @@ namespace XcodeBuilder
             this.FileReferences = new System.Collections.Generic.List<PBXFileReference>();
         }
 
-        public PBXFileReference Get(string name, PBXFileReference.EType type, string path, System.Uri rootPath)
+        public PBXFileReference Get(string name, PBXFileReference.EType type, Opus.Core.Location location, System.Uri rootPath)
         {
+            var path = location.GetSinglePath();
             lock (this.FileReferences)
             {
                 foreach (var fileRef in this.FileReferences)

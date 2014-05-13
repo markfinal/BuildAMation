@@ -9,19 +9,14 @@ namespace VisualCCommon
         #region C.IArchiverOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
+            var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
-                    ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                    if (options.LibraryFilePath.Contains(" "))
-                    {
-                        commandLineBuilder.Add(System.String.Format("-OUT:\"{0}\"", options.LibraryFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-OUT:{0}", options.LibraryFilePath));
-                    }
+                    var options = sender as ArchiverOptionCollection;
+                    var libraryLocation = options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey];
+                    var libraryFilePath = libraryLocation.GetSinglePath();
+                    commandLineBuilder.Add(System.String.Format("-OUT:{0}", libraryFilePath));
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
@@ -29,14 +24,14 @@ namespace VisualCCommon
         }
         private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
+            var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
                     {
-                        VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                        ArchiverOptionCollection options = sender as ArchiverOptionCollection;
-                        returnVal.Add("OutputFile", options.LibraryFilePath);
+                        var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+                        var options = sender as ArchiverOptionCollection;
+                        returnVal.Add("OutputFile", options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey].GetSinglePath());
                         return returnVal;
                     }
                 default:
@@ -45,17 +40,17 @@ namespace VisualCCommon
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            string[] arguments = stringOption.Value.Split(' ');
-            foreach (string argument in arguments)
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            foreach (var argument in arguments)
             {
                 commandLineBuilder.Add(argument);
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary AdditionalOptionsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("AdditionalOptions", stringOption.Value);
             return returnVal;
         }
@@ -63,7 +58,7 @@ namespace VisualCCommon
         #region IArchiverOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
+            var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
                 commandLineBuilder.Add("-NOLOGO");
@@ -71,8 +66,8 @@ namespace VisualCCommon
         }
         private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<bool> noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("SuppressStartupBanner", noLogoOption.Value.ToString().ToLower());
             return returnVal;
         }

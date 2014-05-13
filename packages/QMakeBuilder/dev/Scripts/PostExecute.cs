@@ -67,7 +67,7 @@ namespace QMakeBuilder
                 }
             }
 
-            Opus.Core.Log.MessageAll("Written QMake .pro file '{0}'", proFilePath);
+            Opus.Core.Log.Info("Successfully created QMake .pro file for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, proFilePath);
         }
 
         #endregion
