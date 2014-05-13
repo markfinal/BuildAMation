@@ -27,3 +27,5 @@ if __name__ == "__main__":
     processPath('testpackages', '.h')
     processPath('testpackages', '.c')
     processPath('testpackages', '.cpp')
+    processPath('testpackages', '.m')
+    processPath('testpackages', '.mm')
