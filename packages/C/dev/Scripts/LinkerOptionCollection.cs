@@ -182,7 +182,7 @@ namespace C
             var target = node.Target;
             var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             var options = this as ILinkerOptions;
-            
+
             var outputFile = node.Module.Locations[C.Application.OutputFileLocKey];
             if (!outputFile.IsValid)
             {

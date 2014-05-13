@@ -715,7 +715,7 @@ namespace VisualCCommon
                         commandLineBuilder.Add("-Z7");
                         break;
 
-                    // TODO: more case statements with PDBs... 
+                    // TODO: more case statements with PDBs...
 
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
