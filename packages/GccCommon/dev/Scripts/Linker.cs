@@ -125,7 +125,8 @@ namespace GccCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.ExecutableLocationKey
+                    C.Application.OutputFileLocKey,
+                    C.Application.OutputDirLocKey
                     );
                 return array;
             }

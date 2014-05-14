@@ -67,17 +67,20 @@ namespace C
             // TODO: move to Windows specific LinkerOptionCollections?
             // special case here of the QMakeBuilder
             // it does not support writing import libraries to a separate location to the dll
-            var importLibDir = node.Module.Locations[C.DynamicLibrary.StaticImportLibraryDirectoryLKey];
-            if (!importLibDir.IsValid)
+            if (node.Module.Locations.Contains(C.DynamicLibrary.StaticImportLibraryDirectoryLKey))
             {
-                if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
+                var importLibDir = node.Module.Locations[C.DynamicLibrary.StaticImportLibraryDirectoryLKey];
+                if (!importLibDir.IsValid)
                 {
-                    var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
-                    (importLibDir as Opus.Core.ScaffoldLocation).SetReference(moduleDir);
-                }
-                else
-                {
-                    (importLibDir as Opus.Core.ScaffoldLocation).SetReference(outputDir);
+                    if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
+                    {
+                        var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
+                        (importLibDir as Opus.Core.ScaffoldLocation).SetReference(moduleDir);
+                    }
+                    else
+                    {
+                        (importLibDir as Opus.Core.ScaffoldLocation).SetReference(outputDir);
+                    }
                 }
             }
 

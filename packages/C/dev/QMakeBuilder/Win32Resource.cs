@@ -11,7 +11,6 @@ namespace QMakeBuilder
         {
             var sourceFilePath = moduleToBuild.ResourceFileLocation;
             var node = moduleToBuild.OwningNode;
-            var options = moduleToBuild.Options as C.Win32ResourceCompilerOptionCollection;
 
             var data = new QMakeData(node);
             data.PriPaths.Add(this.EmptyConfigPriPath);
@@ -20,6 +19,7 @@ namespace QMakeBuilder
 #if true
             data.DestDir = moduleToBuild.Locations[C.Win32Resource.OutputDirLKey];
 #else
+            var options = moduleToBuild.Options as C.Win32ResourceCompilerOptionCollection;
             data.DestDir = options.OutputDirectoryPath;
 #endif
 

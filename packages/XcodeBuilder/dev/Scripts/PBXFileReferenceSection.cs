@@ -12,9 +12,8 @@ namespace XcodeBuilder
             this.FileReferences = new System.Collections.Generic.List<PBXFileReference>();
         }
 
-        public PBXFileReference Get(string name, PBXFileReference.EType type, Opus.Core.Location location, System.Uri rootPath)
+        public PBXFileReference Get(string name, PBXFileReference.EType type, string path, System.Uri rootPath)
         {
-            var path = location.GetSinglePath();
             lock (this.FileReferences)
             {
                 foreach (var fileRef in this.FileReferences)
@@ -30,6 +29,12 @@ namespace XcodeBuilder
                 this.FileReferences.Add(newFileRef);
                 return newFileRef;
             }
+        }
+
+        public PBXFileReference Get(string name, PBXFileReference.EType type, Opus.Core.Location location, System.Uri rootPath)
+        {
+            var path = location.GetSinglePath();
+            return this.Get(name, type, path, rootPath);
         }
 
         private System.Collections.Generic.List<PBXFileReference> FileReferences

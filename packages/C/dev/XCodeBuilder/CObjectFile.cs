@@ -68,11 +68,11 @@ namespace XcodeBuilder
                 XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
                 var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
-                var options = moduleToBuild.Options as C.CompilerOptionCollection;
 #if true
                 var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
                 var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
 #else
+                var options = moduleToBuild.Options as C.CompilerOptionCollection;
                 var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
 #endif
                 buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);

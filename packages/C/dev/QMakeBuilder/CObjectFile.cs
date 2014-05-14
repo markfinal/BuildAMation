@@ -20,7 +20,6 @@ namespace QMakeBuilder
             }
 
             var node = moduleToBuild.OwningNode;
-            var options = moduleToBuild.Options as C.CompilerOptionCollection;
             var optionInterface = moduleToBuild.Options as C.ICCompilerOptions;
 
             var data = new QMakeData(node);
@@ -30,6 +29,7 @@ namespace QMakeBuilder
 #if true
             data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
 #else
+            var options = moduleToBuild.Options as C.CompilerOptionCollection;
             data.ObjectsDir = options.OutputDirectoryPath;
 #endif
             data.IncludePaths.AddRangeUnique(optionInterface.IncludePaths.ToStringArray());

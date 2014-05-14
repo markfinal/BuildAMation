@@ -148,11 +148,13 @@ namespace XcodeBuilder
                         // now add linker search paths
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                            var outputDir = moduleToBuild.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                            var outputDir = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                     }
                     else
@@ -181,11 +183,13 @@ namespace XcodeBuilder
                         buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                            var outputDir = moduleToBuild.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                            var outputDir = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                     }
                 }
@@ -241,11 +245,13 @@ namespace XcodeBuilder
                         buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                            var outputDir = dependency.Module.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                            var outputDir = dependency.Module.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                     }
                 }

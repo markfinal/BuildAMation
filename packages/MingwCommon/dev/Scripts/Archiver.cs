@@ -57,7 +57,8 @@ namespace MingwCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.StaticLibrary.StaticLibraryLocationKey
+                    C.StaticLibrary.OutputFileLocKey,
+                    C.StaticLibrary.OutputDirLocKey
                     );
                 return array;
             }

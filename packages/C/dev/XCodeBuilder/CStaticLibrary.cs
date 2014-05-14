@@ -76,7 +76,11 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+            #if true
+            var relPath = Opus.Core.RelativePathUtilities.GetPath(moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey], basePath);
+            #else
             var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
+            #endif
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
 
             // adding the group for the target
@@ -157,11 +161,13 @@ namespace XcodeBuilder
                         buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.Executable]));
+                            var outputDir = dependency.Module.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
                         {
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(System.IO.Path.GetDirectoryName(dependency.Module.Options.OutputPaths[C.OutputFileFlags.StaticLibrary]));
+                            var outputDir = dependency.Module.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
+                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                     }
                 }

@@ -73,7 +73,8 @@ namespace GccCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.ObjectFile.ObjectFileLocationKey
+                    C.ObjectFile.ObjectFileLocationKey,
+                    C.ObjectFile.ObjectFileDirLocationKey
                     );
                 return array;
             }

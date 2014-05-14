@@ -9,12 +9,17 @@ namespace GccCommon
         #region C.ILinkerOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
+            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
+            var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
                     {
+                    #if true
+                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFileLocKey].GetSinglePath();
+                        // TODO: isn't there an option for this on the tool?
+                        commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
+                    #else
                         string outputPathName = options.OutputFilePath;
                         if (outputPathName.Contains(" "))
                         {
@@ -24,10 +29,16 @@ namespace GccCommon
                         {
                             commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                         }
+                    #endif
                     }
                     break;
                 case C.ELinkerOutput.DynamicLibrary:
                     {
+                    #if true
+                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFileLocKey].GetSinglePath();
+                        // TODO: isn't there an option for this on the tool?
+                        commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
+                    #else
                         string outputPathName = options.OutputFilePath;
                         if (outputPathName.Contains(" "))
                         {
@@ -37,6 +48,7 @@ namespace GccCommon
                         {
                             commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                         }
+                    #endif
                         // TODO: this option needs to be pulled out of the common output type option
                         // TODO: this needs more work, re: revisions
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
@@ -44,6 +56,9 @@ namespace GccCommon
                         // see http://lists.apple.com/archives/unix-porting/2003/Oct/msg00032.html
                         if (Opus.Core.OSUtilities.IsUnixHosting)
                         {
+                        #if true
+                            commandLineBuilder.Add(System.String.Format("-Wl,-soname,{0}", outputPath));
+                        #else
                             if (outputPathName.Contains(" "))
                             {
                                 commandLineBuilder.Add(System.String.Format("-Wl,-soname,\"{0}\"", outputPathName));
@@ -52,9 +67,14 @@ namespace GccCommon
                             {
                                 commandLineBuilder.Add(System.String.Format("-Wl,-soname,{0}", outputPathName));
                             }
+                        #endif
                         }
                         else if (Opus.Core.OSUtilities.IsOSXHosting)
                         {
+                        #if true
+                        var filename = System.IO.Path.GetFileName(outputPath);
+                            commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
+                        #else
                             var filename = System.IO.Path.GetFileName(outputPathName);
                             if (filename.Contains(" "))
                             {
@@ -64,6 +84,7 @@ namespace GccCommon
                             {
                                 commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
                             }
+                        #endif
                         }
                     }
                     break;
@@ -188,12 +209,15 @@ namespace GccCommon
         }
         private static void GenerateMapFileCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                LinkerOptionCollection options = sender as LinkerOptionCollection;
+                //var options = sender as LinkerOptionCollection;
                 if (Opus.Core.OSUtilities.IsUnixHosting)
                 {
+                    #if true
+                    // TODO: map file
+                    #else
                     if (options.MapFilePath.Contains(" "))
                     {
                         commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
@@ -202,9 +226,13 @@ namespace GccCommon
                     {
                         commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", options.MapFilePath));
                     }
+                    #endif
                 }
                 else if (Opus.Core.OSUtilities.IsOSXHosting)
                 {
+                    #if true
+                    // TODO: map file
+                    #else
                     if (options.MapFilePath.Contains(" "))
                     {
                         commandLineBuilder.Add(System.String.Format("-Wl,-map,\"{0}\"", options.MapFilePath));
@@ -213,6 +241,7 @@ namespace GccCommon
                     {
                         commandLineBuilder.Add(System.String.Format("-Wl,-map,{0}", options.MapFilePath));
                     }
+                    #endif
                 }
             }
         }
@@ -221,6 +250,9 @@ namespace GccCommon
             var generateMapfile = option as Opus.Core.ValueTypeOption<bool>;
             if (generateMapfile.Value)
             {
+                #if true
+                // TODO: map file
+                #else
                 var generateMapfileOption = configuration.Options["LD_MAP_FILE_PATH"];
                 var options = sender as LinkerOptionCollection;
                 generateMapfileOption.AddUnique(options.MapFilePath);
@@ -228,6 +260,7 @@ namespace GccCommon
                 {
                     throw new Opus.Core.Exception("More than one map file location option has been set");
                 }
+                #endif
             }
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

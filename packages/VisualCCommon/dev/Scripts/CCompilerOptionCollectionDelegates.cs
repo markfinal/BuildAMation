@@ -191,7 +191,6 @@ namespace VisualCCommon
                 return null;
             }
             var processOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
-            var options = sender as CCompilerOptionCollection;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -775,7 +774,6 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary DebugTypeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
-            var options = sender as CCompilerOptionCollection;
             var attributeName = "DebugInformationFormat";
             if (!(sender as C.ICCompilerOptions).DebugSymbols)
             {
@@ -880,7 +878,6 @@ namespace VisualCCommon
         }
         private static void BrowseInformationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            var options = sender as C.CompilerOptionCollection;
             var enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
             var browseDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.ObjectFileDirLocationKey].GetSinglePath();
             switch (enumOption.Value)
@@ -903,7 +900,6 @@ namespace VisualCCommon
 #if true
             var enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var options = sender as C.CompilerOptionCollection;
             var browseLocDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.ObjectFileDirLocationKey];
             // the trailing directory separator is important, or unexpected rebuilds occur
             var browseDir = browseLocDir.IsValid ? browseLocDir.GetSinglePath() + "\\" : string.Empty;

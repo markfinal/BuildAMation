@@ -58,12 +58,21 @@ namespace ClangCommon
             var options = sender as CCompilerOptionCollection;
             if (null == options.OutputName)
             {
+                // TODO: why was this done?
+                #if true
+                #else
                 options.ObjectFilePath = null;
+                #endif
                 return;
             }
             commandLineBuilder.Add("-c");
             commandLineBuilder.Add("-o");
+            #if true
+            var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.ObjectFileLocationKey].GetSinglePath();
+            commandLineBuilder.Add(outputPath);
+            #else
             commandLineBuilder.Add(options.ObjectFilePath);
+            #endif
         }
         private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
