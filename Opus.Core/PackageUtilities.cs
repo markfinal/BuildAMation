@@ -689,10 +689,12 @@ namespace Opus.Core
                 byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
                 if (State.CompileWithDebugSymbols)
                 {
-                    var pdbFilename = System.IO.Path.ChangeExtension(State.ScriptAssemblyPathname, ".pdb");
-                    if (System.IO.File.Exists(pdbFilename))
+                    var debugInfoFilename = State.RunningMono ?
+                        State.ScriptAssemblyPathname + ".mdb" :
+                        System.IO.Path.ChangeExtension(State.ScriptAssemblyPathname, ".pdb");
+                    if (System.IO.File.Exists(debugInfoFilename))
                     {
-                        byte[] pdbBytes = System.IO.File.ReadAllBytes(pdbFilename);
+                        byte[] pdbBytes = System.IO.File.ReadAllBytes(debugInfoFilename);
                         scriptAssembly = System.Reflection.Assembly.Load(asmBytes, pdbBytes);
                     }
                 }
