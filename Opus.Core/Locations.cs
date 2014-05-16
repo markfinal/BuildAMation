@@ -83,6 +83,19 @@ namespace Opus.Core
             var output = builder.ToString().TrimEnd(separator.ToCharArray());
             return output;
         }
+
+        public string Stringify(string separator)
+        {
+            var builder = new System.Text.StringBuilder();
+            foreach (var item in this.list)
+            {
+                var locationPath = item.GetSinglePath(); // this can be mutable
+                builder.AppendFormat("{0}{1}", locationPath, separator);
+            }
+            // remove the trailing separator
+            var output = builder.ToString().TrimEnd(separator.ToCharArray());
+            return output;
+        }
     }
 
     /// <summary>
@@ -445,12 +458,25 @@ namespace Opus.Core
             {
                 this.ResolveDirectory(this.Base);
             }
+            else if (this.Base is FileLocation)
+            {
+                this.Results.Add(this.Base);
+            }
+            else if (!this.IsValid) // same as asking if this.Base is null
+            {
+                throw new Exception("Location has not been set");
+            }
+            else
+            {
+                throw new Exception("Base location is of an unknown type, {0}", this.Base.GetType().ToString());
+            }
 
-            this.Resolved = true;
             if (0 == this.Results.Count)
             {
                 throw new Exception("Location has been resolved, but has no results");
             }
+
+            this.Resolved = true;
         }
 
         public override Location SubDirectory(string subDirName)
