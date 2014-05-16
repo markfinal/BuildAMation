@@ -71,20 +71,18 @@ namespace Opus.Core
             this.AddRange(input);
         }
 
-#if false
-        // TODO: this has to be immutable
         public override string ToString(string separator)
         {
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
             {
-                builder.AppendFormat("{0}{1}", item.GetSinglePath(), separator);
+                var locationPath = item.ToString(); // this must be immutable
+                builder.AppendFormat("{0}{1}", locationPath, separator);
             }
             // remove the trailing separator
             var output = builder.ToString().TrimEnd(separator.ToCharArray());
             return output;
         }
-#endif
     }
 
     /// <summary>
@@ -495,6 +493,18 @@ namespace Opus.Core
             {
                 bool valid = (null != this.Base);
                 return valid;
+            }
+        }
+
+        public override string ToString()
+        {
+            if (this.Resolved)
+            {
+                return this.Results.ToString(" ");
+            }
+            else
+            {
+                return "Scaffold location is unresolved";
             }
         }
     }
