@@ -182,7 +182,9 @@ configs["Symlinks-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
                                     osx={"Native":None,"MakeFile":None})
 """
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
+"""
 configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+"""
 configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
 """
 configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
