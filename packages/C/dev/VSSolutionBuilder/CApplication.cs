@@ -146,7 +146,7 @@ namespace VSSolutionBuilder
 
                 var linkerOptions = applicationOptions as C.LinkerOptionCollection;
 #if true
-                configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+                configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDir];
 #else
                 configuration.OutputDirectory = linkerOptions.OutputDirectoryPath;
 #endif

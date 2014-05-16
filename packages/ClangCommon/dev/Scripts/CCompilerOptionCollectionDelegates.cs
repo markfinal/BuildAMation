@@ -68,7 +68,7 @@ namespace ClangCommon
             commandLineBuilder.Add("-c");
             commandLineBuilder.Add("-o");
             #if true
-            var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.ObjectFileLocationKey].GetSinglePath();
+            var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
             commandLineBuilder.Add(outputPath);
             #else
             commandLineBuilder.Add(options.ObjectFilePath);

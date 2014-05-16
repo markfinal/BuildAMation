@@ -9,22 +9,32 @@ namespace NativeBuilder
     {
         public object Build(FileUtilities.SymlinkFile moduleToBuild, out bool success)
         {
-            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+            var sourceLocation = moduleToBuild.SourceFileLocation;
+            var sourceFilePath = sourceLocation.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
-            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
+            var baseOptions = moduleToBuild.Options;
+            var node = moduleToBuild.OwningNode;
 
             // dependency checking
+
             {
+#if true
+                var inputLocations = new Opus.Core.LocationArray(
+                    sourceLocation
+                    );
+                var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                if (!RequiresBuilding(outputLocations, inputLocations))
+#else
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray(
                     sourceFilePath
                 );
                 Opus.Core.StringArray outputFiles = baseOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
+#endif
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
@@ -58,13 +68,23 @@ namespace NativeBuilder
             const string delimiter = "\"";
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
+#if true
+                var outputPath = moduleToBuild.Locations[FileUtilities.SymlinkFile.OutputFile].GetSinglePath();
+                commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, outputPath, delimiter));
+#else
                 commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink], delimiter));
+#endif
                 commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, sourceFilePath, delimiter));
             }
             else
             {
                 commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, sourceFilePath, delimiter));
+#if true
+                var outputPath = moduleToBuild.Locations[FileUtilities.SymlinkFile.OutputFile].GetSinglePath();
+                commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, outputPath, delimiter));
+#else
                 commandLineBuilder.Add(System.String.Format("{0}{1}{2}", delimiter, baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink], delimiter));
+#endif
             }
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ISymlinkTool));

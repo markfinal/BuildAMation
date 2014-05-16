@@ -22,7 +22,7 @@ namespace FileUtilities
             set;
         }
 
-        public void Include(Opus.Core.Target target, object outputFileEnum, params System.Type[] moduleTypes)
+        public void Include(Opus.Core.Target target, Opus.Core.LocationKey outputLocationKey, params System.Type[] moduleTypes)
         {
             // each file to copy needs to know where the parent was set to copy next to
             BesideModuleAttribute besideModule;
@@ -32,7 +32,7 @@ namespace FileUtilities
             foreach (var moduleType in moduleTypes)
             {
                 CopyFile file = new CopyFile(besideModule, dependentModule);
-                file.Set(moduleType, outputFileEnum);
+                file.Set(moduleType, outputLocationKey);
                 this.copyFiles.Add(file);
             }
         }
@@ -183,7 +183,7 @@ namespace FileUtilities
                 file.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
                     var options = module.Options as ICopyFileOptions;
                     options.DestinationModuleType = dependentModule;
-                    options.DestinationModuleOutputEnum = besideModule.OutputFileFlag;
+                    options.DestinationModuleOutputLocation = besideModule.OutputFileLocation;
                 };
             }
 

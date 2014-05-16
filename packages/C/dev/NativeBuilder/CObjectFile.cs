@@ -26,7 +26,7 @@ namespace NativeBuilder
 
             var compilerOptions = objectFileOptions as C.CompilerOptionCollection;
 
-            var depFilePath = DependencyGenerator.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey]);
+            var depFilePath = DependencyGenerator.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, moduleToBuild.Locations[C.ObjectFile.OutputDir]);
 
             var headerDependencyGeneration = (bool)Opus.Core.State.Get("C", "HeaderDependencyGeneration");
 
@@ -35,7 +35,7 @@ namespace NativeBuilder
                 var inputFiles = new Opus.Core.LocationArray();
                 inputFiles.Add(sourceLoc);
                 var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.ObjectFile.ObjectFileLocationKey
+                    C.ObjectFile.OutputFile
                     );
                 var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
                 var doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceLoc);

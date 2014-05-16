@@ -32,7 +32,8 @@ namespace QtCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    MocFile.MocdSourceFileLocationKey
+                    MocFile.OutputFile,
+                    MocFile.OutputDir
                     );
                 return array;
             }

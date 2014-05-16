@@ -17,7 +17,7 @@ namespace QMakeBuilder
             data.WinRCFiles.Add(sourceFilePath.GetSinglePath());
             data.Output = QMakeData.OutputType.WinResource;
 #if true
-            data.DestDir = moduleToBuild.Locations[C.Win32Resource.OutputDirLKey];
+            data.DestDir = moduleToBuild.Locations[C.Win32Resource.OutputDir];
 #else
             var options = moduleToBuild.Options as C.Win32ResourceCompilerOptionCollection;
             data.DestDir = options.OutputDirectoryPath;

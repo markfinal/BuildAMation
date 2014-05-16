@@ -16,7 +16,7 @@ namespace GccCommon
                 case C.ELinkerOutput.Executable:
                     {
                     #if true
-                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFileLocKey].GetSinglePath();
+                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
                         // TODO: isn't there an option for this on the tool?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     #else
@@ -35,7 +35,7 @@ namespace GccCommon
                 case C.ELinkerOutput.DynamicLibrary:
                     {
                     #if true
-                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFileLocKey].GetSinglePath();
+                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
                         // TODO: isn't there an option for this on the tool?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     #else

@@ -65,12 +65,14 @@ namespace CSharpTest1
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SimpleLibrary));
     }
 
+#if false
+    // TODO: rewrite for publishing
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishAssembliesForExecutable2 : FileUtilities.CopyFile
     {
         public PublishAssembliesForExecutable2()
         {
-            this.Set(typeof(SimpleLibrary), CSharp.OutputFileFlags.AssemblyFile);
+            this.Set(typeof(SimpleLibrary), CSharp.Assembly.OutputFile);
         }
 
         [FileUtilities.BesideModule(CSharp.OutputFileFlags.AssemblyFile)]
@@ -87,6 +89,7 @@ namespace CSharpTest1
     }
 #else
 #error No such FileUtilities package
+#endif
 #endif
 
     class ExecutableReferences : CSharp.Executable

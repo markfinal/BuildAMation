@@ -8,7 +8,7 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
     public class CopyFile : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
-        public static readonly Opus.Core.LocationKey CopyLocationKey = new Opus.Core.LocationKey("Copy");
+        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("CopiedFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
 
         public Opus.Core.Location SourceFileLocation
         {
@@ -51,13 +51,13 @@ namespace FileUtilities
             this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }
 
-        public void Set(System.Type moduleType, object outputFileEnum)
+        public void Set(System.Type moduleType, Opus.Core.LocationKey outputLocationKey)
         {
             this.AdditionalDependentModules.Add(moduleType);
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as ICopyFileOptions;
                 options.SourceModuleType = moduleType;
-                options.SourceModuleOutputEnum = outputFileEnum as System.Enum;
+                options.SourceModuleOutputLocation = outputLocationKey;
             };
         }
 
@@ -69,7 +69,7 @@ namespace FileUtilities
                 {
                     var options = module.Options as ICopyFileOptions;
                     options.DestinationModuleType = this.BesideModuleType;
-                    options.DestinationModuleOutputEnum = this.BesideModuleAttribute.OutputFileFlag;
+                    options.DestinationModuleOutputLocation = this.BesideModuleAttribute.OutputFileLocation;
                     options.DestinationRelativePath = this.BesideModuleAttribute.RelativePath;
                 };
 
@@ -96,7 +96,7 @@ namespace FileUtilities
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
                 var options = module.Options as ICopyFileOptions;
                 options.DestinationModuleType = dependentModuleType;
-                options.DestinationModuleOutputEnum = besideModule.OutputFileFlag;
+                options.DestinationModuleOutputLocation = besideModule.OutputFileLocation;
                 options.DestinationRelativePath = besideModule.RelativePath;
             };
 
@@ -131,7 +131,7 @@ namespace FileUtilities
             description.AppendFormat("{0} -> ", this.SourceFileLocation.GetSinglePath().ToString());
             if (null != this.BesideModuleType)
             {
-                description.AppendFormat("{0} {1}", this.BesideModuleType.ToString(), this.BesideModuleAttribute.OutputFileFlag);
+                description.AppendFormat("{0} {1}", this.BesideModuleType.ToString(), this.BesideModuleAttribute.OutputFileLocation);
             }
             else
             {

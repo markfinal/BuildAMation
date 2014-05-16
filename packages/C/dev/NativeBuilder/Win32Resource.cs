@@ -26,7 +26,7 @@ namespace NativeBuilder
                 var inputFiles = new Opus.Core.LocationArray();
                 inputFiles.Add(resourceLoc);
                 var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Win32Resource.OutputFileLKey
+                    C.Win32Resource.OutputFile
                     );
                 var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
                 if (!RequiresBuilding(outputFiles, inputFiles))
@@ -65,7 +65,7 @@ namespace NativeBuilder
             // add output path
             commandLineBuilder.Add(System.String.Format("{0}{1}",
                                                         compilerTool.OutputFileSwitch,
-                                                        moduleToBuild.Locations[C.Win32Resource.OutputFileLKey].GetSinglePath()));
+                                                        moduleToBuild.Locations[C.Win32Resource.OutputFile].GetSinglePath()));
 
             // add input path
             commandLineBuilder.Add(System.String.Format("{0}{1}", compilerTool.InputFileSwitch, resourceFilePath));

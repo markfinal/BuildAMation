@@ -30,16 +30,16 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("DestinationModuleTypeSetHandler", this["DestinationModuleType"]);
             }
         }
-        System.Enum ISymlinkOptions.DestinationModuleOutputEnum
+        Opus.Core.LocationKey ISymlinkOptions.DestinationModuleOutputLocation
         {
             get
             {
-                return this.GetReferenceTypeOption<System.Enum>("DestinationModuleOutputEnum", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Opus.Core.LocationKey>("DestinationModuleOutputLocation", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<System.Enum>("DestinationModuleOutputEnum", value);
-                this.ProcessNamedSetHandler("DestinationModuleOutputEnumSetHandler", this["DestinationModuleOutputEnum"]);
+                this.SetReferenceTypeOption<Opus.Core.LocationKey>("DestinationModuleOutputLocation", value);
+                this.ProcessNamedSetHandler("DestinationModuleOutputLocationSetHandler", this["DestinationModuleOutputLocation"]);
             }
         }
         System.Type ISymlinkOptions.SourceModuleType
@@ -54,16 +54,16 @@ namespace FileUtilities
                 this.ProcessNamedSetHandler("SourceModuleTypeSetHandler", this["SourceModuleType"]);
             }
         }
-        System.Enum ISymlinkOptions.SourceModuleOutputEnum
+        Opus.Core.LocationKey ISymlinkOptions.SourceModuleOutputLocation
         {
             get
             {
-                return this.GetReferenceTypeOption<System.Enum>("SourceModuleOutputEnum", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Opus.Core.LocationKey>("SourceModuleOutputLocation", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<System.Enum>("SourceModuleOutputEnum", value);
-                this.ProcessNamedSetHandler("SourceModuleOutputEnumSetHandler", this["SourceModuleOutputEnum"]);
+                this.SetReferenceTypeOption<Opus.Core.LocationKey>("SourceModuleOutputLocation", value);
+                this.ProcessNamedSetHandler("SourceModuleOutputLocationSetHandler", this["SourceModuleOutputLocation"]);
             }
         }
         #endregion

@@ -35,16 +35,29 @@ namespace CodeGenTest2
             var options = this as ICodeGenOptions;
             options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectory("src");
             options.OutputName = "function";
+
+            if (!owningNode.Module.Locations[CodeGenModule.OutputDir].IsValid)
+            {
+                (owningNode.Module.Locations[CodeGenModule.OutputDir] as Opus.Core.ScaffoldLocation).SetReference(owningNode.GetTargettedModuleBuildDirectoryLocation("src"));
+            }
         }
 
         public override void FinalizeOptions (Opus.Core.DependencyNode node)
         {
+#if true
+            if (!node.Module.Locations[CodeGenModule.OutputFile].IsValid)
+            {
+                var options = node.Module.Options as ICodeGenOptions;
+                (node.Module.Locations[CodeGenModule.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[CodeGenModule.OutputDir], options.OutputName + ".c", Opus.Core.Location.EExists.WillExist);
+            }
+#else
             if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
             {
                 var options = node.Module.Options as ICodeGenOptions;
                 string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
                 this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
             }
+#endif
 
             base.FinalizeOptions (node);
         }
@@ -82,7 +95,8 @@ namespace CodeGenTest2
     [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
     public abstract class CodeGenModule : Opus.Core.BaseModule, Opus.Core.IInjectModules
     {
-        public static readonly Opus.Core.LocationKey GeneratedSourceFileLocationKey = new Opus.Core.LocationKey("GeneratedSource");
+        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("GeneratedSource", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("GeneratedSourceDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
         [Opus.Core.RequiredModules]
         protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CodeGeneratorTool));

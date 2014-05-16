@@ -68,7 +68,8 @@ namespace ComposerXECommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.ObjectFile.ObjectFileLocationKey
+                    C.ObjectFile.OutputFile,
+                    C.ObjectFile.OutputDir
                     );
                 return array;
             }

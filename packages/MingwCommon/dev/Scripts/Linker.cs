@@ -128,7 +128,8 @@ namespace MingwCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.ExecutableLocationKey
+                    C.Application.OutputFile,
+                    C.Application.OutputDir
                     );
                 return array;
             }

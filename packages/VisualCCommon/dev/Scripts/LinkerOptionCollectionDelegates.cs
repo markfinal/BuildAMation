@@ -15,7 +15,7 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFileLocKey];
+                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputFileLocation.GetSinglePath()));
                     break;
                 default:
@@ -33,7 +33,7 @@ namespace VisualCCommon
                 case C.ELinkerOutput.DynamicLibrary:
                     {
                         var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                        var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFileLocKey];
+                        var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
                         returnVal.Add("OutputFile", outputFileLocation.GetSinglePath());
                         return returnVal;
                     }
@@ -171,7 +171,7 @@ namespace VisualCCommon
             {
                 commandLineBuilder.Add("-DLL");
                 var options = sender as LinkerOptionCollection;
-                var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.StaticImportLibraryLocationKey];
+                var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
                 // TODO: is this check necessary? isn't there always an import library for a DLL?
                 if (staticImportLibraryLoc.IsValid)
                 {
@@ -183,7 +183,7 @@ namespace VisualCCommon
         {
 #if true
             var options = sender as LinkerOptionCollection;
-            var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.StaticImportLibraryLocationKey];
+            var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
             // TODO: is this check necessary? isn't there always an import library for a DLL?
             if (!staticImportLibraryLoc.IsValid)
             {

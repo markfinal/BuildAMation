@@ -28,7 +28,7 @@ namespace C
             var locationMap = node.Module.Locations;
             var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
 
-            var outputFileDir = locationMap[C.Win32Resource.OutputDirLKey];
+            var outputFileDir = locationMap[C.Win32Resource.OutputDir];
             if (!outputFileDir.IsValid)
             {
                 var target = node.Target;
@@ -62,7 +62,14 @@ namespace C
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
 #if true
-            throw new System.NotImplementedException();
+            var locationMap = node.Module.Locations;
+            if (!locationMap[C.Win32Resource.OutputFile].IsValid)
+            {
+                var target = node.Target;
+                var resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
+                var objectFile = this.OutputName + resourceCompilerTool.CompiledResourceSuffix;
+                (locationMap[C.Win32Resource.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Win32Resource.OutputDir], objectFile, Opus.Core.Location.EExists.WillExist);
+            }
 #else
             if (!this.OutputPaths.Has(C.OutputFileFlags.Win32CompiledResource))
             {
@@ -71,9 +78,9 @@ namespace C
                 var objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + resourceCompilerTool.CompiledResourceSuffix;
                 this.CompiledResourceFilePath = objectPathname;
             }
+#endif
 
             base.FinalizeOptions(node);
-#endif
         }
 
         public string OutputName

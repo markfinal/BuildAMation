@@ -5,10 +5,12 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
+#if false
     [System.Flags]
     public enum OutputFileFlags
     {
         MocGeneratedSourceFile = (1 << 0),
         MocGeneratedSourceFileCollection = (1 << 1)
     }
+#endif
 }

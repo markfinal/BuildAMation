@@ -110,7 +110,7 @@ namespace C
             var locationMap = this.OwningNode.Module.Locations;
             var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
 
-            var outputFileDir = locationMap[C.ObjectFile.ObjectFileDirLocationKey];
+            var outputFileDir = locationMap[C.ObjectFile.OutputDir];
             if (!outputFileDir.IsValid)
             {
                 var target = node.Target;
@@ -200,7 +200,7 @@ namespace C
             var objectFileModule = node.Module as ObjectFile;
             if (null != objectFileModule)
             {
-                var outputFileLocation = node.Module.Locations[C.ObjectFile.ObjectFileLocationKey] as Opus.Core.ScaffoldLocation;
+                var outputFileLocation = node.Module.Locations[C.ObjectFile.OutputFile] as Opus.Core.ScaffoldLocation;
                 if (!outputFileLocation.IsValid)
                 {
                     var target = node.Target;
@@ -209,7 +209,7 @@ namespace C
                     var suffix = (options.OutputType == ECompilerOutput.Preprocess) ?
                         tool.PreprocessedOutputSuffix :
                         tool.ObjectFileSuffix;
-                    outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.ObjectFileDirLocationKey], this.OutputName + suffix, Opus.Core.Location.EExists.WillExist);
+                    outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.OutputDir], this.OutputName + suffix, Opus.Core.Location.EExists.WillExist);
                 }
             }
 #else

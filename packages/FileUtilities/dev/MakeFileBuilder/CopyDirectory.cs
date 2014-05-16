@@ -9,18 +9,27 @@ namespace MakeFileBuilder
     {
         public object Build(FileUtilities.CopyDirectory moduleToBuild, out bool success)
         {
-            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
+            var node = moduleToBuild.OwningNode;
 
-            MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
+            var dependents = new MakeFileVariableDictionary();
+            foreach (var childNode in node.Children)
             {
-                MakeFileData data = childNode.Data as MakeFileData;
+                var data = childNode.Data as MakeFileData;
+#if true
+                if (!data.VariableDictionary.ContainsKey(FileUtilities.CopyFile.OutputFile))
+                {
+                    throw new Opus.Core.Exception("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName);
+                }
+
+                dependents.Add(FileUtilities.CopyFile.OutputFile, data.VariableDictionary[FileUtilities.CopyFile.OutputFile]);
+#else
                 if (!data.VariableDictionary.ContainsKey(FileUtilities.OutputFileFlags.CopiedFile))
                 {
                     throw new Opus.Core.Exception("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName);
                 }
 
                 dependents.Add(FileUtilities.OutputFileFlags.CopiedFile, data.VariableDictionary[FileUtilities.OutputFileFlags.CopiedFile]);
+#endif
             }
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
@@ -28,6 +37,16 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+#if true
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                FileUtilities.CopyDirectory.OutputDir,
+                node.UniqueModuleName,
+                null,
+                dependents,
+                null,
+                null);
+#else
             // no output paths because this rule has no recipe
             MakeFileRule rule = new MakeFileRule(null,
                                                  FileUtilities.OutputFileFlags.CopiedDirectory,
@@ -36,6 +55,7 @@ namespace MakeFileBuilder
                                                  dependents,
                                                  null,
                                                  null);
+#endif
             if (null == node.Parent)
             {
                 // phony target

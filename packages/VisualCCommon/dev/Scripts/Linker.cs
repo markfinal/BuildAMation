@@ -131,10 +131,10 @@ namespace VisualCCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.OutputFileLocKey,
-                    C.Application.OutputDirLocKey,
-                    C.DynamicLibrary.StaticImportLibraryDirectoryLKey,
-                    C.DynamicLibrary.StaticImportLibraryLocationKey
+                    C.Application.OutputFile,
+                    C.Application.OutputDir,
+                    C.DynamicLibrary.ImportLibraryDir,
+                    C.DynamicLibrary.ImportLibraryFile
                     );
                 return array;
             }

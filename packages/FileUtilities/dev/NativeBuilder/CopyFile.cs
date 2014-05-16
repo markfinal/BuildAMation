@@ -9,24 +9,37 @@ namespace NativeBuilder
     {
         public object Build(FileUtilities.CopyFile moduleToBuild, out bool success)
         {
-            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+            var sourceLocation = moduleToBuild.SourceFileLocation;
+            var sourceFilePath = sourceLocation.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.BaseOptionCollection baseOptions = moduleToBuild.Options;
+            var baseOptions = moduleToBuild.Options;
+#if true
+            var copiedFilePath = moduleToBuild.Locations[FileUtilities.CopyFile.OutputFile].GetSinglePath();
+#else
             string copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+#endif
 
             Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             // dependency checking
             {
+#if true
+                var inputLocations = new Opus.Core.LocationArray(
+                    sourceLocation
+                    );
+                var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                if (!RequiresBuilding(outputLocations, inputLocations))
+#else
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray(
                     sourceFilePath
                 );
                 Opus.Core.StringArray outputFiles = baseOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
+#endif
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;

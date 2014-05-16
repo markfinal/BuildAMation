@@ -19,7 +19,11 @@ namespace NativeBuilder
             Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
 
             // dependency checking
+#if true
+            if (DirectoryUpToDate(moduleToBuild.Locations[FileUtilities.SymlinkFile.OutputFile], sourceFilePath))
+#else
             if (DirectoryUpToDate(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink], sourceFilePath))
+#endif
             {
                 Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                 success = true;
@@ -52,13 +56,23 @@ namespace NativeBuilder
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 commandLineBuilder.Add("/D");
+#if true
+                var outputPath = moduleToBuild.Locations[FileUtilities.SymlinkFile.OutputFile].GetSinglePath();
+                commandLineBuilder.Add(outputPath);
+#else
                 commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink]);
+#endif
                 commandLineBuilder.Add(sourceFilePath);
             }
             else
             {
                 commandLineBuilder.Add(sourceFilePath);
+#if true
+                var outputPath = moduleToBuild.Locations[FileUtilities.SymlinkFile.OutputFile].GetSinglePath();
+                commandLineBuilder.Add(outputPath);
+#else
                 commandLineBuilder.Add(baseOptions.OutputPaths[FileUtilities.OutputFileFlags.Symlink]);
+#endif
             }
 
             Opus.Core.ITool tool = target.Toolset.Tool(typeof(FileUtilities.ISymlinkTool));

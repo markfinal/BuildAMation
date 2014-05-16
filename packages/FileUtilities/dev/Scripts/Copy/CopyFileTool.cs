@@ -32,7 +32,7 @@ namespace FileUtilities
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    CopyFile.CopyLocationKey
+                    CopyFile.OutputFile
                     );
                 return array;
             }

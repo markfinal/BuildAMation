@@ -27,8 +27,19 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+#if true
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                QtCommon.MocFile.OutputFile,
+                node.UniqueModuleName,
+                null,
+                dependents,
+                null,
+                null);
+#else
             // no output paths because this rule has no recipe
             MakeFileRule rule = new MakeFileRule(null, QtCommon.OutputFileFlags.MocGeneratedSourceFileCollection, node.UniqueModuleName, null, dependents, null, null);
+#endif
             if (null == node.Parent)
             {
                 // phony target

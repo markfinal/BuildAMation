@@ -29,12 +29,14 @@ namespace Test5
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
+#if false
+    // TODO: rework with publishing
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishDynamicLibraries : FileUtilities.CopyFile
     {
         public PublishDynamicLibraries()
         {
-            this.Set(typeof(Test4.MyDynamicLib), C.OutputFileFlags.Executable);
+            this.Set(typeof(Test4.MyDynamicLib), C.DynamicLibrary.OutputFileLocKey);
         }
 
         [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
@@ -88,5 +90,6 @@ namespace Test5
     }
 #else
 #error Unrecognized FileUtilities package version
+#endif
 #endif
 }

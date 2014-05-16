@@ -17,11 +17,11 @@ namespace NativeBuilder
 
             // find dependent object files
             var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
-                C.ObjectFile.ObjectFileLocationKey
+                C.ObjectFile.OutputFile
                 );
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
-                keysToFilter.Add(C.Win32Resource.OutputFileLKey);
+                keysToFilter.Add(C.Win32Resource.OutputFile);
             }
             var dependentObjectFiles = new Opus.Core.LocationArray();
             if (null != node.Children)
@@ -47,7 +47,7 @@ namespace NativeBuilder
 
                 var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey,
-                    C.DynamicLibrary.StaticImportLibraryLocationKey
+                    C.DynamicLibrary.ImportLibraryFile
                     );
 
                 node.ExternalDependents.FilterOutputLocations(libraryKeysToFilter, dependentLibraryFiles);
@@ -65,7 +65,7 @@ namespace NativeBuilder
                 // don't dependency check against the static import library, since it is generally not rewritten
                 // when code changes
                 var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.OutputFileLocKey
+                    C.Application.OutputFile
                     // TODO pdbs, maps, etc
                     );
                 var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);

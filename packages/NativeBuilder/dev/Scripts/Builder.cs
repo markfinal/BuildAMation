@@ -93,6 +93,12 @@ namespace NativeBuilder
             return true;
         }
 
+        public static bool DirectoryUpToDate(Opus.Core.Location destinationDir, string sourceDir)
+        {
+            var destinationDirPath = destinationDir.GetSinglePath();
+            return DirectoryUpToDate(destinationDirPath, sourceDir);
+        }
+
         public enum FileRebuildStatus
         {
             AlwaysBuild,

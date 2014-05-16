@@ -13,10 +13,18 @@ namespace NativeBuilder
 
             // dependency checking
             {
+#if true
+                var inputLocations = new Opus.Core.LocationArray(
+                    Opus.Core.FileLocation.Get(tool.Executable((Opus.Core.BaseTarget)target), Opus.Core.Location.EExists.WillExist)
+                    );
+                var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                if (!RequiresBuilding(outputLocations, inputLocations))
+#else
                 Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
                 inputFiles.Add(tool.Executable((Opus.Core.BaseTarget)target));
                 Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, inputFiles))
+#endif
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;

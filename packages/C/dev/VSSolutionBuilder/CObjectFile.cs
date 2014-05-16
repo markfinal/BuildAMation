@@ -107,7 +107,7 @@ namespace VSSolutionBuilder
                 }
 
 #if true
-                configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+                configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.OutputDir];
 #else
                 var options = objectFileOptions as C.CompilerOptionCollection;
                 configuration.IntermediateDirectory = options.OutputDirectoryPath;

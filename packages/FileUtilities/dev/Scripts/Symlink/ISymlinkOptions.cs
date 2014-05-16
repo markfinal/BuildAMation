@@ -25,7 +25,7 @@ namespace FileUtilities
         }
 
         // StateOnly
-        System.Enum DestinationModuleOutputEnum
+        Opus.Core.LocationKey DestinationModuleOutputLocation
         {
             get;
             set;
@@ -39,7 +39,7 @@ namespace FileUtilities
         }
 
         // StateOnly
-        System.Enum SourceModuleOutputEnum
+        Opus.Core.LocationKey SourceModuleOutputLocation
         {
             get;
             set;

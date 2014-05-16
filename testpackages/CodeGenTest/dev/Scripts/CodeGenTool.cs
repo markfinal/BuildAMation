@@ -15,13 +15,17 @@ namespace CodeGenTest
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest.CodeGeneratorTool), baseTarget);
+            var module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest.CodeGeneratorTool), baseTarget);
 
             if (null == module)
             {
                 throw new Opus.Core.Exception("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString());
             }
 
+#if true
+            var outputLoc = (module as Opus.Core.BaseModule).Locations[C.Application.OutputFile];
+            return outputLoc.GetSinglePath();
+#else
             C.LinkerOptionCollection options = module.Options as C.LinkerOptionCollection;
             if (null == options)
             {
@@ -30,6 +34,7 @@ namespace CodeGenTest
 
             string exe = options.OutputFilePath;
             return exe;
+#endif
         }
 
         Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
@@ -37,7 +42,8 @@ namespace CodeGenTest
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    CodeGenModule.GeneratedSourceFileLocationKey
+                    CodeGenModule.OutputFile,
+                    CodeGenModule.OutputDir
                     );
                 return array;
             }

@@ -145,7 +145,7 @@ namespace VSSolutionBuilder
 
                 var dynamicLibOptions = dynamicLibraryOptions as C.LinkerOptionCollection;
 #if true
-                configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+                configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDir];
 #else
                 configuration.OutputDirectory = dynamicLibOptions.OutputDirectoryPath;
 #endif

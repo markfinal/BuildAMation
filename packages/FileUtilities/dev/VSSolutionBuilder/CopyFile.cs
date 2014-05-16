@@ -92,7 +92,11 @@ namespace VSSolutionBuilder
         {
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             var baseOptions = moduleToBuild.Options;
+#if true
+            var copiedFilePath = moduleToBuild.Locations[FileUtilities.CopyFile.OutputFile].GetSinglePath();
+#else
             var copiedFilePath = baseOptions.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+#endif
             var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
             var node = moduleToBuild.OwningNode;
             var target = node.Target;

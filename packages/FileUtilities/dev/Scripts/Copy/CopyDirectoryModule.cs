@@ -8,6 +8,8 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ICopyFileTool))]
     public class CopyDirectory : Opus.Core.BaseModule, Opus.Core.IModuleCollection
     {
+        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("CopiedDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+
         private Opus.Core.Array<CopyFile> copyFiles = new Opus.Core.Array<CopyFile>();
 
         public Opus.Core.Location CommonBaseDirectory

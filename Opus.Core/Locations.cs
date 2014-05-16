@@ -188,6 +188,7 @@ namespace Opus.Core
                 }
             }
             this.AbsolutePath = absolutePath;
+            this.Exists = exists;
         }
 
         public static FileLocation Get(string absolutePath, Location.EExists exists)
@@ -277,6 +278,7 @@ namespace Opus.Core
             this.TypeHint = typeHint;
             this.Exists = EExists.WillExist; // make no assumptions that a stub will exist
             this.Results = new LocationArray();
+            this.Resolved = false;
         }
 
         public ScaffoldLocation(Location baseLocation, string pattern, ETypeHint typeHint)
@@ -587,7 +589,11 @@ namespace Opus.Core
             {
                 if (this.map.ContainsKey(key))
                 {
-                    filteredLocations.Add(this.map[key]);
+                    var loc = this.map[key];
+                    if (loc.IsValid)
+                    {
+                        filteredLocations.Add(loc);
+                    }
                 }
             }
             return filteredLocations;
@@ -598,14 +604,17 @@ namespace Opus.Core
             var filteredLocations = new LocationArray();
             foreach (var key in this.map.Keys)
             {
-                if (key.Type == type)
+                if (key.Type != type)
                 {
-                    var location = this.map[key];
-                    if (location.Exists == exists)
-                    {
-                        filteredLocations.Add(this.map[key]);
-                    }
+                    continue;
                 }
+                var location = this.map[key];
+                if (location.Exists != exists)
+                {
+                    continue;
+                }
+                // TODO: why does this set the resolved state to true???
+                filteredLocations.Add(location);
             }
             return filteredLocations;
         }

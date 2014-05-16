@@ -15,7 +15,7 @@ namespace NativeBuilder
 
             // find dependent object files
             var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
-                C.ObjectFile.ObjectFileLocationKey
+                C.ObjectFile.OutputFile
                 );
             var dependentObjectFiles = new Opus.Core.LocationArray();
             if (null != node.Children)

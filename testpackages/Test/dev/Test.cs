@@ -19,11 +19,14 @@ namespace Test
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
+            // TODO: pdb support
+#if false
             if (optionCollection is VisualCCommon.LinkerOptionCollection)
             {
                 var linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
                 linkerOptions.ProgamDatabaseDirectoryPath = System.IO.Path.Combine(Opus.Core.State.BuildRoot, "symbols");
             }
+#endif
         }
     }
 

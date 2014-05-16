@@ -115,7 +115,7 @@ namespace MakeFileBuilder
             recipeBuilder.Append(dependentLibraryCommandLine.ToString(' '));
             var recipe = recipeBuilder.ToString();
             // replace primary target with $@
-            var primaryOutputKey = C.Application.OutputFileLocKey;
+            var primaryOutputKey = C.Application.OutputFile;
             var outputPath = moduleToBuild.Locations[primaryOutputKey].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
             var instanceName = MakeFile.InstanceName(node);
@@ -169,7 +169,7 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(moduleToBuild, C.Application.OutputFileLocKey, node.UniqueModuleName, dirsToCreate, inputVariables, null, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.Application.OutputFile, node.UniqueModuleName, dirsToCreate, inputVariables, null, recipes);
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

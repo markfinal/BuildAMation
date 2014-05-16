@@ -27,7 +27,7 @@ namespace QMakeBuilder
             data.Sources.Add(sourceFilePath);
             data.Output = QMakeData.OutputType.ObjectFile;
 #if true
-            data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+            data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.OutputDir];
 #else
             var options = moduleToBuild.Options as C.CompilerOptionCollection;
             data.ObjectsDir = options.OutputDirectoryPath;

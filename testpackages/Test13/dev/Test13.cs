@@ -103,6 +103,8 @@ namespace Test13
             );
     }
 
+#if false
+    // TODO: rework with publishing
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows | Opus.Core.EPlatform.Unix)]
     class PublishDynamicLibraries : FileUtilities.CopyFileCollection
@@ -163,6 +165,7 @@ namespace Test13
     }
 #else
 #error Unknown FileUtilities package version
+#endif
 #endif
 }
 

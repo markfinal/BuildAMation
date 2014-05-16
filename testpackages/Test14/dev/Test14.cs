@@ -101,6 +101,8 @@ namespace Test14
         );
     }
 
+#if false
+    // TODO: rework with publishing
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishDynamicLibraries : FileUtilities.CopyFileCollection
     {
@@ -129,5 +131,6 @@ namespace Test14
     }
 #else
 #error Unknown FileUtilities package version
+#endif
 #endif
 }

@@ -119,7 +119,7 @@ namespace VisualCCommon
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
 #if true
-            var outputFileLoc = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.ObjectFileLocationKey];
+            var outputFileLoc = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputFile];
             var enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -185,7 +185,7 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
-            var outputFileLoc = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.ObjectFileLocationKey];
+            var outputFileLoc = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputFile];
             if (!outputFileLoc.IsValid)
             {
                 return null;
@@ -879,7 +879,7 @@ namespace VisualCCommon
         private static void BrowseInformationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             var enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
-            var browseDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.ObjectFileDirLocationKey].GetSinglePath();
+            var browseDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputDir].GetSinglePath();
             switch (enumOption.Value)
             {
                 case EBrowseInformation.None:
@@ -900,7 +900,7 @@ namespace VisualCCommon
 #if true
             var enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var browseLocDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+            var browseLocDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputDir];
             // the trailing directory separator is important, or unexpected rebuilds occur
             var browseDir = browseLocDir.IsValid ? browseLocDir.GetSinglePath() + "\\" : string.Empty;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)

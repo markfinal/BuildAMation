@@ -59,10 +59,23 @@ namespace QtCommon
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
+#if true
+            var module = node.Module;
+            if (module is QtCommon.MocFile)
+            {
+                var mocFile = module.Locations[MocFile.OutputFile] as Opus.Core.ScaffoldLocation;
+                if (!mocFile.IsValid)
+                {
+                    var mocOutputPath = (this as IMocOptions).MocOutputPath;
+                    mocFile.SetReference(Opus.Core.FileLocation.Get(mocOutputPath, Opus.Core.Location.EExists.WillExist));
+                }
+            }
+#else
             if (!this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
             {
                 this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
             }
+#endif
 
             base.FinalizeOptions(node);
         }

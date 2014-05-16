@@ -15,16 +15,18 @@ namespace FileUtilities
 
         public BesideModuleAttribute(object flag, string relativePath)
         {
+#if true
+            throw new System.NotSupportedException();
+#else
             if (!flag.GetType().IsEnum)
             {
-                throw new Opus.Core.Exception("Object is not of enum type");
+                throw new Opus.Core.Exception("Flag is not of type enum");
             }
-
-            this.OutputFileFlag = flag as System.Enum;
             this.RelativePath = relativePath;
+#endif
         }
 
-        public System.Enum OutputFileFlag
+        public Opus.Core.LocationKey OutputFileLocation
         {
             get;
             private set;

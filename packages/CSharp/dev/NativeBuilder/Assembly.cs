@@ -9,18 +9,30 @@ namespace NativeBuilder
     {
         public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule assemblyModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = assemblyModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;
-            CSharp.IOptions options = assemblyOptions as CSharp.IOptions;
+            var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = assemblyModule.OwningNode;
+            var target = node.Target;
+            var assemblyOptions = assemblyModule.Options;
+            var options = assemblyOptions as CSharp.IOptions;
 
             if (node.ExternalDependents != null)
             {
+#if true
+                var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    CSharp.Assembly.OutputFile
+                    );
+                var dependentAssemblies = new Opus.Core.LocationArray();
+                node.ExternalDependents.FilterOutputLocations(keyFilters, dependentAssemblies);
+
+                foreach (var loc in dependentAssemblies)
+                {
+                    options.References.Add(loc.GetSinglePath());
+                }
+#else
                 Opus.Core.StringArray dependentAssemblies = new Opus.Core.StringArray();
                 node.ExternalDependents.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, dependentAssemblies);
-
                 options.References.AddRange(dependentAssemblies);
+#endif
             }
 
             Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
@@ -181,8 +193,18 @@ namespace NativeBuilder
 
             // dependency checking
             {
+#if true
+                var inputLocations = new Opus.Core.LocationArray();
+                foreach (var source in sourceFiles)
+                {
+                    inputLocations.Add(Opus.Core.FileLocation.Get(source));
+                }
+                var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                if (!RequiresBuilding(outputLocations, inputLocations))
+#else
                 Opus.Core.StringArray outputFiles = assemblyOptions.OutputPaths.Paths;
                 if (!RequiresBuilding(outputFiles, sourceFiles))
+#endif
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;

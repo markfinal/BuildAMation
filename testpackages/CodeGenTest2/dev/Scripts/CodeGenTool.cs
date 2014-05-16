@@ -17,19 +17,24 @@ namespace CodeGenTest2
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            Opus.Core.IModule module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest2.CodeGeneratorTool), baseTarget);
+            var module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest2.CodeGeneratorTool), baseTarget);
             if (null == module)
             {
                 throw new Opus.Core.Exception("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString());
             }
 
-            CSharp.OptionCollection options = module.Options as CSharp.OptionCollection;
+#if true
+            var outputLoc = (module as Opus.Core.BaseModule).Locations[CSharp.Assembly.OutputFile];
+            return outputLoc.GetSinglePath();
+#else
+            var options = module.Options as CSharp.OptionCollection;
             if (null == options)
             {
                 throw new Opus.Core.Exception("CodeGeneratorTool options are not derived from CSharp.OptionCollection");
             }
 
             return options.OutputFilePath;
+#endif
         }
 
         Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
@@ -37,7 +42,8 @@ namespace CodeGenTest2
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    CodeGenModule.GeneratedSourceFileLocationKey
+                    CodeGenModule.OutputFile,
+                    CodeGenModule.OutputDir
                     );
                 return array;
             }

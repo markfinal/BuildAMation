@@ -25,6 +25,8 @@ namespace OpenCLTest1
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
+#if false
+    // TODO: rework with publishing
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class CopyKernels : FileUtilities.CopyFileCollection
     {
@@ -53,5 +55,6 @@ namespace OpenCLTest1
     }
 #else
 #error Unknown FileUtilities package version
+#endif
 #endif
 }

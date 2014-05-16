@@ -28,7 +28,7 @@ namespace FileUtilities
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    SymlinkBase.SymlinkLocationKey
+                    SymlinkBase.OutputFile
                     );
                 return array;
             }

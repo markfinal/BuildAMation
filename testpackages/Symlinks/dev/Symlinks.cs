@@ -24,6 +24,8 @@ namespace Symlinks
         }
     }
 
+#if false
+    // TODO: rework with publishing
     class SymLinkToFileNextTo : FileUtilities.SymlinkFile
     {
         public SymLinkToFileNextTo()
@@ -39,12 +41,13 @@ namespace Symlinks
         [FileUtilities.BesideModule(FileUtilities.OutputFileFlags.Symlink)]
         System.Type nextTo = typeof(SymLinkToFile);
     }
+#endif
 
     class SymLinkToBuiltFile : FileUtilities.SymlinkFile
     {
         public SymLinkToBuiltFile()
         {
-            this.Set(typeof(SymLinkToFile), FileUtilities.OutputFileFlags.Symlink);
+            this.Set(typeof(SymLinkToFile), FileUtilities.SymlinkFile.OutputFile);
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "LinkedBuiltFile.txt";
@@ -74,6 +77,8 @@ namespace Symlinks
         }
     }
 
+#if false
+    // TODO: rework with publication
     class SymlinkToDirectoryNextTo : FileUtilities.SymlinkDirectory
     {
         public SymlinkToDirectoryNextTo()
@@ -89,13 +94,14 @@ namespace Symlinks
         [FileUtilities.BesideModule(FileUtilities.OutputFileFlags.Symlink)]
         System.Type nextTo = typeof(SymlinkToDirectory);
     }
+#endif
 
     // this one is a bit unusual
     class SymlinkToBuiltDir : FileUtilities.SymlinkDirectory
     {
         public SymlinkToBuiltDir()
         {
-            this.Set(typeof(SymlinkToDirectory), FileUtilities.OutputFileFlags.Symlink);
+            this.Set(typeof(SymlinkToDirectory), FileUtilities.SymlinkFile.OutputFile);
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as FileUtilities.ISymlinkOptions;
                 options.TargetName = "LinkedBuiltDir";

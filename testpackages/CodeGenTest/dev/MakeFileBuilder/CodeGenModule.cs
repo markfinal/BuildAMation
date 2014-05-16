@@ -14,7 +14,10 @@ namespace MakeFileBuilder
 
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(toolExePath);
+#if true
+#else
             Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
+#endif
 
             // at this point, we know the node outputs need building
 
@@ -48,7 +51,18 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+#if true
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                CodeGenTest.CodeGenModule.OutputFile,
+                node.UniqueModuleName,
+                dirsToCreate,
+                null,
+                inputFiles,
+                recipes);
+#else
             MakeFileRule rule = new MakeFileRule(codeGenModuleOptions.OutputPaths, CodeGenTest.OutputFileFlags.GeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+#endif
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

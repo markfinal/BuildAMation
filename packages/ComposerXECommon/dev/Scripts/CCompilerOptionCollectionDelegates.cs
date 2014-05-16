@@ -74,7 +74,7 @@ namespace ComposerXECommon
                     {
                         commandLineBuilder.Add("-c");
                     #if true
-                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.ObjectFileLocationKey].GetSinglePath();
+                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
                         // TODO: isn't there an option on the tool for the flag?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     #else
@@ -94,7 +94,7 @@ namespace ComposerXECommon
                     {
                         commandLineBuilder.Add("-E");
                     #if true
-                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.ObjectFileLocationKey].GetSinglePath();
+                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
                         // TODO: isn't there an option on the tool for the flag?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     #else

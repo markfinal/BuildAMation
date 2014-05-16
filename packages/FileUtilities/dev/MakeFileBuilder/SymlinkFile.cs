@@ -75,6 +75,16 @@ namespace MakeFileBuilder
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+#if true
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                FileUtilities.SymlinkFile.OutputFile,
+                node.UniqueModuleName,
+                dirsToCreate,
+                null,
+                new Opus.Core.StringArray(sourceFilePath),
+                recipes);
+#else
             MakeFileRule rule = new MakeFileRule(baseOptions.OutputPaths,
                                                  FileUtilities.OutputFileFlags.Symlink,
                                                  node.UniqueModuleName,
@@ -82,6 +92,7 @@ namespace MakeFileBuilder
                                                  null,
                                                  new Opus.Core.StringArray(sourceFilePath),
                                                  recipes);
+#endif
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

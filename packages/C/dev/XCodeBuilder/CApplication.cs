@@ -16,7 +16,7 @@ namespace XcodeBuilder
 
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
 #if true
-            var executableLocation = moduleToBuild.Locations[C.Application.OutputFileLocKey];
+            var executableLocation = moduleToBuild.Locations[C.Application.OutputFile];
 #else
             var outputPath = options.OutputPaths[C.OutputFileFlags.Executable];
 #endif
@@ -78,7 +78,7 @@ namespace XcodeBuilder
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
 #if true
-            var outputDirLoc = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+            var outputDirLoc = moduleToBuild.Locations[C.Application.OutputDir];
             var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
 #else
             var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
@@ -147,7 +147,7 @@ namespace XcodeBuilder
                         // now add linker search paths
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            var outputDir = moduleToBuild.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            var outputDir = moduleToBuild.Locations[C.Application.OutputDir].GetSinglePath();
                             buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
@@ -182,7 +182,7 @@ namespace XcodeBuilder
                         buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            var outputDir = dependency.Module.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            var outputDir = dependency.Module.Locations[C.Application.OutputDir].GetSinglePath();
                             buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
@@ -244,7 +244,7 @@ namespace XcodeBuilder
                         buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            var outputDir = moduleToBuild.Locations[C.Application.OutputDirLocKey].GetSinglePath();
+                            var outputDir = moduleToBuild.Locations[C.Application.OutputDir].GetSinglePath();
                             buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)

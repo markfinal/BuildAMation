@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace FileUtilities
 {
+#if false
     public enum OutputFileFlags
     {
         CopiedFile           = (1 << 0),
@@ -12,4 +13,5 @@ namespace FileUtilities
         CopiedDirectory      = (1 << 2),
         Symlink              = (1 << 3),
     }
+#endif
 }

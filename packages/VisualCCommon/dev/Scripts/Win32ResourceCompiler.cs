@@ -56,7 +56,8 @@ namespace VisualCCommon
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Win32Resource.OutputFileLKey
+                    C.Win32Resource.OutputFile,
+                    C.Win32Resource.OutputDir
                     );
                 return array;
             }

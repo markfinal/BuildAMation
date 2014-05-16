@@ -9,12 +9,16 @@ namespace MingwCommon
         #region C.ILinkerOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.ELinkerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
-            LinkerOptionCollection options = sender as LinkerOptionCollection;
+            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
+            var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
+#if true
+                    var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                    commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
+#else
                     string outputPathName = options.OutputFilePath;
                     if (outputPathName.Contains(" "))
                     {
@@ -24,6 +28,7 @@ namespace MingwCommon
                     {
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
                     }
+#endif
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
@@ -65,11 +70,18 @@ namespace MingwCommon
         }
         private static void DynamicLibraryCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
+            var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
                 commandLineBuilder.Add("-shared");
-                LinkerOptionCollection options = sender as LinkerOptionCollection;
+                var options = sender as LinkerOptionCollection;
+#if true
+                if (options.OwningNode.Module.Locations.Contains(C.DynamicLibrary.ImportLibraryFile))
+                {
+                    var outputPath = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile].GetSinglePath();
+                    commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", outputPath));
+                }
+#else
                 if (null != options.StaticImportLibraryFilePath)
                 {
                     if (options.StaticImportLibraryFilePath.Contains(" "))
@@ -81,6 +93,7 @@ namespace MingwCommon
                         commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", options.StaticImportLibraryFilePath));
                     }
                 }
+#endif
             }
         }
         private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -108,10 +121,13 @@ namespace MingwCommon
         }
         private static void GenerateMapFileCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+#if true
+            // TODO: map file
+#else
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                LinkerOptionCollection options = sender as LinkerOptionCollection;
+                var options = sender as LinkerOptionCollection;
                 if (options.MapFilePath.Contains(" "))
                 {
                     commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
@@ -121,6 +137,7 @@ namespace MingwCommon
                     commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", options.MapFilePath));
                 }
             }
+#endif
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {

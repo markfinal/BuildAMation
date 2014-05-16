@@ -314,8 +314,12 @@ namespace VSSolutionBuilder
                 vcsCompiler = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcsCompiler);
 
+#if true
+                configuration.OutputDirectory = moduleToBuild.Locations[CSharp.Assembly.OutputDirectory];
+#else
                 string outputDirectory = (options as CSharp.OptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;
+#endif
 
                 if (options is VisualStudioProcessor.IVisualStudioSupport)
                 {

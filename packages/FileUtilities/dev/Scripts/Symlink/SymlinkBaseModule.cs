@@ -8,7 +8,7 @@ namespace FileUtilities
     [Opus.Core.ModuleToolAssignment(typeof(ISymlinkTool))]
     public abstract class SymlinkBase : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
-        public static readonly Opus.Core.LocationKey SymlinkLocationKey = new Opus.Core.LocationKey("Symlink");
+        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("Symlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
 
         public Opus.Core.Location SourceFileLocation
         {
@@ -33,13 +33,13 @@ namespace FileUtilities
             this.AdditionalDependentModules = new Opus.Core.TypeArray();
         }
 
-        public void Set(System.Type moduleType, object outputFileEnum)
+        public void Set(System.Type moduleType, Opus.Core.LocationKey outputLocation)
         {
             this.AdditionalDependentModules.Add(moduleType);
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as ISymlinkOptions;
                 options.SourceModuleType = moduleType;
-                options.SourceModuleOutputEnum = outputFileEnum as System.Enum;
+                options.SourceModuleOutputLocation = outputLocation;
             };
         }
 
@@ -65,7 +65,7 @@ namespace FileUtilities
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delegateTarget) {
                 var options = module.Options as ISymlinkOptions;
                 options.DestinationModuleType = dependentModule;
-                options.DestinationModuleOutputEnum = besideModule.OutputFileFlag;
+                options.DestinationModuleOutputLocation = besideModule.OutputFileLocation;
             };
 
             return new Opus.Core.TypeArray(dependentModule);

@@ -24,8 +24,11 @@ namespace MakeFileBuilder
             Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
+#if true
+#else
             Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
             node.FilterOutputPaths(QtCommon.OutputFileFlags.MocGeneratedSourceFile, outputFiles);
+#endif
 
             // at this point, we know the node outputs need building
 
@@ -71,7 +74,18 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+#if true
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                QtCommon.MocFile.OutputFile,
+                node.UniqueModuleName,
+                dirsToCreate,
+                null,
+                inputFiles,
+                recipes);
+#else
             MakeFileRule rule = new MakeFileRule(mocFileOptions.OutputPaths, QtCommon.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
+#endif
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))

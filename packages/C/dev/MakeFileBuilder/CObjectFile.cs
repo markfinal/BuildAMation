@@ -50,7 +50,7 @@ namespace MakeFileBuilder
             }
             recipe += System.String.Format(" {0} $<", commandLineBuilder.ToString(' '));
             // replace target with $@
-            var outputPath = moduleToBuild.Locations[C.ObjectFile.ObjectFileLocationKey].GetSinglePath();
+            var outputPath = moduleToBuild.Locations[C.ObjectFile.OutputFile].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
 
             var recipes = new Opus.Core.StringArray();
@@ -61,7 +61,7 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(moduleToBuild, C.ObjectFile.ObjectFileLocationKey, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.ObjectFile.OutputFile, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))

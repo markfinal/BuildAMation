@@ -44,7 +44,7 @@ namespace MakeFileBuilder
             var compilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
 
             // add output path
-            var outputPath = moduleToBuild.Locations[C.Win32Resource.OutputFileLKey].GetSinglePath();
+            var outputPath = moduleToBuild.Locations[C.Win32Resource.OutputFile].GetSinglePath();
             commandLineBuilder.Add(System.String.Format("{0}{1}",
                                                         compilerTool.OutputFileSwitch,
                                                         outputPath));
@@ -72,7 +72,7 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(moduleToBuild, C.Win32Resource.OutputFileLKey, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
+            var rule = new MakeFileRule(moduleToBuild, C.Win32Resource.OutputFile, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
             makeFile.RuleArray.Add(rule);
 
             using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))

@@ -18,9 +18,9 @@ namespace FileUtilities
             var options = this as ISymlinkOptions;
             options.TargetName = null;
             options.DestinationModuleType = null;
-            options.DestinationModuleOutputEnum = null;
+            options.DestinationModuleOutputLocation = null;
             options.SourceModuleType = null;
-            options.SourceModuleOutputEnum = null;
+            options.SourceModuleOutputLocation = null;
         }
         #endregion
 
@@ -38,6 +38,8 @@ namespace FileUtilities
                 {
                     throw new Opus.Core.Exception("Source module to symlink from '{0}' has not been created", options.SourceModuleType.ToString());
                 }
+#if true
+#else
                 string sourceModuleOutputPath = sourceModule.Options.OutputPaths[options.SourceModuleOutputEnum];
                 if (null == sourceModuleOutputPath)
                 {
@@ -46,8 +48,43 @@ namespace FileUtilities
                                                   options.SourceModuleOutputEnum.ToString());
                 }
                 (node.Module as SymlinkBase).SourceFileLocation = Opus.Core.FileLocation.Get(sourceModuleOutputPath, Opus.Core.Location.EExists.WillExist);
+#endif
             }
 
+#if true
+            if (!node.Module.Locations[SymlinkFile.OutputFile].IsValid)
+            {
+                Opus.Core.Location destinationDir;
+                if (null != options.DestinationModuleType)
+                {
+                    var destinationModule = Opus.Core.ModuleUtilities.GetModule(options.DestinationModuleType, baseTarget);
+                    if (null == destinationModule)
+                    {
+                        throw new Opus.Core.Exception("Module to symlink next to '{0}' has not been created", options.DestinationModuleType.ToString());
+                    }
+                    destinationDir = (destinationModule as Opus.Core.BaseModule).Locations[options.DestinationModuleOutputLocation];
+                }
+                else
+                {
+                    destinationDir = node.Module.Locations[Opus.Core.State.ModuleBuildDirLocationKey];
+                }
+
+                string targetName;
+                if (null != options.TargetName)
+                {
+                    targetName = options.TargetName;
+                }
+                else
+                {
+                    var module = node.Module as SymlinkBase;
+                    var filename = System.IO.Path.GetFileName(module.SourceFileLocation.GetSinglePath());
+                    targetName = filename;
+                }
+
+                var outputFile = new Opus.Core.ScaffoldLocation(destinationDir, targetName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                (node.Module.Locations[SymlinkFile.OutputFile] as Opus.Core.ScaffoldLocation).SetReference(outputFile);
+            }
+#else
             if (null == this.OutputPaths[OutputFileFlags.Symlink])
             {
                 string destinationDirectory;
@@ -80,6 +117,7 @@ namespace FileUtilities
 
                 this.OutputPaths[OutputFileFlags.Symlink] = System.IO.Path.Combine(destinationDirectory, targetName);
             }
+#endif
 
             base.FinalizeOptions (node);
         }

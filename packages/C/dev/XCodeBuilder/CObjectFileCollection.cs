@@ -32,7 +32,7 @@ namespace XcodeBuilder
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
 #if true
-            var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.ObjectFileDirLocationKey];
+            var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.OutputDir];
             var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
 #else
             var options = moduleToBuild.Options as C.CompilerOptionCollection;

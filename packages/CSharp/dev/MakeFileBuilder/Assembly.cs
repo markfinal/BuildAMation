@@ -23,6 +23,19 @@ namespace MakeFileBuilder
                 {
                     if (null != dependentNode.Data)
                     {
+#if true
+                        var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
+                            CSharp.Assembly.OutputFile
+                            );
+                        var assemblyLocations = new Opus.Core.LocationArray();
+                        dependentNode.FilterOutputLocations(keyFilters, assemblyLocations);
+
+                        var csharpOptions = options as CSharp.IOptions;
+                        foreach (var loc in assemblyLocations)
+                        {
+                            csharpOptions.References.Add(loc.GetSinglePath());
+                        }
+#else
                         Opus.Core.StringArray assemblyPaths = new Opus.Core.StringArray();
                         dependentNode.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, assemblyPaths);
                         (options as CSharp.IOptions).References.AddRange(assemblyPaths);
@@ -30,6 +43,7 @@ namespace MakeFileBuilder
                         MakeFileData data = dependentNode.Data as MakeFileData;
                         inputVariables.Add(CSharp.OutputFileFlags.AssemblyFile, data.VariableDictionary[CSharp.OutputFileFlags.AssemblyFile]);
                         dataArray.Add(data);
+#endif
                     }
                 }
             }
@@ -233,7 +247,18 @@ namespace MakeFileBuilder
 
             MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
+#if true
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                CSharp.Assembly.OutputFile,
+                node.UniqueModuleName,
+                dirsToCreate,
+                inputVariables,
+                null,
+                recipes);
+#else
             MakeFileRule rule = new MakeFileRule(assemblyOptions.OutputPaths, CSharp.OutputFileFlags.AssemblyFile, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
+#endif
             makeFile.RuleArray.Add(rule);
 
             string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

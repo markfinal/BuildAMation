@@ -9,8 +9,8 @@ namespace CSharp
         #region IOptions Option delegates
         private static void TargetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            OptionCollection options = sender as OptionCollection;
-            Opus.Core.ValueTypeOption<ETarget> enumOption = option as Opus.Core.ValueTypeOption<ETarget>;
+            var options = sender as OptionCollection;
+            var enumOption = option as Opus.Core.ValueTypeOption<ETarget>;
             switch (enumOption.Value)
             {
                 case ETarget.Executable:
@@ -28,7 +28,11 @@ namespace CSharp
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
-            string outputPathName = options.OutputFilePath;
+#if true
+            var outputPath = options.OwningNode.Module.Locations[CSharp.Assembly.OutputFile].GetSinglePath();
+            commandLineBuilder.Add(System.String.Format("/out:{0}", outputPath));
+#else
+            var outputPathName = options.OutputFilePath;
             if (outputPathName.Contains(" "))
             {
                 commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", outputPathName));
@@ -37,6 +41,7 @@ namespace CSharp
             {
                 commandLineBuilder.Add(System.String.Format("/out:{0}", outputPathName));
             }
+#endif
         }
         private static VisualStudioProcessor.ToolAttributeDictionary TargetVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
@@ -139,6 +144,9 @@ namespace CSharp
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
                         {
                             commandLineBuilder.Add("/debug+");
+#if true
+                            // TODO: pdbs
+#else
                             commandLineBuilder.Add("/debug:pdbinfo");
                             string pdbPathName = options.ProgramDatabaseFilePath;
                             if (pdbPathName.Contains(" "))
@@ -149,6 +157,7 @@ namespace CSharp
                             {
                                 commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbPathName));
                             }
+#endif
                         }
                         else
                         {
@@ -161,6 +170,9 @@ namespace CSharp
                         if (Opus.Core.OSUtilities.IsWindowsHosting)
                         {
                             commandLineBuilder.Add("/debug+");
+#if true
+                            // TODO: pdbs
+#else
                             commandLineBuilder.Add("/debug:full");
                             string pdbPathName = options.ProgramDatabaseFilePath;
                             if (pdbPathName.Contains(" "))
@@ -171,6 +183,7 @@ namespace CSharp
                             {
                                 commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbPathName));
                             }
+#endif
                         }
                         else
                         {

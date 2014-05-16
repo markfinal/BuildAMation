@@ -56,6 +56,8 @@ namespace CSharp
             set;
         }
 
+#if true
+#else
         public string OutputDirectoryPath
         {
             get;
@@ -85,17 +87,44 @@ namespace CSharp
                 this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = value;
             }
         }
+#endif
 
         protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
-            this.OutputDirectoryPath = node.GetTargettedModuleBuildDirectory("bin");
+            (node.Module.Locations[Assembly.OutputDirectory] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Opus.Core.State.ModuleBuildDirLocationKey], "bin", Opus.Core.Location.EExists.WillExist);
         }
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
             var options = this as IOptions;
 
+#if true
+            if (!node.Module.Locations[Assembly.OutputFile].IsValid)
+            {
+                string outputSuffix;
+                switch (options.Target)
+                {
+                    case ETarget.Executable:
+                    case ETarget.WindowsExecutable:
+                        outputSuffix = ".exe";
+                        break;
+
+                    case ETarget.Library:
+                        outputSuffix = ".dll";
+                        break;
+
+                    case ETarget.Module:
+                        outputSuffix = ".netmodule";
+                        break;
+
+                    default:
+                        throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
+                }
+
+                (node.Module.Locations[Assembly.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Assembly.OutputDirectory], this.OutputName + outputSuffix, Opus.Core.Location.EExists.WillExist);
+            }
+#else
             if (!this.OutputPaths.Has(OutputFileFlags.AssemblyFile))
             {
                 string outputSuffix;
@@ -121,7 +150,11 @@ namespace CSharp
                 string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + outputSuffix;
                 this.OutputFilePath = outputPathName;
             }
+#endif
 
+#if true
+            // TODO pdbs
+#else
             if ((options.DebugInformation != EDebugInformation.Disabled) && !this.OutputPaths.Has(OutputFileFlags.ProgramDatabaseFile))
             {
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
@@ -130,6 +163,7 @@ namespace CSharp
                     this.ProgramDatabaseFilePath = pdbPathname;
                 }
             }
+#endif
 
             base.FinalizeOptions(node);
         }

@@ -149,7 +149,7 @@ namespace VSSolutionBuilder
 
                 // add the output file spec
 #if true
-                vcResourceCompilerTool["ResourceOutputFileName"] = moduleToBuild.Locations[C.Win32Resource.OutputFileLKey].GetSinglePath();
+                vcResourceCompilerTool["ResourceOutputFileName"] = moduleToBuild.Locations[C.Win32Resource.OutputFile].GetSinglePath();
 #else
                 var compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
                 vcResourceCompilerTool["ResourceOutputFileName"] = compilerOptions.CompiledResourceFilePath;

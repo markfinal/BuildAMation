@@ -36,7 +36,7 @@ namespace QMakeBuilder
             data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.DynamicLibrary;
 #if true
-            data.DestDir = moduleToBuild.Locations[C.Application.OutputDirLocKey];
+            data.DestDir = moduleToBuild.Locations[C.Application.OutputDir];
 #else
             data.DestDir = options.OutputDirectoryPath;
 #endif
@@ -46,7 +46,7 @@ namespace QMakeBuilder
             {
                 var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey,
-                    C.DynamicLibrary.StaticImportLibraryLocationKey
+                    C.DynamicLibrary.ImportLibraryFile
                     );
 
                 var dependentLibraryFiles = new Opus.Core.LocationArray();

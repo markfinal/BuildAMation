@@ -26,7 +26,11 @@ namespace QMakeBuilder
             {
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
+#if true
+            var copiedFilePath = moduleToBuild.Locations[FileUtilities.CopyFile.OutputFile].GetSinglePath();
+#else
             var copiedFilePath = options.OutputPaths[FileUtilities.OutputFileFlags.CopiedFile];
+#endif
             var destinationDirectory = System.IO.Path.GetDirectoryName(copiedFilePath);
 
             var data = new QMakeData(node);
