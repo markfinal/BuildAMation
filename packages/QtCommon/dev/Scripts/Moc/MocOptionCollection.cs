@@ -37,7 +37,13 @@ namespace QtCommon
 
         protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
-            string mocDir = node.GetTargettedModuleBuildDirectory("src");
+            var locationMap = node.Module.Locations;
+            if (!locationMap[MocFile.OutputDir].IsValid)
+            {
+                (locationMap[MocFile.OutputDir] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[Opus.Core.State.ModuleBuildDirLocationKey], "src", Opus.Core.Location.EExists.WillExist);
+            }
+
+            var mocDir = locationMap[MocFile.OutputDir].GetSinglePath();
             this.OutputDirectoryPath = mocDir;
             MocFile mocFile = node.Module as MocFile;
             string mocPath;
