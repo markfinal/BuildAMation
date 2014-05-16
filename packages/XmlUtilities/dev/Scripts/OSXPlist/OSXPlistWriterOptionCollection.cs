@@ -54,6 +54,8 @@ namespace XmlUtilities
             // the plist file is relative to the main executable
             if (null != node.ExternalDependents)
             {
+                // TODO: this needs to be rewritten
+                #if false
                 var dependentNode = node.ExternalDependents[0];
                 foreach (string outputPath in dependentNode.Module.Options.OutputPaths.Paths)
                 {
@@ -66,6 +68,7 @@ namespace XmlUtilities
                     string contentsDir = System.IO.Directory.GetParent(primaryOutputPath).Parent.FullName;
                     this.OutputPaths[OutputFileFlags.XmlFile] = System.IO.Path.Combine(contentsDir, "Info.plist");
                 }
+                #endif
             }
             else
             {

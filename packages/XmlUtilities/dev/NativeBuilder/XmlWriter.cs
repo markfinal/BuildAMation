@@ -9,9 +9,10 @@ namespace NativeBuilder
     {
         public object Build(XmlUtilities.XmlModule moduleToBuild, out bool success)
         {
-            Opus.Core.DependencyNode node = moduleToBuild.OwningNode;
+            var node = moduleToBuild.OwningNode;
 
-            string xmlPath = moduleToBuild.Options.OutputPaths[XmlUtilities.OutputFileFlags.XmlFile];
+            var xmlLocation = moduleToBuild.Locations[XmlUtilities.XmlModule.OutputFile];
+            var xmlPath = xmlLocation.GetSinglePath();
             if (null == xmlPath)
             {
                 throw new Opus.Core.Exception("XML output path was not set");

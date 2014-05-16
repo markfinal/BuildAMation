@@ -19,7 +19,8 @@ namespace XmlUtilities
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    XmlModule.XmlOutputFile
+                    XmlModule.OutputFile,
+                    XmlModule.OutputDir
                     );
                 return array;
             }
