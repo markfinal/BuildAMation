@@ -183,12 +183,12 @@ namespace XcodeBuilder
                         buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
                         if (dependency.Module is C.DynamicLibrary)
                         {
-                            var outputDir = moduleToBuild.Locations[C.Application.OutputDir].GetSinglePath();
+                            var outputDir = dependency.Module.Locations[C.Application.OutputDir].GetSinglePath();
                             buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                         else if (dependency.Module is C.StaticLibrary)
                         {
-                            var outputDir = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
+                            var outputDir = dependency.Module.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
                             buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
                         }
                     }
