@@ -81,9 +81,7 @@ namespace RenderTextureAndProcessor
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             var commonDir = sourceDir.SubDirectory("common");
-            var textureProcessorDir = sourceDir.SubDirectory("textureprocessor");
             this.headerFiles.Include(commonDir, "*.h");
-            this.headerFiles.Include(textureProcessorDir, "*.h");
         }
 
         class SourceFiles : C.Cxx.ObjectFileCollection
