@@ -71,6 +71,8 @@ namespace Opus.Core
             this.AddRange(input);
         }
 
+#if false
+        // TODO: this has to be immutable
         public override string ToString(string separator)
         {
             var builder = new System.Text.StringBuilder();
@@ -82,6 +84,7 @@ namespace Opus.Core
             var output = builder.ToString().TrimEnd(separator.ToCharArray());
             return output;
         }
+#endif
     }
 
     /// <summary>
@@ -446,6 +449,10 @@ namespace Opus.Core
             }
 
             this.Resolved = true;
+            if (0 == this.Results.Count)
+            {
+                throw new Exception("Location has been resolved, but has no results");
+            }
         }
 
         public override Location SubDirectory(string subDirName)
@@ -613,7 +620,7 @@ namespace Opus.Core
                 {
                     continue;
                 }
-                // TODO: why does this set the resolved state to true???
+
                 filteredLocations.Add(location);
             }
             return filteredLocations;
