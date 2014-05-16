@@ -96,7 +96,7 @@ namespace NativeBuilder
             }
 
             // object files must come before everything else, for some compilers
-            commandLineBuilder.Insert(0, dependentObjectFiles.ToString(" "));
+            commandLineBuilder.Insert(0, dependentObjectFiles.Stringify(" "));
 
             // then libraries
             var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
