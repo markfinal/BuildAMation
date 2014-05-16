@@ -447,10 +447,17 @@ namespace Opus.Core
                     {
                         this.ResolveDirectory(result);
                     }
+                    else if (result is FileLocation)
+                    {
+                        this.Results.Add(result);
+                    }
+                    else if (!result.IsValid)
+                    {
+                        throw new Exception("Resolved scaffold location is undefined");
+                    }
                     else
                     {
-                        // TODO: what does this mean exactly?
-                        throw new System.NotImplementedException();
+                        throw new Exception("Resolved scaffold location is of an unknown type, {0}", result.GetType().ToString());
                     }
                 }
             }
