@@ -185,7 +185,13 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
-            var outputFileLoc = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputFile];
+            var node = (sender as Opus.Core.BaseOptionCollection).OwningNode;
+            if (null == node)
+            {
+                // this can happen with intersected option collections
+                return null;
+            }
+            var outputFileLoc = node.Module.Locations[C.ObjectFile.OutputFile];
             if (!outputFileLoc.IsValid)
             {
                 return null;
@@ -898,9 +904,15 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary BrowseInformationVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
+            var node = (sender as Opus.Core.BaseOptionCollection).OwningNode;
+            if (null == node)
+            {
+                // this can happen with intersected optioncollections
+                return null;
+            }
             var enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var browseLocDir = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputDir];
+            var browseLocDir = node.Module.Locations[C.ObjectFile.OutputDir];
             // the trailing directory separator is important, or unexpected rebuilds occur
             var browseDir = browseLocDir.IsValid ? browseLocDir.GetSinglePath() + "\\" : string.Empty;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
