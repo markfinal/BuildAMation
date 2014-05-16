@@ -104,8 +104,11 @@ namespace QtCommon
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
             {
-                // TODO: this probably needs some rework
+                // TODO: this needs some rework with publishing, as it ought to be a framework
+                #if false
                 return Opus.Core.FileLocation.Get(moduleName);
+                #endif
+                return null;
             }
             else
             {

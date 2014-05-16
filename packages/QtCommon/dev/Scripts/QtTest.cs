@@ -17,7 +17,11 @@ namespace QtCommon
         public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
         {
 #if true
-            this.Locations[C.DynamicLibrary.OutputFile] = this.GetModuleDynamicLibrary(target, "QtTest");
+            var module = this.GetModuleDynamicLibrary(target, "QtTest");
+            if (null != module)
+            {
+                this.Locations[C.DynamicLibrary.OutputFile] = module;
+            }
 #else
             options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtTest");
 #endif
