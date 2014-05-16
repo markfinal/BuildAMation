@@ -10,6 +10,17 @@ namespace DependencyGenerator
         private System.Collections.Generic.Queue<Data> data = new System.Collections.Generic.Queue<Data>();
         private System.Threading.ManualResetEvent alive = new System.Threading.ManualResetEvent(false);
 
+        public DependencyQueue(bool isThreaded)
+        {
+            this.IsThreaded = isThreaded;
+        }
+
+        private bool IsThreaded
+        {
+            get;
+            set;
+        }
+
         public System.Threading.ManualResetEvent IsAlive
         {
             get
@@ -20,23 +31,44 @@ namespace DependencyGenerator
 
         public void Enqueue(Data value)
         {
-            lock (this.data)
+            if (this.IsThreaded)
             {
-                this.data.Enqueue(value);
-                this.alive.Set();
+                lock (this.data)
+                {
+                    this.data.Enqueue(value);
+                    this.alive.Set();
+                }
+            }
+            else
+            {
+                // do the work now!
+                var cast = value as IncludeDependencyGeneration.Data;
+                IncludeDependencyGeneration.GenerateDepFile(cast, IncludeDependencyGeneration.Style.Opus);
             }
         }
 
         public void Enqueue(Opus.Core.Array<Data> values)
         {
-            lock (this.data)
+            if (this.IsThreaded)
             {
-                // TODO: change to var?
-                foreach (Data value in values)
+                lock (this.data)
                 {
-                    this.data.Enqueue(value);
+                    // TODO: change to var?
+                    foreach (Data value in values)
+                    {
+                        this.data.Enqueue(value);
+                    }
+                    this.alive.Set();
                 }
-                this.alive.Set();
+            }
+            else
+            {
+                // do the work now!
+                foreach (var value in values)
+                {
+                    var cast = value as IncludeDependencyGeneration.Data;
+                    IncludeDependencyGeneration.GenerateDepFile(cast, IncludeDependencyGeneration.Style.Opus);
+                }
             }
         }
 

@@ -31,7 +31,9 @@ namespace DependencyGenerator
 
         static IncludeDependencyGeneration()
         {
-            FileProcessQueue = new DependencyQueue<Data>();
+            // TODO: put this on an action
+            bool isThreaded = true;
+            FileProcessQueue = new DependencyQueue<Data>(isThreaded);
 
             var threadStart = new System.Threading.ParameterizedThreadStart(ProcessFileQueue);
             dependencyThread = new System.Threading.Thread(threadStart);
@@ -51,7 +53,7 @@ namespace DependencyGenerator
             return headerDependencyLocation.GetSinglePath();
         }
 
-        private static void GenerateDepFile(Data entry, Style style)
+        public static void GenerateDepFile(Data entry, Style style)
         {
             var filesToSearch = new System.Collections.Generic.Queue<string>();
             filesToSearch.Enqueue(entry.sourcePath);
