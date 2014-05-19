@@ -178,7 +178,7 @@ namespace VSSolutionBuilder
 
         internal static string RefactorPathForVCProj(string path, Opus.Core.Location outputDirectory, Opus.Core.Location intermediateDirectory, string projectName, System.Uri projectUri)
         {
-            var outputDirectoryPath = outputDirectory.GetSinglePath();
+            var outputDirectoryPath = (outputDirectory != null) ? outputDirectory.GetSinglePath() : null;
             var intermediateDirectoryPath = intermediateDirectory.GetSinglePath();
             return RefactorPathForVCProj(path, outputDirectoryPath, intermediateDirectoryPath, projectName, projectUri);
         }
