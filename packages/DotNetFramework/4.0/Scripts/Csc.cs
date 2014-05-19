@@ -42,7 +42,8 @@ namespace DotNetFramework
             get
             {
                 var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    CSharp.Assembly.AssemblyLocationKey
+                    CSharp.Assembly.OutputFile,
+                    CSharp.Assembly.OutputDirectory
                     );
                 return array;
             }
