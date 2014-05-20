@@ -267,7 +267,7 @@ namespace NativeBuilder
             string newestInputFile = null;
             foreach (var inputFile in inputFiles)
             {
-                var inputFilePath = inputFile.GetSinglePath();
+                var inputFilePath = inputFile.GetSingleRawPath();
                 var inputFileLastWriteTime = System.IO.File.GetLastWriteTime(inputFilePath);
                 if (inputFileLastWriteTime.CompareTo(newestInputFileDate) > 0)
                 {
@@ -278,7 +278,7 @@ namespace NativeBuilder
 
             foreach (var outputFile in outputFiles)
             {
-                var outputFilePath = outputFile.GetSinglePath();
+                var outputFilePath = outputFile.GetSingleRawPath();
                 if (System.IO.File.Exists(outputFilePath))
                 {
                     var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFilePath);

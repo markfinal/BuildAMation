@@ -62,7 +62,9 @@ namespace C
                 excludePathList.AddRangeUnique(exclude.GetLocations());
             }
 
-            var complement = includePathList.Complement(excludePathList) as Opus.Core.LocationArray;
+            // TODO: is there a better way to handle this? an 'as' cast results in null
+            var rawComplement = includePathList.Complement(excludePathList);
+            var complement = new Opus.Core.LocationArray(rawComplement);
             return complement;
         }
 
