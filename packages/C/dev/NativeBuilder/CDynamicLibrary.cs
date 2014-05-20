@@ -62,13 +62,13 @@ namespace NativeBuilder
                     inputFiles.AddRange(dependentLibraryFiles);
                 }
 
+                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                 // don't dependency check against the static import library, since it is generally not rewritten
                 // when code changes
-                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.OutputFile
-                    // TODO pdbs, maps, etc
-                    );
-                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
+                if (outputFiles.Contains(moduleToBuild.Locations[C.DynamicLibrary.ImportLibraryFile]))
+                {
+                    outputFiles.Remove(moduleToBuild.Locations[C.DynamicLibrary.ImportLibraryFile]);
+                }
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

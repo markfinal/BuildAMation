@@ -61,11 +61,7 @@ namespace NativeBuilder
                 {
                     inputFiles.AddRange(dependentLibraryFiles);
                 }
-                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.OutputFile
-                    // TODO pdbs, maps, etc
-                    );
-                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
+                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);

@@ -587,6 +587,24 @@ namespace Opus.Core
             private set;
         }
 
+        public bool IsFileKey
+        {
+            get
+            {
+                bool isFileKey = (this.Type == ScaffoldLocation.ETypeHint.File);
+                return isFileKey;
+            }
+        }
+
+        public bool IsDirectoryKey
+        {
+            get
+            {
+                bool isDirectoryKey = (this.Type == ScaffoldLocation.ETypeHint.Directory);
+                return isDirectoryKey;
+            }
+        }
+
         public override string ToString()
         {
             return this.Identifier;

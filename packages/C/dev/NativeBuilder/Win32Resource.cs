@@ -25,10 +25,7 @@ namespace NativeBuilder
             {
                 var inputFiles = new Opus.Core.LocationArray();
                 inputFiles.Add(resourceLoc);
-                var outputFileLKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Win32Resource.OutputFile
-                    );
-                var outputFiles = moduleToBuild.Locations.FilterByKey(outputFileLKeys);
+                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", resourceFileModule.OwningNode.UniqueModuleName);
