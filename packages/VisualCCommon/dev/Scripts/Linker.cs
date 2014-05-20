@@ -126,18 +126,21 @@ namespace VisualCCommon
             return System.IO.Path.Combine(binPath, "link.exe");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        Opus.Core.Array<Opus.Core.LocationKey>
+        Opus.Core.ITool.OutputLocationKeys(
+            Opus.Core.BaseModule module)
         {
-            get
+            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                C.Application.OutputFile,
+                C.Application.OutputDir
+                );
+            if (module is C.DynamicLibrary)
             {
-                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.OutputFile,
-                    C.Application.OutputDir,
+                array.AddRange(new [] {
                     C.DynamicLibrary.ImportLibraryDir,
-                    C.DynamicLibrary.ImportLibraryFile
-                    );
-                return array;
+                    C.DynamicLibrary.ImportLibraryFile});
             }
+            return array;
         }
 
         #endregion

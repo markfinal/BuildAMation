@@ -37,16 +37,15 @@ namespace CodeGenTest2
 #endif
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        Opus.Core.Array<Opus.Core.LocationKey>
+        Opus.Core.ITool.OutputLocationKeys(
+            Opus.Core.BaseModule module)
         {
-            get
-            {
-                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    CodeGenModule.OutputFile,
-                    CodeGenModule.OutputDir
-                    );
-                return array;
-            }
+            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                CodeGenModule.OutputFile,
+                CodeGenModule.OutputDir
+                );
+            return array;
         }
 
         #endregion

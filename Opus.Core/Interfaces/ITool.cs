@@ -7,11 +7,12 @@ namespace Opus.Core
 {
     public interface ITool
     {
-        string Executable(BaseTarget baseTarget);
+        string
+        Executable(
+            BaseTarget baseTarget);
 
-        Array<LocationKey> OutputLocationKeys
-        {
-            get;
-        }
+        Array<LocationKey>
+        OutputLocationKeys(
+            Opus.Core.BaseModule module);
     }
 }

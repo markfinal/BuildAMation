@@ -120,17 +120,20 @@ namespace GccCommon
             return executablePath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        Opus.Core.Array<Opus.Core.LocationKey>
+        Opus.Core.ITool.OutputLocationKeys(
+            Opus.Core.BaseModule module)
         {
-            get
+            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                C.Application.OutputFile,
+                C.Application.OutputDir);
+            if (module is C.DynamicLibrary)
             {
-                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    C.Application.OutputFile,
-                    C.Application.OutputDir,
-                    C.DynamicLibrary.ImportLibraryFile
-                    );
-                return array;
+                array.AddRange(new [] {
+                    C.DynamicLibrary.ImportLibraryFile,
+                    C.DynamicLibrary.ImportLibraryDir});
             }
+            return array;
         }
 
         #endregion

@@ -23,15 +23,14 @@ namespace FileUtilities
             throw new Opus.Core.Exception("Unsupported platform for sym links");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey> Opus.Core.ITool.OutputLocationKeys
+        Opus.Core.Array<Opus.Core.LocationKey>
+        Opus.Core.ITool.OutputLocationKeys(
+            Opus.Core.BaseModule module)
         {
-            get
-            {
-                var array = new Opus.Core.Array<Opus.Core.LocationKey>(
-                    SymlinkBase.OutputFile
-                    );
-                return array;
-            }
+            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+                SymlinkBase.OutputFile
+                );
+            return array;
         }
 
         #endregion

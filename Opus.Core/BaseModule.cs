@@ -34,7 +34,7 @@ namespace Opus.Core
             var tool = toolset.Tool(toolAttr.ToolType);
             if (null != tool)
             {
-                foreach (var locationKey in tool.OutputLocationKeys)
+                foreach (var locationKey in tool.OutputLocationKeys(this))
                 {
                     this.Locations[locationKey] = new ScaffoldLocation(locationKey.Type);
                 }
