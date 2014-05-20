@@ -66,7 +66,23 @@ namespace VisualCCommon
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
 #if true
-            // TODO: handle the pdbs later
+            var options = this as C.ILinkerOptions;
+            if (options.DebugSymbols)
+            {
+                var locationMap = node.Module.Locations;
+                var pdbDir = locationMap[Linker.PDBDir] as Opus.Core.ScaffoldLocation;
+                if (!pdbDir.IsValid)
+                {
+                    pdbDir.SetReference(locationMap[C.Application.OutputDir]);
+                }
+
+                var pdbFile = locationMap[Linker.PDBFile] as Opus.Core.ScaffoldLocation;
+                if (!pdbFile.IsValid)
+                {
+                    pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
+                }
+            }
+
             base.FinalizeOptions(node);
 #else
             var options = this as C.ILinkerOptions;

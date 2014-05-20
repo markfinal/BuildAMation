@@ -79,7 +79,9 @@ namespace VisualCCommon
             {
                 commandLineBuilder.Add("-DEBUG");
 #if true
-                // TODO: pdb
+                var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
+                var pdbPath = pdbFile.GetSinglePath();
+                commandLineBuilder.Add(System.String.Format("/PDB:{0}", pdbPath));
 #else
                 var options = sender as LinkerOptionCollection;
                 var pdbPathName = options.ProgramDatabaseFilePath;
@@ -101,7 +103,12 @@ namespace VisualCCommon
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("GenerateDebugInformation", debugSymbolsOption.Value.ToString().ToLower());
 #if true
-            // TODO: pdbs
+            if (debugSymbolsOption.Value)
+            {
+                var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
+                var pdbPath = pdbFile.GetSinglePath();
+                returnVal.Add("ProgramDatabaseFile", pdbPath);
+            }
 #else
             if (debugSymbolsOption.Value)
             {
