@@ -179,25 +179,20 @@ namespace VisualCCommon
                 commandLineBuilder.Add("-DLL");
                 var options = sender as LinkerOptionCollection;
                 var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
-                // TODO: is this check necessary? isn't there always an import library for a DLL?
-                if (staticImportLibraryLoc.IsValid)
-                {
-                    commandLineBuilder.Add(System.String.Format("-IMPLIB:{0}", staticImportLibraryLoc.GetSinglePath()));
-                }
+                commandLineBuilder.Add(System.String.Format("-IMPLIB:{0}", staticImportLibraryLoc.GetSinglePath()));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DynamicLibraryVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
-            var options = sender as LinkerOptionCollection;
-            var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
-            // TODO: is this check necessary? isn't there always an import library for a DLL?
-            if (!staticImportLibraryLoc.IsValid)
-            {
-                return null;
-            }
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            returnVal.Add("ImportLibrary", staticImportLibraryLoc.GetSinglePath());
+            var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (dynamicLibraryOption.Value)
+            {
+                var options = sender as LinkerOptionCollection;
+                var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
+                returnVal.Add("ImportLibrary", staticImportLibraryLoc.GetSinglePath());
+            }
             return returnVal;
 #else
             var options = sender as LinkerOptionCollection;
