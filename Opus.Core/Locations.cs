@@ -45,21 +45,32 @@ namespace Opus.Core
         /// <returns>Single path of the resolved Location</returns>
         public string GetSinglePath()
         {
-            var resolvedLocations = this.GetLocations();
-            if (resolvedLocations.Count != 1)
-            {
-                throw new Exception("Location '{0}' did not resolve just one path, but {1}", this.ToString(), resolvedLocations.Count);
-            }
-            var path = resolvedLocations[0].AbsolutePath;
+            var path = this.GetSingleRawPath();
             if (path.Contains(" "))
             {
                 path = System.String.Format("\"{0}\"", path);
             }
             return path;
         }
+
+        /// <summary>
+        /// This is a special case of GetLocations. It requires a Location resolves to a single path, which is returned.
+        /// No checking whether the path contains spaces is performed.
+        /// </summary>
+        /// <returns>Single path of the resolved Location</returns>
+        public string GetSingleRawPath()
+        {
+            var resolvedLocations = this.GetLocations();
+            if (resolvedLocations.Count != 1)
+            {
+                throw new Exception("Location '{0}' did not resolve just one path, but {1}", this.ToString(), resolvedLocations.Count);
+            }
+            var path = resolvedLocations[0].AbsolutePath;
+            return path;
+        }
     }
 
-    public sealed class LocationArray : Array<Location>
+    public sealed class LocationArray : Array<Location>, System.ICloneable
     {
         public LocationArray(params Location[] input)
         {
@@ -96,6 +107,17 @@ namespace Opus.Core
             var output = builder.ToString().TrimEnd(separator.ToCharArray());
             return output;
         }
+
+        #region ICloneable Members
+
+        object System.ICloneable.Clone()
+        {
+            var clone = new LocationArray();
+            clone.list.AddRange(this.list);
+            return clone;
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -480,7 +502,7 @@ namespace Opus.Core
 
             if (0 == this.Results.Count)
             {
-                throw new Exception("Location has been resolved, but has no results");
+                throw new Exception("Location has been resolved, but has no results. Base was '{0}'. Pattern was '{1}'", this.Base.GetSinglePath(), this.Pattern);
             }
 
             this.Resolved = true;
