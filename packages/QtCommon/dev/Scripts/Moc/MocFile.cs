@@ -32,7 +32,7 @@ namespace QtCommon
 
         public void Include(Opus.Core.Location baseLocation, string pattern)
         {
-            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.Exists);
         }
 
         public Opus.Core.Location SourceFileLocation

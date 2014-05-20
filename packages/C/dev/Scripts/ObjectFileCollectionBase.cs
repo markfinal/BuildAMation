@@ -27,7 +27,7 @@ namespace C
             {
                 this.Includes = new Opus.Core.LocationArray();
             }
-            this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
+            this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.Exists));
         }
 
         public void Exclude(Opus.Core.Location baseLocation, string pattern)
@@ -36,7 +36,7 @@ namespace C
             {
                 this.Excludes = new Opus.Core.LocationArray();
             }
-            this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
+            this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.Exists));
         }
 
         private Opus.Core.LocationArray EvaluatePaths()
