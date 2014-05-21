@@ -74,7 +74,9 @@ namespace VisualCCommon
         {
             var array = new Opus.Core.Array<Opus.Core.LocationKey>(
                 C.ObjectFile.OutputFile,
-                C.ObjectFile.OutputDir
+                C.ObjectFile.OutputDir,
+                CCompiler.PDBFile,
+                CCompiler.PDBDir
                 );
             return array;
         }

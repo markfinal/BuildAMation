@@ -7,6 +7,9 @@ namespace VisualCCommon
 {
     public sealed class CCompiler : C.ICompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
     {
+        public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("CompilerPDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("CompilerPDBDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
 
@@ -77,7 +80,9 @@ namespace VisualCCommon
         {
             var array = new Opus.Core.Array<Opus.Core.LocationKey>(
                 C.ObjectFile.OutputFile,
-                C.ObjectFile.OutputDir
+                C.ObjectFile.OutputDir,
+                PDBFile,
+                PDBDir
                 );
             return array;
         }

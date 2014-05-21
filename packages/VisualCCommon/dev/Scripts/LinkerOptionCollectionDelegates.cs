@@ -331,7 +331,12 @@ namespace VisualCCommon
         private static void GenerateMapFileCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
 #if true
-            // TODO: not handling map files yet
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                commandLineBuilder.Add(System.String.Format("-MAP:{0}", mapFileLoc.GetSinglePath()));
+            }
 #else
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
@@ -351,8 +356,15 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary GenerateMapFileVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
-            // TODO: not handling map files yet
-            return null;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            returnVal.Add("GenerateMapFile", boolOption.Value.ToString().ToLower());
+            if (boolOption.Value)
+            {
+                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                returnVal.Add("MapFileName", mapFileLoc.GetSingleRawPath());
+            }
+            return returnVal;
 #else
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();

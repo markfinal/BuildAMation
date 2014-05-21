@@ -95,8 +95,8 @@ namespace QMakeBuilder
                 var excludedOptionNames = new Opus.Core.StringArray();
                 excludedOptionNames.Add("OutputType");
                 excludedOptionNames.Add("LibraryPaths");
-                excludedOptionNames.Add("GenerateMapFile"); // TODO: better way of extracting the map file?
-                excludedOptionNames.Add("DebugSymbols"); // TODO: better way of extracting the PDB file?
+                excludedOptionNames.Add("GenerateMapFile"); // TODO: better way of extracting the map file? yes, locations
+                excludedOptionNames.Add("DebugSymbols"); // TODO: better way of extracting the PDB file? yes, location
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
                 data.LinkFlags.AddRangeUnique(commandLineBuilder);
             }

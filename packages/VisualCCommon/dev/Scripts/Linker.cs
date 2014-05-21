@@ -7,8 +7,8 @@ namespace VisualCCommon
 {
     public sealed class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
     {
-        public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("PDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("PDBDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("LinkerPDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("LinkerPDBDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
@@ -136,6 +136,8 @@ namespace VisualCCommon
             var array = new Opus.Core.Array<Opus.Core.LocationKey>(
                 C.Application.OutputFile,
                 C.Application.OutputDir,
+                C.Application.MapFile,
+                C.Application.MapFileDir,
                 PDBFile,
                 PDBDir
                 );

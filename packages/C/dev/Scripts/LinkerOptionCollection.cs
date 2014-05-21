@@ -64,9 +64,8 @@ namespace C
                 (outputDir as Opus.Core.ScaffoldLocation).SetReference(linkerOutputDir);
             }
 
-            // TODO: move to Windows specific LinkerOptionCollections?
             // special case here of the QMakeBuilder
-            // it does not support writing import libraries to a separate location to the dll
+            // QMake does not support writing import libraries to a separate location to the dll
             if (node.Module.Locations.Contains(C.DynamicLibrary.ImportLibraryDir))
             {
                 var importLibDir = node.Module.Locations[C.DynamicLibrary.ImportLibraryDir];
@@ -186,7 +185,8 @@ namespace C
             var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             var options = this as ILinkerOptions;
 
-            var outputFile = node.Module.Locations[C.Application.OutputFile];
+            var locationMap = node.Module.Locations;
+            var outputFile = locationMap[C.Application.OutputFile];
             if (!outputFile.IsValid)
             {
                 string prefix;
@@ -194,13 +194,12 @@ namespace C
                 GetBinaryPrefixAndSuffix(options, linkerTool, out prefix, out suffix);
                 var filename = prefix + this.OutputName + suffix;
 
-                (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[C.Application.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
+                (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
             }
 
-            // TODO: move DLLs into vendor specific FinalizeOptions
             if (node.Module is C.DynamicLibrary)
             {
-                var importLibraryFile = node.Module.Locations[C.DynamicLibrary.ImportLibraryFile] as Opus.Core.ScaffoldLocation;
+                var importLibraryFile = locationMap[C.DynamicLibrary.ImportLibraryFile] as Opus.Core.ScaffoldLocation;
                 if (!importLibraryFile.IsValid)
                 {
                     if (linkerTool is IWinImportLibrary)
@@ -208,15 +207,29 @@ namespace C
                         // explicit import library
                         var importLibrary = linkerTool as IWinImportLibrary;
                         var filename = importLibrary.ImportLibraryPrefix + this.OutputName + importLibrary.ImportLibrarySuffix;
-                        importLibraryFile.SpecifyStub(node.Module.Locations[C.DynamicLibrary.ImportLibraryDir], filename, Opus.Core.Location.EExists.WillExist);
+                        importLibraryFile.SpecifyStub(locationMap[C.DynamicLibrary.ImportLibraryDir], filename, Opus.Core.Location.EExists.WillExist);
                     }
                     else
                     {
                         // shared objects
-                        importLibraryFile.SetReference(node.Module.Locations[C.DynamicLibrary.OutputFile]);
+                        importLibraryFile.SetReference(locationMap[C.DynamicLibrary.OutputFile]);
                     }
                 }
             }
+
+            if (options.GenerateMapFile)
+            {
+                if (!locationMap[C.Application.MapFileDir].IsValid)
+                {
+                    (locationMap[C.Application.MapFileDir] as Opus.Core.ScaffoldLocation).SetReference(locationMap[C.Application.OutputDir]);
+                }
+
+                if (!locationMap[C.Application.MapFile].IsValid)
+                {
+                    (locationMap[C.Application.MapFile] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.MapFileDir], this.OutputName + linkerTool.MapFileSuffix, Opus.Core.Location.EExists.WillExist);
+                }
+            }
+
 #else
             var target = node.Target;
             var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;

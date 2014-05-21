@@ -54,7 +54,6 @@ namespace VisualCCommon
             compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
 
 #if true
-            // TODO
 #else
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
 #endif
@@ -90,7 +89,23 @@ namespace VisualCCommon
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
 #if true
-            // TODO: come back to this
+            var options = this as ICCompilerOptions;
+            if (options.DebugType != EDebugType.Embedded)
+            {
+                var locationMap = node.Module.Locations;
+                var pdbDirLoc = locationMap[CCompiler.PDBDir] as Opus.Core.ScaffoldLocation;
+                if (!pdbDirLoc.IsValid)
+                {
+                    pdbDirLoc.SetReference(locationMap[C.Application.OutputDir]);
+                }
+
+                var pdbFileLoc = locationMap[CCompiler.PDBFile] as Opus.Core.ScaffoldLocation;
+                if (!pdbFileLoc.IsValid)
+                {
+                    pdbFileLoc.SpecifyStub(pdbDirLoc, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
+                }
+            }
+
             base.FinalizeOptions(node);
 #else
             var options = this as ICCompilerOptions;

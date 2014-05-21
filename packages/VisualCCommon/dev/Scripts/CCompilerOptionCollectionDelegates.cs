@@ -720,7 +720,21 @@ namespace VisualCCommon
                         commandLineBuilder.Add("-Z7");
                         break;
 
-                    // TODO: more case statements with PDBs...
+                    case EDebugType.ProgramDatabase:
+                        {
+                            commandLineBuilder.Add("-Zi");
+                            var pdbFileLoc = (sender as C.CompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbFileLoc.GetSinglePath()));
+                        }
+                        break;
+
+                    case EDebugType.ProgramDatabaseEditAndContinue:
+                        {
+                            commandLineBuilder.Add("-ZI");
+                            var pdbFileLoc = (sender as C.CompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbFileLoc.GetSinglePath()));
+                        }
+                        break;
 
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
@@ -795,6 +809,15 @@ namespace VisualCCommon
                         returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
                         break;
 
+                    case EDebugType.ProgramDatabase:
+                    case EDebugType.ProgramDatabaseEditAndContinue:
+                        {
+                            returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
+                            var pdbFileLoc = (sender as C.CompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
+                        }
+                        break;
+
 #if true
                         // TODO: handle PDBs
 #else
@@ -817,7 +840,21 @@ namespace VisualCCommon
                         returnVal.Add("DebugInformationFormat", "OldStyle");
                         break;
 #if true
-                        // TODO: handle PDBs
+                    case EDebugType.ProgramDatabase:
+                        {
+                            returnVal.Add("DebugInformationFormat", "ProgramDatabase");
+                            var pdbFileLoc = (sender as CCompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
+                        }
+                        break;
+
+                    case EDebugType.ProgramDatabaseEditAndContinue:
+                        {
+                            returnVal.Add("DebugInformationFormat", "EditAndContinue");
+                            var pdbFileLoc = (sender as CCompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
+                        }
+                        break;
 #else
                     case EDebugType.ProgramDatabase:
                         returnVal.Add("DebugInformationFormat", "ProgramDatabase");

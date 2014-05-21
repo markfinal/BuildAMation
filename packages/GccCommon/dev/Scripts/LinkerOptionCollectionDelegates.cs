@@ -213,9 +213,11 @@ namespace GccCommon
             if (boolOption.Value)
             {
                 //var options = sender as LinkerOptionCollection;
+                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
                 if (Opus.Core.OSUtilities.IsUnixHosting)
                 {
                     #if true
+                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", mapFileLoc.GetSinglePath()));
                     // TODO: map file
                     #else
                     if (options.MapFilePath.Contains(" "))
@@ -231,7 +233,7 @@ namespace GccCommon
                 else if (Opus.Core.OSUtilities.IsOSXHosting)
                 {
                     #if true
-                    // TODO: map file
+                    commandLineBuilder.Add(System.String.Format("-Wl,-map,{0}", mapFileLoc.GetSinglePath()));
                     #else
                     if (options.MapFilePath.Contains(" "))
                     {
@@ -251,16 +253,18 @@ namespace GccCommon
             if (generateMapfile.Value)
             {
                 #if true
-                // TODO: map file
+                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                var generateMapfileOption = configuration.Options["LD_MAP_FILE_PATH"];
+                generateMapfileOption.AddUnique(mapFileLoc.GetSinglePath());
                 #else
                 var generateMapfileOption = configuration.Options["LD_MAP_FILE_PATH"];
                 var options = sender as LinkerOptionCollection;
                 generateMapfileOption.AddUnique(options.MapFilePath);
+                #endif
                 if (generateMapfileOption.Count != 1)
                 {
                     throw new Opus.Core.Exception("More than one map file location option has been set");
                 }
-                #endif
             }
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)

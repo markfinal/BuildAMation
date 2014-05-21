@@ -17,7 +17,6 @@ namespace VisualCCommon
             linkerInterface.StackReserveAndCommit = null;
             linkerInterface.IgnoredLibraries = new Opus.Core.StringArray();
 #if true
-            // TODO: pdb later
 #else
             this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
 #endif

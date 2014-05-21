@@ -129,7 +129,9 @@ namespace MingwCommon
         {
             var array = new Opus.Core.Array<Opus.Core.LocationKey>(
                 C.Application.OutputFile,
-                C.Application.OutputDir);
+                C.Application.OutputDir,
+                C.Application.MapFile,
+                C.Application.MapFileDir);
             if (module is C.DynamicLibrary)
             {
                 array.AddRange(new [] {

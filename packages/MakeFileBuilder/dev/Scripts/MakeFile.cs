@@ -136,7 +136,6 @@ namespace MakeFileBuilder
                 {
                     writer.WriteLine("# Define directories to create");
                     string linearizedDirsToCreate = null;
-                    // TODO: there are Locations in the DirectoriesToCreate, so different syntax may be required here (might be fixed now)
                     foreach (var dir in rule.DirectoriesToCreate)
                     {
                         var dirPath = dir.GetSinglePath();

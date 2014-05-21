@@ -14,6 +14,9 @@ namespace C
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("ExecutableBinaryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("ExecutableBinaryDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
+        public static readonly Opus.Core.LocationKey MapFile = new Opus.Core.LocationKey("MapFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey MapFileDir = new Opus.Core.LocationKey("MapFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();

@@ -122,7 +122,13 @@ namespace MingwCommon
         private static void GenerateMapFileCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
 #if true
-            // TODO: map file
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            if (boolOption.Value)
+            {
+                var locationMap = (sender as LinkerOptionCollection).OwningNode.Module.Locations;
+                var mapFileLoc = locationMap[C.Application.MapFile];
+                commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", mapFileLoc.GetSinglePath()));
+            }
 #else
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)

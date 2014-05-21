@@ -138,7 +138,7 @@ namespace VSSolutionBuilder
                 configuration.Type = EProjectConfigurationType.Utility;
 
                 var executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
-                // TODO: pdb if it exists?
+                // TODO: pdb if it exists? WHY would a PDB file be needed?
 
                 var commandLineBuilder = new Opus.Core.StringArray();
                 if (executable.Contains(" "))
