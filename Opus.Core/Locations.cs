@@ -677,14 +677,16 @@ namespace Opus.Core
             var filteredLocations = new LocationArray();
             foreach (var key in filterKeys)
             {
-                if (this.map.ContainsKey(key))
+                if (!this.map.ContainsKey(key))
                 {
-                    var loc = this.map[key];
-                    if (loc.IsValid)
-                    {
-                        filteredLocations.Add(loc);
-                    }
+                    continue;
                 }
+                var loc = this.map[key];
+                if (!loc.IsValid)
+                {
+                    continue;
+                }
+                filteredLocations.Add(loc);
             }
             return filteredLocations;
         }
@@ -699,6 +701,10 @@ namespace Opus.Core
                     continue;
                 }
                 var location = this.map[key];
+                if (!location.IsValid)
+                {
+                    continue;
+                }
                 if (location.Exists != exists)
                 {
                     continue;
