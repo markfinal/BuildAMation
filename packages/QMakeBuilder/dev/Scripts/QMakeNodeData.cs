@@ -396,6 +396,10 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
+                if (null == array[0].DestDir)
+                {
+                    return;
+                }
                 WriteString(array[0].DestDir.GetSinglePath(), "DESTDIR=", null, writer);
             }
             else
@@ -403,6 +407,10 @@ namespace QMakeBuilder
                 var values = new Values<string>();
                 foreach (var data in array)
                 {
+                    if (null == data.DestDir)
+                    {
+                        continue;
+                    }
                     var destDir = data.DestDir.GetSinglePath();
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                     {
@@ -1018,7 +1026,7 @@ namespace QMakeBuilder
                 WriteHeaders(array, proFilePath, proWriter);
                 WriteWinRCFiles(array, proFilePath, proWriter);
                 WriteLibraries(array, proFilePath, proWriter);
-                // TODO: WriteExternalLibraries
+                // TODO: WriteExternalLibraries since they have been separated from built libraries by Locations
                 WriteLinkFlags(array, proFilePath, proWriter);
                 WritePostLinkCommands(array, proFilePath, proWriter);
             }
