@@ -18,7 +18,7 @@ namespace XcodeBuilder
 
             var project = this.Workspace.GetProject(node);
 
-            PBXFileReference.EType fileType = PBXFileReference.EType.CSourceFile;
+            var fileType = PBXFileReference.EType.CSourceFile;
             if (moduleToBuild is C.ObjCxx.ObjectFile)
             {
                 fileType = PBXFileReference.EType.ObjCxxSourceFile;
@@ -53,7 +53,7 @@ namespace XcodeBuilder
             if ((complementOptionCollection != null) && !complementOptionCollection.Empty)
             {
                 // there is an option delta to write for this file
-                Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+                var commandLineBuilder = new Opus.Core.StringArray();
                 CommandLineProcessor.ToCommandLine.Execute(complementOptionCollection, commandLineBuilder, target, null);
 
                 if (commandLineBuilder.Count > 0)

@@ -63,12 +63,12 @@ namespace C
             }
 
             {
-                bool is64bit = Opus.Core.OSUtilities.Is64Bit(target);
-                int bits = (is64bit) ? 64 : 32;
+                var is64bit = Opus.Core.OSUtilities.Is64Bit(target);
+                var bits = (is64bit) ? 64 : 32;
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_BITS={0}", bits.ToString()));
             }
             {
-                bool isLittleEndian = Opus.Core.State.IsLittleEndian;
+                var isLittleEndian = Opus.Core.State.IsLittleEndian;
                 if (isLittleEndian)
                 {
                     compilerOptions.Defines.Add("D_OPUS_PLATFORM_LITTLEENDIAN");

@@ -60,6 +60,7 @@ namespace QMakeBuilder
             data.ExternalLibraries.AddRangeUnique(optionsInterface.Libraries.ToStringArray());
 
             // find library paths
+            // TODO: convert to var, or Location
             foreach (string libPath in optionsInterface.LibraryPaths)
             {
                 if (libPath.Contains(" "))
