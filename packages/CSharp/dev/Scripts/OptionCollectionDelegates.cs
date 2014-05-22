@@ -371,7 +371,8 @@ namespace CSharp
                         fileList.AppendFormat("{0};", file);
                     }
                 }
-                commandLineBuilder.Add(System.String.Format("/reference:{0}", fileList.ToString()));
+                var linearizedList = fileList.ToString().TrimEnd(new char [] { ';' });
+                commandLineBuilder.Add(System.String.Format("/reference:{0}", linearizedList));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary ReferencesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
