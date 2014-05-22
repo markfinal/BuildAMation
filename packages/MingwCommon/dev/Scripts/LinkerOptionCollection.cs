@@ -11,7 +11,8 @@ namespace MingwCommon
         {
             base.SetDefaultOptionValues(node);
 
-            (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            var cLinkerOptions = this as C.ILinkerOptions;
+            cLinkerOptions.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
             (this as ILinkerOptions).EnableAutoImport = false;
 
             // we use gcc as the linker - if there is C++ code included, link against libstdc++
@@ -19,7 +20,7 @@ namespace MingwCommon
             {
                 if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection)
                 {
-                    (this as C.ILinkerOptions).Libraries.Add("-lstdc++");
+                    cLinkerOptions.Libraries.Add("-lstdc++");
                     break;
                 }
             }

@@ -12,12 +12,12 @@ namespace GccCommon
         public static GccDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
         {
             var executable = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
-            bool isLLVMGcc = System.IO.Path.GetFileName(executable).StartsWith("llvm");
+            var isLLVMGcc = System.IO.Path.GetFileName(executable).StartsWith("llvm");
 
             // get version
             string gccVersion = null;
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = executable;
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -49,9 +49,9 @@ namespace GccCommon
             string gxxIncludeDir = null;
             string gccTarget = null;
             string libDir = null;
-            Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+            var includePaths = new Opus.Core.StringArray();
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -73,25 +73,25 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
-                string details = process.StandardError.ReadToEnd();
+                var details = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
-                string[] splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
+                var splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
 
-                foreach (string detail in splitDetails)
+                foreach (var detail in splitDetails)
                 {
                     const string configuredWith = "Configured with: ";
                     if (detail.StartsWith(configuredWith))
                     {
-                        string configuredOptions = detail.Substring(configuredWith.Length);
-                        string[] splitConfigureOptions = configuredOptions.Split(' ');
+                        var configuredOptions = detail.Substring(configuredWith.Length);
+                        var splitConfigureOptions = configuredOptions.Split(' ');
 
                         const string pathPrefixKey = "--prefix=";
                         const string gxxIncludeDirKey = "--with-gxx-include-dir=";
                         const string targetKey = "--target=";
                         const string libexecKey = "--libexecdir=";
                         const string slibDirKey = "--with-slibdir=";
-                        foreach (string option in splitConfigureOptions)
+                        foreach (var option in splitConfigureOptions)
                         {
                             if (option.StartsWith(pathPrefixKey))
                             {
@@ -129,7 +129,7 @@ namespace GccCommon
 
                 if (null == gccTarget)
                 {
-                    foreach (string detail in splitDetails)
+                    foreach (var detail in splitDetails)
                     {
                         string targetKey = "Target: ";
                         if (detail.StartsWith(targetKey))
@@ -156,9 +156,9 @@ namespace GccCommon
                 }
 
                 includePaths.Add("/usr/local/include");
-                string gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libDir, gccTarget, gccVersion);
-                string gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
-                string gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
+                var gccLibFolder = System.String.Format("{0}/gcc/{1}/{2}", libDir, gccTarget, gccVersion);
+                var gccIncludeFolder = System.String.Format("{0}/include", gccLibFolder);
+                var gccIncludeFixedFolder = System.String.Format("{0}/include-fixed", gccLibFolder);
 
                 if (!isLLVMGcc)
                 {
@@ -188,7 +188,7 @@ namespace GccCommon
                     }
                 }
 
-                string targetIncludeFolder = System.String.Format("/usr/{0}/include", gccTarget);
+                var targetIncludeFolder = System.String.Format("/usr/{0}/include", gccTarget);
                 if (System.IO.Directory.Exists(targetIncludeFolder))
                 {
                     includePaths.Add(targetIncludeFolder);
@@ -198,7 +198,7 @@ namespace GccCommon
                 // TODO: this looks like the targetIncludeFolder, and has been necessary
                 {
                     // this is for some Linux distributions
-                    string path = System.String.Format("/usr/include/{0}", gccTarget);
+                    var path = System.String.Format("/usr/include/{0}", gccTarget);
                     if (System.IO.Directory.Exists(path))
                     {
                         includePaths.Add(path);
@@ -206,7 +206,7 @@ namespace GccCommon
                 }
             }
 
-            GccDetailData gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
+            var gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
             gccDetailsForTarget[baseTarget] = gccDetails;
 
             Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);

@@ -68,8 +68,8 @@ namespace MingwCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.toolset.BinPath(baseTarget);
-            string executablePath = System.IO.Path.Combine(installPath, this.Filename);
+            var installPath = this.toolset.BinPath(baseTarget);
+            var executablePath = System.IO.Path.Combine(installPath, this.Filename);
             return executablePath;
         }
 
@@ -101,7 +101,7 @@ namespace MingwCommon
 
         System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
         {
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
             return dictionary;
         }

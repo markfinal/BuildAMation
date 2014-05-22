@@ -11,8 +11,9 @@ namespace MingwCommon
         {
             base.SetDefaultOptionValues(node);
 
-            (this as IArchiverOptions).Command = EArchiverCommand.Replace;
-            (this as IArchiverOptions).DoNotWarnIfLibraryCreated = true;
+            var localArchiverOptions = this as IArchiverOptions;
+            localArchiverOptions.Command = EArchiverCommand.Replace;
+            localArchiverOptions.DoNotWarnIfLibraryCreated = true;
 
             // this must be set last, as it appears last on the command line
             (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;

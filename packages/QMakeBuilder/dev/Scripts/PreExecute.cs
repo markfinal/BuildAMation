@@ -14,9 +14,9 @@ namespace QMakeBuilder
             Opus.Core.Log.DebugMessage("PreExecute for QMakeBuilder");
 
             var mainPackage = Opus.Core.State.PackageInfo[0];
-            string priFileName = "EmptyConfig.pri";
-            string rootDirectory = mainPackage.BuildDirectory;
-            string priFilePath = System.IO.Path.Combine(rootDirectory, priFileName);
+            var priFileName = "EmptyConfig.pri";
+            var rootDirectory = mainPackage.BuildDirectory;
+            var priFilePath = System.IO.Path.Combine(rootDirectory, priFileName);
 
             System.IO.Directory.CreateDirectory(rootDirectory);
             using (System.IO.TextWriter proFileWriter = new System.IO.StreamWriter(priFilePath))

@@ -13,7 +13,7 @@ namespace QMakeBuilder
             var data = new QMakeData(node);
 
             var moduleType = moduleToBuild.GetType();
-            string className = moduleType.FullName.Replace(moduleType.Namespace, string.Empty).Trim('.').ToLower();
+            var className = moduleType.FullName.Replace(moduleType.Namespace, string.Empty).Trim('.').ToLower();
             data.QtModules.Add(className);
 
             success = true;

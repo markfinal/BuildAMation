@@ -15,19 +15,19 @@ namespace DotNetFramework
         static Solution()
         {
             // TODO: this path is for VCSExpress - what about the professional version?
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VCSExpress\10.0\Projects"))
+            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VCSExpress\10.0\Projects"))
             {
                 if (null == key)
                 {
                     throw new Opus.Core.Exception("VisualStudio C# Express 2010 was not installed");
                 }
 
-                string[] subKeyNames = key.GetSubKeyNames();
-                foreach (string subKeyName in subKeyNames)
+                var subKeyNames = key.GetSubKeyNames();
+                foreach (var subKeyName in subKeyNames)
                 {
-                    using (Microsoft.Win32.RegistryKey subKey = key.OpenSubKey(subKeyName))
+                    using (var subKey = key.OpenSubKey(subKeyName))
                     {
-                        string projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
+                        var projectExtension = subKey.GetValue("DefaultProjectExtension") as string;
                         if (null != projectExtension)
                         {
                             if (projectExtension == "csproj")
@@ -36,7 +36,7 @@ namespace DotNetFramework
                                 break;
                             }
                         }
-                        string defaultValue = subKey.GetValue("") as string;
+                        var defaultValue = subKey.GetValue("") as string;
                         if (null != defaultValue)
                         {
                             if ("Solution Folder Project" == defaultValue)
@@ -67,7 +67,7 @@ namespace DotNetFramework
         {
             get
             {
-                System.Text.StringBuilder header = new System.Text.StringBuilder();
+                var header = new System.Text.StringBuilder();
                 header.AppendLine("Microsoft Visual Studio Solution File, Format Version 11.00");
                 header.AppendLine("# Visual C# Express 2010");
                 return header.ToString();
@@ -106,8 +106,8 @@ namespace DotNetFramework
         {
             get
             {
-                Opus.Core.PackageInformation dotNetPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
-                string version = dotNetPackage.Version;
+                var dotNetPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
+                var version = dotNetPackage.Version;
                 return version;
             }
         }
@@ -119,7 +119,7 @@ namespace DotNetFramework
                 if (Opus.Core.OSUtilities.IsWindowsHosting)
                 {
                     string toolsPath = null;
-                    using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\4.0"))
+                    using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\4.0"))
                     {
                         toolsPath = key.GetValue("MSBuildToolsPath") as string;
                     }

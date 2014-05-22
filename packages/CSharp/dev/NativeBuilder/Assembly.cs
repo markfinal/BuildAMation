@@ -35,7 +35,7 @@ namespace NativeBuilder
 #endif
             }
 
-            Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
+            var sourceFiles = new Opus.Core.StringArray();
             var fields = moduleToBuild.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
             foreach (var field in fields)
             {
@@ -48,7 +48,7 @@ namespace NativeBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -58,7 +58,8 @@ namespace NativeBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            // TODO: convert to var
                             foreach (Opus.Core.Location location in sourceCollection)
                             {
                                 var absolutePath = location.AbsolutePath;
@@ -86,13 +87,13 @@ namespace NativeBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
-                            string csPath = absolutePath + ".cs";
+                            var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
                                 throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
@@ -102,12 +103,13 @@ namespace NativeBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
                                 throw new Opus.Core.Exception("There can be only one application definition");
                             }
 
+                            // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -115,7 +117,7 @@ namespace NativeBuilder
                                     throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
-                                string csPath = absolutePath + ".cs";
+                                var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
@@ -140,13 +142,13 @@ namespace NativeBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
-                            string csPath = absolutePath + ".cs";
+                            var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
                                 throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
@@ -156,12 +158,13 @@ namespace NativeBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
                                 throw new Opus.Core.Exception("There can be only one page file");
                             }
 
+                            // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -169,7 +172,7 @@ namespace NativeBuilder
                                     throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
-                                string csPath = absolutePath + ".cs";
+                                var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
@@ -233,7 +236,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            foreach (string source in sourceFiles)
+            foreach (var source in sourceFiles)
             {
                 if (source.Contains(" "))
                 {
@@ -245,9 +248,9 @@ namespace NativeBuilder
                 }
             }
 
-            Opus.Core.ITool compilerTool = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
+            var compilerTool = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(node, compilerTool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

@@ -69,9 +69,9 @@ namespace VisualC
             this.lib32Folder.Add(System.IO.Path.Combine(this.installPath, "lib"));
             this.lib64Folder.Add(System.IO.Path.Combine(this.lib32Folder[0], "amd64"));
 
-            string parent = System.IO.Directory.GetParent(this.installPath).FullName;
-            string common7 = System.IO.Path.Combine(parent, "Common7");
-            string ide = System.IO.Path.Combine(common7, "IDE");
+            var parent = System.IO.Directory.GetParent(this.installPath).FullName;
+            var common7 = System.IO.Path.Combine(parent, "Common7");
+            var ide = System.IO.Path.Combine(common7, "IDE");
 
             this.environment.Add(ide);
         }

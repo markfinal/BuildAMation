@@ -21,8 +21,8 @@ namespace WindowsSDK
                 return;
             }
 
-            C.Toolchain tc = C.ToolchainFactory.GetTargetInstance(target);
-            string platformSDKPath = System.IO.Path.Combine(tc.InstallPath(target), "PlatformSDK");
+            var tc = C.ToolchainFactory.GetTargetInstance(target);
+            var platformSDKPath = System.IO.Path.Combine(tc.InstallPath(target), "PlatformSDK");
 
             if (System.IO.Directory.Exists(platformSDKPath))
             {
@@ -50,7 +50,7 @@ namespace WindowsSDK
         [C.ExportLinkerOptionsDelegate]
         void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ILinkerOptions linkerOptions = module.Options as C.ILinkerOptions;
+            var linkerOptions = module.Options as C.ILinkerOptions;
             if (target.Platform == Opus.Core.EPlatform.Win32)
             {
                 linkerOptions.LibraryPaths.Add(lib32Path);
@@ -68,7 +68,7 @@ namespace WindowsSDK
         [C.ExportCompilerOptionsDelegate]
         void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            C.ICCompilerOptions compilerOptions = module.Options as C.ICCompilerOptions;
+            var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Add(includePath);
         }
 

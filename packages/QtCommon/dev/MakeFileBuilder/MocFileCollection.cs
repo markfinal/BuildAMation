@@ -9,23 +9,23 @@ namespace MakeFileBuilder
     {
         public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
         {
-            Opus.Core.BaseModule mocFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = mocFileCollectionModule.OwningNode;
-            Opus.Core.Target target = node.Target;
+            var mocFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = mocFileCollectionModule.OwningNode;
+            var target = node.Target;
 
-            MakeFileVariableDictionary dependents = new MakeFileVariableDictionary();
-            foreach (Opus.Core.DependencyNode childNode in node.Children)
+            var dependents = new MakeFileVariableDictionary();
+            foreach (var childNode in node.Children)
             {
-                MakeFileData data = childNode.Data as MakeFileData;
+                var data = childNode.Data as MakeFileData;
                 // TODO: handle this better for more dependents
                 dependents.Append(data.VariableDictionary);
             }
 
-            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
 #if true
             var rule = new MakeFileRule(
@@ -54,7 +54,7 @@ namespace MakeFileBuilder
 
             success = true;
 
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
+            var returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, null);
             return returnData;
         }
     }

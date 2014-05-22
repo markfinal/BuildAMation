@@ -266,7 +266,7 @@ namespace QMakeBuilder
                                         string proFilePath,
                                         System.IO.StreamWriter writer)
         {
-            string config = string.Empty;
+            var config = string.Empty;
             if (array.Count == 1)
             {
                 if (array[0].OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
@@ -625,11 +625,11 @@ namespace QMakeBuilder
             }
             else
             {
-                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                var builder = new System.Text.StringBuilder();
                 if (useContinuation)
                 {
                     builder.Append(format);
-                    foreach (string value in stringArray)
+                    foreach (var value in stringArray)
                     {
                         if (escaped)
                         {
@@ -640,7 +640,7 @@ namespace QMakeBuilder
                 }
                 else
                 {
-                    foreach (string value in stringArray)
+                    foreach (var value in stringArray)
                     {
                         builder.AppendFormat("{0}{1}", format, FormatPath(value, proFilePath, verbose));
                         if (escaped)
@@ -971,7 +971,7 @@ namespace QMakeBuilder
 
         public static void Write(Opus.Core.Array<QMakeData> array)
         {
-            bool consistentMergeState = true;
+            var consistentMergeState = true;
             if (array.Count > 1)
             {
                 foreach (var data in array)
@@ -993,8 +993,8 @@ namespace QMakeBuilder
             }
 
             var node = array[0].OwningNode;
-            string proFileDirectory = node.GetModuleBuildDirectory();
-            string proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}.pro", node.ModuleName));
+            var proFileDirectory = node.GetModuleBuildDirectory();
+            var proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}.pro", node.ModuleName));
             if (array[0].Target.Length > 0)
             {
                 proFilePath = proFilePath.Replace(node.ModuleName, array[0].Target);
@@ -1034,7 +1034,7 @@ namespace QMakeBuilder
 
         public override string ToString()
         {
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            var builder = new System.Text.StringBuilder();
             builder.AppendFormat("QMakeData: Type {0} node '{1}'", this.Output, this.OwningNode.UniqueModuleName);
             return builder.ToString();
         }

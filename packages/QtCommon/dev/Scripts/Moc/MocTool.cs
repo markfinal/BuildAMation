@@ -18,7 +18,7 @@ namespace QtCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string mocExePath = System.IO.Path.Combine(this.toolset.BinPath(baseTarget), "moc");
+            var mocExePath = System.IO.Path.Combine(this.toolset.BinPath(baseTarget), "moc");
             if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 mocExePath += ".exe";

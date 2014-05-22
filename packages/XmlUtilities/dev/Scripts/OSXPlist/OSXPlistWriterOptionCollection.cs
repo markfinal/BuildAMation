@@ -33,16 +33,16 @@ namespace XmlUtilities
 
         private static void AddKeyToDict(System.Xml.XmlDocument doc, System.Xml.XmlElement dict, string value)
         {
-            System.Xml.XmlElement element = doc.CreateElement("key");
-            System.Xml.XmlText text = doc.CreateTextNode(value);
+            var element = doc.CreateElement("key");
+            var text = doc.CreateTextNode(value);
             element.AppendChild(text);
             dict.AppendChild(element);
         }
 
         private static void AddStringToDict(System.Xml.XmlDocument doc, System.Xml.XmlElement dict, string value)
         {
-            System.Xml.XmlElement element = doc.CreateElement("string");
-            System.Xml.XmlText text = doc.CreateTextNode(value);
+            var element = doc.CreateElement("string");
+            var text = doc.CreateTextNode(value);
             element.AppendChild(text);
             dict.AppendChild(element);
         }
@@ -54,8 +54,9 @@ namespace XmlUtilities
             // the plist file is relative to the main executable
             if (null != node.ExternalDependents)
             {
+                #if true
                 // TODO: this needs to be rewritten
-                #if false
+                #else
                 var dependentNode = node.ExternalDependents[0];
                 foreach (string outputPath in dependentNode.Module.Options.OutputPaths.Paths)
                 {
@@ -93,7 +94,7 @@ namespace XmlUtilities
 
             // now generate the XML document
             var xmlModule = node.Module as XmlModule;
-            System.Xml.XmlElement dictEl = (xmlModule as XmlUtilities.OSXPlistModule).DictElement;
+            var dictEl = (xmlModule as XmlUtilities.OSXPlistModule).DictElement;
 
             if (null != options.CFBundleName)
             {

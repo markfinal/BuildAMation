@@ -26,7 +26,7 @@ namespace Qt
             string installPath = null;
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
-                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Trolltech\Versions\4.6.3"))
+                using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Trolltech\Versions\4.6.3"))
                 {
                     if (null == key)
                     {

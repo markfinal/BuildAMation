@@ -16,7 +16,7 @@ namespace XcodeProjectProcessor
             var optionCollection = sender as Opus.Core.BaseOptionCollection;
             var optionNames = optionCollection.OptionNames;
 
-            foreach (string optionName in optionNames)
+            foreach (var optionName in optionNames)
             {
                 var option = optionCollection[optionName];
                 if (null == option.PrivateData)

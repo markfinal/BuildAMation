@@ -9,17 +9,17 @@ namespace MakeFileBuilder
     {
         public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule assemblyModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = assemblyModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection assemblyOptions = assemblyModule.Options;
-            CSharp.OptionCollection options = assemblyOptions as CSharp.OptionCollection;
+            var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = assemblyModule.OwningNode;
+            var target = node.Target;
+            var assemblyOptions = assemblyModule.Options;
+            var options = assemblyOptions as CSharp.OptionCollection;
 
-            MakeFileVariableDictionary inputVariables = new MakeFileVariableDictionary();
-            System.Collections.Generic.List<MakeFileData> dataArray = new System.Collections.Generic.List<MakeFileData>();
+            var inputVariables = new MakeFileVariableDictionary();
+            var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (node.ExternalDependents != null)
             {
-                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null != dependentNode.Data)
                     {
@@ -48,7 +48,7 @@ namespace MakeFileBuilder
                 }
             }
 
-            Opus.Core.StringArray sourceFiles = new Opus.Core.StringArray();
+            var sourceFiles = new Opus.Core.StringArray();
             var fields = moduleToBuild.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
             foreach (var field in fields)
             {
@@ -61,7 +61,7 @@ namespace MakeFileBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -71,10 +71,11 @@ namespace MakeFileBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            // TODO: convert to var
                             foreach (Opus.Core.Location location in sourceCollection)
                             {
-                                string absolutePath = location.GetSinglePath();
+                                var absolutePath = location.GetSinglePath();
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
                                     throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -99,13 +100,13 @@ namespace MakeFileBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
-                            string csPath = absolutePath + ".cs";
+                            var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
                                 throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
@@ -115,12 +116,13 @@ namespace MakeFileBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
                                 throw new Opus.Core.Exception("There can be only one application definition");
                             }
 
+                            // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -128,7 +130,7 @@ namespace MakeFileBuilder
                                     throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
-                                string csPath = absolutePath + ".cs";
+                                var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
@@ -153,13 +155,13 @@ namespace MakeFileBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
-                            string csPath = absolutePath + ".cs";
+                            var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
                                 throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
@@ -169,12 +171,13 @@ namespace MakeFileBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
                                 throw new Opus.Core.Exception("There can be only one page file");
                             }
 
+                            // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -182,7 +185,7 @@ namespace MakeFileBuilder
                                     throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
-                                string csPath = absolutePath + ".cs";
+                                var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
@@ -220,7 +223,7 @@ namespace MakeFileBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            foreach (string source in sourceFiles)
+            foreach (var source in sourceFiles)
             {
                 if (source.Contains(" "))
                 {
@@ -232,10 +235,10 @@ namespace MakeFileBuilder
                 }
             }
 
-            Opus.Core.ITool compilerInstance = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
-            string executablePath = compilerInstance.Executable((Opus.Core.BaseTarget)target);
+            var compilerInstance = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
+            var executablePath = compilerInstance.Executable((Opus.Core.BaseTarget)target);
 
-            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            var recipes = new Opus.Core.StringArray();
             if (executablePath.Contains(" "))
             {
                 recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString(' ')));
@@ -245,7 +248,7 @@ namespace MakeFileBuilder
                 recipes.Add(System.String.Format("{0} {1}", executablePath, commandLineBuilder.ToString(' ')));
             }
 
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
 #if true
             var rule = new MakeFileRule(
@@ -261,7 +264,7 @@ namespace MakeFileBuilder
 #endif
             makeFile.RuleArray.Add(rule);
 
-            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
@@ -271,13 +274,13 @@ namespace MakeFileBuilder
             }
 
             success = true;
-            Opus.Core.ITool compilerTool = compilerInstance as Opus.Core.ITool;
+            var compilerTool = compilerInstance as Opus.Core.ITool;
             System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
             if (compilerTool is Opus.Core.IToolEnvironmentVariables)
             {
                 environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
+            var returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             return returnData;
         }
     }

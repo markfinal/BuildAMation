@@ -97,7 +97,7 @@ namespace GccCommon
         }
         private static void DoNotAutoIncludeStandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
+            var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
                 commandLineBuilder.Add("-nostdlib");
@@ -122,7 +122,7 @@ namespace GccCommon
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-g");
@@ -147,7 +147,7 @@ namespace GccCommon
         }
         private static void DynamicLibraryCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
+            var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
                 if (Opus.Core.OSUtilities.IsUnixHosting)
@@ -172,7 +172,8 @@ namespace GccCommon
         }
         private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            // TODO: convert to var
             foreach (string libraryPath in libraryPathsOption.Value)
             {
                 if (libraryPath.Contains(" "))
@@ -269,9 +270,9 @@ namespace GccCommon
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            string[] arguments = stringOption.Value.Split(' ');
-            foreach (string argument in arguments)
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            foreach (var argument in arguments)
             {
                 commandLineBuilder.Add(argument);
             }
@@ -294,8 +295,8 @@ namespace GccCommon
             {
                 return;
             }
-            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
-            foreach (string framework in stringArrayOption.Value)
+            var stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (var framework in stringArrayOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-framework {0}", framework));
             }
@@ -361,7 +362,7 @@ namespace GccCommon
         #region ILinkerOptions Option delegates
         private static void CanUseOriginCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wl,-z,origin");
@@ -378,7 +379,7 @@ namespace GccCommon
         }
         private static void AllowUndefinedSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 if (Opus.Core.OSUtilities.IsOSXHosting)
@@ -419,7 +420,7 @@ namespace GccCommon
         }
         private static void RPathCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var stringsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             foreach (string rpath in stringsOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
@@ -432,7 +433,7 @@ namespace GccCommon
         }
         private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
+            var sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
             if (sixtyFourBitOption.Value)
             {
                 commandLineBuilder.Add("-m64");

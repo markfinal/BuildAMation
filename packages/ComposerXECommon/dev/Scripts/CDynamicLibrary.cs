@@ -12,7 +12,7 @@ namespace C
         {
             if (Opus.Core.OSUtilities.IsUnix(target))
             {
-                ComposerXECommon.ICCompilerOptions compilerOptions = module.Options as ComposerXECommon.ICCompilerOptions;
+                var compilerOptions = module.Options as ComposerXECommon.ICCompilerOptions;
                 if (null != compilerOptions)
                 {
                     compilerOptions.PositionIndependentCode = true;

@@ -15,23 +15,24 @@ namespace Gcc
             base.SetDefaultOptionValues(node);
 
             // TODO: think I can move this to GccCommon, but it misses out the C++ include paths for some reason (see Test9-dev)
-            Opus.Core.Target target = node.Target;
-            GccCommon.Toolset gccToolset = target.Toolset as GccCommon.Toolset;
-            string machineType = gccToolset.GccDetail.Target;
-            string cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
+            var target = node.Target;
+            var gccToolset = target.Toolset as GccCommon.Toolset;
+            var machineType = gccToolset.GccDetail.Target;
+            var cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
 
             if (!System.IO.Directory.Exists(cxxIncludePath))
             {
                 throw new Opus.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath);
             }
-            string cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
+            var cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
             if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
                 throw new Opus.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2);
             }
 
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cxxIncludePath);
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cxxIncludePath2);
+            var cCompilerOptions = this as C.ICCompilerOptions;
+            cCompilerOptions.SystemIncludePaths.Add(cxxIncludePath);
+            cCompilerOptions.SystemIncludePaths.Add(cxxIncludePath2);
 
             GccCommon.ObjCxxCompilerOptionCollection.ExportedDefaults(this, node);
         }

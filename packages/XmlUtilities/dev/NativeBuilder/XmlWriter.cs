@@ -20,7 +20,7 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                Opus.Core.StringArray outputFiles = new Opus.Core.StringArray();
+                var outputFiles = new Opus.Core.StringArray();
                 outputFiles.Add(xmlPath);
                 if (!RequiresBuilding(outputFiles, new Opus.Core.StringArray()))
                 {
@@ -33,7 +33,7 @@ namespace NativeBuilder
             Opus.Core.Log.Info("Writing XML file '{0}'", xmlPath);
 
             // serialize the XML to disk
-            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+            var settings = new System.Xml.XmlWriterSettings();
             settings.CheckCharacters = true;
             settings.CloseOutput = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
@@ -44,7 +44,7 @@ namespace NativeBuilder
             settings.NewLineOnAttributes = false;
             settings.OmitXmlDeclaration = false;
 
-            using (System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(xmlPath, settings))
+            using (var writer = System.Xml.XmlWriter.Create(xmlPath, settings))
             {
                 moduleToBuild.Document.WriteTo(writer);
             }

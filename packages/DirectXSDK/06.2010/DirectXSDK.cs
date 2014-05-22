@@ -20,7 +20,7 @@ namespace DirectXSDK
             }
 
             const string registryPath = @"Microsoft\DirectX\Microsoft DirectX SDK (June 2010)";
-            using (Microsoft.Win32.RegistryKey dxInstallLocation = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryPath))
+            using (var dxInstallLocation = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryPath))
             {
                 if (null == dxInstallLocation)
                 {
@@ -66,7 +66,7 @@ namespace DirectXSDK
             linkerOptions.LibraryPaths.Add(platformLibraryPath);
 
             // add libraries
-            Opus.Core.StringArray libraries = new Opus.Core.StringArray();
+            var libraries = new Opus.Core.StringArray();
             libraries.Add("d3d9.lib");
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {

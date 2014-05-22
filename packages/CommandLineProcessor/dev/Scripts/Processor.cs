@@ -35,7 +35,7 @@ namespace CommandLineProcessor
             var requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
             if (tool is Opus.Core.IToolForwardedEnvironmentVariables)
             {
-                foreach (string requiredEnvVar in (tool as Opus.Core.IToolForwardedEnvironmentVariables).VariableNames)
+                foreach (var requiredEnvVar in (tool as Opus.Core.IToolForwardedEnvironmentVariables).VariableNames)
                 {
                     requiredEnvironmentVariables[requiredEnvVar] = processStartInfo.EnvironmentVariables[requiredEnvVar];
                     //Opus.Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);
@@ -58,7 +58,7 @@ namespace CommandLineProcessor
             if (tool is Opus.Core.IToolEnvironmentVariables)
             {
                 var variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
-                foreach (string key in variables.Keys)
+                foreach (var key in variables.Keys)
                 {
                     // values - assume when there are multiple values that they are paths
                     processStartInfo.EnvironmentVariables[key] = variables[key].ToString(System.IO.Path.PathSeparator);

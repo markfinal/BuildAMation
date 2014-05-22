@@ -20,7 +20,7 @@ namespace DotNetFramework
         {
             string CscPath = null;
 
-            string installPath = this.toolset.InstallPath(baseTarget);
+            var installPath = this.toolset.InstallPath(baseTarget);
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 CscPath = System.IO.Path.Combine(installPath, "Csc.exe");
@@ -56,7 +56,7 @@ namespace DotNetFramework
         {
             get
             {
-                Opus.Core.StringArray envVars = new Opus.Core.StringArray();
+                var envVars = new Opus.Core.StringArray();
                 envVars.Add("SystemRoot");
                 envVars.Add("TEMP"); // otherwise you get errors like this CS0016: Could not write to output file 'd:\build\CSharpTest1-dev\SimpleAssembly\win32-dotnet2.0.50727-debug\bin\SimpleAssembly.dll' -- 'Access is denied.
                 return envVars;

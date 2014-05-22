@@ -11,37 +11,38 @@ namespace GccCommon
         {
             base.SetDefaultOptionValues(node);
 
-            Opus.Core.Target target = node.Target;
+            var target = node.Target;
 
-            ILinkerOptions linkerOptions = this as ILinkerOptions;
-            linkerOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
+            var localLinkerOptions = this as ILinkerOptions;
+            localLinkerOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
 
-            (this as C.ILinkerOptions).DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
+            var cLinkerOptions = this as C.ILinkerOptions;
+            cLinkerOptions.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
-            linkerOptions.CanUseOrigin = false;
-            linkerOptions.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
-            linkerOptions.RPath = new Opus.Core.StringArray();
+            localLinkerOptions.CanUseOrigin = false;
+            localLinkerOptions.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
+            localLinkerOptions.RPath = new Opus.Core.StringArray();
 
             if (null != node.Children)
             {
                 // we use gcc as the linker - if there is C++ code included, link against libstdc++
-                foreach (Opus.Core.DependencyNode child in node.Children)
+                foreach (var child in node.Children)
                 {
                     if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection |
                         child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
                     {
-                        (this as C.ILinkerOptions).Libraries.Add("-lstdc++");
+                        cLinkerOptions.Libraries.Add("-lstdc++");
                         break;
                     }
                 }
 
                 // we use gcc as the link - if there is ObjectiveC code included, link against -lobjc
-                foreach (Opus.Core.DependencyNode child in node.Children)
+                foreach (var child in node.Children)
                 {
                     if (child.Module is C.ObjC.ObjectFile || child.Module is C.ObjC.ObjectFileCollection |
                         child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
                     {
-                        (this as C.ILinkerOptions).Libraries.Add("-lobjc");
+                        cLinkerOptions.Libraries.Add("-lobjc");
                         break;
                     }
                 }

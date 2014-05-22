@@ -52,6 +52,7 @@ namespace VSSolutionBuilder
                 var dirName = splitFileDirs[index];
 
                 System.Xml.XmlElement directoryElement = null;
+                // TODO: convert to var
                 foreach (System.Xml.XmlElement child in parentElement.ChildNodes)
                 {
                     if ("Filter" == child.Name)
@@ -93,6 +94,7 @@ namespace VSSolutionBuilder
                 foreach (ProjectFileConfiguration configuration in this.FileConfigurations)
                 {
                     ProjectTool parentTool = null;
+                    // TODO: convert to var
                     foreach (ProjectTool tool in configuration.Configuration.Tools)
                     {
                         if (tool.Name == configuration.Tool.Name)

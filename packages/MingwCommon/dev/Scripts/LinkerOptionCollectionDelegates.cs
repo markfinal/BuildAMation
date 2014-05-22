@@ -36,7 +36,7 @@ namespace MingwCommon
         }
         private static void DoNotAutoIncludeStandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
+            var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
                 commandLineBuilder.Add("-nostdlib");
@@ -44,7 +44,7 @@ namespace MingwCommon
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-g");
@@ -52,7 +52,7 @@ namespace MingwCommon
         }
         private static void SubSystemCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.ESubsystem> subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
+            var subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
             {
                 case C.ESubsystem.NotSet:
@@ -98,7 +98,8 @@ namespace MingwCommon
         }
         private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            // TODO: convert to var
             foreach (string libraryPath in libraryPathsOption.Value)
             {
                 if (libraryPath.Contains(" "))
@@ -147,9 +148,9 @@ namespace MingwCommon
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            string[] arguments = stringOption.Value.Split(' ');
-            foreach (string argument in arguments)
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            foreach (var argument in arguments)
             {
                 commandLineBuilder.Add(argument);
             }
@@ -158,7 +159,7 @@ namespace MingwCommon
         #region ILinkerOptions Option delegates
         private static void EnableAutoImportCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wl,--enable-auto-import");

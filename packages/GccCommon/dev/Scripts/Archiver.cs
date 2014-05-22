@@ -46,8 +46,8 @@ namespace GccCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.toolset.BinPath(baseTarget);
-            string executablePath = System.IO.Path.Combine(installPath, "ar");
+            var installPath = this.toolset.BinPath(baseTarget);
+            var executablePath = System.IO.Path.Combine(installPath, "ar");
             return executablePath;
         }
 

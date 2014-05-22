@@ -10,33 +10,34 @@ namespace MingwCommon
     {
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            ICCompilerOptions compilerInterface = this as ICCompilerOptions;
-            compilerInterface.AllWarnings = true;
-            compilerInterface.ExtraWarnings = true;
+            var localCompilerOptions = this as ICCompilerOptions;
+            localCompilerOptions.AllWarnings = true;
+            localCompilerOptions.ExtraWarnings = true;
 
             base.SetDefaultOptionValues(node);
 
-            Opus.Core.Target target = node.Target;
-            compilerInterface.SixtyFourBit = target.HasPlatform(Opus.Core.EPlatform.Win64);
+            var target = node.Target;
+            localCompilerOptions.SixtyFourBit = target.HasPlatform(Opus.Core.EPlatform.Win64);
 
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
             {
-                compilerInterface.StrictAliasing = false;
-                compilerInterface.InlineFunctions = false;
+                localCompilerOptions.StrictAliasing = false;
+                localCompilerOptions.InlineFunctions = false;
             }
             else
             {
-                compilerInterface.StrictAliasing = true;
-                compilerInterface.InlineFunctions = true;
+                localCompilerOptions.StrictAliasing = true;
+                localCompilerOptions.InlineFunctions = true;
             }
 
-            (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
+            var cCompilerOptions = this as C.ICCompilerOptions;
+            cCompilerOptions.TargetLanguage = C.ETargetLanguage.C;
 
-            Opus.Core.IToolset toolset = target.Toolset;
-            C.ICompilerTool compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)node.Target));
+            var toolset = target.Toolset;
+            var compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            cCompilerOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)node.Target));
 
-            compilerInterface.Pedantic = true;
+            localCompilerOptions.Pedantic = true;
         }
 
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)

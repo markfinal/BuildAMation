@@ -9,7 +9,7 @@ namespace GccCommon
         #region C.ICxxCompilerOptions Option delegates
         public static void ExceptionHandlerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler> exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
             {
                 case C.Cxx.EExceptionHandler.Disabled:

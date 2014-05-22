@@ -9,14 +9,16 @@ namespace MingwCommon
         #region C.IArchiverOptions Option delegates
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.EArchiverOutput> enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
+            var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
-                    var options = sender as ArchiverOptionCollection;
-                    var libraryLocation = options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey];
-                    var libraryFilePath = libraryLocation.GetSinglePath();
-                    commandLineBuilder.Add(libraryFilePath);
+                    {
+                        var options = sender as ArchiverOptionCollection;
+                        var libraryLocation = options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey];
+                        var libraryFilePath = libraryLocation.GetSinglePath();
+                        commandLineBuilder.Add(libraryFilePath);
+                    }
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
@@ -24,9 +26,9 @@ namespace MingwCommon
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            string[] arguments = stringOption.Value.Split(' ');
-            foreach (string argument in arguments)
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            foreach (var argument in arguments)
             {
                 commandLineBuilder.Add(argument);
             }
@@ -35,7 +37,7 @@ namespace MingwCommon
         #region IArchiverOptions Option delegates
         private static void CommandCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<EArchiverCommand> commandOption = option as Opus.Core.ValueTypeOption<EArchiverCommand>;
+            var commandOption = option as Opus.Core.ValueTypeOption<EArchiverCommand>;
             switch (commandOption.Value)
             {
                 case EArchiverCommand.Replace:
@@ -47,7 +49,7 @@ namespace MingwCommon
         }
         private static void DoNotWarnIfLibraryCreatedCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-c");

@@ -10,17 +10,19 @@ namespace ComposerXECommon
     {
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            ICCompilerOptions compilerInterface = this as ICCompilerOptions;
+            var compilerInterface = this as ICCompilerOptions;
             compilerInterface.AllWarnings = true;
             compilerInterface.StrictDiagnostics = true;
             compilerInterface.EnableRemarks = true;
 
             base.SetDefaultOptionValues(node);
 
-            // there is too much of a headache with include paths to enable this!
-            (this as C.ICCompilerOptions).IgnoreStandardIncludePaths = false;
+            var cOptions = this as C.ICCompilerOptions;
 
-            Opus.Core.Target target = node.Target;
+            // there is too much of a headache with include paths to enable this!
+            cOptions.IgnoreStandardIncludePaths = false;
+
+            var target = node.Target;
             compilerInterface.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
 
             if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
@@ -36,10 +38,10 @@ namespace ComposerXECommon
 
             compilerInterface.PositionIndependentCode = false;
 
-            C.ICompilerTool compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)target));
+            var compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            cOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)target));
 
-            (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
+            cOptions.TargetLanguage = C.ETargetLanguage.C;
         }
 
         public CCompilerOptionCollection(Opus.Core.DependencyNode node)

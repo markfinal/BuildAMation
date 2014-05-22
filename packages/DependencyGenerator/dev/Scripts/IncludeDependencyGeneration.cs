@@ -32,7 +32,7 @@ namespace DependencyGenerator
         static IncludeDependencyGeneration()
         {
             // TODO: put this on an action
-            bool isThreaded = true;
+            var isThreaded = true;
             FileProcessQueue = new DependencyQueue<Data>(isThreaded);
 
             var threadStart = new System.Threading.ParameterizedThreadStart(ProcessFileQueue);

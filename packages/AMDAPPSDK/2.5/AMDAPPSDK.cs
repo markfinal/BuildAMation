@@ -21,14 +21,14 @@ namespace AMDAPPSDK
 
             if (null == InstallPath)
             {
-                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"ATI Technologies\Install\AMD APP SDK Developer"))
+                using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"ATI Technologies\Install\AMD APP SDK Developer"))
                 {
                     if (null == key)
                     {
                         throw new Opus.Core.Exception("AMDAPPSDK was not installed");
                     }
 
-                    string installPath = key.GetValue("InstallDir") as string;
+                    var installPath = key.GetValue("InstallDir") as string;
                     if (null == installPath)
                     {
                         throw new Opus.Core.Exception("AMDAPPSDK was not installed correctly");

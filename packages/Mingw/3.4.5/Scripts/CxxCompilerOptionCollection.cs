@@ -17,19 +17,21 @@ namespace Mingw
             base.SetDefaultOptionValues(node);
 
             // TODO: can this be moved to MingwCommon? (difference in root C folders)
-            Opus.Core.Target target = node.Target;
-            MingwCommon.Toolset mingwToolset = target.Toolset as MingwCommon.Toolset;
+            var target = node.Target;
+            var mingwToolset = target.Toolset as MingwCommon.Toolset;
+
+            var cCompilerOptions = this as C.ICCompilerOptions;
 
             // using [0] as we want the one in the root include folder
-            string cppIncludePath = System.IO.Path.Combine(mingwToolset.MingwDetail.IncludePaths[0], "c++");
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cppIncludePath);
+            var cppIncludePath = System.IO.Path.Combine(mingwToolset.MingwDetail.IncludePaths[0], "c++");
+            cCompilerOptions.SystemIncludePaths.Add(cppIncludePath);
 
-            string cppIncludePath2 = System.IO.Path.Combine(cppIncludePath, mingwToolset.MingwDetail.Version);
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cppIncludePath2);
+            var cppIncludePath2 = System.IO.Path.Combine(cppIncludePath, mingwToolset.MingwDetail.Version);
+            cCompilerOptions.SystemIncludePaths.Add(cppIncludePath2);
 
             // TODO: commenting these two lines out reveals an error on Mingw Test9-dev
-            string cppIncludePath3 = System.IO.Path.Combine(cppIncludePath2, mingwToolset.MingwDetail.Target);
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cppIncludePath3);
+            var cppIncludePath3 = System.IO.Path.Combine(cppIncludePath2, mingwToolset.MingwDetail.Target);
+            cCompilerOptions.SystemIncludePaths.Add(cppIncludePath3);
         }
     }
 }

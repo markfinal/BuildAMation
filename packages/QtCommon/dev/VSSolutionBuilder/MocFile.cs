@@ -9,12 +9,12 @@ namespace VSSolutionBuilder
     {
         public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule mocFileModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = mocFileModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
+            var mocFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = mocFileModule.OwningNode;
+            var target = node.Target;
+            var mocFileOptions = mocFileModule.Options;
 
-            Opus.Core.DependencyNode parentNode = node.Parent;
+            var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
             if (parentNode.Module is Opus.Core.IModuleCollection)
             {
@@ -27,7 +27,7 @@ namespace VSSolutionBuilder
 
             IProject projectData = null;
             // TODO: want to remove this
-            string moduleName = targetNode.ModuleName;
+            var moduleName = targetNode.ModuleName;
             lock (this.solutionFile.ProjectDictionary)
             {
                 if (this.solutionFile.ProjectDictionary.ContainsKey(moduleName))
@@ -36,15 +36,15 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
-                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
-                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    string projectPathName = System.IO.Path.Combine(targetNode.GetModuleBuildDirectory(), moduleName);
+                    var projectPathName = System.IO.Path.Combine(targetNode.GetModuleBuildDirectory(), moduleName);
                     projectPathName += projectExtension;
 
-                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    var projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, mocFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
@@ -52,14 +52,14 @@ namespace VSSolutionBuilder
             }
 
             {
-                string platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
+                var platformName = VSSolutionBuilder.GetPlatformNameFromTarget(target);
                 if (!projectData.Platforms.Contains(platformName))
                 {
                     projectData.Platforms.Add(platformName);
                 }
             }
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             // TODO: want to remove this
             lock (this.solutionFile.ProjectConfigurations)
@@ -86,10 +86,10 @@ namespace VSSolutionBuilder
                 }
             }
 
-            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
             ProjectFile sourceFile;
-            ICProject cProject = projectData as ICProject;
+            var cProject = projectData as ICProject;
             lock (cProject.HeaderFiles)
             {
                 if (!cProject.HeaderFiles.Contains(sourceFilePath))
@@ -104,10 +104,10 @@ namespace VSSolutionBuilder
                 }
             }
 
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            string toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
+            var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
 
-            Opus.Core.StringArray commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Opus.Core.StringArray();
             if (toolExePath.Contains(" "))
             {
                 commandLineBuilder.Add(System.String.Format("\"{0}\"", toolExePath));
@@ -126,7 +126,7 @@ namespace VSSolutionBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            ProjectTool customTool = new ProjectTool("VCCustomBuildTool");
+            var customTool = new ProjectTool("VCCustomBuildTool");
 
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
             {
@@ -138,8 +138,8 @@ namespace VSSolutionBuilder
 #else
                 string mocPathName = mocFileOptions.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
 #endif
-                string outputPathname = mocPathName;
-                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}{1}{2}", System.IO.Path.GetDirectoryName(mocPathName), System.Environment.NewLine, commandLineBuilder.ToString(' '));
+                var outputPathname = mocPathName;
+                var commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}{1}{2}", System.IO.Path.GetDirectoryName(mocPathName), System.Environment.NewLine, commandLineBuilder.ToString(' '));
                 customTool.AddAttribute("CommandLine", commandLine);
 
                 customTool.AddAttribute("Outputs", outputPathname);
@@ -158,8 +158,8 @@ namespace VSSolutionBuilder
 #else
                 string mocPathName = mocFileOptions.OutputPaths[QtCommon.OutputFileFlags.MocGeneratedSourceFile];
 #endif
-                string outputPathname = mocPathName;
-                string commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}{1}{2}", System.IO.Path.GetDirectoryName(mocPathName), System.Environment.NewLine, commandLineBuilder.ToString(' '));
+                var outputPathname = mocPathName;
+                var commandLine = System.String.Format("IF NOT EXIST {0} MKDIR {0}{1}{2}", System.IO.Path.GetDirectoryName(mocPathName), System.Environment.NewLine, commandLineBuilder.ToString(' '));
                 customTool.AddAttribute("Command", commandLine);
 
                 customTool.AddAttribute("Outputs", outputPathname);
@@ -168,7 +168,7 @@ namespace VSSolutionBuilder
                 customTool.AddAttribute("AdditionalInputs", toolExePath);
             }
 
-            ProjectFileConfiguration fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
+            var fileConfiguration = new ProjectFileConfiguration(configuration, customTool, false);
             sourceFile.FileConfigurations.Add(fileConfiguration);
 
             success = true;

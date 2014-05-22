@@ -23,7 +23,7 @@ namespace CommandLineProcessor
                 optionNames = new Opus.Core.StringArray(optionNames.Complement(excludedOptionNames));
             }
 
-            foreach (string optionName in optionNames)
+            foreach (var optionName in optionNames)
             {
                 var option = optionCollection[optionName];
                 if (null == option.PrivateData)

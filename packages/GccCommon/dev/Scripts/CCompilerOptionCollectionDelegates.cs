@@ -9,8 +9,8 @@ namespace GccCommon
         #region C.ICCompilerOptions Option delegates
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<C.DefineCollection> definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
-            foreach (string define in definesOption.Value)
+            var definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
+            foreach (var define in definesOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-D{0}", define));
             }
@@ -22,10 +22,11 @@ namespace GccCommon
         }
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.IToolset toolset = target.Toolset;
-            C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            string switchPrefix = compiler.IncludePathCompilerSwitches[1];
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var toolset = target.Toolset;
+            var compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            var switchPrefix = compiler.IncludePathCompilerSwitches[1];
+            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            // TODO: convert to var
             foreach (string includePath in includePathsOption.Value)
             {
                 if (includePath.Contains(" "))
@@ -45,16 +46,17 @@ namespace GccCommon
         }
         private static void SystemIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            C.ICCompilerOptions optionCollection = sender as C.ICCompilerOptions;
+            var optionCollection = sender as C.ICCompilerOptions;
             if (!optionCollection.IgnoreStandardIncludePaths)
             {
                 Opus.Core.Log.Full("System include paths not explicitly added to the build");
                 return;
             }
-            Opus.Core.IToolset toolset = target.Toolset;
-            C.ICompilerTool compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            string switchPrefix = compiler.IncludePathCompilerSwitches[0];
-            Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection> includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var toolset = target.Toolset;
+            var compiler = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
+            var switchPrefix = compiler.IncludePathCompilerSwitches[0];
+            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            // TODO: convert to var
             foreach (string includePath in includePathsOption.Value)
             {
                 if (includePath.Contains(" "))
@@ -137,7 +139,7 @@ namespace GccCommon
         }
         private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-g");
@@ -162,7 +164,7 @@ namespace GccCommon
         }
         private static void WarningsAsErrorsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var warningsAsErrorsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (warningsAsErrorsOption.Value)
             {
                 commandLineBuilder.Add("-Werror");
@@ -187,11 +189,11 @@ namespace GccCommon
         }
         private static void IgnoreStandardIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> ignoreStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var ignoreStandardIncludePathsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardIncludePathsOption.Value)
             {
                 commandLineBuilder.Add("-nostdinc");
-                C.ICCompilerOptions options = sender as C.ICCompilerOptions;
+                var options = sender as C.ICCompilerOptions;
                 if (options.TargetLanguage == C.ETargetLanguage.Cxx)
                 {
                     commandLineBuilder.Add("-nostdinc++");
@@ -214,7 +216,7 @@ namespace GccCommon
         }
         private static void OptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.EOptimization> optimizationOption = option as Opus.Core.ValueTypeOption<C.EOptimization>;
+            var optimizationOption = option as Opus.Core.ValueTypeOption<C.EOptimization>;
             switch (optimizationOption.Value)
             {
                 case C.EOptimization.Off:
@@ -267,7 +269,7 @@ namespace GccCommon
         }
         private static void CustomOptimizationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<string> customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.Add(customOptimizationOption.Value);
         }
         private static void CustomOptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
@@ -278,7 +280,7 @@ namespace GccCommon
         }
         private static void TargetLanguageCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.ETargetLanguage> targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
+            var targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
             switch (targetLanguageOption.Value)
             {
                 case C.ETargetLanguage.Default:
@@ -331,7 +333,7 @@ namespace GccCommon
         }
         private static void ShowIncludesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-H");
@@ -348,9 +350,9 @@ namespace GccCommon
         }
         private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<string> stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            string[] arguments = stringOption.Value.Split(' ');
-            foreach (string argument in arguments)
+            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var arguments = stringOption.Value.Split(' ');
+            foreach (var argument in arguments)
             {
                 commandLineBuilder.Add(argument);
             }
@@ -367,7 +369,7 @@ namespace GccCommon
         }
         private static void OmitFramePointerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-fomit-frame-pointer");
@@ -392,8 +394,8 @@ namespace GccCommon
         }
         private static void DisableWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
-            foreach (string warning in disableWarningsOption.Value)
+            var disableWarningsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (var warning in disableWarningsOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-Wno-{0}", warning));
             }
@@ -411,7 +413,7 @@ namespace GccCommon
         }
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<C.ECharacterSet> enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
+            var enumOption = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
             var cOptions = sender as C.ICCompilerOptions;
             switch (enumOption.Value)
             {
@@ -493,7 +495,7 @@ namespace GccCommon
         private static void UndefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             var undefinesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
-            foreach (string undefine in undefinesOption.Value)
+            foreach (var undefine in undefinesOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-U{0}", undefine));
             }
@@ -506,7 +508,7 @@ namespace GccCommon
         #region ICCompilerOptions Option delegates
         private static void AllWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wall");
@@ -523,7 +525,7 @@ namespace GccCommon
         }
         private static void ExtraWarningsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wextra");
@@ -540,7 +542,7 @@ namespace GccCommon
         }
         private static void StrictAliasingCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-fstrict-aliasing");
@@ -569,7 +571,7 @@ namespace GccCommon
         }
         private static void PositionIndependentCodeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-fPIC");
@@ -595,7 +597,7 @@ namespace GccCommon
         }
         private static void InlineFunctionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-finline-functions");
@@ -620,7 +622,7 @@ namespace GccCommon
         }
         private static void PedanticCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-pedantic");
@@ -645,7 +647,7 @@ namespace GccCommon
         }
         private static void SixtyFourBitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
+            var sixtyFourBitOption = option as Opus.Core.ValueTypeOption<bool>;
             if (sixtyFourBitOption.Value)
             {
                 commandLineBuilder.Add("-m64");

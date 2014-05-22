@@ -9,19 +9,19 @@ namespace MakeFileBuilder
     {
         public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule mocFileModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = mocFileModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection mocFileOptions = mocFileModule.Options;
-            QtCommon.MocOptionCollection toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
+            var mocFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = mocFileModule.OwningNode;
+            var target = node.Target;
+            var mocFileOptions = mocFileModule.Options;
+            var toolOptions = mocFileOptions as QtCommon.MocOptionCollection;
 
-            string sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
                 throw new Opus.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);
             }
 
-            Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
+            var inputFiles = new Opus.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
 #if true
@@ -55,10 +55,10 @@ namespace MakeFileBuilder
                 commandLineBuilder.Add(sourceFilePath);
             }
 
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            string toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
+            var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
 
-            Opus.Core.StringArray recipes = new Opus.Core.StringArray();
+            var recipes = new Opus.Core.StringArray();
             if (toolExePath.Contains(" "))
             {
                 recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString(' '));
@@ -68,11 +68,11 @@ namespace MakeFileBuilder
                 recipes.Add(toolExePath + " " + commandLineBuilder.ToString(' '));
             }
 
-            string makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
-            MakeFile makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
 #if true
             var rule = new MakeFileRule(
@@ -98,7 +98,7 @@ namespace MakeFileBuilder
             {
                 environment = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
             }
-            MakeFileData returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
+            var returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             success = true;
             return returnData;
         }

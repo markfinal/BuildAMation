@@ -14,7 +14,7 @@ namespace ComposerXECommon
             // get version
             string gccVersion = null;
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -44,7 +44,7 @@ namespace ComposerXECommon
             // get target
             string gccTarget = null;
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -75,9 +75,9 @@ namespace ComposerXECommon
             string pathPrefix = null;
             string gxxIncludeDir = null;
             string libDir = null;
-            Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+            var includePaths = new Opus.Core.StringArray();
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -100,25 +100,25 @@ namespace ComposerXECommon
                     throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
-                string details = process.StandardOutput.ReadToEnd();
+                var details = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
-                string[] splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
+                var splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
 
-                foreach (string detail in splitDetails)
+                foreach (var detail in splitDetails)
                 {
                     const string configuredWith = "Configured with: ";
                     if (detail.StartsWith(configuredWith))
                     {
-                        string configuredOptions = detail.Substring(configuredWith.Length);
-                        string[] splitConfigureOptions = configuredOptions.Split(' ');
+                        var configuredOptions = detail.Substring(configuredWith.Length);
+                        var splitConfigureOptions = configuredOptions.Split(' ');
 
                         const string pathPrefixKey = "--prefix=";
                         const string gxxIncludeDirKey = "--with-gxx-include-dir=";
                         const string targetKey = "--target=";
                         const string libexecKey = "--libexecdir=";
                         const string slibDirKey = "--with-slibdir=";
-                        foreach (string option in splitConfigureOptions)
+                        foreach (var option in splitConfigureOptions)
                         {
                             if (option.StartsWith(pathPrefixKey))
                             {
@@ -156,9 +156,9 @@ namespace ComposerXECommon
 
                 if (null == gccTarget)
                 {
-                    foreach (string detail in splitDetails)
+                    foreach (var detail in splitDetails)
                     {
-                        string targetKey = "Target: ";
+                        var targetKey = "Target: ";
                         if (detail.StartsWith(targetKey))
                         {
                             gccTarget = detail.Substring(targetKey.Length).Trim();
@@ -180,7 +180,7 @@ namespace ComposerXECommon
                 // TODO: this looks like the targetIncludeFolder, and has been necessary
                 {
                     // this is for some Linux distributions
-                    string path = System.String.Format("/usr/include/{0}", gccTarget);
+                    var path = System.String.Format("/usr/include/{0}", gccTarget);
                     if (System.IO.Directory.Exists(path))
                     {
                         includePaths.Add(path);
@@ -188,7 +188,7 @@ namespace ComposerXECommon
                 }
             }
 
-            GccDetailData gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
+            var gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
             gccDetailsForTarget[baseTarget] = gccDetails;
 
             Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);

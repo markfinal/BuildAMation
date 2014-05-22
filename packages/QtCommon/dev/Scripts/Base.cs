@@ -22,7 +22,7 @@ namespace QtCommon
                                       Opus.Core.Target target,
                                       string moduleName)
         {
-            string includePath = this.QtToolset.GetIncludePath((Opus.Core.BaseTarget)target);
+            var includePath = this.QtToolset.GetIncludePath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(includePath))
             {
                 options.IncludePaths.Add(includePath);
@@ -37,7 +37,7 @@ namespace QtCommon
         protected void AddLibraryPath(C.ILinkerOptions options,
                                       Opus.Core.Target target)
         {
-            string libraryPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
+            var libraryPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(libraryPath))
             {
                 options.LibraryPaths.Add(libraryPath);

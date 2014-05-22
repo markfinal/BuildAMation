@@ -43,13 +43,13 @@ namespace QtCommon
 
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
-            Opus.Core.IModule module = this as Opus.Core.IModule;
-            IMocOptions options = module.Options as IMocOptions;
-            string outputPath = options.MocOutputPath;
-            C.Cxx.ObjectFile injectedFile = new C.Cxx.ObjectFile();
+            var module = this as Opus.Core.IModule;
+            var options = module.Options as IMocOptions;
+            var outputPath = options.MocOutputPath;
+            var injectedFile = new C.Cxx.ObjectFile();
             injectedFile.SourceFileLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
 
-            Opus.Core.ModuleCollection moduleCollection = new Opus.Core.ModuleCollection();
+            var moduleCollection = new Opus.Core.ModuleCollection();
             moduleCollection.Add(injectedFile);
 
             return moduleCollection;

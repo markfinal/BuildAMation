@@ -11,11 +11,13 @@ namespace GccCommon
         {
             base.SetDefaultOptionValues(node);
 
-            (this as IArchiverOptions).Command = EArchiverCommand.Replace;
-            (this as IArchiverOptions).DoNotWarnIfLibraryCreated = true;
+            var localArchiverOptions = this as IArchiverOptions;
+            localArchiverOptions.Command = EArchiverCommand.Replace;
+            localArchiverOptions.DoNotWarnIfLibraryCreated = true;
 
+            var cArchiverOptions = this as C.IArchiverOptions;
             // this must be set last, as it appears last on the command line
-            (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
+            cArchiverOptions.OutputType = C.EArchiverOutput.StaticLibrary;
         }
 
         public ArchiverOptionCollection(Opus.Core.DependencyNode node)

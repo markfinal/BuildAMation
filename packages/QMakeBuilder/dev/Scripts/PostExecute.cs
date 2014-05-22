@@ -14,7 +14,7 @@ namespace QMakeBuilder
             Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
             // find all nodes with the same unique name
-            System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>> similarNodes = new System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>>();
+            var similarNodes = new System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>>();
             foreach (var node in executedNodes)
             {
                 if (null == node.Data)
@@ -40,9 +40,9 @@ namespace QMakeBuilder
             }
 
             var mainPackage = Opus.Core.State.PackageInfo[0];
-            string proFileName = mainPackage + ".pro";
-            string rootDirectory = Opus.Core.State.BuildRoot;
-            string proFilePath = System.IO.Path.Combine(rootDirectory, proFileName);
+            var proFileName = mainPackage + ".pro";
+            var rootDirectory = Opus.Core.State.BuildRoot;
+            var proFilePath = System.IO.Path.Combine(rootDirectory, proFileName);
 
             // relative paths need a trailing slash to work
             rootDirectory += System.IO.Path.DirectorySeparatorChar;
@@ -59,8 +59,8 @@ namespace QMakeBuilder
                     var data = collection[0];
                     if (data.ProFilePath != null)
                     {
-                        string subDirProjectDir = System.IO.Path.GetDirectoryName(data.ProFilePath) + System.IO.Path.DirectorySeparatorChar;
-                        string relativeDir = Opus.Core.RelativePathUtilities.GetPath(subDirProjectDir, rootDirectory);
+                        var subDirProjectDir = System.IO.Path.GetDirectoryName(data.ProFilePath) + System.IO.Path.DirectorySeparatorChar;
+                        var relativeDir = Opus.Core.RelativePathUtilities.GetPath(subDirProjectDir, rootDirectory);
                         relativeDir = relativeDir.TrimEnd(System.IO.Path.DirectorySeparatorChar);
                         proWriter.WriteLine("\t{0}\\", relativeDir.Replace('\\', '/'));
                     }

@@ -14,7 +14,7 @@ namespace MingwCommon
             // get version
             string gccVersion = null;
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -46,9 +46,9 @@ namespace MingwCommon
             string gxxIncludeDir = null;
             string gccTarget = null;
             string libExecDir = null;
-            Opus.Core.StringArray includePaths = new Opus.Core.StringArray();
+            var includePaths = new Opus.Core.StringArray();
             {
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
                 processStartInfo.ErrorDialog = true;
                 processStartInfo.UseShellExecute = false;
@@ -70,24 +70,24 @@ namespace MingwCommon
                     throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
-                string details = process.StandardError.ReadToEnd();
+                var details = process.StandardError.ReadToEnd();
                 process.WaitForExit();
 
-                string[] splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
+                var splitDetails = details.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.None);
 
-                foreach (string detail in splitDetails)
+                foreach (var detail in splitDetails)
                 {
                     const string configuredWith = "Configured with: ";
                     if (detail.StartsWith(configuredWith))
                     {
-                        string configuredOptions = detail.Substring(configuredWith.Length);
-                        string[] splitConfigureOptions = configuredOptions.Split(' ');
+                        var configuredOptions = detail.Substring(configuredWith.Length);
+                        var splitConfigureOptions = configuredOptions.Split(' ');
 
                         const string pathPrefixKey = "--prefix=";
                         const string gxxIncludeDirKey = "--with-gxx-include-dir=";
                         const string targetKey = "--target=";
                         const string libexecKey = "--libexecdir=";
-                        foreach (string option in splitConfigureOptions)
+                        foreach (var option in splitConfigureOptions)
                         {
                             if (option.StartsWith(pathPrefixKey))
                             {
@@ -113,9 +113,9 @@ namespace MingwCommon
 
                 if (null == gccTarget)
                 {
-                    foreach (string detail in splitDetails)
+                    foreach (var detail in splitDetails)
                     {
-                        string targetKey = "Target: ";
+                        var targetKey = "Target: ";
                         if (detail.StartsWith(targetKey))
                         {
                             gccTarget = detail.Substring(targetKey.Length).Trim();
@@ -131,8 +131,8 @@ namespace MingwCommon
                 }
 
                 // C include paths
-                string installPath = toolset.InstallPath(baseTarget);
-                string gccIncludeFolder = System.IO.Path.Combine(installPath, "lib");
+                var installPath = toolset.InstallPath(baseTarget);
+                var gccIncludeFolder = System.IO.Path.Combine(installPath, "lib");
                 gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, "gcc");
                 gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, gccTarget);
                 gccIncludeFolder = System.IO.Path.Combine(gccIncludeFolder, gccVersion);
@@ -142,7 +142,7 @@ namespace MingwCommon
                 includePaths.Add(gccIncludeFolder);
             }
 
-            MingwDetailData gccDetails = new MingwDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libExecDir);
+            var gccDetails = new MingwDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libExecDir);
             gccDetailsForTarget[baseTarget] = gccDetails;
 
             Opus.Core.Log.DebugMessage("Mingw version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);

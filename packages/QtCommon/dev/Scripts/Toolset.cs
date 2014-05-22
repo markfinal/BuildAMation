@@ -11,10 +11,10 @@ namespace QtCommon
         protected abstract string GetVersionNumber();
         protected virtual string GetBinPath(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.GetInstallPath(baseTarget);
+            var installPath = this.GetInstallPath(baseTarget);
             if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
             {
-                string binPath = System.IO.Path.Combine(installPath, "bin");
+                var binPath = System.IO.Path.Combine(installPath, "bin");
                 return binPath;
             }
             else
@@ -26,8 +26,8 @@ namespace QtCommon
         {
             if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
             {
-                string installPath = this.GetInstallPath(baseTarget);
-                string includePath = System.IO.Path.Combine(installPath, "include");
+                var installPath = this.GetInstallPath(baseTarget);
+                var includePath = System.IO.Path.Combine(installPath, "include");
                 return includePath;
             }
             else
@@ -40,8 +40,8 @@ namespace QtCommon
         {
             if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
             {
-                string installPath = this.GetInstallPath(baseTarget);
-                string libPath = System.IO.Path.Combine(installPath, "lib");
+                var installPath = this.GetInstallPath(baseTarget);
+                var libPath = System.IO.Path.Combine(installPath, "lib");
                 return libPath;
             }
             else
@@ -79,7 +79,7 @@ namespace QtCommon
 
         string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.GetInstallPath(baseTarget);
+            var installPath = this.GetInstallPath(baseTarget);
             return installPath;
         }
 

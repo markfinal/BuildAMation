@@ -58,8 +58,8 @@ namespace ComposerXECommon
         #region ITool implementation
         string Opus.Core.ITool.Executable (Opus.Core.BaseTarget baseTarget)
         {
-            string installPath = this.toolset.BinPath(baseTarget);
-            string executablePath = System.IO.Path.Combine(installPath, "icpc");
+            var installPath = this.toolset.BinPath(baseTarget);
+            var executablePath = System.IO.Path.Combine(installPath, "icpc");
             return executablePath;
         }
 

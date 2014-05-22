@@ -31,7 +31,7 @@ namespace Mingw
 
             if (null == this.installPath)
             {
-                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows\CurrentVersion\Uninstall\MinGW"))
+                using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows\CurrentVersion\Uninstall\MinGW"))
                 {
                     if (null == key)
                     {

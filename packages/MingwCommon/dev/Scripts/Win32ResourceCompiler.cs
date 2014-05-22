@@ -48,7 +48,7 @@ namespace MingwCommon
 
         string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
         {
-            string platformBinFolder = this.toolset.BinPath(baseTarget);
+            var platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "windres.exe");
         }
 
@@ -69,8 +69,8 @@ namespace MingwCommon
 
         System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
         {
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-            Opus.Core.StringArray paths = new Opus.Core.StringArray();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var paths = new Opus.Core.StringArray();
             paths.AddRange(this.pathEnvironment);
             paths.AddRange(this.toolset.Environment);
             dictionary["PATH"] = paths;

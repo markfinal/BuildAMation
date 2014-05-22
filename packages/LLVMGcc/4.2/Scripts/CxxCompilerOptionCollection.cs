@@ -15,22 +15,24 @@ namespace LLVMGcc
             base.SetDefaultOptionValues(node);
 
             // TODO: think I can move this to GccCommon, but it misses out the C++ include paths for some reason (see Test9-dev)
-            Opus.Core.Target target = node.Target;
-            GccCommon.Toolset gccToolset = target.Toolset as GccCommon.Toolset;
-            string cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
+            var target = node.Target;
+            var gccToolset = target.Toolset as GccCommon.Toolset;
+            var cxxIncludePath = gccToolset.GccDetail.GxxIncludePath;
 
             if (!System.IO.Directory.Exists(cxxIncludePath))
             {
                 throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath);
             }
-            (this as C.ICCompilerOptions).SystemIncludePaths.Add(cxxIncludePath);
+
+            var cCompilerOptions = this as C.ICCompilerOptions;
+            cCompilerOptions.SystemIncludePaths.Add(cxxIncludePath);
 
             GccCommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
 
             // disable long long as it won't compile on C++98 and -pedantic
-            if ((this as C.ICCompilerOptions).LanguageStandard != C.ELanguageStandard.Cxx11)
+            if (cCompilerOptions.LanguageStandard != C.ELanguageStandard.Cxx11)
             {
-                (this as C.ICCompilerOptions).DisableWarnings.AddUnique("long-long");
+                cCompilerOptions.DisableWarnings.AddUnique("long-long");
             }
         }
 

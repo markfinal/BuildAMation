@@ -9,12 +9,12 @@ namespace VSSolutionBuilder
     {
         public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
         {
-            Opus.Core.BaseModule assemblyModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = assemblyModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            CSharp.OptionCollection options = assemblyModule.Options as CSharp.OptionCollection;
+            var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = assemblyModule.OwningNode;
+            var target = node.Target;
+            var options = assemblyModule.Options as CSharp.OptionCollection;
 
-            string moduleName = node.ModuleName;
+            var moduleName = node.ModuleName;
 
             string platformName;
             switch ((options as CSharp.IOptions).Platform)
@@ -46,15 +46,15 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    System.Type solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
-                    object SolutionInstance = System.Activator.CreateInstance(solutionType);
-                    System.Reflection.PropertyInfo ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
-                    string projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
+                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var SolutionInstance = System.Activator.CreateInstance(solutionType);
+                    var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
+                    var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    string projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
+                    var projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
                     projectPathName += projectExtension;
 
-                    System.Type projectType = VSSolutionBuilder.GetProjectClassType();
+                    var projectType = VSSolutionBuilder.GetProjectClassType();
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, node.Package.Identifier, assemblyModule.ProxyPath }) as ICSProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
@@ -79,7 +79,7 @@ namespace VSSolutionBuilder
 
             if (node.ExternalDependents != null)
             {
-                foreach (Opus.Core.DependencyNode dependentNode in node.ExternalDependents)
+                foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (dependentNode.ModuleName != moduleName)
                     {
@@ -88,7 +88,7 @@ namespace VSSolutionBuilder
                         {
                             if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
                             {
-                                IProject dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                                var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
                                 projectData.DependentProjects.Add(dependentProject);
                             }
                         }
@@ -97,13 +97,14 @@ namespace VSSolutionBuilder
             }
 
             // references
+            // TODO: convert to var
             foreach (Opus.Core.Location location in (options as CSharp.IOptions).References)
             {
                 var reference = location.GetSinglePath();
                 projectData.References.Add(reference);
             }
 
-            string configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target, platformName);
+            var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target, platformName);
 
             ProjectConfiguration configuration;
             lock (projectData.Configurations)
@@ -134,7 +135,7 @@ namespace VSSolutionBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
@@ -157,7 +158,8 @@ namespace VSSolutionBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            // TODO: convert to var
                             foreach (Opus.Core.Location location in sourceCollection)
                             {
                                 var absolutePath = location.GetSinglePath();
@@ -198,7 +200,7 @@ namespace VSSolutionBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
@@ -217,12 +219,13 @@ namespace VSSolutionBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
                                 throw new Opus.Core.Exception("There can be only one application definition");
                             }
 
+                            // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -258,7 +261,7 @@ namespace VSSolutionBuilder
                         if (sourceField is Opus.Core.Location)
                         {
                             var file = sourceField as Opus.Core.Location;
-                            string absolutePath = file.GetSinglePath();
+                            var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
                                 throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
@@ -274,7 +277,8 @@ namespace VSSolutionBuilder
                         }
                         else if (sourceField is Opus.Core.FileCollection)
                         {
-                            Opus.Core.FileCollection sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
@@ -282,7 +286,7 @@ namespace VSSolutionBuilder
                                     throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
-                                string csPath = absolutePath + ".cs";
+                                var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
                                     throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
@@ -307,8 +311,8 @@ namespace VSSolutionBuilder
 
             configuration.Type = EProjectConfigurationType.Application;
 
-            string toolName = "VCSCompiler";
-            ProjectTool vcsCompiler = configuration.GetTool(toolName);
+            var toolName = "VCSCompiler";
+            var vcsCompiler = configuration.GetTool(toolName);
             if (null == vcsCompiler)
             {
                 vcsCompiler = new ProjectTool(toolName);
@@ -323,10 +327,10 @@ namespace VSSolutionBuilder
 
                 if (options is VisualStudioProcessor.IVisualStudioSupport)
                 {
-                    VisualStudioProcessor.IVisualStudioSupport visualStudioProjectOption = options as VisualStudioProcessor.IVisualStudioSupport;
-                    VisualStudioProcessor.ToolAttributeDictionary settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
+                    var visualStudioProjectOption = options as VisualStudioProcessor.IVisualStudioSupport;
+                    var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
-                    foreach (System.Collections.Generic.KeyValuePair<string, string> setting in settingsDictionary)
+                    foreach (var setting in settingsDictionary)
                     {
                         vcsCompiler[setting.Key] = setting.Value;
                     }

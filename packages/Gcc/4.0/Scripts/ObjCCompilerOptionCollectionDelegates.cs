@@ -10,7 +10,7 @@ namespace Gcc
         private static void VisibilityCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             // requires gcc 4.0
-            Opus.Core.ValueTypeOption<EVisibility> enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
+            var enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
             switch (enumOption.Value)
             {
                 case EVisibility.Default:

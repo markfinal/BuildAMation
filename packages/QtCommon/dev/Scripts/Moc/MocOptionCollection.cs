@@ -14,7 +14,7 @@ namespace QtCommon
 
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            IMocOptions options = this as IMocOptions;
+            var options = this as IMocOptions;
             options.MocOutputPath = null;
             options.IncludePaths = new Opus.Core.DirectoryCollection();
             options.Defines = new C.DefineCollection();
@@ -23,9 +23,9 @@ namespace QtCommon
             options.PathPrefix = null;
 
             // version number of the current Qt package
-            string QtVersion = Opus.Core.State.PackageInfo["Qt"].Version;
-            string QtVersionFormatted = QtVersion.Replace(".", "0");
-            string VersionDefine = "QT_VERSION=0x0" + QtVersionFormatted;
+            var QtVersion = Opus.Core.State.PackageInfo["Qt"].Version;
+            var QtVersionFormatted = QtVersion.Replace(".", "0");
+            var VersionDefine = "QT_VERSION=0x0" + QtVersionFormatted;
             options.Defines.Add(VersionDefine);
         }
 
@@ -45,18 +45,18 @@ namespace QtCommon
 
             var mocDir = locationMap[MocFile.OutputDir].GetSinglePath();
             this.OutputDirectoryPath = mocDir;
-            MocFile mocFile = node.Module as MocFile;
+            var mocFile = node.Module as MocFile;
             string mocPath;
             if (null != mocFile)
             {
-                string sourceFilePath = mocFile.SourceFileLocation.GetSinglePath();
-                string filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
+                var sourceFilePath = mocFile.SourceFileLocation.GetSinglePath();
+                var filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
                 mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
             }
             else
             {
                 // TODO: would like to have a null output path for a collection, but it doesn't work for cloning reference types
-                string filename = node.ModuleName;
+                var filename = node.ModuleName;
                 mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
             }
 

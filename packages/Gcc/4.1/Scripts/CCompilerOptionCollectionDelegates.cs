@@ -9,7 +9,7 @@ namespace Gcc
         #region ICCompilerOptions Option delegates
         private static void VisibilityCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<EVisibility> enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
+            var enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
             switch (enumOption.Value)
             {
                 case EVisibility.Default:

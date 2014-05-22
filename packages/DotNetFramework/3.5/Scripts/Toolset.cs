@@ -41,7 +41,7 @@ namespace DotNetFramework
             if (Opus.Core.OSUtilities.IsWindowsHosting)
             {
                 string toolsPath = null;
-                using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
+                using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
                 {
                     toolsPath = key.GetValue("MSBuildToolsPath") as string;
                 }

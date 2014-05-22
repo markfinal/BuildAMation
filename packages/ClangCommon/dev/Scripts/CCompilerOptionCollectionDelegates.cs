@@ -50,8 +50,7 @@ namespace ClangCommon
         }
         private static void SystemIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
-            configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
+            IncludePathsXcodeProjectProcessor(sender, project, currentObject, configuration, option, target);
         }
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
@@ -440,7 +439,7 @@ namespace ClangCommon
         private static void UndefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
             var undefinesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
-            foreach (string undefine in undefinesOption.Value)
+            foreach (var undefine in undefinesOption.Value)
             {
                 commandLineBuilder.Add(System.String.Format("-U{0}", undefine));
             }
