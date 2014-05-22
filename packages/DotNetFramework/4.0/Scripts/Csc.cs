@@ -43,7 +43,9 @@ namespace DotNetFramework
         {
             var array = new Opus.Core.Array<Opus.Core.LocationKey>(
                 CSharp.Assembly.OutputFile,
-                CSharp.Assembly.OutputDirectory
+                CSharp.Assembly.OutputDir,
+                CSharp.Assembly.PDBFile,
+                CSharp.Assembly.PDBDir
                 );
             return array;
         }

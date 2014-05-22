@@ -319,7 +319,7 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcsCompiler);
 
 #if true
-                configuration.OutputDirectory = moduleToBuild.Locations[CSharp.Assembly.OutputDirectory];
+                configuration.OutputDirectory = moduleToBuild.Locations[CSharp.Assembly.OutputDir];
 #else
                 string outputDirectory = (options as CSharp.OptionCollection).OutputDirectoryPath;
                 configuration.OutputDirectory = outputDirectory;

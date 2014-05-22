@@ -92,7 +92,7 @@ namespace CSharp
         protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
-            (node.Module.Locations[Assembly.OutputDirectory] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Opus.Core.State.ModuleBuildDirLocationKey], "bin", Opus.Core.Location.EExists.WillExist);
+            (node.Module.Locations[Assembly.OutputDir] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Opus.Core.State.ModuleBuildDirLocationKey], "bin", Opus.Core.Location.EExists.WillExist);
         }
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
@@ -122,7 +122,7 @@ namespace CSharp
                         throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
                 }
 
-                (node.Module.Locations[Assembly.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Assembly.OutputDirectory], this.OutputName + outputSuffix, Opus.Core.Location.EExists.WillExist);
+                (node.Module.Locations[Assembly.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Assembly.OutputDir], this.OutputName + outputSuffix, Opus.Core.Location.EExists.WillExist);
             }
 #else
             if (!this.OutputPaths.Has(OutputFileFlags.AssemblyFile))
@@ -153,7 +153,21 @@ namespace CSharp
 #endif
 
 #if true
-            // TODO pdbs
+            if (options.DebugInformation != EDebugInformation.Disabled)
+            {
+                var locationMap = node.Module.Locations;
+                var pdbDir = locationMap[Assembly.PDBDir] as Opus.Core.ScaffoldLocation;
+                if (!pdbDir.IsValid)
+                {
+                    pdbDir.SetReference(locationMap[Assembly.OutputDir]);
+                }
+
+                var pdbFile = locationMap[Assembly.PDBFile] as Opus.Core.ScaffoldLocation;
+                if (!pdbFile.IsValid)
+                {
+                    pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
+                }
+            }
 #else
             if ((options.DebugInformation != EDebugInformation.Disabled) && !this.OutputPaths.Has(OutputFileFlags.ProgramDatabaseFile))
             {
