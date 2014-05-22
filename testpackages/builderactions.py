@@ -13,11 +13,11 @@ class Builder(object):
 
 # the version of MSBuild.exe to use, depends on which version of VisualStudio was used to build the solution and projects
 # by default, VS2008 is assumed
-msBuildVersion = {\
+msBuildVersionToNetMapping = {\
   None:"v3.5",
   "9.0":"v3.5",
   "10.0":"v4.0.30319",
-  "11.0":"v4.0.30319",
+  "11.0":"v4.0.30319"
 }
 
 def VSSolutionPost(package, options, outputMessages, errorMessages):
@@ -33,7 +33,12 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         vcVersion = options.visualc_version
         if vcVersion:
           vcVersion = vcVersion[0]
-        msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersion[vcVersion]
+        vcVersionSplit = vcVersion.split('.')
+        vcMajorVersion = int(vcVersionSplit[0])
+        if vcMajorVersion < 12:
+          msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
+        else:
+          msBuildPath = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe"%vcVersion
         for config in options.configurations:
             argList = []
             argList.append(msBuildPath)
