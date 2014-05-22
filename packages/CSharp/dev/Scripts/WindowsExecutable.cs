@@ -13,7 +13,7 @@ namespace CSharp
         [CSharp.LocalCscOptionsDelegate]
         protected static void SetType(Opus.Core.IModule module, Opus.Core.Target target)
         {
-            IOptions options = module.Options as IOptions;
+            var options = module.Options as IOptions;
             options.Target = ETarget.WindowsExecutable;
         }
     }

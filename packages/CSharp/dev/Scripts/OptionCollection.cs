@@ -9,9 +9,9 @@ namespace CSharp
     {
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
-            Opus.Core.Target target = node.Target;
+            var target = node.Target;
 
-            IOptions options = this as IOptions;
+            var options = this as IOptions;
             options.Target = ETarget.Executable;
             options.NoLogo = true;
             options.Platform = EPlatform.AnyCpu;
@@ -175,7 +175,7 @@ namespace CSharp
 
         VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
         {
-            VisualStudioProcessor.ToolAttributeDictionary dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, VisualStudioProcessor.EVisualStudioTarget.MSBUILD);
+            var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, VisualStudioProcessor.EVisualStudioTarget.MSBUILD);
             return dictionary;
         }
     }

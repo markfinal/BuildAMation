@@ -45,8 +45,8 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary TargetVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            Opus.Core.ValueTypeOption<ETarget> enumOption = option as Opus.Core.ValueTypeOption<ETarget>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var enumOption = option as Opus.Core.ValueTypeOption<ETarget>;
             switch (enumOption.Value)
             {
                 case ETarget.Executable:
@@ -68,7 +68,7 @@ namespace CSharp
         }
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("/nologo");
@@ -76,8 +76,8 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             returnVal.Add("NoLogo", boolOption.Value ? "true" : "false");
             return returnVal;
         }
@@ -88,7 +88,7 @@ namespace CSharp
             {
                 return;
             }
-            Opus.Core.ValueTypeOption<EPlatform> enumOption = option as Opus.Core.ValueTypeOption<EPlatform>;
+            var enumOption = option as Opus.Core.ValueTypeOption<EPlatform>;
             switch (enumOption.Value)
             {
                 case EPlatform.X86:
@@ -109,8 +109,8 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary PlatformVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<EPlatform> enumOption = option as Opus.Core.ValueTypeOption<EPlatform>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var enumOption = option as Opus.Core.ValueTypeOption<EPlatform>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             switch (enumOption.Value)
             {
                 case EPlatform.X86:
@@ -132,8 +132,8 @@ namespace CSharp
         }
         private static void DebugInformationCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            OptionCollection options = sender as OptionCollection;
-            Opus.Core.ValueTypeOption<EDebugInformation> enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
+            var options = sender as OptionCollection;
+            var enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
             switch (enumOption.Value)
             {
                 case EDebugInformation.Disabled:
@@ -197,8 +197,8 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DebugInformationVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            Opus.Core.ValueTypeOption<EDebugInformation> enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
             switch (enumOption.Value)
             {
                 case EDebugInformation.Disabled:
@@ -241,7 +241,7 @@ namespace CSharp
         }
         private static void CheckedCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("/checked+");
@@ -253,14 +253,14 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary CheckedVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("CheckForOverflowUnderflow", boolOption.Value ? "true" : "false");
             return returnVal;
         }
         private static void UnsafeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("/unsafe+");
@@ -272,14 +272,14 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary UnsafeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("Unsafe", boolOption.Value ? "true" : "false");
             return returnVal;
         }
         private static void WarningLevelCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<EWarningLevel> enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
+            var enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
             switch (enumOption.Value)
             {
                 case EWarningLevel.Level0:
@@ -295,8 +295,8 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary WarningLevelVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<EWarningLevel> enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var enumOption = option as Opus.Core.ValueTypeOption<EWarningLevel>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             switch (enumOption.Value)
             {
                 case EWarningLevel.Level0:
@@ -313,7 +313,7 @@ namespace CSharp
         }
         private static void WarningsAsErrorsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("/warnaserror+");
@@ -325,14 +325,14 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary WarningsAsErrorsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("TreatWarningsAsErrors", boolOption.Value ? "true" : "false");
             return returnVal;
         }
         private static void OptimizeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("/optimize+");
@@ -344,17 +344,18 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary OptimizeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ValueTypeOption<bool> boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("Optimize", boolOption.Value ? "true" : "false");
             return returnVal;
         }
         private static void ReferencesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> fileCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var fileCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             if (fileCollectionOption.Value.Count > 0)
             {
-                System.Text.StringBuilder fileList = new System.Text.StringBuilder();
+                var fileList = new System.Text.StringBuilder();
+                // TODO: convert to var
                 foreach (Opus.Core.FileLocation location in fileCollectionOption.Value)
                 {
                     var file = location.AbsolutePath;
@@ -371,8 +372,7 @@ namespace CSharp
                         fileList.AppendFormat("{0};", file);
                     }
                 }
-                var linearizedList = fileList.ToString().TrimEnd(new char [] { ';' });
-                commandLineBuilder.Add(System.String.Format("/reference:{0}", linearizedList));
+                commandLineBuilder.Add(System.String.Format("/reference:{0}", fileList.ToString().TrimEnd(new char[] { ';' })));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary ReferencesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
@@ -382,10 +382,11 @@ namespace CSharp
         }
         private static void ModulesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection> fileCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var fileCollectionOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             if (fileCollectionOption.Value.Count > 0)
             {
-                System.Text.StringBuilder fileList = new System.Text.StringBuilder();
+                var fileList = new System.Text.StringBuilder();
+                // TODO: convert to var
                 foreach (string file in fileCollectionOption.Value)
                 {
                     // TODO: need to check whether ; is appropriate here for *nix platforms
@@ -400,25 +401,25 @@ namespace CSharp
                         fileList.AppendFormat("{0};", file);
                     }
                 }
-                commandLineBuilder.Add(System.String.Format("/addmodule:{0}", fileList.ToString()));
+                commandLineBuilder.Add(System.String.Format("/addmodule:{0}", fileList.ToString().TrimEnd(new char[] { ';' })));
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary ModulesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             // TODO
             return returnVal;
         }
         private static void DefinesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             if (stringArrayOption.Value.Count == 0)
             {
                 return;
             }
-            System.Text.StringBuilder definesList = new System.Text.StringBuilder();
+            var definesList = new System.Text.StringBuilder();
             definesList.Append("/define:");
-            foreach (string define in stringArrayOption.Value)
+            foreach (var define in stringArrayOption.Value)
             {
                 definesList.AppendFormat("{0};", define);
             }
@@ -426,14 +427,14 @@ namespace CSharp
         }
         private static VisualStudioProcessor.ToolAttributeDictionary DefinesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            Opus.Core.ReferenceTypeOption<Opus.Core.StringArray> stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
-            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var stringArrayOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             if (stringArrayOption.Value.Count == 0)
             {
                 return returnVal;
             }
-            System.Text.StringBuilder definesList = new System.Text.StringBuilder();
-            foreach (string define in stringArrayOption.Value)
+            var definesList = new System.Text.StringBuilder();
+            foreach (var define in stringArrayOption.Value)
             {
                 definesList.AppendFormat("{0};", define);
             }

@@ -8,8 +8,5 @@ namespace CSharp
     [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple=true)]
     public sealed class ApplicationDefinitionAttribute : System.Attribute
     {
-        public ApplicationDefinitionAttribute()
-        {
-        }
     }
 }
