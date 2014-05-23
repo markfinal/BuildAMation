@@ -49,33 +49,26 @@ namespace XmlUtilities
 
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-            var options = node.Module.Options as IOSXPlistOptions;
-            string primaryOutputPath = null;
             // the plist file is relative to the main executable
-            if (null != node.ExternalDependents)
+            if (null == node.ExternalDependents)
             {
-                #if true
-                // TODO: this needs to be rewritten
-                #else
-                var dependentNode = node.ExternalDependents[0];
-                foreach (string outputPath in dependentNode.Module.Options.OutputPaths.Paths)
-                {
-                    primaryOutputPath = outputPath;
-                    break;
-                }
-
-                if (null == this.OutputPaths[OutputFileFlags.XmlFile])
-                {
-                    string contentsDir = System.IO.Directory.GetParent(primaryOutputPath).Parent.FullName;
-                    this.OutputPaths[OutputFileFlags.XmlFile] = System.IO.Path.Combine(contentsDir, "Info.plist");
-                }
-                #endif
-            }
-            else
-            {
-                primaryOutputPath = "Undefined";
+                throw new Opus.Core.Exception("PList generation must be dependent upon the executable associated with it");
             }
 
+            var dependentNode = node.ExternalDependents[0];
+            var exeFileLoc = dependentNode.Module.Locations[C.Application.OutputFile];
+            var exeDirLoc = dependentNode.Module.Locations[C.Application.OutputDir];
+
+            var locationMap = node.Module.Locations;
+            var pListFileLoc = locationMap[XmlModule.OutputFile] as Opus.Core.ScaffoldLocation;
+            if (!pListFileLoc.IsValid)
+            {
+                pListFileLoc.SpecifyStub(exeDirLoc, "Info.plist", Opus.Core.ScaffoldLocation.EExists.WillExist);
+            }
+
+            var primaryOutputPath = exeFileLoc.GetSinglePath();
+
+            var options = node.Module.Options as IOSXPlistOptions;
             // some other defaults
             if (null == options.CFBundleName)
             {
