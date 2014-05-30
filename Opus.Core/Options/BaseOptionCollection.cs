@@ -9,14 +9,6 @@ namespace Opus.Core
     {
         protected System.Collections.Generic.Dictionary<string, Option> table = new System.Collections.Generic.Dictionary<string, Option>();
 
-#if false
-        public OutputPaths OutputPaths
-        {
-            get;
-            private set;
-        }
-#endif
-
         public DependencyNode OwningNode
         {
             get;
@@ -25,9 +17,6 @@ namespace Opus.Core
 
         protected BaseOptionCollection(DependencyNode owningNode)
         {
-#if false
-            this.OutputPaths = new OutputPaths();
-#endif
             this.OwningNode = owningNode;
             if (null != owningNode)
             {
@@ -213,55 +202,6 @@ namespace Opus.Core
                 this[optionName] = new Core.ReferenceTypeOption<Type>(value);
             }
         }
-
-#if false
-        public void FilterOutputPaths(System.Enum filter, StringArray outPaths)
-        {
-            var filterType = filter.GetType();
-            int filterValue = System.Convert.ToInt32(filter);
-
-            var outputPaths = this.OutputPaths;
-            if (State.RunningMono)
-            {
-                foreach (var key in outputPaths.Types)
-                {
-                    if (key.GetType() != filterType)
-                    {
-                        throw new Exception("Incompatible enum type comparison");
-                    }
-
-                    int keyValue = System.Convert.ToInt32(key);
-
-                    if (keyValue == (filterValue & keyValue))
-                    //if (o.Key.Includes(filter))
-                    {
-                        string paths = outputPaths[key];
-                        outPaths.Add(paths);
-                    }
-                }
-            }
-            else
-            {
-                // TODO: this causes a System.InvalidCastException, Cannot cast from source type to destination type
-                // because it's a SortedDictionary? Can't find any reference to this though
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> o in outputPaths)
-                {
-                    if (o.Key.GetType() != filterType)
-                    {
-                        throw new Exception("Incompatible enum type comparison");
-                    }
-
-                    int keyValue = System.Convert.ToInt32(o.Key);
-
-                    if (keyValue == (filterValue & keyValue))
-                    //if (o.Key.Includes(filter))
-                    {
-                        outPaths.Add(o.Value);
-                    }
-                }
-            }
-        }
-#endif
 
         public override bool Equals(object obj)
         {

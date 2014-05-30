@@ -559,24 +559,11 @@ namespace Opus.Core
             return childModuleName;
         }
 
-#if true
         public void FilterOutputLocations(Array<LocationKey> filterKeys, LocationArray filteredLocations)
         {
             var locationMap = this.Module.Locations;
             filteredLocations.AddRange(locationMap.FilterByKey(filterKeys));
         }
-#else
-        public void FilterOutputPaths(System.Enum filter, StringArray paths)
-        {
-            var options = this.Module.Options;
-            if (null == options)
-            {
-                return;
-            }
-
-            options.FilterOutputPaths(filter, paths);
-        }
-#endif
 
         public bool IsReadyToBuild()
         {
