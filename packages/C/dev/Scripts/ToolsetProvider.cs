@@ -48,7 +48,7 @@ namespace C
             return GenericGetToolset(toolType, "C archiver", "Use C.AR=<toolset>");
         }
 
-        static string GetWinResourceompilerToolset(System.Type toolType)
+        static string GetWinResourceCompilerToolset(System.Type toolType)
         {
             return GenericGetToolset(toolType, "Windows resource compiler", "Use C.RC=<toolset>");
         }
