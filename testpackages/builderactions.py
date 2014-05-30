@@ -32,13 +32,14 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
     try:
         vcVersion = options.visualc_version
         if vcVersion:
-          vcVersion = vcVersion[0]
-        vcVersionSplit = vcVersion.split('.')
-        vcMajorVersion = int(vcVersionSplit[0])
-        if vcMajorVersion < 12:
-          msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
+            vcVersion = vcVersion[0]
+        if vcVersion:
+            vcVersionSplit = vcVersion.split('.')
+            vcMajorVersion = int(vcVersionSplit[0])
+        if not vcVersion or vcMajorVersion < 12:
+            msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
         else:
-          msBuildPath = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe"%vcVersion
+            msBuildPath = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe"%vcVersion
         for config in options.configurations:
             argList = []
             argList.append(msBuildPath)
