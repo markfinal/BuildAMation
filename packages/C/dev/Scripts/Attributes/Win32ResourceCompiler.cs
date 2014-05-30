@@ -1,4 +1,4 @@
-// <copyright file="Win32ResoureCompilerBase.cs" company="Mark Final">
+// <copyright file="Win32ResoureCompiler.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
