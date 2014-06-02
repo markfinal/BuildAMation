@@ -27,6 +27,7 @@ namespace VisualC
             this.toolConfig[typeof(C.ILinkerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Linker(this), typeof(LinkerOptionCollection));
             this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Archiver(this), typeof(ArchiverOptionCollection));
             this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ResourceCompiler(this), typeof(VisualCCommon.Win32ResourceCompilerOptionCollection));
+            this.toolConfig[typeof(C.IWinManifestTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ManifestTool(this), typeof(VisualCCommon.Win32ManifestOptionCollection));
         }
 
         protected override void GetInstallPath()

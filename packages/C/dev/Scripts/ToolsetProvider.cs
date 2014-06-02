@@ -15,7 +15,14 @@ namespace C
             }
 
             var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            return map[toolType];
+            try
+            {
+                return map[toolType];
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                throw new Opus.Core.Exception("Tool '{0}' ({1}) has not been registered", typeName, toolType.ToString());
+            }
         }
 
         static string GetCCompilerToolset(System.Type toolType)
@@ -51,6 +58,11 @@ namespace C
         static string GetWinResourceCompilerToolset(System.Type toolType)
         {
             return GenericGetToolset(toolType, "Windows resource compiler", "Use C.RC=<toolset>");
+        }
+
+        static string GetWinManifestToolToolset(System.Type toolType)
+        {
+            return GenericGetToolset(toolType, "Windows manifest tool", "Use C.MT=<toolset>");
         }
 
         static string GetNullOpToolset(System.Type toolType)
