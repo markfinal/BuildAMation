@@ -9,7 +9,11 @@ namespace C
     /// C/C++ console application
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
-    public class Application : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.ICommonOptionCollection
+    public class Application :
+        Opus.Core.BaseModule,
+        Opus.Core.INestedDependents,
+        Opus.Core.ICommonOptionCollection,
+        Opus.Core.IPostActionModules
     {
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("ExecutableBinaryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("ExecutableBinaryDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -74,5 +78,27 @@ namespace C
             get;
             set;
         }
+
+        #region IPostActionModules Members
+
+        Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
+        {
+#if true
+            return null;
+#else
+            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            {
+                var postActionModules = new Opus.Core.TypeArray(
+                    typeof(Win32Manifest));
+                return postActionModules;
+            }
+            else
+            {
+                return null;
+            }
+#endif
+        }
+
+        #endregion
     }
 }

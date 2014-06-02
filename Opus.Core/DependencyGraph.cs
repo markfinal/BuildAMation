@@ -209,6 +209,7 @@ namespace Opus.Core
                 profile.StartProfile();
 
                 this.AddInjectedDependents();
+                this.AddPostActions();
 
                 profile.StopProfile();
                 State.TimingProfiles[(int)ETimingProfiles.HandleInjectionDependents] = profile;
@@ -293,15 +294,32 @@ namespace Opus.Core
         private void AddChildAndExternalDependents()
         {
             var nodesWithForwardedDependencies = new DependencyNodeCollection();
+            var nodesWithPostActionsDealtWith = new DependencyNodeCollection();
 
             int currentRank = 0;
             while (currentRank < this.RankCount)
             {
-                this.CheckForEmptyRanks();
+                // Can no longer check for empty ranks now, because they can be intentionally introduced by post actions
+                //this.CheckForEmptyRanks();
                 var nodesToMove = new System.Collections.Generic.Dictionary<DependencyNode,int>();
                 var rankNodes = this[currentRank];
                 foreach (var node in rankNodes)
                 {
+                    // cannot add the post-action module into this rank, as you cannot modify the container being iterated
+                    // but we can create 'space' to add it later by moving the current node to the next rank
+                    var postActionInterface = node.Module as IPostActionModules;
+                    if (postActionInterface != null &&
+                        postActionInterface.GetPostActionModuleTypes((BaseTarget)node.Target) != null)
+                    {
+                        if (!nodesWithPostActionsDealtWith.Contains(node))
+                        {
+                            // remember to move the node, and don't process it on it's current rank
+                            nodesToMove.Add(node, currentRank + 1);
+                            nodesWithPostActionsDealtWith.Add(node);
+                            continue;
+                        }
+                    }
+
                     var nestedDependentsInterface = node.Module as INestedDependents;
                     var externalDependentModuleTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
                     TypeArray additionalExternalDependentModuleTypes = null;
@@ -634,6 +652,64 @@ namespace Opus.Core
                 for (int i = injectedNodes.Count - 1; i >= 0; --i)
                 {
                     var node = injectedNodes[i];
+                    node.PostCreateOptionCollection();
+                }
+            }
+        }
+
+        private void AddPostActions()
+        {
+            int currentRank = 0;
+            var addedNodes = new Array<DependencyNode>();
+            do
+            {
+                var nodeCollection = this.rankList[currentRank];
+                foreach (var node in nodeCollection)
+                {
+                    var postActionModuleTypes = node.Module as IPostActionModules;
+                    if (null == postActionModuleTypes)
+                    {
+                        continue;
+                    }
+
+                    var postActionTypes = postActionModuleTypes.GetPostActionModuleTypes((BaseTarget)node.Target);
+                    if (null == postActionTypes)
+                    {
+                        continue;
+                    }
+
+                    var postActionRank = node.Rank - 1;
+                    if (postActionRank < 0)
+                    {
+                        throw new Exception("Cannot have a negative rank");
+                    }
+
+                    int count = 0;
+                    foreach (var moduleType in postActionTypes)
+                    {
+                        // TODO: would like to have a unique name for this node, to identify it as a post action
+                        // but the DependencyNode unique name does not have an override
+                        var newNode = this.AddModule(moduleType, postActionRank, null, (BaseTarget)node.Target);
+                        newNode.AddExternalDependent(node);
+                        this.AddDependencyNodeToCollection(newNode, postActionRank);
+                        addedNodes.Add(newNode);
+
+                        // module inherits the options from the source of the dependency
+                        newNode.CreateOptionCollection();
+
+                        ++count;
+                    }
+                }
+                ++currentRank;
+            }
+            while (currentRank < this.RankCount);
+
+            // now finalize the options on the nodes in reverse order to their addition
+            if (addedNodes.Count > 0)
+            {
+                for (int i = addedNodes.Count - 1; i >= 0; --i)
+                {
+                    var node = addedNodes[i];
                     node.PostCreateOptionCollection();
                 }
             }
