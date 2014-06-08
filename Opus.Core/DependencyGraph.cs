@@ -610,7 +610,6 @@ namespace Opus.Core
             System.Collections.Generic.Dictionary<DependencyNode, int> latestedIntendedNodeRanks)
         {
             int pastRank = node.NodeCollection.Rank;
-            int intendedRank = (node.Module is IInjectModules) ? parentIntendedRank + 2 : parentIntendedRank + 1;
             if (intendedNodeRanks.ContainsKey(node))
             {
                 if (intendedNodeRanks[node] > pastRank)
@@ -641,7 +640,6 @@ namespace Opus.Core
             var moreNodesToMove = new System.Collections.Generic.Dictionary<DependencyNode, int>();
             foreach (var node in intendedNodeRanks.Keys)
             {
-                int currentRank = (node.NodeCollection != null) ? node.NodeCollection.Rank : -1;
                 int intendedRank = intendedNodeRanks[node];
 
                 if (node.ExternalDependents != null)
