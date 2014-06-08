@@ -166,5 +166,12 @@ namespace Opus.Core
             description.AppendFormat("DependencyNodeCollection: rank {0} with {1} nodes", this.Rank, this.list.Count);
             return description.ToString();
         }
+
+        public void ReassignRank(int newRank)
+        {
+            // the Rank set accessor is private, so this function is to ensure that users are aware that
+            // changing a collection's rank may have side-effects
+            this.Rank = newRank;
+        }
     }
 }

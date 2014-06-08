@@ -41,6 +41,9 @@ namespace QtCommon
             set;
         }
 
+        #region IInjectModules Members
+
+#if false
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
             var module = this as Opus.Core.IModule;
@@ -54,5 +57,36 @@ namespace QtCommon
 
             return moduleCollection;
         }
+#endif
+
+        string Opus.Core.IInjectModules.GetInjectedModuleNameSuffix(Opus.Core.BaseTarget baseTarget)
+        {
+            return "Qt4MocSourceFile";
+        }
+
+        System.Type Opus.Core.IInjectModules.GetInjectedModuleType(Opus.Core.BaseTarget baseTarget)
+        {
+            return typeof(C.Cxx.ObjectFile);
+        }
+
+        Opus.Core.DependencyNode Opus.Core.IInjectModules.GetInjectedParentNode(Opus.Core.DependencyNode node)
+        {
+            var dependentFor = node.ExternalDependentFor;
+            var firstDependentFor = dependentFor[0];
+            return firstDependentFor;
+        }
+
+        void Opus.Core.IInjectModules.ModuleCreationFixup(Opus.Core.DependencyNode node)
+        {
+            var dependent = node.ExternalDependents;
+            var firstDependent = dependent[0];
+            var dependentModule = firstDependent.Module;
+            var module = node.Module as C.ObjectFile;
+            var sourceFile = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+            sourceFile.SetReference(dependentModule.Locations[MocFile.OutputFile]);
+            module.SourceFileLocation = sourceFile;
+        }
+
+        #endregion
     }
 }

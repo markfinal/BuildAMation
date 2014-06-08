@@ -62,7 +62,7 @@ namespace Opus.Core
 
         public void AddTopLevelModule(System.Type moduleType, BaseTarget baseTarget)
         {
-            AddModule(moduleType, 0, null, baseTarget);
+            AddModule(moduleType, 0, null, baseTarget, null, -1);
         }
 
         public int TotalNodeCount
@@ -78,7 +78,14 @@ namespace Opus.Core
             }
         }
 
-        private DependencyNode AddModule(System.Type moduleType, int rank, DependencyNode parent, BaseTarget baseTarget)
+        private DependencyNode
+        AddModule(
+            System.Type moduleType,
+            int rank,
+            DependencyNode parent,
+            BaseTarget baseTarget,
+            string uniqueNameSuffix,
+            int uniqueIndex)
         {
             var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
             var targetUsed = Target.GetInstance(baseTarget, toolset);
@@ -95,7 +102,9 @@ namespace Opus.Core
 
             // this is the only place a manual construction of a module is made
             var module = ModuleFactory.CreateModule(moduleType, targetUsed);
-            var moduleNode = new DependencyNode(module, parent, targetUsed, -1, false);
+
+            var isNested = (-1 != uniqueIndex);
+            var moduleNode = new DependencyNode(module, parent, targetUsed, uniqueIndex, isNested, uniqueNameSuffix);
             AddDependencyNodeToCollection(moduleNode, rank);
 
             return moduleNode;
@@ -109,14 +118,19 @@ namespace Opus.Core
                 this.rankList.Insert(this.rankList.Count, newRank);
             }
 
+            // TODO: why can these two statements not be combined? Is there another case where they must be separate?
             this.rankList[rank].Add(moduleNode);
-            moduleNode.Rank = rank;
+            moduleNode.NodeCollection = this.rankList[rank];
 
+            // a module can be added multiple times (for unique targets)
             if (!this.uniqueNameToNodeDictionary.ContainsKey(moduleNode.UniqueModuleName))
             {
                 this.uniqueNameToNodeDictionary[moduleNode.UniqueModuleName] = new System.Collections.Generic.Dictionary<string, DependencyNode>();
             }
-            this.uniqueNameToNodeDictionary[moduleNode.UniqueModuleName][moduleNode.Target.Key] = moduleNode;
+            if (!this.uniqueNameToNodeDictionary[moduleNode.UniqueModuleName].ContainsKey(moduleNode.Target.Key))
+            {
+                this.uniqueNameToNodeDictionary[moduleNode.UniqueModuleName][moduleNode.Target.Key] = moduleNode;
+            }
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -125,10 +139,13 @@ namespace Opus.Core
             Log.DebugMessage("-------------GRAPH--------------");
             foreach (var nodeCollection in this.rankList)
             {
-                Log.DebugMessage("Rank {0}", nodeCollection.Rank);
+                var rank = nodeCollection.Rank;
+                Log.DebugMessage("Rank {0}", rank);
+                Log.DebugMessage("=======");
+                int index = 0;
                 foreach (var node in nodeCollection)
                 {
-                    Log.DebugMessage("\t{0}", node.ToString());
+                    Log.DebugMessage("({0}:r{1}) {2}", index++, rank, node.ToString());
                 }
             }
             Log.DebugMessage("------------/GRAPH--------------");
@@ -178,21 +195,39 @@ namespace Opus.Core
                 return;
             }
 
-            Log.DebugMessage("\nTop level modules only");
-            this.Dump();
+            //Log.DebugMessage("\nTop level modules only");
+            //this.Dump();
 
             {
                 var profile = new TimeProfile(ETimingProfiles.PopulateGraph);
                 profile.StartProfile();
 
+#if true
+                // TODO: while deployment modules do not satisfy normal dependency checks
+                // this will not place the top level modules into a mini-graph properly
+                this.SortTopLevelModules();
+
+                //this.Dump();
+
+                var nodesWithForwardedDependencies = new DependencyNodeCollection();
+                // TODO: this assumes that all dependencies are added up front
+                // however, some nodes are only created and added as requirements of a child node later,
+                // and these NEED to have their own dependencies to be linked up
+                // TODO: almost need to detect when a new dependency is introduced in the child adding stage
+                // and resolve it's dependencies
+                this.AddDependents(nodesWithForwardedDependencies);
+                this.PopulateChildNodes(nodesWithForwardedDependencies);
+                this.ForwardOnDependencies(nodesWithForwardedDependencies);
+#else
                 this.AddChildAndExternalDependents();
+#endif
 
                 profile.StopProfile();
                 State.TimingProfiles[(int)ETimingProfiles.PopulateGraph] = profile;
             }
 
-            Log.DebugMessage("\nPost normal dependencies");
-            this.Dump();
+            //Log.DebugMessage("\nPost normal dependencies");
+            //this.Dump();
 
             {
                 var profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
@@ -204,6 +239,7 @@ namespace Opus.Core
                 State.TimingProfiles[(int)ETimingProfiles.CreateOptionCollections] = profile;
             }
 
+#if false
             {
                 var profile = new TimeProfile(ETimingProfiles.HandleInjectionDependents);
                 profile.StartProfile();
@@ -216,6 +252,7 @@ namespace Opus.Core
             }
 
             Log.DebugMessage("\nPost injected dependencies");
+#endif
             this.Dump();
         }
 
@@ -236,6 +273,505 @@ namespace Opus.Core
             return this.uniqueNameToNodeDictionary[moduleName][target.Key];
         }
 
+#if true
+        private DependencyNode FindExistingNode(
+            System.Type moduleType,
+            string moduleName,
+            Target target)
+        {
+            var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
+            var targetUsed = Target.GetInstance((BaseTarget)target, toolset);
+
+            var node = this.FindNodeForTargettedModule(moduleName, targetUsed);
+            return node;
+        }
+
+        private DependencyNodeCollection
+        FindExistingOrCreateNewNodes(
+            DependencyNode node,
+            TypeArray dependentTypes,
+            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks)
+        {
+            var dependentNodes = new DependencyNodeCollection();
+            foreach (var depType in dependentTypes)
+            {
+                var depNode = this.FindExistingNode(depType, depType.FullName, node.Target);
+                if (null == depNode)
+                {
+                    // note: this node is unparented
+                    DependencyNode parent = null;
+                    depNode = this.AddModule(depType, node.NodeCollection.Rank + 1, parent, (BaseTarget)node.Target, null, -1);
+                }
+                else
+                {
+                    // the node already exists, but does not satisfy all dependencies at it's current position
+                    // so record where it should be placed (but don't move it yet)
+                    // since each rank is considered in turn, the movement of existing nodes generally doesn't
+                    // extend further than the next rank
+                    var isInjectionModule = depNode.Module is IInjectModules;
+                    var rankOffset = isInjectionModule ? 2 : 1;
+                    var depNodeRank = depNode.NodeCollection.Rank;
+                    if (intendedNodeRanks.ContainsKey(node))
+                    {
+                        if (depNodeRank <= intendedNodeRanks[node])
+                        {
+                            intendedNodeRanks[depNode] = intendedNodeRanks[node] + rankOffset;
+                        }
+                    }
+                    else
+                    {
+                        var nodeRank = node.NodeCollection.Rank;
+                        if (depNodeRank <= nodeRank)
+                        {
+                            intendedNodeRanks[depNode] = nodeRank + rankOffset;
+                        }
+                    }
+                }
+                dependentNodes.Add(depNode);
+            }
+            return dependentNodes;
+        }
+
+        private DependencyNode
+        InjectNodeAbove(
+            DependencyNode owningNode,
+            DependencyNode nodePerformingInjection,
+            BaseTarget baseTarget,
+            int uniqueIndex,
+            int insertionRank)
+        {
+            var injectInterface = nodePerformingInjection.Module as IInjectModules;
+            var injectType = injectInterface.GetInjectedModuleType(baseTarget);
+            var injectSuffix = injectInterface.GetInjectedModuleNameSuffix(baseTarget);
+            var uniqueSuffix = System.String.Format("{0}.{1}", injectSuffix, uniqueIndex);
+            var parentNode = injectInterface.GetInjectedParentNode(owningNode);
+
+            var injectedNode = this.AddModule(injectType, insertionRank, parentNode, baseTarget, uniqueSuffix, uniqueIndex);
+            injectedNode.AddExternalDependent(nodePerformingInjection);
+
+            injectInterface.ModuleCreationFixup(injectedNode);
+
+            return injectedNode;
+        }
+
+        private void
+        ProcessNode(
+            DependencyNode node,
+            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            DependencyNodeCollection nodesWithForwardedDependencies)
+        {
+            if (node.AreDependenciesProcessed)
+            {
+                return;
+            }
+
+            this.ConnectExternalDependencies(node, intendedNodeRanks, nodesWithForwardedDependencies);
+            this.ConnectRequiredDependencies(node, intendedNodeRanks, nodesWithForwardedDependencies);
+            node.AreDependenciesProcessed = true;
+        }
+
+        private void
+        ConnectExternalDependencies(
+            DependencyNode node,
+            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            DependencyNodeCollection nodesWithForwardedDependencies)
+        {
+            // find all dependencies that are in the attribute metadata
+            var depTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
+
+            // find any additional dependencies that are procedurally defined
+            var externalDepsInterface = node.Module as IIdentifyExternalDependencies;
+            if (null != externalDepsInterface)
+            {
+                var additionalDepTypes = externalDepsInterface.IdentifyExternalDependencies(node.Target);
+                if (null != additionalDepTypes)
+                {
+                    if (depTypes != null)
+                    {
+                        depTypes.AddRangeUnique(additionalDepTypes);
+                    }
+                    else
+                    {
+                        depTypes = additionalDepTypes;
+                    }
+                }
+            }
+            if (null == depTypes)
+            {
+                return;
+            }
+
+            var externalDeps = this.FindExistingOrCreateNewNodes(node, depTypes, intendedNodeRanks);
+            foreach (var dep in externalDeps)
+            {
+                node.AddExternalDependent(dep);
+                if (!dep.AreDependenciesProcessed)
+                {
+                    this.ProcessNode(dep, intendedNodeRanks, nodesWithForwardedDependencies);
+                }
+
+                if (dep.Module is IInjectModules)
+                {
+                    var baseTarget = (BaseTarget)dep.Target;
+                    var childIndex = 0;
+                    var currentRank = intendedNodeRanks[dep];
+
+                    // move the dependency one rank down, to make room for the injected node
+                    ++intendedNodeRanks[dep];
+
+                    var injectedNode = this.InjectNodeAbove(dep, dep, baseTarget, childIndex, currentRank);
+                    this.ProcessNode(injectedNode, intendedNodeRanks, nodesWithForwardedDependencies);
+                }
+            }
+
+            var hasForwardedDependencies = (node.Module is IForwardDependenciesOn);
+            if (hasForwardedDependencies)
+            {
+                nodesWithForwardedDependencies.Add(node);
+            }
+        }
+
+        private void
+        ConnectRequiredDependencies(
+            DependencyNode node,
+            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            DependencyNodeCollection nodesWithForwardedDependencies)
+        {
+            // find all dependencies that are in the attribute metadata
+            var depTypes = ModuleUtilities.GetRequiredDependents(node.Module, node.Target);
+            if (null == depTypes)
+            {
+                return;
+            }
+
+            var requiredNodes = this.FindExistingOrCreateNewNodes(node, depTypes, intendedNodeRanks);
+            foreach (var required in requiredNodes)
+            {
+                node.AddRequiredDependent(required);
+                if (!required.AreDependenciesProcessed)
+                {
+                    this.ProcessNode(required, intendedNodeRanks, nodesWithForwardedDependencies);
+                }
+            }
+        }
+
+        void SortTopLevelModules()
+        {
+            var topLevelNodesToMove = new DependencyNodeCollection();
+            foreach (var node in this.rankList[0])
+            {
+                // find all dependencies that are in the attribute metadata
+                var depTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
+
+                // find any additional dependencies that are procedurally defined
+                var externalDepsInterface = node.Module as IIdentifyExternalDependencies;
+                if (null != externalDepsInterface)
+                {
+                    var additionalDepTypes = externalDepsInterface.IdentifyExternalDependencies(node.Target);
+                    if (null != additionalDepTypes)
+                    {
+                        if (depTypes != null)
+                        {
+                            depTypes.AddRangeUnique(additionalDepTypes);
+                        }
+                        else
+                        {
+                            depTypes = additionalDepTypes;
+                        }
+                    }
+                }
+                // find all requirements that are in the attribute metadata
+                var reqTypes = ModuleUtilities.GetRequiredDependents(node.Module, node.Target);
+                if (reqTypes != null)
+                {
+                    if (depTypes != null)
+                    {
+                        depTypes.AddRangeUnique(reqTypes);
+                    }
+                    else
+                    {
+                        depTypes = reqTypes;
+                    }
+                }
+                if (null == depTypes)
+                {
+                    continue;
+                }
+
+                foreach (var depType in depTypes)
+                {
+                    var existingDep = this.FindExistingNode(depType, depType.FullName, node.Target);
+                    if (null != existingDep)
+                    {
+                        topLevelNodesToMove.Add(existingDep);
+                    }
+                }
+            }
+
+            foreach (var movedNode in topLevelNodesToMove)
+            {
+                this.rankList[0].Remove(movedNode);
+                this.AddDependencyNodeToCollection(movedNode, 1);
+            }
+        }
+
+        private void
+        ForwardOnDependencies(
+            DependencyNodeCollection nodesWithForwardedDependencies)
+        {
+            foreach (var node in nodesWithForwardedDependencies)
+            {
+                if (null == node.ExternalDependentFor)
+                {
+                    continue;
+                }
+
+                foreach (var dependee in node.ExternalDependentFor)
+                {
+                    foreach (var dependent in node.ExternalDependents)
+                    {
+                        // add forwarded dependencies to the end, as this should satisfy the link order of a single pass linker
+                        dependee.AddExternalDependent(dependent);
+                    }
+                }
+            }
+        }
+
+        private void
+        AddDependents(DependencyNodeCollection nodesWithForwardedDependencies)
+        {
+            // DependencyNodes have a loose connection with Rank and their DependencyNodeCollection at this stage
+            // There is some need for it, in order to determine whether a node satisfies all dependencies
+            int currentRank = 0;
+            while (currentRank < this.RankCount)
+            {
+                // TODO: at this stage, I kind of expect there might be empty ranks on purpose, as dependencies
+                // move around... at the end of this initial stage, the empty ranks can then be squashed
+                // this is another reason to not have ranks in the nodes themselves as it would require a double update
+                // to squash collections
+                //this.CheckForEmptyRanks();
+
+                var intendedNodeRanks = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+                foreach (var node in this.rankList[currentRank])
+                {
+                    this.ProcessNode(node, intendedNodeRanks, nodesWithForwardedDependencies);
+                }
+
+                foreach (var node in intendedNodeRanks.Keys)
+                {
+                    int newRank = intendedNodeRanks[node];
+                    node.NodeCollection.Remove(node);
+                    this.AddDependencyNodeToCollection(node, newRank);
+                }
+
+                ++currentRank;
+            }
+
+            this.SquashEmptyNodeCollections();
+        }
+
+        private void SquashEmptyNodeCollections()
+        {
+            var emptyCollections = new Array<DependencyNodeCollection>();
+            int currentRank = 0;
+            while (currentRank < this.RankCount)
+            {
+                if (0 == this[currentRank].Count)
+                {
+                    emptyCollections.Add(this[currentRank]);
+                }
+                ++currentRank;
+            }
+
+            if (emptyCollections.Count > 0)
+            {
+                foreach (var empty in emptyCollections)
+                {
+                    this.rankList.Remove(empty);
+                }
+
+                // ensure rank indices are contiguous
+                currentRank = 0;
+                while (currentRank < this.RankCount)
+                {
+                    if (this.rankList[currentRank].Rank != currentRank)
+                    {
+                        this.rankList[currentRank].ReassignRank(currentRank);
+                    }
+                    ++currentRank;
+                }
+            }
+        }
+
+        private void DetermineIfNodeNeedsToMove(
+            DependencyNode node,
+            int parentIntendedRank,
+            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            System.Collections.Generic.Dictionary<DependencyNode, int> latestedIntendedNodeRanks)
+        {
+            int pastRank = node.NodeCollection.Rank;
+            int intendedRank = (node.Module is IInjectModules) ? parentIntendedRank + 2 : parentIntendedRank + 1;
+            if (intendedNodeRanks.ContainsKey(node))
+            {
+                if (intendedNodeRanks[node] > pastRank)
+                {
+                    pastRank = intendedNodeRanks[node];
+                }
+            }
+            if (latestedIntendedNodeRanks.ContainsKey(node))
+            {
+                if (latestedIntendedNodeRanks[node] > pastRank)
+                {
+                    pastRank = latestedIntendedNodeRanks[node];
+                }
+            }
+            if (pastRank < (parentIntendedRank + 1))
+            {
+                // dependency of that moved no longer satisfies rank order
+                // always add it to the re-evaluation list, in case an earlier evaluation
+                // needs to be performed again
+                // this will only be a problem if there are circular dependencies
+                latestedIntendedNodeRanks[node] = parentIntendedRank + 1;
+            }
+        }
+
+        private System.Collections.Generic.Dictionary<DependencyNode, int> DetermineNodesToMove(
+            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks)
+        {
+            var moreNodesToMove = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+            foreach (var node in intendedNodeRanks.Keys)
+            {
+                int currentRank = (node.NodeCollection != null) ? node.NodeCollection.Rank : -1;
+                int intendedRank = intendedNodeRanks[node];
+
+                if (node.ExternalDependents != null)
+                {
+                    foreach (var dependent in node.ExternalDependents)
+                    {
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, intendedNodeRanks, moreNodesToMove);
+                    }
+                }
+                if (node.RequiredDependents != null)
+                {
+                    foreach (var dependent in node.RequiredDependents)
+                    {
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, intendedNodeRanks, moreNodesToMove);
+                    }
+                }
+            }
+
+            return (moreNodesToMove.Count > 0) ? moreNodesToMove : null;
+        }
+
+        private void
+        PopulateChildNodes(
+            DependencyNodeCollection nodesWithForwardedDependencies)
+        {
+            int currentRank = 0;
+            while (currentRank < this.RankCount)
+            {
+                var intendedNodeRanks = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+                var rankCollection = this.rankList[currentRank];
+                foreach (var node in rankCollection)
+                {
+                    if (node.AreChildrenProcessed)
+                    {
+                        continue;
+                    }
+
+                    var nestedDependentsInterface = node.Module as INestedDependents;
+                    if (null == nestedDependentsInterface)
+                    {
+                        continue;
+                    }
+
+                    var nestedDependentModules = nestedDependentsInterface.GetNestedDependents(node.Target);
+                    if (null == nestedDependentModules)
+                    {
+                        throw new Exception("Module '{0}' implements Opus.Core.INestedDependents but returns null", node.UniqueModuleName);
+                    }
+
+                    int childIndex = 0;
+                    foreach (var nestedModule in nestedDependentModules)
+                    {
+                        var baseTarget = (BaseTarget)node.Target;
+                        var nestedModuleType = nestedModule.GetType();
+
+                        var nestedToolset = ModuleUtilities.GetToolsetForModule(nestedModuleType);
+                        var nestedTargetUsed = Target.GetInstance(baseTarget, nestedToolset);
+
+                        var isNestedNodeInjected = nestedModule is IInjectModules;
+                        // for injected nodes, move the nested node down one rank, to squeeze in the injected node
+                        var nestedNodeRank = isNestedNodeInjected ? currentRank + 2 : currentRank + 1;
+
+                        var childNode = new DependencyNode(nestedModule as BaseModule, node, nestedTargetUsed, childIndex, true, null);
+                        this.AddDependencyNodeToCollection(childNode, nestedNodeRank);
+                        this.ProcessNode(childNode, intendedNodeRanks, nodesWithForwardedDependencies);
+
+                        // all children inherit their collection's dependents
+                        if (node.Module is IModuleCollection)
+                        {
+                            if (null != node.ExternalDependents)
+                            {
+                                foreach (var dep in node.ExternalDependents)
+                                {
+                                    childNode.AddExternalDependent(dep);
+                                }
+                            }
+                        }
+
+                        if (isNestedNodeInjected)
+                        {
+                            // add the injected node, in a rank above the nested node
+                            var injectedNode = this.InjectNodeAbove(node, childNode, baseTarget, childIndex, nestedNodeRank - 1);
+                            this.ProcessNode(injectedNode, intendedNodeRanks, nodesWithForwardedDependencies);
+                        }
+
+                        ++childIndex;
+                    }
+
+                    node.AreChildrenProcessed = true;
+                }
+
+                // if there are nodes that need moving to satisfy dependencies, recursively search
+                // through their dependencies to ensure all sub-dependencies get moved too
+                // this may involve dependencies being examined more than once, if they are dependents
+                // of several moving nodes, and subsequently move multiple times
+                // WARNING: if cyclic dependencies are introduced, this will result in an infinite loop
+                if (intendedNodeRanks.Count > 0)
+                {
+                    var nodesToExamine = intendedNodeRanks;
+                    for (;;)
+                    {
+                        var moreDependentsToMove = this.DetermineNodesToMove(nodesToExamine);
+                        if (null == moreDependentsToMove)
+                        {
+                            break;
+                        }
+
+                        // merge the nodes that have to move
+                        foreach (var toMove in moreDependentsToMove.Keys)
+                        {
+                            intendedNodeRanks[toMove] = moreDependentsToMove[toMove];
+                        }
+
+                        // now examine the latest set of nodes, so as not to repeat
+                        nodesToExamine = moreDependentsToMove;
+                    }
+                }
+
+                // finally move the desired nodes
+                foreach (var node in intendedNodeRanks.Keys)
+                {
+                    int newRank = intendedNodeRanks[node];
+                    node.NodeCollection.Remove(node);
+                    this.AddDependencyNodeToCollection(node, newRank);
+                }
+
+                ++currentRank;
+            }
+        }
+#else
         private DependencyNode FindOrCreateUnparentedNode(System.Type moduleType,
                                                           string moduleName,
                                                           Target target,
@@ -714,5 +1250,6 @@ namespace Opus.Core
                 }
             }
         }
+#endif
     }
 }

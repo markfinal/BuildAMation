@@ -15,7 +15,8 @@ namespace QtCommon
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
         {
             var options = this as IMocOptions;
-            options.MocOutputPath = null;
+            // TODO: do not set this, as it overwrites what was set in SetNodeSpecificData
+            //options.MocOutputPath = null;
             options.IncludePaths = new Opus.Core.DirectoryCollection();
             options.Defines = new C.DefineCollection();
             options.DoNotGenerateIncludeStatement = false;

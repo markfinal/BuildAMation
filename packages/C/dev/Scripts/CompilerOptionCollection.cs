@@ -203,6 +203,14 @@ namespace C
                 var outputFileLocation = node.Module.Locations[C.ObjectFile.OutputFile] as Opus.Core.ScaffoldLocation;
                 if (!outputFileLocation.IsValid)
                 {
+                    if (null == this.OutputName)
+                    {
+                        // in the case of procedurally generated source, the output name may not have been set yet
+                        var sourceLoc = objectFileModule.SourceFileLocation;
+                        var sourceLocPath = sourceLoc.GetSingleRawPath();
+                        this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourceLocPath);
+                    }
+
                     var target = node.Target;
                     var tool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                     var options = this as ICCompilerOptions;

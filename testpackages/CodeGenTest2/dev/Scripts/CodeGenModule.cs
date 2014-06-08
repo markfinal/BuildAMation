@@ -101,6 +101,9 @@ namespace CodeGenTest2
         [Opus.Core.RequiredModules]
         protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CodeGeneratorTool));
 
+        #region IInjectModules Members
+
+#if false
         Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
         {
             var module = this as Opus.Core.IModule;
@@ -114,5 +117,36 @@ namespace CodeGenTest2
 
             return moduleCollection;
         }
+#endif
+
+        string Opus.Core.IInjectModules.GetInjectedModuleNameSuffix(Opus.Core.BaseTarget baseTarget)
+        {
+            return "CodeGen2";
+        }
+
+        System.Type Opus.Core.IInjectModules.GetInjectedModuleType(Opus.Core.BaseTarget baseTarget)
+        {
+            return typeof(C.ObjectFile);
+        }
+
+        Opus.Core.DependencyNode Opus.Core.IInjectModules.GetInjectedParentNode(Opus.Core.DependencyNode node)
+        {
+            var dependentFor = node.ExternalDependentFor;
+            var firstDependentFor = dependentFor[0];
+            return firstDependentFor;
+        }
+
+        void Opus.Core.IInjectModules.ModuleCreationFixup(Opus.Core.DependencyNode node)
+        {
+            var dependent = node.ExternalDependents;
+            var firstDependent = dependent[0];
+            var dependentModule = firstDependent.Module;
+            var module = node.Module as C.ObjectFile;
+            var sourceFile = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+            sourceFile.SetReference(dependentModule.Locations[CodeGenModule.OutputFile]);
+            module.SourceFileLocation = sourceFile;
+        }
+
+        #endregion
     }
 }

@@ -28,6 +28,14 @@ namespace Opus.Core
                 {
                     throw new Exception("Dependency node collection for rank {0} is empty", rank);
                 }
+
+                foreach (var node in rankCollection)
+                {
+                    if (!node.AreDependenciesProcessed)
+                    {
+                        throw new Exception("Node '{0}' has not been processed in rank {1}", node.UniqueModuleName, rank);
+                    }
+                }
             }
         }
 
