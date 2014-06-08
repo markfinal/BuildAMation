@@ -276,9 +276,9 @@ namespace Test
             }
         }
 
-        sealed class Win32Resources : C.Win32Resource
+        sealed class Win32ResourceFile : C.Win32Resource
         {
-            public Win32Resources()
+            public Win32ResourceFile()
             {
                 var resourcesDir = this.PackageLocation.SubDirectory("resources");
                 this.Include(resourcesDir, "win32.rc");
@@ -288,17 +288,17 @@ namespace Test
         [Opus.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        [Opus.Core.DependentModules(ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
             );
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
+        [Opus.Core.DependentModules]
         Opus.Core.TypeArray mingwDependents = new Opus.Core.TypeArray(
-            typeof(Win32Resources)
+            typeof(Win32ResourceFile)
             );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        [C.RequiredLibraries(ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 }
