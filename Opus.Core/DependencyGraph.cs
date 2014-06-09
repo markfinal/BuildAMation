@@ -366,6 +366,34 @@ namespace Opus.Core
                 return;
             }
 
+            // WIP
+#if false
+            var postActionInterface = node.Module as IPostActionModules;
+            if (null != postActionInterface)
+            {
+                var postActionModuleTypes = postActionInterface.GetPostActionModuleTypes((BaseTarget)node.Target);
+                if (null != postActionModuleTypes)
+                {
+                    var nodeRank = node.NodeCollection.Rank;
+                    if (intendedNodeRanks.ContainsKey(node))
+                    {
+                        nodeRank = intendedNodeRanks[node];
+                    }
+                    intendedNodeRanks[node] = nodeRank + 1;
+
+                    int postCount = 0;
+                    foreach (var postModuleType in postActionModuleTypes)
+                    {
+                        // TODO: this modifies the node collection of the rank we are currently enumerating
+                        // which is not allowed
+                        var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, "PostAction", postCount);
+                        postNode.AddExternalDependent(node);
+                        ++postCount;
+                    }
+                }
+            }
+#endif
+
             this.ConnectExternalDependencies(node, intendedNodeRanks, nodesWithForwardedDependencies);
             this.ConnectRequiredDependencies(node, intendedNodeRanks, nodesWithForwardedDependencies);
             node.AreDependenciesProcessed = true;
@@ -554,7 +582,8 @@ namespace Opus.Core
                 //this.CheckForEmptyRanks();
 
                 var intendedNodeRanks = new System.Collections.Generic.Dictionary<DependencyNode, int>();
-                foreach (var node in this.rankList[currentRank])
+                var rankNodeCollection = this.rankList[currentRank];
+                foreach (var node in rankNodeCollection)
                 {
                     this.ProcessNode(node, intendedNodeRanks, nodesWithForwardedDependencies);
                 }
@@ -611,7 +640,7 @@ namespace Opus.Core
             DependencyNode node,
             int parentIntendedRank,
             System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
-            System.Collections.Generic.Dictionary<DependencyNode, int> latestedIntendedNodeRanks)
+            System.Collections.Generic.Dictionary<DependencyNode, int> latestIntendedNodeRanks)
         {
             int pastRank = node.NodeCollection.Rank;
             if (intendedNodeRanks.ContainsKey(node))
@@ -621,11 +650,11 @@ namespace Opus.Core
                     pastRank = intendedNodeRanks[node];
                 }
             }
-            if (latestedIntendedNodeRanks.ContainsKey(node))
+            if (latestIntendedNodeRanks.ContainsKey(node))
             {
-                if (latestedIntendedNodeRanks[node] > pastRank)
+                if (latestIntendedNodeRanks[node] > pastRank)
                 {
-                    pastRank = latestedIntendedNodeRanks[node];
+                    pastRank = latestIntendedNodeRanks[node];
                 }
             }
             if (pastRank < (parentIntendedRank + 1))
@@ -634,7 +663,7 @@ namespace Opus.Core
                 // always add it to the re-evaluation list, in case an earlier evaluation
                 // needs to be performed again
                 // this will only be a problem if there are circular dependencies
-                latestedIntendedNodeRanks[node] = parentIntendedRank + 1;
+                latestIntendedNodeRanks[node] = parentIntendedRank + 1;
             }
         }
 
