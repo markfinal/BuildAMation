@@ -274,7 +274,8 @@ namespace Opus.Core
         }
 
 #if true
-        private DependencyNode FindExistingNode(
+        private DependencyNode
+        FindExistingNode(
             System.Type moduleType,
             string moduleName,
             Target target)
@@ -455,7 +456,8 @@ namespace Opus.Core
             }
         }
 
-        void SortTopLevelModules()
+        private void
+        SortTopLevelModules()
         {
             var topLevelNodesToMove = new DependencyNodeCollection();
             foreach (var node in this.rankList[0])
@@ -570,7 +572,8 @@ namespace Opus.Core
             this.SquashEmptyNodeCollections();
         }
 
-        private void SquashEmptyNodeCollections()
+        private void
+        SquashEmptyNodeCollections()
         {
             var emptyCollections = new Array<DependencyNodeCollection>();
             int currentRank = 0;
@@ -603,7 +606,8 @@ namespace Opus.Core
             }
         }
 
-        private void DetermineIfNodeNeedsToMove(
+        private void
+        DetermineIfNodeNeedsToMove(
             DependencyNode node,
             int parentIntendedRank,
             System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
@@ -634,7 +638,8 @@ namespace Opus.Core
             }
         }
 
-        private System.Collections.Generic.Dictionary<DependencyNode, int> DetermineNodesToMove(
+        private System.Collections.Generic.Dictionary<DependencyNode, int>
+        DetermineNodesToMove(
             System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks)
         {
             var moreNodesToMove = new System.Collections.Generic.Dictionary<DependencyNode, int>();
