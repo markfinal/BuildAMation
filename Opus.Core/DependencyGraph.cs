@@ -291,7 +291,7 @@ namespace Opus.Core
         FindExistingOrCreateNewNodes(
             DependencyNode node,
             TypeArray dependentTypes,
-            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks)
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets)
         {
             var dependentNodes = new DependencyNodeCollection();
             foreach (var depType in dependentTypes)
@@ -312,11 +312,13 @@ namespace Opus.Core
                     var isInjectionModule = depNode.Module is IInjectModules;
                     var rankOffset = isInjectionModule ? 2 : 1;
                     var depNodeRank = depNode.NodeCollection.Rank;
-                    if (intendedNodeRanks.ContainsKey(node))
+                    // if the dependency is currently ranked less than the parent node, the parent
+                    // node needs to move to a higher rank
+                    if (nodeRankOffsets.ContainsKey(node))
                     {
-                        if (depNodeRank <= intendedNodeRanks[node])
+                        if (depNodeRank <= node.NodeCollection.Rank + nodeRankOffsets[node])
                         {
-                            intendedNodeRanks[depNode] = intendedNodeRanks[node] + rankOffset;
+                            nodeRankOffsets[depNode] = nodeRankOffsets[node] + rankOffset;
                         }
                     }
                     else
@@ -324,7 +326,7 @@ namespace Opus.Core
                         var nodeRank = node.NodeCollection.Rank;
                         if (depNodeRank <= nodeRank)
                         {
-                            intendedNodeRanks[depNode] = nodeRank + rankOffset;
+                            nodeRankOffsets[depNode] = rankOffset;
                         }
                     }
                 }
@@ -358,7 +360,7 @@ namespace Opus.Core
         private void
         ProcessNode(
             DependencyNode node,
-            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
             DependencyNodeCollection nodesWithForwardedDependencies)
         {
             if (node.AreDependenciesProcessed)
@@ -375,11 +377,11 @@ namespace Opus.Core
                 if (null != postActionModuleTypes)
                 {
                     var nodeRank = node.NodeCollection.Rank;
-                    if (intendedNodeRanks.ContainsKey(node))
+                    if (nodeRankOffsets.ContainsKey(node))
                     {
-                        nodeRank = intendedNodeRanks[node];
+                        nodeRank = nodeRankOffsets[node];
                     }
-                    intendedNodeRanks[node] = nodeRank + 1;
+                    nodeRankOffsets[node] = nodeRank + 1;
 
                     int postCount = 0;
                     foreach (var postModuleType in postActionModuleTypes)
@@ -394,15 +396,15 @@ namespace Opus.Core
             }
 #endif
 
-            this.ConnectExternalDependencies(node, intendedNodeRanks, nodesWithForwardedDependencies);
-            this.ConnectRequiredDependencies(node, intendedNodeRanks, nodesWithForwardedDependencies);
+            this.ConnectExternalDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
+            this.ConnectRequiredDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
             node.AreDependenciesProcessed = true;
         }
 
         private void
         ConnectExternalDependencies(
             DependencyNode node,
-            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
             DependencyNodeCollection nodesWithForwardedDependencies)
         {
             // find all dependencies that are in the attribute metadata
@@ -430,26 +432,26 @@ namespace Opus.Core
                 return;
             }
 
-            var externalDeps = this.FindExistingOrCreateNewNodes(node, depTypes, intendedNodeRanks);
+            var externalDeps = this.FindExistingOrCreateNewNodes(node, depTypes, nodeRankOffsets);
             foreach (var dep in externalDeps)
             {
                 node.AddExternalDependent(dep);
                 if (!dep.AreDependenciesProcessed)
                 {
-                    this.ProcessNode(dep, intendedNodeRanks, nodesWithForwardedDependencies);
+                    this.ProcessNode(dep, nodeRankOffsets, nodesWithForwardedDependencies);
                 }
 
                 if (dep.Module is IInjectModules)
                 {
                     var baseTarget = (BaseTarget)dep.Target;
                     var childIndex = 0;
-                    var currentRank = intendedNodeRanks[dep];
+                    var currentRank = dep.NodeCollection.Rank + nodeRankOffsets[dep];
 
                     // move the dependency one rank down, to make room for the injected node
-                    ++intendedNodeRanks[dep];
+                    ++nodeRankOffsets[dep];
 
                     var injectedNode = this.InjectNodeAbove(dep, dep, baseTarget, childIndex, currentRank);
-                    this.ProcessNode(injectedNode, intendedNodeRanks, nodesWithForwardedDependencies);
+                    this.ProcessNode(injectedNode, nodeRankOffsets, nodesWithForwardedDependencies);
                 }
             }
 
@@ -463,7 +465,7 @@ namespace Opus.Core
         private void
         ConnectRequiredDependencies(
             DependencyNode node,
-            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
             DependencyNodeCollection nodesWithForwardedDependencies)
         {
             // find all dependencies that are in the attribute metadata
@@ -473,13 +475,13 @@ namespace Opus.Core
                 return;
             }
 
-            var requiredNodes = this.FindExistingOrCreateNewNodes(node, depTypes, intendedNodeRanks);
+            var requiredNodes = this.FindExistingOrCreateNewNodes(node, depTypes, nodeRankOffsets);
             foreach (var required in requiredNodes)
             {
                 node.AddRequiredDependent(required);
                 if (!required.AreDependenciesProcessed)
                 {
-                    this.ProcessNode(required, intendedNodeRanks, nodesWithForwardedDependencies);
+                    this.ProcessNode(required, nodeRankOffsets, nodesWithForwardedDependencies);
                 }
             }
         }
@@ -581,16 +583,16 @@ namespace Opus.Core
                 // to squash collections
                 //this.CheckForEmptyRanks();
 
-                var intendedNodeRanks = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+                var nodeRankOffsets = new System.Collections.Generic.Dictionary<DependencyNode, int>();
                 var rankNodeCollection = this.rankList[currentRank];
                 foreach (var node in rankNodeCollection)
                 {
-                    this.ProcessNode(node, intendedNodeRanks, nodesWithForwardedDependencies);
+                    this.ProcessNode(node, nodeRankOffsets, nodesWithForwardedDependencies);
                 }
 
-                foreach (var node in intendedNodeRanks.Keys)
+                foreach (var node in nodeRankOffsets.Keys)
                 {
-                    int newRank = intendedNodeRanks[node];
+                    var newRank = node.NodeCollection.Rank + nodeRankOffsets[node];
                     node.NodeCollection.Remove(node);
                     this.AddDependencyNodeToCollection(node, newRank);
                 }
@@ -639,22 +641,23 @@ namespace Opus.Core
         DetermineIfNodeNeedsToMove(
             DependencyNode node,
             int parentIntendedRank,
-            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks,
-            System.Collections.Generic.Dictionary<DependencyNode, int> latestIntendedNodeRanks)
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
+            System.Collections.Generic.Dictionary<DependencyNode, int> updatedNodeRankOffsets)
         {
             int pastRank = node.NodeCollection.Rank;
-            if (intendedNodeRanks.ContainsKey(node))
+            if (nodeRankOffsets.ContainsKey(node))
             {
-                if (intendedNodeRanks[node] > pastRank)
+                if (nodeRankOffsets[node] > 0)
                 {
-                    pastRank = intendedNodeRanks[node];
+                    pastRank += nodeRankOffsets[node];
                 }
             }
-            if (latestIntendedNodeRanks.ContainsKey(node))
+            var inUpdatedOffsets = updatedNodeRankOffsets.ContainsKey(node);
+            if (inUpdatedOffsets)
             {
-                if (latestIntendedNodeRanks[node] > pastRank)
+                if (updatedNodeRankOffsets[node] > 0)
                 {
-                    pastRank = latestIntendedNodeRanks[node];
+                    pastRank += updatedNodeRankOffsets[node];
                 }
             }
             if (pastRank < (parentIntendedRank + 1))
@@ -663,36 +666,43 @@ namespace Opus.Core
                 // always add it to the re-evaluation list, in case an earlier evaluation
                 // needs to be performed again
                 // this will only be a problem if there are circular dependencies
-                latestIntendedNodeRanks[node] = parentIntendedRank + 1;
+                if (inUpdatedOffsets)
+                {
+                    ++updatedNodeRankOffsets[node];
+                }
+                else
+                {
+                    updatedNodeRankOffsets[node] = 1;
+                }
             }
         }
 
         private System.Collections.Generic.Dictionary<DependencyNode, int>
         DetermineNodesToMove(
-            System.Collections.Generic.Dictionary<DependencyNode, int> intendedNodeRanks)
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets)
         {
-            var moreNodesToMove = new System.Collections.Generic.Dictionary<DependencyNode, int>();
-            foreach (var node in intendedNodeRanks.Keys)
+            var updatedNodeRankOffsets = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+            foreach (var node in nodeRankOffsets.Keys)
             {
-                int intendedRank = intendedNodeRanks[node];
+                int intendedRank = nodeRankOffsets[node];
 
                 if (node.ExternalDependents != null)
                 {
                     foreach (var dependent in node.ExternalDependents)
                     {
-                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, intendedNodeRanks, moreNodesToMove);
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets);
                     }
                 }
                 if (node.RequiredDependents != null)
                 {
                     foreach (var dependent in node.RequiredDependents)
                     {
-                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, intendedNodeRanks, moreNodesToMove);
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets);
                     }
                 }
             }
 
-            return (moreNodesToMove.Count > 0) ? moreNodesToMove : null;
+            return (updatedNodeRankOffsets.Count > 0) ? updatedNodeRankOffsets : null;
         }
 
         private void
@@ -702,7 +712,7 @@ namespace Opus.Core
             int currentRank = 0;
             while (currentRank < this.RankCount)
             {
-                var intendedNodeRanks = new System.Collections.Generic.Dictionary<DependencyNode, int>();
+                var nodeRankOffsets = new System.Collections.Generic.Dictionary<DependencyNode, int>();
                 var rankCollection = this.rankList[currentRank];
                 foreach (var node in rankCollection)
                 {
@@ -738,7 +748,7 @@ namespace Opus.Core
 
                         var childNode = new DependencyNode(nestedModule as BaseModule, node, nestedTargetUsed, childIndex, true, null);
                         this.AddDependencyNodeToCollection(childNode, nestedNodeRank);
-                        this.ProcessNode(childNode, intendedNodeRanks, nodesWithForwardedDependencies);
+                        this.ProcessNode(childNode, nodeRankOffsets, nodesWithForwardedDependencies);
 
                         // all children inherit their collection's dependents
                         if (node.Module is IModuleCollection)
@@ -756,7 +766,7 @@ namespace Opus.Core
                         {
                             // add the injected node, in a rank above the nested node
                             var injectedNode = this.InjectNodeAbove(node, childNode, baseTarget, childIndex, nestedNodeRank - 1);
-                            this.ProcessNode(injectedNode, intendedNodeRanks, nodesWithForwardedDependencies);
+                            this.ProcessNode(injectedNode, nodeRankOffsets, nodesWithForwardedDependencies);
                         }
 
                         ++childIndex;
@@ -770,9 +780,9 @@ namespace Opus.Core
                 // this may involve dependencies being examined more than once, if they are dependents
                 // of several moving nodes, and subsequently move multiple times
                 // WARNING: if cyclic dependencies are introduced, this will result in an infinite loop
-                if (intendedNodeRanks.Count > 0)
+                if (nodeRankOffsets.Count > 0)
                 {
-                    var nodesToExamine = intendedNodeRanks;
+                    var nodesToExamine = nodeRankOffsets;
                     for (;;)
                     {
                         var moreDependentsToMove = this.DetermineNodesToMove(nodesToExamine);
@@ -784,7 +794,7 @@ namespace Opus.Core
                         // merge the nodes that have to move
                         foreach (var toMove in moreDependentsToMove.Keys)
                         {
-                            intendedNodeRanks[toMove] = moreDependentsToMove[toMove];
+                            nodeRankOffsets[toMove] = moreDependentsToMove[toMove];
                         }
 
                         // now examine the latest set of nodes, so as not to repeat
@@ -793,9 +803,9 @@ namespace Opus.Core
                 }
 
                 // finally move the desired nodes
-                foreach (var node in intendedNodeRanks.Keys)
+                foreach (var node in nodeRankOffsets.Keys)
                 {
-                    int newRank = intendedNodeRanks[node];
+                    int newRank = node.NodeCollection.Rank + nodeRankOffsets[node];
                     node.NodeCollection.Remove(node);
                     this.AddDependencyNodeToCollection(node, newRank);
                 }
