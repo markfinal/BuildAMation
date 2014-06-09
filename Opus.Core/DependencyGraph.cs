@@ -110,7 +110,10 @@ namespace Opus.Core
             return moduleNode;
         }
 
-        private void AddDependencyNodeToCollection(DependencyNode moduleNode, int rank)
+        private void
+        AddDependencyNodeToCollection(
+            DependencyNode moduleNode,
+            int rank)
         {
             while (this.rankList.Count <= rank)
             {
@@ -358,6 +361,20 @@ namespace Opus.Core
         }
 
         private void
+        ShiftUpRanksFrom(
+            int minimumRank)
+        {
+            // move all subsequent ranks up by one
+            for (var movingRankIndex = this.RankCount - 1; movingRankIndex >= minimumRank; --movingRankIndex)
+            {
+                var rankCollection = this.rankList[movingRankIndex];
+                var newRank = movingRankIndex + 1;
+                rankCollection.ReassignRank(newRank);
+            }
+            this.rankList.Insert(minimumRank, new DependencyNodeCollection(minimumRank));
+        }
+
+        private void
         ProcessNode(
             DependencyNode node,
             System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
@@ -368,8 +385,6 @@ namespace Opus.Core
                 return;
             }
 
-            // WIP
-#if false
             var postActionInterface = node.Module as IPostActionModules;
             if (null != postActionInterface)
             {
@@ -379,9 +394,10 @@ namespace Opus.Core
                     var nodeRank = node.NodeCollection.Rank;
                     if (nodeRankOffsets.ContainsKey(node))
                     {
-                        nodeRank = nodeRankOffsets[node];
+                        nodeRank += nodeRankOffsets[node];
                     }
-                    nodeRankOffsets[node] = nodeRank + 1;
+
+                    this.ShiftUpRanksFrom(nodeRank);
 
                     int postCount = 0;
                     foreach (var postModuleType in postActionModuleTypes)
@@ -390,11 +406,11 @@ namespace Opus.Core
                         // which is not allowed
                         var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, "PostAction", postCount);
                         postNode.AddExternalDependent(node);
+                        this.ProcessNode(postNode, nodeRankOffsets, nodesWithForwardedDependencies);
                         ++postCount;
                     }
                 }
             }
-#endif
 
             this.ConnectExternalDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
             this.ConnectRequiredDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
