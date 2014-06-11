@@ -56,6 +56,25 @@ namespace VSSolutionBuilder
                 }
             }
 
+            if (null != node.ExternalDependents)
+            {
+                foreach (var dependentNode in node.ExternalDependents)
+                {
+                    if (dependentNode.ModuleName != moduleName)
+                    {
+                        // TODO: want to remove this
+                        lock (this.solutionFile.ProjectDictionary)
+                        {
+                            if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
+                            {
+                                var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                                projectData.DependentProjects.Add(dependentProject);
+                            }
+                        }
+                    }
+                }
+            }
+
             var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);
 
             // TODO: want to remove this

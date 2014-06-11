@@ -7,6 +7,6 @@ namespace Opus.Core
 {
     public interface INestedDependents
     {
-        ModuleCollection GetNestedDependents(Core.Target target);
+        ModuleCollection GetNestedDependents(Target target);
     }
 }

@@ -6,7 +6,7 @@
 namespace C
 {
     /// <summary>
-    /// C/C++ console application
+    /// Windows resource to be compiled and embedded into a binary
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
     public class Win32Resource : Opus.Core.BaseModule

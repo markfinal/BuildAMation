@@ -1,4 +1,4 @@
-// <copyright file="Win32ResoureCompiler.cs" company="Mark Final">
+// <copyright file="Win32ManifestTool.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportWin32ResourceCompilerOptionsDelegateAttribute : System.Attribute
+    public class ExportWin32ManifestToolOptionsDelegateAttribute : System.Attribute
     {
     }
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalWin32ResourceCompilerOptionsDelegateAttribute : System.Attribute
+    public class LocalWin32ManifestToolOptionsDelegateAttribute : System.Attribute
     {
     }
 }

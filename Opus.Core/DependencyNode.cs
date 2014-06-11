@@ -15,49 +15,57 @@ namespace Opus.Core
 
     public sealed class DependencyNode
     {
+        public bool
+        AreDependenciesProcessed
+        {
+            get;
+            set;
+        }
+
+        public bool
+        AreChildrenProcessed
+        {
+            get;
+            set;
+        }
+
         public override string ToString()
         {
             var output = new System.Text.StringBuilder();
-            output.AppendFormat("Family '{0}'", this.ModuleName);
-            output.AppendFormat(" Instance '{0}'", this.UniqueModuleName);
+            output.AppendFormat("'{0}' from '{1}'", this.UniqueModuleName, this.ModuleName);
             if (this.Parent != null)
             {
-                output.AppendFormat(" Parent '{0}'", this.Parent.UniqueModuleName);
+                output.AppendFormat(" child of '{0}'", this.Parent.UniqueModuleName);
             }
-            output.AppendFormat(" Type '{0}'", this.Module.GetType().ToString());
-            output.AppendFormat(" Base '{0}'", this.Module.GetType().BaseType.ToString());
-            output.AppendFormat(" Target '{0}'", this.Target.Key);
-            if (-1 != this.Rank)
-            {
-                output.AppendFormat(" Rank {0}", this.Rank);
-            }
+            output.AppendFormat(" Type '{0}' (from '{1}')", this.Module.GetType().ToString(), this.Module.GetType().BaseType.ToString());
+            output.AppendFormat(" in '{0}'", this.Target.Key);
             output.AppendFormat(" {0}", this.ConsiderForBuild ? "Buildable" : "Ignored");
             if (null != this.Children)
             {
-                output.Append(" Children { ");
+                output.Append("\nChildren:\n");
+                output.Append("\tRank\tName\n");
                 foreach (var node in this.Children)
                 {
-                    output.AppendFormat("{0} ", node.UniqueModuleName);
+                    output.AppendFormat("\t{0}\t{1}\n", node.NodeCollection.Rank, node.UniqueModuleName);
                 }
-                output.Append("}");
             }
             if (null != this.ExternalDependents)
             {
-                output.Append(" Deps { ");
+                output.Append("\nDependents:\n");
+                output.Append("\tRank\tName\n");
                 foreach (var node in this.ExternalDependents)
                 {
-                    output.AppendFormat("{0} ", node.UniqueModuleName);
+                    output.AppendFormat("\t{0}\t{1}\n", node.NodeCollection.Rank, node.UniqueModuleName);
                 }
-                output.Append("}");
             }
             if (null != this.RequiredDependents)
             {
-                output.Append(" Reqs { ");
+                output.Append("\nRequired dependents:\n");
+                output.Append("\tRank\tName\n");
                 foreach (var node in this.RequiredDependents)
                 {
-                    output.AppendFormat("{0} ", node.UniqueModuleName);
+                    output.AppendFormat("\t{0}\t{1}\n", node.NodeCollection.Rank, node.UniqueModuleName);
                 }
-                output.Append("}");
             }
 
             return output.ToString();
@@ -198,11 +206,19 @@ namespace Opus.Core
             }
         }
 
-        public DependencyNode(BaseModule module, DependencyNode parent, Target target, int childIndex, bool nestedModule)
+        // TODO: need a better way to figure out whether a node is nested or not than by the child index etc.
+        public
+        DependencyNode(
+            BaseModule module,
+            DependencyNode parent,
+            Target target,
+            int childIndex,
+            bool nestedModule,
+            string uniqueNameSuffix)
         {
             var moduleType = module.GetType();
             this.ConsiderForBuild = true;
-            this.Rank = -1;
+            this.NodeCollection = null;
             this.Parent = parent;
             this.Target = target;
             this.IsModuleNested = nestedModule;
@@ -211,7 +227,9 @@ namespace Opus.Core
 
             if (null == parent || !nestedModule)
             {
-                string packageName = moduleType.Namespace;
+                var packageName = moduleType.Namespace;
+                // always take the first part of the namespace
+                packageName = packageName.Split('.')[0];
                 var packages = State.PackageInfo;
                 var package = packages[packageName];
                 if (null == package)
@@ -229,6 +247,10 @@ namespace Opus.Core
                 this.EncapsulatingNode = parent.EncapsulatingNode;
                 this.ModuleName = parent.ModuleName;
                 this.UniqueModuleName = parent.GetChildModuleName(moduleType, childIndex);
+            }
+            if (null != uniqueNameSuffix)
+            {
+                this.UniqueModuleName = System.String.Format("{0}.{1}", this.UniqueModuleName, uniqueNameSuffix);
             }
 
             var builderInstance = State.BuilderInstance;
@@ -270,6 +292,9 @@ namespace Opus.Core
 
             var moduleBuildDir = this.GetTargettedModuleBuildDirectoryLocation();
             (module.Locations[State.ModuleBuildDirLocationKey] as ScaffoldLocation).SetReference(moduleBuildDir);
+
+            this.AreDependenciesProcessed = false;
+            this.AreChildrenProcessed = false;
         }
 
         public Target Target
@@ -545,7 +570,7 @@ namespace Opus.Core
             }
         }
 
-        public int Rank
+        public DependencyNodeCollection NodeCollection
         {
             get;
             set;
@@ -559,24 +584,11 @@ namespace Opus.Core
             return childModuleName;
         }
 
-#if true
         public void FilterOutputLocations(Array<LocationKey> filterKeys, LocationArray filteredLocations)
         {
             var locationMap = this.Module.Locations;
             filteredLocations.AddRange(locationMap.FilterByKey(filterKeys));
         }
-#else
-        public void FilterOutputPaths(System.Enum filter, StringArray paths)
-        {
-            var options = this.Module.Options;
-            if (null == options)
-            {
-                return;
-            }
-
-            options.FilterOutputPaths(filter, paths);
-        }
-#endif
 
         public bool IsReadyToBuild()
         {

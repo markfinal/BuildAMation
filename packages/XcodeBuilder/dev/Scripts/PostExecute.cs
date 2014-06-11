@@ -79,7 +79,7 @@ namespace XcodeBuilder
             var workspaceSettings = new WorkspaceSettings(this.Workspace);
             workspaceSettings.Serialize();
 
-            Opus.Core.Log.MessageAll("Xcode workspace written to '{0}'", this.Workspace.BundlePath);
+            Opus.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, this.Workspace.BundlePath);
         }
 
 #endregion

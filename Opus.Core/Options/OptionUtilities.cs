@@ -61,7 +61,7 @@ namespace Opus.Core
 
             foreach (var dependentNode in collection)
             {
-                Log.DebugMessage("\tAttaching {0} dependent '{1}' of '{2}' to option updates", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
+                //Log.DebugMessage("\tAttaching {0} dependent '{1}' of '{2}' to option updates", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
 
                 AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth);
 

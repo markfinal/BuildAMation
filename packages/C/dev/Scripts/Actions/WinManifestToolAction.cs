@@ -1,17 +1,17 @@
-// <copyright file="ToolchainAction.cs" company="Mark Final">
+// <copyright file="WinManifestToolAction.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(C.ToolchainAction))]
+[assembly: Opus.Core.RegisterAction(typeof(C.WinManifestToolAction))]
 
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class ToolchainAction : Opus.Core.IActionWithArguments
+    public sealed class WinManifestToolAction : Opus.Core.IActionWithArguments
     {
-        public ToolchainAction()
+        public WinManifestToolAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -25,7 +25,7 @@ namespace C
             }
         }
 
-        private string Toolchain
+        private string WinManifestTool
         {
             get;
             set;
@@ -33,14 +33,14 @@ namespace C
 
         void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
         {
-            this.Toolchain = arguments;
+            this.WinManifestTool = arguments;
         }
 
         string Opus.Core.IAction.CommandLineSwitch
         {
             get
             {
-                return "-C.toolchain";
+                return "-C.MT";
             }
         }
 
@@ -48,25 +48,16 @@ namespace C
         {
             get
             {
-                return "Assign the toolchain used for building C code";
+                return "Assign the Windows manifest tool used.";
             }
         }
 
         bool Opus.Core.IAction.Execute()
         {
-            Opus.Core.Log.DebugMessage("C toolchain is '{0}'", this.Toolchain);
+            Opus.Core.Log.DebugMessage("Windows manifest tool is '{0}'", this.WinManifestTool);
 
             var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            map[typeof(ICompilerTool)]            = this.Toolchain;
-            map[typeof(ICxxCompilerTool)]         = this.Toolchain;
-            map[typeof(IObjCCompilerTool)]        = this.Toolchain;
-            map[typeof(IObjCxxCompilerTool)]      = this.Toolchain;
-            map[typeof(ILinkerTool)]              = this.Toolchain;
-            map[typeof(IArchiverTool)]            = this.Toolchain;
-            map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
-            map[typeof(INullOpTool)]              = this.Toolchain;
-            map[typeof(IThirdPartyTool)]          = this.Toolchain;
-            map[typeof(IWinManifestTool)]         = this.Toolchain;
+            map[typeof(IWinManifestTool)] = this.WinManifestTool;
 
             return true;
         }

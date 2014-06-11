@@ -51,7 +51,7 @@ namespace Opus.Core
             var node = agent.Node;
             var builder = agent.Builder as IBuilder;
 
-            Log.DebugMessage("Agent '{0}' is running node '{1}'", agent.Name, node.UniqueModuleName);
+            Log.DebugMessage("Agent '{0}' is running node '{1}' from rank {2}", agent.Name, node.UniqueModuleName, node.NodeCollection.Rank);
             var owningNode = node.Module.OwningNode;
 
             if (owningNode != node)

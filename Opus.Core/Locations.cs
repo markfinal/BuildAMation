@@ -619,7 +619,14 @@ namespace Opus.Core
         {
             get
             {
-                return this.map[key];
+                try
+                {
+                    return this.map[key];
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    throw new Exception("Cannot find {0} location key '{1}'", key.IsFileKey ? "file" : "directory", key.ToString());
+                }
             }
 
             set
