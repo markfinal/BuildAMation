@@ -7,8 +7,15 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(Publisher.ProductModule moduleToBuild, out bool success)
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
         {
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
+            var primaryNodeData = primaryNode.Data as MakeFileData;
+
             success = false;
             return null;
         }

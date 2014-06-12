@@ -25,7 +25,7 @@ namespace Publisher
             var locationMap = node.Module.Locations;
             var exeDirLoc = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Directory);
             exeDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
-            locationMap[ProductModule.ExeDir] = exeDirLoc;
+            locationMap[ProductModule.PublishDir] = exeDirLoc;
 
             base.SetNodeSpecificData(node);
         }

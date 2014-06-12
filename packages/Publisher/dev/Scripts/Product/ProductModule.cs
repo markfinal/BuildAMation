@@ -8,7 +8,7 @@ namespace Publisher
     [Opus.Core.ModuleToolAssignment(typeof(IPublishProductTool))]
     public abstract class ProductModule : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
-        public static readonly Opus.Core.LocationKey ExeDir = new Opus.Core.LocationKey("ExecutableDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Opus.Core.LocationKey PublishDir = new Opus.Core.LocationKey("PrimaryModuleDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
         #region IIdentifyExternalDependencies Members
 
