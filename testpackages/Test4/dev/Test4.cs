@@ -9,6 +9,14 @@ namespace Test4
         {
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.headerFiles.Include(includeDir, "dynamiclibrary.h");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                //this.publishKeys.Add(C.Unix.RealNameSymbolLink);
+                //this.publishKeys.Add(C.Unix.SONameSymbolicLink);
+            }
+#endif
         }
 
         class SourceFiles : C.ObjectFileCollection
@@ -53,6 +61,12 @@ namespace Test4
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.PublishModuleDependency]
+        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+            C.DynamicLibrary.OutputFile);
+#endif
     }
 
     class MyStaticLib : C.StaticLibrary

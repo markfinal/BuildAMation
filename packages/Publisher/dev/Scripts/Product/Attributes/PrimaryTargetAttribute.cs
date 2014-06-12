@@ -1,4 +1,4 @@
-// <copyright file="Executables.cs" company="Mark Final">
+// <copyright file="PrimaryTargetAttribute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Publisher package</summary>
@@ -6,7 +6,7 @@
 namespace Publisher
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class ExecutablesAttribute : Opus.Core.BaseTargetFilteredAttribute
+    public sealed class PrimaryTargetAttribute : Opus.Core.BaseTargetFilteredAttribute
     {
     }
 }

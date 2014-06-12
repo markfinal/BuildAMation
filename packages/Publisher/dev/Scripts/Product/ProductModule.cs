@@ -29,10 +29,10 @@ namespace Publisher
                 }
 
                 var currentAttr = attributes[0];
-                if (currentAttr.GetType() == typeof(ExecutablesAttribute))
+                if (currentAttr.GetType() == typeof(PrimaryTargetAttribute))
                 {
-                    var executableModuleTypes = field.GetValue(this) as Opus.Core.TypeArray;
-                    dependentModuleTypes.AddRangeUnique(executableModuleTypes);
+                    var primaryModuleType = field.GetValue(this) as System.Type;
+                    dependentModuleTypes.AddUnique(primaryModuleType);
                 }
                 else
                 {

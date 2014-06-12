@@ -59,15 +59,9 @@ namespace VSSolutionBuilder
 
         public object Build(Publisher.ProductModule moduleToBuild, out bool success)
         {
-            var executableModuleNodes = Publisher.ProductModuleUtilities.GetExecutableModules(moduleToBuild);
-            var primaryNode = executableModuleNodes[0];
+            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
             var projectData = primaryNode.Data as IProject;
-            executableModuleNodes.Remove(primaryNode);
-            foreach (var otherExeNode in executableModuleNodes)
-            {
-                // TODO: completely untested
-                CopyNodes(projectData, otherExeNode);
-            }
+            CopyNodes(projectData, primaryNode);
 
             success = true;
             return null;

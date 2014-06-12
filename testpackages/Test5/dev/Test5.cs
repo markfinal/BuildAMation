@@ -29,8 +29,13 @@ namespace Test5
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
-#if false
-    // TODO: rework with publishing
+#if OPUSPACKAGE_PUBLISHER_DEV
+    class Publish : Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        System.Type primary = typeof(Test5.MyDynamicLibTestApp);
+    }
+#else
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishDynamicLibraries : FileUtilities.CopyFile
     {

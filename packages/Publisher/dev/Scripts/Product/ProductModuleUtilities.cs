@@ -31,39 +31,32 @@ namespace Publisher
                 var currentAttr = attributes[0];
                 if (currentAttr.GetType() == attributeType)
                 {
-                    var executableModuleTypes = field.GetValue(moduleToBuild) as Opus.Core.TypeArray;
-                    moduleTypes.AddRangeUnique(executableModuleTypes);
+                    var primaryTargetType = field.GetValue(moduleToBuild) as System.Type;
+                    moduleTypes.AddUnique(primaryTargetType);
                 }
             }
 
             return moduleTypes;
         }
 
-        public static Opus.Core.DependencyNodeCollection GetExecutableModules(Publisher.ProductModule moduleToBuild)
+        public static Opus.Core.DependencyNode GetPrimaryNode(Publisher.ProductModule moduleToBuild)
         {
-            var executableModules = new Opus.Core.DependencyNodeCollection();
+            Opus.Core.DependencyNode primaryNode = null;
 
             var dependents = moduleToBuild.OwningNode.ExternalDependents;
             if (dependents.Count == 0)
             {
-                return executableModules;
+                return primaryNode;
             }
 
-            var executableModuleTypes = GetModulesTypesWithAttribute(moduleToBuild, typeof(Publisher.ExecutablesAttribute));
-            if (executableModuleTypes.Count == 0)
+            var primaryTargetTypes = GetModulesTypesWithAttribute(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
+            if (primaryTargetTypes.Count == 0)
             {
-                return executableModules;
+                return primaryNode;
             }
 
-            foreach (var dep in dependents)
-            {
-                if (executableModuleTypes.Contains(dep.Module.GetType()))
-                {
-                    executableModules.Add(dep);
-                }
-            }
-
-            return executableModules;
+            primaryNode = Opus.Core.ModuleUtilities.GetNode(primaryTargetTypes[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            return primaryNode;
         }
     }
 }
