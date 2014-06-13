@@ -19,12 +19,12 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported copy command on this platform");
+                recipeBuilder.AppendFormat("cp {0} {1}", sourcePath, destPath);
             }
             var recipe = recipeBuilder.ToString();
             // replace primary target with $@
             recipe = recipe.Replace(destPath, "$@");
-            // TODO: too many inputs to just replace source with $<
+            // TODO: too many inputs for some modules (map files, pdbs, etc) to just replace source with $<
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
