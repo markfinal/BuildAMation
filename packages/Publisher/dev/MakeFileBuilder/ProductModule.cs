@@ -7,17 +7,130 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
+        private static Opus.Core.StringArray
+        MakeCopyRecipe(
+            string sourcePath,
+            string destPath)
+        {
+            var recipeBuilder = new System.Text.StringBuilder();
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                recipeBuilder.AppendFormat("cmd.exe /c COPY {0} {1}", sourcePath, destPath);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Unsupported copy command on this platform");
+            }
+            var recipe = recipeBuilder.ToString();
+            // replace primary target with $@
+            recipe = recipe.Replace(destPath, "$@");
+            // TODO: too many inputs to just replace source with $<
+
+            var recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+            return recipes;
+        }
+
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
+            var node = moduleToBuild.OwningNode;
+
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
             var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
-            var primaryNodeData = primaryNode.Data as MakeFileData;
+            var locationMap = moduleToBuild.Locations;
+            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
+            var publishDirPath = publishDirLoc.GetSingleRawPath();
 
-            success = false;
-            return null;
+            // TODO: LocationKey needs to be an option
+            var sourceLoc = primaryNode.Module.Locations[C.Application.OutputFile];
+            var sourcePath = sourceLoc.GetSingleRawPath();
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, C.Application.OutputFile);
+            var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, moduleToBuild, primaryKey);
+
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+
+            var primaryNodeData = primaryNode.Data as MakeFileData;
+            var primaryInputVariables = new MakeFileVariableDictionary();
+            primaryInputVariables.Append(primaryNodeData.VariableDictionary);
+
+            var primaryRule = new MakeFileRule(
+                moduleToBuild,
+                primaryKey,
+                node.UniqueModuleName,
+                dirsToCreate,
+                primaryInputVariables,
+                null,
+                MakeCopyRecipe(sourcePath, destPath));
+            makeFile.RuleArray.Add(primaryRule);
+
+            foreach (var dependency in primaryNode.ExternalDependents)
+            {
+                var depNodeData = dependency.Data as MakeFileData;
+                var depInputVariables = new MakeFileVariableDictionary();
+                if (null != depNodeData)
+                {
+                    depInputVariables.Append(depNodeData.VariableDictionary);
+                }
+
+                var module = dependency.Module;
+                var moduleType = module.GetType();
+                var flags = System.Reflection.BindingFlags.Instance |
+                            System.Reflection.BindingFlags.NonPublic;
+                var fields = moduleType.GetFields(flags);
+                foreach (var field in fields)
+                {
+                    var candidates = field.GetCustomAttributes(typeof(Publisher.PublishModuleDependencyAttribute), false);
+                    if (0 == candidates.Length)
+                    {
+                        continue;
+                    }
+                    if (candidates.Length > 1)
+                    {
+                        throw new Opus.Core.Exception("More than one publish module dependency found");
+                    }
+                    var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
+                    foreach (var key in candidateData)
+                    {
+                        var loc = module.Locations[key];
+                        var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                        var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+
+                        var depSourcePath = loc.GetSingleRawPath();
+                        var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                            depSourcePath,
+                            publishDirPath,
+                            moduleToBuild,
+                            newKey);
+                        var rule = new MakeFileRule(
+                            moduleToBuild,
+                            newKey,
+                            node.UniqueModuleName,
+                            dirsToCreate,
+                            depInputVariables,
+                            null,
+                            MakeCopyRecipe(depSourcePath, depDestPath));
+                        makeFile.RuleArray.Add(rule);
+                    }
+                }
+            }
+
+            var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
+
+            using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))
+            {
+                makeFile.Write(makeFileWriter);
+            }
+
+            var exportedTargets = makeFile.ExportedTargets;
+            var exportedVariables = makeFile.ExportedVariables;
+            var returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, null);
+            success = true;
+            return returnData;
         }
     }
 }

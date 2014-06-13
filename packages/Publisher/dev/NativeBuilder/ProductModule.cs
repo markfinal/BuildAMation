@@ -7,35 +7,6 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        private static string
-        GetPublishedKeyName(
-            Opus.Core.BaseModule module,
-            Opus.Core.LocationKey key)
-        {
-            var builder = new System.Text.StringBuilder();
-            builder.Append(module.OwningNode.ModuleName);
-            builder.Append(".");
-            builder.Append(key.ToString());
-            builder.Append(".PublishedFile");
-            return builder.ToString();
-        }
-
-        private static void
-        CopyFileToLocation(
-            Opus.Core.Location sourceFile,
-            string destinationDirectory,
-            Opus.Core.BaseModule module,
-            Opus.Core.LocationKey key)
-        {
-            var sourcePath = sourceFile.GetSingleRawPath();
-            var filename = System.IO.Path.GetFileName(sourcePath);
-            var destPath = System.IO.Path.Combine(destinationDirectory, filename);
-            Opus.Core.Log.Info("Copying {0} to {1}", sourcePath, destPath);
-            System.IO.File.Copy(sourcePath, destPath, true);
-
-            module.Locations[key] = Opus.Core.FileLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
-        }
-
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
@@ -50,14 +21,14 @@ namespace NativeBuilder
 
             var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
             var locationMap = moduleToBuild.Locations;
-            var exeDirLoc = locationMap[Publisher.ProductModule.PublishDir];
-            var exeDirPath = exeDirLoc.GetSingleRawPath();
+            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
+            var publishDirPath = publishDirLoc.GetSingleRawPath();
 
             // TODO: the key here needs to be on an optionset or similar
             var sourceLoc = primaryNode.Module.Locations[C.Application.OutputFile];
-            var publishedSourceKeyName = GetPublishedKeyName(primaryNode.Module, C.Application.OutputFile);
+            var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, C.Application.OutputFile);
             var publishedKey = new Opus.Core.LocationKey(publishedSourceKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            CopyFileToLocation(sourceLoc, exeDirPath, moduleToBuild, publishedKey);
+            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, moduleToBuild, publishedKey);
 
             foreach (var dependency in primaryNode.ExternalDependents)
             {
@@ -81,9 +52,9 @@ namespace NativeBuilder
                     foreach (var key in candidateData)
                     {
                         var loc = module.Locations[key];
-                        var keyName = System.String.Format("{0}.{1}.PublishedFile", module.OwningNode.ModuleName, key.ToString());
+                        var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
                         var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                        CopyFileToLocation(loc, exeDirPath, moduleToBuild, newKey);
+                        Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey);
                     }
                 }
             }

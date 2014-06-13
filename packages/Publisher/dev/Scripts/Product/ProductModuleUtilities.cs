@@ -58,5 +58,50 @@ namespace Publisher
             primaryNode = Opus.Core.ModuleUtilities.GetNode(primaryTargetTypes[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
             return primaryNode;
         }
+
+        public static string
+        GetPublishedKeyName(
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.BaseModule module,
+            Opus.Core.LocationKey key)
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.Append(module.OwningNode.ModuleName);
+            builder.Append(".");
+            builder.Append(key.ToString());
+            builder.Append(".PublishedFile");
+            if (primaryModule != module)
+            {
+                builder.Append(".For.");
+                builder.Append(primaryModule.OwningNode.ModuleName);
+            }
+            return builder.ToString();
+        }
+
+        public static string
+        GenerateDestinationPath(
+            string sourcePath,
+            string destinationDirectory,
+            Opus.Core.BaseModule module,
+            Opus.Core.LocationKey key)
+        {
+            var filename = System.IO.Path.GetFileName(sourcePath);
+            var destPath = System.IO.Path.Combine(destinationDirectory, filename);
+            module.Locations[key] = Opus.Core.FileLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
+            return destPath;
+        }
+
+        public static void
+        CopyFileToLocation(
+            Opus.Core.Location sourceFile,
+            string destinationDirectory,
+            Opus.Core.BaseModule module,
+            Opus.Core.LocationKey key)
+        {
+            var sourcePath = sourceFile.GetSingleRawPath();
+            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
+            Opus.Core.Log.Info("Copying {0} to {1}", sourcePath, destPath);
+            System.IO.File.Copy(sourcePath, destPath, true);
+        }
     }
 }
