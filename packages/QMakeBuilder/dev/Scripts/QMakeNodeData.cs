@@ -27,6 +27,7 @@ namespace QMakeBuilder
             this.OwningNode = node;
 
             this.CCFlags = new Opus.Core.StringArray();
+            this.CustomRules = null;
             this.CXXFlags = new Opus.Core.StringArray();
             this.Defines = new Opus.Core.StringArray();
             this.DestDir = null;
@@ -57,6 +58,12 @@ namespace QMakeBuilder
         {
             get;
             private set;
+        }
+
+        public Opus.Core.StringArray CustomRules
+        {
+            get;
+            set;
         }
 
         public Opus.Core.StringArray CXXFlags
@@ -915,6 +922,48 @@ namespace QMakeBuilder
             }
         }
 
+        private static void
+        WriteCustomRules(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                if (array[0].CustomRules == null)
+                {
+                    return;
+                }
+                foreach (var customRule in array[0].CustomRules)
+                {
+                    WriteString(customRule, string.Empty, proFilePath, writer);
+                }
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.CustomRules == null)
+                    {
+                        continue;
+                    }
+
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.CustomRules;
+                    }
+                    else
+                    {
+                        values.Release = data.CustomRules;
+                    }
+                }
+
+                // TODO: this might product incorrectly formatted pro files
+                WriteStringArrays(values, string.Empty, proFilePath, true, false, true, writer);
+            }
+        }
+
         public void Merge(QMakeData data)
         {
             this.Merge(data, OutputType.None);
@@ -935,6 +984,14 @@ namespace QMakeBuilder
             }
 
             this.CCFlags.AddRangeUnique(data.CCFlags);
+            if (null != data.CustomRules)
+            {
+                if (null == this.CustomRules)
+                {
+                    this.CustomRules = new Opus.Core.StringArray();
+                }
+                this.CustomRules.AddRangeUnique(data.CustomRules);
+            }
             this.CXXFlags.AddRangeUnique(data.CXXFlags);
             this.Defines.AddRangeUnique(data.Defines);
             if ((null != data.DestDir) && data.DestDir.IsValid)
@@ -1029,6 +1086,7 @@ namespace QMakeBuilder
                 // TODO: WriteExternalLibraries since they have been separated from built libraries by Locations
                 WriteLinkFlags(array, proFilePath, proWriter);
                 WritePostLinkCommands(array, proFilePath, proWriter);
+                WriteCustomRules(array, proFilePath, proWriter);
             }
         }
 
