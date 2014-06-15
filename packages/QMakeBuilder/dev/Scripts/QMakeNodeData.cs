@@ -25,6 +25,7 @@ namespace QMakeBuilder
         public QMakeData(Opus.Core.DependencyNode node)
         {
             this.OwningNode = node;
+            this.OSXApplicationBundle = false;
 
             this.CCFlags = new Opus.Core.StringArray();
             this.CustomRules = null;
@@ -52,6 +53,13 @@ namespace QMakeBuilder
         {
             get;
             private set;
+        }
+
+        public bool
+        OSXApplicationBundle
+        {
+            get;
+            set;
         }
 
         public Opus.Core.StringArray CCFlags
@@ -313,6 +321,13 @@ namespace QMakeBuilder
             if (qtModules.Count > 0)
             {
                 writer.WriteLine("QT = {0}", qtModules.ToString());
+            }
+            if (Opus.Core.OSUtilities.IsOSXHosting)
+            {
+                if (array[0].Output == OutputType.Application && !array[0].OSXApplicationBundle)
+                {
+                    writer.WriteLine("CONFIG -= app_bundle");
+                }
             }
         }
 

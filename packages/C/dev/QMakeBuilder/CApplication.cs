@@ -35,6 +35,12 @@ namespace QMakeBuilder
 
             data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.Application;
+            var osxLinkerOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
+            if (osxLinkerOptions != null)
+            {
+                data.OSXApplicationBundle = osxLinkerOptions.ApplicationBundle;
+            }
+
 #if true
             data.DestDir = moduleToBuild.Locations[C.Application.OutputDir];
 #else

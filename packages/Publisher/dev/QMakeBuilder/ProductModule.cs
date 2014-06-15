@@ -50,8 +50,13 @@ namespace QMakeBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
+                        // TODO: the key needs to be on an options interface or similiar
+                        var sourceLoc = dependency.Module.Locations[C.Application.OutputFile];
+                        var sourcePath = sourceLoc.GetSingleRawPath();
+
                         var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
                         var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                        Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, moduleToBuild, newKey);
 
                         InstallFile(publishDirPath, proData);
                     }
