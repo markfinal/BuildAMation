@@ -9,8 +9,6 @@ namespace QMakeBuilder
     {
         private static void
         InstallFile(
-            Opus.Core.BaseModule moduleCopied,
-            Opus.Core.Location fileToCopy,
             string destinationDirectory,
             QMakeData proData)
         {
@@ -26,8 +24,8 @@ namespace QMakeBuilder
             out bool success)
         {
             var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
-            var locationMap = moduleToBuild.Locations;
-            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
+            var locationMap = primaryNode.Module.Locations;
+            var publishDirLoc = locationMap[C.Application.OutputDir];
             var publishDirPath = publishDirLoc.GetSingleRawPath();
 
             foreach (var dependency in primaryNode.ExternalDependents)
@@ -52,11 +50,10 @@ namespace QMakeBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
-                        var loc = module.Locations[key];
                         var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
                         var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
 
-                        InstallFile(module, loc, publishDirPath, proData);
+                        InstallFile(publishDirPath, proData);
                     }
                 }
             }
