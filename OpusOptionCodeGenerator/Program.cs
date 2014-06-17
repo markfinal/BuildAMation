@@ -292,9 +292,10 @@ namespace OpusOptionCodeGenerator
                 while (!line.EndsWith(");"))
                 {
                     var newLine = ReadLine(reader);
+                    line += " "; // add a space as buffers around joining lines up
                     line += newLine;
                 }
-                Log("Delegate: '{0}'", line);
+                Log("Delegate potential: '{0}'", line);
                 var delegateStrings = line.Split(new char[] { ' ' });
                 if ("public" != delegateStrings[0] || "delegate" != delegateStrings[1])
                 {
