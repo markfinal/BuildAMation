@@ -57,7 +57,9 @@ namespace GccCommon
                         if (Opus.Core.OSUtilities.IsUnixHosting)
                         {
                         #if true
-                            commandLineBuilder.Add(System.String.Format("-Wl,-soname,{0}", outputPath));
+                            var linkerOptions = sender as C.ILinkerOptions;
+                            var soName = System.String.Format("{0}.so.{1}", options.OutputName, linkerOptions.MajorVersion);
+                            commandLineBuilder.Add(System.String.Format("-Wl,-soname,{0}", soName));
                         #else
                             if (outputPathName.Contains(" "))
                             {

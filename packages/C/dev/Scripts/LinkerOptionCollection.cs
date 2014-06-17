@@ -196,6 +196,13 @@ namespace C
                 string suffix;
                 GetBinaryPrefixAndSuffix(options, linkerTool, out prefix, out suffix);
                 var filename = prefix + this.OutputName + suffix;
+                if (target.HasPlatform(Opus.Core.EPlatform.Posix) &&
+                    options.OutputType == ELinkerOutput.DynamicLibrary)
+                {
+                    var versionNumber = new System.Text.StringBuilder();
+                    versionNumber.AppendFormat(".{0}.{1}.{2}", options.MajorVersion, options.MinorVersion, options.PatchVersion);
+                    filename += versionNumber.ToString();
+                }
 
                 (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
             }
