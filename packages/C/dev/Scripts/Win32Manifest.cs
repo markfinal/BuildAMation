@@ -6,7 +6,7 @@
 namespace C
 {
     /// <summary>
-    /// C/C++ console application
+    /// Windows manifest management
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IWinManifestTool))]
     public class Win32Manifest : Opus.Core.BaseModule
