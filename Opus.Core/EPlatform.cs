@@ -19,10 +19,12 @@ namespace Opus.Core
         Windows = Win32 | Win64,
         Unix    = Unix32 | Unix64,
         OSX     = OSX32 | OSX64,
+        Posix   = Unix | OSX,
 
         NotWindows = ~Windows,
         NotUnix    = ~Unix,
         NotOSX     = ~OSX,
+        NotPosix   = ~Posix,
 
         All        = Windows | Unix | OSX
     }
