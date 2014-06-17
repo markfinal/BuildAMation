@@ -155,18 +155,6 @@ namespace MingwCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static void MajorVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            // do nothing
-        }
-        private static void MinorVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            // do nothing
-        }
-        private static void PatchVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
-        {
-            // do nothing
-        }
         #endregion
         #region ILinkerOptions Option delegates
         private static void EnableAutoImportCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -190,9 +178,9 @@ namespace MingwCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
-            this["MajorVersion"].PrivateData = new PrivateData(MajorVersionCommandLineProcessor);
-            this["MinorVersion"].PrivateData = new PrivateData(MinorVersionCommandLineProcessor);
-            this["PatchVersion"].PrivateData = new PrivateData(PatchVersionCommandLineProcessor);
+            // Property 'MajorVersion' is state only
+            // Property 'MinorVersion' is state only
+            // Property 'PatchVersion' is state only
             this["EnableAutoImport"].PrivateData = new PrivateData(EnableAutoImportCommandLineProcessor);
         }
     }

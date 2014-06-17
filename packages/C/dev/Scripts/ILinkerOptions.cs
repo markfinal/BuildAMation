@@ -103,6 +103,7 @@ namespace C
         /// <value>
         /// The major version.
         /// </value>
+        // StateOnly
         int MajorVersion
         {
             get;
@@ -115,6 +116,7 @@ namespace C
         /// <value>
         /// The minor version.
         /// </value>
+        // StateOnly
         int MinorVersion
         {
             get;
@@ -127,6 +129,7 @@ namespace C
         /// <value>
         /// The patch version.
         /// </value>
+        // StateOnly
         int PatchVersion
         {
             get;
