@@ -401,12 +401,21 @@ namespace Opus.Core
 
                     this.ShiftUpRanksFrom(nodeRank);
 
-                    // TODO: any node with a dependency on node, must also now have a dependency on the post action nodes
-                    // e.g. if a manifest VC node is added, then the executable cannot be used until the manifest has been written
                     int postCount = 0;
                     foreach (var postModuleType in postActionModuleTypes)
                     {
                         var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, "PostAction", postCount);
+
+                        if (null != node.ExternalDependentFor)
+                        {
+                            // ensure that those nodes with a dependent on the node with the post-action, also have
+                            // a dependency on the post-action
+                            foreach (var dependee in node.ExternalDependentFor)
+                            {
+                                dependee.AddExternalDependent(postNode);
+                            }
+                        }
+
                         postNode.AddExternalDependent(node);
                         this.ProcessNode(postNode, nodeRankOffsets, nodesWithForwardedDependencies);
                         ++postCount;
