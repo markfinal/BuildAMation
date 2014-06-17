@@ -39,9 +39,6 @@ namespace C
 
         Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
         {
-#if true
-            return null;
-#else
             if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 var postActionModules = new Opus.Core.TypeArray(
@@ -49,7 +46,6 @@ namespace C
                 return postActionModules;
             }
             return null;
-#endif
         }
 
         #endregion
