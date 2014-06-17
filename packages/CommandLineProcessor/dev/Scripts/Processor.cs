@@ -68,7 +68,6 @@ namespace CommandLineProcessor
             if ((tool is Opus.Core.IToolSupportsResponseFile) && !disableResponseFiles)
             {
                 var module = node.Module;
-                var options = module.Options;
                 var moduleBuildDir = module.Locations[Opus.Core.State.ModuleBuildDirLocationKey];
                 var responseFileLoc = new Opus.Core.ScaffoldLocation(
                     moduleBuildDir,
