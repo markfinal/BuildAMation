@@ -92,6 +92,12 @@ namespace C
                     typeof(Win32Manifest));
                 return postActionModules;
             }
+            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                var postActionModules = new Opus.Core.TypeArray(
+                    typeof(PosixSharedLibrarySymlinks));
+                return postActionModules;
+            }
             else
             {
                 return null;

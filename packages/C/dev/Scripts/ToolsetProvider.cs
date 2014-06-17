@@ -74,5 +74,10 @@ namespace C
         {
             return GenericGetToolset(toolType, "C", "Use C.toolset=<toolset>");
         }
+
+        static string GetPosixSharedLibrarySymlinksToolset(System.Type toolType)
+        {
+            return GenericGetToolset(toolType, "Posix shared library symlinks tool", "Use C.SOSymLinks=<toolset>");
+        }
     }
 }

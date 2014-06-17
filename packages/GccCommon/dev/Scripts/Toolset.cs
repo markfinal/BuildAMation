@@ -15,6 +15,8 @@ namespace GccCommon
         {
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
             this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
+            this.toolConfig[typeof(C.IPosixSharedLibrarySymlinksTool)] =
+                new Opus.Core.ToolAndOptionType(new GccCommon.PosixSharedLibrarySymlinksTool(this), typeof(GccCommon.PosixSharedLibrarySymlinksOptionCollection));
         }
 
         private void GetInstallPath(Opus.Core.BaseTarget baseTarget)

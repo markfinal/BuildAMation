@@ -57,16 +57,17 @@ namespace C
             Opus.Core.Log.DebugMessage("C toolchain is '{0}'", this.Toolchain);
 
             var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
-            map[typeof(ICompilerTool)]            = this.Toolchain;
-            map[typeof(ICxxCompilerTool)]         = this.Toolchain;
-            map[typeof(IObjCCompilerTool)]        = this.Toolchain;
-            map[typeof(IObjCxxCompilerTool)]      = this.Toolchain;
-            map[typeof(ILinkerTool)]              = this.Toolchain;
-            map[typeof(IArchiverTool)]            = this.Toolchain;
-            map[typeof(IWinResourceCompilerTool)] = this.Toolchain;
-            map[typeof(INullOpTool)]              = this.Toolchain;
-            map[typeof(IThirdPartyTool)]          = this.Toolchain;
-            map[typeof(IWinManifestTool)]         = this.Toolchain;
+            map[typeof(ICompilerTool)]                   = this.Toolchain;
+            map[typeof(ICxxCompilerTool)]                = this.Toolchain;
+            map[typeof(IObjCCompilerTool)]               = this.Toolchain;
+            map[typeof(IObjCxxCompilerTool)]             = this.Toolchain;
+            map[typeof(ILinkerTool)]                     = this.Toolchain;
+            map[typeof(IArchiverTool)]                   = this.Toolchain;
+            map[typeof(IWinResourceCompilerTool)]        = this.Toolchain;
+            map[typeof(INullOpTool)]                     = this.Toolchain;
+            map[typeof(IThirdPartyTool)]                 = this.Toolchain;
+            map[typeof(IWinManifestTool)]                = this.Toolchain;
+            map[typeof(IPosixSharedLibrarySymlinksTool)] = this.Toolchain;
 
             return true;
         }
