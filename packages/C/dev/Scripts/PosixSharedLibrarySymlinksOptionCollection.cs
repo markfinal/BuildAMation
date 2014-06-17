@@ -29,10 +29,14 @@ namespace C
         {
             var locationMap = node.Module.Locations;
 
+            var moduleWithPostAction = node.ExternalDependents[0].Module;
+
+            (node.Module as PosixSharedLibrarySymlinks).RealSharedLibraryFileLocation = moduleWithPostAction.Locations[C.DynamicLibrary.OutputFile];
+
             var outputFileDir = locationMap[C.PosixSharedLibrarySymlinks.OutputDir] as Opus.Core.ScaffoldLocation;
             if (!outputFileDir.IsValid)
             {
-                //outputFileDir.SetReference(binaryModule.Locations[C.Application.OutputDir]);
+                outputFileDir.SetReference(moduleWithPostAction.Locations[C.DynamicLibrary.OutputDir]);
             }
         }
 

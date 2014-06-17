@@ -15,5 +15,11 @@ namespace C
         public static readonly Opus.Core.LocationKey LinkerSymlink = new Opus.Core.LocationKey("PosixSOSymlinkLinkerSymlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey MajorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMajorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey MinorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMinorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
+
+        public Opus.Core.Location RealSharedLibraryFileLocation
+        {
+            get;
+            set;
+        }
     }
 }

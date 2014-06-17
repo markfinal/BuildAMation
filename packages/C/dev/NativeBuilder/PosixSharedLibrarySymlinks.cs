@@ -9,26 +9,13 @@ namespace NativeBuilder
     {
         public object Build(C.PosixSharedLibrarySymlinks moduleToBuild, out bool success)
         {
-#if true
-            success = false;
-            return null;
-#else
-            var binaryLoc = moduleToBuild.BinaryFileLocation;
-            var binaryLocPath = binaryLoc.GetSinglePath();
-            if (!System.IO.File.Exists(binaryLocPath))
+            var realSharedLibraryLoc = moduleToBuild.RealSharedLibraryFileLocation;
+            var realSharedLibraryPath = realSharedLibraryLoc.GetSingleRawPath();
+            Opus.Core.Log.MessageAll(realSharedLibraryPath);
+            if (!System.IO.File.Exists(realSharedLibraryPath))
             {
-                throw new Opus.Core.Exception("Binary file '{0}' does not exist", binaryLocPath);
+                throw new Opus.Core.Exception("Real shared library '{0}' does not exist", realSharedLibraryPath);
             }
-
-            var asModule = moduleToBuild as Opus.Core.BaseModule;
-            var options = asModule.Options;
-
-            var compilerOptions = options as C.Win32ManifestOptionCollection;
-
-            // don't do dependency checking, as it's an in-place operation
-            // TODO: should really do dependency checking on whether the manifest is newer than the executable
-
-            // at this point, we know the node outputs need building
 
             // create all directories required
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
@@ -38,12 +25,13 @@ namespace NativeBuilder
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var target = asModule.OwningNode.Target;
+            var target = moduleToBuild.OwningNode.Target;
+            var creationOptions = moduleToBuild.Options as C.PosixSharedLibrarySymlinksOptionCollection;
 
             var commandLineBuilder = new Opus.Core.StringArray();
-            if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
+            if (creationOptions is CommandLineProcessor.ICommandLineSupport)
             {
-                var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
+                var commandLineOption = creationOptions as CommandLineProcessor.ICommandLineSupport;
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
             }
             else
@@ -51,27 +39,17 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
 
-            var compilerTool = target.Toolset.Tool(typeof(C.IWinManifestTool)) as C.IWinManifestTool;
+            var symlinkTool = target.Toolset.Tool(typeof(C.IPosixSharedLibrarySymlinksTool)) as C.IPosixSharedLibrarySymlinksTool;
+            var workingDir = moduleToBuild.Locations[C.PosixSharedLibrarySymlinks.OutputDir].GetSingleRawPath();
 
-            // add input path
-            commandLineBuilder.Add(System.String.Format("-manifest {0}.manifest", binaryLocPath));
-            commandLineBuilder.Add("-nologo");
-            // add output path
-            var binaryModule = moduleToBuild.OwningNode.ExternalDependents[0].Module;
-            if (binaryModule is C.DynamicLibrary)
-            {
-                commandLineBuilder.Add(System.String.Format("-outputresource:{0};2", binaryLocPath));
-            }
-            else
-            {
-                commandLineBuilder.Add(System.String.Format("-outputresource:{0};1", binaryLocPath));
-            }
+            commandLineBuilder.Add("-s");
+            commandLineBuilder.Add(System.IO.Path.GetFileName(realSharedLibraryPath));
+            commandLineBuilder.Add("mylink"); // TODO: replace with proper name
 
-            var exitCode = CommandLineProcessor.Processor.Execute(asModule.OwningNode, compilerTool, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(moduleToBuild.OwningNode, symlinkTool, commandLineBuilder, null, workingDir);
             success = (0 == exitCode);
 
             return null;
-#endif
         }
     }
 }

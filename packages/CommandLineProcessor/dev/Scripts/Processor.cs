@@ -9,12 +9,32 @@ namespace CommandLineProcessor
     {
         static bool disableResponseFiles = Opus.Core.State.Get<bool>("Build", "DisableResponseFiles", false);
 
-        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder)
+        public static int
+        Execute(
+            Opus.Core.DependencyNode node,
+            Opus.Core.ITool tool,
+            Opus.Core.StringArray commandLineBuilder)
         {
-            return Execute(node, tool, commandLineBuilder, null);
+            return Execute(node, tool, commandLineBuilder, null, null);
         }
 
-        public static int Execute(Opus.Core.DependencyNode node, Opus.Core.ITool tool, Opus.Core.StringArray commandLineBuilder, string hostApplication)
+        public static int
+        Execute(
+            Opus.Core.DependencyNode node,
+            Opus.Core.ITool tool,
+            Opus.Core.StringArray commandLineBuilder,
+            string hostApplication)
+        {
+            return Execute(node, tool, commandLineBuilder, hostApplication, null);
+        }
+
+        public static int
+        Execute(
+            Opus.Core.DependencyNode node,
+            Opus.Core.ITool tool,
+            Opus.Core.StringArray commandLineBuilder,
+            string hostApplication,
+            string workingDirectory)
         {
             var target = node.Target;
             var executablePath = tool.Executable((Opus.Core.BaseTarget)target);
@@ -31,6 +51,10 @@ namespace CommandLineProcessor
             }
             processStartInfo.FileName = executablePath;
             processStartInfo.ErrorDialog = true;
+            if (null != workingDirectory)
+            {
+                processStartInfo.WorkingDirectory = workingDirectory;
+            }
 
             var requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
             if (tool is Opus.Core.IToolForwardedEnvironmentVariables)
