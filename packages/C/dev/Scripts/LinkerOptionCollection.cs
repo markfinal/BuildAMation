@@ -47,6 +47,9 @@ namespace C
                 osxLinkerOptions.SuppressReadOnlyRelocations = false;
             }
 
+            linkerOptions.MajorVersion = 1;
+            linkerOptions.MinorVersion = 0;
+            linkerOptions.PatchVersion = 0;
             linkerOptions.AdditionalOptions = "";
         }
 
