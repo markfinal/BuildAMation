@@ -287,6 +287,24 @@ namespace GccCommon
                 otherLDOptions.AddUnique(argument);
             }
         }
+        private static void MajorVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static void MajorVersionXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static void MinorVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static void MinorVersionXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static void PatchVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static void PatchVersionXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
         #endregion
         #region C.ILinkerOptionsOSX Option delegates
         private static void FrameworksCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -459,6 +477,9 @@ namespace GccCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesXcodeProjectProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor,GenerateMapFileXcodeProjectProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);
+            this["MajorVersion"].PrivateData = new PrivateData(MajorVersionCommandLineProcessor,MajorVersionXcodeProjectProcessor);
+            this["MinorVersion"].PrivateData = new PrivateData(MinorVersionCommandLineProcessor,MinorVersionXcodeProjectProcessor);
+            this["PatchVersion"].PrivateData = new PrivateData(PatchVersionCommandLineProcessor,PatchVersionXcodeProjectProcessor);
             // Property 'ApplicationBundle' is state only
             this["Frameworks"].PrivateData = new PrivateData(FrameworksCommandLineProcessor,FrameworksXcodeProjectProcessor);
             this["FrameworkSearchDirectories"].PrivateData = new PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);

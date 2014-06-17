@@ -96,5 +96,41 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the major version. Used by Posix shared libraries.
+        /// </summary>
+        /// <value>
+        /// The major version.
+        /// </value>
+        int MajorVersion
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the minor version. Used by Posix shared libraries.
+        /// </summary>
+        /// <value>
+        /// The minor version.
+        /// </value>
+        int MinorVersion
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the patch version. Used by Posix shared libraries.
+        /// </summary>
+        /// <value>
+        /// The patch version.
+        /// </value>
+        int PatchVersion
+        {
+            get;
+            set;
+        }
     }
 }

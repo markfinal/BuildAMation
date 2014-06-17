@@ -393,6 +393,30 @@ namespace VisualCCommon
             returnVal.Add("AdditionalOptions", stringOption.Value);
             return returnVal;
         }
+        private static void MajorVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary MajorVersionVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            return returnVal;
+        }
+        private static void MinorVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary MinorVersionVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            return returnVal;
+        }
+        private static void PatchVersionCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary PatchVersionVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            return returnVal;
+        }
         #endregion
         #region ILinkerOptions Option delegates
         private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -508,6 +532,9 @@ namespace VisualCCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesVisualStudioProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor,GenerateMapFileVisualStudioProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsVisualStudioProcessor);
+            this["MajorVersion"].PrivateData = new PrivateData(MajorVersionCommandLineProcessor,MajorVersionVisualStudioProcessor);
+            this["MinorVersion"].PrivateData = new PrivateData(MinorVersionCommandLineProcessor,MinorVersionVisualStudioProcessor);
+            this["PatchVersion"].PrivateData = new PrivateData(PatchVersionCommandLineProcessor,PatchVersionVisualStudioProcessor);
             this["NoLogo"].PrivateData = new PrivateData(NoLogoCommandLineProcessor,NoLogoVisualStudioProcessor);
             this["StackReserveAndCommit"].PrivateData = new PrivateData(StackReserveAndCommitCommandLineProcessor,StackReserveAndCommitVisualStudioProcessor);
             this["IgnoredLibraries"].PrivateData = new PrivateData(IgnoredLibrariesCommandLineProcessor,IgnoredLibrariesVisualStudioProcessor);

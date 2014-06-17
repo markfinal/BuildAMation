@@ -126,6 +126,42 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("AdditionalOptionsSetHandler", this["AdditionalOptions"]);
             }
         }
+        int C.ILinkerOptions.MajorVersion
+        {
+            get
+            {
+                return this.GetValueTypeOption<int>("MajorVersion", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetValueTypeOption<int>("MajorVersion", value);
+                this.ProcessNamedSetHandler("MajorVersionSetHandler", this["MajorVersion"]);
+            }
+        }
+        int C.ILinkerOptions.MinorVersion
+        {
+            get
+            {
+                return this.GetValueTypeOption<int>("MinorVersion", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetValueTypeOption<int>("MinorVersion", value);
+                this.ProcessNamedSetHandler("MinorVersionSetHandler", this["MinorVersion"]);
+            }
+        }
+        int C.ILinkerOptions.PatchVersion
+        {
+            get
+            {
+                return this.GetValueTypeOption<int>("PatchVersion", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetValueTypeOption<int>("PatchVersion", value);
+                this.ProcessNamedSetHandler("PatchVersionSetHandler", this["PatchVersion"]);
+            }
+        }
         #endregion
         #region ILinkerOptions Option properties
         bool ILinkerOptions.NoLogo
