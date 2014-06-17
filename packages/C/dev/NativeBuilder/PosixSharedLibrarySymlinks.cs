@@ -43,15 +43,12 @@ namespace NativeBuilder
             var workingDir = moduleToBuild.Locations[C.PosixSharedLibrarySymlinks.OutputDir].GetSingleRawPath();
 
             // create symlink for major version (soname)
-            // TODO: this needs to move to the option collection code
-            var linkerOptions = moduleToBuild.OwningNode.ExternalDependents[0].Module.Options as C.ILinkerOptions;
-            var realSharedLibraryLeafname = System.IO.Path.GetFileName(realSharedLibraryPath);
-            var splitName = realSharedLibraryLeafname.Split('.');
-            var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], splitName[1], linkerOptions.MajorVersion);
-
             commandLineBuilder.Add("-s");
+            var realSharedLibraryLeafname = System.IO.Path.GetFileName(realSharedLibraryPath);
             commandLineBuilder.Add(realSharedLibraryLeafname);
-            commandLineBuilder.Add(majorSymlinkLeafname);
+            var majorSymlinkFile = moduleToBuild.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink];
+            var majorSymlinkFileLeafname = System.IO.Path.GetFileName(majorSymlinkFile.GetSingleRawPath());
+            commandLineBuilder.Add(majorSymlinkFileLeafname);
 
             var exitCode = CommandLineProcessor.Processor.Execute(moduleToBuild.OwningNode, symlinkTool, commandLineBuilder, null, workingDir);
             success = (0 == exitCode);
