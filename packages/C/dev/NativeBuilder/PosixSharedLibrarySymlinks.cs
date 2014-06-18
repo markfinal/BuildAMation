@@ -7,7 +7,29 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.PosixSharedLibrarySymlinks moduleToBuild, out bool success)
+        private static bool
+        MakeSymlink(
+            Opus.Core.StringArray commandLineBuilder,
+            C.PosixSharedLibrarySymlinks moduleToBuild,
+            C.IPosixSharedLibrarySymlinksTool symlinkTool,
+            string workingDir,
+            Opus.Core.LocationKey keyToSymlink)
+        {
+            var symlinkCommandLineBuilder = new Opus.Core.StringArray(commandLineBuilder);
+
+            var majorSymlinkFile = moduleToBuild.Locations[keyToSymlink];
+            var majorSymlinkFileLeafname = System.IO.Path.GetFileName(majorSymlinkFile.GetSingleRawPath());
+            symlinkCommandLineBuilder.Add(majorSymlinkFileLeafname);
+
+            var exitCode = CommandLineProcessor.Processor.Execute(moduleToBuild.OwningNode, symlinkTool, symlinkCommandLineBuilder, null, workingDir);
+            var success = (0 == exitCode);
+            return success;
+        }
+
+        public object
+        Build(
+            C.PosixSharedLibrarySymlinks moduleToBuild,
+            out bool success)
         {
             var realSharedLibraryLoc = moduleToBuild.RealSharedLibraryFileLocation;
             var realSharedLibraryPath = realSharedLibraryLoc.GetSingleRawPath();
@@ -42,17 +64,31 @@ namespace NativeBuilder
             var symlinkTool = target.Toolset.Tool(typeof(C.IPosixSharedLibrarySymlinksTool)) as C.IPosixSharedLibrarySymlinksTool;
             var workingDir = moduleToBuild.Locations[C.PosixSharedLibrarySymlinks.OutputDir].GetSingleRawPath();
 
-            // create symlink for major version (soname)
             commandLineBuilder.Add("-s");
+            commandLineBuilder.Add("-f"); // TODO: temporary while dependency checking is not active
             var realSharedLibraryLeafname = System.IO.Path.GetFileName(realSharedLibraryPath);
             commandLineBuilder.Add(realSharedLibraryLeafname);
-            var majorSymlinkFile = moduleToBuild.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink];
-            var majorSymlinkFileLeafname = System.IO.Path.GetFileName(majorSymlinkFile.GetSingleRawPath());
-            commandLineBuilder.Add(majorSymlinkFileLeafname);
 
-            var exitCode = CommandLineProcessor.Processor.Execute(moduleToBuild.OwningNode, symlinkTool, commandLineBuilder, null, workingDir);
-            success = (0 == exitCode);
+            // create symlink for major version (soname)
+            if (!MakeSymlink(commandLineBuilder, moduleToBuild, symlinkTool, workingDir, C.PosixSharedLibrarySymlinks.MajorVersionSymlink))
+            {
+                success = false;
+                return null;
+            }
+            // create symlink for minor version
+            if (!MakeSymlink(commandLineBuilder, moduleToBuild, symlinkTool, workingDir, C.PosixSharedLibrarySymlinks.MinorVersionSymlink))
+            {
+                success = false;
+                return null;
+            }
+            // create symlink for linker version
+            if (!MakeSymlink(commandLineBuilder, moduleToBuild, symlinkTool, workingDir, C.PosixSharedLibrarySymlinks.LinkerSymlink))
+            {
+                success = false;
+                return null;
+            }
 
+            success = true;
             return null;
         }
     }

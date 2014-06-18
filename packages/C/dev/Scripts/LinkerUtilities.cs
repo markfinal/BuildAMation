@@ -7,10 +7,13 @@ namespace C
 {
     public static class LinkerUtilities
     {
-        public static void AppendLibrariesToCommandLine(Opus.Core.StringArray commandLineBuilder,
-                                                        ILinkerTool linkerTool,
-                                                        ILinkerOptions linkerOptions,
-                                                        Opus.Core.StringArray otherLibraryPaths)
+        // TODO: this is still used in the MakeFile builder
+        public static void
+        AppendLibrariesToCommandLine(
+            Opus.Core.StringArray commandLineBuilder,
+            ILinkerTool linkerTool,
+            ILinkerOptions linkerOptions,
+            Opus.Core.StringArray otherLibraryPaths)
         {
             var includeStandardLibraries = linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0;
             var includeOtherLibraries = (null != otherLibraryPaths) && (otherLibraryPaths.Count > 0);
@@ -59,10 +62,12 @@ namespace C
             }
         }
 
-        public static void AppendLibrariesToCommandLine(Opus.Core.StringArray commandLineBuilder,
-                                                        ILinkerTool linkerTool,
-                                                        ILinkerOptions linkerOptions,
-                                                        Opus.Core.LocationArray otherLibraryPaths)
+        public static void
+        AppendLibrariesToCommandLine(
+            Opus.Core.StringArray commandLineBuilder,
+            ILinkerTool linkerTool,
+            ILinkerOptions linkerOptions,
+            Opus.Core.LocationArray otherLibraryPaths)
         {
             var includeStandardLibraries = linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0;
             var includeOtherLibraries = (null != otherLibraryPaths) && (otherLibraryPaths.Count > 0);
