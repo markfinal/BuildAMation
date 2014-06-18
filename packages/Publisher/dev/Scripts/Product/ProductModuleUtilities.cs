@@ -101,6 +101,7 @@ namespace Publisher
             var sourcePath = sourceFile.GetSingleRawPath();
             var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
             Opus.Core.Log.Info("Copying {0} to {1}", sourcePath, destPath);
+            // TODO: this currently copies targets of symlinks
             System.IO.File.Copy(sourcePath, destPath, true);
         }
     }
