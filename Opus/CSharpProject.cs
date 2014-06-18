@@ -400,6 +400,13 @@ namespace Opus
                             }
                         }
 
+                        if (System.Type.GetType("Mono.Runtime") != null)
+                        {
+                            xmlWriter.WriteStartElement("Reference");
+                            xmlWriter.WriteAttributeString("Include", "Mono.Posix");
+                            xmlWriter.WriteEndElement();
+                        }
+
                         xmlWriter.WriteEndElement();
                     }
 

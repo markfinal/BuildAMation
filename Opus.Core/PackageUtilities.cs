@@ -561,6 +561,11 @@ namespace Opus.Core
                         var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
+
+                    if (State.RunningMono)
+                    {
+                        compilerParameters.ReferencedAssemblies.Add("Mono.Posix.dll");
+                    }
                 }
                 else
                 {
