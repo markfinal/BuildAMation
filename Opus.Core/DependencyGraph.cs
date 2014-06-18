@@ -404,7 +404,7 @@ namespace Opus.Core
                     int postCount = 0;
                     foreach (var postModuleType in postActionModuleTypes)
                     {
-                        var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, "PostAction", postCount);
+                        var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, node.ModuleName + ".PostAction", postCount);
 
                         // ensure that those nodes with a dependent on the node with the post-action, also have
                         // a dependency on the post-action
