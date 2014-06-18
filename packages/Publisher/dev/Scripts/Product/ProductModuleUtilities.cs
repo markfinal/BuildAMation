@@ -101,8 +101,25 @@ namespace Publisher
             var sourcePath = sourceFile.GetSingleRawPath();
             var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
             Opus.Core.Log.Info("Copying {0} to {1}", sourcePath, destPath);
-            // TODO: this currently copies targets of symlinks
+#if __MonoCS__
+            var buf = new Mono.Unix.Native.Stat();
+            var statResult = Mono.Unix.Native.Syscall.lstat(sourcePath, out buf);
+            if (0 != statResult)
+            {
+                throw new Opus.Core.Exception("Exception while stat'ing '{0}'", sourcePath);
+            }
+            var symLink = (buf.st_mode & Mono.Unix.Native.FilePermissions.S_IFLNK) == Mono.Unix.Native.FilePermissions.S_IFLNK;
+            if (symLink)
+            {
+                Mono.Unix.Native.Syscall.symlink(sourcePath, destPath);
+            }
+            else
+            {
+                System.IO.File.Copy(sourcePath, destPath, true);
+            }
+#else
             System.IO.File.Copy(sourcePath, destPath, true);
+#endif
         }
     }
 }
