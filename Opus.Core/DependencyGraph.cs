@@ -406,13 +406,20 @@ namespace Opus.Core
                     {
                         var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, "PostAction", postCount);
 
+                        // ensure that those nodes with a dependent on the node with the post-action, also have
+                        // a dependency on the post-action
                         if (null != node.ExternalDependentFor)
                         {
-                            // ensure that those nodes with a dependent on the node with the post-action, also have
-                            // a dependency on the post-action
                             foreach (var dependee in node.ExternalDependentFor)
                             {
-                                dependee.AddExternalDependent(postNode);
+                                dependee.AddRequiredDependent(postNode);
+                            }
+                        }
+                        if (null != node.RequiredDependentFor)
+                        {
+                            foreach (var dependee in node.RequiredDependentFor)
+                            {
+                                dependee.AddRequiredDependent(postNode);
                             }
                         }
 
