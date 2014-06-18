@@ -4,6 +4,19 @@ namespace Test5
     // Define module classes here
     class MyDynamicLibTestApp : C.Application
     {
+        public MyDynamicLibTestApp()
+        {
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                var linkerOptions = module.Options as GccCommon.ILinkerOptions;
+                if (null != linkerOptions)
+                {
+                    linkerOptions.CanUseOrigin = true;
+                    linkerOptions.RPath.Add("$ORIGIN");
+                }
+            };
+        }
+
         class SourceFiles : C.ObjectFileCollection
         {
             public SourceFiles()
