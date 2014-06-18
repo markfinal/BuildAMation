@@ -57,8 +57,12 @@ namespace GccCommon
                         if (Opus.Core.OSUtilities.IsUnixHosting)
                         {
                         #if true
-                            var linkerOptions = sender as C.ILinkerOptions;
-                            var soName = System.String.Format("{0}.so.{1}", options.OutputName, linkerOptions.MajorVersion);
+                            var leafname = System.IO.Path.GetFileName(outputPath);
+                            var splitLeafName = leafname.Split('.');
+                            // index 0: filename without extension
+                            // index 1: 'so'
+                            // index 2: major version number
+                            var soName = System.String.Format("{0}.{1}.{2}", splitLeafName[0], splitLeafName[1], splitLeafName[2]);
                             commandLineBuilder.Add(System.String.Format("-Wl,-soname,{0}", soName));
                         #else
                             if (outputPathName.Contains(" "))
