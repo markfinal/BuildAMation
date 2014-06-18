@@ -111,7 +111,9 @@ namespace Publisher
             var symLink = (buf.st_mode & Mono.Unix.Native.FilePermissions.S_IFLNK) == Mono.Unix.Native.FilePermissions.S_IFLNK;
             if (symLink)
             {
-                Mono.Unix.Native.Syscall.symlink(sourcePath, destPath);
+                var targetLink = new System.Text.StringBuilder(1024);
+                Mono.Unix.Native.Syscall.readlink(sourcePath, targetLink, 1024);
+                Mono.Unix.Native.Syscall.symlink(targetLink.ToString(), destPath);
             }
             else
             {
