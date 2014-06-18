@@ -5,16 +5,18 @@ namespace Test4
     // Define module classes here
     class MyDynamicLib : C.DynamicLibrary
     {
-        public MyDynamicLib()
+        public MyDynamicLib(Opus.Core.Target target)
         {
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.headerFiles.Include(includeDir, "dynamiclibrary.h");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-            if (Opus.Core.OSUtilities.IsOSXHosting)
+            // TODO: can this be automated?
+            if (target.HasPlatform(Opus.Core.EPlatform.Posix))
             {
-                //this.publishKeys.Add(C.Unix.RealNameSymbolLink);
-                //this.publishKeys.Add(C.Unix.SONameSymbolicLink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
             }
 #endif
         }
