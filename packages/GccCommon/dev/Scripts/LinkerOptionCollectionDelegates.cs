@@ -78,7 +78,7 @@ namespace GccCommon
                         else if (Opus.Core.OSUtilities.IsOSXHosting)
                         {
                         #if true
-                        var filename = System.IO.Path.GetFileName(outputPath);
+                            var filename = System.IO.Path.GetFileName(outputPath);
                             commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
                         #else
                             var filename = System.IO.Path.GetFileName(outputPathName);
@@ -91,6 +91,10 @@ namespace GccCommon
                                 commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
                             }
                         #endif
+                            var linkerOptions = sender as C.ILinkerOptions;
+                            commandLineBuilder.Add(System.String.Format("-Wl,-current_version,{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion));
+                            // TODO: this needs to have a proper option
+                            commandLineBuilder.Add(System.String.Format("-Wl,-compatibility_version,{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion));
                         }
                     }
                     break;
