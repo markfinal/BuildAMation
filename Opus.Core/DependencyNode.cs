@@ -295,6 +295,8 @@ namespace Opus.Core
 
             this.AreDependenciesProcessed = false;
             this.AreChildrenProcessed = false;
+
+            this.PostActionNodes = null;
         }
 
         public Target Target
@@ -364,6 +366,12 @@ namespace Opus.Core
         }
 
         public BaseModule Module
+        {
+            get;
+            private set;
+        }
+
+        public DependencyNodeCollection PostActionNodes
         {
             get;
             private set;
@@ -631,6 +639,20 @@ namespace Opus.Core
         {
             get;
             set;
+        }
+
+        public void
+        AddPostActionNode(
+            DependencyNode postActionNode)
+        {
+            // cache a list of the post action events for this node
+            if (null == this.PostActionNodes)
+            {
+                this.PostActionNodes = new DependencyNodeCollection();
+            }
+            this.PostActionNodes.Add(postActionNode);
+
+            postActionNode.AddExternalDependent(this);
         }
     }
 }

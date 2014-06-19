@@ -387,6 +387,9 @@ namespace Opus.Core
                 return;
             }
 
+            this.ConnectExternalDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
+            this.ConnectRequiredDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
+
             var postActionInterface = node.Module as IPostActionModules;
             if (null != postActionInterface)
             {
@@ -423,15 +426,13 @@ namespace Opus.Core
                             }
                         }
 
-                        postNode.AddExternalDependent(node);
+                        node.AddPostActionNode(postNode);
                         this.ProcessNode(postNode, nodeRankOffsets, nodesWithForwardedDependencies);
                         ++postCount;
                     }
                 }
             }
 
-            this.ConnectExternalDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
-            this.ConnectRequiredDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
             node.AreDependenciesProcessed = true;
         }
 
@@ -470,6 +471,14 @@ namespace Opus.Core
             foreach (var dep in externalDeps)
             {
                 node.AddExternalDependent(dep);
+                if (null != dep.PostActionNodes)
+                {
+                    // post action nodes on the dependent are also a dependency
+                    foreach (var postAction in dep.PostActionNodes)
+                    {
+                        node.AddRequiredDependent(postAction);
+                    }
+                }
                 this.ProcessNode(dep, nodeRankOffsets, nodesWithForwardedDependencies);
 
                 if (dep.Module is IInjectModules)
