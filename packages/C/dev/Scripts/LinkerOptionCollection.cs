@@ -181,6 +181,39 @@ namespace C
             }
         }
 
+        private string
+        GetExecutableFilename(
+            Opus.Core.Target target,
+            ILinkerTool linkerTool,
+            ILinkerOptions linkerOptions)
+        {
+            string prefix;
+            string suffix;
+            GetBinaryPrefixAndSuffix(linkerOptions, linkerTool, out prefix, out suffix);
+
+            string filename = null;
+            if (linkerOptions.OutputType == ELinkerOutput.DynamicLibrary)
+            {
+                var versionNumber = new System.Text.StringBuilder();
+                versionNumber.AppendFormat(".{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
+                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                {
+                    // version number postfixes the filename
+                    filename = prefix + this.OutputName + suffix + versionNumber.ToString();
+                }
+                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                {
+                    // version number prefixes the extension
+                    filename = prefix + this.OutputName + versionNumber.ToString() + suffix;
+                }
+            }
+            if (null == filename)
+            {
+                filename = prefix + this.OutputName + suffix;
+            }
+            return filename;
+        }
+
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
 #if true
@@ -192,18 +225,7 @@ namespace C
             var outputFile = locationMap[C.Application.OutputFile];
             if (!outputFile.IsValid)
             {
-                string prefix;
-                string suffix;
-                GetBinaryPrefixAndSuffix(options, linkerTool, out prefix, out suffix);
-                var filename = prefix + this.OutputName + suffix;
-                if (target.HasPlatform(Opus.Core.EPlatform.Posix) &&
-                    options.OutputType == ELinkerOutput.DynamicLibrary)
-                {
-                    var versionNumber = new System.Text.StringBuilder();
-                    versionNumber.AppendFormat(".{0}.{1}.{2}", options.MajorVersion, options.MinorVersion, options.PatchVersion);
-                    filename += versionNumber.ToString();
-                }
-
+                var filename = this.GetExecutableFilename(target, linkerTool, options);
                 (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
             }
 
