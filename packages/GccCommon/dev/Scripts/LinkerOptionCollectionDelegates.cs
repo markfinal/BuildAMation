@@ -368,6 +368,12 @@ namespace GccCommon
         #region ILinkerOptions Option delegates
         private static void CanUseOriginCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // $ORIGIN not supported on OSX linkers - use install name, etc
+            if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                return;
+            }
+
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
@@ -376,6 +382,12 @@ namespace GccCommon
         }
         private static void CanUseOriginXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
+            // $ORIGIN not supported on OSX linkers - use install name, etc
+            if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                return;
+            }
+
             var useOrigin = option as Opus.Core.ValueTypeOption<bool>;
             var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
             if (useOrigin.Value)
