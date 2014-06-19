@@ -40,6 +40,105 @@ namespace C
             }
         }
 
+        private static string
+        GetMajorVersionSymlinkLeafname(
+            Opus.Core.Target target,
+            string realSharedLibraryLeafname,
+            C.ILinkerOptions linkerOptions)
+        {
+            var splitName = realSharedLibraryLeafname.Split('.');
+            // On Unix
+            // 0 = filename
+            // 1 = 'so'
+            // 2 = major version
+            // 3 = minor version
+            // 4 = patch version
+            // On OSX
+            // 0 = filename
+            // 1 = major version
+            // 2 = minor version
+            // 3 = patch version
+            // 4 = 'dylib'
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], splitName[1], linkerOptions.MajorVersion);
+                return majorSymlinkLeafname;
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], linkerOptions.MajorVersion, splitName[4]);
+                return majorSymlinkLeafname;
+            }
+
+            throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
+        }
+
+        private static string
+        GetMinorVersionSymlinkLeafname(
+            Opus.Core.Target target,
+            string realSharedLibraryLeafname,
+            C.ILinkerOptions linkerOptions)
+        {
+            var splitName = realSharedLibraryLeafname.Split('.');
+            // On Unix
+            // 0 = filename
+            // 1 = 'so'
+            // 2 = major version
+            // 3 = minor version
+            // 4 = patch version
+            // On OSX
+            // 0 = filename
+            // 1 = major version
+            // 2 = minor version
+            // 3 = patch version
+            // 4 = 'dylib'
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}.{3}", splitName[0], splitName[1], linkerOptions.MajorVersion, linkerOptions.MinorVersion);
+                return majorSymlinkLeafname;
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}.{3}", splitName[0], linkerOptions.MajorVersion, linkerOptions.MinorVersion, splitName[4]);
+                return majorSymlinkLeafname;
+            }
+
+            throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
+        }
+
+        private static string
+        GetLinkerSymlinkLeafname(
+            Opus.Core.Target target,
+            string realSharedLibraryLeafname,
+            C.ILinkerOptions linkerOptions)
+        {
+            var splitName = realSharedLibraryLeafname.Split('.');
+            // On Unix
+            // 0 = filename
+            // 1 = 'so'
+            // 2 = major version
+            // 3 = minor version
+            // 4 = patch version
+            // On OSX
+            // 0 = filename
+            // 1 = major version
+            // 2 = minor version
+            // 3 = patch version
+            // 4 = 'dylib'
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                var majorSymlinkLeafname = System.String.Format("{0}.{1}", splitName[0], splitName[1]);
+                return majorSymlinkLeafname;
+            }
+            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            {
+                var majorSymlinkLeafname = System.String.Format("{0}.{1}", splitName[0], splitName[4]);
+                return majorSymlinkLeafname;
+            }
+
+            throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
+        }
+
         public override void FinalizeOptions (Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
@@ -55,7 +154,7 @@ namespace C
             var majorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] as Opus.Core.ScaffoldLocation;
             if (!majorSymlinkFile.IsValid)
             {
-                var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], splitName[1], linkerOptions.MajorVersion);
+                var majorSymlinkLeafname = GetMajorVersionSymlinkLeafname(node.Target, realSharedLibraryPath, linkerOptions);
                 majorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], majorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
@@ -68,7 +167,7 @@ namespace C
             var minorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] as Opus.Core.ScaffoldLocation;
             if (!minorSymlinkFile.IsValid)
             {
-                var minorSymlinkLeafname = System.String.Format("{0}.{1}.{2}.{3}", splitName[0], splitName[1], linkerOptions.MajorVersion, linkerOptions.MinorVersion);
+                var minorSymlinkLeafname = GetMinorVersionSymlinkLeafname(node.Target, realSharedLibraryPath, linkerOptions);
                 minorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], minorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
@@ -81,7 +180,7 @@ namespace C
             var linkerSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.LinkerSymlink] as Opus.Core.ScaffoldLocation;
             if (!linkerSymlinkFile.IsValid)
             {
-                var linkerSymlinkLeafname = System.String.Format("{0}.{1}", splitName[0], splitName[1]);
+                var linkerSymlinkLeafname = GetLinkerSymlinkLeafname(node.Target, realSharedLibraryPath, linkerOptions);
                 linkerSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], linkerSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
