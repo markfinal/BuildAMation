@@ -229,23 +229,15 @@ namespace C
                 (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
             }
 
-            if (node.Module is C.DynamicLibrary)
+            if (node.Module is C.DynamicLibrary && linkerTool is IWinImportLibrary)
             {
                 var importLibraryFile = locationMap[C.DynamicLibrary.ImportLibraryFile] as Opus.Core.ScaffoldLocation;
                 if (!importLibraryFile.IsValid)
                 {
-                    if (linkerTool is IWinImportLibrary)
-                    {
-                        // explicit import library
-                        var importLibrary = linkerTool as IWinImportLibrary;
-                        var filename = importLibrary.ImportLibraryPrefix + this.OutputName + importLibrary.ImportLibrarySuffix;
-                        importLibraryFile.SpecifyStub(locationMap[C.DynamicLibrary.ImportLibraryDir], filename, Opus.Core.Location.EExists.WillExist);
-                    }
-                    else
-                    {
-                        // shared objects
-                        importLibraryFile.SetReference(locationMap[C.DynamicLibrary.OutputFile]);
-                    }
+                    // explicit import library
+                    var importLibrary = linkerTool as IWinImportLibrary;
+                    var filename = importLibrary.ImportLibraryPrefix + this.OutputName + importLibrary.ImportLibrarySuffix;
+                    importLibraryFile.SpecifyStub(locationMap[C.DynamicLibrary.ImportLibraryDir], filename, Opus.Core.Location.EExists.WillExist);
                 }
             }
 
