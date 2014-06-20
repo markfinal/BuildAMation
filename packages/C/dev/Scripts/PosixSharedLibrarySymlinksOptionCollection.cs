@@ -147,8 +147,6 @@ namespace C
             var linkerOptions = moduleWithPostAction.Options as C.ILinkerOptions;
 
             var realSharedLibraryPath = (node.Module as PosixSharedLibrarySymlinks).RealSharedLibraryFileLocation.GetSingleRawPath();
-            var realSharedLibraryLeafname = System.IO.Path.GetFileName(realSharedLibraryPath);
-            var splitName = realSharedLibraryLeafname.Split('.');
 
             // major version symlink
             var majorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] as Opus.Core.ScaffoldLocation;

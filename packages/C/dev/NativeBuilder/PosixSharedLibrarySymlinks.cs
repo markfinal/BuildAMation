@@ -33,7 +33,6 @@ namespace NativeBuilder
         {
             var realSharedLibraryLoc = moduleToBuild.RealSharedLibraryFileLocation;
             var realSharedLibraryPath = realSharedLibraryLoc.GetSingleRawPath();
-            Opus.Core.Log.MessageAll(realSharedLibraryPath);
             if (!System.IO.File.Exists(realSharedLibraryPath))
             {
                 throw new Opus.Core.Exception("Real shared library '{0}' does not exist", realSharedLibraryPath);
