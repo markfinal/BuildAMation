@@ -46,6 +46,9 @@ namespace QMakeBuilder
             this.QtModules = new Opus.Core.StringArray();
             this.Sources = new Opus.Core.StringArray();
             this.Target = string.Empty;
+            this.VersionMajor = string.Empty;
+            this.VersionMinor = string.Empty;
+            this.VersionPatch = string.Empty;
             this.WinRCFiles = new Opus.Core.StringArray();
         }
 
@@ -185,6 +188,24 @@ namespace QMakeBuilder
         }
 
         public string Target
+        {
+            get;
+            set;
+        }
+
+        public string VersionMajor
+        {
+            get;
+            set;
+        }
+
+        public string VersionMinor
+        {
+            get;
+            set;
+        }
+
+        public string VersionPatch
         {
             get;
             set;
@@ -979,6 +1000,111 @@ namespace QMakeBuilder
             }
         }
 
+        private static void
+        WriteMajorVersionNumber(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                if (!string.IsNullOrEmpty(array[0].VersionMajor))
+                {
+                    WriteString(array[0].VersionMajor, "VER_MAJ=", proFilePath, writer);
+                }
+            }
+            else
+            {
+                var values = new Values<string>();
+                foreach (var data in array)
+                {
+                    if (!string.IsNullOrEmpty(data.VersionMajor))
+                    {
+                        if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                        {
+                            values.Debug = data.VersionMajor;
+                        }
+                        else
+                        {
+                            values.Release = data.VersionMajor;
+                        }
+                    }
+                }
+
+                WriteString(values, "VER_MAJ=", proFilePath, writer);
+            }
+        }
+
+        private static void
+        WriteMinorVersionNumber(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                if (!string.IsNullOrEmpty(array[0].VersionMinor))
+                {
+                    WriteString(array[0].VersionMinor, "VER_MIN=", proFilePath, writer);
+                }
+            }
+            else
+            {
+                var values = new Values<string>();
+                foreach (var data in array)
+                {
+                    if (!string.IsNullOrEmpty(data.VersionMinor))
+                    {
+                        if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                        {
+                            values.Debug = data.VersionMinor;
+                        }
+                        else
+                        {
+                            values.Release = data.VersionMinor;
+                        }
+                    }
+                }
+
+                WriteString(values, "VER_MIN=", proFilePath, writer);
+            }
+        }
+
+        private static void
+        WritePatchVersionNumber(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                if (!string.IsNullOrEmpty(array[0].VersionPatch))
+                {
+                    WriteString(array[0].VersionPatch, "VER_PAT=", proFilePath, writer);
+                }
+            }
+            else
+            {
+                var values = new Values<string>();
+                foreach (var data in array)
+                {
+                    if (!string.IsNullOrEmpty(data.VersionPatch))
+                    {
+                        if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                        {
+                            values.Debug = data.VersionPatch;
+                        }
+                        else
+                        {
+                            values.Release = data.VersionPatch;
+                        }
+                    }
+                }
+
+                WriteString(values, "VER_PAT=", proFilePath, writer);
+            }
+        }
+
         public void Merge(QMakeData data)
         {
             this.Merge(data, OutputType.None);
@@ -1100,6 +1226,9 @@ namespace QMakeBuilder
                 WriteLibraries(array, proFilePath, proWriter);
                 // TODO: WriteExternalLibraries since they have been separated from built libraries by Locations
                 WriteLinkFlags(array, proFilePath, proWriter);
+                WriteMajorVersionNumber(array, proFilePath, proWriter);
+                WriteMinorVersionNumber(array, proFilePath, proWriter);
+                WritePatchVersionNumber(array, proFilePath, proWriter);
                 WritePostLinkCommands(array, proFilePath, proWriter);
                 WriteCustomRules(array, proFilePath, proWriter);
             }

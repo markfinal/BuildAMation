@@ -115,6 +115,10 @@ namespace QMakeBuilder
                 throw new Opus.Core.Exception("Linker options does not support command line translation");
             }
 
+            data.VersionMajor = optionsInterface.MajorVersion.ToString();
+            data.VersionMinor = optionsInterface.MinorVersion.ToString();
+            data.VersionPatch = optionsInterface.PatchVersion.ToString();
+
             success = true;
             return data;
         }
