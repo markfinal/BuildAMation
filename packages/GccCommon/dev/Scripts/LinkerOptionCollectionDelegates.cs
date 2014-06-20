@@ -104,9 +104,31 @@ namespace GccCommon
         }
         private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // TODO: set install_name
-            // TODO: set current_version
-            // TODO: set compatibility_version
+            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
+            if (enumOption.Value != C.ELinkerOutput.DynamicLibrary)
+            {
+                return;
+            }
+
+            var options = sender as LinkerOptionCollection;
+            {
+                var installNameOption = configuration.Options["LD_DYLIB_INSTALL_NAME"];
+                var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                var filename = System.IO.Path.GetFileName(outputPath);
+                var installName = System.String.Format("@executable_path/{0}", filename);
+                installNameOption.AddUnique(installName);
+            }
+            var linkerOptions = sender as C.ILinkerOptions;
+            {
+                var currentVersionOption = configuration.Options["DYLIB_CURRENT_VERSION"];
+                var version = System.String.Format("{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
+                currentVersionOption.AddUnique(version);
+            }
+            {
+                var compatibilityVersionOption = configuration.Options["DYLIB_COMPATIBILITY_VERSION"];
+                var version = System.String.Format("{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
+                compatibilityVersionOption.AddUnique(version);
+            }
         }
         private static void DoNotAutoIncludeStandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {

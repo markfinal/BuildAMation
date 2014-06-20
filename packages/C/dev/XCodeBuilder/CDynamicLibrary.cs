@@ -75,8 +75,6 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_PREFIX"].AddUnique(outputPrefix);
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
-            buildConfiguration.Options["LD_DYLIB_INSTALL_NAME"].AddUnique("@executable_path/$(EXECUTABLE_PATH)");
-
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
 #if true
             var outputDirLoc = moduleToBuild.Locations[C.Application.OutputDir];
