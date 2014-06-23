@@ -70,6 +70,7 @@ namespace QMakeBuilder
                 proFileWriter.WriteLine("QMAKE_LFLAGS_DEBUG=");
                 proFileWriter.WriteLine("QMAKE_LFLAGS_RELEASE=");
                 proFileWriter.WriteLine("QMAKE_LN_SHLIB=");
+                proFileWriter.WriteLine("QMAKE_MACOSX_DEPLOYMENT_TARGET=10.8");
             }
 
             this.EmptyConfigPriPath = priFilePath;
