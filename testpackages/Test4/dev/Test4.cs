@@ -12,7 +12,7 @@ namespace Test4
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Opus.Core.EPlatform.Posix))
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
                 this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);

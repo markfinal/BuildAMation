@@ -47,13 +47,17 @@ namespace NativeBuilder
 
                 var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey);
-                if (target.HasPlatform(Opus.Core.EPlatform.Posix))
+                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
                 {
                     libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
                 }
                 else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                 {
                     libraryKeysToFilter.Add(C.DynamicLibrary.ImportLibraryFile);
+                }
+                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                {
+                    libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
                 }
 
                 node.ExternalDependents.FilterOutputLocations(libraryKeysToFilter, dependentLibraryFiles);

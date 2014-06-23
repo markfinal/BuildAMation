@@ -64,7 +64,9 @@ namespace XcodeBuilder
             // fill out the build configuration
             XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
-            buildConfiguration.Options["PRODUCT_NAME"].AddUnique(options.OutputName);
+            buildConfiguration.Options["DYLIB_MAJOR_VERSION"].AddUnique((options as C.ILinkerOptions).MajorVersion.ToString());
+            var productName = System.String.Format("$(TARGET_NAME).$(DYLIB_MAJOR_VERSION)");
+            buildConfiguration.Options["PRODUCT_NAME"].AddUnique(productName);
 
             // Xcode 4 complains this is missing for target configurations
             buildConfiguration.Options["COMBINE_HIDPI_IMAGES"].AddUnique("YES");

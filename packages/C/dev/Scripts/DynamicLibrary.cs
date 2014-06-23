@@ -39,7 +39,7 @@ namespace C
 
         Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
         {
-            if (target.HasPlatform(Opus.Core.EPlatform.Posix))
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 var postActionModules = new Opus.Core.TypeArray(
                     typeof(PosixSharedLibrarySymlinks));

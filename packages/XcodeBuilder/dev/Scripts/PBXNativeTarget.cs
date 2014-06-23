@@ -89,7 +89,7 @@ namespace XcodeBuilder
             }
             writer.WriteLine("\t\t\t);");
             writer.WriteLine("\t\t\tname = {0};", this.Name);
-            writer.WriteLine("\t\t\tproductName = {0};", this.Name);
+            writer.WriteLine("\t\t\tproductName = \"$(TARGET_NAME)\";");
             writer.WriteLine("\t\t\tproductReference = {0} /* {1} */;", this.ProductReference.UUID, this.ProductReference.ShortPath);
             switch (this.Type)
             {

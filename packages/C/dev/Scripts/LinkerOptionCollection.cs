@@ -194,17 +194,17 @@ namespace C
             string filename = null;
             if (linkerOptions.OutputType == ELinkerOutput.DynamicLibrary)
             {
-                var versionNumber = new System.Text.StringBuilder();
-                versionNumber.AppendFormat(".{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
                 if (target.HasPlatform(Opus.Core.EPlatform.Unix))
                 {
                     // version number postfixes the filename
+                    var versionNumber = new System.Text.StringBuilder();
+                    versionNumber.AppendFormat(".{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
                     filename = prefix + this.OutputName + suffix + versionNumber.ToString();
                 }
                 else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
                 {
-                    // version number prefixes the extension
-                    filename = prefix + this.OutputName + versionNumber.ToString() + suffix;
+                    // major version number is prior to the extension
+                    filename = prefix + this.OutputName + "." + linkerOptions.MajorVersion.ToString() + suffix;
                 }
             }
             if (null == filename)

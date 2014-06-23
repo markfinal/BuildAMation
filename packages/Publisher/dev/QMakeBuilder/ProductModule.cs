@@ -15,7 +15,14 @@ namespace QMakeBuilder
             var customRules = new Opus.Core.StringArray();
             customRules.Add(System.String.Format("target.path={0}", destinationDirectory));
             customRules.Add(System.String.Format("INSTALLS+=target"));
-            proData.CustomRules = customRules;
+            if (null == proData.CustomRules)
+            {
+                proData.CustomRules = customRules;
+            }
+            else
+            {
+                proData.CustomRules.AddRangeUnique(customRules);
+            }
         }
 
         public object
