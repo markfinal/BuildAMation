@@ -147,12 +147,13 @@ namespace C
             var linkerOptions = moduleWithPostAction.Options as C.ILinkerOptions;
 
             var realSharedLibraryPath = (node.Module as PosixSharedLibrarySymlinks).RealSharedLibraryFileLocation.GetSingleRawPath();
+            var realSharedLibraryLeafName = System.IO.Path.GetFileName(realSharedLibraryPath);
 
             // major version symlink
             var majorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] as Opus.Core.ScaffoldLocation;
             if (!majorSymlinkFile.IsValid)
             {
-                var majorSymlinkLeafname = GetMajorVersionSymlinkLeafname(node.Target, realSharedLibraryPath, linkerOptions);
+                var majorSymlinkLeafname = GetMajorVersionSymlinkLeafname(node.Target, realSharedLibraryLeafName, linkerOptions);
                 majorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], majorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
@@ -165,7 +166,7 @@ namespace C
             var minorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] as Opus.Core.ScaffoldLocation;
             if (!minorSymlinkFile.IsValid)
             {
-                var minorSymlinkLeafname = GetMinorVersionSymlinkLeafname(node.Target, realSharedLibraryPath, linkerOptions);
+                var minorSymlinkLeafname = GetMinorVersionSymlinkLeafname(node.Target, realSharedLibraryLeafName, linkerOptions);
                 minorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], minorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
@@ -178,7 +179,7 @@ namespace C
             var linkerSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.LinkerSymlink] as Opus.Core.ScaffoldLocation;
             if (!linkerSymlinkFile.IsValid)
             {
-                var linkerSymlinkLeafname = GetLinkerSymlinkLeafname(node.Target, realSharedLibraryPath, linkerOptions);
+                var linkerSymlinkLeafname = GetLinkerSymlinkLeafname(node.Target, realSharedLibraryLeafName, linkerOptions);
                 linkerSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], linkerSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
