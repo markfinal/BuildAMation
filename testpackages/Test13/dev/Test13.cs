@@ -3,13 +3,19 @@ namespace Test13
 {
     class QtApplication : C.Application
     {
-        public QtApplication()
+        public QtApplication(Opus.Core.Target target)
         {
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delTarget) {
                 var osxLink = module.Options as C.ILinkerOptionsOSX;
                 if (osxLink != null)
                 {
                     osxLink.ApplicationBundle = true;
+                }
+                var gccLink = module.Options as GccCommon.ILinkerOptions;
+                if (null != gccLink)
+                {
+                    gccLink.CanUseOrigin = true;
+                    gccLink.RPath.Add("$ORIGIN");
                 }
             };
         }
