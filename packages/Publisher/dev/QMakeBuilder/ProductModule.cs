@@ -71,6 +71,12 @@ namespace QMakeBuilder
                     {
                         throw new Opus.Core.Exception("More than one publish module dependency found");
                     }
+                    var attribute = candidates[0] as Publisher.PublishModuleDependencyAttribute;
+                    var matchesTarget = Opus.Core.TargetUtilities.MatchFilters(moduleToBuild.OwningNode.Target, attribute);
+                    if (!matchesTarget)
+                    {
+                        continue;
+                    }
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
