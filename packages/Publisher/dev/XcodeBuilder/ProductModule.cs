@@ -44,6 +44,12 @@ namespace XcodeBuilder
             out bool success)
         {
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
             var primaryNode = primaryNodeData.Node;
             var project = this.Workspace.GetProject(primaryNode);
             var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;

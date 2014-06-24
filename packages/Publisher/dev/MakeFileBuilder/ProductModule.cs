@@ -40,6 +40,12 @@ namespace MakeFileBuilder
 
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
             var primaryNode = primaryNodeData.Node;
             var locationMap = moduleToBuild.Locations;
             var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];

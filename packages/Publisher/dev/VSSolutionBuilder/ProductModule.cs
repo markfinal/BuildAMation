@@ -73,6 +73,12 @@ namespace VSSolutionBuilder
             out bool success)
         {
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
             var primaryNode = primaryNodeData.Node;
             var projectData = primaryNode.Data as IProject;
 

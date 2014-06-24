@@ -31,6 +31,12 @@ namespace QMakeBuilder
             out bool success)
         {
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
             var primaryNode = primaryNodeData.Node;
             var locationMap = primaryNode.Module.Locations;
             var publishDirLoc = (locationMap[primaryNodeData.Key] as Opus.Core.ScaffoldLocation).Base;

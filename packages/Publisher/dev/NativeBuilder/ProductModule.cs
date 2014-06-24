@@ -20,6 +20,12 @@ namespace NativeBuilder
             }
 
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
             var primaryNode = primaryNodeData.Node;
             var locationMap = moduleToBuild.Locations;
             var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];

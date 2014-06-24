@@ -64,7 +64,7 @@ namespace Publisher
 
             // TODO: why is this check necessary?
             var dependents = moduleToBuild.OwningNode.ExternalDependents;
-            if (dependents.Count == 0)
+            if ((null == dependents) || (dependents.Count == 0))
             {
                 return primaryNodeData;
             }
