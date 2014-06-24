@@ -115,5 +115,11 @@ namespace QtCommon
                 throw new System.NotImplementedException();
             }
         }
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.PublishModuleDependency]
+        protected Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+            C.DynamicLibrary.OutputFile);
+#endif
     }
 }
