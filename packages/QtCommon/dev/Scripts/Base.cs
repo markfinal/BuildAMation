@@ -98,7 +98,8 @@ namespace QtCommon
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
                 var libPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
-                dynamicLibraryName = System.String.Format("lib{0}.so", moduleName);
+                var version = (this.QtToolset as Opus.Core.IToolset).Version((Opus.Core.BaseTarget)target);
+                dynamicLibraryName = System.String.Format("lib{0}.so.{1}", moduleName, version);
                 var dynamicLibraryPath = System.IO.Path.Combine(libPath, dynamicLibraryName);
                 return Opus.Core.FileLocation.Get(dynamicLibraryPath);
             }
