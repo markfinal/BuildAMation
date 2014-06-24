@@ -502,6 +502,11 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
+                if (array[0].ObjectsDir == null)
+                {
+                    return;
+                }
+
                 WriteString(array[0].ObjectsDir.GetSinglePath(), "OBJECTS_DIR=", null, writer);
             }
             else
@@ -509,6 +514,10 @@ namespace QMakeBuilder
                 var values = new Values<string>();
                 foreach (var data in array)
                 {
+                    if (data.ObjectsDir == null)
+                    {
+                        continue;
+                    }
                     var objDir = data.ObjectsDir.GetSinglePath();
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                     {
