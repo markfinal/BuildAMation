@@ -307,6 +307,11 @@ namespace Opus.Core
                     // note: this node is unparented
                     DependencyNode parent = null;
                     depNode = this.AddModule(depType, node.NodeCollection.Rank + 1, parent, (BaseTarget)node.Target, null, -1);
+                    if (null == depNode)
+                    {
+                        // this can happen, say, if the dependent is filtered
+                        continue;
+                    }
                 }
                 else
                 {
