@@ -117,7 +117,7 @@ namespace QtCommon
         }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency]
+        [Publisher.PublishModuleDependency(Platform=Opus.Core.EPlatform.NotOSX)]
         protected Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
             C.DynamicLibrary.OutputFile);
 #endif
