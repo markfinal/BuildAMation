@@ -46,7 +46,7 @@ namespace Test5
     class Publish : Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
-        System.Type primary = typeof(Test5.MyDynamicLibTestApp);
+        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(MyDynamicLibTestApp), C.Application.OutputFile);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

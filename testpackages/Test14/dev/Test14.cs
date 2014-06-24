@@ -36,6 +36,12 @@ namespace Test14
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.PublishModuleDependency]
+        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+            C.DynamicLibrary.OutputFile);
+#endif
     }
 
     class DynamicLibraryB : C.DynamicLibrary
@@ -74,6 +80,12 @@ namespace Test14
 
         [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.PublishModuleDependency]
+        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+            C.DynamicLibrary.OutputFile);
+#endif
     }
 
     class Application : C.Application
@@ -101,8 +113,13 @@ namespace Test14
         );
     }
 
-#if false
-    // TODO: rework with publishing
+#if OPUSPACKAGE_PUBLISHER_DEV
+    class Publish : Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(Application), C.Application.OutputFile);
+    }
+#else
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishDynamicLibraries : FileUtilities.CopyFileCollection
     {

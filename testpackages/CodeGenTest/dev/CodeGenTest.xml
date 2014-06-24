@@ -36,9 +36,6 @@
       <Opus:Version Id="8.0" />
       <Opus:Version Id="9.0" Default="true" />
     </Opus:Package>
-    <Opus:Package Name="VSSolutionBuilder">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
     <Opus:Package Name="WindowsSDK">
       <Opus:Version Id="6.0A" Default="true" />
       <Opus:Version Id="7.1" />

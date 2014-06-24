@@ -36,5 +36,11 @@ namespace Test7
         Opus.Core.StringArray libraries = new Opus.Core.StringArray(
             "KERNEL32.lib"
         );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.PublishModuleDependency]
+        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+            C.DynamicLibrary.OutputFile);
+#endif
     }
 }

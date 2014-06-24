@@ -5,7 +5,8 @@ namespace HeaderLibraryTest
     {
         public HeaderLibrary()
         {
-            this.headers.Include(this.PackageLocation, "include", "*.h");
+            var includeDir = this.PackageLocation.SubDirectory("include");
+            this.headers.Include(includeDir, "*.h");
 
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(HeaderLibrary_IncludePaths);
         }
@@ -25,7 +26,8 @@ namespace HeaderLibraryTest
     {
         public Application()
         {
-            this.sourceFile.Include(this.PackageLocation, "source", "main.c");
+            var sourceDir = this.PackageLocation.SubDirectory("source");
+            this.sourceFile.Include(sourceDir, "main.c");
         }
 
         [Opus.Core.SourceFiles]
@@ -34,6 +36,11 @@ namespace HeaderLibraryTest
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
             typeof(HeaderLibrary)
+            );
+
+        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Opus.Core.TypeArray winDependents = new Opus.Core.TypeArray(
+            typeof(WindowsSDK.WindowsSDK)
             );
     }
 }

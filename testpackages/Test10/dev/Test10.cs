@@ -29,6 +29,12 @@ namespace Test10
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.PublishModuleDependency]
+        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
+            C.DynamicLibrary.OutputFile);
+#endif
     }
 
     class MyStandaloneApp : C.Application
@@ -73,8 +79,13 @@ namespace Test10
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
-#if false
-    // TODO: rework with publishing
+#if OPUSPACKAGE_PUBLISHER_DEV
+    class Publish : Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(DllDependentApp), C.Application.OutputFile);
+    }
+#else
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     class PublishDynamicLibraries : FileUtilities.CopyFile
     {

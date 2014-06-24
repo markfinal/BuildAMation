@@ -4,6 +4,9 @@
     <Opus:Package Name="C">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Clang">
+      <Opus:Version Id="Apple425" />
+    </Opus:Package>
     <Opus:Package Name="Gcc">
       <Opus:Version Id="4.4" Default="true" />
       <Opus:Version Id="4.5" />
@@ -12,7 +15,13 @@
     <Opus:Package Name="LLVMGcc">
       <Opus:Version Id="4.2" />
     </Opus:Package>
+    <Opus:Package Name="MakeFileBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="VisualC">
@@ -21,6 +30,9 @@
       <Opus:Version Id="12.0" />
       <Opus:Version Id="8.0" />
       <Opus:Version Id="9.0" Default="true" />
+    </Opus:Package>
+    <Opus:Package Name="VSSolutionBuilder">
+      <Opus:Version Id="dev" />
     </Opus:Package>
     <Opus:Package Name="XcodeBuilder">
       <Opus:Version Id="dev" />

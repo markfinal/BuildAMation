@@ -103,8 +103,13 @@ namespace Test13
             );
     }
 
-#if false
-    // TODO: rework with publishing
+#if OPUSPACKAGE_PUBLISHER_DEV
+    class Publish : Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(QtApplication), C.Application.OutputFile);
+    }
+#else
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows | Opus.Core.EPlatform.Unix)]
     class PublishDynamicLibraries : FileUtilities.CopyFileCollection

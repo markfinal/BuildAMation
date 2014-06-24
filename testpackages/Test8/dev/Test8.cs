@@ -32,8 +32,13 @@ namespace Test8
         );
     }
 
-#if false
-    //TODO: rework with publishing
+#if OPUSPACKAGE_PUBLISHER_DEV
+    class Publish : Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(ApplicationTest), C.Application.OutputFile);
+    }
+#else
 #if OPUSPACKAGE_FILEUTILITIES_DEV
     [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows)]
     class PublishDynamicLibraries : FileUtilities.CopyFile
