@@ -30,12 +30,23 @@ namespace QMakeBuilder
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
-            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            var primaryNode = primaryNodeData.Node;
             var locationMap = primaryNode.Module.Locations;
-            var publishDirLoc = locationMap[C.Application.OutputDir];
+            var publishDirLoc = (locationMap[primaryNodeData.Key] as Opus.Core.ScaffoldLocation).Base;
             var publishDirPath = publishDirLoc.GetSingleRawPath();
 
-            foreach (var dependency in primaryNode.ExternalDependents)
+            var dependents = new Opus.Core.DependencyNodeCollection();
+            if (null != primaryNode.ExternalDependents)
+            {
+                dependents.AddRange(primaryNode.ExternalDependents);
+            }
+            if (null != primaryNode.RequiredDependents)
+            {
+                dependents.AddRange(primaryNode.RequiredDependents);
+            }
+
+            foreach (var dependency in dependents)
             {
                 var proData = dependency.Data as QMakeData;
                 var module = dependency.Module;
@@ -57,8 +68,7 @@ namespace QMakeBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
-                        // TODO: the key needs to be on an options interface or similiar
-                        var sourceLoc = dependency.Module.Locations[C.Application.OutputFile];
+                        var sourceLoc = dependency.Module.Locations[key];
                         var sourcePath = sourceLoc.GetSingleRawPath();
 
                         var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);

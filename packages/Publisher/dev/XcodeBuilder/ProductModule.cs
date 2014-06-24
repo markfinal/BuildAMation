@@ -43,11 +43,22 @@ namespace XcodeBuilder
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
-            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            var primaryNode = primaryNodeData.Node;
             var project = this.Workspace.GetProject(primaryNode);
             var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;
 
-            foreach (var dependency in primaryNode.ExternalDependents)
+            var dependents = new Opus.Core.DependencyNodeCollection();
+            if (null != primaryNode.ExternalDependents)
+            {
+                dependents.AddRange(primaryNode.ExternalDependents);
+            }
+            if (null != primaryNode.RequiredDependents)
+            {
+                dependents.AddRange(primaryNode.RequiredDependents);
+            }
+
+            foreach (var dependency in dependents)
             {
                 var module = dependency.Module;
                 var moduleType = module.GetType();

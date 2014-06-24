@@ -39,23 +39,23 @@ namespace MakeFileBuilder
             var node = moduleToBuild.OwningNode;
 
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
-            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            var primaryNode = primaryNodeData.Node;
             var locationMap = moduleToBuild.Locations;
             var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
             var publishDirPath = publishDirLoc.GetSingleRawPath();
 
-            // TODO: LocationKey needs to be an option
-            var sourceLoc = primaryNode.Module.Locations[C.Application.OutputFile];
+            var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
             var sourcePath = sourceLoc.GetSingleRawPath();
-            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, C.Application.OutputFile);
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, moduleToBuild, primaryKey);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var primaryNodeData = primaryNode.Data as MakeFileData;
+            var primaryNodeMakeData = primaryNode.Data as MakeFileData;
             var primaryInputVariables = new MakeFileVariableDictionary();
-            primaryInputVariables.Append(primaryNodeData.VariableDictionary);
+            primaryInputVariables.Append(primaryNodeMakeData.VariableDictionary);
 
             var primaryRule = new MakeFileRule(
                 moduleToBuild,
@@ -67,7 +67,17 @@ namespace MakeFileBuilder
                 MakeCopyRecipe(sourcePath, destPath));
             makeFile.RuleArray.Add(primaryRule);
 
-            foreach (var dependency in primaryNode.ExternalDependents)
+            var dependents = new Opus.Core.DependencyNodeCollection();
+            if (null != primaryNode.ExternalDependents)
+            {
+                dependents.AddRange(primaryNode.ExternalDependents);
+            }
+            if (null != primaryNode.RequiredDependents)
+            {
+                dependents.AddRange(primaryNode.RequiredDependents);
+            }
+
+            foreach (var dependency in dependents)
             {
                 var depNodeData = dependency.Data as MakeFileData;
                 var depInputVariables = new MakeFileVariableDictionary();

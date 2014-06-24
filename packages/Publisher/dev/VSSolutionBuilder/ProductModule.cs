@@ -11,7 +11,8 @@ namespace VSSolutionBuilder
         CopyNodes(
             Publisher.ProductModule moduleToBuild,
             IProject toProject,
-            Opus.Core.DependencyNode toCopy)
+            Opus.Core.DependencyNode toCopy,
+            Opus.Core.LocationKey keyToCopy)
         {
             var configCollection = toProject.Configurations;
             // TODO: this should be done from the base target!
@@ -26,14 +27,13 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcPostBuildEventTool);
             }
 
-            // TODO: the key needs to be on an options interface or similiar
-            var sourceLoc = toCopy.Module.Locations[C.Application.OutputFile];
+            var sourceLoc = toCopy.Module.Locations[keyToCopy];
             var sourcePath = sourceLoc.GetSingleRawPath();
 
             var destinationDir = configuration.OutputDirectory;
             var destinationDirPath = destinationDir.GetSingleRawPath();
 
-            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, C.Application.OutputFile);
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, keyToCopy);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, destinationDirPath, moduleToBuild, primaryKey);
 
@@ -72,10 +72,21 @@ namespace VSSolutionBuilder
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
-            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            var primaryNode = primaryNodeData.Node;
             var projectData = primaryNode.Data as IProject;
 
-            foreach (var dependency in primaryNode.ExternalDependents)
+            var dependents = new Opus.Core.DependencyNodeCollection();
+            if (null != primaryNode.ExternalDependents)
+            {
+                dependents.AddRange(primaryNode.ExternalDependents);
+            }
+            if (null != primaryNode.RequiredDependents)
+            {
+                dependents.AddRange(primaryNode.RequiredDependents);
+            }
+
+            foreach (var dependency in dependents)
             {
                 var module = dependency.Module;
                 var moduleType = module.GetType();
@@ -96,7 +107,7 @@ namespace VSSolutionBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
-                        CopyNodes(moduleToBuild, projectData, module.OwningNode);
+                        CopyNodes(moduleToBuild, projectData, module.OwningNode, key);
                     }
                 }
             }

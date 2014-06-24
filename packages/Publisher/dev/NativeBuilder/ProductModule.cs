@@ -19,18 +19,28 @@ namespace NativeBuilder
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryNode(moduleToBuild);
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            var primaryNode = primaryNodeData.Node;
             var locationMap = moduleToBuild.Locations;
             var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
             var publishDirPath = publishDirLoc.GetSingleRawPath();
 
-            // TODO: the key here needs to be on an optionset or similar
-            var sourceLoc = primaryNode.Module.Locations[C.Application.OutputFile];
-            var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, C.Application.OutputFile);
+            var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
+            var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
             var publishedKey = new Opus.Core.LocationKey(publishedSourceKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
             Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, moduleToBuild, publishedKey);
 
-            foreach (var dependency in primaryNode.ExternalDependents)
+            var dependents = new Opus.Core.DependencyNodeCollection();
+            if (null != primaryNode.ExternalDependents)
+            {
+                dependents.AddRange(primaryNode.ExternalDependents);
+            }
+            if (null != primaryNode.RequiredDependents)
+            {
+                dependents.AddRange(primaryNode.RequiredDependents);
+            }
+
+            foreach (var dependency in dependents)
             {
                 var module = dependency.Module;
                 var moduleType = module.GetType();

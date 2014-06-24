@@ -31,8 +31,12 @@ namespace Publisher
                 var currentAttr = attributes[0];
                 if (currentAttr.GetType() == typeof(PrimaryTargetAttribute))
                 {
-                    var primaryModuleType = field.GetValue(this) as System.Type;
-                    dependentModuleTypes.AddUnique(primaryModuleType);
+                    var primaryModuleData = field.GetValue(this) as PublishNodeData;
+                    if (null == primaryModuleData)
+                    {
+                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type PublishNodeData");
+                    }
+                    dependentModuleTypes.AddUnique(primaryModuleData.ModuleType);
                 }
                 else
                 {

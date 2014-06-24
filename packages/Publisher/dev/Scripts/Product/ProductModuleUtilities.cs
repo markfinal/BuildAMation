@@ -9,12 +9,12 @@ namespace Publisher
     {
         // TODO: out of all the dependents, how do we determine the metadata that they have associated with them
         // from the Publisher.ProductModule module, that is beyond just the need for graph building?
-        private static Opus.Core.TypeArray
-        GetModulesTypesWithAttribute(
+        private static Opus.Core.Array<PublishNodeData>
+        GetModulesDataWithAttribute(
             Publisher.ProductModule moduleToBuild,
             System.Type attributeType)
         {
-            var moduleTypes = new Opus.Core.TypeArray();
+            var moduleData = new Opus.Core.Array<PublishNodeData>();
 
             var flags = System.Reflection.BindingFlags.Instance |
                         System.Reflection.BindingFlags.NonPublic;
@@ -31,32 +31,54 @@ namespace Publisher
                 var currentAttr = attributes[0];
                 if (currentAttr.GetType() == attributeType)
                 {
-                    var primaryTargetType = field.GetValue(moduleToBuild) as System.Type;
-                    moduleTypes.AddUnique(primaryTargetType);
+                    var primaryTargetData = field.GetValue(moduleToBuild) as PublishNodeData;
+                    if (null == primaryTargetData)
+                    {
+                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type PublishNodeData");
+                    }
+                    moduleData.AddUnique(primaryTargetData);
                 }
             }
 
-            return moduleTypes;
+            return moduleData;
         }
 
-        public static Opus.Core.DependencyNode GetPrimaryNode(Publisher.ProductModule moduleToBuild)
+        public class PrimaryNodeData
         {
-            Opus.Core.DependencyNode primaryNode = null;
+            public Opus.Core.DependencyNode Node
+            {
+                get;
+                set;
+            }
 
+            public Opus.Core.LocationKey Key
+            {
+                get;
+                set;
+            }
+        }
+
+        public static PrimaryNodeData GetPrimaryNodeData(Publisher.ProductModule moduleToBuild)
+        {
+            PrimaryNodeData primaryNodeData = null;
+
+            // TODO: why is this check necessary?
             var dependents = moduleToBuild.OwningNode.ExternalDependents;
             if (dependents.Count == 0)
             {
-                return primaryNode;
+                return primaryNodeData;
             }
 
-            var primaryTargetTypes = GetModulesTypesWithAttribute(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
-            if (primaryTargetTypes.Count == 0)
+            var primaryTargetData = GetModulesDataWithAttribute(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
+            if (primaryTargetData.Count == 0)
             {
-                return primaryNode;
+                return primaryNodeData;
             }
 
-            primaryNode = Opus.Core.ModuleUtilities.GetNode(primaryTargetTypes[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-            return primaryNode;
+            primaryNodeData = new PrimaryNodeData();
+            primaryNodeData.Node = Opus.Core.ModuleUtilities.GetNode(primaryTargetData[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            primaryNodeData.Key = primaryTargetData[0].Key;
+            return primaryNodeData;
         }
 
         public static string
