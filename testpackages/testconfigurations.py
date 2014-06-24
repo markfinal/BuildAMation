@@ -194,3 +194,6 @@ configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
 configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                      linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                      osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"]})
+configs["HeaderLibraryTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
+                                             linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                                             osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
