@@ -107,24 +107,30 @@ namespace QMakeBuilder
                 excludedOptionNames.Add("GenerateMapFile"); // TODO: better way of extracting the map file?, yes locations
                 excludedOptionNames.Add("DebugSymbols"); // TODO: better way of extracting the PDB file?, yes locations
                 excludedOptionNames.Add("DynamicLibrary"); // TODO: better way of extracting the import library?, yes locations
-                excludedOptionNames.Add("RPath");
+                if (target.HasPlatform(Opus.Core.EPlatform.NotWindows))
+                {
+                    excludedOptionNames.Add("RPath");
+                }
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
                 data.LinkFlags.AddRangeUnique(commandLineBuilder);
 
-                // handle RPath separately
-                var rPathCommandLine = new Opus.Core.StringArray();
-                var optionNames = new Opus.Core.StringArray();
-                optionNames.Add("RPath");
-                CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, rPathCommandLine, target, optionNames);
-                foreach (var rpath in rPathCommandLine)
+                if (target.HasPlatform(Opus.Core.EPlatform.NotWindows))
                 {
-                    var linkerCommand = rpath.Split(',');
-                    var rpathDir = linkerCommand[linkerCommand.Length - 1];
-                    // unable to insert $ORIGIN into QMAKE_RPATHDIR, that is suggested at
-                    // http://www.opensource.apple.com/source/WebKit/WebKit-7534.56.5/qt/declarative/declarative.pro
-                    // so use a workaround
-                    rpathDir = rpathDir.Replace("$ORIGIN", "$$DESTDIR");
-                    data.RPathDir.AddUnique(rpathDir);
+                    // handle RPath separately
+                    var rPathCommandLine = new Opus.Core.StringArray();
+                    var optionNames = new Opus.Core.StringArray();
+                    optionNames.Add("RPath");
+                    CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, rPathCommandLine, target, optionNames);
+                    foreach (var rpath in rPathCommandLine)
+                    {
+                        var linkerCommand = rpath.Split(',');
+                        var rpathDir = linkerCommand[linkerCommand.Length - 1];
+                        // unable to insert $ORIGIN into QMAKE_RPATHDIR, that is suggested at
+                        // http://www.opensource.apple.com/source/WebKit/WebKit-7534.56.5/qt/declarative/declarative.pro
+                        // so use a workaround
+                        rpathDir = rpathDir.Replace("$ORIGIN", "$$DESTDIR");
+                        data.RPathDir.AddUnique(rpathDir);
+                    }
                 }
             }
             else
