@@ -11,7 +11,6 @@ namespace MakeFileBuilder
         {
             var mocFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
             var node = mocFileCollectionModule.OwningNode;
-            var target = node.Target;
 
             var dependents = new MakeFileVariableDictionary();
             foreach (var childNode in node.Children)

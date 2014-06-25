@@ -11,7 +11,6 @@ namespace QMakeBuilder
         {
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             var node = moduleToBuild.OwningNode;
-            var target = node.Target;
 
             var data = new QMakeData(node);
             data.PriPaths.Add(this.EmptyConfigPriPath);
