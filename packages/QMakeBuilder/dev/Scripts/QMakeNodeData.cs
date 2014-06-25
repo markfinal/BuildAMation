@@ -43,6 +43,7 @@ namespace QMakeBuilder
             this.Output = OutputType.Undefined;
             this.PostLink = new Opus.Core.StringArray();
             this.PriPaths = new Opus.Core.StringArray();
+            this.RPathDir = new Opus.Core.StringArray();
             this.QtModules = new Opus.Core.StringArray();
             this.Sources = new Opus.Core.StringArray();
             this.Target = string.Empty;
@@ -164,6 +165,12 @@ namespace QMakeBuilder
         }
 
         public Opus.Core.StringArray PriPaths
+        {
+            get;
+            private set;
+        }
+
+        public Opus.Core.StringArray RPathDir
         {
             get;
             private set;
@@ -942,6 +949,31 @@ namespace QMakeBuilder
             }
         }
 
+        private static void WriteRPathDir(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteStringArray(array[0].RPathDir, "QMAKE_RPATHDIR+=", proFilePath, writer);
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.RPathDir;
+                    }
+                    else
+                    {
+                        values.Release = data.RPathDir;
+                    }
+                }
+
+                WriteStringArrays(values, "QMAKE_RPATHDIR+=", proFilePath, writer);
+            }
+        }
+
         private static void WritePostLinkCommands(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
@@ -1161,6 +1193,7 @@ namespace QMakeBuilder
             }
             this.PostLink.AddRangeUnique(data.PostLink);
             this.PriPaths.AddRangeUnique(data.PriPaths);
+            this.RPathDir.AddRangeUnique(data.RPathDir);
             this.QtModules.AddRangeUnique(data.QtModules);
             this.Sources.AddRangeUnique(data.Sources);
             if (data.Output != OutputType.Undefined)
@@ -1235,6 +1268,7 @@ namespace QMakeBuilder
                 WriteLibraries(array, proFilePath, proWriter);
                 // TODO: WriteExternalLibraries since they have been separated from built libraries by Locations
                 WriteLinkFlags(array, proFilePath, proWriter);
+                WriteRPathDir(array, proFilePath, proWriter);
                 WriteMajorVersionNumber(array, proFilePath, proWriter);
                 WriteMinorVersionNumber(array, proFilePath, proWriter);
                 WritePatchVersionNumber(array, proFilePath, proWriter);
