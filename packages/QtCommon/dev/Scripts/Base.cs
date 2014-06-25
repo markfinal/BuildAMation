@@ -75,7 +75,7 @@ namespace QtCommon
             }
         }
 
-        protected Opus.Core.Location
+        protected void
         GetModuleDynamicLibrary(
             Opus.Core.Target target,
             string moduleName)
@@ -93,7 +93,7 @@ namespace QtCommon
                     dynamicLibraryName = System.String.Format("{0}4.dll", moduleName);
                 }
                 var dynamicLibraryPath = System.IO.Path.Combine(binPath, dynamicLibraryName);
-                return Opus.Core.FileLocation.Get(dynamicLibraryPath);
+                this.Locations[C.DynamicLibrary.OutputFile] = Opus.Core.FileLocation.Get(dynamicLibraryPath);
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
@@ -101,7 +101,7 @@ namespace QtCommon
                 var version = (this.QtToolset as Opus.Core.IToolset).Version((Opus.Core.BaseTarget)target);
                 dynamicLibraryName = System.String.Format("lib{0}.so.{1}", moduleName, version);
                 var dynamicLibraryPath = System.IO.Path.Combine(libPath, dynamicLibraryName);
-                return Opus.Core.FileLocation.Get(dynamicLibraryPath);
+                this.Locations[C.DynamicLibrary.OutputFile] = Opus.Core.FileLocation.Get(dynamicLibraryPath);
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
             {
@@ -109,7 +109,6 @@ namespace QtCommon
                 #if false
                 return Opus.Core.FileLocation.Get(moduleName);
                 #endif
-                return null;
             }
             else
             {
