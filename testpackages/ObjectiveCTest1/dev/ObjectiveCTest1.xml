@@ -10,6 +10,8 @@
     <Opus:Package Name="Gcc">
       <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" Default="true" />
       <Opus:Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
+      <Opus:Version Id="4.5" />
+      <Opus:Version Id="4.6" />
     </Opus:Package>
     <Opus:Package Name="LLVMGcc">
       <Opus:Version Id="4.2" Default="true" />
