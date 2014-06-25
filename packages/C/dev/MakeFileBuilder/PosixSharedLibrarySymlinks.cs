@@ -24,12 +24,9 @@ namespace MakeFileBuilder
             recipeBuilder.AppendFormat(" {0}", symlinkFileLeafname);
 
             var recipe = recipeBuilder.ToString();
-            // replace primary target with $@
-            recipe = recipe.Replace(symlinkFileLeafname, "$@");
 
-            // TODO: working directory support is incorrect
             var recipes = new Opus.Core.StringArray();
-            recipes.Add(System.String.Format("pushd {0}; {1}; popd", workingDirectory, recipe));
+            recipes.Add(System.String.Format("cd {0} && {1}", workingDirectory, recipe));
             return recipes;
         }
 
