@@ -29,9 +29,7 @@ namespace MakeFileBuilder
 
             // TODO: working directory support is incorrect
             var recipes = new Opus.Core.StringArray();
-            recipes.Add(System.String.Format("pushd {0}", workingDirectory));
-            recipes.Add(recipe);
-            recipes.Add("popd");
+            recipes.Add(System.String.Format("pushd {0}; {1}; popd", workingDirectory, recipe));
             return recipes;
         }
 
