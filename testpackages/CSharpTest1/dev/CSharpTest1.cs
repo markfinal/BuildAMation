@@ -44,6 +44,9 @@ namespace CSharpTest1
         Opus.Core.Location source;
     }
 
+    // disabled on Unix builds, as it fails: CS0016
+    // Could not write to file `SimpleModule', cause: fileName '<blah>' must not include a path.
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.NotUnix)]
     class SimpleModule : CSharp.Module
     {
         public SimpleModule()
