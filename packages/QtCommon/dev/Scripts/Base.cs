@@ -10,6 +10,15 @@ namespace QtCommon
         protected Base()
         {
             this.QtToolset = Opus.Core.State.Get("Toolset", "Qt") as Toolset;
+#if OPUSPACKAGE_PUBLISHER_DEV
+            // TODO: can this be automated?
+            if (Opus.Core.OSUtilities.IsUnixHosting)
+            {
+                this.publishKeys.AddUnique(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
+                this.publishKeys.AddUnique(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
+                this.publishKeys.AddUnique(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+            }
+#endif
         }
 
         private Toolset QtToolset
