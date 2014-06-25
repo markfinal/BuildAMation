@@ -23,7 +23,7 @@ namespace CodeGenTool
                 file.WriteLine(@"#include <stdio.h>");
                 file.WriteLine(@"void MyGeneratedFunction()");
                 file.WriteLine(@"{");
-                file.WriteLine("\tprintf(\"Hello world\");");
+                file.WriteLine("\tprintf(\"Hello world\\n\");");
                 file.WriteLine(@"}");
                 file.WriteLine("");
 
