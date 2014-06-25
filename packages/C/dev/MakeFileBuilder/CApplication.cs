@@ -51,7 +51,29 @@ namespace MakeFileBuilder
             if (applicationOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = applicationOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
+                var excludedOptions = new Opus.Core.StringArray();
+                excludedOptions.Add("RPath"); // $ORIGIN is handled differently
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptions);
+
+                // handle RPath separately
+                // what needs to happen is that the $ must be doubled, and the entire path quoted
+                // http://stackoverflow.com/questions/230364/how-to-get-rpath-with-origin-to-work-on-codeblocks-gcc
+                var rPathCommandLine = new Opus.Core.StringArray();
+                var optionNames = new Opus.Core.StringArray();
+                optionNames.Add("RPath");
+                CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(applicationOptions, rPathCommandLine, target, optionNames);
+                foreach (var rpath in rPathCommandLine)
+                {
+                    var linkerCommand = rpath.Split(',');
+                    var rpathDir = linkerCommand[linkerCommand.Length - 1];
+                    rpathDir = rpathDir.Replace("$ORIGIN", "$$ORIGIN");
+                    rpathDir = System.String.Format("'{0}'", rpathDir);
+                    var linkerCommandArray = new Opus.Core.StringArray(linkerCommand);
+                    linkerCommandArray.Remove(linkerCommand[linkerCommand.Length - 1]);
+                    linkerCommandArray.Add(rpathDir);
+                    var newRPathCommand = linkerCommandArray.ToString(',');
+                    commandLineBuilder.Add(newRPathCommand);
+                }
             }
             else
             {
