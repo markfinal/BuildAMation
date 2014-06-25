@@ -80,10 +80,10 @@ namespace QtCommon
             Opus.Core.Target target,
             string moduleName)
         {
-            string dynamicLibraryName = null;
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
                 var binPath = (this.QtToolset as Opus.Core.IToolset).BinPath((Opus.Core.BaseTarget)target);
+                string dynamicLibraryName = null;
                 if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                 {
                     dynamicLibraryName = System.String.Format("{0}d4.dll", moduleName);
@@ -99,7 +99,7 @@ namespace QtCommon
             {
                 var libPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
                 var version = (this.QtToolset as Opus.Core.IToolset).Version((Opus.Core.BaseTarget)target);
-                dynamicLibraryName = System.String.Format("lib{0}.so.{1}", moduleName, version);
+                var dynamicLibraryName = System.String.Format("lib{0}.so.{1}", moduleName, version);
                 var dynamicLibraryPath = System.IO.Path.Combine(libPath, dynamicLibraryName);
                 this.Locations[C.DynamicLibrary.OutputFile] = Opus.Core.FileLocation.Get(dynamicLibraryPath);
             }
