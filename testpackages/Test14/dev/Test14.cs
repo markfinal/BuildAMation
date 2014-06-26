@@ -4,7 +4,7 @@ namespace Test14
     // Define module classes here
     class DynamicLibraryA : C.DynamicLibrary
     {
-        public DynamicLibraryA()
+        public DynamicLibraryA(Opus.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryA.c");
@@ -13,6 +13,16 @@ namespace Test14
 
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.header.Include(includeDir, "dynamicLibraryA.h");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+            // TODO: can this be automated?
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+            }
+#endif
         }
 
         [C.ExportCompilerOptionsDelegate]
@@ -46,7 +56,7 @@ namespace Test14
 
     class DynamicLibraryB : C.DynamicLibrary
     {
-        public DynamicLibraryB()
+        public DynamicLibraryB(Opus.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryB.c");
@@ -55,6 +65,16 @@ namespace Test14
 
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.header.Include(includeDir, "dynamicLibraryB.h");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+            // TODO: can this be automated?
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+            }
+#endif
         }
 
         void DynamicLibraryB_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
@@ -100,7 +120,16 @@ namespace Test14
         void Application_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
-            linkerOptions.DoNotAutoIncludeStandardLibraries = false;
+            if (null != linkerOptions)
+            {
+                linkerOptions.DoNotAutoIncludeStandardLibraries = false;
+            }
+            var gccLink = module.Options as GccCommon.ILinkerOptions;
+            if (null != gccLink)
+            {
+                gccLink.CanUseOrigin = true;
+                gccLink.RPath.Add("$ORIGIN");
+            }
         }
 
         [Opus.Core.SourceFiles]
