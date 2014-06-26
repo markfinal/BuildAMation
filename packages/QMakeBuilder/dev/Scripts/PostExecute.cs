@@ -13,6 +13,12 @@ namespace QMakeBuilder
         {
             Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
+            if (0 == executedNodes.Count)
+            {
+                Opus.Core.Log.Info("No QMake pro file written as there were no targets generated");
+                return;
+            }
+
             // find all nodes with the same unique name
             var similarNodes = new System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>>();
             foreach (var node in executedNodes)
