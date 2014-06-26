@@ -12,18 +12,18 @@ namespace NativeBuilder
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
-            foreach (var dir in dirsToCreate)
-            {
-                var dirPath = dir.GetSinglePath();
-                NativeBuilder.MakeDirectory(dirPath);
-            }
-
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
             if (null == primaryNodeData)
             {
                 success = true;
                 return null;
+            }
+
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
             }
 
             var primaryNode = primaryNodeData.Node;
