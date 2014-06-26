@@ -33,6 +33,7 @@ namespace Test8
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
     class Publish : Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
