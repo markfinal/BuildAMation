@@ -15,10 +15,20 @@ namespace Test10
 
     class MyDynamicLibrary : C.DynamicLibrary
     {
-        public MyDynamicLibrary()
+        public MyDynamicLibrary(Opus.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dylib.c");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+            // TODO: can this be automated?
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
+                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+            }
+#endif
         }
 
         [Opus.Core.SourceFiles]
@@ -64,6 +74,16 @@ namespace Test10
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dlldependentapp.c");
+
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                var linkerOptions = module.Options as GccCommon.ILinkerOptions;
+                if (null != linkerOptions)
+                {
+                    linkerOptions.CanUseOrigin = true;
+                    linkerOptions.RPath.Add("$ORIGIN");
+                }
+            };
         }
 
         [Opus.Core.SourceFiles]
