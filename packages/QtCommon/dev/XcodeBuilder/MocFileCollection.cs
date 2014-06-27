@@ -34,15 +34,9 @@ namespace XcodeBuilder
             shellScriptBuildPhase.ShellScriptLines.Add("do");
             shellScriptBuildPhase.ShellScriptLines.Add("inputFile=`eval echo '$SCRIPT_INPUT_FILE_'$i`");
             shellScriptBuildPhase.ShellScriptLines.Add("outputFile=`eval echo '$SCRIPT_OUTPUT_FILE_'$i`");
+            shellScriptBuildPhase.ShellScriptLines.Add("echo \\\"Moc'ing $inputFile\\\"");
             shellScriptBuildPhase.ShellScriptLines.Add("/Developer/Tools/Qt/moc $inputFile -o $outputFile");
             shellScriptBuildPhase.ShellScriptLines.Add("done");
-
-            // TODO: move this to the MocFile build routine - always add in pairs
-            shellScriptBuildPhase.InputPaths.Add("$(PACKAGE_DIR)/source/myobject.h");
-            shellScriptBuildPhase.OutputPaths.Add("$(MOC_DIR)/moc_myobject.cpp");
-
-            shellScriptBuildPhase.InputPaths.Add("$(PACKAGE_DIR)/source/myobject2.h");
-            shellScriptBuildPhase.OutputPaths.Add("$(MOC_DIR)/moc_myobject2.cpp");
 
             success = true;
             return null;

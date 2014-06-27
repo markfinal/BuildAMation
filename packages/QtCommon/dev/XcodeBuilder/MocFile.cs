@@ -11,7 +11,6 @@ namespace XcodeBuilder
         {
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
-            var baseTarget = (Opus.Core.BaseTarget)node.Target;
 
             var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
@@ -25,9 +24,18 @@ namespace XcodeBuilder
             }
 
             var project = this.Workspace.GetProject(targetNode);
-            var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
-            buildConfiguration.Options["MOC_DIR"].AddUnique(moduleToBuild.Locations[QtCommon.MocFile.OutputDir].GetSingleRawPath());
-            buildConfiguration.Options["PACKAGE_DIR"].AddUnique(targetNode.Module.PackageLocation.GetSingleRawPath());
+
+            if (null != parentNode)
+            {
+                var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOC files", parentNode.ModuleName);
+                shellScriptBuildPhase.InputPaths.Add(moduleToBuild.SourceFileLocation.GetSingleRawPath());
+                shellScriptBuildPhase.OutputPaths.Add(moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSingleRawPath());
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Single MOC file support in Xcode not yet supported");
+            }
+
             success = true;
             return null;
         }
