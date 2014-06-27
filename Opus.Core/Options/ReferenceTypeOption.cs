@@ -66,6 +66,10 @@ namespace Opus.Core
         {
             var thisValue = this.Value;
             var otherValue = ((ReferenceTypeOption<T>)(obj)).Value;
+            if (thisValue == null)
+            {
+                return (otherValue == null);
+            }
             var equals = thisValue.Equals(otherValue);
             return equals;
         }
@@ -82,7 +86,21 @@ namespace Opus.Core
 
             if (!typeof(ISetOperations<T>).IsAssignableFrom(thisValue.GetType()))
             {
-                throw new Exception("Type {0} does not implement the Opus.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+                if (thisValue.GetType() == typeof(string))
+                {
+                    if (thisValue.Equals(otherValue))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return this.Clone() as Option;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Type {0} does not implement the Opus.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+                }
             }
 
             var complementInterface = thisValue as ISetOperations<T>;
@@ -102,7 +120,21 @@ namespace Opus.Core
 
             if (!typeof(ISetOperations<T>).IsAssignableFrom(thisValue.GetType()))
             {
-                throw new Exception("Type {0} does not implement the Opus.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+                if (thisValue.GetType() == typeof(string))
+                {
+                    if (thisValue.Equals(otherValue))
+                    {
+                        return this.Clone() as Option;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Type {0} does not implement the Opus.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+                }
             }
 
             var complementInterface = thisValue as ISetOperations<T>;
