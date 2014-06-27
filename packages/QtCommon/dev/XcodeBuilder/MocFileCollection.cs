@@ -10,6 +10,8 @@ namespace XcodeBuilder
         public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
         {
             var node = moduleToBuild.OwningNode;
+            var target = node.Target;
+            var mocOptions = moduleToBuild.Options as QtCommon.MocOptionCollection;
 
             var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
@@ -27,15 +29,32 @@ namespace XcodeBuilder
             var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOC files", moduleToBuild.OwningNode.ModuleName);
             // cannot add to the nativeTarget's build phases, so delay this til later
 
+            var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
+            var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
+
+            var commandLineBuilder = new Opus.Core.StringArray();
+            commandLineBuilder.Add(toolExePath);
+            if (mocOptions is CommandLineProcessor.ICommandLineSupport)
+            {
+                var commandLineOption = mocOptions as CommandLineProcessor.ICommandLineSupport;
+                var excludedOptionNames = new Opus.Core.StringArray();
+                excludedOptionNames.Add("MocOutputPath");
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+            }
+            commandLineBuilder.Add("$inputFile");
+            commandLineBuilder.Add("-o$outputFile");
+
             // script for moc'ing all files
-            // TODO: path to moc
-            // TODO: command line parameters to moc
             shellScriptBuildPhase.ShellScriptLines.Add("for ((i=0; i < SCRIPT_INPUT_FILE_COUNT ; i++))");
             shellScriptBuildPhase.ShellScriptLines.Add("do");
             shellScriptBuildPhase.ShellScriptLines.Add("inputFile=`eval echo '$SCRIPT_INPUT_FILE_'$i`");
             shellScriptBuildPhase.ShellScriptLines.Add("outputFile=`eval echo '$SCRIPT_OUTPUT_FILE_'$i`");
             shellScriptBuildPhase.ShellScriptLines.Add("echo \\\"Moc'ing $inputFile\\\"");
-            shellScriptBuildPhase.ShellScriptLines.Add("/Developer/Tools/Qt/moc $inputFile -o $outputFile");
+            shellScriptBuildPhase.ShellScriptLines.Add(commandLineBuilder.ToString());
             shellScriptBuildPhase.ShellScriptLines.Add("done");
 
             success = true;
