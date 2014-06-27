@@ -17,7 +17,10 @@ namespace QtCommon
     /// Create meta data from a C++ header or source file
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
-    public class MocFile : Opus.Core.BaseModule, Opus.Core.IInjectModules
+    public class MocFile :
+        Opus.Core.BaseModule,
+        Opus.Core.IInjectModules,
+        Opus.Core.ICommonOptionCollection
     {
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("MocdSource", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("MocdSourceDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -85,6 +88,16 @@ namespace QtCommon
             var sourceFile = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
             sourceFile.SetReference(dependentModule.Locations[MocFile.OutputFile]);
             module.SourceFileLocation = sourceFile;
+        }
+
+        #endregion
+
+        #region ICommonOptionCollection implementation
+
+        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        {
+            get;
+            set;
         }
 
         #endregion

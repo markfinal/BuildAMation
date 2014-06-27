@@ -25,9 +25,31 @@ namespace XcodeBuilder
 
             var project = this.Workspace.GetProject(targetNode);
 
+            Opus.Core.BaseOptionCollection complementOptionCollection = null;
+            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+            {
+                var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                if (commonOptions is QtCommon.MocOptionCollection)
+                {
+                    complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
+                }
+            }
+            if (complementOptionCollection != null)
+            {
+                // > 1 because the MocOutputPath is currently in the options
+                if (complementOptionCollection.OptionNames.Count > 1)
+                {
+                    // use a custom moc
+                }
+                else
+                {
+                    // use common moc
+                }
+            }
+
             if (null != parentNode)
             {
-                var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOC files", parentNode.ModuleName);
+                var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + parentNode.ModuleName, parentNode.ModuleName);
                 shellScriptBuildPhase.InputPaths.Add(moduleToBuild.SourceFileLocation.GetSingleRawPath());
                 shellScriptBuildPhase.OutputPaths.Add(moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSingleRawPath());
             }

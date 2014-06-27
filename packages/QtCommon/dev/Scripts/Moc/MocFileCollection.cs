@@ -9,7 +9,10 @@ namespace QtCommon
     /// Create meta data from a collection of C++ header or source files
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
-    public abstract class MocFileCollection : Opus.Core.BaseModule, Opus.Core.IModuleCollection
+    public abstract class MocFileCollection :
+        Opus.Core.BaseModule,
+        Opus.Core.IModuleCollection,
+    Opus.Core.ICommonOptionCollection
     {
         private Opus.Core.Array<MocFile> list = new Opus.Core.Array<MocFile>();
 
@@ -145,6 +148,16 @@ namespace QtCommon
             }
 
             this.DeferredUpdates[new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File)] = delegateArray;
+        }
+
+        #endregion
+
+        #region ICommonOptionCollection implementation
+
+        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        {
+            get;
+            set;
         }
 
         #endregion

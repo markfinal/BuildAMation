@@ -26,7 +26,7 @@ namespace XcodeBuilder
             }
 
             var project = this.Workspace.GetProject(targetNode);
-            var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOC files", moduleToBuild.OwningNode.ModuleName);
+            var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + node.ModuleName, moduleToBuild.OwningNode.ModuleName);
             // cannot add to the nativeTarget's build phases, so delay this til later
 
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
