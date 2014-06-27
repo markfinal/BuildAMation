@@ -34,24 +34,26 @@ namespace XcodeBuilder
                     complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
                 }
             }
-            if (complementOptionCollection != null)
-            {
-                // > 1 because the MocOutputPath is currently in the options
-                if (complementOptionCollection.OptionNames.Count > 1)
-                {
-                    // use a custom moc
-                }
-                else
-                {
-                    // use common moc
-                }
-            }
 
             if (null != parentNode)
             {
-                var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + parentNode.ModuleName, parentNode.ModuleName);
-                shellScriptBuildPhase.InputPaths.Add(moduleToBuild.SourceFileLocation.GetSingleRawPath());
-                shellScriptBuildPhase.OutputPaths.Add(moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSingleRawPath());
+                // > 1 because the MocOutputPath is currently in the options, hence never null
+                if (complementOptionCollection.OptionNames.Count > 1)
+                {
+                    // use a custom moc
+                    var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + node.UniqueModuleName, node.ModuleName);
+
+                    ShellScriptHelper.WriteShellCommand(node.Target, moduleToBuild.Options, shellScriptBuildPhase);
+
+                    shellScriptBuildPhase.InputPaths.Add(moduleToBuild.SourceFileLocation.GetSingleRawPath());
+                    shellScriptBuildPhase.OutputPaths.Add(moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSingleRawPath());
+                }
+                else
+                {
+                    var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + parentNode.ModuleName, parentNode.ModuleName);
+                    shellScriptBuildPhase.InputPaths.Add(moduleToBuild.SourceFileLocation.GetSingleRawPath());
+                    shellScriptBuildPhase.OutputPaths.Add(moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSingleRawPath());
+                }
             }
             else
             {
