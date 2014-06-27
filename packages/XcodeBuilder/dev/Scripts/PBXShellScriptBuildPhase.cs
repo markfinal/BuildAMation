@@ -14,6 +14,7 @@ namespace XcodeBuilder
             this.OutputPaths = new Opus.Core.StringArray();
             this.ShellPath = "/bin/sh";
             this.ShellScriptLines = new Opus.Core.StringArray();
+            this.ShowEnvironmentVariablesInLog = true;
         }
 
         public Opus.Core.StringArray InputPaths
@@ -40,6 +41,12 @@ namespace XcodeBuilder
             private set;
         }
 
+        public bool ShowEnvironmentVariablesInLog
+        {
+            get;
+            set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
@@ -60,6 +67,7 @@ namespace XcodeBuilder
                 writer.WriteLine("\t\t\t\t\"{0}\",", path);
             }
             writer.WriteLine("\t\t\t);");
+            writer.WriteLine("\t\t\tname = \"{0}\";", this.Name);
             writer.WriteLine("\t\t\toutputPaths = (");
             foreach (var path in this.OutputPaths)
             {
@@ -71,9 +79,13 @@ namespace XcodeBuilder
             var script = new System.Text.StringBuilder();
             foreach (var line in this.ShellScriptLines)
             {
-                script.AppendFormat("{0}\n", line);
+                script.AppendFormat("{0}\\n", line);
             }
             writer.WriteLine("\t\t\tshellScript = \"{0}\";", script.ToString());
+            if (!this.ShowEnvironmentVariablesInLog)
+            {
+                writer.WriteLine("\t\t\tshowEnvVarsInLog = 0;");
+            }
             writer.WriteLine("\t\t};");
         }
 

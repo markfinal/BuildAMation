@@ -28,6 +28,7 @@ namespace XcodeBuilder
             this.FrameworksBuildPhases = new PBXFrameworksBuildPhaseSection();
             this.TargetDependencies = new PBXTargetDependencySection();
             this.ContainerItemProxies = new PBXContainerItemProxySection();
+            this.ShellScriptBuildPhases = new PBXShellScriptBuildPhaseSection();
 
             this.InitializeGroups();
         }
@@ -147,6 +148,12 @@ namespace XcodeBuilder
             private set;
         }
 
+        public PBXShellScriptBuildPhaseSection ShellScriptBuildPhases
+        {
+            get;
+            private set;
+        }
+
         public PBXGroup MainGroup
         {
             get;
@@ -177,6 +184,7 @@ namespace XcodeBuilder
             writer.WriteLine("\tobjects = {");
 
             (this.BuildFiles as IWriteableNode).Write(writer);
+            (this.ShellScriptBuildPhases as IWriteableNode).Write(writer);
             (this.ContainerItemProxies as IWriteableNode).Write(writer);
             (this.CopyFilesBuildPhases as IWriteableNode).Write(writer);
             (this.FileReferences as IWriteableNode).Write(writer);
