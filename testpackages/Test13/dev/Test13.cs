@@ -52,15 +52,19 @@ namespace Test13
                 }
             }
 
-            /*
+#if false
             class MyMocFile : QtCommon.MocFile
             {
                 public MyMocFile()
                 {
-                    this.SetRelativePath(this, "source", "myobject.h");
+                    var sourceDir = this.PackageLocation.SubDirectory("source");
+                    this.Include(sourceDir, "myobject.h");
                 }
             }
-             */
+
+            [Opus.Core.DependentModules]
+            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFile));
+#else
             class MyMocFiles : QtCommon.MocFileCollection
             {
                 public MyMocFiles()
@@ -84,8 +88,8 @@ namespace Test13
             }
 
             [Opus.Core.DependentModules]
-            //Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFile));
             Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFiles));
+#endif
         }
 
         [Opus.Core.SourceFiles]
