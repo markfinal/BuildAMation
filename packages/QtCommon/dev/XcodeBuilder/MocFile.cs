@@ -7,14 +7,17 @@ namespace XcodeBuilder
 {
     public partial class XcodeBuilder
     {
-        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
+        public object
+        Build(
+            QtCommon.MocFile moduleToBuild,
+            out System.Boolean success)
         {
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
 
             var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
-            if (parentNode.Module is Opus.Core.IModuleCollection)
+            if ((parentNode != null) && (parentNode.Module is Opus.Core.IModuleCollection))
             {
                 targetNode = parentNode.ExternalDependentFor[0];
             }
@@ -25,18 +28,18 @@ namespace XcodeBuilder
 
             var project = this.Workspace.GetProject(targetNode);
 
-            Opus.Core.BaseOptionCollection complementOptionCollection = null;
-            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
-            {
-                var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
-                if (commonOptions is QtCommon.MocOptionCollection)
-                {
-                    complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
-                }
-            }
-
             if (null != parentNode)
             {
+                Opus.Core.BaseOptionCollection complementOptionCollection = null;
+                if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+                {
+                    var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                    if (commonOptions is QtCommon.MocOptionCollection)
+                    {
+                        complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
+                    }
+                }
+
                 // > 1 because the MocOutputPath is currently in the options, hence never null
                 if (complementOptionCollection.OptionNames.Count > 1)
                 {
@@ -57,7 +60,12 @@ namespace XcodeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Single MOC file support in Xcode not yet supported");
+                var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + node.UniqueModuleName, node.ModuleName);
+
+                ShellScriptHelper.WriteShellCommand(node.Target, moduleToBuild.Options, shellScriptBuildPhase);
+
+                shellScriptBuildPhase.InputPaths.Add(moduleToBuild.SourceFileLocation.GetSingleRawPath());
+                shellScriptBuildPhase.OutputPaths.Add(moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSingleRawPath());
             }
 
             success = true;
