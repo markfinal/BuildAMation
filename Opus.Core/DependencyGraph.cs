@@ -490,7 +490,15 @@ namespace Opus.Core
                 {
                     var baseTarget = (BaseTarget)dep.Target;
                     var childIndex = 0;
-                    var currentRank = dep.NodeCollection.Rank + nodeRankOffsets[dep];
+                    var currentRank = dep.NodeCollection.Rank;
+                    if (nodeRankOffsets.ContainsKey(dep))
+                    {
+                        currentRank += nodeRankOffsets[dep];
+                    }
+                    else
+                    {
+                        nodeRankOffsets[dep] = dep.NodeCollection.Rank;
+                    }
 
                     // move the dependency one rank down, to make room for the injected node
                     ++nodeRankOffsets[dep];
