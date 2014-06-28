@@ -16,7 +16,7 @@ namespace VSSolutionBuilder
 
             var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
-            if (parentNode.Module is Opus.Core.IModuleCollection)
+            if ((null != parentNode) && (parentNode.Module is Opus.Core.IModuleCollection))
             {
                 targetNode = parentNode.ExternalDependentFor[0];
             }
