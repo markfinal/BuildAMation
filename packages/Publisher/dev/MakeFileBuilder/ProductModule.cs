@@ -44,7 +44,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                recipeBuilder.AppendFormat("cd {0} && ln -sf $(basename {1}) $(basename {2})", workingDir, sourcePath, destPath);
+                recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) $(notdir {2})", workingDir, sourcePath, destPath);
             }
             var recipe = recipeBuilder.ToString();
             var recipes = new Opus.Core.StringArray();
