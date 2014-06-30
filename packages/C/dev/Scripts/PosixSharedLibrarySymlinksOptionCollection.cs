@@ -157,7 +157,7 @@ namespace C
                 majorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], majorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
-                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
                 copiedSymlink.SetReference(majorSymlinkFile);
                 moduleWithPostAction.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = copiedSymlink;
             }
@@ -170,7 +170,7 @@ namespace C
                 minorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], minorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
-                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
                 copiedSymlink.SetReference(minorSymlinkFile);
                 moduleWithPostAction.Locations[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] = copiedSymlink;
             }
@@ -183,7 +183,7 @@ namespace C
                 linkerSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], linkerSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
-                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
                 copiedSymlink.SetReference(linkerSymlinkFile);
                 moduleWithPostAction.Locations[C.PosixSharedLibrarySymlinks.LinkerSymlink] = copiedSymlink;
             }
