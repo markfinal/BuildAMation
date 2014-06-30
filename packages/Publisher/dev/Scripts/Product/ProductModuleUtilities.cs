@@ -109,7 +109,18 @@ namespace Publisher
         {
             var filename = System.IO.Path.GetFileName(sourcePath);
             var destPath = System.IO.Path.Combine(destinationDirectory, filename);
-            module.Locations[key] = Opus.Core.FileLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
+            if (key.IsFileKey)
+            {
+                module.Locations[key] = Opus.Core.FileLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
+            }
+            else if (key.IsSymlinkKey)
+            {
+                module.Locations[key] = Opus.Core.SymlinkLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
+            }
+            else if (key.IsDirectoryKey)
+            {
+                module.Locations[key] = Opus.Core.DirectoryLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
+            }
             return destPath;
         }
 
@@ -122,7 +133,20 @@ namespace Publisher
         {
             var sourcePath = sourceFile.GetSingleRawPath();
             var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
-            Opus.Core.Log.Info("Copying {0} to {1}", sourcePath, destPath);
+            Opus.Core.Log.Info("Copying file {0} to {1}", sourcePath, destPath);
+            System.IO.File.Copy(sourcePath, destPath, true);
+        }
+
+        public static void
+        CopySymlinkToLocation(
+            Opus.Core.Location sourceSymlink,
+            string destinationDirectory,
+            Opus.Core.BaseModule module,
+            Opus.Core.LocationKey key)
+        {
+            var sourcePath = sourceSymlink.GetSingleRawPath();
+            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
+            Opus.Core.Log.Info("Copying symlink {0} to {1}", sourcePath, destPath);
 #if __MonoCS__
             var buf = new Mono.Unix.Native.Stat();
             var statResult = Mono.Unix.Native.Syscall.lstat(sourcePath, out buf);

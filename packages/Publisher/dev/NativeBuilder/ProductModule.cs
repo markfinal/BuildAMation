@@ -75,8 +75,27 @@ namespace NativeBuilder
                     {
                         var loc = module.Locations[key];
                         var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
-                        var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                        Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                        if (key.IsFileKey)
+                        {
+                            Opus.Core.Log.MessageAll("File: {0}", loc.GetSingleRawPath());
+                            var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                            Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                        }
+                        else if (key.IsSymlinkKey)
+                        {
+                            Opus.Core.Log.MessageAll("Symlink: {0}", loc.GetSingleRawPath());
+                            var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                            Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                        }
+                        else if (key.IsDirectoryKey)
+                        {
+                            Opus.Core.Log.MessageAll("Directory: {0}", loc.GetSingleRawPath());
+                            throw new Opus.Core.Exception("Unsupported Location type");
+                        }
+                        else
+                        {
+                            throw new Opus.Core.Exception("Unsupported Location type");
+                        }
                     }
                 }
             }

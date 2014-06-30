@@ -31,7 +31,6 @@ namespace Opus.Core
             get;
         }
 
-        // TODO: this might have to migrate to the base class, if more subclasses need to be cloneable
         public EExists Exists
         {
             get;
@@ -297,6 +296,92 @@ namespace Opus.Core
     }
 
     /// <summary>
+    /// SymlinkLocation represents a single symbol link on disk.
+    /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
+    /// SymlinkLocation are cached internally, so only a single instance of a symlink path exists.
+    /// </summary>
+    public sealed class SymlinkLocation : Location
+    {
+        private static System.Collections.Generic.Dictionary<int, SymlinkLocation> cache = new System.Collections.Generic.Dictionary<int, SymlinkLocation>();
+
+        private SymlinkLocation(string absolutePath, Location.EExists exists)
+        {
+            if (exists == EExists.Exists)
+            {
+                if (!System.IO.File.Exists(absolutePath))
+                {
+                    throw new Exception("Symlink '{0}' does not exist", absolutePath);
+                }
+            }
+            this.AbsolutePath = absolutePath;
+            this.Exists = exists;
+        }
+
+        public static SymlinkLocation Get(string absolutePath, Location.EExists exists)
+        {
+            var hash = absolutePath.GetHashCode();
+            if (cache.ContainsKey(hash))
+            {
+                return cache[hash];
+            }
+
+            // because the cache might be written into by multiple threads
+            lock (cache)
+            {
+                var instance = new SymlinkLocation(absolutePath, exists);
+                cache[hash] = instance;
+                return instance;
+            }
+        }
+
+        public static SymlinkLocation Get(string absolutePath)
+        {
+            return Get(absolutePath, EExists.Exists);
+        }
+
+        public static SymlinkLocation Get(Location baseLocation, string nonWildcardedFilename)
+        {
+            var locations = baseLocation.GetLocations();
+            if (locations.Count != 1)
+            {
+                throw new Exception("Cannot resolve source Location to a single path");
+            }
+            var path = System.IO.Path.Combine(locations[0].AbsolutePath, nonWildcardedFilename);
+            var hash = path.GetHashCode();
+            if (cache.ContainsKey(hash))
+            {
+                return cache[hash];
+            }
+            var instance = new SymlinkLocation(path, EExists.Exists);
+            cache[hash] = instance;
+            return instance;
+        }
+
+        public override Location SubDirectory(string subDirName)
+        {
+            throw new System.NotImplementedException ();
+        }
+
+        public override Location SubDirectory(string subDirName, EExists exists)
+        {
+            throw new System.NotImplementedException ();
+        }
+
+        public override LocationArray GetLocations()
+        {
+            return new LocationArray(this);
+        }
+
+        public override bool IsValid
+        {
+            get
+            {
+                return true;
+            }
+        }
+    }
+
+    /// <summary>
     /// ScaffoldLocation is an abstract representation of many real Locations on disk.
     /// ScaffoldLocations are constructed from a base Location, with a search pattern added to it. This pattern may be wildcarded.
     /// Calling GetLocations() on a ScaffoldLocation will resolve the pattern to a list of real Locations, be they file or directory.
@@ -306,7 +391,8 @@ namespace Opus.Core
         public enum ETypeHint
         {
             Directory,
-            File
+            File,
+            Symlink
         }
 
         public ScaffoldLocation(ETypeHint typeHint)
@@ -420,7 +506,7 @@ namespace Opus.Core
                 }
 
                 var fullPath = System.IO.Path.Combine(path, this.Pattern);
-                if (this.TypeHint == ETypeHint.File)
+                if (this.TypeHint == ETypeHint.File || this.TypeHint == ETypeHint.Symlink)
                 {
                     if (this.Pattern.Contains("*"))
                     {
@@ -437,12 +523,26 @@ namespace Opus.Core
                         var files = dirInfo.GetFiles(pattern, searchType);
                         foreach (var file in files)
                         {
-                            this.Results.AddUnique(FileLocation.Get(file.FullName, this.Exists));
+                            if (this.TypeHint == ETypeHint.File)
+                            {
+                                this.Results.AddUnique(FileLocation.Get(file.FullName, this.Exists));
+                            }
+                            else
+                            {
+                                this.Results.AddUnique(SymlinkLocation.Get(file.FullName, this.Exists));
+                            }
                         }
                     }
                     else
                     {
-                        this.Results.AddUnique(FileLocation.Get(fullPath, this.Exists));
+                        if (this.TypeHint == ETypeHint.File)
+                        {
+                            this.Results.AddUnique(FileLocation.Get(fullPath, this.Exists));
+                        }
+                        else
+                        {
+                            this.Results.AddUnique(SymlinkLocation.Get(fullPath, this.Exists));
+                        }
                     }
                 }
                 else
@@ -469,7 +569,7 @@ namespace Opus.Core
                     {
                         this.ResolveDirectory(result);
                     }
-                    else if (result is FileLocation)
+                    else if (result is FileLocation || result is SymlinkLocation)
                     {
                         this.Results.Add(result);
                     }
@@ -487,7 +587,7 @@ namespace Opus.Core
             {
                 this.ResolveDirectory(this.Base);
             }
-            else if (this.Base is FileLocation)
+            else if (this.Base is FileLocation | this.Base is SymlinkLocation)
             {
                 this.Results.Add(this.Base);
             }
@@ -532,7 +632,7 @@ namespace Opus.Core
             }
             protected set
             {
-                throw new Exception("Scaffold locations cannot have their absolute path set. Use a FileLocation or DirectoryLocation");
+                throw new Exception("Scaffold locations cannot have their absolute path set. Use a FileLocation, SymlinkLocation or DirectoryLocation");
             }
         }
 
@@ -605,6 +705,15 @@ namespace Opus.Core
             }
         }
 
+        public bool IsSymlinkKey
+        {
+            get
+            {
+                bool isSymlinkKey = (this.Type == ScaffoldLocation.ETypeHint.Symlink);
+                return isSymlinkKey;
+            }
+        }
+
         public override string ToString()
         {
             return this.Identifier;
@@ -636,21 +745,29 @@ namespace Opus.Core
                 {
                     if ((value as ScaffoldLocation).TypeHint != key.Type)
                     {
-                        throw new Exception("Location and LocationKey differ on type hints");
+                        throw new Exception("Location and LocationKey differ on type hints. Location is {0}. Key type is {1}",
+                                            (value as ScaffoldLocation).TypeHint.ToString(), key.Type.ToString());
                     }
                 }
                 else if (key.Type == ScaffoldLocation.ETypeHint.File)
                 {
                     if (!(value is FileLocation))
                     {
-                        throw new Exception("LocationKey wants a file, but doesn't have one");
+                        throw new Exception("LocationKey requires a file but has an {0} instead", value.GetType().ToString());
+                    }
+                }
+                else if (key.Type == ScaffoldLocation.ETypeHint.Symlink)
+                {
+                    if (!(value is SymlinkLocation))
+                    {
+                        throw new Exception("LocationKey requires a symbolic link but has an {0} instead", value.GetType().ToString());
                     }
                 }
                 else if (key.Type == ScaffoldLocation.ETypeHint.Directory)
                 {
                     if (!(value is DirectoryLocation))
                     {
-                        throw new Exception("LocationKey wants a directory, but doesn't have one");
+                        throw new Exception("LocationKey requires a directory but has an {0} instead", value.GetType().ToString());
                     }
                 }
                 this.map[key] = value;

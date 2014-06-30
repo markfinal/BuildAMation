@@ -121,17 +121,17 @@ namespace QtCommon
                 // so library name (major version)
                 var soNameDynamicLibraryLeafname = System.String.Format("lib{0}.so.{1}", moduleName, majorVersion);
                 var soNameDynamicLibraryPath = System.IO.Path.Combine(libPath, soNameDynamicLibraryLeafname);
-                this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = Opus.Core.FileLocation.Get(soNameDynamicLibraryPath);
+                this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = Opus.Core.SymlinkLocation.Get(soNameDynamicLibraryPath);
 
                 // minor version library name
                 var minorVersionDynamicLibraryLeafname = System.String.Format("lib{0}.so.{1}.{2}", moduleName, majorVersion, minorVersion);
                 var minorVersionDynamicLibraryPath = System.IO.Path.Combine(libPath, minorVersionDynamicLibraryLeafname);
-                this.Locations[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] = Opus.Core.FileLocation.Get(minorVersionDynamicLibraryPath);
+                this.Locations[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] = Opus.Core.SymlinkLocation.Get(minorVersionDynamicLibraryPath);
 
                 // linker library name
                 var linkerDynamicLibraryLeafname = System.String.Format("lib{0}.so", moduleName);
                 var linkerDynamicLibraryPath = System.IO.Path.Combine(libPath, linkerDynamicLibraryLeafname);
-                this.Locations[C.PosixSharedLibrarySymlinks.LinkerSymlink] = Opus.Core.FileLocation.Get(linkerDynamicLibraryPath);
+                this.Locations[C.PosixSharedLibrarySymlinks.LinkerSymlink] = Opus.Core.SymlinkLocation.Get(linkerDynamicLibraryPath);
             }
             else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
             {

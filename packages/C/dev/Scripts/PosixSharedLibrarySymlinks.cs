@@ -12,9 +12,9 @@ namespace C
     public class PosixSharedLibrarySymlinks : Opus.Core.BaseModule
     {
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("PosixSOSymlinkOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey LinkerSymlink = new Opus.Core.LocationKey("PosixSOSymlinkLinkerSymlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey MajorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMajorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey MinorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMinorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Opus.Core.LocationKey LinkerSymlink = new Opus.Core.LocationKey("PosixSOSymlinkLinkerSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+        public static readonly Opus.Core.LocationKey MajorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMajorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+        public static readonly Opus.Core.LocationKey MinorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMinorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
 
         public Opus.Core.Location RealSharedLibraryFileLocation
         {
