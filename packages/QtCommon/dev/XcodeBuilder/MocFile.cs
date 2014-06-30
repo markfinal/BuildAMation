@@ -13,7 +13,6 @@ namespace XcodeBuilder
             out System.Boolean success)
         {
             var node = moduleToBuild.OwningNode;
-            var moduleName = node.ModuleName;
 
             var parentNode = node.Parent;
             Opus.Core.DependencyNode targetNode;
