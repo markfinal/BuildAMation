@@ -185,7 +185,11 @@ namespace MakeFileBuilder
                     }
                     else
                     {
-                        var outputKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                        var outputKeys = new Opus.Core.Array<Opus.Core.LocationKey>();
+                        var fileKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                        var symlinkKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.Symlink, Opus.Core.Location.EExists.WillExist);
+                        outputKeys.AddRangeUnique(fileKeys);
+                        outputKeys.AddRangeUnique(symlinkKeys);
                         foreach (var outputLocKey in outputKeys)
                         {
                             var outputLoc = rule.ModuleToBuild.Locations[outputLocKey];
