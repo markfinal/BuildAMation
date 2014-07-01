@@ -43,6 +43,8 @@ namespace XcodeBuilder
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
+            var options = moduleToBuild.Options as Publisher.IPublishOptions;
+
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
             if (null == primaryNodeData)
             {
@@ -53,6 +55,12 @@ namespace XcodeBuilder
             var primaryNode = primaryNodeData.Node;
             var project = this.Workspace.GetProject(primaryNode);
             var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;
+
+            if (options.OSXApplicationBundle)
+            {
+                primaryPBXNativeTarget.Type = PBXNativeTarget.EType.ApplicationBundle;
+                primaryPBXNativeTarget.ProductReference.SetType(PBXFileReference.EType.ApplicationBundle);
+            }
 
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)

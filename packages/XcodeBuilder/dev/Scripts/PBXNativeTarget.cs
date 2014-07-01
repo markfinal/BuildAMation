@@ -28,7 +28,7 @@ namespace XcodeBuilder
         public EType Type
         {
             get;
-            private set;
+            set;
         }
 
         public PBXFileReference ProductReference

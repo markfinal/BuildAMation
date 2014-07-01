@@ -26,9 +26,16 @@ namespace XcodeBuilder
         public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
             : base(name)
         {
+            this.RootPath = rootPath;
             this.FullPath = path;
+            this.SetType(type);
+        }
+
+        public void
+        SetType(EType type)
+        {
             this.Type = type;
-            this.ShortPath = CalculateShortPath(type, path);
+            this.ShortPath = CalculateShortPath(type, this.FullPath);
             if (EType.Framework == type)
             {
                 // TODO: this is a hack, as I don't know the SDK at this stage
@@ -37,7 +44,7 @@ namespace XcodeBuilder
             }
             else
             {
-                var relative = Opus.Core.RelativePathUtilities.GetPath(path, rootPath);
+                var relative = Opus.Core.RelativePathUtilities.GetPath(this.FullPath, this.RootPath);
                 if (relative.Contains("-"))
                 {
                     relative = System.String.Format("\"{0}\"", relative);
@@ -58,6 +65,12 @@ namespace XcodeBuilder
                 shortPath += ".app";
             }
             return shortPath;
+        }
+
+        private System.Uri RootPath
+        {
+            get;
+            set;
         }
 
         public string FullPath
