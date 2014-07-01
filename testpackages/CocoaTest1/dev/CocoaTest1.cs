@@ -45,4 +45,25 @@ namespace CocoaTest1
             typeof(CocoaTest)
             );
     }
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
+    class Publish : Publisher.ProductModule
+    {
+        public Publish()
+        {
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                var options = module.Options as Publisher.IPublishOptions;
+                if (null != options)
+                {
+                    options.OSXApplicationBundle = true;
+                }
+            };
+        }
+
+        [Publisher.PrimaryTarget]
+        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(CocoaTest), C.Application.OutputFile);
+    }
+#endif
 }

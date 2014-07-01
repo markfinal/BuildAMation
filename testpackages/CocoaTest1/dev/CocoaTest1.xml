@@ -19,6 +19,9 @@
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Publisher">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="XcodeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
