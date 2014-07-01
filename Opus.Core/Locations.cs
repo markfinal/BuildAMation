@@ -248,7 +248,7 @@ namespace Opus.Core
             return Get(absolutePath, EExists.Exists);
         }
 
-        public static FileLocation Get(Location baseLocation, string nonWildcardedFilename)
+        public static FileLocation Get(Location baseLocation, string nonWildcardedFilename, EExists exists)
         {
             var locations = baseLocation.GetLocations();
             if (locations.Count != 1)
@@ -261,9 +261,14 @@ namespace Opus.Core
             {
                 return cache[hash];
             }
-            var instance = new FileLocation(path, EExists.Exists);
+            var instance = new FileLocation(path, exists);
             cache[hash] = instance;
             return instance;
+        }
+
+        public static FileLocation Get(Location baseLocation, string nonWildcardedFilename)
+        {
+            return Get(baseLocation, nonWildcardedFilename, EExists.Exists);
         }
 
         public override Location SubDirectory(string subDirName)
