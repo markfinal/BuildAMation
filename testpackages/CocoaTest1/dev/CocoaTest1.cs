@@ -64,6 +64,9 @@ namespace CocoaTest1
 
         [Publisher.PrimaryTarget]
         Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(CocoaTest), C.Application.OutputFile);
+
+        [Publisher.OSXInfoPList]
+        Publisher.PublishNodeData infoPList = new Publisher.PublishNodeData(typeof(CocoaTestPlist), XmlUtilities.OSXPlistModule.OutputFile);
     }
 #endif
 }
