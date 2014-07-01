@@ -5,7 +5,9 @@
 // <author>Mark Final</author>
 namespace Publisher
 {
-    public sealed class OptionSet : Opus.Core.BaseOptionCollection, IPublishOptions
+    public sealed partial class OptionSet :
+        Opus.Core.BaseOptionCollection,
+        IPublishOptions
     {
         public OptionSet(Opus.Core.DependencyNode owningNode)
             : base(owningNode)
@@ -14,20 +16,34 @@ namespace Publisher
 
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
         {
+            var options = this as IPublishOptions;
+            options.OSXApplicationBundle = false;
         }
 
-        protected override void SetDelegates(Opus.Core.DependencyNode owningNode)
+        public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
-        }
+            var options = this as IPublishOptions;
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
-        {
             var locationMap = node.Module.Locations;
             var exeDirLoc = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Directory);
             exeDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
-            locationMap[ProductModule.PublishDir] = exeDirLoc;
+            if (node.Target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
+            {
+                // TODO: specifying the application bundle name needs a better solution
+                var appBundle = exeDirLoc.SubDirectory(node.ModuleName + ".app");
+                locationMap[ProductModule.OSXAppBundle] = appBundle;
+                var contents = appBundle.SubDirectory("Contents");
+                locationMap[ProductModule.OSXAppBundleContents] = contents;
+                var macos = contents.SubDirectory("MacOS");
+                locationMap[ProductModule.OSXAppBundleMacOS] = macos;
+                locationMap[ProductModule.PublishDir] = macos;
+            }
+            else
+            {
+                locationMap[ProductModule.PublishDir] = exeDirLoc;
+            }
 
-            base.SetNodeSpecificData(node);
+            base.FinalizeOptions (node);
         }
     }
 }

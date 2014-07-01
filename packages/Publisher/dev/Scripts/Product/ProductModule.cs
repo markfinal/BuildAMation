@@ -8,6 +8,9 @@ namespace Publisher
     [Opus.Core.ModuleToolAssignment(typeof(IPublishProductTool))]
     public abstract class ProductModule : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
     {
+        public static readonly Opus.Core.LocationKey OSXAppBundle = new Opus.Core.LocationKey("OSXPrimaryApplicationBundle", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Opus.Core.LocationKey OSXAppBundleContents = new Opus.Core.LocationKey("OSXPrimaryAppBundleContents", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Opus.Core.LocationKey OSXAppBundleMacOS = new Opus.Core.LocationKey("OSXPrimaryAppBundleMacOS", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         public static readonly Opus.Core.LocationKey PublishDir = new Opus.Core.LocationKey("PrimaryModuleDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
         #region IIdentifyExternalDependencies Members
