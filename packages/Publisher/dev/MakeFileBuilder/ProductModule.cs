@@ -187,6 +187,34 @@ namespace MakeFileBuilder
                 }
             }
 
+            var options = moduleToBuild.Options as Publisher.IPublishOptions;
+            if (options.OSXApplicationBundle)
+            {
+                var plistNodeData = Publisher.ProductModuleUtilities.GetOSXPListNodeData(moduleToBuild);
+                if (null != plistNodeData)
+                {
+                    var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, plistNodeData.Node.Module, plistNodeData.Key);
+                    var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                    var contentsLoc = locationMap[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
+                    var plistSourceLoc = plistNodeData.Node.Module.Locations[plistNodeData.Key];
+                    var plistSourcePath = plistSourceLoc.GetSingleRawPath();
+                    var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                        plistSourcePath,
+                        contentsLoc,
+                        moduleToBuild,
+                        newKey);
+                    var rule = new MakeFileRule(
+                        moduleToBuild,
+                        newKey,
+                        node.UniqueModuleName,
+                        dirsToCreate,
+                        null,
+                        null,
+                        MakeCopyFileRecipe(plistSourcePath, depDestPath));
+                    makeFile.RuleArray.Add(rule);
+                }
+            }
+
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
 

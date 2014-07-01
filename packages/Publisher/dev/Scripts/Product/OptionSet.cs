@@ -29,8 +29,10 @@ namespace Publisher
             exeDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
             if (node.Target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
             {
+                var dependent = node.ExternalDependents[0];
+
                 // TODO: specifying the application bundle name needs a better solution
-                var appBundle = exeDirLoc.SubDirectory(node.ModuleName + ".app");
+                var appBundle = exeDirLoc.SubDirectory(dependent.ModuleName + ".app");
                 locationMap[ProductModule.OSXAppBundle] = appBundle;
                 var contents = appBundle.SubDirectory("Contents");
                 locationMap[ProductModule.OSXAppBundleContents] = contents;
