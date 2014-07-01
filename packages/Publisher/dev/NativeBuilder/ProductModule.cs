@@ -97,6 +97,20 @@ namespace NativeBuilder
                 }
             }
 
+            var options = moduleToBuild.Options as Publisher.IPublishOptions;
+            if (options.OSXApplicationBundle)
+            {
+                var plistNodeData = Publisher.ProductModuleUtilities.GetOSXPListNodeData(moduleToBuild);
+                if (null != plistNodeData)
+                {
+                    var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, plistNodeData.Node.Module, plistNodeData.Key);
+                    var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                    var contentsLoc = locationMap[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
+                    var plistSourceLoc = plistNodeData.Node.Module.Locations[plistNodeData.Key];
+                    Publisher.ProductModuleUtilities.CopyFileToLocation(plistSourceLoc, contentsLoc, moduleToBuild, newKey);
+                }
+            }
+
             success = true;
             return null;
         }

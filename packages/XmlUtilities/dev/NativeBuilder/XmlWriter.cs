@@ -32,6 +32,14 @@ namespace NativeBuilder
 
             Opus.Core.Log.Info("Writing XML file '{0}'", xmlPath);
 
+            // create all directories required
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
             // serialize the XML to disk
             var settings = new System.Xml.XmlWriterSettings();
             settings.CheckCharacters = true;
@@ -43,6 +51,7 @@ namespace NativeBuilder
             settings.NewLineHandling = System.Xml.NewLineHandling.None;
             settings.NewLineOnAttributes = false;
             settings.OmitXmlDeclaration = false;
+            settings.Encoding = new System.Text.UTF8Encoding(false); // do not write BOM
 
             using (var writer = System.Xml.XmlWriter.Create(xmlPath, settings))
             {

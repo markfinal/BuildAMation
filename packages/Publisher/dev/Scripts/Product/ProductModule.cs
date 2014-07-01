@@ -32,7 +32,8 @@ namespace Publisher
                 }
 
                 var currentAttr = attributes[0];
-                if (currentAttr.GetType() == typeof(PrimaryTargetAttribute))
+                if (currentAttr.GetType() == typeof(PrimaryTargetAttribute) ||
+                    currentAttr.GetType() == typeof(OSXInfoPListAttribute))
                 {
                     var primaryModuleData = field.GetValue(this) as PublishNodeData;
                     if (null == primaryModuleData)

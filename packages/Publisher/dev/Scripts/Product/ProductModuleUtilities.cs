@@ -43,7 +43,7 @@ namespace Publisher
             return moduleData;
         }
 
-        public class PrimaryNodeData
+        public class PublishingNodeData
         {
             public Opus.Core.DependencyNode Node
             {
@@ -58,27 +58,54 @@ namespace Publisher
             }
         }
 
-        public static PrimaryNodeData GetPrimaryNodeData(Publisher.ProductModule moduleToBuild)
+        public static PublishingNodeData
+        GetPrimaryNodeData(
+            Publisher.ProductModule moduleToBuild)
         {
-            PrimaryNodeData primaryNodeData = null;
+            PublishingNodeData data = null;
 
             // TODO: why is this check necessary?
             var dependents = moduleToBuild.OwningNode.ExternalDependents;
             if ((null == dependents) || (dependents.Count == 0))
             {
-                return primaryNodeData;
+                return data;
             }
 
-            var primaryTargetData = GetModulesDataWithAttribute(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
-            if (primaryTargetData.Count == 0)
+            var matchingModules = GetModulesDataWithAttribute(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
+            if (matchingModules.Count == 0)
             {
-                return primaryNodeData;
+                return data;
             }
 
-            primaryNodeData = new PrimaryNodeData();
-            primaryNodeData.Node = Opus.Core.ModuleUtilities.GetNode(primaryTargetData[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-            primaryNodeData.Key = primaryTargetData[0].Key;
-            return primaryNodeData;
+            data = new PublishingNodeData();
+            data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            data.Key = matchingModules[0].Key;
+            return data;
+        }
+
+        public static PublishingNodeData
+        GetOSXPListNodeData(
+            Publisher.ProductModule moduleToBuild)
+        {
+            PublishingNodeData data = null;
+
+            // TODO: why is this check necessary?
+            var dependents = moduleToBuild.OwningNode.ExternalDependents;
+            if ((null == dependents) || (dependents.Count == 0))
+            {
+                return data;
+            }
+
+            var matchingModules = GetModulesDataWithAttribute(moduleToBuild, typeof(Publisher.OSXInfoPListAttribute));
+            if (matchingModules.Count == 0)
+            {
+                return data;
+            }
+
+            data = new PublishingNodeData();
+            data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            data.Key = matchingModules[0].Key;
+            return data;
         }
 
         public static string

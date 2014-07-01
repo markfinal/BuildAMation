@@ -47,8 +47,28 @@ namespace XmlUtilities
             dict.AppendChild(element);
         }
 
+        protected override void SetNodeSpecificData (Opus.Core.DependencyNode node)
+        {
+            var locationMap = node.Module.Locations;
+            var pListDirLoc = locationMap[XmlModule.OutputDir] as Opus.Core.ScaffoldLocation;
+            if (!pListDirLoc.IsValid)
+            {
+                pListDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
+            }
+
+            base.SetNodeSpecificData (node);
+        }
+
         public override void FinalizeOptions(Opus.Core.DependencyNode node)
         {
+            var locationMap = node.Module.Locations;
+            var pListFileLoc = locationMap[XmlModule.OutputFile] as Opus.Core.ScaffoldLocation;
+            if (!pListFileLoc.IsValid)
+            {
+                pListFileLoc.SpecifyStub(locationMap[XmlModule.OutputDir], "Info.plist", Opus.Core.ScaffoldLocation.EExists.WillExist);
+            }
+
+            // TODO: move this into the Module itself
             // the plist file is relative to the main executable
             if (null == node.ExternalDependents)
             {
@@ -58,13 +78,6 @@ namespace XmlUtilities
             var dependentNode = node.ExternalDependents[0];
             var exeFileLoc = dependentNode.Module.Locations[C.Application.OutputFile];
             var exeDirLoc = dependentNode.Module.Locations[C.Application.OutputDir];
-
-            var locationMap = node.Module.Locations;
-            var pListFileLoc = locationMap[XmlModule.OutputFile] as Opus.Core.ScaffoldLocation;
-            if (!pListFileLoc.IsValid)
-            {
-                pListFileLoc.SpecifyStub(exeDirLoc, "Info.plist", Opus.Core.ScaffoldLocation.EExists.WillExist);
-            }
 
             var primaryOutputPath = exeFileLoc.GetSinglePath();
 
