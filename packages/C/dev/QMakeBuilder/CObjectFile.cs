@@ -24,7 +24,14 @@ namespace QMakeBuilder
 
             var data = new QMakeData(node);
             data.PriPaths.Add(this.EmptyConfigPriPath);
-            data.Sources.Add(sourceFilePath);
+            if ((moduleToBuild is C.ObjC.ObjectFile) || (moduleToBuild is C.ObjCxx.ObjectFile))
+            {
+                data.ObjectiveSources.Add(sourceFilePath);
+            }
+            else
+            {
+                data.Sources.Add(sourceFilePath);
+            }
             data.Output = QMakeData.OutputType.ObjectFile;
 #if true
             data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.OutputDir];

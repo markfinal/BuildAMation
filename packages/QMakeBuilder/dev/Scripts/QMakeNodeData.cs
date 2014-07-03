@@ -39,6 +39,7 @@ namespace QMakeBuilder
             this.LinkFlags = new Opus.Core.StringArray();
             this.Merged = false;
             this.MocDir = string.Empty;
+            this.ObjectiveSources = new Opus.Core.StringArray();
             this.ObjectsDir = null;
             this.Output = OutputType.Undefined;
             this.PostLink = new Opus.Core.StringArray();
@@ -144,6 +145,12 @@ namespace QMakeBuilder
         {
             get;
             set;
+        }
+
+        public Opus.Core.StringArray ObjectiveSources
+        {
+            get;
+            private set;
         }
 
         public Opus.Core.Location ObjectsDir
@@ -383,6 +390,35 @@ namespace QMakeBuilder
                 }
 
                 WriteStringArrays(values, "SOURCES+=", proFilePath, writer);
+            }
+        }
+
+        private static void
+        WriteObjectiveSources(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                WriteStringArray(array[0].ObjectiveSources, "OBJECTIVE_SOURCES+=", proFilePath, writer);
+            }
+            else
+            {
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.ObjectiveSources;
+                    }
+                    else
+                    {
+                        values.Release = data.ObjectiveSources;
+                    }
+                }
+
+                WriteStringArrays(values, "OBJECTIVE_SOURCES+=", proFilePath, writer);
             }
         }
 
@@ -1022,7 +1058,6 @@ namespace QMakeBuilder
             {
                 // TODO: how to handle this for splitting on the equals sign?
                 var values = new Values<Opus.Core.StringArray>();
-                string prefix;
                 foreach (var data in array)
                 {
                     if (data.CustomRules == null)
@@ -1200,6 +1235,7 @@ namespace QMakeBuilder
             this.RPathDir.AddRangeUnique(data.RPathDir);
             this.QtModules.AddRangeUnique(data.QtModules);
             this.Sources.AddRangeUnique(data.Sources);
+            this.ObjectiveSources.AddRangeUnique(data.ObjectiveSources);
             if (data.Output != OutputType.Undefined)
             {
                 this.Output = data.Output;
@@ -1267,6 +1303,7 @@ namespace QMakeBuilder
                 WriteCCFlags(array, proFilePath, proWriter);
                 WriteCXXFlags(array, proFilePath, proWriter);
                 WriteSources(array, proFilePath, proWriter);
+                WriteObjectiveSources(array, proFilePath, proWriter);
                 WriteHeaders(array, proFilePath, proWriter);
                 WriteWinRCFiles(array, proFilePath, proWriter);
                 WriteLibraries(array, proFilePath, proWriter);
