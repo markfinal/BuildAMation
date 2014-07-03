@@ -103,6 +103,7 @@ namespace XcodeBuilder
                     group.Children.AddUnique(sourceData.FileReference);
                 }
             }
+            data.Group = group;
             project.MainGroup.Children.AddUnique(group);
 
             var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);

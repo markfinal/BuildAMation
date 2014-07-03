@@ -67,6 +67,12 @@ namespace XcodeBuilder
             private set;
         }
 
+        public PBXGroup Group
+        {
+            get;
+            set;
+        }
+
 #region IWriteableNode implementation
 
         void IWriteableNode.Write(System.IO.TextWriter writer)
