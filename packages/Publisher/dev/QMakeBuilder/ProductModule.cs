@@ -30,6 +30,8 @@ namespace QMakeBuilder
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
+            var options = moduleToBuild.Options as Publisher.IPublishOptions;
+
             var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
             if (null == primaryNodeData)
             {
@@ -38,6 +40,12 @@ namespace QMakeBuilder
             }
 
             var primaryNode = primaryNodeData.Node;
+            if (options.OSXApplicationBundle)
+            {
+                var data = primaryNode.Data as QMakeData;
+                data.OSXApplicationBundle = true;
+            }
+
             var locationMap = primaryNode.Module.Locations;
             var publishDirLoc = (locationMap[primaryNodeData.Key] as Opus.Core.ScaffoldLocation).Base;
             var publishDirPath = publishDirLoc.GetSingleRawPath();
