@@ -22,6 +22,9 @@
     <Opus:Package Name="Publisher">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="QMakeBuilder">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
     <Opus:Package Name="XcodeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
