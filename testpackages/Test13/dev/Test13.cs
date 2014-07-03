@@ -146,7 +146,7 @@ namespace Test13
         [Publisher.PrimaryTarget]
         Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(QtApplication), C.Application.OutputFile);
 
-        [Publisher.OSXInfoPList]
+        [Publisher.OSXInfoPList(Platform=Opus.Core.EPlatform.OSX)]
         Publisher.PublishNodeData infoPList = new Publisher.PublishNodeData(typeof(AppInfoPList), XmlUtilities.OSXPlistModule.OutputFile);
     }
 #else
