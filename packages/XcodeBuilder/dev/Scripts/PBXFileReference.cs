@@ -20,7 +20,8 @@ namespace XcodeBuilder
             ObjCSourceFile,
             ObjCxxSourceFile,
             HeaderFile,
-            Framework
+            Framework,
+            PList
         }
 
         public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
@@ -149,6 +150,10 @@ namespace XcodeBuilder
 
             case EType.Framework:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = {1}; path = {2}; sourceTree = DEVELOPER_DIR; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            case EType.PList:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = text.plist; name = {1}; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
                 break;
 
             default:
