@@ -1013,12 +1013,16 @@ namespace QMakeBuilder
                 }
                 foreach (var customRule in array[0].CustomRules)
                 {
-                    WriteString(customRule, string.Empty, proFilePath, writer);
+                    var split = customRule.Split('=');
+                    split[0] += '=';
+                    WriteString(split[1], split[0], proFilePath, writer);
                 }
             }
             else
             {
+                // TODO: how to handle this for splitting on the equals sign?
                 var values = new Values<Opus.Core.StringArray>();
+                string prefix;
                 foreach (var data in array)
                 {
                     if (data.CustomRules == null)
