@@ -41,7 +41,6 @@ namespace C
             var osxLinkerOptions = this as ILinkerOptionsOSX;
             if (osxLinkerOptions != null)
             {
-                osxLinkerOptions.ApplicationBundle = false;
                 osxLinkerOptions.Frameworks = new Opus.Core.StringArray();
                 osxLinkerOptions.FrameworkSearchDirectories = new Opus.Core.DirectoryCollection();
                 osxLinkerOptions.SuppressReadOnlyRelocations = false;

@@ -30,18 +30,6 @@ namespace BundlingTest
     /// </summary>
     class WindowedApplication : C.WindowsApplication
     {
-        public WindowedApplication()
-        {
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
-            {
-                var osxOptions = module.Options as C.ILinkerOptionsOSX;
-                if (null != osxOptions)
-                {
-                    osxOptions.ApplicationBundle = true;
-                }
-            };
-        }
-
         class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()

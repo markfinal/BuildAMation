@@ -61,6 +61,9 @@
     <Opus:Package Name="XcodeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="XmlUtilities">
+      <Opus:Version Id="dev" />
+    </Opus:Package>
   </Opus:RequiredPackages>
   <Opus:RequiredOpusAssemblies>
     <Opus:OpusAssembly Name="Opus.Core" />

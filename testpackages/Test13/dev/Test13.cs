@@ -6,11 +6,6 @@ namespace Test13
         public QtApplication(Opus.Core.Target target)
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delTarget) {
-                var osxLink = module.Options as C.ILinkerOptionsOSX;
-                if (osxLink != null)
-                {
-                    osxLink.ApplicationBundle = true;
-                }
                 var gccLink = module.Options as GccCommon.ILinkerOptions;
                 if (null != gccLink)
                 {
@@ -113,11 +108,46 @@ namespace Test13
             );
     }
 
+    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
+    class AppInfoPList : XmlUtilities.OSXPlistModule
+    {
+        public AppInfoPList()
+        {
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+                var options = module.Options as XmlUtilities.IOSXPlistOptions;
+                options.CFBundleName = "QtApplication";
+                options.CFBundleDisplayName = "QtApplication";
+                options.CFBundleIdentifier = "QtApplication";
+                options.CFBundleVersion = "1.0.0";
+            };
+        }
+
+        [Opus.Core.DependentModules]
+        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+            typeof(QtApplication)
+        );
+    }
+
 #if OPUSPACKAGE_PUBLISHER_DEV
     class Publish : Publisher.ProductModule
     {
+        public Publish()
+        {
+            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            {
+                var options = module.Options as Publisher.IPublishOptions;
+                if (null != options)
+                {
+                    options.OSXApplicationBundle = true;
+                }
+            };
+        }
+
         [Publisher.PrimaryTarget]
         Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(QtApplication), C.Application.OutputFile);
+
+        [Publisher.OSXInfoPList]
+        Publisher.PublishNodeData infoPList = new Publisher.PublishNodeData(typeof(AppInfoPList), XmlUtilities.OSXPlistModule.OutputFile);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

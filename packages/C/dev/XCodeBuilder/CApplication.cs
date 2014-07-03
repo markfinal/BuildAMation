@@ -23,13 +23,10 @@ namespace XcodeBuilder
 
             var project = this.Workspace.GetProject(node);
 
-            var osxLinkerOptions = moduleToBuild.Options as C.ILinkerOptionsOSX;
-            var fileType = osxLinkerOptions.ApplicationBundle ? PBXFileReference.EType.ApplicationBundle : PBXFileReference.EType.Executable;
-            var fileRef = project.FileReferences.Get(moduleName, fileType, executableLocation, project.RootUri);
+            var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.Executable, executableLocation, project.RootUri);
             project.ProductsGroup.Children.AddUnique(fileRef);
 
-            var nativeType = osxLinkerOptions.ApplicationBundle ? PBXNativeTarget.EType.ApplicationBundle : PBXNativeTarget.EType.Executable;
-            var data = project.NativeTargets.Get(moduleName, nativeType, project);
+            var data = project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.Executable, project);
             data.ProductReference = fileRef;
 
             // gather up all the source files for this target

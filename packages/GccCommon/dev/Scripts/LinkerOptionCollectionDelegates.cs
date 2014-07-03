@@ -509,7 +509,6 @@ namespace GccCommon
             // Property 'MajorVersion' is state only
             // Property 'MinorVersion' is state only
             // Property 'PatchVersion' is state only
-            // Property 'ApplicationBundle' is state only
             this["Frameworks"].PrivateData = new PrivateData(FrameworksCommandLineProcessor,FrameworksXcodeProjectProcessor);
             this["FrameworkSearchDirectories"].PrivateData = new PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
             this["SuppressReadOnlyRelocations"].PrivateData = new PrivateData(SuppressReadOnlyRelocationsCommandLineProcessor,SuppressReadOnlyRelocationsXcodeProjectProcessor);

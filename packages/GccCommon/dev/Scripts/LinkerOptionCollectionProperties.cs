@@ -164,18 +164,6 @@ namespace GccCommon
         }
         #endregion
         #region C.ILinkerOptionsOSX Option properties
-        bool C.ILinkerOptionsOSX.ApplicationBundle
-        {
-            get
-            {
-                return this.GetValueTypeOption<bool>("ApplicationBundle", this.SuperSetOptionCollection);
-            }
-            set
-            {
-                this.SetValueTypeOption<bool>("ApplicationBundle", value);
-                this.ProcessNamedSetHandler("ApplicationBundleSetHandler", this["ApplicationBundle"]);
-            }
-        }
         Opus.Core.StringArray C.ILinkerOptionsOSX.Frameworks
         {
             get
