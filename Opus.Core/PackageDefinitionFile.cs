@@ -1000,7 +1000,7 @@ namespace Opus.Core
             }
 
             this.PackageIdentifiers.Add(idToAdd);
-            Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root);
+            Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root.GetSingleRawPath());
         }
 
         public bool RemovePackage(PackageIdentifier idToRemove)
@@ -1018,7 +1018,7 @@ namespace Opus.Core
             if (null != idToRemoveReally)
             {
                 this.PackageIdentifiers.Remove(idToRemoveReally);
-                Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), idToRemove.Root);
+                Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), idToRemove.Root.GetSingleRawPath());
                 return true;
             }
             else
