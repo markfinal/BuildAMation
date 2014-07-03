@@ -7,52 +7,29 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(XmlUtilities.XmlModule moduleToBuild, out bool success)
+        public object
+        Build(
+            XmlUtilities.XmlModule moduleToBuild,
+            out bool success)
         {
+            var isPlist = moduleToBuild is XmlUtilities.OSXPlistModule;
             var locationMap = moduleToBuild.Locations;
             var outputDir = locationMap[XmlUtilities.OSXPlistModule.OutputDir];
             var outputDirPath = outputDir.GetSingleRawPath();
-
-            // serialize the XML to memory
-            var settings = new System.Xml.XmlWriterSettings();
-            settings.CheckCharacters = true;
-            settings.CloseOutput = true;
-            settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
-            settings.Indent = true;
-            settings.IndentChars = "    ";
-            settings.NewLineChars = "\n";
-            settings.NewLineHandling = System.Xml.NewLineHandling.None;
-            settings.NewLineOnAttributes = false;
-            settings.OmitXmlDeclaration = false;
-            settings.Encoding = new System.Text.UTF8Encoding(false); // do not write BOM
-
-            var xmlString = new System.Text.StringBuilder();
-            using (var xmlStream = System.Xml.XmlWriter.Create(xmlString, settings))
-            {
-                moduleToBuild.Document.WriteTo(xmlStream);
-            }
 
             if (!System.IO.Directory.Exists(outputDirPath))
             {
                 System.IO.Directory.CreateDirectory(outputDirPath);
             }
 
-            var plistFileLoc = locationMap[XmlUtilities.XmlModule.OutputFile];
-            var plistPath = plistFileLoc.GetSingleRawPath();
+            var xmlFileLoc = locationMap[XmlUtilities.XmlModule.OutputFile];
+            var xmlFilePath = xmlFileLoc.GetSingleRawPath();
 
-            // write a script that can be invoked by the MakeFile to generate the Info.plist
-            var shellScriptLoc = Opus.Core.FileLocation.Get(outputDir, "writePList.py", Opus.Core.Location.EExists.WillExist);
+            // write a script that can be invoked by the MakeFile to generate the XML file
+            var shellScriptLeafName = isPlist ? "writePList.py" : "writeXMLFile.py";
+            var shellScriptLoc = Opus.Core.FileLocation.Get(outputDir, shellScriptLeafName, Opus.Core.Location.EExists.WillExist);
             var shellScriptPath = shellScriptLoc.GetSingleRawPath();
-            using (var writer = new System.IO.StreamWriter(shellScriptPath))
-            {
-                writer.WriteLine("#!usr/bin/python");
-
-                writer.WriteLine(System.String.Format("with open('{0}', 'wt') as script:", plistPath));
-                foreach (var line in xmlString.ToString().Split('\n'))
-                {
-                    writer.WriteLine("\tscript.write('{0}\\n')", line);
-                }
-            }
+            XmlUtilities.XmlDocumentToPythonScript.Write(moduleToBuild.Document, shellScriptPath, xmlFilePath);
 
             var node = moduleToBuild.OwningNode;
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
