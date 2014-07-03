@@ -11,8 +11,7 @@ namespace XcodeBuilder
         WriteShellCommand(
             Opus.Core.Target target,
             Opus.Core.BaseOptionCollection mocOptions,
-            PBXShellScriptBuildPhase shellScriptBuildPhase
-        )
+            PBXShellScriptBuildPhase shellScriptBuildPhase)
         {
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
             var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
