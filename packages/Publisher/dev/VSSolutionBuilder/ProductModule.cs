@@ -30,7 +30,7 @@ namespace VSSolutionBuilder
             var sourceLoc = toCopy.Module.Locations[keyToCopy];
             if (!sourceLoc.IsValid)
             {
-                continue;
+                return;
             }
             var sourcePath = sourceLoc.GetSingleRawPath();
 
