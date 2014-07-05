@@ -196,6 +196,21 @@ namespace XcodeBuilder
                 }
             }
 
+            // required dependencies need to go into scheme targets
+            if (null != node.RequiredDependents)
+            {
+                foreach (var dependency in node.RequiredDependents)
+                {
+                    var dependentData = dependency.Data as PBXNativeTarget;
+                    if (null == dependentData)
+                    {
+                        continue;
+                    }
+
+                    data.RequiredTargets.Add(dependentData);
+                }
+            }
+#if false
             if (null != node.RequiredDependents)
             {
                 foreach (var dependency in node.RequiredDependents)
@@ -257,6 +272,7 @@ namespace XcodeBuilder
                     }
                 }
             }
+#endif
 
             // find header files
             var fieldBindingFlags = System.Reflection.BindingFlags.Instance |

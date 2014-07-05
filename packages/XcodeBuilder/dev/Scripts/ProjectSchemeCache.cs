@@ -11,7 +11,7 @@ namespace XcodeBuilder
         {
             if (project.NativeTargets.Count > 1)
             {
-                throw new Opus.Core.Exception("Cannot create scheme cache for projects with more than none PBXNativeTarget");
+                throw new Opus.Core.Exception("Cannot create scheme cache for projects with more than one PBXNativeTarget");
             }
 
             var nativeTarget = project.NativeTargets[0];
@@ -28,6 +28,44 @@ namespace XcodeBuilder
             this.CreateManagementPlist(schemeFilename);
         }
 
+        private void
+        CreateBuildActionEntry(
+            System.Xml.XmlDocument doc,
+            System.Xml.XmlElement buildActionEntriesEl,
+            PBXNativeTarget target,
+            PBXProject primaryProject)
+        {
+            var buildActionEntry = doc.CreateElement("BuildActionEntry");
+            buildActionEntriesEl.AppendChild(buildActionEntry);
+            var buildableReference = doc.CreateElement("BuildableReference");
+            buildActionEntry.AppendChild(buildableReference);
+            {
+                var buildable = doc.CreateAttribute("BuildableIdentifier");
+                buildable.Value = "primary";
+                var blueprint = doc.CreateAttribute("BlueprintIdentifier");
+                blueprint.Value = target.UUID;
+                var buildableName = doc.CreateAttribute("BuildableName");
+                buildableName.Value = target.Name;
+                var blueprintName = doc.CreateAttribute("BlueprintName");
+                blueprintName.Value = target.Name;
+                var refContainer = doc.CreateAttribute("ReferencedContainer");
+                if (target.Project.Path == primaryProject.Path)
+                {
+                    refContainer.Value = "container:" + target.Name + ".xcodeproj";
+                }
+                else
+                {
+                    var relative = Opus.Core.RelativePathUtilities.GetPath(target.Project.RootUri, primaryProject.RootUri);
+                    refContainer.Value = "container:" + relative;
+                }
+                buildableReference.Attributes.Append(buildable);
+                buildableReference.Attributes.Append(blueprint);
+                buildableReference.Attributes.Append(buildableName);
+                buildableReference.Attributes.Append(blueprintName);
+                buildableReference.Attributes.Append(refContainer);
+            }
+        }
+
         private void CreateSchemePlist(PBXNativeTarget target, PBXProject project)
         {
             var doc = new System.Xml.XmlDocument();
@@ -40,27 +78,14 @@ namespace XcodeBuilder
             {
                 var buildActionEntries = doc.CreateElement("BuildActionEntries");
                 buildActionEl.AppendChild(buildActionEntries);
-                var buildActionEntry = doc.CreateElement("BuildActionEntry");
-                buildActionEntries.AppendChild(buildActionEntry);
-                var buildableReference = doc.CreateElement("BuildableReference");
-                buildActionEntry.AppendChild(buildableReference);
+
+                // add all required dependencies in first (order matters)
+                foreach (var required in target.RequiredTargets)
                 {
-                    var buildable = doc.CreateAttribute("BuildableIdentifier");
-                    buildable.Value = "primary";
-                    var blueprint = doc.CreateAttribute("BlueprintIdentifier");
-                    blueprint.Value = target.UUID;
-                    var buildableName = doc.CreateAttribute("BuildableName");
-                    buildableName.Value = target.Name;
-                    var blueprintName = doc.CreateAttribute("BlueprintName");
-                    blueprintName.Value = target.Name;
-                    var refContainer = doc.CreateAttribute("ReferencedContainer");
-                    refContainer.Value = "container:" + target.Name + ".xcodeproj";
-                    buildableReference.Attributes.Append(buildable);
-                    buildableReference.Attributes.Append(blueprint);
-                    buildableReference.Attributes.Append(buildableName);
-                    buildableReference.Attributes.Append(blueprintName);
-                    buildableReference.Attributes.Append(refContainer);
+                    this.CreateBuildActionEntry(doc, buildActionEntries, required, target.Project);
                 }
+
+                this.CreateBuildActionEntry(doc, buildActionEntries, target, target.Project);
             }
 
             var testActionEl = doc.CreateElement("TestAction");

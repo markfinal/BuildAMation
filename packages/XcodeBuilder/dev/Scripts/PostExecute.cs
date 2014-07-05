@@ -56,7 +56,7 @@ namespace XcodeBuilder
 
                 if (project.NativeTargets.Count > 0)
                 {
-                    if ((bool)Opus.Core.State.Get("XcodeBuilder", "WarmSchemeCache"))
+                    if ((bool)Opus.Core.State.Get("XcodeBuilder", "WarmSchemeCache") || true)
                     {
                         var projectSchemeCache = new ProjectSchemeCache(project);
                         projectSchemeCache.Serialize();

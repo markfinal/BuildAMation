@@ -23,6 +23,7 @@ namespace XcodeBuilder
             this.Dependencies = new Opus.Core.Array<PBXTargetDependency>();
             this.SourceFilesToBuild = new Opus.Core.Array<PBXBuildFile>();
             this.Project = project;
+            this.RequiredTargets = new Opus.Core.Array<PBXNativeTarget>();
         }
 
         public EType Type
@@ -71,6 +72,12 @@ namespace XcodeBuilder
         {
             get;
             set;
+        }
+
+        public Opus.Core.Array<PBXNativeTarget> RequiredTargets
+        {
+            get;
+            private set;
         }
 
 #region IWriteableNode implementation
