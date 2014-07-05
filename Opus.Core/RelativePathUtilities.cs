@@ -14,6 +14,35 @@ namespace Opus.Core
             return isAbsolute;
         }
 
+        public static string GetPath(System.Uri pathUri, System.Uri relativeToUri)
+        {
+            return GetPath(pathUri, relativeToUri, null);
+        }
+
+        public static string GetPath(System.Uri pathUri, System.Uri relativeToUri, string relativePrefix)
+        {
+            var relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
+            if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
+            {
+                // should return the path that pathUri was constructed with
+                return pathUri.LocalPath;
+            }
+            else
+            {
+                var relativePath = relativePathUri.ToString();
+                relativePath = System.Uri.UnescapeDataString(relativePath);
+                if (null != relativePrefix)
+                {
+                    relativePath = System.IO.Path.Combine(relativePrefix, relativePath);
+                }
+                if (OSUtilities.IsWindowsHosting)
+                {
+                    relativePath = relativePath.Replace('/', '\\');
+                }
+                return relativePath;
+            }
+        }
+
         public static string GetPath(string path, System.Uri relativeToUri, string relativePrefix)
         {
             if (null == path)
@@ -29,6 +58,9 @@ namespace Opus.Core
             }
 
             var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
+            #if true
+            return GetPath(pathUri, relativeToUri, relativePrefix);
+            #else
             var relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
             if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
             {
@@ -48,6 +80,7 @@ namespace Opus.Core
                 }
                 return relativePath;
             }
+            #endif
         }
 
         public static string GetPath(string path, System.Uri relativeToUri)
