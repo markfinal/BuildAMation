@@ -278,6 +278,13 @@ namespace XcodeBuilder
                 }
             }
 
+            // TODO: this is the WRONG place to put this
+            // add outstanding build phases made by nodes prior to this
+            foreach (var scriptBuildPhase in project.ShellScriptBuildPhases)
+            {
+                data.BuildPhases.Insert(0, scriptBuildPhase as PBXShellScriptBuildPhase);
+            }
+
             success = true;
             return data;
         }
