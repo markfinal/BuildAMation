@@ -750,29 +750,29 @@ namespace Opus.Core
                 {
                     if ((value as ScaffoldLocation).TypeHint != key.Type)
                     {
-                        throw new Exception("Location and LocationKey differ on type hints. Location is {0}. Key type is {1}",
-                                            (value as ScaffoldLocation).TypeHint.ToString(), key.Type.ToString());
+                        throw new Exception("Location and LocationKey differ on type hints. Location is {0}. Key '{1}' is type {2}",
+                                            (value as ScaffoldLocation).TypeHint.ToString(), key.ToString(), key.Type.ToString());
                     }
                 }
                 else if (key.Type == ScaffoldLocation.ETypeHint.File)
                 {
                     if (!(value is FileLocation))
                     {
-                        throw new Exception("LocationKey requires a file but has an {0} instead", value.GetType().ToString());
+                        throw new Exception("LocationKey '{0}' requires a file but has an {1} instead", key.ToString(), value.GetType().ToString());
                     }
                 }
                 else if (key.Type == ScaffoldLocation.ETypeHint.Symlink)
                 {
                     if (!(value is SymlinkLocation))
                     {
-                        throw new Exception("LocationKey requires a symbolic link but has an {0} instead", value.GetType().ToString());
+                        throw new Exception("LocationKey '{0}' requires a symbolic link but has an {1} instead", key.ToString(), value.GetType().ToString());
                     }
                 }
                 else if (key.Type == ScaffoldLocation.ETypeHint.Directory)
                 {
                     if (!(value is DirectoryLocation))
                     {
-                        throw new Exception("LocationKey requires a directory but has an {0} instead", value.GetType().ToString());
+                        throw new Exception("LocationKey '{0}' requires a directory but has an {1} instead", key.ToString(), value.GetType().ToString());
                     }
                 }
                 this.map[key] = value;
