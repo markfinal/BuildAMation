@@ -88,7 +88,16 @@ namespace QMakeBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
-                        var sourceLoc = dependency.Module.Locations[key];
+                        if (!module.Locations.Contains(key))
+                        {
+                            continue;
+                        }
+
+                        var sourceLoc = module.Locations[key];
+                        if (!sourceLoc.IsValid)
+                        {
+                            continue;
+                        }
                         var sourcePath = sourceLoc.GetSingleRawPath();
 
                         var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);

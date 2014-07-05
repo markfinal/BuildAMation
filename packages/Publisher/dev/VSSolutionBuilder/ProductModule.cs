@@ -28,6 +28,10 @@ namespace VSSolutionBuilder
             }
 
             var sourceLoc = toCopy.Module.Locations[keyToCopy];
+            if (!sourceLoc.IsValid)
+            {
+                continue;
+            }
             var sourcePath = sourceLoc.GetSingleRawPath();
 
             var destinationDir = configuration.OutputDirectory;
@@ -119,6 +123,11 @@ namespace VSSolutionBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
+                        if (!module.Locations.Contains(key))
+                        {
+                            continue;
+                        }
+
                         CopyNodes(moduleToBuild, projectData, module.OwningNode, key);
                     }
                 }

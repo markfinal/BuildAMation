@@ -138,7 +138,16 @@ namespace MakeFileBuilder
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
                     foreach (var key in candidateData)
                     {
+                        if (!module.Locations.Contains(key))
+                        {
+                            continue;
+                        }
+
                         var loc = module.Locations[key];
+                        if (!loc.IsValid)
+                        {
+                            continue;
+                        }
                         var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
 
                         if (key.IsFileKey)
