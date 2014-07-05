@@ -65,7 +65,7 @@ namespace XcodeBuilder
             XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
             buildConfiguration.Options["DYLIB_MAJOR_VERSION"].AddUnique((options as C.ILinkerOptions).MajorVersion.ToString());
-            var productName = System.String.Format("$(TARGET_NAME).$(DYLIB_MAJOR_VERSION)");
+            var productName = System.String.Format("{0}.$(DYLIB_MAJOR_VERSION)", options.OutputName);
             buildConfiguration.Options["PRODUCT_NAME"].AddUnique(productName);
 
             // Xcode 4 complains this is missing for target configurations
