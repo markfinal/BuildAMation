@@ -36,12 +36,38 @@ namespace XcodeBuilder
                 {
                     foreach (var objectFile in childNode.Children)
                     {
-                        data.SourceFilesToBuild.AddUnique(objectFile.Data as PBXBuildFile);
+                        var buildFile = objectFile.Data as PBXBuildFile;
+                        data.SourceFilesToBuild.AddUnique(buildFile);
+
+                        // since static libraries have no in-built dependency, add an artificial one into the scheme
+                        if (null != objectFile.ExternalDependents)
+                        {
+                            foreach (var dep in objectFile.ExternalDependents)
+                            {
+                                if (dep.Data is PBXNativeTarget)
+                                {
+                                    data.RequiredTargets.AddUnique(dep.Data as PBXNativeTarget);
+                                }
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    data.SourceFilesToBuild.AddUnique(childNode.Data as PBXBuildFile);
+                    var buildFile = childNode.Data as PBXBuildFile;
+                    data.SourceFilesToBuild.AddUnique(buildFile);
+
+                    // since static libraries have no in-built dependency, add an artificial one into the scheme
+                    if (null != childNode.ExternalDependents)
+                    {
+                        foreach (var dep in childNode.ExternalDependents)
+                        {
+                            if (dep.Data is PBXNativeTarget)
+                            {
+                                data.RequiredTargets.AddUnique(dep.Data as PBXNativeTarget);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -109,6 +135,32 @@ namespace XcodeBuilder
             var sourcesBuildPhase = project.SourceBuildPhases.Get("Sources", moduleName);
             data.BuildPhases.AddUnique(sourcesBuildPhase);
 
+            // any external dependents get turned into scheme requirements
+            if (null != node.ExternalDependents)
+            {
+                foreach (var dependency in node.ExternalDependents)
+                {
+                    var dependentData = dependency.Data as PBXNativeTarget;
+                    if (null == dependentData)
+                    {
+                        continue;
+                    }
+
+                    // accumulate any scheme requirements from dependents
+                    data.RequiredTargets.AddRangeUnique(dependentData.RequiredTargets);
+                }
+            }
+
+            foreach (var req in node.EncapsulatingRequirements)
+            {
+                var reqData = req.Data as PBXNativeTarget;
+                if (null != reqData)
+                {
+                    data.RequiredTargets.AddUnique(reqData);
+                }
+            }
+
+            #if false
             // required dependencies need to go into scheme targets
             if (null != node.RequiredDependents)
             {
@@ -120,9 +172,11 @@ namespace XcodeBuilder
                         continue;
                     }
 
-                    data.RequiredTargets.Add(dependentData);
+                    data.RequiredTargets.AddUnique(dependentData);
+                    data.RequiredTargets.AddRangeUnique(dependentData.RequiredTargets);
                 }
             }
+            #endif
 #if false
             if (null != node.RequiredDependents)
             {

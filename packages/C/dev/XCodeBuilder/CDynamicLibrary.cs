@@ -36,12 +36,14 @@ namespace XcodeBuilder
                 {
                     foreach (var objectFile in childNode.Children)
                     {
-                        data.SourceFilesToBuild.AddUnique(objectFile.Data as PBXBuildFile);
+                        var buildFile = objectFile.Data as PBXBuildFile;
+                        data.SourceFilesToBuild.AddUnique(buildFile);
                     }
                 }
                 else
                 {
-                    data.SourceFilesToBuild.AddUnique(childNode.Data as PBXBuildFile);
+                    var buildFile = childNode.Data as PBXBuildFile;
+                    data.SourceFilesToBuild.AddUnique(buildFile);
                 }
             }
 
@@ -125,6 +127,9 @@ namespace XcodeBuilder
                         continue;
                     }
 
+                    // accumulate any scheme requirements from dependents
+                    data.RequiredTargets.AddRangeUnique(dependentData.RequiredTargets);
+
                     if (dependentData.Project == project)
                     {
                         // first add a dependency so that they are built in the right order
@@ -196,20 +201,16 @@ namespace XcodeBuilder
                 }
             }
 
-            // required dependencies need to go into scheme targets
-            if (null != node.RequiredDependents)
+            // any required nodes must be registered as an ordering in the schema
+            foreach (var req in node.EncapsulatingRequirements)
             {
-                foreach (var dependency in node.RequiredDependents)
+                var reqData = req.Data as PBXNativeTarget;
+                if (null != reqData)
                 {
-                    var dependentData = dependency.Data as PBXNativeTarget;
-                    if (null == dependentData)
-                    {
-                        continue;
-                    }
-
-                    data.RequiredTargets.Add(dependentData);
+                    data.RequiredTargets.AddUnique(reqData);
                 }
             }
+
 #if false
             if (null != node.RequiredDependents)
             {

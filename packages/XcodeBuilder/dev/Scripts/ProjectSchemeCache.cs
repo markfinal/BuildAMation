@@ -35,6 +35,12 @@ namespace XcodeBuilder
             PBXNativeTarget target,
             PBXProject primaryProject)
         {
+            // add all required dependencies in first (order matters)
+            foreach (var required in target.RequiredTargets)
+            {
+                this.CreateBuildActionEntry(doc, buildActionEntriesEl, required, primaryProject);
+            }
+
             var buildActionEntry = doc.CreateElement("BuildActionEntry");
             buildActionEntriesEl.AppendChild(buildActionEntry);
             var buildableReference = doc.CreateElement("BuildableReference");
@@ -76,14 +82,18 @@ namespace XcodeBuilder
             var buildActionEl = doc.CreateElement("BuildAction");
             schemeEl.AppendChild(buildActionEl);
             {
+                // disable parallel builds, because the order defined must be honoured, and implicit dependencies
+                // may not exist, e.g. between static libs, or depending on the output of an executable
+                var parallelBuildsAttr = doc.CreateAttribute("parallelizeBuildables");
+                parallelBuildsAttr.Value = "NO";
+                buildActionEl.Attributes.Append(parallelBuildsAttr);
+
+                var buildImplicitDepsAttr = doc.CreateAttribute("buildImplicitDependencies");
+                buildImplicitDepsAttr.Value = "YES";
+                buildActionEl.Attributes.Append(buildImplicitDepsAttr);
+
                 var buildActionEntries = doc.CreateElement("BuildActionEntries");
                 buildActionEl.AppendChild(buildActionEntries);
-
-                // add all required dependencies in first (order matters)
-                foreach (var required in target.RequiredTargets)
-                {
-                    this.CreateBuildActionEntry(doc, buildActionEntries, required, target.Project);
-                }
 
                 this.CreateBuildActionEntry(doc, buildActionEntries, target, target.Project);
             }
