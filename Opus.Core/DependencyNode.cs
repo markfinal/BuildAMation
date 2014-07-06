@@ -297,6 +297,7 @@ namespace Opus.Core
             this.AreChildrenProcessed = false;
 
             this.PostActionNodes = null;
+            this.EncapsulatingRequirements = new DependencyNodeCollection();
         }
 
         public Target Target
@@ -324,6 +325,12 @@ namespace Opus.Core
         }
 
         public DependencyNode EncapsulatingNode
+        {
+            get;
+            private set;
+        }
+
+        public DependencyNodeCollection EncapsulatingRequirements
         {
             get;
             private set;
@@ -461,6 +468,19 @@ namespace Opus.Core
                 required.RequiredDependentFor = new DependencyNodeCollection();
             }
             required.RequiredDependentFor.Add(this);
+
+            // each requirement goes into the encapsulating node as well
+            // so that project generation can honour requirements correctly
+            this.EncapsulatingNode.EncapsulatingRequirements.Add(required);
+            if (null != this.EncapsulatingNode.ExternalDependentFor)
+            {
+                // if the encapsulating node is a dependent of another node, forward on the
+                // requirements, again to honour them
+                foreach (var encapsulationDependee in this.EncapsulatingNode.ExternalDependentFor)
+                {
+                    encapsulationDependee.EncapsulatingNode.EncapsulatingRequirements.Add(required);
+                }
+            }
         }
 
         public EBuildState BuildState
