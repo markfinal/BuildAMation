@@ -33,12 +33,20 @@ namespace XcodeBuilder
             System.Xml.XmlDocument doc,
             System.Xml.XmlElement buildActionEntriesEl,
             PBXNativeTarget target,
-            PBXProject primaryProject)
+            PBXProject primaryProject,
+            Opus.Core.Array<PBXNativeTarget> buildActionsCreated)
         {
             // add all required dependencies in first (order matters)
             foreach (var required in target.RequiredTargets)
             {
-                this.CreateBuildActionEntry(doc, buildActionEntriesEl, required, primaryProject);
+                this.CreateBuildActionEntry(doc, buildActionEntriesEl, required, primaryProject, buildActionsCreated);
+            }
+
+            // the same PBXNativeTarget might appear again while iterating through the required targets of dependencies
+            // only add it once (first one is important for ordering)
+            if (buildActionsCreated.Contains(target))
+            {
+                return;
             }
 
             var buildActionEntry = doc.CreateElement("BuildActionEntry");
@@ -70,6 +78,8 @@ namespace XcodeBuilder
                 buildableReference.Attributes.Append(blueprintName);
                 buildableReference.Attributes.Append(refContainer);
             }
+
+            buildActionsCreated.Add(target);
         }
 
         private void CreateSchemePlist(PBXNativeTarget target, PBXProject project)
@@ -95,7 +105,8 @@ namespace XcodeBuilder
                 var buildActionEntries = doc.CreateElement("BuildActionEntries");
                 buildActionEl.AppendChild(buildActionEntries);
 
-                this.CreateBuildActionEntry(doc, buildActionEntries, target, target.Project);
+                var buildActionsCreated = new Opus.Core.Array<PBXNativeTarget>();
+                this.CreateBuildActionEntry(doc, buildActionEntries, target, target.Project, buildActionsCreated);
             }
 
             var testActionEl = doc.CreateElement("TestAction");
