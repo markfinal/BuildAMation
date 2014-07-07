@@ -63,6 +63,11 @@ namespace QMakeBuilder
             foreach (var dependency in dependents)
             {
                 var proData = dependency.Data as QMakeData;
+                if (null == proData)
+                {
+                    continue;
+                }
+
                 var module = dependency.Module;
                 var moduleType = module.GetType();
                 var flags = System.Reflection.BindingFlags.Instance |
