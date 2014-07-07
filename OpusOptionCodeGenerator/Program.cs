@@ -339,7 +339,7 @@ namespace OpusOptionCodeGenerator
                 else
                 {
                     signature.Body = new System.Collections.Specialized.StringCollection();
-                    signature.Body.Add(System.String.Format("{0} returnVal = new {0}();", returnType));
+                    signature.Body.Add(System.String.Format("var returnVal = new {0}();", returnType));
                     signature.Body.Add("return returnVal;");
                 }
             }
