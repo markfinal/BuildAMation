@@ -97,5 +97,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        Opus.Core.StringArray ForcedInclude
+        {
+            get;
+            set;
+        }
     }
 }

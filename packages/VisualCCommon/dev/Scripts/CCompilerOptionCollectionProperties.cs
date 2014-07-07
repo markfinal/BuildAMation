@@ -392,6 +392,18 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("RuntimeLibrarySetHandler", this["RuntimeLibrary"]);
             }
         }
+        Opus.Core.StringArray ICCompilerOptions.ForcedInclude
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Opus.Core.StringArray>("ForcedInclude", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Opus.Core.StringArray>("ForcedInclude", value);
+                this.ProcessNamedSetHandler("ForcedIncludeSetHandler", this["ForcedInclude"]);
+            }
+        }
         #endregion
     }
 }

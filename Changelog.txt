@@ -1,3 +1,5 @@
+07-Jul-2014 Added VisualCCommon.ICCompilerOptions.ForcedInclude compiler option, to preprocess specified header files automatically.
+
 07-Apr-2014 Package definition files can now contain an Opus:PackageRoots element, providing additional package search paths. Removed -packageroots command line argument. Added -addpackageroots and -removepackageroots command line arguments.
 
 02-Apr-2014 Exporting TMP and TEMP environment variables with the VisualC tools, to avoid generation of _CL_<hexdigits> temporary files in the current directory.

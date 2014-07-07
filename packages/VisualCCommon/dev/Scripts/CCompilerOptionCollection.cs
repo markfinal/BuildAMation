@@ -52,6 +52,7 @@ namespace VisualCCommon
             compilerInterface.UseFullPaths = true;
             compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
             compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
+            compilerInterface.ForcedInclude = new Opus.Core.StringArray();
 
 #if true
 #else

@@ -719,7 +719,6 @@ namespace VisualCCommon
                     case EDebugType.Embedded:
                         commandLineBuilder.Add("-Z7");
                         break;
-
                     case EDebugType.ProgramDatabase:
                         {
                             commandLineBuilder.Add("-Zi");
@@ -727,7 +726,6 @@ namespace VisualCCommon
                             commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbFileLoc.GetSinglePath()));
                         }
                         break;
-
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
                             commandLineBuilder.Add("-ZI");
@@ -735,7 +733,6 @@ namespace VisualCCommon
                             commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbFileLoc.GetSinglePath()));
                         }
                         break;
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                 }
@@ -799,7 +796,6 @@ namespace VisualCCommon
             {
                 return null;
             }
-
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
@@ -808,7 +804,6 @@ namespace VisualCCommon
                     case EDebugType.Embedded:
                         returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
                         break;
-
                     case EDebugType.ProgramDatabase:
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
@@ -817,7 +812,6 @@ namespace VisualCCommon
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
-
 #if true
                         // TODO: handle PDBs
 #else
@@ -827,7 +821,6 @@ namespace VisualCCommon
                         returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
                         break;
 #endif
-
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                 }
@@ -847,7 +840,6 @@ namespace VisualCCommon
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
-
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
                             returnVal.Add("DebugInformationFormat", "EditAndContinue");
@@ -1352,6 +1344,22 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized runtime library option");
             }
         }
+        private static void ForcedIncludeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        {
+            var forcedIncludesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            foreach (var headerFile in forcedIncludesOption.Value)
+            {
+                commandLineBuilder.Add(System.String.Format("-FI{0}", headerFile));
+            }
+        }
+        private static VisualStudioProcessor.ToolAttributeDictionary ForcedIncludeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        {
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
+            var forcedIncludesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var linearized = forcedIncludesOption.Value.ToString(';');
+            returnVal.Add("ForcedIncludeFiles", linearized);
+            return returnVal;
+        }
         #endregion
         protected override void SetDelegates(Opus.Core.DependencyNode node)
         {
@@ -1387,6 +1395,7 @@ namespace VisualCCommon
             this["InlineFunctionExpansion"].PrivateData = new PrivateData(InlineFunctionExpansionCommandLineProcessor,InlineFunctionExpansionVisualStudioProcessor);
             this["EnableIntrinsicFunctions"].PrivateData = new PrivateData(EnableIntrinsicFunctionsCommandLineProcessor,EnableIntrinsicFunctionsVisualStudioProcessor);
             this["RuntimeLibrary"].PrivateData = new PrivateData(RuntimeLibraryCommandLineProcessor,RuntimeLibraryVisualStudioProcessor);
+            this["ForcedInclude"].PrivateData = new PrivateData(ForcedIncludeCommandLineProcessor,ForcedIncludeVisualStudioProcessor);
         }
     }
 }
