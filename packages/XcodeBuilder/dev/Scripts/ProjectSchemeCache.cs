@@ -82,15 +82,15 @@ namespace XcodeBuilder
             buildActionsCreated.Add(target);
         }
 
-        private void CreateSchemePlist(PBXNativeTarget target, PBXProject project)
+        private void
+        CreateBuildActions(
+            System.Xml.XmlDocument doc,
+            System.Xml.XmlElement schemeElement,
+            PBXNativeTarget target,
+            PBXProject project)
         {
-            var doc = new System.Xml.XmlDocument();
-
-            var schemeEl = doc.CreateElement("Scheme");
-            doc.AppendChild(schemeEl);
-
             var buildActionEl = doc.CreateElement("BuildAction");
-            schemeEl.AppendChild(buildActionEl);
+            schemeElement.AppendChild(buildActionEl);
             {
                 // disable parallel builds, because the order defined must be honoured, and implicit dependencies
                 // may not exist, e.g. between static libs, or depending on the output of an executable
@@ -108,22 +108,106 @@ namespace XcodeBuilder
                 var buildActionsCreated = new Opus.Core.Array<PBXNativeTarget>();
                 this.CreateBuildActionEntry(doc, buildActionEntries, target, target.Project, buildActionsCreated);
             }
+        }
 
+        private void
+        CreateTestActions(
+            System.Xml.XmlDocument doc,
+            System.Xml.XmlElement schemeElement,
+            PBXNativeTarget target)
+        {
             var testActionEl = doc.CreateElement("TestAction");
-            schemeEl.AppendChild(testActionEl);
+            schemeElement.AppendChild(testActionEl);
             {
                 var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
                 buildConfigurationAttr.Value = target.BuildConfigurationList.BuildConfigurations[0].Name;
                 testActionEl.Attributes.Append(buildConfigurationAttr);
-            }
 
+                var selectedDebuggerAttr = doc.CreateAttribute("selectedDebuggerIdentifier");
+                selectedDebuggerAttr.Value = "Xcode.DebuggerFoundation.Debugger.LLDB";
+                testActionEl.Attributes.Append(selectedDebuggerAttr);
+
+                var selectedLauncherAttr = doc.CreateAttribute("selectedLauncherIdentifier");
+                selectedLauncherAttr.Value = "Xcode.DebuggerFoundation.Debugger.LLDB";
+                testActionEl.Attributes.Append(selectedLauncherAttr);
+
+                var useLaunchSchemeArgsAttr = doc.CreateAttribute("shouldUseLaunchSchemeArgsEnv");
+                useLaunchSchemeArgsAttr.Value = "YES";
+                testActionEl.Attributes.Append(useLaunchSchemeArgsAttr);
+            }
+        }
+
+        private void
+        CreateLaunchActions(
+            System.Xml.XmlDocument doc,
+            System.Xml.XmlElement schemeElement,
+            PBXNativeTarget target,
+            PBXProject primaryProject)
+        {
             var launchActionEl = doc.CreateElement("LaunchAction");
-            schemeEl.AppendChild(launchActionEl);
+            schemeElement.AppendChild(launchActionEl);
             {
                 var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
                 buildConfigurationAttr.Value = target.BuildConfigurationList.BuildConfigurations[0].Name;
                 launchActionEl.Attributes.Append(buildConfigurationAttr);
+
+                var selectedDebuggerAttr = doc.CreateAttribute("selectedDebuggerIdentifier");
+                selectedDebuggerAttr.Value = "Xcode.DebuggerFoundation.Debugger.LLDB";
+                launchActionEl.Attributes.Append(selectedDebuggerAttr);
+
+                var selectedLauncherAttr = doc.CreateAttribute("selectedLauncherIdentifier");
+                selectedLauncherAttr.Value = "Xcode.DebuggerFoundation.Debugger.LLDB";
+                launchActionEl.Attributes.Append(selectedLauncherAttr);
+
+                var productRunnableEl = doc.CreateElement("BuildableProductRunnable");
+                launchActionEl.AppendChild(productRunnableEl);
+
+                var buildableRefEl = doc.CreateElement("BuildableReference");
+                productRunnableEl.AppendChild(buildableRefEl);
+
+                var buildableIdAttr = doc.CreateAttribute("BuildableIdentifier");
+                buildableIdAttr.Value = "primary";
+                buildableRefEl.Attributes.Append(buildableIdAttr);
+
+                var blueprintIdAttr = doc.CreateAttribute("BlueprintIdentifier");
+                blueprintIdAttr.Value = target.ProductReference.UUID;
+                buildableRefEl.Attributes.Append(blueprintIdAttr);
+
+                var buildableNameAttr = doc.CreateAttribute("BuildableName");
+                buildableNameAttr.Value = target.ProductReference.ShortPath;
+                buildableRefEl.Attributes.Append(buildableNameAttr);
+
+                var blueprintNameAttr = doc.CreateAttribute("BlueprintName");
+                blueprintNameAttr.Value = target.ProductReference.Name;
+                buildableRefEl.Attributes.Append(blueprintNameAttr);
+
+                var refContainerAttr = doc.CreateAttribute("ReferencedContainer");
+                if (target.Project.Path == primaryProject.Path)
+                {
+                    refContainerAttr.Value = "container:" + target.Name + ".xcodeproj";
+                }
+                else
+                {
+                    var relative = Opus.Core.RelativePathUtilities.GetPath(target.Project.RootUri, primaryProject.RootUri);
+                    refContainerAttr.Value = "container:" + relative;
+                }
+                buildableRefEl.Attributes.Append(refContainerAttr);
             }
+        }
+
+        private void
+        CreateSchemePlist(
+            PBXNativeTarget target,
+            PBXProject project)
+        {
+            var doc = new System.Xml.XmlDocument();
+
+            var schemeEl = doc.CreateElement("Scheme");
+            doc.AppendChild(schemeEl);
+
+            this.CreateBuildActions(doc, schemeEl, target, project);
+            this.CreateTestActions(doc, schemeEl, target);
+            this.CreateLaunchActions(doc, schemeEl, target, project);
 
             var profileActionEl = doc.CreateElement("ProfileAction");
             schemeEl.AppendChild(profileActionEl);
