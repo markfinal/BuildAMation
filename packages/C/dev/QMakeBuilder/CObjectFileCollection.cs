@@ -32,7 +32,7 @@ namespace QMakeBuilder
                     var depData = dependent.Data as QMakeData;
                     if (null != depData)
                     {
-                        data.Merge(depData);
+                        data.Merge(depData, QMakeData.OutputType.StaticLibrary | QMakeData.OutputType.DynamicLibrary | QMakeData.OutputType.HeaderLibrary);
                     }
                 }
             }
