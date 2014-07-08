@@ -111,7 +111,7 @@ namespace NativeBuilder
             if (options.OSXApplicationBundle)
             {
                 var plistNodeData = Publisher.ProductModuleUtilities.GetOSXPListNodeData(moduleToBuild);
-                if (null != plistNodeData)
+                if ((null != plistNodeData) && (plistNodeData.Node != null))
                 {
                     var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, plistNodeData.Node.Module, plistNodeData.Key);
                     var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
