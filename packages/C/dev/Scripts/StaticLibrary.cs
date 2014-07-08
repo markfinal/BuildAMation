@@ -14,6 +14,28 @@ namespace C
         public static readonly Opus.Core.LocationKey OutputFileLocKey = new Opus.Core.LocationKey("StaticLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDirLocKey = new Opus.Core.LocationKey("StaticLibraryOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
+        private string PreprocessorDefine
+        {
+            get;
+            set;
+        }
+
+        [ExportCompilerOptionsDelegate]
+        protected void StaticLibrarySetPreprocessorDefine(Opus.Core.IModule module, Opus.Core.Target target)
+        {
+            if (null == this.PreprocessorDefine)
+            {
+                var packageName = this.OwningNode.Package.Name.ToUpper();
+                var moduleName = this.OwningNode.ModuleName.ToUpper();
+                var preprocessorName = new System.Text.StringBuilder();
+                preprocessorName.AppendFormat("D_{0}_{1}_STATICAPI", packageName, moduleName);
+                this.PreprocessorDefine = preprocessorName.ToString();
+            }
+
+            var compilerOptions = module.Options as ICCompilerOptions;
+            compilerOptions.Defines.Add(this.PreprocessorDefine);
+        }
+
         Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();

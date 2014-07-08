@@ -6,7 +6,7 @@
 
 #if defined(D_OPUS_PLATFORM_WINDOWS)
 
-#if defined(D_OPUS_DYNAMICLIBRARY)
+#if defined(D_OPUS_DYNAMICLIBRARY_BUILD)
 #define API __declspec(dllexport)
 #else
 #define API __declspec(dllimport)
@@ -14,7 +14,7 @@
 
 #elif defined(D_OPUS_PLATFORM_UNIX) || defined(D_OPUS_PLATFORM_OSX)
 
-#if defined(D_OPUS_DYNAMICLIBRARY)
+#if defined(D_OPUS_DYNAMICLIBRARY_BUILD)
 #if __GNUC__ >= 4
 #define API __attribute__ ((visibility("default")))
 #else /* __GNUC__ */

@@ -1,3 +1,7 @@
+09-Jul-2014 Added the exported (to the module build and all dependencies) preprocessor symbol D_<PACKAGENAME>_<MODULENAME>_STATICAPI for all static library modules, to indicate the API linkage required. This can be used, in conjunction with D_OPUS_DYNAMICLIBRARY_BUILD to define API visibility macros.
+
+08-Jul-2014 Renamed the #define OPUS_DYNAMICLIBRARY to D_OPUS_DYNAMICLIBRARY_BUILD to be more consistent with other preprocessor macros. This is defined only in a dynamic library module build.
+
 07-Jul-2014 Added VisualCCommon.ICCompilerOptions.ForcedInclude compiler option, to preprocess specified header files automatically.
 
 07-Apr-2014 Package definition files can now contain an Opus:PackageRoots element, providing additional package search paths. Removed -packageroots command line argument. Added -addpackageroots and -removepackageroots command line arguments.
