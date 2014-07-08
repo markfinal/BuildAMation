@@ -18,6 +18,9 @@
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
+    <Opus:Package Name="Mingw">
+      <Opus:Version Id="4.8.1" />
+    </Opus:Package>
     <Opus:Package Name="NativeBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>
