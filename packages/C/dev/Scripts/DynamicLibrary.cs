@@ -19,7 +19,7 @@ namespace C
         protected static void DynamicLibrarySetOpusDLLPreprocessor(Opus.Core.IModule module, Opus.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
-            compilerOptions.Defines.Add("OPUS_DYNAMICLIBRARY");
+            compilerOptions.Defines.Add("D_OPUS_DYNAMICLIBRARY");
         }
 
         [LocalLinkerOptionsDelegate]

@@ -3,7 +3,7 @@
 
 #if defined(_WIN32)
 
-#if defined(OPUS_DYNAMICLIBRARY)
+#if defined(D_OPUS_DYNAMICLIBRARY)
 #define DYNAMICLIBRARYB_API __declspec(dllexport)
 #else
 #define DYNAMICLIBRARYB_API __declspec(dllimport)
@@ -11,7 +11,7 @@
 
 #elif defined(__unix__) || defined(__APPLE__)
 
-#if defined(OPUS_DYNAMICLIBRARY)
+#if defined(D_OPUS_DYNAMICLIBRARY)
 #if __GNUC__ >= 4
 #define DYNAMICLIBRARYB_API __attribute__ ((visibility("default")))
 #else /* __GNUC__ */
