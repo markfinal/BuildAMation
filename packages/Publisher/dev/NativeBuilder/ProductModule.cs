@@ -34,7 +34,7 @@ namespace NativeBuilder
             var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
             var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
             var publishedKey = new Opus.Core.LocationKey(publishedSourceKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, moduleToBuild, publishedKey);
+            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, moduleToBuild, publishedKey, string.Empty);
 
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
@@ -71,38 +71,85 @@ namespace NativeBuilder
                         continue;
                     }
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
-                    foreach (var key in candidateData)
+                    if (null != candidateData)
                     {
-                        if (!module.Locations.Contains(key))
+                        foreach (var key in candidateData)
                         {
-                            continue;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            var loc = module.Locations[key];
+                            if (!loc.IsValid)
+                            {
+                                continue;
+                            }
+
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            if (key.IsFileKey)
+                            {
+                                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey, string.Empty);
+                            }
+                            else if (key.IsSymlinkKey)
+                            {
+                                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                                Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                            }
+                            else if (key.IsDirectoryKey)
+                            {
+                                throw new Opus.Core.Exception("Directories cannot be published yet");
+                            }
+                            else
+                            {
+                                throw new Opus.Core.Exception("Unsupported Location type");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var candidateData2 = field.GetValue(module) as Opus.Core.Array<Publisher.PublishDependency>;
+                        if (null == candidateData2)
+                        {
+                            throw new Opus.Core.Exception("Unrecognized type for dependency data");
                         }
 
-                        var loc = module.Locations[key];
-                        if (!loc.IsValid)
+                        foreach (var dep in candidateData2)
                         {
-                            continue;
+                            var key = dep.Key;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            var loc = module.Locations[key];
+                            if (!loc.IsValid)
+                            {
+                                continue;
+                            }
+
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            if (key.IsFileKey)
+                            {
+                                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey, dep.SubDirectory);
+                            }
+                            else if (key.IsSymlinkKey)
+                            {
+                                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                                Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                            }
+                            else if (key.IsDirectoryKey)
+                            {
+                                throw new Opus.Core.Exception("Directories cannot be published yet");
+                            }
+                            else
+                            {
+                                throw new Opus.Core.Exception("Unsupported Location type");
+                            }
                         }
 
-                        var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
-                        if (key.IsFileKey)
-                        {
-                            var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                            Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey);
-                        }
-                        else if (key.IsSymlinkKey)
-                        {
-                            var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-                            Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, moduleToBuild, newKey);
-                        }
-                        else if (key.IsDirectoryKey)
-                        {
-                            throw new Opus.Core.Exception("Unsupported Location type");
-                        }
-                        else
-                        {
-                            throw new Opus.Core.Exception("Unsupported Location type");
-                        }
                     }
                 }
             }
@@ -117,7 +164,7 @@ namespace NativeBuilder
                     var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
                     var contentsLoc = locationMap[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
                     var plistSourceLoc = plistNodeData.Node.Module.Locations[plistNodeData.Key];
-                    Publisher.ProductModuleUtilities.CopyFileToLocation(plistSourceLoc, contentsLoc, moduleToBuild, newKey);
+                    Publisher.ProductModuleUtilities.CopyFileToLocation(plistSourceLoc, contentsLoc, moduleToBuild, newKey, string.Empty);
                 }
             }
 

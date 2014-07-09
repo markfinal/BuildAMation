@@ -76,7 +76,7 @@ namespace MakeFileBuilder
             var sourcePath = sourceLoc.GetSingleRawPath();
             var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, moduleToBuild, primaryKey);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, moduleToBuild, primaryKey, string.Empty);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
@@ -158,7 +158,8 @@ namespace MakeFileBuilder
                                 depSourcePath,
                                 publishDirPath,
                                 moduleToBuild,
-                                newKey);
+                                newKey,
+                                string.Empty);
                             var rule = new MakeFileRule(
                                 moduleToBuild,
                                 newKey,
@@ -177,7 +178,8 @@ namespace MakeFileBuilder
                                 depSourcePath,
                                 publishDirPath,
                                 moduleToBuild,
-                                newKey);
+                                newKey,
+                                string.Empty);
                             var rule = new MakeFileRule(
                                 moduleToBuild,
                                 newKey,
@@ -211,7 +213,8 @@ namespace MakeFileBuilder
                         plistSourcePath,
                         contentsLoc,
                         moduleToBuild,
-                        newKey);
+                        newKey,
+                        string.Empty);
                     var rule = new MakeFileRule(
                         moduleToBuild,
                         newKey,

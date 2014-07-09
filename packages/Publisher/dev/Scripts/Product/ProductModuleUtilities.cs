@@ -132,10 +132,21 @@ namespace Publisher
             string sourcePath,
             string destinationDirectory,
             Opus.Core.BaseModule module,
-            Opus.Core.LocationKey key)
+            Opus.Core.LocationKey key,
+            string subdirectory)
         {
             var filename = System.IO.Path.GetFileName(sourcePath);
-            var destPath = System.IO.Path.Combine(destinationDirectory, filename);
+            string destPath;
+            if (string.IsNullOrEmpty(subdirectory))
+            {
+                destPath = System.IO.Path.Combine(destinationDirectory, filename);
+            }
+            else
+            {
+                destPath = System.IO.Path.Combine(destinationDirectory, subdirectory);
+                NativeBuilder.NativeBuilder.MakeDirectory(destPath);
+                destPath = System.IO.Path.Combine(destPath, filename);
+            }
             if (key.IsFileKey)
             {
                 module.Locations[key] = Opus.Core.FileLocation.Get(destPath, Opus.Core.Location.EExists.WillExist);
@@ -156,10 +167,11 @@ namespace Publisher
             Opus.Core.Location sourceFile,
             string destinationDirectory,
             Opus.Core.BaseModule module,
-            Opus.Core.LocationKey key)
+            Opus.Core.LocationKey key,
+            string subdirectory)
         {
             var sourcePath = sourceFile.GetSingleRawPath();
-            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
+            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key, subdirectory);
             Opus.Core.Log.Info("Copying file {0} to {1}", sourcePath, destPath);
             System.IO.File.Copy(sourcePath, destPath, true);
         }
@@ -172,7 +184,7 @@ namespace Publisher
             Opus.Core.LocationKey key)
         {
             var sourcePath = sourceSymlink.GetSingleRawPath();
-            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key);
+            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, module, key, string.Empty);
             Opus.Core.Log.Info("Copying symlink {0} to {1}", sourcePath, destPath);
 #if __MonoCS__
             var buf = new Mono.Unix.Native.Stat();
