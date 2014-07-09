@@ -54,12 +54,16 @@ namespace MakeFileBuilder
                 var commandLineOption = dynamicLibraryOptions as CommandLineProcessor.ICommandLineSupport;
                 if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                 {
-                    commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
+                    // libraries are manually added later
+                    var excludedOptions = new Opus.Core.StringArray("Libraries", "StandardLibraries");
+                    commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptions);
                 }
                 else
                 {
                     var excludedOptions = new Opus.Core.StringArray();
                     excludedOptions.Add("RPath"); // $ORIGIN is handled differently
+                    excludedOptions.Add("Libraries");
+                    excludedOptions.Add("StandardLibraries");
                     commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptions);
 
                     // handle RPath separately

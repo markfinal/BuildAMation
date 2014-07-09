@@ -118,6 +118,17 @@ namespace QMakeBuilder
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
                 data.LinkFlags.AddRangeUnique(commandLineBuilder);
 
+                // library paths and libs
+                {
+                    var commandLine = new Opus.Core.StringArray();
+                    var optionNames = new Opus.Core.StringArray("LibraryPaths");
+                    CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, commandLine, target, optionNames);
+                    foreach (var option in commandLine)
+                    {
+                        //data.Libraries.AddUnique(option);
+                    }
+                }
+
                 // debug symbols
                 {
                     var commandLine = new Opus.Core.StringArray();

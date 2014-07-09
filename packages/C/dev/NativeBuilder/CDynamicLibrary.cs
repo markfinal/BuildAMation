@@ -101,7 +101,9 @@ namespace NativeBuilder
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
+                // libraries are manually added later
+                var excludedOptions = new Opus.Core.StringArray("Libraries", "StandardLibraries");
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptions);
             }
             else
             {

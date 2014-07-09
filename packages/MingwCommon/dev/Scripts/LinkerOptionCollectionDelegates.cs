@@ -114,11 +114,21 @@ namespace MingwCommon
         }
         private static void StandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // empty
+            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            // TODO: change to var, and returning Locations
+            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            {
+                commandLineBuilder.Add(libraryPath.GetSinglePath());
+            }
         }
         private static void LibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // empty
+            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            // TODO: change to var, and returning Locations
+            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            {
+                commandLineBuilder.Add(libraryPath.GetSinglePath());
+            }
         }
         private static void GenerateMapFileCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {

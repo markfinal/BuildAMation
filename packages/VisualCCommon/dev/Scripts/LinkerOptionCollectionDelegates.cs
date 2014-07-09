@@ -210,17 +210,17 @@ namespace VisualCCommon
         }
         private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var librarySearchPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             // TODO: change to var, and returning Locations
-            foreach (string includePath in includePathsOption.Value)
+            foreach (string librarySearchPath in librarySearchPathsOption.Value)
             {
-                if (includePath.Contains(" "))
+                if (librarySearchPath.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("-LIBPATH:\"{0}\"", includePath));
+                    commandLineBuilder.Add(System.String.Format("-LIBPATH:\"{0}\"", librarySearchPath));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("-LIBPATH:{0}", includePath));
+                    commandLineBuilder.Add(System.String.Format("-LIBPATH:{0}", librarySearchPath));
                 }
             }
         }
@@ -246,7 +246,12 @@ namespace VisualCCommon
         }
         private static void StandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // empty
+            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            // TODO: change to var, and returning Locations
+            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            {
+                commandLineBuilder.Add(libraryPath.GetSinglePath());
+            }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary StandardLibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
@@ -291,7 +296,12 @@ namespace VisualCCommon
         }
         private static void LibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
         {
-            // empty
+            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            // TODO: change to var, and returning Locations
+            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            {
+                commandLineBuilder.Add(libraryPath.GetSinglePath());
+            }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary LibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
