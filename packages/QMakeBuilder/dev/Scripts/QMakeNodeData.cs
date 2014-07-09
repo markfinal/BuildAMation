@@ -28,6 +28,7 @@ namespace QMakeBuilder
             this.OSXApplicationBundle = false;
 
             this.CCFlags = new Opus.Core.StringArray();
+            this.CustomPathVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             this.CustomRules = null;
             this.CXXFlags = new Opus.Core.StringArray();
             this.Defines = new Opus.Core.StringArray();
@@ -68,6 +69,12 @@ namespace QMakeBuilder
         }
 
         public Opus.Core.StringArray CCFlags
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> CustomPathVariables
         {
             get;
             private set;
@@ -694,6 +701,19 @@ namespace QMakeBuilder
             writer.WriteLine(format, FormatPath(value, proFilePath, verbose));
         }
 
+        private static void WriteVerboseString(string value, string format, string proFilePath, System.IO.StreamWriter writer)
+        {
+            if (0 == value.Length)
+            {
+                return;
+            }
+            if (!format.Contains("{0}"))
+            {
+                format += "{0}";
+            }
+            writer.WriteLine(format, value);
+        }
+
         private static void WriteStringArray(Opus.Core.StringArray stringArray,
                                              string format,
                                              string proFilePath,
@@ -1036,6 +1056,42 @@ namespace QMakeBuilder
         }
 
         private static void
+        WriteCustomPathVariables(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
+        {
+            if (1 == array.Count)
+            {
+                foreach (var customPath in array[0].CustomPathVariables)
+                {
+                    WriteStringArray(customPath.Value, customPath.Key + "+=", proFilePath, writer);
+                }
+            }
+            else
+            {
+                // TODO
+                throw new System.NotImplementedException();
+#if false
+                var values = new Values<Opus.Core.StringArray>();
+                foreach (var data in array)
+                {
+                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    {
+                        values.Debug = data.Sources;
+                    }
+                    else
+                    {
+                        values.Release = data.Sources;
+                    }
+                }
+
+                WriteStringArrays(values, "SOURCES+=", proFilePath, writer);
+#endif
+            }
+        }
+
+        private static void
         WriteCustomRules(
             Opus.Core.Array<QMakeData> array,
             string proFilePath,
@@ -1049,9 +1105,12 @@ namespace QMakeBuilder
                 }
                 foreach (var customRule in array[0].CustomRules)
                 {
-                    var split = customRule.Split('=');
+                    // split on the first = only
+                    var split = customRule.Split(new [] {'='}, 2);
+                    split[0] = split[0].Trim();
+                    split[1] = split[1].Trim();
                     split[0] += '=';
-                    WriteString(split[1], split[0], proFilePath, writer);
+                    WriteVerboseString(split[1], split[0], proFilePath, writer);
                 }
             }
             else
@@ -1205,6 +1264,17 @@ namespace QMakeBuilder
             }
 
             this.CCFlags.AddRangeUnique(data.CCFlags);
+            foreach (var customPath in data.CustomPathVariables)
+            {
+                if (this.CustomPathVariables.ContainsKey(customPath.Key))
+                {
+                    this.CustomPathVariables[customPath.Key].AddRangeUnique(customPath.Value);
+                }
+                else
+                {
+                    this.CustomPathVariables[customPath.Key] = new Opus.Core.StringArray(customPath.Value);
+                }
+            }
             if (null != data.CustomRules)
             {
                 if (null == this.CustomRules)
@@ -1314,6 +1384,7 @@ namespace QMakeBuilder
                 WriteMinorVersionNumber(array, proFilePath, proWriter);
                 WritePatchVersionNumber(array, proFilePath, proWriter);
                 WritePostLinkCommands(array, proFilePath, proWriter);
+                WriteCustomPathVariables(array, proFilePath, proWriter);
                 WriteCustomRules(array, proFilePath, proWriter);
             }
         }
