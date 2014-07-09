@@ -16,35 +16,34 @@ namespace QMakeBuilder
 
             // any source file that is derived from a moc step should not be listed
             // explicitly, because QMake handles this via searching for Q_OBJECT classes
+            var excludedSource = false;
             if (System.IO.Path.GetFileNameWithoutExtension(sourceFilePath).StartsWith("moc_"))
             {
-                success = true;
-                return null;
+                excludedSource = true;
             }
-            // TODO: removing these source files, leaving an empty source list, seems to stop useful compilation options being added
-#if false
             // same with protocol buffers
             if (sourceFilePath.EndsWith(".pb.cc") && sourceLoc.Exists == Opus.Core.Location.EExists.WillExist)
             {
-                success = true;
-                return null;
+                excludedSource = true;
             }
-#endif
 
             var node = moduleToBuild.OwningNode;
             var optionInterface = moduleToBuild.Options as C.ICCompilerOptions;
 
             var data = new QMakeData(node);
             data.PriPaths.Add(this.EmptyConfigPriPath);
-            if ((moduleToBuild is C.ObjC.ObjectFile) || (moduleToBuild is C.ObjCxx.ObjectFile))
+            if (!excludedSource)
             {
-                data.ObjectiveSources.Add(sourceFilePath);
+                if ((moduleToBuild is C.ObjC.ObjectFile) || (moduleToBuild is C.ObjCxx.ObjectFile))
+                {
+                    data.ObjectiveSources.Add(sourceFilePath);
+                }
+                else
+                {
+                    data.Sources.Add(sourceFilePath);
+                }
+                data.Output = QMakeData.OutputType.ObjectFile;
             }
-            else
-            {
-                data.Sources.Add(sourceFilePath);
-            }
-            data.Output = QMakeData.OutputType.ObjectFile;
 #if true
             data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.OutputDir];
 #else
