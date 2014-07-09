@@ -81,17 +81,17 @@ namespace VisualCCommon
 #if true
                 var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
                 var pdbPath = pdbFile.GetSinglePath();
-                commandLineBuilder.Add(System.String.Format("/PDB:{0}", pdbPath));
+                commandLineBuilder.Add(System.String.Format("-PDB:{0}", pdbPath));
 #else
                 var options = sender as LinkerOptionCollection;
                 var pdbPathName = options.ProgramDatabaseFilePath;
                 if (pdbPathName.Contains(" "))
                 {
-                    commandLineBuilder.Add(System.String.Format("/PDB:\"{0}\"", pdbPathName));
+                    commandLineBuilder.Add(System.String.Format("-PDB:\"{0}\"", pdbPathName));
                 }
                 else
                 {
-                    commandLineBuilder.Add(System.String.Format("/PDB:{0}", pdbPathName));
+                    commandLineBuilder.Add(System.String.Format("-PDB:{0}", pdbPathName));
                 }
 #endif
             }

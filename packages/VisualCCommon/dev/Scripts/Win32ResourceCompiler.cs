@@ -36,7 +36,7 @@ namespace VisualCCommon
         {
             get
             {
-                return "/fo ";
+                return "-fo ";
             }
         }
 
