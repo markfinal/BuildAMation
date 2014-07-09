@@ -110,7 +110,7 @@ namespace QMakeBuilder
                 excludedOptionNames.Add("OutputType");
                 excludedOptionNames.Add("LibraryPaths");
                 excludedOptionNames.Add("GenerateMapFile"); // TODO: better way of extracting the map file? yes, locations
-                excludedOptionNames.Add("DebugSymbols"); // TODO: better way of extracting the PDB file? yes, location
+                excludedOptionNames.Add("DebugSymbols");
                 if (target.HasPlatform(Opus.Core.EPlatform.NotWindows))
                 {
                     excludedOptionNames.Add("RPath");
@@ -118,16 +118,30 @@ namespace QMakeBuilder
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
                 data.LinkFlags.AddRangeUnique(commandLineBuilder);
 
+                // debug symbols
+                {
+                    var commandLine = new Opus.Core.StringArray();
+                    var optionNames = new Opus.Core.StringArray("DebugSymbols");
+                    CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, commandLine, target, optionNames);
+                    if (!data.CustomPathVariables.ContainsKey("QMAKE_LFLAGS_DEBUG"))
+                    {
+                        data.CustomPathVariables["QMAKE_LFLAGS_DEBUG"] = new Opus.Core.StringArray();
+                    }
+                    foreach (var option in commandLine)
+                    {
+                        data.CustomPathVariables["QMAKE_LFLAGS_DEBUG"].AddUnique(option);
+                    }
+                }
+
+                // rpath
                 if (target.HasPlatform(Opus.Core.EPlatform.NotWindows))
                 {
-                    // handle RPath separately
-                    var rPathCommandLine = new Opus.Core.StringArray();
-                    var optionNames = new Opus.Core.StringArray();
-                    optionNames.Add("RPath");
-                    CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, rPathCommandLine, target, optionNames);
-                    foreach (var rpath in rPathCommandLine)
+                    var commandLine = new Opus.Core.StringArray();
+                    var optionNames = new Opus.Core.StringArray("RPath");
+                    CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, commandLine, target, optionNames);
+                    foreach (var option in commandLine)
                     {
-                        var linkerCommand = rpath.Split(',');
+                        var linkerCommand = option.Split(',');
                         var rpathDir = linkerCommand[linkerCommand.Length - 1];
                         // unable to insert $ORIGIN into QMAKE_RPATHDIR, that is suggested at
                         // http://www.opensource.apple.com/source/WebKit/WebKit-7534.56.5/qt/declarative/declarative.pro
