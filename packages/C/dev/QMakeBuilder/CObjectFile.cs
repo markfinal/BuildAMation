@@ -9,7 +9,10 @@ namespace QMakeBuilder
     {
         public object Build(C.ObjectFile moduleToBuild, out bool success)
         {
-            var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
+            var sourceLoc = moduleToBuild.SourceFileLocation;
+            var sourceFilePath = sourceLoc.GetSinglePath();
+
+            // TODO: this needs to be done better!!!
 
             // any source file that is derived from a moc step should not be listed
             // explicitly, because QMake handles this via searching for Q_OBJECT classes
@@ -18,6 +21,15 @@ namespace QMakeBuilder
                 success = true;
                 return null;
             }
+            // TODO: removing these source files, leaving an empty source list, seems to stop useful compilation options being added
+#if false
+            // same with protocol buffers
+            if (sourceFilePath.EndsWith(".pb.cc") && sourceLoc.Exists == Opus.Core.Location.EExists.WillExist)
+            {
+                success = true;
+                return null;
+            }
+#endif
 
             var node = moduleToBuild.OwningNode;
             var optionInterface = moduleToBuild.Options as C.ICCompilerOptions;
