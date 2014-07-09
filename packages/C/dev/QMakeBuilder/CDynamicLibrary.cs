@@ -114,6 +114,22 @@ namespace QMakeBuilder
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
                 data.LinkFlags.AddRangeUnique(commandLineBuilder);
 
+                // library paths and libs
+                {
+                    var linkerOptions = options as C.ILinkerOptions;
+                    foreach (var linkerSearchPath in linkerOptions.LibraryPaths)
+                    {
+                        // Note: the -L prefix is for all platforms
+                        // Note: this is not the best way to use a DirectoryLocation
+                        data.Libraries.AddUnique(Opus.Core.DirectoryLocation.Get(System.String.Format("-L{0}", linkerSearchPath), Opus.Core.Location.EExists.WillExist));
+                    }
+                    // TODO: convert to var
+                    foreach (Opus.Core.FileLocation libraryPath in linkerOptions.Libraries)
+                    {
+                        data.Libraries.AddUnique(libraryPath);
+                    }
+                }
+
                 // debug symbols
                 {
                     var commandLine = new Opus.Core.StringArray();

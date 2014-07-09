@@ -120,12 +120,17 @@ namespace QMakeBuilder
 
                 // library paths and libs
                 {
-                    var commandLine = new Opus.Core.StringArray();
-                    var optionNames = new Opus.Core.StringArray("LibraryPaths");
-                    CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, commandLine, target, optionNames);
-                    foreach (var option in commandLine)
+                    var linkerOptions = options as C.ILinkerOptions;
+                    foreach (var linkerSearchPath in linkerOptions.LibraryPaths)
                     {
-                        //data.Libraries.AddUnique(option);
+                        // Note: the -L prefix is for all platforms
+                        // Note: this is not the best way to use a DirectoryLocation
+                        data.Libraries.AddUnique(Opus.Core.DirectoryLocation.Get(System.String.Format("-L{0}", linkerSearchPath), Opus.Core.Location.EExists.WillExist));
+                    }
+                    // TODO: convert to var
+                    foreach (Opus.Core.FileLocation libraryPath in linkerOptions.Libraries)
+                    {
+                        data.Libraries.AddUnique(libraryPath);
                     }
                 }
 
