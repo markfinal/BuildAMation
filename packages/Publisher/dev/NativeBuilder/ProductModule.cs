@@ -7,35 +7,12 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object
-        Build(
+        private void
+        PublishDependents(
             Publisher.ProductModule moduleToBuild,
-            out bool success)
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath)
         {
-            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
-            if (null == primaryNodeData)
-            {
-                success = true;
-                return null;
-            }
-
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
-            foreach (var dir in dirsToCreate)
-            {
-                var dirPath = dir.GetSinglePath();
-                NativeBuilder.MakeDirectory(dirPath);
-            }
-
-            var primaryNode = primaryNodeData.Node;
-            var locationMap = moduleToBuild.Locations;
-            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
-            var publishDirPath = publishDirLoc.GetSingleRawPath();
-
-            var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
-            var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
-            var publishedKey = new Opus.Core.LocationKey(publishedSourceKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, string.Empty, moduleToBuild, publishedKey);
-
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
             {
@@ -160,7 +137,14 @@ namespace NativeBuilder
                     }
                 }
             }
+        }
 
+        private void
+        PublishOSXPList(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            Opus.Core.LocationMap locationMap)
+        {
             var options = moduleToBuild.Options as Publisher.IPublishOptions;
             if (options.OSXApplicationBundle)
             {
@@ -174,6 +158,39 @@ namespace NativeBuilder
                     Publisher.ProductModuleUtilities.CopyFileToLocation(plistSourceLoc, contentsLoc, string.Empty, moduleToBuild, newKey);
                 }
             }
+        }
+
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
+        {
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            foreach (var dir in dirsToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
+            var primaryNode = primaryNodeData.Node;
+            var locationMap = moduleToBuild.Locations;
+            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
+            var publishDirPath = publishDirLoc.GetSingleRawPath();
+
+            var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
+            var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
+            var publishedKey = new Opus.Core.LocationKey(publishedSourceKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, string.Empty, moduleToBuild, publishedKey);
+
+            this.PublishDependents(moduleToBuild, primaryNode, publishDirPath);
+            this.PublishOSXPList(moduleToBuild, primaryNode, locationMap);
 
             success = true;
             return null;
