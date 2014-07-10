@@ -201,74 +201,76 @@ namespace MakeFileBuilder
                     else
                     {
                         var candidateData2 = field.GetValue(module) as Opus.Core.Array<Publisher.PublishDependency>;
-                        if (null != candidateData2)
+                        if (null == candidateData2)
                         {
-                            foreach (var dep in candidateData2)
+                            throw new Opus.Core.Exception("Unrecognized type for dependency data");
+                        }
+
+                        foreach (var dep in candidateData2)
+                        {
+                            var key = dep.Key;
+                            if (!module.Locations.Contains(key))
                             {
-                                var key = dep.Key;
-                                if (!module.Locations.Contains(key))
-                                {
-                                    continue;
-                                }
+                                continue;
+                            }
 
-                                var loc = module.Locations[key];
-                                if (!loc.IsValid)
-                                {
-                                    continue;
-                                }
-                                var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            var loc = module.Locations[key];
+                            if (!loc.IsValid)
+                            {
+                                continue;
+                            }
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
 
-                                // take the common subdirectory by default, otherwise override on a per Location basis
-                                var subDirectory = attribute.CommonSubDirectory;
-                                if (!string.IsNullOrEmpty(dep.SubDirectory))
-                                {
-                                    subDirectory = dep.SubDirectory;
-                                }
+                            // take the common subdirectory by default, otherwise override on a per Location basis
+                            var subDirectory = attribute.CommonSubDirectory;
+                            if (!string.IsNullOrEmpty(dep.SubDirectory))
+                            {
+                                subDirectory = dep.SubDirectory;
+                            }
 
-                                if (key.IsFileKey)
-                                {
-                                    var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                                    var depSourcePath = loc.GetSingleRawPath();
-                                    var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
-                                        depSourcePath,
-                                        publishDirPath,
-                                        subDirectory,
-                                        moduleToBuild,
-                                        newKey);
-                                    var rule = new MakeFileRule(
-                                        moduleToBuild,
-                                        newKey,
-                                        node.UniqueModuleName,
-                                        dirsToCreate,
-                                        depInputVariables,
-                                        null,
-                                        MakeCopyFileRecipe(depSourcePath, depDestPath));
-                                    makeFile.RuleArray.Add(rule);
-                                }
-                                else if (key.IsSymlinkKey)
-                                {
-                                    var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-                                    var depSourcePath = loc.GetSingleRawPath();
-                                    var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
-                                        depSourcePath,
-                                        publishDirPath,
-                                        subDirectory,
-                                        moduleToBuild,
-                                        newKey);
-                                    var rule = new MakeFileRule(
-                                        moduleToBuild,
-                                        newKey,
-                                        node.UniqueModuleName,
-                                        dirsToCreate,
-                                        depInputVariables,
-                                        null,
-                                        MakeCopySymlinkRecipe(depSourcePath, depDestPath, publishDirPath));
-                                    makeFile.RuleArray.Add(rule);
-                                }
-                                else
-                                {
-                                    throw new Opus.Core.Exception("Unsupported location type");
-                                }
+                            if (key.IsFileKey)
+                            {
+                                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                                var depSourcePath = loc.GetSingleRawPath();
+                                var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                                    depSourcePath,
+                                    publishDirPath,
+                                    subDirectory,
+                                    moduleToBuild,
+                                    newKey);
+                                var rule = new MakeFileRule(
+                                    moduleToBuild,
+                                    newKey,
+                                    node.UniqueModuleName,
+                                    dirsToCreate,
+                                    depInputVariables,
+                                    null,
+                                    MakeCopyFileRecipe(depSourcePath, depDestPath));
+                                makeFile.RuleArray.Add(rule);
+                            }
+                            else if (key.IsSymlinkKey)
+                            {
+                                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                                var depSourcePath = loc.GetSingleRawPath();
+                                var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                                    depSourcePath,
+                                    publishDirPath,
+                                    subDirectory,
+                                    moduleToBuild,
+                                    newKey);
+                                var rule = new MakeFileRule(
+                                    moduleToBuild,
+                                    newKey,
+                                    node.UniqueModuleName,
+                                    dirsToCreate,
+                                    depInputVariables,
+                                    null,
+                                    MakeCopySymlinkRecipe(depSourcePath, depDestPath, publishDirPath));
+                                makeFile.RuleArray.Add(rule);
+                            }
+                            else
+                            {
+                                throw new Opus.Core.Exception("Unsupported location type");
                             }
                         }
                     }
