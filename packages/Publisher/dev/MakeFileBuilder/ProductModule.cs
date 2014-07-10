@@ -35,6 +35,7 @@ namespace MakeFileBuilder
         MakeCopySymlinkRecipe(
             string sourcePath,
             string destPath,
+            string subdirectory,
             string workingDir)
         {
             var recipeBuilder = new System.Text.StringBuilder();
@@ -44,7 +45,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) $(notdir {2})", workingDir, sourcePath, destPath);
+                recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) {2}/$(notdir {3})", workingDir, sourcePath, subdirectory, destPath);
             }
             var recipe = recipeBuilder.ToString();
             var recipes = new Opus.Core.StringArray();
@@ -189,7 +190,7 @@ namespace MakeFileBuilder
                                     dirsToCreate,
                                     depInputVariables,
                                     null,
-                                    MakeCopySymlinkRecipe(depSourcePath, depDestPath, publishDirPath));
+                                    MakeCopySymlinkRecipe(depSourcePath, depDestPath, ".", publishDirPath));
                                 makeFile.RuleArray.Add(rule);
                             }
                             else
@@ -265,7 +266,7 @@ namespace MakeFileBuilder
                                     dirsToCreate,
                                     depInputVariables,
                                     null,
-                                    MakeCopySymlinkRecipe(depSourcePath, depDestPath, publishDirPath));
+                                    MakeCopySymlinkRecipe(depSourcePath, depDestPath, subDirectory, publishDirPath));
                                 makeFile.RuleArray.Add(rule);
                             }
                             else
