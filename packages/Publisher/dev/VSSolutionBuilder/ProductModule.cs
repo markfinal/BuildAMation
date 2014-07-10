@@ -12,7 +12,8 @@ namespace VSSolutionBuilder
             Publisher.ProductModule moduleToBuild,
             IProject toProject,
             Opus.Core.DependencyNode toCopy,
-            Opus.Core.LocationKey keyToCopy)
+            Opus.Core.LocationKey keyToCopy,
+            string subdirectory)
         {
             var configCollection = toProject.Configurations;
             // TODO: this should be done from the base target!
@@ -39,7 +40,7 @@ namespace VSSolutionBuilder
 
             var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, keyToCopy);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, destinationDirPath, string.Empty, moduleToBuild, primaryKey);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, destinationDirPath, subdirectory, moduleToBuild, primaryKey);
 
             var commandLine = new System.Text.StringBuilder();
             commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"{2}", sourcePath, destPath, System.Environment.NewLine);
@@ -121,14 +122,44 @@ namespace VSSolutionBuilder
                         continue;
                     }
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
-                    foreach (var key in candidateData)
+                    if (null != candidateData)
                     {
-                        if (!module.Locations.Contains(key))
+                        foreach (var key in candidateData)
                         {
-                            continue;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            CopyNodes(moduleToBuild, projectData, module.OwningNode, key, string.Empty);
+                        }
+                    }
+                    else
+                    {
+                        var candidateData2 = field.GetValue(module) as Opus.Core.Array<Publisher.PublishDependency>;
+                        if (null == candidateData2)
+                        {
+                            throw new Opus.Core.Exception("Unrecognized type for dependency data");
                         }
 
-                        CopyNodes(moduleToBuild, projectData, module.OwningNode, key);
+                        foreach (var dep in candidateData2)
+                        {
+                            var key = dep.Key;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            // take the common subdirectory by default, otherwise override on a per Location basis
+                            var subDirectory = attribute.CommonSubDirectory;
+                            if (!string.IsNullOrEmpty(dep.SubDirectory))
+                            {
+                                subDirectory = dep.SubDirectory;
+                            }
+
+                            CopyNodes(moduleToBuild, projectData, module.OwningNode, key, subDirectory);
+                        }
+
                     }
                 }
             }
