@@ -144,7 +144,10 @@ namespace Publisher
             else
             {
                 destPath = System.IO.Path.Combine(destinationDirectory, subdirectory);
-                NativeBuilder.NativeBuilder.MakeDirectory(destPath);
+                if (subdirectory != ".")
+                {
+                    NativeBuilder.NativeBuilder.MakeDirectory(destPath);
+                }
                 destPath = System.IO.Path.Combine(destPath, filename);
             }
             if (key.IsFileKey)

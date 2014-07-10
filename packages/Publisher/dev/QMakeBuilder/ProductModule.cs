@@ -91,25 +91,67 @@ namespace QMakeBuilder
                         continue;
                     }
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
-                    foreach (var key in candidateData)
+                    if (null != candidateData)
                     {
-                        if (!module.Locations.Contains(key))
+                        foreach (var key in candidateData)
                         {
-                            continue;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            var sourceLoc = module.Locations[key];
+                            if (!sourceLoc.IsValid)
+                            {
+                                continue;
+                            }
+                            var sourcePath = sourceLoc.GetSingleRawPath();
+
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, newKey);
+                            var destDir = System.IO.Path.GetDirectoryName(destPath);
+
+                            InstallFile(destDir, proData);
+                        }
+                    }
+                    else
+                    {
+                        var candidateData2 = field.GetValue(module) as Opus.Core.Array<Publisher.PublishDependency>;
+                        if (null == candidateData2)
+                        {
+                            throw new Opus.Core.Exception("Unrecognized type for dependency data");
                         }
 
-                        var sourceLoc = module.Locations[key];
-                        if (!sourceLoc.IsValid)
+                        foreach (var dep in candidateData2)
                         {
-                            continue;
+                            var key = dep.Key;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            var sourceLoc = module.Locations[key];
+                            if (!sourceLoc.IsValid)
+                            {
+                                continue;
+                            }
+                            var sourcePath = sourceLoc.GetSingleRawPath();
+
+                            // take the common subdirectory by default, otherwise override on a per Location basis
+                            var subDirectory = attribute.CommonSubDirectory;
+                            if (!string.IsNullOrEmpty(dep.SubDirectory))
+                            {
+                                subDirectory = dep.SubDirectory;
+                            }
+
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, subDirectory, moduleToBuild, newKey);
+                            var destDir = System.IO.Path.GetDirectoryName(destPath);
+
+                            InstallFile(destDir, proData);
                         }
-                        var sourcePath = sourceLoc.GetSingleRawPath();
-
-                        var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
-                        var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                        Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, newKey);
-
-                        InstallFile(publishDirPath, proData);
                     }
                 }
             }
