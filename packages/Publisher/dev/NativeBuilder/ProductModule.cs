@@ -129,11 +129,18 @@ namespace NativeBuilder
                                 continue;
                             }
 
+                            // take the common subdirectory by default, otherwise override on a per Location basis
+                            var subDirectory = attribute.CommonSubDirectory;
+                            if (!string.IsNullOrEmpty(dep.SubDirectory))
+                            {
+                                subDirectory = dep.SubDirectory;
+                            }
+
                             var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
                             if (key.IsFileKey)
                             {
                                 var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey, dep.SubDirectory);
+                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey, subDirectory);
                             }
                             else if (key.IsSymlinkKey)
                             {
