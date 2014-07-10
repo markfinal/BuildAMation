@@ -12,11 +12,11 @@ namespace Test4
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (Opus.Core.OSUtilities.IsUnixHosting)
             {
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+                this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
+                this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
+                this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
             }
 #endif
         }
@@ -66,8 +66,9 @@ namespace Test4
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.PublishModuleDependency]
-        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-            C.DynamicLibrary.OutputFile);
+        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
+            );
 #endif
     }
 
