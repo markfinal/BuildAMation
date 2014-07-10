@@ -76,7 +76,7 @@ namespace MakeFileBuilder
             var sourcePath = sourceLoc.GetSingleRawPath();
             var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, moduleToBuild, primaryKey, string.Empty);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, primaryKey);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
@@ -157,9 +157,9 @@ namespace MakeFileBuilder
                             var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                                 depSourcePath,
                                 publishDirPath,
+                                string.Empty,
                                 moduleToBuild,
-                                newKey,
-                                string.Empty);
+                                newKey);
                             var rule = new MakeFileRule(
                                 moduleToBuild,
                                 newKey,
@@ -177,9 +177,9 @@ namespace MakeFileBuilder
                             var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                                 depSourcePath,
                                 publishDirPath,
+                                string.Empty,
                                 moduleToBuild,
-                                newKey,
-                                string.Empty);
+                                newKey);
                             var rule = new MakeFileRule(
                                 moduleToBuild,
                                 newKey,
@@ -212,9 +212,9 @@ namespace MakeFileBuilder
                     var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                         plistSourcePath,
                         contentsLoc,
+                        string.Empty,
                         moduleToBuild,
-                        newKey,
-                        string.Empty);
+                        newKey);
                     var rule = new MakeFileRule(
                         moduleToBuild,
                         newKey,

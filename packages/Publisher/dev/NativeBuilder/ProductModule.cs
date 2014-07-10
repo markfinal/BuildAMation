@@ -34,7 +34,7 @@ namespace NativeBuilder
             var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
             var publishedSourceKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
             var publishedKey = new Opus.Core.LocationKey(publishedSourceKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, moduleToBuild, publishedKey, string.Empty);
+            Publisher.ProductModuleUtilities.CopyFileToLocation(sourceLoc, publishDirPath, string.Empty, moduleToBuild, publishedKey);
 
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
@@ -90,12 +90,12 @@ namespace NativeBuilder
                             if (key.IsFileKey)
                             {
                                 var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey, string.Empty);
+                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, string.Empty, moduleToBuild, newKey);
                             }
                             else if (key.IsSymlinkKey)
                             {
                                 var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-                                Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                                Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, string.Empty, moduleToBuild, newKey);
                             }
                             else if (key.IsDirectoryKey)
                             {
@@ -140,12 +140,12 @@ namespace NativeBuilder
                             if (key.IsFileKey)
                             {
                                 var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, moduleToBuild, newKey, subDirectory);
+                                Publisher.ProductModuleUtilities.CopyFileToLocation(loc, publishDirPath, subDirectory, moduleToBuild, newKey);
                             }
                             else if (key.IsSymlinkKey)
                             {
                                 var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-                                Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, moduleToBuild, newKey);
+                                Publisher.ProductModuleUtilities.CopySymlinkToLocation(loc, publishDirPath, subDirectory, moduleToBuild, newKey);
                             }
                             else if (key.IsDirectoryKey)
                             {
@@ -171,7 +171,7 @@ namespace NativeBuilder
                     var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
                     var contentsLoc = locationMap[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
                     var plistSourceLoc = plistNodeData.Node.Module.Locations[plistNodeData.Key];
-                    Publisher.ProductModuleUtilities.CopyFileToLocation(plistSourceLoc, contentsLoc, moduleToBuild, newKey, string.Empty);
+                    Publisher.ProductModuleUtilities.CopyFileToLocation(plistSourceLoc, contentsLoc, string.Empty, moduleToBuild, newKey);
                 }
             }
 
