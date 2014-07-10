@@ -12,10 +12,15 @@ namespace XcodeBuilder
             Publisher.ProductModule moduleToBuild,
             PBXProject project,
             Opus.Core.DependencyNode toCopy,
-            PBXNativeTarget nativeTarget)
+            PBXNativeTarget nativeTarget,
+            string subdirectory)
         {
             var copyFilesBuildPhase = project.CopyFilesBuildPhases.Get("CopyFiles", moduleToBuild.OwningNode.ModuleName);
             copyFilesBuildPhase.SubFolder = PBXCopyFilesBuildPhase.ESubFolder.Executables;
+            if (!string.IsNullOrEmpty(subdirectory))
+            {
+                copyFilesBuildPhase.DestinationPath = subdirectory;
+            }
             nativeTarget.BuildPhases.AddUnique(copyFilesBuildPhase);
 
             var copySourceNativeTarget = toCopy.Data as PBXNativeTarget;
@@ -97,14 +102,43 @@ namespace XcodeBuilder
                         continue;
                     }
                     var candidateData = field.GetValue(module) as Opus.Core.Array<Opus.Core.LocationKey>;
-                    foreach (var key in candidateData)
+                    if (null != candidateData)
                     {
-                        if (!module.Locations.Contains(key))
+                        foreach (var key in candidateData)
                         {
-                            continue;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            CopyNodes(moduleToBuild, project, module.OwningNode, primaryPBXNativeTarget, string.Empty);
+                        }
+                    }
+                    else
+                    {
+                        var candidateData2 = field.GetValue(module) as Opus.Core.Array<Publisher.PublishDependency>;
+                        if (null == candidateData2)
+                        {
+                            throw new Opus.Core.Exception("Unrecognized type for dependency data");
                         }
 
-                        CopyNodes(moduleToBuild, project, module.OwningNode, primaryPBXNativeTarget);
+                        foreach (var dep in candidateData2)
+                        {
+                            var key = dep.Key;
+                            if (!module.Locations.Contains(key))
+                            {
+                                continue;
+                            }
+
+                            // take the common subdirectory by default, otherwise override on a per Location basis
+                            var subDirectory = attribute.CommonSubDirectory;
+                            if (!string.IsNullOrEmpty(dep.SubDirectory))
+                            {
+                                subDirectory = dep.SubDirectory;
+                            }
+
+                            CopyNodes(moduleToBuild, project, module.OwningNode, primaryPBXNativeTarget, subDirectory);
+                        }
                     }
                 }
             }
