@@ -9,12 +9,12 @@ namespace Publisher
     {
         // TODO: out of all the dependents, how do we determine the metadata that they have associated with them
         // from the Publisher.ProductModule module, that is beyond just the need for graph building?
-        private static Opus.Core.Array<PublishNodeData>
-        GetModulesDataWithAttribute(
+        private static Opus.Core.Array<T>
+        GetModulesDataWithAttribute<T>(
             Publisher.ProductModule moduleToBuild,
-            System.Type attributeType)
+            System.Type attributeType) where T : class
         {
-            var moduleData = new Opus.Core.Array<PublishNodeData>();
+            var moduleData = new Opus.Core.Array<T>();
 
             var flags = System.Reflection.BindingFlags.Instance |
                         System.Reflection.BindingFlags.NonPublic;
@@ -31,7 +31,7 @@ namespace Publisher
                 var currentAttr = attributes[0];
                 if (currentAttr.GetType() == attributeType)
                 {
-                    var primaryTargetData = field.GetValue(moduleToBuild) as PublishNodeData;
+                    var primaryTargetData = field.GetValue(moduleToBuild) as T;
                     if (null == primaryTargetData)
                     {
                         throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type PublishNodeData");
@@ -43,7 +43,7 @@ namespace Publisher
             return moduleData;
         }
 
-        public class PublishingNodeData
+        public class InternalPublishingNodeData
         {
             public Opus.Core.DependencyNode Node
             {
@@ -58,11 +58,26 @@ namespace Publisher
             }
         }
 
-        public static PublishingNodeData
+        public class InternalPublishingAdditionalDirectoriesData
+        {
+            public Opus.Core.Location SourceDirectory
+            {
+                get;
+                set;
+            }
+
+            public string DirectoryName
+            {
+                get;
+                set;
+            }
+        }
+
+        public static InternalPublishingNodeData
         GetPrimaryNodeData(
             Publisher.ProductModule moduleToBuild)
         {
-            PublishingNodeData data = null;
+            InternalPublishingNodeData data = null;
 
             // TODO: why is this check necessary?
             var dependents = moduleToBuild.OwningNode.ExternalDependents;
@@ -71,23 +86,23 @@ namespace Publisher
                 return data;
             }
 
-            var matchingModules = GetModulesDataWithAttribute(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
+            var matchingModules = GetModulesDataWithAttribute<PublishNodeData>(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
             if (matchingModules.Count == 0)
             {
                 return data;
             }
 
-            data = new PublishingNodeData();
+            data = new InternalPublishingNodeData();
             data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
             data.Key = matchingModules[0].Key;
             return data;
         }
 
-        public static PublishingNodeData
+        public static InternalPublishingNodeData
         GetOSXPListNodeData(
             Publisher.ProductModule moduleToBuild)
         {
-            PublishingNodeData data = null;
+            InternalPublishingNodeData data = null;
 
             // TODO: why is this check necessary?
             var dependents = moduleToBuild.OwningNode.ExternalDependents;
@@ -96,15 +111,40 @@ namespace Publisher
                 return data;
             }
 
-            var matchingModules = GetModulesDataWithAttribute(moduleToBuild, typeof(Publisher.OSXInfoPListAttribute));
+            var matchingModules = GetModulesDataWithAttribute<PublishNodeData>(moduleToBuild, typeof(Publisher.OSXInfoPListAttribute));
             if (matchingModules.Count == 0)
             {
                 return data;
             }
 
-            data = new PublishingNodeData();
+            data = new InternalPublishingNodeData();
             data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
             data.Key = matchingModules[0].Key;
+            return data;
+        }
+
+        public static InternalPublishingAdditionalDirectoriesData
+        GetAdditionalDirectoriesData(
+            Publisher.ProductModule moduleToBuild)
+        {
+            InternalPublishingAdditionalDirectoriesData data = null;
+
+            // TODO: why is this check necessary?
+            var dependents = moduleToBuild.OwningNode.ExternalDependents;
+            if ((null == dependents) || (dependents.Count == 0))
+            {
+                return data;
+            }
+
+            var matchingModules = GetModulesDataWithAttribute<PublishDirectory>(moduleToBuild, typeof(Publisher.AdditionalDirectoriesAttribute));
+            if (matchingModules.Count == 0)
+            {
+                return data;
+            }
+
+            data = new InternalPublishingAdditionalDirectoriesData();
+            data.SourceDirectory = matchingModules[0].DirectoryLocation;
+            data.DirectoryName = matchingModules[0].Directory;
             return data;
         }
 
@@ -124,6 +164,19 @@ namespace Publisher
                 builder.Append(".For.");
                 builder.Append(primaryModule.OwningNode.ModuleName);
             }
+            return builder.ToString();
+        }
+
+        public static string
+        GetPublishedAdditionalDirectoryKeyName(
+            Opus.Core.BaseModule primaryModule,
+            string directoryName)
+        {
+            var builder = new System.Text.StringBuilder();
+            builder.Append("Directory.");
+            builder.Append(directoryName);
+            builder.Append(".PublishedFor.");
+            builder.Append(primaryModule.OwningNode.ModuleName);
             return builder.ToString();
         }
 
@@ -177,6 +230,34 @@ namespace Publisher
             var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, subdirectory, module, key);
             Opus.Core.Log.Info("Copying file {0} to {1}", sourcePath, destPath);
             System.IO.File.Copy(sourcePath, destPath, true);
+        }
+
+        public static void
+        CopyDirectoryToLocation(
+            Opus.Core.Location sourceDirectory,
+            string destinationDirectory,
+            string subdirectory,
+            Opus.Core.BaseModule module,
+            Opus.Core.LocationKey key)
+        {
+            var sourcePath = sourceDirectory.GetSingleRawPath();
+            var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, subdirectory, module, key);
+            Opus.Core.Log.Info("Copying directory {0} to {1}", sourcePath, destPath);
+
+            foreach (string dir in System.IO.Directory.GetDirectories(sourcePath, "*", System.IO.SearchOption.AllDirectories))
+            {
+                var dirToCreate = destPath + dir.Substring(sourcePath.Length);
+                if (!System.IO.Directory.Exists(dirToCreate))
+                {
+                    System.IO.Directory.CreateDirectory(dirToCreate);
+                }
+            }
+
+            foreach (string file_name in System.IO.Directory.GetFiles(sourcePath, "*.*", System.IO.SearchOption.AllDirectories))
+            {
+                var fileCopiedTo = destPath + file_name.Substring(sourcePath.Length);
+                System.IO.File.Copy(file_name, fileCopiedTo, true);
+            }
         }
 
         public static void

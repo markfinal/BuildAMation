@@ -42,6 +42,10 @@ namespace Publisher
                     }
                     dependentModuleTypes.AddUnique(primaryModuleData.ModuleType);
                 }
+                else if (currentAttr.GetType() == typeof(AdditionalDirectoriesAttribute))
+                {
+                    // do nothing
+                }
                 else
                 {
                     throw new Opus.Core.Exception("Unrecognized attribute of type {0} on field {1} of module {2}",

@@ -160,6 +160,22 @@ namespace NativeBuilder
             }
         }
 
+        private void
+        PublishAdditionalDirectories(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath)
+        {
+            var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
+            if (null != additionalDirsData)
+            {
+                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
+                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+                var sourceLoc = additionalDirsData.SourceDirectory;
+                Publisher.ProductModuleUtilities.CopyDirectoryToLocation(sourceLoc, publishDirPath, string.Empty, moduleToBuild, newKey);
+            }
+        }
+
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
@@ -191,6 +207,7 @@ namespace NativeBuilder
 
             this.PublishDependents(moduleToBuild, primaryNode, publishDirPath);
             this.PublishOSXPList(moduleToBuild, primaryNode, locationMap);
+            this.PublishAdditionalDirectories(moduleToBuild, primaryNode, publishDirPath);
 
             success = true;
             return null;
