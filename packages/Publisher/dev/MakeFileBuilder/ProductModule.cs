@@ -32,6 +32,30 @@ namespace MakeFileBuilder
         }
 
         private static Opus.Core.StringArray
+        MakeCopyDirectoryRecipe(
+            string sourcePath,
+            string destPath)
+        {
+            var recipeBuilder = new System.Text.StringBuilder();
+            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            {
+                recipeBuilder.AppendFormat("cmd.exe /c XCOPY {0} {1} /E", sourcePath, destPath);
+            }
+            else
+            {
+                recipeBuilder.AppendFormat("cp -R {0} {1}", sourcePath, destPath);
+            }
+            var recipe = recipeBuilder.ToString();
+            // replace primary target with $@
+            recipe = recipe.Replace(destPath, "$@");
+            // TODO: too many inputs for some modules (map files, pdbs, etc) to just replace source with $<
+
+            var recipes = new Opus.Core.StringArray();
+            recipes.Add(recipe);
+            return recipes;
+        }
+
+        private static Opus.Core.StringArray
         MakeCopySymlinkRecipe(
             string sourcePath,
             string destPath,
@@ -286,6 +310,40 @@ namespace MakeFileBuilder
             }
         }
 
+        private void
+        PublishAdditionalDirectories(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath,
+            Opus.Core.LocationArray dirsToCreate,
+            MakeFile makeFile)
+        {
+            var node = moduleToBuild.OwningNode;
+            var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
+            if (null != additionalDirsData)
+            {
+                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
+                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+                var sourceLoc = additionalDirsData.SourceDirectory;
+                var sourcePath = sourceLoc.GetSingleRawPath();
+                var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                    sourcePath,
+                    publishDirPath,
+                    string.Empty,
+                    moduleToBuild,
+                    newKey);
+                var rule = new MakeFileRule(
+                    moduleToBuild,
+                    newKey,
+                    node.UniqueModuleName,
+                    dirsToCreate,
+                    null,
+                    null,
+                    MakeCopyDirectoryRecipe(sourcePath, destPath));
+                makeFile.RuleArray.Add(rule);
+            }
+        }
+
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
@@ -330,6 +388,7 @@ namespace MakeFileBuilder
 
             this.PublishDependents(moduleToBuild, primaryNode, publishDirPath, dirsToCreate, makeFile);
             this.PublishOSXPList(moduleToBuild, primaryNode, dirsToCreate, makeFile);
+            this.PublishAdditionalDirectories(moduleToBuild, primaryNode, publishDirPath, dirsToCreate, makeFile);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
