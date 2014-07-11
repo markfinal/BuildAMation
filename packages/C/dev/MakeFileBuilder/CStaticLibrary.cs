@@ -89,7 +89,20 @@ namespace MakeFileBuilder
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);
 
-            var rule = new MakeFileRule(moduleToBuild, C.StaticLibrary.OutputFileLocKey, node.UniqueModuleName, dirsToCreate, inputVariables, null, recipes);
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                C.StaticLibrary.OutputFileLocKey,
+                node.UniqueModuleName,
+                dirsToCreate,
+                inputVariables,
+                null,
+                recipes);
+
+            var toolOutputLocKeys = (archiverTool as Opus.Core.ITool).OutputLocationKeys(moduleToBuild);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
+            rule.OutputLocationKeys = outputFileLocationsOfInterest;
+
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

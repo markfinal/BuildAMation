@@ -85,6 +85,7 @@ namespace MakeFileBuilder
                 dependentVariables,
                 null,
                 MakeSymlinkRecipe(commandLineBuilder, symlinkTool, moduleToBuild, workingDir, C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
+            majorVersionRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
             makeFile.RuleArray.Add(majorVersionRule);
 
             var minorVersionRule = new MakeFileRule(
@@ -95,6 +96,7 @@ namespace MakeFileBuilder
                 dependentVariables,
                 null,
                 MakeSymlinkRecipe(commandLineBuilder, symlinkTool, moduleToBuild, workingDir, C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
+            minorVersionRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
             makeFile.RuleArray.Add(minorVersionRule);
 
             var linkerSymlinkRule = new MakeFileRule(
@@ -105,6 +107,7 @@ namespace MakeFileBuilder
                 dependentVariables,
                 null,
                 MakeSymlinkRecipe(commandLineBuilder, symlinkTool, moduleToBuild, workingDir, C.PosixSharedLibrarySymlinks.LinkerSymlink));
+            linkerSymlinkRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.PosixSharedLibrarySymlinks.LinkerSymlink);
             makeFile.RuleArray.Add(linkerSymlinkRule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

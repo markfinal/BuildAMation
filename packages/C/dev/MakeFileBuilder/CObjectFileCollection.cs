@@ -47,7 +47,14 @@ namespace MakeFileBuilder
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
             // no output paths because this rule has no recipe
-            var rule = new MakeFileRule(moduleToBuild, C.ObjectFile.OutputFile, node.UniqueModuleName, null, dependents, null, null);
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                C.ObjectFile.OutputFile,
+                node.UniqueModuleName,
+                null,
+                dependents,
+                null,
+                null);
             if (null == node.Parent)
             {
                 // phony target

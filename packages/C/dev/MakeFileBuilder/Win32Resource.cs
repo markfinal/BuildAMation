@@ -72,7 +72,14 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(moduleToBuild, C.Win32Resource.OutputFile, node.UniqueModuleName, dirsToCreate, null, inputFiles, recipes);
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                C.Win32Resource.OutputFile,
+                node.UniqueModuleName,
+                dirsToCreate,
+                null,
+                inputFiles,recipes);
+            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.Win32Resource.OutputFile);
             makeFile.RuleArray.Add(rule);
 
             using (var makeFileWriter = new System.IO.StreamWriter(makeFilePath))

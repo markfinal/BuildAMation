@@ -185,12 +185,22 @@ namespace MakeFileBuilder
                     }
                     else
                     {
+#if false
                         var outputKeys = new Opus.Core.Array<Opus.Core.LocationKey>();
                         var fileKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                         var symlinkKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.Symlink, Opus.Core.Location.EExists.WillExist);
+                        // TODO: directory keys here list more locations than are needed
+                        var dirKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
                         outputKeys.AddRangeUnique(fileKeys);
                         outputKeys.AddRangeUnique(symlinkKeys);
-                        foreach (var outputLocKey in outputKeys)
+                        outputKeys.AddRangeUnique(dirKeys);
+#endif
+                        if (null == rule.OutputLocationKeys)
+                        {
+                            throw new Opus.Core.Exception("No output keys have been assigned to Makefile rule for target '{1}'", rule.ModuleToBuild.OwningNode.UniqueModuleName, rule.Target);
+                        }
+
+                        foreach (var outputLocKey in rule.OutputLocationKeys)
                         {
                             var outputLoc = rule.ModuleToBuild.Locations[outputLocKey];
                             if (!outputLoc.IsValid)

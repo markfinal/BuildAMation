@@ -163,6 +163,7 @@ namespace MakeFileBuilder
                                     depInputVariables,
                                     null,
                                     MakeCopyFileRecipe(depSourcePath, depDestPath));
+                                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(newKey);
                                 makeFile.RuleArray.Add(rule);
                             }
                             else if (key.IsSymlinkKey)
@@ -183,6 +184,7 @@ namespace MakeFileBuilder
                                     depInputVariables,
                                     null,
                                     MakeCopySymlinkRecipe(depSourcePath, depDestPath, ".", publishDirPath));
+                                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(newKey);
                                 makeFile.RuleArray.Add(rule);
                             }
                             else
@@ -239,6 +241,7 @@ namespace MakeFileBuilder
                                     depInputVariables,
                                     null,
                                     MakeCopyFileRecipe(depSourcePath, depDestPath));
+                                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(newKey);
                                 makeFile.RuleArray.Add(rule);
                             }
                             else if (key.IsSymlinkKey)
@@ -259,6 +262,7 @@ namespace MakeFileBuilder
                                     depInputVariables,
                                     null,
                                     MakeCopySymlinkRecipe(depSourcePath, depDestPath, subDirectory, publishDirPath));
+                                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(newKey);
                                 makeFile.RuleArray.Add(rule);
                             }
                             else
@@ -305,6 +309,7 @@ namespace MakeFileBuilder
                         null,
                         null,
                         MakeCopyFileRecipe(plistSourcePath, depDestPath));
+                    rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(newKey);
                     makeFile.RuleArray.Add(rule);
                 }
             }
@@ -340,6 +345,7 @@ namespace MakeFileBuilder
                     null,
                     null,
                     MakeCopyDirectoryRecipe(sourcePath, destPath));
+                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(newKey);
                 makeFile.RuleArray.Add(rule);
             }
         }
@@ -384,6 +390,8 @@ namespace MakeFileBuilder
                 primaryInputVariables,
                 null,
                 MakeCopyFileRecipe(sourcePath, destPath));
+            primaryRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>();
+            primaryRule.OutputLocationKeys.AddUnique(primaryKey);
             makeFile.RuleArray.Add(primaryRule);
 
             this.PublishDependents(moduleToBuild, primaryNode, publishDirPath, dirsToCreate, makeFile);

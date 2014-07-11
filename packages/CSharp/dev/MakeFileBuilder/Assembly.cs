@@ -259,6 +259,11 @@ namespace MakeFileBuilder
                 inputVariables,
                 null,
                 recipes);
+
+            var toolOutputLocKeys = compilerInstance.OutputLocationKeys(moduleToBuild);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
+            rule.OutputLocationKeys = outputFileLocationsOfInterest;
 #else
             MakeFileRule rule = new MakeFileRule(assemblyOptions.OutputPaths, CSharp.OutputFileFlags.AssemblyFile, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
 #endif

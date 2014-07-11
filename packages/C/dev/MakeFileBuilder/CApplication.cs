@@ -153,8 +153,12 @@ namespace MakeFileBuilder
             recipe = recipe.Replace(outputPath, "$@");
             var instanceName = MakeFile.InstanceName(node);
 #if true
+            var toolOutputLocKeys = (linkerTool as Opus.Core.ITool).OutputLocationKeys(moduleToBuild);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
+
             // replace non-primary outputs with their variable names
-            foreach (var outputKey in moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist))
+            foreach (var outputKey in outputFileLocations)
             {
                 if (outputKey == primaryOutputKey)
                 {
@@ -202,7 +206,15 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var rule = new MakeFileRule(moduleToBuild, C.Application.OutputFile, node.UniqueModuleName, dirsToCreate, inputVariables, null, recipes);
+            var rule = new MakeFileRule(
+                moduleToBuild,
+                C.Application.OutputFile,
+                node.UniqueModuleName,
+                dirsToCreate,
+                inputVariables,
+                null,
+                recipes);
+            rule.OutputLocationKeys = outputFileLocationsOfInterest;
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

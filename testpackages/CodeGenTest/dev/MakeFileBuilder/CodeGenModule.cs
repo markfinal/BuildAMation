@@ -60,6 +60,7 @@ namespace MakeFileBuilder
                 null,
                 inputFiles,
                 recipes);
+            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(CodeGenTest.CodeGenModule.OutputFile);
 #else
             MakeFileRule rule = new MakeFileRule(codeGenModuleOptions.OutputPaths, CodeGenTest.OutputFileFlags.GeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
 #endif

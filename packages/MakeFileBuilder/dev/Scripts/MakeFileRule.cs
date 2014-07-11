@@ -105,5 +105,11 @@ namespace MakeFileBuilder
             get;
             set;
         }
+
+        public Opus.Core.Array<Opus.Core.LocationKey> OutputLocationKeys
+        {
+            get;
+            set;
+        }
     }
 }

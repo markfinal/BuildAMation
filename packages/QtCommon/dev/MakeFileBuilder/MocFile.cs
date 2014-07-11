@@ -83,6 +83,7 @@ namespace MakeFileBuilder
                 null,
                 inputFiles,
                 recipes);
+            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(QtCommon.MocFile.OutputFile);
 #else
             MakeFileRule rule = new MakeFileRule(mocFileOptions.OutputPaths, QtCommon.OutputFileFlags.MocGeneratedSourceFile, node.UniqueModuleName, directoriesToCreate, null, inputFiles, recipes);
 #endif
