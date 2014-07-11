@@ -53,47 +53,15 @@ namespace MakeFileBuilder
             return recipes;
         }
 
-        public object
-        Build(
+        private void
+        PublishDependents(
             Publisher.ProductModule moduleToBuild,
-            out bool success)
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath,
+            Opus.Core.LocationArray dirsToCreate,
+            MakeFile makeFile)
         {
             var node = moduleToBuild.OwningNode;
-
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
-            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
-            if (null == primaryNodeData)
-            {
-                success = true;
-                return null;
-            }
-
-            var primaryNode = primaryNodeData.Node;
-            var locationMap = moduleToBuild.Locations;
-            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
-            var publishDirPath = publishDirLoc.GetSingleRawPath();
-
-            var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
-            var sourcePath = sourceLoc.GetSingleRawPath();
-            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
-            var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, primaryKey);
-
-            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
-
-            var primaryNodeMakeData = primaryNode.Data as MakeFileData;
-            var primaryInputVariables = new MakeFileVariableDictionary();
-            primaryInputVariables.Append(primaryNodeMakeData.VariableDictionary);
-
-            var primaryRule = new MakeFileRule(
-                moduleToBuild,
-                primaryKey,
-                node.UniqueModuleName,
-                dirsToCreate,
-                primaryInputVariables,
-                null,
-                MakeCopyFileRecipe(sourcePath, destPath));
-            makeFile.RuleArray.Add(primaryRule);
 
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
@@ -277,10 +245,20 @@ namespace MakeFileBuilder
                     }
                 }
             }
+        }
 
+        private void
+        PublishOSXPList(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            Opus.Core.LocationArray dirsToCreate,
+            MakeFile makeFile)
+        {
+            var node = moduleToBuild.OwningNode;
             var options = moduleToBuild.Options as Publisher.IPublishOptions;
             if (options.OSXApplicationBundle)
             {
+                var locationMap = moduleToBuild.Locations;
                 var plistNodeData = Publisher.ProductModuleUtilities.GetOSXPListNodeData(moduleToBuild);
                 if ((null != plistNodeData) && (plistNodeData.Node != null))
                 {
@@ -306,6 +284,52 @@ namespace MakeFileBuilder
                     makeFile.RuleArray.Add(rule);
                 }
             }
+        }
+
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
+        {
+            var node = moduleToBuild.OwningNode;
+
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
+            var primaryNode = primaryNodeData.Node;
+            var locationMap = moduleToBuild.Locations;
+            var publishDirLoc = locationMap[Publisher.ProductModule.PublishDir];
+            var publishDirPath = publishDirLoc.GetSingleRawPath();
+
+            var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
+            var sourcePath = sourceLoc.GetSingleRawPath();
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
+            var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, primaryKey);
+
+            var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
+
+            var primaryNodeMakeData = primaryNode.Data as MakeFileData;
+            var primaryInputVariables = new MakeFileVariableDictionary();
+            primaryInputVariables.Append(primaryNodeMakeData.VariableDictionary);
+
+            var primaryRule = new MakeFileRule(
+                moduleToBuild,
+                primaryKey,
+                node.UniqueModuleName,
+                dirsToCreate,
+                primaryInputVariables,
+                null,
+                MakeCopyFileRecipe(sourcePath, destPath));
+            makeFile.RuleArray.Add(primaryRule);
+
+            this.PublishDependents(moduleToBuild, primaryNode, publishDirPath, dirsToCreate, makeFile);
+            this.PublishOSXPList(moduleToBuild, primaryNode, dirsToCreate, makeFile);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
