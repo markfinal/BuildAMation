@@ -114,12 +114,12 @@ namespace VSSolutionBuilder
                     // TODO: fix me?
                     configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = EProjectCharacterSet.NotSet;
-                    projectData.Configurations.Add(target, configuration);
+                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget(target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
                 }
             }
 

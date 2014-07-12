@@ -79,12 +79,12 @@ namespace VSSolutionBuilder
                 if (!projectData.Configurations.Contains(configurationName))
                 {
                     configuration = new ProjectConfiguration(configurationName, projectData);
-                    projectData.Configurations.Add(target, configuration);
+                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget(target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
                 }
 
                 // Don't overwrite the intermediate directory

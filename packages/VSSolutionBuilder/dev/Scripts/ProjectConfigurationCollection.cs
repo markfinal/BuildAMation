@@ -8,32 +8,30 @@ namespace VSSolutionBuilder
     public sealed class ProjectConfigurationCollection : System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectConfiguration> list = new System.Collections.Generic.List<ProjectConfiguration>();
-        private System.Collections.Generic.Dictionary<string, string> targetToConfig = new System.Collections.Generic.Dictionary<string, string>();
+        private System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, string> targetToConfig = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, string>();
 
         public System.Collections.IEnumerator GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        public void Add(Opus.Core.Target target, ProjectConfiguration configuration)
+        public void Add(Opus.Core.BaseTarget target, ProjectConfiguration configuration)
         {
             this.list.Add(configuration);
             this.AddExistingForTarget(target, configuration);
         }
 
-        public void AddExistingForTarget(Opus.Core.Target target, ProjectConfiguration configuration)
+        public void AddExistingForTarget(Opus.Core.BaseTarget target, ProjectConfiguration configuration)
         {
-            var targetString = target.ToString();
-
-            if (!this.targetToConfig.ContainsKey(targetString))
+            if (!this.targetToConfig.ContainsKey(target))
             {
-                this.targetToConfig.Add(targetString, configuration.Name);
+                this.targetToConfig.Add(target, configuration.Name);
             }
         }
 
-        public string GetConfigurationNameForTarget(Opus.Core.Target target)
+        public string GetConfigurationNameForTarget(Opus.Core.BaseTarget target)
         {
-            var configurationName = this.targetToConfig[target.ToString()];
+            var configurationName = this.targetToConfig[target];
             return configurationName;
         }
 

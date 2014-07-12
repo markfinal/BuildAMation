@@ -119,7 +119,7 @@ namespace VSSolutionBuilder
                     configuration.CharacterSet = characterSet;
 #endif
                     configuration = new ProjectConfiguration(configurationName, projectData);
-                    projectData.Configurations.Add(target, configuration);
+                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace VSSolutionBuilder
 #if false
                     configuration.CharacterSet = (EProjectCharacterSet)((objectFileCollectionOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
 #endif
-                    projectData.Configurations.AddExistingForTarget(target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
                 }
 
 #if true

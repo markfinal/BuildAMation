@@ -66,12 +66,12 @@ namespace VSSolutionBuilder
                     configuration = new ProjectConfiguration(configurationName, projectData);
                     // arbitrary character set, as nothing is built
                     configuration.CharacterSet = EProjectCharacterSet.NotSet;
-                    projectData.Configurations.Add(target, configuration);
+                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget(target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
                 }
             }
 

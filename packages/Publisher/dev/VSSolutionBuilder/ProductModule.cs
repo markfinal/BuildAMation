@@ -17,7 +17,7 @@ namespace VSSolutionBuilder
         {
             var configCollection = toProject.Configurations;
             // TODO: this should be done from the base target!
-            var configurationName = configCollection.GetConfigurationNameForTarget(toCopy.Target); // TODO: not accurate
+            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)toCopy.Target); // TODO: not accurate
             var configuration = configCollection[configurationName];
 
             var toolName = "VCPostBuildEventTool";
@@ -71,6 +71,73 @@ namespace VSSolutionBuilder
                 }
             }
         }
+
+#if false
+        private static void
+        CopyDirectory(
+            Publisher.ProductModule moduleToBuild,
+            IProject toProject,
+            Opus.Core.DependencyNode toCopy,
+            Opus.Core.LocationKey keyToCopy,
+            string subdirectory)
+        {
+            var configCollection = toProject.Configurations;
+            // TODO: this should be done from the base target!
+            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)toCopy.Target); // TODO: not accurate
+            var configuration = configCollection[configurationName];
+
+            var toolName = "VCPostBuildEventTool";
+            var vcPostBuildEventTool = configuration.GetTool(toolName);
+            if (null == vcPostBuildEventTool)
+            {
+                vcPostBuildEventTool = new ProjectTool(toolName);
+                configuration.AddToolIfMissing(vcPostBuildEventTool);
+            }
+
+            var sourceLoc = toCopy.Module.Locations[keyToCopy];
+            if (!sourceLoc.IsValid)
+            {
+                return;
+            }
+            var sourcePath = sourceLoc.GetSingleRawPath();
+
+            var destinationDir = configuration.OutputDirectory;
+            var destinationDirPath = destinationDir.GetSingleRawPath();
+
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, keyToCopy);
+            var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, destinationDirPath, subdirectory, moduleToBuild, primaryKey);
+
+            var commandLine = new System.Text.StringBuilder();
+            commandLine.AppendFormat("cmd.exe /c COPY \"{0}\" \"{1}\"{2}", sourcePath, destPath, System.Environment.NewLine);
+
+            {
+                string attributeName = null;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == toProject.VSTarget)
+                {
+                    attributeName = "CommandLine";
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == toProject.VSTarget)
+                {
+                    attributeName = "Command";
+                }
+
+                lock (vcPostBuildEventTool)
+                {
+                    if (vcPostBuildEventTool.HasAttribute(attributeName))
+                    {
+                        var currentValue = vcPostBuildEventTool[attributeName];
+                        currentValue += commandLine.ToString();
+                        vcPostBuildEventTool[attributeName] = currentValue;
+                    }
+                    else
+                    {
+                        vcPostBuildEventTool.AddAttribute(attributeName, commandLine.ToString());
+                    }
+                }
+            }
+        }
+#endif
 
         private void
         PublishDependents(
@@ -156,6 +223,26 @@ namespace VSSolutionBuilder
             }
         }
 
+#if false
+        private void
+        PublishAdditionalDirectories(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath,
+            IProject projectData)
+        {
+            var node = moduleToBuild.OwningNode;
+            var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
+            if (null != additionalDirsData)
+            {
+                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
+                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+                var sourceLoc = additionalDirsData.SourceDirectory;
+                CopyDirectory(moduleToBuild, projectData, sourceLoc, publishDirPath, string.Empty, newKey);
+            }
+        }
+#endif
+
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
@@ -172,6 +259,7 @@ namespace VSSolutionBuilder
             var projectData = primaryNode.Data as IProject;
 
             this.PublishDependents(moduleToBuild, primaryNode, projectData);
+            //this.PublishAdditionalDirectories();
 
             success = true;
             return null;

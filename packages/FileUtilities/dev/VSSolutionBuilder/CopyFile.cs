@@ -46,7 +46,7 @@ namespace VSSolutionBuilder
             }
 
             var configCollection = nodeProjectData.Configurations;
-            var configurationName = configCollection.GetConfigurationNameForTarget(sourceModuleNode.Target);
+            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)sourceModuleNode.Target);
             var configuration = configCollection[configurationName];
 
             var toolName = "VCPostBuildEventTool";
