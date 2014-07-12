@@ -18,6 +18,10 @@ namespace MakeFileBuilder
             var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
+                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.OutputFile
+                );
+
                 foreach (var childNode in node.Children)
                 {
                     if (null == childNode.Data)
@@ -25,12 +29,29 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = childNode.Data as MakeFileData;
-                    inputVariables.Append(data.VariableDictionary);
+                    inputVariables.Append(data.VariableDictionary.Filter(keysToFilter));
                     dataArray.Add(data);
                 }
             }
             if (null != node.ExternalDependents)
             {
+                var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.StaticLibrary.OutputFileLocKey);
+                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                {
+                    // TODO: why is the symlink not present?
+                    //libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+                    libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
+                }
+                else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                {
+                    libraryKeysToFilter.Add(C.DynamicLibrary.ImportLibraryFile);
+                }
+                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                {
+                    libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
+                }
+
                 foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null == dependentNode.Data)
@@ -38,7 +59,7 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = dependentNode.Data as MakeFileData;
-                    inputVariables.Append(data.VariableDictionary);
+                    inputVariables.Append(data.VariableDictionary.Filter(libraryKeysToFilter));
                     dataArray.Add(data);
                 }
             }
@@ -111,13 +132,9 @@ namespace MakeFileBuilder
 
                 recipeBuilder.AppendFormat(" {0} ", commandLineBuilder.ToString(' '));
 
-                var extensionFilters = new Opus.Core.StringArray();
-                extensionFilters.AddUnique(compilerTool.ObjectFileSuffix);
-
                 if (toolset.HasTool(typeof(C.IWinResourceCompilerTool)))
                 {
                     var winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-                    extensionFilters.AddUnique(winResourceCompilerTool.CompiledResourceSuffix);
                 }
 
                 // TODO: don't want to access the archiver tool here really, as creating
@@ -126,22 +143,7 @@ namespace MakeFileBuilder
                 // perhaps the ILinkerTool can have a duplicate of the static library suffix?
                 var archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
 
-                var dependentLibraries = new Opus.Core.StringArray();
-                extensionFilters.AddUnique(archiverTool.StaticLibrarySuffix);
-                if (linkerTool is C.IWinImportLibrary)
-                {
-                    extensionFilters.AddUnique((linkerTool as C.IWinImportLibrary).ImportLibrarySuffix);
-                }
-                else
-                {
-                    extensionFilters.AddUnique(linkerTool.DynamicLibrarySuffix);
-                }
-
-                foreach (var ext in extensionFilters)
-                {
-                    dependentLibraries.Add(System.String.Format("$(filter %{0},$^)", ext));
-                }
-
+                var dependentLibraries = new Opus.Core.StringArray("$^");
                 C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
             }
 

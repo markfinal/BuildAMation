@@ -42,6 +42,18 @@ namespace MakeFileBuilder
         }
 
 #if true
+        public MakeFileVariableDictionary Filter(Opus.Core.Array<Opus.Core.LocationKey> filterKeys)
+        {
+            var filteredDictionary = new MakeFileVariableDictionary();
+            foreach (var key in this.Keys)
+            {
+                if (filterKeys.Contains(key))
+                {
+                    filteredDictionary.Add(key, this[key]);
+                }
+            }
+            return filteredDictionary;
+        }
 #else
         public MakeFileVariableDictionary Filter(System.Enum filterKeys)
         {

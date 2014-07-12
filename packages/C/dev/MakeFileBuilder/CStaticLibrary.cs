@@ -18,6 +18,10 @@ namespace MakeFileBuilder
             var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
+                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.OutputFile
+                );
+
                 foreach (var childNode in node.Children)
                 {
                     if (null == childNode.Data)
@@ -25,12 +29,16 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = childNode.Data as MakeFileData;
-                    inputVariables.Append(data.VariableDictionary);
+                    inputVariables.Append(data.VariableDictionary.Filter(keysToFilter));
                     dataArray.Add(data);
                 }
             }
             if (null != node.ExternalDependents)
             {
+                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.OutputFile
+                );
+
                 foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null == dependentNode.Data)
@@ -38,7 +46,7 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = dependentNode.Data as MakeFileData;
-                    inputVariables.Append(data.VariableDictionary);
+                    inputVariables.Append(data.VariableDictionary.Filter(keysToFilter));
                     dataArray.Add(data);
                 }
             }

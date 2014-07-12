@@ -18,6 +18,10 @@ namespace MakeFileBuilder
             var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
+                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.OutputFile
+                );
+
                 foreach (var childNode in node.Children)
                 {
                     if (null == childNode.Data)
@@ -25,12 +29,29 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = childNode.Data as MakeFileData;
-                    inputVariables.Append(data.VariableDictionary);
+                    inputVariables.Append(data.VariableDictionary.Filter(keysToFilter));
                     dataArray.Add(data);
                 }
             }
             if (null != node.ExternalDependents)
             {
+                var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.StaticLibrary.OutputFileLocKey);
+                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                {
+                    // TODO: why is the symlink not present?
+                    //libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+                    libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
+                }
+                else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                {
+                    libraryKeysToFilter.Add(C.DynamicLibrary.ImportLibraryFile);
+                }
+                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                {
+                    libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
+                }
+
                 foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null == dependentNode.Data)
@@ -38,7 +59,7 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = dependentNode.Data as MakeFileData;
-                    inputVariables.Append(data.VariableDictionary);
+                    inputVariables.Append(data.VariableDictionary.Filter(libraryKeysToFilter));
                     dataArray.Add(data);
                 }
             }

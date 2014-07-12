@@ -69,7 +69,14 @@ namespace MakeFileBuilder
             }
             else
             {
-                recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) {2}/$(notdir {3})", workingDir, sourcePath, subdirectory, destPath);
+                if (string.IsNullOrEmpty(subdirectory))
+                {
+                    recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) $(notdir {2})", workingDir, sourcePath, destPath);
+                }
+                else
+                {
+                    recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) {2}/$(notdir {3})", workingDir, sourcePath, subdirectory, destPath);
+                }
             }
             var recipe = recipeBuilder.ToString();
             var recipes = new Opus.Core.StringArray();

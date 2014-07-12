@@ -27,6 +27,10 @@ namespace MakeFileBuilder
             }
             if (null != node.ExternalDependents)
             {
+                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    C.ObjectFile.OutputFile
+                );
+
                 foreach (var dependentNode in node.ExternalDependents)
                 {
                     if (null == dependentNode.Data)
@@ -34,7 +38,7 @@ namespace MakeFileBuilder
                         continue;
                     }
                     var data = dependentNode.Data as MakeFileData;
-                    foreach (var makeVariable in data.VariableDictionary)
+                    foreach (var makeVariable in data.VariableDictionary.Filter(keysToFilter))
                     {
                         dependents.Add(makeVariable.Key, makeVariable.Value);
                     }
