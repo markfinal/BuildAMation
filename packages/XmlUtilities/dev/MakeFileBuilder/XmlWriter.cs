@@ -47,6 +47,7 @@ namespace MakeFileBuilder
                 null,
                 null,
                 recipe);
+            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(XmlUtilities.XmlModule.OutputFile);
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

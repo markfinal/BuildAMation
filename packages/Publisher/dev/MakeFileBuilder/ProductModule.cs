@@ -397,8 +397,7 @@ namespace MakeFileBuilder
                 primaryInputVariables,
                 null,
                 MakeCopyFileRecipe(sourcePath, destPath));
-            primaryRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>();
-            primaryRule.OutputLocationKeys.AddUnique(primaryKey);
+            primaryRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(primaryKey);
             makeFile.RuleArray.Add(primaryRule);
 
             this.PublishDependents(moduleToBuild, primaryNode, publishDirPath, dirsToCreate, makeFile);
