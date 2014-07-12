@@ -72,21 +72,12 @@ namespace VSSolutionBuilder
             }
         }
 
-        public object
-        Build(
+        private void
+        PublishDependents(
             Publisher.ProductModule moduleToBuild,
-            out bool success)
+            Opus.Core.DependencyNode primaryNode,
+            IProject projectData)
         {
-            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
-            if (null == primaryNodeData)
-            {
-                success = true;
-                return null;
-            }
-
-            var primaryNode = primaryNodeData.Node;
-            var projectData = primaryNode.Data as IProject;
-
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
             {
@@ -163,6 +154,24 @@ namespace VSSolutionBuilder
                     }
                 }
             }
+        }
+
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
+        {
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
+            var primaryNode = primaryNodeData.Node;
+            var projectData = primaryNode.Data as IProject;
+
+            this.PublishDependents(moduleToBuild, primaryNode, projectData);
 
             success = true;
             return null;
