@@ -51,7 +51,6 @@ namespace XcodeBuilder
             PBXProject project,
             PBXNativeTarget primaryPBXNativeTarget)
         {
-
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
             {
@@ -129,6 +128,35 @@ namespace XcodeBuilder
             }
         }
 
+        private void
+        PublishAdditionalDirectories(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            PBXProject project,
+            PBXNativeTarget primaryPBXNativeTarget)
+        {
+            var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
+            if (null != additionalDirsData)
+            {
+                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
+                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+                var sourceLoc = additionalDirsData.SourceDirectory;
+                var sourcePath = sourceLoc.GetSingleRawPath();
+                var lastDir = System.IO.Path.GetFileName(sourcePath);
+                var destDir = primaryNode.Module.Locations[C.Application.OutputDir].GetSingleRawPath();
+                var dest = System.IO.Path.Combine(destDir, "$EXECUTABLE_FOLDER_PATH");
+                dest = System.IO.Path.Combine(dest, lastDir);
+
+                var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("Copy Directories", moduleToBuild.OwningNode.ModuleName);
+
+                shellScriptBuildPhase.ShellScriptLines.Add("cp -Rf $SCRIPT_INPUT_FILE_0 $SCRIPT_OUTPUT_FILE_0");
+                shellScriptBuildPhase.InputPaths.Add(sourcePath);
+                shellScriptBuildPhase.OutputPaths.Add(dest);
+
+                primaryPBXNativeTarget.BuildPhases.Add(shellScriptBuildPhase);
+            }
+        }
+
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
@@ -154,6 +182,7 @@ namespace XcodeBuilder
             }
 
             this.PublishDependencies(moduleToBuild, primaryNode, project, primaryPBXNativeTarget);
+            this.PublishAdditionalDirectories(moduleToBuild, primaryNode, project, primaryPBXNativeTarget);
 
             success = true;
             return null;
