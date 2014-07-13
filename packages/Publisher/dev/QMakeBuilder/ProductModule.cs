@@ -9,12 +9,15 @@ namespace QMakeBuilder
     {
         private static void
         InstallFile(
+            Opus.Core.BaseModule module,
+            Opus.Core.DependencyNode primaryNode,
             string destinationDirectory,
             QMakeData proData)
         {
+            var targetName = System.String.Format("copy_{0}_for_{1}", module.OwningNode.ModuleName, primaryNode.ModuleName);
             var customRules = new Opus.Core.StringArray();
-            customRules.Add(System.String.Format("target.path={0}", destinationDirectory));
-            customRules.Add(System.String.Format("INSTALLS+=target"));
+            customRules.Add(System.String.Format("{0}.path={1}", targetName, destinationDirectory));
+            customRules.Add(System.String.Format("INSTALLS+={0}", targetName));
             if (null == proData.CustomRules)
             {
                 proData.CustomRules = customRules;
@@ -112,7 +115,7 @@ namespace QMakeBuilder
                             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
-                            InstallFile(destDir, proData);
+                            InstallFile(module, primaryNode, destDir, proData);
                         }
                     }
                     else
@@ -150,7 +153,7 @@ namespace QMakeBuilder
                             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, subDirectory, moduleToBuild, newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
-                            InstallFile(destDir, proData);
+                            InstallFile(module, primaryNode, destDir, proData);
                         }
                     }
                 }
