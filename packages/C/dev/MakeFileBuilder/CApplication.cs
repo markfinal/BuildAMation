@@ -128,20 +128,7 @@ namespace MakeFileBuilder
 
             var dependentLibraryCommandLine = new Opus.Core.StringArray();
             {
-                var compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-
                 recipeBuilder.AppendFormat(" {0} ", commandLineBuilder.ToString(' '));
-
-                if (toolset.HasTool(typeof(C.IWinResourceCompilerTool)))
-                {
-                    var winResourceCompilerTool = toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;
-                }
-
-                // TODO: don't want to access the archiver tool here really, as creating
-                // an application does not require one
-                // although we do need to know where static libraries are written
-                // perhaps the ILinkerTool can have a duplicate of the static library suffix?
-                var archiverTool = toolset.Tool(typeof(C.IArchiverTool)) as C.IArchiverTool;
 
                 var dependentLibraries = new Opus.Core.StringArray("$^");
                 C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
