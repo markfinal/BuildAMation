@@ -15,7 +15,8 @@ namespace XcodeBuilder
             PBXNativeTarget nativeTarget,
             string subdirectory)
         {
-            var copyFilesBuildPhase = project.CopyFilesBuildPhases.Get("CopyFiles", moduleToBuild.OwningNode.ModuleName);
+            var nameOfBuildPhase = System.String.Format("Copy files for {0} to {1}", nativeTarget.Name, subdirectory);
+            var copyFilesBuildPhase = project.CopyFilesBuildPhases.Get(nameOfBuildPhase, moduleToBuild.OwningNode.ModuleName);
             copyFilesBuildPhase.SubFolder = PBXCopyFilesBuildPhase.ESubFolder.Executables;
             if (!string.IsNullOrEmpty(subdirectory))
             {
