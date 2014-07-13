@@ -44,29 +44,13 @@ namespace XcodeBuilder
             project.MainGroup.Children.AddUnique(dependentFileRef);
         }
 
-        public object
-        Build(
+        private void
+        PublishDependencies(
             Publisher.ProductModule moduleToBuild,
-            out bool success)
+            Opus.Core.DependencyNode primaryNode,
+            PBXProject project,
+            PBXNativeTarget primaryPBXNativeTarget)
         {
-            var options = moduleToBuild.Options as Publisher.IPublishOptions;
-
-            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
-            if (null == primaryNodeData)
-            {
-                success = true;
-                return null;
-            }
-
-            var primaryNode = primaryNodeData.Node;
-            var project = this.Workspace.GetProject(primaryNode);
-            var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;
-
-            if (options.OSXApplicationBundle)
-            {
-                primaryPBXNativeTarget.Type = PBXNativeTarget.EType.ApplicationBundle;
-                primaryPBXNativeTarget.ProductReference.SetType(PBXFileReference.EType.ApplicationBundle);
-            }
 
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
@@ -143,6 +127,33 @@ namespace XcodeBuilder
                     }
                 }
             }
+        }
+
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
+        {
+            var options = moduleToBuild.Options as Publisher.IPublishOptions;
+
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
+            var primaryNode = primaryNodeData.Node;
+            var project = this.Workspace.GetProject(primaryNode);
+            var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;
+
+            if (options.OSXApplicationBundle)
+            {
+                primaryPBXNativeTarget.Type = PBXNativeTarget.EType.ApplicationBundle;
+                primaryPBXNativeTarget.ProductReference.SetType(PBXFileReference.EType.ApplicationBundle);
+            }
+
+            this.PublishDependencies(moduleToBuild, primaryNode, project, primaryPBXNativeTarget);
 
             success = true;
             return null;
