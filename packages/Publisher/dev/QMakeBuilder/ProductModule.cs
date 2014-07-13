@@ -28,31 +28,12 @@ namespace QMakeBuilder
             }
         }
 
-        public object
-        Build(
+        private void
+        PublishDependents(
             Publisher.ProductModule moduleToBuild,
-            out bool success)
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath)
         {
-            var options = moduleToBuild.Options as Publisher.IPublishOptions;
-
-            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
-            if (null == primaryNodeData)
-            {
-                success = true;
-                return null;
-            }
-
-            var primaryNode = primaryNodeData.Node;
-            if (options.OSXApplicationBundle)
-            {
-                var data = primaryNode.Data as QMakeData;
-                data.OSXApplicationBundle = true;
-            }
-
-            var locationMap = primaryNode.Module.Locations;
-            var publishDirLoc = (locationMap[primaryNodeData.Key] as Opus.Core.ScaffoldLocation).Base;
-            var publishDirPath = publishDirLoc.GetSingleRawPath();
-
             var dependents = new Opus.Core.DependencyNodeCollection();
             if (null != primaryNode.ExternalDependents)
             {
@@ -158,6 +139,34 @@ namespace QMakeBuilder
                     }
                 }
             }
+        }
+
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
+        {
+            var options = moduleToBuild.Options as Publisher.IPublishOptions;
+
+            var primaryNodeData = Publisher.ProductModuleUtilities.GetPrimaryNodeData(moduleToBuild);
+            if (null == primaryNodeData)
+            {
+                success = true;
+                return null;
+            }
+
+            var primaryNode = primaryNodeData.Node;
+            if (options.OSXApplicationBundle)
+            {
+                var data = primaryNode.Data as QMakeData;
+                data.OSXApplicationBundle = true;
+            }
+
+            var locationMap = primaryNode.Module.Locations;
+            var publishDirLoc = (locationMap[primaryNodeData.Key] as Opus.Core.ScaffoldLocation).Base;
+            var publishDirPath = publishDirLoc.GetSingleRawPath();
+
+            this.PublishDependents(moduleToBuild, primaryNode, publishDirPath);
 
             success = true;
             return null;
