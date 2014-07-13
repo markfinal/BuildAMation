@@ -8,7 +8,7 @@ namespace QMakeBuilder
     public sealed partial class QMakeBuilder
     {
         private static void
-        InstallFile(
+        CopyFilesToDirectory(
             Opus.Core.BaseModule module,
             Opus.Core.DependencyNode primaryNode,
             string destinationDirectory,
@@ -26,6 +26,19 @@ namespace QMakeBuilder
             {
                 proData.CustomRules.AddRangeUnique(customRules);
             }
+        }
+
+        private static void
+        CopyDirectoryToDirectory(
+            Opus.Core.BaseModule module,
+            Opus.Core.DependencyNode primaryNode,
+            Opus.Core.Location sourceLoc,
+            string destinationDirectory,
+            QMakeData proData)
+        {
+            // TODO:
+            // TODO: Mac app bundles need to be catered for
+            Opus.Core.Log.MessageAll("Copy dir '{0}' to '{1}'", sourceLoc.GetSingleRawPath(), destinationDirectory);
         }
 
         private void
@@ -96,7 +109,7 @@ namespace QMakeBuilder
                             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
-                            InstallFile(module, primaryNode, destDir, proData);
+                            CopyFilesToDirectory(module, primaryNode, destDir, proData);
                         }
                     }
                     else
@@ -134,10 +147,26 @@ namespace QMakeBuilder
                             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, subDirectory, moduleToBuild, newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
-                            InstallFile(module, primaryNode, destDir, proData);
+                            CopyFilesToDirectory(module, primaryNode, destDir, proData);
                         }
                     }
                 }
+            }
+        }
+
+        private void
+        PublishAdditionalDirectories(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.DependencyNode primaryNode,
+            string publishDirPath)
+        {
+            var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
+            if (null != additionalDirsData)
+            {
+                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
+                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+                var sourceLoc = additionalDirsData.SourceDirectory;
+                CopyDirectoryToDirectory(moduleToBuild, primaryNode, sourceLoc, publishDirPath, primaryNode.Data as QMakeData);
             }
         }
 
@@ -167,6 +196,7 @@ namespace QMakeBuilder
             var publishDirPath = publishDirLoc.GetSingleRawPath();
 
             this.PublishDependents(moduleToBuild, primaryNode, publishDirPath);
+            this.PublishAdditionalDirectories(moduleToBuild, primaryNode, publishDirPath);
 
             success = true;
             return null;
