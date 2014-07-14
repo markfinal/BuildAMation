@@ -11,13 +11,25 @@ namespace QMakeBuilder
         CopyFilesToDirectory(
             Opus.Core.BaseModule module,
             Opus.Core.DependencyNode primaryNode,
+            string sourcePath,
             string destinationDirectory,
             QMakeData proData)
         {
-            var targetName = System.String.Format("copy_{0}_for_{1}", module.OwningNode.ModuleName, primaryNode.ModuleName);
+#if true
+            // TOOD: if there is only one place to write to, use this
+            var targetName = (module is C.DynamicLibrary) ? "dlltarget" : "target";
             var customRules = new Opus.Core.StringArray();
             customRules.Add(System.String.Format("{0}.path={1}", targetName, destinationDirectory));
             customRules.Add(System.String.Format("INSTALLS+={0}", targetName));
+#else
+            // otherwise, if there are multiple places to install to, use this
+            // Note: don't use absolute paths, unless they exist already - cannot refer to files that are to be built
+            var targetName = System.String.Format("copy_{0}_for_{1}", module.OwningNode.ModuleName, primaryNode.ModuleName);
+            var customRules = new Opus.Core.StringArray();
+            customRules.Add(System.String.Format("{0}.path={1}", targetName, destinationDirectory.Replace('\\', '/')));
+            customRules.Add(System.String.Format("{0}.files={1}", targetName, sourcePath.Replace('\\', '/')));
+            customRules.Add(System.String.Format("INSTALLS+={0}", targetName));
+#endif
             if (null == proData.CustomRules)
             {
                 proData.CustomRules = customRules;
@@ -109,7 +121,7 @@ namespace QMakeBuilder
                             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
-                            CopyFilesToDirectory(module, primaryNode, destDir, proData);
+                            CopyFilesToDirectory(module, primaryNode, sourcePath, destDir, proData);
                         }
                     }
                     else
@@ -147,7 +159,7 @@ namespace QMakeBuilder
                             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, subDirectory, moduleToBuild, newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
-                            CopyFilesToDirectory(module, primaryNode, destDir, proData);
+                            CopyFilesToDirectory(module, primaryNode, sourcePath, destDir, proData);
                         }
                     }
                 }
