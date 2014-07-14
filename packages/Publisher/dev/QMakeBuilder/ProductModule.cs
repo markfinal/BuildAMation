@@ -27,7 +27,8 @@ namespace QMakeBuilder
             var targetName = System.String.Format("copy_{0}_for_{1}", module.OwningNode.ModuleName, primaryNode.ModuleName);
             var customRules = new Opus.Core.StringArray();
             customRules.Add(System.String.Format("{0}.path={1}", targetName, destinationDirectory.Replace('\\', '/')));
-            customRules.Add(System.String.Format("{0}.files={1}", targetName, sourcePath.Replace('\\', '/')));
+            // TODO: this does not resolve to the final destination path
+            customRules.Add(System.String.Format("{0}.files=$${{DESTDIR}}/$${{TARGET}}.$${{TARGET_EXT})", targetName));
             customRules.Add(System.String.Format("INSTALLS+={0}", targetName));
 #endif
             if (null == proData.CustomRules)
