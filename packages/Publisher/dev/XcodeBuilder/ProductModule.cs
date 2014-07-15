@@ -70,7 +70,7 @@ namespace XcodeBuilder
                 var fields = moduleType.GetFields(flags);
                 foreach (var field in fields)
                 {
-                    var candidates = field.GetCustomAttributes(typeof(Publisher.PublishModuleDependencyAttribute), false);
+                    var candidates = field.GetCustomAttributes(typeof(Publisher.CopyFileLocationsAttribute), false);
                     if (0 == candidates.Length)
                     {
                         continue;
@@ -79,7 +79,7 @@ namespace XcodeBuilder
                     {
                         throw new Opus.Core.Exception("More than one publish module dependency found");
                     }
-                    var attribute = candidates[0] as Publisher.PublishModuleDependencyAttribute;
+                    var attribute = candidates[0] as Publisher.CopyFileLocationsAttribute;
                     var matchesTarget = Opus.Core.TargetUtilities.MatchFilters(moduleToBuild.OwningNode.Target, attribute);
                     if (!matchesTarget)
                     {

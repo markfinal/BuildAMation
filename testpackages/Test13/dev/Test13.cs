@@ -106,6 +106,12 @@ namespace Test13
         Opus.Core.TypeArray resourceFiles = new Opus.Core.TypeArray(
             typeof(Win32ResourceFile)
             );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        protected Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.Application.OutputFile));
+#endif
     }
 
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
@@ -126,6 +132,12 @@ namespace Test13
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
             typeof(QtApplication)
         );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        protected Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(XmlUtilities.OSXPlistModule.OutputFile));
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
@@ -144,10 +156,7 @@ namespace Test13
         }
 
         [Publisher.PrimaryTarget]
-        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(QtApplication), C.Application.OutputFile);
-
-        [Publisher.OSXInfoPList(Platform=Opus.Core.EPlatform.OSX)]
-        Publisher.PublishNodeData infoPList = new Publisher.PublishNodeData(typeof(AppInfoPList), XmlUtilities.OSXPlistModule.OutputFile);
+        System.Type primary = typeof(QtApplication);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

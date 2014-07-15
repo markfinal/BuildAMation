@@ -6,7 +6,9 @@
 namespace Publisher
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class PrimaryTargetAttribute : Opus.Core.BaseTargetFilteredAttribute
+    public sealed class PrimaryTargetAttribute :
+        Opus.Core.BaseTargetFilteredAttribute,
+        IPublishBaseAttribute
     {
     }
 }

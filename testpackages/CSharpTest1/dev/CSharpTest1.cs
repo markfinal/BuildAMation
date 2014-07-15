@@ -14,9 +14,9 @@ namespace CSharpTest1
         Opus.Core.FileCollection source = new Opus.Core.FileCollection();
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency]
-        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-            CSharp.Assembly.OutputFile);
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(CSharp.Assembly.OutputFile));
 #endif
     }
 
@@ -72,13 +72,19 @@ namespace CSharpTest1
 
         [Opus.Core.DependentModules]
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SimpleLibrary));
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(CSharp.Assembly.OutputFile));
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
     class Publish : Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
-        Publisher.PublishNodeData primary = new Publisher.PublishNodeData(typeof(Executable2), CSharp.Assembly.OutputFile);
+        System.Type primary = typeof(Executable2);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

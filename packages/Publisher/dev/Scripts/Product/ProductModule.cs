@@ -32,15 +32,23 @@ namespace Publisher
                 }
 
                 var currentAttr = attributes[0];
-                if (currentAttr.GetType() == typeof(PrimaryTargetAttribute) ||
-                    currentAttr.GetType() == typeof(OSXInfoPListAttribute))
+                if (currentAttr.GetType() == typeof(PrimaryTargetAttribute))
                 {
-                    var primaryModuleData = field.GetValue(this) as PublishNodeData;
-                    if (null == primaryModuleData)
+                    var fieldValue = field.GetValue(this) as System.Type;
+                    if (null == fieldValue)
                     {
-                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type PublishNodeData");
+                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type System.Type");
                     }
-                    dependentModuleTypes.AddUnique(primaryModuleData.ModuleType);
+                    dependentModuleTypes.AddUnique(fieldValue);
+                }
+                else if (currentAttr.GetType() == typeof(OSXInfoPListAttribute))
+                {
+                    var fieldValue = field.GetValue(this) as PublishNodeData;
+                    if (null == fieldValue)
+                    {
+                        throw new Opus.Core.Exception("OSXInfoPList attribute field was not of type PublishNodeData");
+                    }
+                    dependentModuleTypes.AddUnique(fieldValue.ModuleType);
                 }
                 else if (currentAttr.GetType() == typeof(AdditionalDirectoriesAttribute))
                 {

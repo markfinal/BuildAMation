@@ -18,9 +18,9 @@ namespace Test14
             // TODO: can this be automated?
             if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+                this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
+                this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
+                this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
             }
 #endif
         }
@@ -48,9 +48,9 @@ namespace Test14
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency]
-        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-            C.DynamicLibrary.OutputFile);
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
 
@@ -70,9 +70,9 @@ namespace Test14
             // TODO: can this be automated?
             if (target.HasPlatform(Opus.Core.EPlatform.Unix))
             {
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
-                this.publishKeys.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+                this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
+                this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
+                this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
             }
 #endif
         }
@@ -102,9 +102,9 @@ namespace Test14
         Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency]
-        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-            C.DynamicLibrary.OutputFile);
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
 
@@ -140,13 +140,19 @@ namespace Test14
             typeof(DynamicLibraryA),
             typeof(DynamicLibraryB)
         );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.Application.OutputFile));
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
     class Publish : Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
-        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(Application), C.Application.OutputFile);
+        System.Type primary = typeof(Application);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

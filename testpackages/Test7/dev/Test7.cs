@@ -38,9 +38,9 @@ namespace Test7
         );
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency]
-        Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-            C.DynamicLibrary.OutputFile);
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
 }

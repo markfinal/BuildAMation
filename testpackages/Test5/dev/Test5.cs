@@ -40,13 +40,20 @@ namespace Test5
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
+            );
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
     class Publish : Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
-        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(MyDynamicLibTestApp), C.Application.OutputFile);
+        System.Type primary = typeof(MyDynamicLibTestApp);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

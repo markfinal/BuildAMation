@@ -7,6 +7,110 @@ namespace Publisher
 {
     public static class ProductModuleUtilities
     {
+        public class MetaData
+        {
+            public Opus.Core.DependencyNode Node
+            {
+                get;
+                set;
+            }
+
+            public string Name
+            {
+                get;
+                set;
+            }
+
+            public object Data
+            {
+                get;
+                set;
+            }
+
+            public Publisher.IPublishBaseAttribute Attribute
+            {
+                get;
+                set;
+            }
+        }
+
+        public class MetaDataCollection : System.Collections.IEnumerable
+        {
+            public MetaDataCollection()
+            {
+                this.List = new Opus.Core.Array<MetaData>();
+            }
+
+            public void Add(MetaData input)
+            {
+                this.List.AddUnique(input);
+            }
+
+            public MetaDataCollection FilterByType<T>() where T : class
+            {
+                var filtered = new MetaDataCollection();
+                foreach (var item in this.List)
+                {
+                    if (item.Attribute is T)
+                    {
+                        filtered.Add(item);
+                    }
+                }
+                return filtered;
+            }
+
+            private Opus.Core.Array<MetaData> List
+            {
+                get;
+                set;
+            }
+
+#region IEnumerable Members
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return this.List.GetEnumerator();
+            }
+
+#endregion
+        }
+
+        public static MetaDataCollection
+        GetPublishingMetaData(
+            Opus.Core.DependencyNodeCollection nodeCollection)
+        {
+            var results = new MetaDataCollection();
+            foreach (var node in nodeCollection)
+            {
+                var module = node.Module;
+                var moduleType = module.GetType();
+                var flags = System.Reflection.BindingFlags.Instance |
+                            System.Reflection.BindingFlags.NonPublic;
+                var fields = moduleType.GetFields(flags);
+                foreach (var field in fields)
+                {
+                    var candidates = field.GetCustomAttributes(typeof(Publisher.IPublishBaseAttribute), true);
+                    if (0 == candidates.Length)
+                    {
+                        continue;
+                    }
+
+                    if (candidates.Length > 1)
+                    {
+                        throw new Opus.Core.Exception("More than one publish attribute found on field '{0}'", field.Name);
+                    }
+
+                    var data = new MetaData();
+                    data.Node = node;
+                    data.Data = field.GetValue(module);
+                    data.Attribute = candidates[0] as Publisher.IPublishBaseAttribute;
+                    data.Name = field.Name;
+                    results.Add(data);
+                }
+            }
+            return results;
+        }
+
         // TODO: out of all the dependents, how do we determine the metadata that they have associated with them
         // from the Publisher.ProductModule module, that is beyond just the need for graph building?
         private static Opus.Core.Array<T>
@@ -34,7 +138,7 @@ namespace Publisher
                     var primaryTargetData = field.GetValue(moduleToBuild) as T;
                     if (null == primaryTargetData)
                     {
-                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type PublishNodeData");
+                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type {0}", typeof(T).ToString());
                     }
                     moduleData.AddUnique(primaryTargetData);
                 }
@@ -73,6 +177,28 @@ namespace Publisher
             }
         }
 
+//#if true
+        public static Opus.Core.DependencyNode
+        GetPrimaryTarget(
+            Publisher.ProductModule moduleToBuild)
+        {
+            // TODO: why is this check necessary?
+            var dependents = moduleToBuild.OwningNode.ExternalDependents;
+            if ((null == dependents) || (dependents.Count == 0))
+            {
+                return null;
+            }
+
+            var matchingModules = GetModulesDataWithAttribute<System.Type>(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
+            if (matchingModules.Count == 0)
+            {
+                return null;
+            }
+
+            var primaryNode = Opus.Core.ModuleUtilities.GetNode(matchingModules[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            return primaryNode;
+        }
+//#else
         public static InternalPublishingNodeData
         GetPrimaryNodeData(
             Publisher.ProductModule moduleToBuild)
@@ -86,17 +212,18 @@ namespace Publisher
                 return data;
             }
 
-            var matchingModules = GetModulesDataWithAttribute<PublishNodeData>(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
+            var matchingModules = GetModulesDataWithAttribute<System.Type>(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
             if (matchingModules.Count == 0)
             {
                 return data;
             }
 
             data = new InternalPublishingNodeData();
-            data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-            data.Key = matchingModules[0].Key;
+            data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            //data.Key = matchingModules[0].Key;
             return data;
         }
+//#endif
 
         public static InternalPublishingNodeData
         GetOSXPListNodeData(

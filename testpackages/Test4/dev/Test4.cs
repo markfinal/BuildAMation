@@ -65,7 +65,7 @@ namespace Test4
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency]
+        [Publisher.CopyFileLocations]
         Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
             );

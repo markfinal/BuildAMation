@@ -14,9 +14,9 @@ namespace QtCommon
             // TODO: can this be automated?
             if (Opus.Core.OSUtilities.IsUnixHosting)
             {
-                this.publishKeys.AddUnique(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
-                this.publishKeys.AddUnique(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
-                this.publishKeys.AddUnique(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+                this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
+                this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
+                this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
             }
 #endif
         }
@@ -147,9 +147,9 @@ namespace QtCommon
         }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.PublishModuleDependency(Platform=Opus.Core.EPlatform.NotOSX)]
-        protected Opus.Core.Array<Opus.Core.LocationKey> publishKeys = new Opus.Core.Array<Opus.Core.LocationKey>(
-            C.DynamicLibrary.OutputFile);
+        [Publisher.CopyFileLocations(Platform=Opus.Core.EPlatform.NotOSX)]
+        protected Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
 }

@@ -30,6 +30,12 @@ namespace Test8
             "KERNEL32.lib",
             "dbghelp.lib"
         );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.Application.OutputFile));
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
@@ -37,7 +43,7 @@ namespace Test8
     class Publish : Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
-        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(ApplicationTest), C.Application.OutputFile);
+        System.Type primary = typeof(ApplicationTest);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

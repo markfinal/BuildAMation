@@ -1,4 +1,4 @@
-// <copyright file="PublishModuleDependencyAttribute.cs" company="Mark Final">
+// <copyright file="CopyFileLocationsAttribute.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Publisher package</summary>
@@ -6,14 +6,16 @@
 namespace Publisher
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class PublishModuleDependencyAttribute : Opus.Core.BaseTargetFilteredAttribute
+    public sealed class CopyFileLocationsAttribute :
+        Opus.Core.BaseTargetFilteredAttribute,
+        IPublishBaseAttribute
     {
-        public PublishModuleDependencyAttribute()
+        public CopyFileLocationsAttribute()
             : this(string.Empty)
         {
         }
 
-        public PublishModuleDependencyAttribute(
+        public CopyFileLocationsAttribute(
             string commonSubDirectory)
         {
             this.CommonSubDirectory = commonSubDirectory;

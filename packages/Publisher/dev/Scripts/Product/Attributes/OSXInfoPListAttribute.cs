@@ -6,7 +6,9 @@
 namespace Publisher
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class OSXInfoPListAttribute : Opus.Core.BaseTargetFilteredAttribute
+    public sealed class OSXInfoPListAttribute :
+        Opus.Core.BaseTargetFilteredAttribute,
+        IPublishBaseAttribute
     {
     }
 }
