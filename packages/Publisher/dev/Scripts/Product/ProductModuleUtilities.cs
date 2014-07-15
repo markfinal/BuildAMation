@@ -77,6 +77,7 @@ namespace Publisher
 
         public static MetaDataCollection
         GetPublishingMetaData(
+            Opus.Core.Target targetToMatch,
             Opus.Core.DependencyNodeCollection nodeCollection)
         {
             var results = new MetaDataCollection();
@@ -100,10 +101,17 @@ namespace Publisher
                         throw new Opus.Core.Exception("More than one publish attribute found on field '{0}'", field.Name);
                     }
 
+                    var attribute = candidates[0] as Publisher.IPublishBaseAttribute;
+                    var matchesTarget = Opus.Core.TargetUtilities.MatchFilters(targetToMatch, attribute as Opus.Core.ITargetFilters);
+                    if (!matchesTarget)
+                    {
+                        continue;
+                    }
+
                     var data = new MetaData();
                     data.Node = node;
                     data.Data = field.GetValue(module);
-                    data.Attribute = candidates[0] as Publisher.IPublishBaseAttribute;
+                    data.Attribute = attribute;
                     data.Name = field.Name;
                     results.Add(data);
                 }

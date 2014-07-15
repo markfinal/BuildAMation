@@ -323,7 +323,7 @@ namespace NativeBuilder
             }
 
             // gather up the publishing metadata for those nodes
-            var metaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(nodesToPublish);
+            var metaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, nodesToPublish);
 
             // for built files to copy...
             var copyFiles = metaData.FilterByType<Publisher.CopyFileLocationsAttribute>();
