@@ -313,6 +313,7 @@ namespace NativeBuilder
             // gather all nodes that will be considered for publication
             var nodesToPublish = new Opus.Core.DependencyNodeCollection();
             nodesToPublish.Add(primaryNode);
+            nodesToPublish.Add(moduleToBuild.OwningNode);
             if (null != primaryNode.ExternalDependents)
             {
                 nodesToPublish.AddRange(primaryNode.ExternalDependents);
@@ -389,22 +390,22 @@ namespace NativeBuilder
                 // TODO: convert to var
                 foreach (Publisher.ProductModuleUtilities.MetaData meta in infoPLists)
                 {
-                    var nodeData = meta.Data as Opus.Core.Array<Publisher.PublishDependency>;
+                    var nodeData = meta.Data as System.Type;
                     if (null == nodeData)
                     {
                         throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
-                            meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Opus.Core.Array<Publisher.PublishDependency>).ToString());
+                            meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(System.Type).ToString());
                     }
 
-                    foreach (var node in nodeData)
-                    {
-                        Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath);
-                        this.CopyInfoPList(
-                            moduleToBuild,
-                            primaryModule,
-                            meta.Node.Module,
-                            node.Key);
-                    }
+                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+
+                    var outputKey = XmlUtilities.OSXPlistModule.OutputFile; // TODO: probably don't want to hard code this
+                    Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, outputKey.ToString(), publishDirPath);
+                    this.CopyInfoPList(
+                        moduleToBuild,
+                        primaryModule,
+                        plistNode.Module,
+                        outputKey);
                 }
             }
 

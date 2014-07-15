@@ -43,12 +43,12 @@ namespace Publisher
                 }
                 else if (currentAttr.GetType() == typeof(OSXInfoPListAttribute))
                 {
-                    var fieldValue = field.GetValue(this) as PublishNodeData;
+                    var fieldValue = field.GetValue(this) as System.Type;
                     if (null == fieldValue)
                     {
-                        throw new Opus.Core.Exception("OSXInfoPList attribute field was not of type PublishNodeData");
+                        throw new Opus.Core.Exception("OSXInfoPList attribute field was not of type System.Type");
                     }
-                    dependentModuleTypes.AddUnique(fieldValue.ModuleType);
+                    dependentModuleTypes.AddUnique(fieldValue);
                 }
                 else if (currentAttr.GetType() == typeof(AdditionalDirectoriesAttribute))
                 {
