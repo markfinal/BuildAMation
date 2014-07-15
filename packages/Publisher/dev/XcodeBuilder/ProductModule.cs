@@ -138,8 +138,6 @@ namespace XcodeBuilder
             var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
             if (null != additionalDirsData)
             {
-                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
-                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
                 var sourceLoc = additionalDirsData.SourceDirectory;
                 var sourcePath = sourceLoc.GetSingleRawPath();
                 var lastDir = System.IO.Path.GetFileName(sourcePath);

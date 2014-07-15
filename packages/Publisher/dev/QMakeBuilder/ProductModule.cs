@@ -176,8 +176,6 @@ namespace QMakeBuilder
             var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
             if (null != additionalDirsData)
             {
-                var keyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(primaryNode.Module, additionalDirsData.DirectoryName);
-                var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
                 var sourceLoc = additionalDirsData.SourceDirectory;
                 CopyDirectoryToDirectory(moduleToBuild, primaryNode, sourceLoc, publishDirPath, primaryNode.Data as QMakeData);
             }
