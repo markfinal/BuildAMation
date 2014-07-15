@@ -390,22 +390,21 @@ namespace NativeBuilder
                 // TODO: convert to var
                 foreach (Publisher.ProductModuleUtilities.MetaData meta in infoPLists)
                 {
-                    var nodeData = meta.Data as System.Type;
+                    var nodeData = meta.Data as Publisher.NamedModuleLocation;
                     if (null == nodeData)
                     {
                         throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
-                            meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(System.Type).ToString());
+                            meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.NamedModuleLocation).ToString());
                     }
 
-                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData.ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
 
-                    var outputKey = XmlUtilities.OSXPlistModule.OutputFile; // TODO: probably don't want to hard code this
-                    Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, outputKey.ToString(), publishDirPath);
+                    Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, nodeData.Key, publishDirPath);
                     this.CopyInfoPList(
                         moduleToBuild,
                         primaryModule,
                         plistNode.Module,
-                        outputKey);
+                        nodeData.Key);
                 }
             }
 
