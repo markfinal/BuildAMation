@@ -152,7 +152,7 @@ namespace Test13
         [Publisher.PrimaryTarget]
         System.Type primary = typeof(QtApplication);
 
-        [Publisher.OSXInfoPList]
+        [Publisher.OSXInfoPList(Platform=Opus.Core.EPlatform.OSX)]
         Publisher.NamedModuleLocation plist = new Publisher.NamedModuleLocation(typeof(AppInfoPList), XmlUtilities.OSXPlistModule.OutputFile);
     }
 #else
