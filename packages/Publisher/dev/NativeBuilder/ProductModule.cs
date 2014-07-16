@@ -248,6 +248,7 @@ namespace NativeBuilder
             Opus.Core.BaseModule moduleToBuild,
             Opus.Core.BaseModule primaryModule,
             Publisher.PublishDirectory directoryInfo,
+            Publisher.AdditionalDirectoriesAttribute attribute,
             string publishDirPath)
         {
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
@@ -255,10 +256,12 @@ namespace NativeBuilder
                 directoryInfo.Directory);
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
             var sourceLoc = directoryInfo.DirectoryLocation;
+            var subdirectory = attribute.CommonSubDirectory;
             Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
                 sourceLoc,
                 publishDirPath,
-                string.Empty, // TODO: copy to subdirectory
+                subdirectory,
+                directoryInfo.RenamedLeaf,
                 moduleToBuild,
                 publishedKey);
         }
@@ -379,6 +382,7 @@ namespace NativeBuilder
                     moduleToBuild,
                     primaryModule,
                     dirData,
+                    meta.Attribute as Publisher.AdditionalDirectoriesAttribute,
                     publishDirPath);
             }
 

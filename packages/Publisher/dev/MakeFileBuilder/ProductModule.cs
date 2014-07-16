@@ -160,6 +160,7 @@ namespace MakeFileBuilder
                                     depSourcePath,
                                     publishDirPath,
                                     string.Empty,
+                                    string.Empty,
                                     moduleToBuild,
                                     newKey);
                                 var rule = new MakeFileRule(
@@ -180,6 +181,7 @@ namespace MakeFileBuilder
                                 var depDestPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                                     depSourcePath,
                                     publishDirPath,
+                                    string.Empty,
                                     string.Empty,
                                     moduleToBuild,
                                     newKey);
@@ -238,6 +240,7 @@ namespace MakeFileBuilder
                                     depSourcePath,
                                     publishDirPath,
                                     subDirectory,
+                                    string.Empty,
                                     moduleToBuild,
                                     newKey);
                                 var rule = new MakeFileRule(
@@ -259,6 +262,7 @@ namespace MakeFileBuilder
                                     depSourcePath,
                                     publishDirPath,
                                     subDirectory,
+                                    string.Empty,
                                     moduleToBuild,
                                     newKey);
                                 var rule = new MakeFileRule(
@@ -306,6 +310,7 @@ namespace MakeFileBuilder
                         plistSourcePath,
                         contentsLoc,
                         string.Empty,
+                        string.Empty,
                         moduleToBuild,
                         newKey);
                     var rule = new MakeFileRule(
@@ -341,6 +346,7 @@ namespace MakeFileBuilder
                 var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                     sourcePath,
                     publishDirPath,
+                    string.Empty,
                     string.Empty,
                     moduleToBuild,
                     newKey);
@@ -379,9 +385,18 @@ namespace MakeFileBuilder
 
             var sourceLoc = primaryNode.Module.Locations[primaryNodeData.Key];
             var sourcePath = sourceLoc.GetSingleRawPath();
-            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, primaryNode.Module, primaryNodeData.Key);
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                primaryNode.Module,
+                primaryNode.Module,
+                primaryNodeData.Key);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, primaryKey);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                sourcePath,
+                publishDirPath,
+                string.Empty,
+                string.Empty,
+                moduleToBuild,
+                primaryKey);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 

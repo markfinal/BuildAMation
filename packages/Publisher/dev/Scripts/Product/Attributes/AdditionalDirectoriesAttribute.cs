@@ -10,5 +10,21 @@ namespace Publisher
         Opus.Core.BaseTargetFilteredAttribute,
         IPublishBaseAttribute
     {
+        public AdditionalDirectoriesAttribute()
+            : this(string.Empty)
+        {
+        }
+
+        public AdditionalDirectoriesAttribute(
+            string commonSubDirectory)
+        {
+            this.CommonSubDirectory = commonSubDirectory;
+        }
+
+        public string CommonSubDirectory
+        {
+            get;
+            private set;
+        }
     }
 }

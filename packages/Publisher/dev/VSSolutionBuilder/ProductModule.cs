@@ -39,7 +39,13 @@ namespace VSSolutionBuilder
 
             var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, keyToCopy);
             var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, destinationDirPath, subdirectory, moduleToBuild, primaryKey);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                sourcePath,
+                destinationDirPath,
+                subdirectory,
+                string.Empty,
+                moduleToBuild,
+                primaryKey);
 
             var commandLine = new System.Text.StringBuilder();
             commandLine.AppendFormat("cmd.exe /c COPY /Y \"{0}\" \"{1}\"{2}", sourcePath, destPath, System.Environment.NewLine);
