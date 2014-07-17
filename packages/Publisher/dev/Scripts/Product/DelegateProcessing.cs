@@ -95,7 +95,6 @@ namespace Publisher
                         Opus.Core.Log.MessageAll("Copy file '{0}' : '{1}' -> {2}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath);
                     }
 
-#if true
                     copyNode(
                         moduleToBuild,
                         primaryModule,
@@ -103,16 +102,6 @@ namespace Publisher
                         meta,
                         node,
                         publishDirPath);
-#else
-                    this.CopyNodeLocation(
-                        moduleToBuild,
-                        module,
-                        node.Key,
-                        meta.Attribute as Publisher.CopyFileLocationsAttribute,
-                        node.SubDirectory,
-                        primaryModule,
-                        publishDirPath);
-#endif
                 }
             }
 
@@ -129,7 +118,6 @@ namespace Publisher
                 }
 
                 Opus.Core.Log.MessageAll("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
-#if true
                 copyAdditionalDir(
                     moduleToBuild,
                     primaryModule,
@@ -137,14 +125,6 @@ namespace Publisher
                     meta,
                     dirData,
                     publishDirPath);
-#else
-                this.CopyAdditionalDirectory(
-                    moduleToBuild,
-                    primaryModule,
-                    dirData,
-                    meta.Attribute as Publisher.AdditionalDirectoriesAttribute,
-                    publishDirPath);
-#endif
             }
 
             var options = moduleToBuild.Options as Publisher.IPublishOptions;
@@ -163,22 +143,13 @@ namespace Publisher
                     }
 
                     Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, nodeData.Key, publishDirPath);
-#if true
+
                     copyInfoPList(
                         moduleToBuild,
                         primaryModule,
                         dirsToCreate,
                         meta,
                         nodeData);
-
-#else
-                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData.ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-                    this.CopyInfoPList(
-                        moduleToBuild,
-                        primaryModule,
-                        plistNode.Module,
-                        nodeData.Key);
-#endif
                 }
             }
         }
