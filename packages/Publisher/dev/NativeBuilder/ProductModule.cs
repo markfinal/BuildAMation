@@ -169,7 +169,7 @@ namespace NativeBuilder
                 directoryInfo.Directory);
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
             var sourceLoc = directoryInfo.DirectoryLocation;
-            var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;
+            var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
             Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
                 sourceLoc,
