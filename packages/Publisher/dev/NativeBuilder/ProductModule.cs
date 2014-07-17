@@ -151,8 +151,33 @@ namespace NativeBuilder
 #if true
         private void
         nativeCopyAdditionalDirectory(
-            )
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDirectory directoryInfo,
+            string publishDirectoryPath)
         {
+            foreach (var dir in directoriesToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
+            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
+                primaryModule,
+                directoryInfo.Directory);
+            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var sourceLoc = directoryInfo.DirectoryLocation;
+            var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;
+            var subdirectory = attribute.CommonSubDirectory;
+            Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
+                sourceLoc,
+                publishDirectoryPath,
+                subdirectory,
+                directoryInfo.RenamedLeaf,
+                moduleToBuild,
+                publishedKey);
         }
 #else
         private void
@@ -182,8 +207,32 @@ namespace NativeBuilder
 #if true
         private void
         nativeCopyInfoPList(
-            )
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.NamedModuleLocation namedLocation)
         {
+            var plistNode = Opus.Core.ModuleUtilities.GetNode(
+                namedLocation.ModuleType,
+                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+
+            var moduleToCopy = plistNode.Module;
+            var keyToCopy = namedLocation.Key;
+
+            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                primaryModule,
+                moduleToCopy,
+                keyToCopy);
+            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
+            var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
+            Publisher.ProductModuleUtilities.CopyFileToLocation(
+                plistSourceLoc,
+                contentsLoc,
+                string.Empty,
+                moduleToBuild,
+                publishedKey);
         }
 #else
         private void

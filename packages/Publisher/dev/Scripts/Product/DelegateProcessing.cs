@@ -17,10 +17,21 @@ namespace Publisher
             string publishDirectoryPath);
 
         public delegate void
-        CopyAdditionalDirectoryDelegate();
+        CopyAdditionalDirectoryDelegate(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDirectory directoryInfo,
+            string publishDirectoryPath);
 
         public delegate void
-        CopyInfoPListDelegate();
+        CopyInfoPListDelegate(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.NamedModuleLocation namedLocation);
 
         public static void
         Process(
@@ -119,7 +130,13 @@ namespace Publisher
 
                 Opus.Core.Log.MessageAll("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
 #if true
-                copyAdditionalDir();
+                copyAdditionalDir(
+                    moduleToBuild,
+                    primaryModule,
+                    dirsToCreate,
+                    meta,
+                    dirData,
+                    publishDirPath);
 #else
                 this.CopyAdditionalDirectory(
                     moduleToBuild,
@@ -145,12 +162,17 @@ namespace Publisher
                             meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.NamedModuleLocation).ToString());
                     }
 
-                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData.ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-
                     Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, nodeData.Key, publishDirPath);
 #if true
-                    copyInfoPList();
+                    copyInfoPList(
+                        moduleToBuild,
+                        primaryModule,
+                        dirsToCreate,
+                        meta,
+                        nodeData);
+
 #else
+                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData.ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
                     this.CopyInfoPList(
                         moduleToBuild,
                         primaryModule,
