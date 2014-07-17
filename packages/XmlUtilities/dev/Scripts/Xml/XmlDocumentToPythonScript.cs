@@ -32,16 +32,7 @@ namespace XmlUtilities
                 document.WriteTo(xmlStream);
             }
 
-            using (var writer = new System.IO.StreamWriter(pythonScriptPath))
-            {
-                writer.WriteLine("#!usr/bin/python");
-
-                writer.WriteLine(System.String.Format("with open('{0}', 'wt') as script:", pathToGeneratedFile));
-                foreach (var line in xmlString.ToString().Split('\n'))
-                {
-                    writer.WriteLine("\tscript.write('{0}\\n')", line);
-                }
-            }
+            TextToPythonScript.Write(xmlString, pythonScriptPath, pathToGeneratedFile);
         }
     }
 }
