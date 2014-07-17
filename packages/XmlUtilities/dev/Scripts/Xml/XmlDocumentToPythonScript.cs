@@ -11,7 +11,7 @@ namespace XmlUtilities
         Write(
             System.Xml.XmlDocument document,
             string pythonScriptPath,
-            string xmlFilePath)
+            string pathToGeneratedFile)
         {
             // serialize the XML to memory
             var settings = new System.Xml.XmlWriterSettings();
@@ -36,7 +36,7 @@ namespace XmlUtilities
             {
                 writer.WriteLine("#!usr/bin/python");
 
-                writer.WriteLine(System.String.Format("with open('{0}', 'wt') as script:", xmlFilePath));
+                writer.WriteLine(System.String.Format("with open('{0}', 'wt') as script:", pathToGeneratedFile));
                 foreach (var line in xmlString.ToString().Split('\n'))
                 {
                     writer.WriteLine("\tscript.write('{0}\\n')", line);
