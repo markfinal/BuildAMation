@@ -14,7 +14,8 @@ namespace NativeBuilder
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
-            string publishDirectoryPath)
+            string publishDirectoryPath,
+            object context)
         {
             foreach (var dir in directoriesToCreate)
             {
@@ -88,7 +89,8 @@ namespace NativeBuilder
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
-            string publishDirectoryPath)
+            string publishDirectoryPath,
+            object context)
         {
             foreach (var dir in directoriesToCreate)
             {
@@ -118,7 +120,9 @@ namespace NativeBuilder
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation)
+            Publisher.NamedModuleLocation namedLocation,
+            string publishDirectoryPath,
+            object context)
         {
             foreach (var dir in directoriesToCreate)
             {
@@ -157,7 +161,8 @@ namespace NativeBuilder
                 moduleToBuild,
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
-                nativeCopyInfoPList);
+                nativeCopyInfoPList,
+                null);
 
             success = true;
             return null;

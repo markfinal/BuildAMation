@@ -14,7 +14,8 @@ namespace Publisher
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
-            string publishDirectoryPath);
+            string publishDirectoryPath,
+            object context);
 
         public delegate void
         CopyAdditionalDirectoryDelegate(
@@ -23,7 +24,8 @@ namespace Publisher
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
-            string publishDirectoryPath);
+            string publishDirectoryPath,
+            object context);
 
         public delegate void
         CopyInfoPListDelegate(
@@ -31,14 +33,17 @@ namespace Publisher
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation);
+            Publisher.NamedModuleLocation namedLocation,
+            string publishDirectoryPath,
+            object context);
 
         public static void
         Process(
             ProductModule moduleToBuild,
             CopyNodeLocationDelegate copyNode,
             CopyAdditionalDirectoryDelegate copyAdditionalDir,
-            CopyInfoPListDelegate copyInfoPList)
+            CopyInfoPListDelegate copyInfoPList,
+            object context)
         {
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
             var locationMap = moduleToBuild.Locations;
@@ -101,7 +106,8 @@ namespace Publisher
                         dirsToCreate,
                         meta,
                         node,
-                        publishDirPath);
+                        publishDirPath,
+                        context);
                 }
             }
 
@@ -124,7 +130,8 @@ namespace Publisher
                     dirsToCreate,
                     meta,
                     dirData,
-                    publishDirPath);
+                    publishDirPath,
+                    context);
             }
 
             var options = moduleToBuild.Options as Publisher.IPublishOptions;
@@ -149,7 +156,9 @@ namespace Publisher
                         primaryModule,
                         dirsToCreate,
                         meta,
-                        nodeData);
+                        nodeData,
+                        publishDirPath,
+                        context);
                 }
             }
         }
