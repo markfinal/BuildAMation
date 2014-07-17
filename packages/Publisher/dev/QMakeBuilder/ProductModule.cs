@@ -117,9 +117,18 @@ namespace QMakeBuilder
                             }
                             var sourcePath = sourceLoc.GetSingleRawPath();
 
-                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                                primaryNode.Module,
+                                module,
+                                key);
                             var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, string.Empty, moduleToBuild, newKey);
+                            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                                sourcePath,
+                                publishDirPath,
+                                string.Empty,
+                                string.Empty,
+                                moduleToBuild,
+                                newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
                             CopyFilesToDirectory(module, primaryNode, sourcePath, destDir, proData);
@@ -155,9 +164,18 @@ namespace QMakeBuilder
                                 subDirectory = dep.SubDirectory;
                             }
 
-                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(primaryNode.Module, module, key);
+                            var keyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                                primaryNode.Module,
+                                module,
+                                key);
                             var newKey = new Opus.Core.LocationKey(keyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(sourcePath, publishDirPath, subDirectory, moduleToBuild, newKey);
+                            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                                sourcePath,
+                                publishDirPath,
+                                subDirectory,
+                                string.Empty,
+                                moduleToBuild,
+                                newKey);
                             var destDir = System.IO.Path.GetDirectoryName(destPath);
 
                             CopyFilesToDirectory(module, primaryNode, sourcePath, destDir, proData);
