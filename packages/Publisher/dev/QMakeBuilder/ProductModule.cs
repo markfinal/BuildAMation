@@ -7,6 +7,156 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
+#if true
+        private void
+        nativeCopyNodeLocation(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDependency nodeInfo,
+            string publishDirectoryPath,
+            object context)
+        {
+            var moduleToCopy = meta.Node.Module;
+            var moduleLocations = moduleToCopy.Locations;
+
+            var sourceKey = nodeInfo.Key;
+            if (!moduleLocations.Contains(sourceKey))
+            {
+                return;
+            }
+
+            var sourceLoc = moduleLocations[sourceKey];
+            if (!sourceLoc.IsValid)
+            {
+                return;
+            }
+
+            // take the common subdirectory by default, otherwise override on a per Location basis
+            var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;
+            var subDirectory = attribute.CommonSubDirectory;
+            var nodeSpecificSubdirectory = nodeInfo.SubDirectory;
+            if (!string.IsNullOrEmpty(nodeSpecificSubdirectory))
+            {
+                subDirectory = nodeSpecificSubdirectory;
+            }
+
+            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                primaryModule,
+                moduleToCopy,
+                sourceKey);
+
+            if (sourceKey.IsFileKey)
+            {
+                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+#if false
+                Publisher.ProductModuleUtilities.CopyFileToLocation(
+                    sourceLoc,
+                    publishDirectoryPath,
+                    subDirectory,
+                    moduleToBuild,
+                    publishedKey);
+#endif
+            }
+            else if (sourceKey.IsSymlinkKey)
+            {
+                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+#if false
+                Publisher.ProductModuleUtilities.CopySymlinkToLocation(
+                    sourceLoc,
+                    publishDirectoryPath,
+                    subDirectory,
+                    moduleToBuild,
+                    publishedKey);
+#endif
+            }
+            else if (sourceKey.IsDirectoryKey)
+            {
+                throw new Opus.Core.Exception("Directories cannot be published yet");
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Unsupported Location type");
+            }
+        }
+
+        private void
+        nativeCopyAdditionalDirectory(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDirectory directoryInfo,
+            string publishDirectoryPath,
+            object context)
+        {
+            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
+                primaryModule,
+                directoryInfo.Directory);
+            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var sourceLoc = directoryInfo.DirectoryLocation;
+            var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
+            var subdirectory = attribute.CommonSubDirectory;
+#if false
+            Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
+                sourceLoc,
+                publishDirectoryPath,
+                subdirectory,
+                directoryInfo.RenamedLeaf,
+                moduleToBuild,
+                publishedKey);
+#endif
+        }
+
+        private void
+        nativeCopyInfoPList(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.NamedModuleLocation namedLocation,
+            string publishDirectoryPath,
+            object context)
+        {
+            var plistNode = Opus.Core.ModuleUtilities.GetNode(
+                namedLocation.ModuleType,
+                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+
+            var moduleToCopy = plistNode.Module;
+            var keyToCopy = namedLocation.Key;
+
+            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                primaryModule,
+                moduleToCopy,
+                keyToCopy);
+            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
+            var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
+            Publisher.ProductModuleUtilities.CopyFileToLocation(
+                plistSourceLoc,
+                contentsLoc,
+                string.Empty,
+                moduleToBuild,
+                publishedKey);
+        }
+
+        public object
+        Build(
+            Publisher.ProductModule moduleToBuild,
+            out bool success)
+        {
+            Publisher.DelegateProcessing.Process(
+                moduleToBuild,
+                nativeCopyNodeLocation,
+                nativeCopyAdditionalDirectory,
+                nativeCopyInfoPList,
+                null);
+
+            success = true;
+            return null;
+        }
+#else
         private static void
         CopyFilesToDirectory(
             Opus.Core.BaseModule module,
@@ -230,5 +380,6 @@ namespace QMakeBuilder
             success = true;
             return null;
         }
+#endif
     }
 }
