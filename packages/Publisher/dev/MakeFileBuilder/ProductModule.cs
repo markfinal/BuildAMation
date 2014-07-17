@@ -202,7 +202,7 @@ namespace MakeFileBuilder
                 sourcePath,
                 publishDirectoryPath,
                 subdirectory,
-                string.Empty,
+                directoryInfo.RenamedLeaf,
                 moduleToBuild,
                 publishedKey);
             var rule = new MakeFileRule(
@@ -212,7 +212,7 @@ namespace MakeFileBuilder
                 directoriesToCreate,
                 null, // depInputVariables, TODO: Might have to re-add this
                 null,
-                MakeCopyFileRecipe(sourcePath, destinationPath));
+                MakeCopyDirectoryRecipe(sourcePath, destinationPath));
             rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(publishedKey);
             makeFile.RuleArray.AddUnique(rule);
         }
@@ -250,7 +250,7 @@ namespace MakeFileBuilder
 
             var destinationPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                 plistSourcePath,
-                publishDirectoryPath,
+                contentsLoc,
                 subDirectory,
                 string.Empty,
                 moduleToBuild,
