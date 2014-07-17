@@ -14,8 +14,12 @@ namespace XmlUtilities
 
         public Toolset()
         {
-            this.toolConfig[typeof(IXmlWriterTool)] = new Opus.Core.ToolAndOptionType(new XmlWriterTool(), typeof(XmlWriterOptionCollection));
-            this.toolConfig[typeof(IOSXPlistWriterTool)] = new Opus.Core.ToolAndOptionType(new XmlWriterTool(), typeof(OSXPlistWriterOptionCollection));
+            this.toolConfig[typeof(IXmlWriterTool)] =
+                new Opus.Core.ToolAndOptionType(new XmlWriterTool(), typeof(XmlWriterOptionCollection));
+            this.toolConfig[typeof(IOSXPlistWriterTool)] =
+                new Opus.Core.ToolAndOptionType(new XmlWriterTool(), typeof(OSXPlistWriterOptionCollection));
+            this.toolConfig[typeof(ITextFileTool)] =
+                new Opus.Core.ToolAndOptionType(new TextFileTool(), typeof(TextFileOptionCollection));
         }
 
         #region IToolset Members
