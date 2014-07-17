@@ -77,7 +77,6 @@ namespace XmlUtilities
 
             var dependentNode = node.ExternalDependents[0];
             var exeFileLoc = dependentNode.Module.Locations[C.Application.OutputFile];
-            var exeDirLoc = dependentNode.Module.Locations[C.Application.OutputDir];
 
             var primaryOutputPath = exeFileLoc.GetSinglePath();
 

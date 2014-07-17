@@ -87,8 +87,6 @@ namespace Publisher
                         meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Opus.Core.Array<Publisher.PublishDependency>).ToString());
                 }
 
-                var module = meta.Node.Module;
-                var moduleLocations = module.Locations;
                 foreach (var node in nodeData)
                 {
                     if (node.SubDirectory != null)

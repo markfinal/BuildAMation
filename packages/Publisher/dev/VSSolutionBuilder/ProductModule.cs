@@ -228,7 +228,6 @@ namespace VSSolutionBuilder
             Opus.Core.DependencyNode primaryNode,
             IProject projectData)
         {
-            var node = moduleToBuild.OwningNode;
             var additionalDirsData = Publisher.ProductModuleUtilities.GetAdditionalDirectoriesData(moduleToBuild);
             if (null != additionalDirsData)
             {
