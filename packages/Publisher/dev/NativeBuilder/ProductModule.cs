@@ -7,6 +7,81 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
+#if true
+        private void
+        nativeCopyNodeLocation(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Opus.Core.LocationArray directoriesToCreate,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDependency nodeInfo,
+            string publishDirectoryPath)
+        {
+            foreach (var dir in directoriesToCreate)
+            {
+                var dirPath = dir.GetSinglePath();
+                NativeBuilder.MakeDirectory(dirPath);
+            }
+
+            var moduleToCopy = meta.Node.Module;
+            var moduleLocations = moduleToCopy.Locations;
+
+            var sourceKey = nodeInfo.Key;
+            if (!moduleLocations.Contains(sourceKey))
+            {
+                return;
+            }
+
+            var sourceLoc = moduleLocations[sourceKey];
+            if (!sourceLoc.IsValid)
+            {
+                return;
+            }
+
+            // take the common subdirectory by default, otherwise override on a per Location basis
+            var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;
+            var subDirectory = attribute.CommonSubDirectory;
+            var nodeSpecificSubdirectory = nodeInfo.SubDirectory;
+            if (!string.IsNullOrEmpty(nodeSpecificSubdirectory))
+            {
+                subDirectory = nodeSpecificSubdirectory;
+            }
+
+            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
+                primaryModule,
+                moduleToCopy,
+                sourceKey);
+
+            if (sourceKey.IsFileKey)
+            {
+                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                Publisher.ProductModuleUtilities.CopyFileToLocation(
+                    sourceLoc,
+                    publishDirectoryPath,
+                    subDirectory,
+                    moduleToBuild,
+                    publishedKey);
+            }
+            else if (sourceKey.IsSymlinkKey)
+            {
+                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                Publisher.ProductModuleUtilities.CopySymlinkToLocation(
+                    sourceLoc,
+                    publishDirectoryPath,
+                    subDirectory,
+                    moduleToBuild,
+                    publishedKey);
+            }
+            else if (sourceKey.IsDirectoryKey)
+            {
+                throw new Opus.Core.Exception("Directories cannot be published yet");
+            }
+            else
+            {
+                throw new Opus.Core.Exception("Unsupported Location type");
+            }
+        }
+#else
         private void
         CopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
@@ -71,7 +146,15 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Unsupported Location type");
             }
         }
+#endif
 
+#if true
+        private void
+        nativeCopyAdditionalDirectory(
+            )
+        {
+        }
+#else
         private void
         CopyAdditionalDirectory(
             Opus.Core.BaseModule moduleToBuild,
@@ -94,7 +177,15 @@ namespace NativeBuilder
                 moduleToBuild,
                 publishedKey);
         }
+#endif
 
+#if true
+        private void
+        nativeCopyInfoPList(
+            )
+        {
+        }
+#else
         private void
         CopyInfoPList(
             Opus.Core.BaseModule moduleToBuild,
@@ -116,12 +207,20 @@ namespace NativeBuilder
                 moduleToBuild,
                 publishedKey);
         }
+#endif
 
         public object
         Build(
             Publisher.ProductModule moduleToBuild,
             out bool success)
         {
+#if true
+            Publisher.DelegateProcessing.Process(
+                moduleToBuild,
+                nativeCopyNodeLocation,
+                nativeCopyAdditionalDirectory,
+                nativeCopyInfoPList);
+#else
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
@@ -240,6 +339,7 @@ namespace NativeBuilder
                         nodeData.Key);
                 }
             }
+#endif
 
             success = true;
             return null;
