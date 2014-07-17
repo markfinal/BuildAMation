@@ -15,6 +15,15 @@ namespace C
         public static readonly Opus.Core.LocationKey ImportLibraryFile = new Opus.Core.LocationKey("ImportLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey ImportLibraryDir = new Opus.Core.LocationKey("ImportLibraryDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
+        protected DynamicLibrary()
+        {
+            this.PostActionModuleTypes = new Opus.Core.TypeArray();
+            if (Opus.Core.OSUtilities.IsUnixHosting)
+            {
+                this.PostActionModuleTypes.Add(typeof(PosixSharedLibrarySymlinks));
+            }
+        }
+
         [LocalCompilerOptionsDelegate]
         protected static void DynamicLibrarySetOpusDLLBuildPreprocessorDefine(Opus.Core.IModule module, Opus.Core.Target target)
         {
@@ -35,17 +44,17 @@ namespace C
             }
         }
 
+        public Opus.Core.TypeArray PostActionModuleTypes
+        {
+            get;
+            private set;
+        }
+
         #region IPostActionModules Members
 
         Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
         {
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
-            {
-                var postActionModules = new Opus.Core.TypeArray(
-                    typeof(PosixSharedLibrarySymlinks));
-                return postActionModules;
-            }
-            return null;
+            return this.PostActionModuleTypes;
         }
 
         #endregion
