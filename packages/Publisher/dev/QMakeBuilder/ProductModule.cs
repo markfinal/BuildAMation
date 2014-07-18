@@ -133,12 +133,14 @@ namespace QMakeBuilder
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
+#if false
             Publisher.ProductModuleUtilities.CopyFileToLocation(
                 plistSourceLoc,
                 contentsLoc,
                 string.Empty,
                 moduleToBuild,
                 publishedKey);
+#endif
         }
 
         public object
