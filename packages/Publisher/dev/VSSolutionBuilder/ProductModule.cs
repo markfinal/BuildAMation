@@ -8,6 +8,88 @@ namespace VSSolutionBuilder
     public sealed partial class VSSolutionBuilder
     {
 #if true
+        private static void
+        CopyNodes(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDependency nodeInfo)
+        {
+            var toCopy = meta.Node;
+            var keyToCopy = nodeInfo.Key;
+            var toProject = primaryModule.OwningNode.Data as IProject;
+
+            var configCollection = toProject.Configurations;
+            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)toCopy.Target); // TODO: not accurate
+            var configuration = configCollection[configurationName];
+
+            var toolName = "VCPostBuildEventTool";
+            var vcPostBuildEventTool = configuration.GetTool(toolName);
+            if (null == vcPostBuildEventTool)
+            {
+                vcPostBuildEventTool = new ProjectTool(toolName);
+                configuration.AddToolIfMissing(vcPostBuildEventTool);
+            }
+
+            var sourceLoc = toCopy.Module.Locations[keyToCopy];
+            if (!sourceLoc.IsValid)
+            {
+                return;
+            }
+            var sourcePath = sourceLoc.GetSingleRawPath();
+
+            var destinationDir = configuration.OutputDirectory;
+            var destinationDirPath = destinationDir.GetSingleRawPath();
+
+            // take the common subdirectory by default, otherwise override on a per Location basis
+            var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;
+            var subDirectory = attribute.CommonSubDirectory;
+            var nodeSpecificSubdirectory = nodeInfo.SubDirectory;
+            if (!string.IsNullOrEmpty(nodeSpecificSubdirectory))
+            {
+                subDirectory = nodeSpecificSubdirectory;
+            }
+
+            var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, keyToCopy);
+            var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                sourcePath,
+                destinationDirPath,
+                subDirectory,
+                string.Empty,
+                moduleToBuild,
+                primaryKey);
+
+            var commandLine = new System.Text.StringBuilder();
+            commandLine.AppendFormat("cmd.exe /c COPY /Y \"{0}\" \"{1}\"{2}", sourcePath, destPath, System.Environment.NewLine);
+
+            {
+                string attributeName = null;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == toProject.VSTarget)
+                {
+                    attributeName = "CommandLine";
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == toProject.VSTarget)
+                {
+                    attributeName = "Command";
+                }
+
+                lock (vcPostBuildEventTool)
+                {
+                    if (vcPostBuildEventTool.HasAttribute(attributeName))
+                    {
+                        var currentValue = vcPostBuildEventTool[attributeName];
+                        currentValue += commandLine.ToString();
+                        vcPostBuildEventTool[attributeName] = currentValue;
+                    }
+                    else
+                    {
+                        vcPostBuildEventTool.AddAttribute(attributeName, commandLine.ToString());
+                    }
+                }
+            }
+        }
+
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
@@ -50,6 +132,11 @@ namespace VSSolutionBuilder
             if (sourceKey.IsFileKey)
             {
                 var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                CopyNodes(
+                    moduleToBuild,
+                    primaryModule,
+                    meta,
+                    nodeInfo);
 #if false
                 Publisher.ProductModuleUtilities.CopyFileToLocation(
                     sourceLoc,
@@ -151,7 +238,8 @@ namespace VSSolutionBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null);
+                null,
+                false);
 
             success = true;
             return null;
