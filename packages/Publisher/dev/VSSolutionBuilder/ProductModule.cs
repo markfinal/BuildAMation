@@ -90,6 +90,69 @@ namespace VSSolutionBuilder
             }
         }
 
+        private static void
+        CopyDirectory(
+            Publisher.ProductModule moduleToBuild,
+            Opus.Core.BaseModule primaryModule,
+            Publisher.ProductModuleUtilities.MetaData meta,
+            Publisher.PublishDirectory directoryInfo)
+        {
+            var toProject = primaryModule.OwningNode.Data as IProject;
+
+            var configCollection = toProject.Configurations;
+            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            var configuration = configCollection[configurationName];
+
+            var toolName = "VCPostBuildEventTool";
+            var vcPostBuildEventTool = configuration.GetTool(toolName);
+            if (null == vcPostBuildEventTool)
+            {
+                vcPostBuildEventTool = new ProjectTool(toolName);
+                configuration.AddToolIfMissing(vcPostBuildEventTool);
+            }
+
+            var sourceLoc = directoryInfo.DirectoryLocation;
+            if (!sourceLoc.IsValid)
+            {
+                return;
+            }
+            var sourcePath = sourceLoc.GetSingleRawPath();
+            var lastDir = System.IO.Path.GetFileName(sourcePath);
+
+            var destinationDir = configuration.OutputDirectory;
+            var destinationDirPath = System.IO.Path.Combine(destinationDir.GetSingleRawPath(), lastDir);
+
+            var commandLine = new System.Text.StringBuilder();
+            commandLine.AppendFormat("IF NOT EXIST {0} MKDIR {0}{1}", destinationDirPath, System.Environment.NewLine);
+            commandLine.AppendFormat("cmd.exe /c XCOPY /E /Y \"{0}\" \"{1}\"{2}", sourcePath, destinationDirPath, System.Environment.NewLine);
+
+            {
+                string attributeName = null;
+                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == toProject.VSTarget)
+                {
+                    attributeName = "CommandLine";
+                }
+                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == toProject.VSTarget)
+                {
+                    attributeName = "Command";
+                }
+
+                lock (vcPostBuildEventTool)
+                {
+                    if (vcPostBuildEventTool.HasAttribute(attributeName))
+                    {
+                        var currentValue = vcPostBuildEventTool[attributeName];
+                        currentValue += commandLine.ToString();
+                        vcPostBuildEventTool[attributeName] = currentValue;
+                    }
+                    else
+                    {
+                        vcPostBuildEventTool.AddAttribute(attributeName, commandLine.ToString());
+                    }
+                }
+            }
+        }
+
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
@@ -137,26 +200,15 @@ namespace VSSolutionBuilder
                     primaryModule,
                     meta,
                     nodeInfo);
-#if false
-                Publisher.ProductModuleUtilities.CopyFileToLocation(
-                    sourceLoc,
-                    publishDirectoryPath,
-                    subDirectory,
-                    moduleToBuild,
-                    publishedKey);
-#endif
             }
             else if (sourceKey.IsSymlinkKey)
             {
                 var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-#if false
-                Publisher.ProductModuleUtilities.CopySymlinkToLocation(
-                    sourceLoc,
-                    publishDirectoryPath,
-                    subDirectory,
+                CopyNodes(
                     moduleToBuild,
-                    publishedKey);
-#endif
+                    primaryModule,
+                    meta,
+                    nodeInfo);
             }
             else if (sourceKey.IsDirectoryKey)
             {
@@ -185,15 +237,11 @@ namespace VSSolutionBuilder
             var sourceLoc = directoryInfo.DirectoryLocation;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
-#if false
-            Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
-                sourceLoc,
-                publishDirectoryPath,
-                subdirectory,
-                directoryInfo.RenamedLeaf,
+            CopyDirectory(
                 moduleToBuild,
-                publishedKey);
-#endif
+                primaryModule,
+                meta,
+                directoryInfo);
         }
 
         private void
@@ -206,26 +254,7 @@ namespace VSSolutionBuilder
             string publishDirectoryPath,
             object context)
         {
-            var plistNode = Opus.Core.ModuleUtilities.GetNode(
-                namedLocation.ModuleType,
-                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-
-            var moduleToCopy = plistNode.Module;
-            var keyToCopy = namedLocation.Key;
-
-            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
-                primaryModule,
-                moduleToCopy,
-                keyToCopy);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
-            var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
-            Publisher.ProductModuleUtilities.CopyFileToLocation(
-                plistSourceLoc,
-                contentsLoc,
-                string.Empty,
-                moduleToBuild,
-                publishedKey);
+            throw new Opus.Core.Exception("Info.plists are OSX specific. Not supported with VisualStudio projects");
         }
 
         public object
