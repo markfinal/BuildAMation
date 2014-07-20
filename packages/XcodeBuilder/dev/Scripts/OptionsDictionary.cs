@@ -70,7 +70,7 @@ namespace XcodeBuilder
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return (this as System.Collections.IEnumerable).GetEnumerator();
+            return this.dictionary.GetEnumerator();
         }
 
         #endregion

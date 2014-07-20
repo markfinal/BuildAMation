@@ -230,10 +230,22 @@ namespace VSSolutionBuilder
                         var visualStudioProjectOption = deltaOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
                         var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
+                        // there was a switch between VCPROJ and MSBuild style projects in regard of when inheritance of values happen
+                        // VCPROJ: automatic, manual disabling
+                        // MSBuild: disabled inheritence, manual enable by quoting name of state
+                        var postFixInheritance = (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == projectData.VSTarget);
+
                         // this is ONLY setting the delta
                         foreach (var setting in settingsDictionary)
                         {
-                            vcCLCompilerTool[setting.Key] = setting.Value;
+                            if (postFixInheritance && settingsDictionary.CanInherit(setting.Key))
+                            {
+                                vcCLCompilerTool[setting.Key] = System.String.Format("{0};%({1})", setting.Value, setting.Key);
+                            }
+                            else
+                            {
+                                vcCLCompilerTool[setting.Key] = setting.Value;
+                            }
                         }
                     }
                     else

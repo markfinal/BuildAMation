@@ -25,6 +25,7 @@ namespace VisualCCommon
             }
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("PreprocessorDefinitions", defines.ToString());
+            returnVal.EnableCanInherit("PreprocessorDefinitions");
             return returnVal;
         }
         private static void IncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -64,6 +65,7 @@ namespace VisualCCommon
             }
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("AdditionalIncludeDirectories", includePaths.ToString());
+            returnVal.EnableCanInherit("AdditionalIncludeDirectories");
             return returnVal;
         }
         private static void SystemIncludePathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -114,6 +116,7 @@ namespace VisualCCommon
                 }
             }
             returnVal.Add("AdditionalIncludeDirectories", includePaths.ToString());
+            returnVal.EnableCanInherit("AdditionalIncludeDirectories");
             return returnVal;
         }
         private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -567,6 +570,7 @@ namespace VisualCCommon
                 disableWarnings.AppendFormat("{0};", warning);
             }
             returnVal.Add("DisableSpecificWarnings", disableWarnings.ToString());
+            returnVal.EnableCanInherit("DisableSpecificWarnings");
             return returnVal;
         }
         private static void CharacterSetCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
@@ -629,6 +633,7 @@ namespace VisualCCommon
             }
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("UndefinePreprocessorDefinitions", undefines.ToString());
+            returnVal.EnableCanInherit("UndefinePreprocessorDefinitions");
             return returnVal;
         }
         #endregion
