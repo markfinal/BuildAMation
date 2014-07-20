@@ -153,8 +153,7 @@ namespace XcodeBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null,
-                false);
+                null);
 
             success = true;
             return null;

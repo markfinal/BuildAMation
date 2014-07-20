@@ -60,6 +60,12 @@ namespace VSSolutionBuilder
                 moduleToBuild,
                 primaryKey);
 
+            if (sourcePath == destPath)
+            {
+                Opus.Core.Log.DebugMessage("Skipping copying '{0}' as it would go to the same location", sourcePath);
+                return;
+            }
+
             var commandLine = new System.Text.StringBuilder();
             commandLine.AppendFormat("cmd.exe /c COPY /Y \"{0}\" \"{1}\"{2}", sourcePath, destPath, System.Environment.NewLine);
 
@@ -267,8 +273,7 @@ namespace VSSolutionBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null,
-                false);
+                null);
 
             success = true;
             return null;

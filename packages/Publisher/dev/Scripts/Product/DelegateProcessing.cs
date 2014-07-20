@@ -43,8 +43,7 @@ namespace Publisher
             CopyNodeLocationDelegate copyNode,
             CopyAdditionalDirectoryDelegate copyAdditionalDir,
             CopyInfoPListDelegate copyInfoPList,
-            object context,
-            bool publishPrimary)
+            object context)
         {
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
             var locationMap = moduleToBuild.Locations;
@@ -62,10 +61,7 @@ namespace Publisher
 
             // gather all nodes that will be considered for publication
             var nodesToPublish = new Opus.Core.DependencyNodeCollection();
-            if (publishPrimary)
-            {
-                nodesToPublish.Add(primaryNode);
-            }
+            nodesToPublish.Add(primaryNode);
             nodesToPublish.Add(moduleToBuild.OwningNode);
             if (null != primaryNode.ExternalDependents)
             {
