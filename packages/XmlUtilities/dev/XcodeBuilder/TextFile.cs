@@ -12,13 +12,21 @@ namespace XcodeBuilder
             XmlUtilities.TextFileModule moduleToBuild,
             out bool success)
         {
-            // TODO: might have to implement PList specific Build functions
             var node = moduleToBuild.OwningNode;
             var targetNode = node.ExternalDependents[0];
             var project = this.Workspace.GetProject(targetNode);
 
             var outputFileLoc = moduleToBuild.Locations[XmlUtilities.TextFileModule.OutputFile];
             var outputFilePath = outputFileLoc.GetSingleRawPath();
+
+            var moduleName = node.ModuleName;
+            var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.Text, outputFilePath, project.RootUri);
+            var sourcesBuildPhase = project.SourceBuildPhases.Get("MiscSources", moduleName);
+            var data = project.BuildFiles.Get(moduleName, fileRef, sourcesBuildPhase);
+            if (null == data)
+            {
+                throw new Opus.Core.Exception("Build file not available");
+            }
 
             var content = moduleToBuild.Content.ToString();
             string shellScriptName = "Writing text file for " + targetNode.UniqueModuleName;
@@ -38,7 +46,7 @@ namespace XcodeBuilder
             }
 
             success = true;
-            return null;
+            return data;
         }
     }
 }
