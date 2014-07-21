@@ -58,7 +58,22 @@ namespace XcodeBuilder
 
                 if (commandLineBuilder.Count > 0)
                 {
-                    data.Settings["COMPILER_FLAGS"].AddRangeUnique(commandLineBuilder);
+                    var compilerFlags = data.Settings["COMPILER_FLAGS"];
+
+                    // need to escape any quotes again, otherwise the quotes are lost in the command lines
+                    for (int index = 0; index < commandLineBuilder.Count; ++index)
+                    {
+                        var arg = commandLineBuilder[index];
+                        if (arg.Contains("\""))
+                        {
+                            arg = arg.Replace("\"", "\\\\\"");
+                            compilerFlags.AddUnique(arg);
+                        }
+                        else
+                        {
+                            compilerFlags.AddUnique(arg);
+                        }
+                    }
                 }
             }
             else
