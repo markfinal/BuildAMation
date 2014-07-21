@@ -75,6 +75,30 @@ namespace Publisher
             // gather up the publishing metadata for those nodes
             var metaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, nodesToPublish);
 
+            // publish static directories first, as future steps may copy files into them
+            // for additional directories already on disk...
+            var additionalDirs = metaData.FilterByType<Publisher.AdditionalDirectoriesAttribute>();
+            // TODO: convert to var
+            foreach (Publisher.ProductModuleUtilities.MetaData meta in additionalDirs)
+            {
+                var dirData = meta.Data as Publisher.PublishDirectory;
+                if (null == dirData)
+                {
+                    throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                        meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.PublishDirectory).ToString());
+                }
+
+                Opus.Core.Log.MessageAll("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
+                copyAdditionalDir(
+                    moduleToBuild,
+                    primaryModule,
+                    dirsToCreate,
+                    meta,
+                    dirData,
+                    publishDirPath,
+                    context);
+            }
+
             // for built files to copy...
             var copyFiles = metaData.FilterByType<Publisher.CopyFileLocationsAttribute>();
             // TODO: convert to var
@@ -107,29 +131,6 @@ namespace Publisher
                         publishDirPath,
                         context);
                 }
-            }
-
-            // for additional files already on disk...
-            var additionalDirs = metaData.FilterByType<Publisher.AdditionalDirectoriesAttribute>();
-            // TODO: convert to var
-            foreach (Publisher.ProductModuleUtilities.MetaData meta in additionalDirs)
-            {
-                var dirData = meta.Data as Publisher.PublishDirectory;
-                if (null == dirData)
-                {
-                    throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
-                        meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.PublishDirectory).ToString());
-                }
-
-                Opus.Core.Log.MessageAll("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
-                copyAdditionalDir(
-                    moduleToBuild,
-                    primaryModule,
-                    dirsToCreate,
-                    meta,
-                    dirData,
-                    publishDirPath,
-                    context);
             }
 
             var options = moduleToBuild.Options as Publisher.IPublishOptions;
