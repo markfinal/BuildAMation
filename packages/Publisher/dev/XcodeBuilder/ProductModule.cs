@@ -74,6 +74,39 @@ namespace XcodeBuilder
         }
 
         private void
+        CopyAdditionalDirectory(
+            Publisher.ProductModule moduleToBuild,
+            Publisher.PublishDirectory additionalDirsData,
+            Opus.Core.BaseModule primaryModule,
+            string subdirectory,
+            PBXProject project,
+            PBXNativeTarget primaryPBXNativeTarget)
+        {
+            var sourceLoc = additionalDirsData.DirectoryLocation;
+            var sourcePath = sourceLoc.GetSingleRawPath();
+            var lastDir = additionalDirsData.RenamedLeaf != null ? additionalDirsData.RenamedLeaf : System.IO.Path.GetFileName(sourcePath);
+            var destDir = primaryModule.Locations[C.Application.OutputDir].GetSingleRawPath();
+            var dest = destDir.Clone() as string;
+            if ((moduleToBuild.Options as Publisher.IPublishOptions).OSXApplicationBundle)
+            {
+                dest = System.IO.Path.Combine(dest, "$EXECUTABLE_FOLDER_PATH");
+            }
+            if (!System.String.IsNullOrEmpty(subdirectory))
+            {
+                dest = System.IO.Path.Combine(dest, subdirectory);
+            }
+            dest = System.IO.Path.Combine(dest, lastDir);
+
+            var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("Copy Directories", moduleToBuild.OwningNode.ModuleName);
+
+            shellScriptBuildPhase.ShellScriptLines.Add("cp -Rf $SCRIPT_INPUT_FILE_0 $SCRIPT_OUTPUT_FILE_0");
+            shellScriptBuildPhase.InputPaths.Add(sourcePath);
+            shellScriptBuildPhase.OutputPaths.Add(dest);
+
+            primaryPBXNativeTarget.BuildPhases.Add(shellScriptBuildPhase);
+        }
+
+        private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
             Opus.Core.BaseModule primaryModule,
@@ -167,22 +200,17 @@ namespace XcodeBuilder
             string publishDirectoryPath,
             object context)
         {
-#if false
-            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
-                primaryModule,
-                directoryInfo.Directory);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-            var sourceLoc = directoryInfo.DirectoryLocation;
+            var project = this.Workspace.GetProject(primaryModule.OwningNode);
+            var primaryTarget = primaryModule.OwningNode.Data as PBXNativeTarget;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
-            Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
-                sourceLoc,
-                publishDirectoryPath,
-                subdirectory,
-                directoryInfo.RenamedLeaf,
+            this.CopyAdditionalDirectory(
                 moduleToBuild,
-                publishedKey);
-#endif
+                directoryInfo,
+                primaryModule,
+                subdirectory,
+                project,
+                primaryTarget);
         }
 
         private void
