@@ -37,7 +37,7 @@ namespace Publisher
             string publishDirectoryPath,
             object context);
 
-        public static void
+        public static Opus.Core.DependencyNode
         Process(
             ProductModule moduleToBuild,
             CopyNodeLocationDelegate copyNode,
@@ -159,6 +159,8 @@ namespace Publisher
                         context);
                 }
             }
+
+            return primaryNode;
         }
     }
 }
