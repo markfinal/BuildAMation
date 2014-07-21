@@ -223,17 +223,15 @@ namespace MakeFileBuilder
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation,
+            Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context)
         {
             var makeFile = context as MakeFile;
-            var plistNode = Opus.Core.ModuleUtilities.GetNode(
-                namedLocation.ModuleType,
-                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            var plistNode = meta.Node;
 
             var moduleToCopy = plistNode.Module;
-            var keyToCopy = namedLocation.Key;
+            var keyToCopy = nodeInfo.Key;
 
             // take the common subdirectory by default, otherwise override on a per Location basis
             var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;

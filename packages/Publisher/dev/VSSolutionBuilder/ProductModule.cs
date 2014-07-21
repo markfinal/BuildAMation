@@ -262,7 +262,7 @@ namespace VSSolutionBuilder
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation,
+            Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context)
         {

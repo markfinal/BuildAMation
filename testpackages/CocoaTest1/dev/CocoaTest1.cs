@@ -23,6 +23,12 @@ namespace CocoaTest1
 
         [Opus.Core.SourceFiles]
         Source source = new Source();
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.Application.OutputFile));
+#endif
     }
 
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
@@ -43,6 +49,11 @@ namespace CocoaTest1
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
             typeof(CocoaTest)
             );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Publisher.PublishDependency publishKey = new Publisher.PublishDependency(XmlUtilities.OSXPlistModule.OutputFile);
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
@@ -62,10 +73,10 @@ namespace CocoaTest1
         }
 
         [Publisher.PrimaryTarget]
-        Publisher.PublishNodeData data = new Publisher.PublishNodeData(typeof(CocoaTest), C.Application.OutputFile);
+        System.Type primary = typeof(CocoaTest);
 
         [Publisher.OSXInfoPList]
-        Publisher.PublishNodeData infoPList = new Publisher.PublishNodeData(typeof(CocoaTestPlist), XmlUtilities.OSXPlistModule.OutputFile);
+        System.Type plistType = typeof(CocoaTestPlist);
     }
 #endif
 }

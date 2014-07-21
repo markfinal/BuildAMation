@@ -33,7 +33,7 @@ namespace Publisher
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation,
+            Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context);
 
@@ -141,23 +141,39 @@ namespace Publisher
                 // TODO: convert to var
                 foreach (Publisher.ProductModuleUtilities.MetaData meta in infoPLists)
                 {
-                    var nodeData = meta.Data as Publisher.NamedModuleLocation;
+                    var nodeData = meta.Data as System.Type;
                     if (null == nodeData)
                     {
-                        throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
-                            meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.NamedModuleLocation).ToString());
+                        throw new Opus.Core.Exception("Meta data field called '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                            meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(System.Type).ToString());
                     }
 
-                    Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, nodeData.Key, publishDirPath);
+                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+                    var plistNodes = new Opus.Core.DependencyNodeCollection();
+                    plistNodes.Add(plistNode);
+                    var plistMetaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, plistNodes);
 
-                    copyInfoPList(
-                        moduleToBuild,
-                        primaryModule,
-                        dirsToCreate,
-                        meta,
-                        nodeData,
-                        publishDirPath,
-                        context);
+                    // TODO: convert to var
+                    foreach (Publisher.ProductModuleUtilities.MetaData plistMeta in plistMetaData)
+                    {
+                        var plistNodeData = plistMeta.Data as Publisher.PublishDependency;
+                        if (null == plistNodeData)
+                        {
+                            throw new Opus.Core.Exception("Meta data field called '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                                plistMeta.Name, plistMeta.Node.UniqueModuleName, plistMeta.Data.GetType().ToString(), typeof(Publisher.PublishDependency).ToString());
+                        }
+
+                        Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", plistMeta.Node.UniqueModuleName, plistNodeData.Key, publishDirPath);
+
+                        copyInfoPList(
+                            moduleToBuild,
+                            primaryModule,
+                            dirsToCreate,
+                            plistMeta,
+                            plistNodeData,
+                            publishDirPath,
+                            context);
+                    }
                 }
             }
 

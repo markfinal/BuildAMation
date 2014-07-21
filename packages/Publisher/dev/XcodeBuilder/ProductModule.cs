@@ -219,32 +219,11 @@ namespace XcodeBuilder
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation,
+            Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context)
         {
-#if false
-            var plistNode = Opus.Core.ModuleUtilities.GetNode(
-                namedLocation.ModuleType,
-                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-
-            var moduleToCopy = plistNode.Module;
-            var keyToCopy = namedLocation.Key;
-
-            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
-                primaryModule,
-                moduleToCopy,
-                keyToCopy);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-            var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
-            var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
-            Publisher.ProductModuleUtilities.CopyFileToLocation(
-                plistSourceLoc,
-                contentsLoc,
-                string.Empty,
-                moduleToBuild,
-                publishedKey);
-#endif
+            // no special action here
         }
 
         public object

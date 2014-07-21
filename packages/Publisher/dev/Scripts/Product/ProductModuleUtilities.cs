@@ -203,8 +203,8 @@ namespace Publisher
                 return null;
             }
 
-            var primaryNode = Opus.Core.ModuleUtilities.GetNode(matchingModules[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-            return primaryNode;
+            var node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            return node;
         }
 //#else
         public static InternalPublishingNodeData

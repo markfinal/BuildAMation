@@ -132,6 +132,11 @@ namespace Test13
         Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
             typeof(QtApplication)
         );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Publisher.PublishDependency publishKey = new Publisher.PublishDependency(XmlUtilities.OSXPlistModule.OutputFile);
+#endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
@@ -153,7 +158,7 @@ namespace Test13
         System.Type primary = typeof(QtApplication);
 
         [Publisher.OSXInfoPList(Platform=Opus.Core.EPlatform.OSX)]
-        Publisher.NamedModuleLocation plist = new Publisher.NamedModuleLocation(typeof(AppInfoPList), XmlUtilities.OSXPlistModule.OutputFile);
+        System.Type plistType = typeof(AppInfoPList);
     }
 #else
 #if OPUSPACKAGE_FILEUTILITIES_DEV

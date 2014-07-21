@@ -120,7 +120,7 @@ namespace NativeBuilder
             Opus.Core.BaseModule primaryModule,
             Opus.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
-            Publisher.NamedModuleLocation namedLocation,
+            Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context)
         {
@@ -130,12 +130,10 @@ namespace NativeBuilder
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var plistNode = Opus.Core.ModuleUtilities.GetNode(
-                namedLocation.ModuleType,
-                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            var plistNode = meta.Node;
 
             var moduleToCopy = plistNode.Module;
-            var keyToCopy = namedLocation.Key;
+            var keyToCopy = nodeInfo.Key;
 
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
                 primaryModule,
