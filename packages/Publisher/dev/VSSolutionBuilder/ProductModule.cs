@@ -193,14 +193,17 @@ namespace VSSolutionBuilder
                 subDirectory = nodeSpecificSubdirectory;
             }
 
+            // TODO: should really be using this, in case we need to refer to published locations after this module
+            /*
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
                 primaryModule,
                 moduleToCopy,
                 sourceKey);
+                */
 
             if (sourceKey.IsFileKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                //var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
                 CopyNodes(
                     moduleToBuild,
                     primaryModule,
@@ -209,7 +212,7 @@ namespace VSSolutionBuilder
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                //var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
                 CopyNodes(
                     moduleToBuild,
                     primaryModule,
@@ -236,10 +239,13 @@ namespace VSSolutionBuilder
             string publishDirectoryPath,
             object context)
         {
+            // TODO: should be using this
+            /*
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
                 primaryModule,
                 directoryInfo.Directory);
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            */
             var sourceLoc = directoryInfo.DirectoryLocation;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;

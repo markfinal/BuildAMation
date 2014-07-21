@@ -42,15 +42,17 @@ namespace XcodeBuilder
                 subDirectory = nodeSpecificSubdirectory;
             }
 
+#if false
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
                 primaryModule,
                 moduleToCopy,
                 sourceKey);
+#endif
 
             if (sourceKey.IsFileKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
 #if false
+                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
                 Publisher.ProductModuleUtilities.CopyFileToLocation(
                     sourceLoc,
                     publishDirectoryPath,
@@ -61,8 +63,8 @@ namespace XcodeBuilder
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
 #if false
+                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
                 Publisher.ProductModuleUtilities.CopySymlinkToLocation(
                     sourceLoc,
                     publishDirectoryPath,
@@ -91,6 +93,7 @@ namespace XcodeBuilder
             string publishDirectoryPath,
             object context)
         {
+#if false
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
                 primaryModule,
                 directoryInfo.Directory);
@@ -98,7 +101,6 @@ namespace XcodeBuilder
             var sourceLoc = directoryInfo.DirectoryLocation;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
-#if false
             Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
                 sourceLoc,
                 publishDirectoryPath,
@@ -119,6 +121,7 @@ namespace XcodeBuilder
             string publishDirectoryPath,
             object context)
         {
+#if false
             var plistNode = Opus.Core.ModuleUtilities.GetNode(
                 namedLocation.ModuleType,
                 (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
@@ -133,7 +136,6 @@ namespace XcodeBuilder
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
-#if false
             Publisher.ProductModuleUtilities.CopyFileToLocation(
                 plistSourceLoc,
                 contentsLoc,
