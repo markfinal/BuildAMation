@@ -59,6 +59,14 @@ namespace Publisher
                 return filtered;
             }
 
+            public int Count
+            {
+                get
+                {
+                    return this.List.Count;
+                }
+            }
+
             private Opus.Core.Array<MetaData> List
             {
                 get;
