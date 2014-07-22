@@ -14,6 +14,9 @@ namespace VisualCCommon
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("SystemRoot");
+            // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
+            this.requiredEnvironmentVariables.Add("TEMP");
+            this.requiredEnvironmentVariables.Add("TMP");
         }
 
         #region ICompilerTool Members
