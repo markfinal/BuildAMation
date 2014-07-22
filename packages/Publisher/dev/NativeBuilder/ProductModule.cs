@@ -160,7 +160,8 @@ namespace NativeBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null);
+                null,
+                false);
 
             success = true;
             return null;

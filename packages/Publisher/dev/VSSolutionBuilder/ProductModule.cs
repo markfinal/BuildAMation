@@ -279,7 +279,8 @@ namespace VSSolutionBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null);
+                null,
+                true);
 
             success = true;
             return null;

@@ -43,7 +43,8 @@ namespace Publisher
             CopyNodeLocationDelegate copyNode,
             CopyAdditionalDirectoryDelegate copyAdditionalDir,
             CopyInfoPListDelegate copyInfoPList,
-            object context)
+            object context,
+            bool publishBesidePrimary)
         {
             var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
             var locationMap = moduleToBuild.Locations;
@@ -74,6 +75,24 @@ namespace Publisher
 
             // gather up the publishing metadata for those nodes
             var metaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, nodesToPublish);
+
+            if (publishBesidePrimary)
+            {
+                foreach (Publisher.ProductModuleUtilities.MetaData meta in metaData)
+                {
+                    if (meta.Node == primaryNode)
+                    {
+                        var data = meta.Data as Opus.Core.Array<Publisher.PublishDependency>;
+                        if (null != data)
+                        {
+                            var mainDependency = data[0];
+                            publishDirLoc = (primaryModule.Locations[mainDependency.Key] as Opus.Core.ScaffoldLocation).Base;
+                            publishDirPath = publishDirLoc.GetSingleRawPath();
+                            break;
+                        }
+                    }
+                }
+            }
 
             // publish static directories first, as future steps may copy files into them
             // for additional directories already on disk...

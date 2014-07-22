@@ -9,6 +9,45 @@ namespace QMakeBuilder
     {
 #if true
         private void
+        CopyFilesToDirectory(
+            Opus.Core.BaseModule module,
+            string destinationDirectory,
+            string subdirectory,
+            QMakeData proData)
+        {
+#if true
+            // TOOD: if there is only one place to write to, use this
+            var targetName = (module is C.DynamicLibrary) ? "dlltarget" : "target";
+            var customRules = new Opus.Core.StringArray();
+            var destDir = destinationDirectory.Clone() as string;
+            if (!System.String.IsNullOrEmpty(subdirectory))
+            {
+                destDir = System.IO.Path.Combine(destDir, subdirectory);
+            }
+            destDir = destDir.Replace('\\', '/');
+            customRules.Add(System.String.Format("{0}.path={1}", targetName, destDir));
+            customRules.Add(System.String.Format("INSTALLS+={0}", targetName));
+#else
+            // otherwise, if there are multiple places to install to, use this
+            // Note: don't use absolute paths, unless they exist already - cannot refer to files that are to be built
+            var targetName = System.String.Format("copy_{0}_for_{1}", module.OwningNode.ModuleName, primaryNode.ModuleName);
+            var customRules = new Opus.Core.StringArray();
+            customRules.Add(System.String.Format("{0}.path={1}", targetName, destinationDirectory.Replace('\\', '/')));
+            // TODO: this does not resolve to the final destination path
+            customRules.Add(System.String.Format("{0}.files=$${{DESTDIR}}/$${{TARGET}}.$${{TARGET_EXT})", targetName));
+            customRules.Add(System.String.Format("INSTALLS+={0}", targetName));
+#endif
+            if (null == proData.CustomRules)
+            {
+                proData.CustomRules = customRules;
+            }
+            else
+            {
+                proData.CustomRules.AddRangeUnique(customRules);
+            }
+        }
+
+        private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
             Opus.Core.BaseModule primaryModule,
@@ -42,36 +81,67 @@ namespace QMakeBuilder
                 subDirectory = nodeSpecificSubdirectory;
             }
 
-#if false
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
                 primaryModule,
                 moduleToCopy,
                 sourceKey);
-#endif
 
+            var sourcePath = sourceLoc.GetSingleRawPath();
             if (sourceKey.IsFileKey)
             {
-#if false
                 var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
-                Publisher.ProductModuleUtilities.CopyFileToLocation(
-                    sourceLoc,
+                var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                    sourcePath,
                     publishDirectoryPath,
-                    subDirectory,
+                    string.Empty,
+                    string.Empty,
                     moduleToBuild,
                     publishedKey);
-#endif
+                if (destPath == sourcePath)
+                {
+                    Opus.Core.Log.DebugMessage("Ignoring files to be copied on top of themselves");
+                    return;
+                }
+                var destDir = System.IO.Path.GetDirectoryName(destPath);
+
+                // TODO: where do prebuilt copies go?
+                var proData = meta.Node.Data as QMakeData;
+                if (null == proData)
+                {
+                    Opus.Core.Log.DebugMessage("Cannot handle copying prebuilt libraries");
+                    return;
+                }
+
+                this.CopyFilesToDirectory(
+                    meta.Node.Module,
+                    destDir,
+                    subDirectory,
+                    meta.Node.Data as QMakeData
+                    );
             }
             else if (sourceKey.IsSymlinkKey)
             {
-#if false
                 var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-                Publisher.ProductModuleUtilities.CopySymlinkToLocation(
-                    sourceLoc,
+                var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
+                    sourcePath,
                     publishDirectoryPath,
-                    subDirectory,
+                    string.Empty,
+                    string.Empty,
                     moduleToBuild,
                     publishedKey);
-#endif
+                if (destPath == sourcePath)
+                {
+                    Opus.Core.Log.DebugMessage("Ignoring symlinks to be copied on top of themselves");
+                    return;
+                }
+                var destDir = System.IO.Path.GetDirectoryName(destPath);
+                // TODO: not validated
+                this.CopyFilesToDirectory(
+                    meta.Node.Module,
+                    destDir,
+                    subDirectory,
+                    meta.Node.Data as QMakeData
+                    );
             }
             else if (sourceKey.IsDirectoryKey)
             {
@@ -93,22 +163,7 @@ namespace QMakeBuilder
             string publishDirectoryPath,
             object context)
         {
-#if false
-            var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
-                primaryModule,
-                directoryInfo.Directory);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-            var sourceLoc = directoryInfo.DirectoryLocation;
-            var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
-            var subdirectory = attribute.CommonSubDirectory;
-            Publisher.ProductModuleUtilities.CopyDirectoryToLocation(
-                sourceLoc,
-                publishDirectoryPath,
-                subdirectory,
-                directoryInfo.RenamedLeaf,
-                moduleToBuild,
-                publishedKey);
-#endif
+            Opus.Core.Log.MessageAll("Publishing directories is unsupported in QMake");
         }
 
         private void
@@ -121,13 +176,10 @@ namespace QMakeBuilder
             string publishDirectoryPath,
             object context)
         {
-#if false
-            var plistNode = Opus.Core.ModuleUtilities.GetNode(
-                namedLocation.ModuleType,
-                (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            var plistNode = meta.Node;
 
             var moduleToCopy = plistNode.Module;
-            var keyToCopy = namedLocation.Key;
+            var keyToCopy = nodeInfo.Key;
 
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
                 primaryModule,
@@ -136,13 +188,14 @@ namespace QMakeBuilder
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
-            Publisher.ProductModuleUtilities.CopyFileToLocation(
-                plistSourceLoc,
+
+            // TODO: this probably won't work as it's copying an arbtirary file, but worth trying to exercise
+            this.CopyFilesToDirectory(
+                plistNode.Module,
                 contentsLoc,
-                string.Empty,
-                moduleToBuild,
-                publishedKey);
-#endif
+                null,
+                meta.Node.Data as QMakeData
+                );
         }
 
         public object
@@ -155,7 +208,8 @@ namespace QMakeBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null);
+                null,
+                true);
 
             success = true;
             return null;

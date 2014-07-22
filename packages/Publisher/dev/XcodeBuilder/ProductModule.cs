@@ -236,7 +236,8 @@ namespace XcodeBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                null);
+                null,
+                true);
 
             var options = moduleToBuild.Options as Publisher.IPublishOptions;
             var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;

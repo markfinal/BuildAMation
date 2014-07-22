@@ -278,7 +278,8 @@ namespace MakeFileBuilder
                 nativeCopyNodeLocation,
                 nativeCopyAdditionalDirectory,
                 nativeCopyInfoPList,
-                makeFile);
+                makeFile,
+                false);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
