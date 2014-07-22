@@ -163,37 +163,6 @@ namespace Publisher
             return moduleData;
         }
 
-        public class InternalPublishingNodeData
-        {
-            public Opus.Core.DependencyNode Node
-            {
-                get;
-                set;
-            }
-
-            public Opus.Core.LocationKey Key
-            {
-                get;
-                set;
-            }
-        }
-
-        public class InternalPublishingAdditionalDirectoriesData
-        {
-            public Opus.Core.Location SourceDirectory
-            {
-                get;
-                set;
-            }
-
-            public string DirectoryName
-            {
-                get;
-                set;
-            }
-        }
-
-//#if true
         public static Opus.Core.DependencyNode
         GetPrimaryTarget(
             Publisher.ProductModule moduleToBuild)
@@ -213,82 +182,6 @@ namespace Publisher
 
             var node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
             return node;
-        }
-//#else
-        public static InternalPublishingNodeData
-        GetPrimaryNodeData(
-            Publisher.ProductModule moduleToBuild)
-        {
-            InternalPublishingNodeData data = null;
-
-            // TODO: why is this check necessary?
-            var dependents = moduleToBuild.OwningNode.ExternalDependents;
-            if ((null == dependents) || (dependents.Count == 0))
-            {
-                return data;
-            }
-
-            var matchingModules = GetModulesDataWithAttribute<System.Type>(moduleToBuild, typeof(Publisher.PrimaryTargetAttribute));
-            if (matchingModules.Count == 0)
-            {
-                return data;
-            }
-
-            data = new InternalPublishingNodeData();
-            data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0], (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-            //data.Key = matchingModules[0].Key;
-            return data;
-        }
-//#endif
-
-        public static InternalPublishingNodeData
-        GetOSXPListNodeData(
-            Publisher.ProductModule moduleToBuild)
-        {
-            InternalPublishingNodeData data = null;
-
-            // TODO: why is this check necessary?
-            var dependents = moduleToBuild.OwningNode.ExternalDependents;
-            if ((null == dependents) || (dependents.Count == 0))
-            {
-                return data;
-            }
-
-            var matchingModules = GetModulesDataWithAttribute<PublishNodeData>(moduleToBuild, typeof(Publisher.OSXInfoPListAttribute));
-            if (matchingModules.Count == 0)
-            {
-                return data;
-            }
-
-            data = new InternalPublishingNodeData();
-            data.Node = Opus.Core.ModuleUtilities.GetNode(matchingModules[0].ModuleType, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
-            data.Key = matchingModules[0].Key;
-            return data;
-        }
-
-        public static InternalPublishingAdditionalDirectoriesData
-        GetAdditionalDirectoriesData(
-            Publisher.ProductModule moduleToBuild)
-        {
-            InternalPublishingAdditionalDirectoriesData data = null;
-
-            // TODO: why is this check necessary?
-            var dependents = moduleToBuild.OwningNode.ExternalDependents;
-            if ((null == dependents) || (dependents.Count == 0))
-            {
-                return data;
-            }
-
-            var matchingModules = GetModulesDataWithAttribute<PublishDirectory>(moduleToBuild, typeof(Publisher.AdditionalDirectoriesAttribute));
-            if (matchingModules.Count == 0)
-            {
-                return data;
-            }
-
-            data = new InternalPublishingAdditionalDirectoriesData();
-            data.SourceDirectory = matchingModules[0].DirectoryLocation;
-            data.DirectoryName = matchingModules[0].Directory;
-            return data;
         }
 
         public static string
