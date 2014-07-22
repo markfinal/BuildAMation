@@ -107,7 +107,7 @@ namespace Publisher
                         meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.PublishDirectory).ToString());
                 }
 
-                Opus.Core.Log.MessageAll("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
+                Opus.Core.Log.DebugMessage("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
                 copyAdditionalDir(
                     moduleToBuild,
                     primaryModule,
@@ -134,11 +134,11 @@ namespace Publisher
                 {
                     if (node.SubDirectory != null)
                     {
-                        Opus.Core.Log.MessageAll("Copy file '{0}' : '{1}' -> {2}/{3}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath, node.SubDirectory);
+                        Opus.Core.Log.DebugMessage("Copy file '{0}' : '{1}' -> {2}/{3}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath, node.SubDirectory);
                     }
                     else
                     {
-                        Opus.Core.Log.MessageAll("Copy file '{0}' : '{1}' -> {2}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath);
+                        Opus.Core.Log.DebugMessage("Copy file '{0}' : '{1}' -> {2}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath);
                     }
 
                     copyNode(
@@ -189,7 +189,7 @@ namespace Publisher
                                 plistMeta.Name, plistMeta.Node.UniqueModuleName, plistMeta.Data.GetType().ToString(), typeof(Publisher.PublishDependency).ToString());
                         }
 
-                        Opus.Core.Log.MessageAll("Copy Info.plist file '{0}' : '{1}' -> '{2}'", plistMeta.Node.UniqueModuleName, plistNodeData.Key, publishDirPath);
+                        Opus.Core.Log.DebugMessage("Copy Info.plist file '{0}' : '{1}' -> '{2}'", plistMeta.Node.UniqueModuleName, plistNodeData.Key, publishDirPath);
 
                         copyInfoPList(
                             moduleToBuild,
