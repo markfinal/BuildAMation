@@ -114,6 +114,18 @@ namespace CommandLineProcessor
             }
 
             Opus.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
+#if false
+            // useful debugging of the command line processor
+            Opus.Core.Log.Detail("Curdir : {0}", processStartInfo.WorkingDirectory);
+            if (processStartInfo.EnvironmentVariables.Count > 0)
+            {
+                Opus.Core.Log.Detail("Envvars");
+                foreach (string envVar in processStartInfo.EnvironmentVariables.Keys)
+                {
+                    Opus.Core.Log.Detail("{0} = {1}", envVar, processStartInfo.EnvironmentVariables[envVar]);
+                }
+            }
+#endif
 
             System.Diagnostics.Process process = null;
             try
