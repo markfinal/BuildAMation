@@ -141,6 +141,12 @@ namespace Publisher
                 // TODO: convert to var
                 foreach (Publisher.ProductModuleUtilities.MetaData meta in infoPLists)
                 {
+                    if (meta.Node != moduleToBuild.OwningNode)
+                    {
+                        Opus.Core.Log.DebugMessage("Ignoring Info.plist from '{0}' as it is not associated with the primary target", meta.Node.UniqueModuleName);
+                        continue;
+                    }
+
                     var nodeData = meta.Data as System.Type;
                     if (null == nodeData)
                     {
@@ -149,6 +155,7 @@ namespace Publisher
                     }
 
                     var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+
                     var plistNodes = new Opus.Core.DependencyNodeCollection();
                     plistNodes.Add(plistNode);
                     var plistMetaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, plistNodes);
