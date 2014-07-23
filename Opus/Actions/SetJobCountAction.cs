@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.PreambleAction]
-    internal class SetJobCountAction : Core.IActionWithArguments
+    internal class SetJobCountAction :
+    Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.JobCount = System.Convert.ToInt32(arguments);
             if (0 == this.JobCount)
@@ -42,7 +45,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.State.JobCount = this.JobCount;
 
@@ -53,7 +57,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

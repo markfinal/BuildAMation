@@ -9,7 +9,9 @@
 namespace Opus
 {
     [Core.PreambleAction]
-    internal class PackageVersionAction : Core.IActionWithArguments, Core.IActionCommandComparison
+    internal class PackageVersionAction :
+        Core.IActionWithArguments,
+        Core.IActionCommandComparison
     {
         private string NameChosen
         {
@@ -25,7 +27,9 @@ namespace Opus
 
         #region IActionWithArguments Members
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.VersionChosen = arguments;
         }
@@ -50,7 +54,8 @@ namespace Opus
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             if (!Core.State.HasCategory("PackageDefaultVersions"))
             {
@@ -66,7 +71,10 @@ namespace Opus
 
         #region IActionCommandComparison Members
 
-        bool Opus.Core.IActionCommandComparison.Compare(string command1, string command2)
+        bool
+        Opus.Core.IActionCommandComparison.Compare(
+            string command1,
+            string command2)
         {
             if (command2.EndsWith(".version"))
             {
@@ -81,7 +89,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

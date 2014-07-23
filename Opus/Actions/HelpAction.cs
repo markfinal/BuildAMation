@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class HelpAction : Core.IAction
+    internal class HelpAction :
+        Core.IAction
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,8 @@ namespace Opus
             }
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.Log.MessageAll("Syntax: Opus [@<response file >] <command 0>[=<value 0>] [<command 1>[=<value 1>] .. <command N>[=<value N>]]");
 
@@ -61,8 +63,10 @@ namespace Opus
             return true;
         }
 
-        private void DisplayCommands(Core.Array<Core.RegisterActionAttribute> actions,
-                                     int maximumLength)
+        private void
+        DisplayCommands(
+            Core.Array<Core.RegisterActionAttribute> actions,
+            int maximumLength)
         {
             foreach (var actionAttribute in actions)
             {
@@ -79,7 +83,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.PreambleAction]
-    internal class NoCacheAction : Core.IAction
+    internal class NoCacheAction :
+        Core.IAction
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,8 @@ namespace Opus
             }
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.State.CacheAssembly = false;
             return true;
@@ -35,7 +37,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

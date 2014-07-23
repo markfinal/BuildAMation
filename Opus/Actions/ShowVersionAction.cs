@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class ShowVersionAction : Core.IAction
+    internal class ShowVersionAction :
+        Core.IAction
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,8 @@ namespace Opus
             }
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.Log.MessageAll(Core.State.OpusVersionString);
 
@@ -36,7 +38,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

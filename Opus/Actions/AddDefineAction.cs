@@ -9,9 +9,11 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class AddDefineAction : Core.IActionWithArguments
+    internal class AddDefineAction :
+        Core.IActionWithArguments
     {
-        public string CommandLineSwitch
+        public string
+        CommandLineSwitch
         {
             get
             {
@@ -27,7 +29,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             var definitions = arguments.Split(System.IO.Path.PathSeparator);
             this.DefinitionArray = new Opus.Core.StringArray(definitions);
@@ -39,7 +43,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             bool isWellDefined;
             var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
@@ -88,7 +93,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

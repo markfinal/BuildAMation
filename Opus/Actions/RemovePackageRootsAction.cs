@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class RemovePackageRootsAction : Core.IActionWithArguments
+    internal class RemovePackageRootsAction :
+        Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -33,13 +34,16 @@ namespace Opus
             set;
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             var roots = arguments.Split(System.IO.Path.PathSeparator);
             this.PackageRoots = new Opus.Core.StringArray(roots);
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             bool isWellDefined;
             var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
@@ -92,7 +96,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

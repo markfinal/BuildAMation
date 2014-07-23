@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.PreambleAction]
-    internal class SetDependentAction : Core.IActionWithArguments
+    internal class SetDependentAction :
+        Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.DependentPackageAndVersion = arguments;
         }
@@ -38,7 +41,8 @@ namespace Opus
             private set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             // TODO: might want to figure out the PackageIdentifier here
             return true;
@@ -46,7 +50,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

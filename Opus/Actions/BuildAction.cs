@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class BuildAction : Core.IAction
+    internal class BuildAction :
+        Core.IAction
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,8 @@ namespace Opus
             }
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.Log.DebugMessage("Builder is {0}", Core.State.BuilderName);
             var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
@@ -58,7 +60,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

@@ -13,7 +13,11 @@ namespace Opus
 
     public static class CSharpProject
     {
-        public static void Create(Core.PackageInformation package, VisualStudioVersion version, string[] resourceFilePathNames)
+        public static void
+        Create(
+            Core.PackageInformation package,
+            VisualStudioVersion version,
+            string[] resourceFilePathNames)
         {
             var projectFilename = package.DebugProjectFilename;
             var projectFilenameUri = new System.Uri(projectFilename);

@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.PreambleAction]
-    internal class SetBuilderNameAction : Core.IActionWithArguments
+    internal class SetBuilderNameAction :
+        Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.BuilderName = arguments;
         }
@@ -38,7 +41,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.State.BuilderName = this.BuilderName;
 
@@ -47,7 +51,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

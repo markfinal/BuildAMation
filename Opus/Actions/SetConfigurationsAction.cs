@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.PreambleAction]
-    internal class SetConfigurationsAction : Core.IActionWithArguments
+    internal class SetConfigurationsAction :
+        Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.Configurations = new Opus.Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
@@ -38,7 +41,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             var buildConfigurations = new Core.Array<Opus.Core.EConfiguration>();
 
@@ -63,7 +67,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

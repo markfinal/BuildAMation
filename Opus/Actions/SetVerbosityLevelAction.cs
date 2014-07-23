@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.ImmediateAction]
-    internal class SetVerbosityLevelAction : Core.IActionWithArguments
+    internal class SetVerbosityLevelAction :
+        Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             int level = System.Convert.ToInt32(arguments);
             if (!System.Enum.IsDefined(typeof(Core.EVerboseLevel), level))
@@ -44,7 +47,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Core.Log.DebugMessage("Verbosity level set to '{0}'", Core.State.VerbosityLevel.ToString());
 
@@ -53,7 +57,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

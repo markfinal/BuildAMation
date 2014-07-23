@@ -13,7 +13,10 @@ namespace Opus
         private Core.Array<Core.IAction> preambleActions = new Core.Array<Core.IAction>();
         private Core.IAction triggerAction = null;
 
-        private static void displayInfo(Core.EVerboseLevel level, System.Collections.Generic.Dictionary<string,string> argDict)
+        private static void
+        displayInfo(
+            Core.EVerboseLevel level,
+            System.Collections.Generic.Dictionary<string,string> argDict)
         {
             Core.Log.Message(level, "Opus location: '{0}'", Core.State.OpusDirectory);
             Core.Log.Message(level, "Opus version : '{0}'", Core.State.OpusVersionString);
@@ -36,7 +39,10 @@ namespace Opus
             Core.Log.Message(level, "");
         }
 
-        private void AddCommandValue(System.Collections.Generic.Dictionary<string,string> argDict, string argument)
+        private void
+        AddCommandValue(
+            System.Collections.Generic.Dictionary<string,string> argDict,
+            string argument)
         {
             var splitArg = argument.Split('=');
             var command = splitArg[0];
@@ -61,7 +67,9 @@ namespace Opus
         /// </summary>
         /// <param name="args">Command line arguments.</param>
         /// <returns>Dictionary of key-value pairs for the arguments</returns>
-        private System.Collections.Generic.Dictionary<string, string> ProcessCommandLine(string[] args)
+        private System.Collections.Generic.Dictionary<string, string>
+        ProcessCommandLine(
+            string[] args)
         {
             var argList = new System.Collections.Generic.Dictionary<string, string>();
             string responseFileArgument = null;
@@ -178,7 +186,9 @@ namespace Opus
         /// Initializes a new instance of the Application class.
         /// </summary>
         /// <param name="args">Command line arguments.</param>
-        public Application(string[] args)
+        public
+        Application(
+            string[] args)
         {
             var profile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
             profile.StartProfile();
@@ -192,7 +202,8 @@ namespace Opus
         /// <summary>
         /// Runs the application.
         /// </summary>
-        public void Run()
+        public void
+        Run()
         {
             // get notified of the progress of any scheduling updates
             Core.State.SchedulerProgressUpdates.Add(new Core.BuildSchedulerProgressUpdatedDelegate(scheduler_ProgressUpdated));
@@ -216,7 +227,9 @@ namespace Opus
             }
         }
 
-        private void scheduler_ProgressUpdated(int percentageComplete)
+        private void
+        scheduler_ProgressUpdated(
+            int percentageComplete)
         {
             Core.Log.Info("\t{0}% Scheduled", percentageComplete);
         }

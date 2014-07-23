@@ -14,7 +14,9 @@ namespace Opus
         /// Application entry point.
         /// </summary>
         /// <param name="args">Argument array.</param>
-        public static void Main(string[] args)
+        public static void
+        Main(
+            string[] args)
         {
             // take control of Ctrl+C
             System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
@@ -63,7 +65,10 @@ namespace Opus
             }
         }
 
-        static void HandleCancellation(object sender, System.ConsoleCancelEventArgs e)
+        private static void
+        HandleCancellation(
+            object sender,
+            System.ConsoleCancelEventArgs e)
         {
             // allow the build to fail gracefully
             var buildManager = Core.State.BuildManager;

@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class RemovePlatformFilterAction : Core.IActionWithArguments
+    internal class RemovePlatformFilterAction :
+        Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,9 @@ namespace Opus
             }
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             var platforms = arguments.Split(System.IO.Path.PathSeparator);
             this.PlatformArray = new Opus.Core.StringArray(platforms);
@@ -39,7 +42,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             var setDependentActionArray = Core.ActionManager.FindInvokedActionsByType(typeof(SetDependentAction));
             if (0 == setDependentActionArray.Count)
@@ -110,7 +114,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

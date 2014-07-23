@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class ShowDefinitionAction : Core.IAction
+    internal class ShowDefinitionAction :
+        Core.IAction
     {
         public string CommandLineSwitch
         {
@@ -27,7 +28,10 @@ namespace Opus
             }
         }
 
-        private void DisplayDependencies(Core.PackageDefinitionFile definition, int depth)
+        private void
+        DisplayDependencies(
+            Core.PackageDefinitionFile definition,
+            int depth)
         {
             foreach (var id in definition.PackageIdentifiers)
             {
@@ -42,7 +46,8 @@ namespace Opus
             }
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             // there may be multiple versions of packages - so show them all
             Core.PackageUtilities.IdentifyMainAndDependentPackages(false, true);
@@ -108,7 +113,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

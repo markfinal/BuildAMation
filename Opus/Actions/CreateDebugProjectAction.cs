@@ -9,7 +9,8 @@
 namespace Opus
 {
     [Core.TriggerAction]
-    internal class CreateDebugProjectAction : Core.IAction
+    internal class CreateDebugProjectAction :
+        Core.IAction
     {
         public string CommandLineSwitch
         {
@@ -33,7 +34,8 @@ namespace Opus
             set;
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             // TODO: should be false but other work has to happen first
             Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
@@ -71,7 +73,8 @@ namespace Opus
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }
