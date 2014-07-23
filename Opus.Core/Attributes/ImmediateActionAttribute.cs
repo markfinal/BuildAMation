@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class ImmediateActionAttribute : System.Attribute
-    {
-    }
+    public class ImmediateActionAttribute :
+        System.Attribute
+    {}
 }

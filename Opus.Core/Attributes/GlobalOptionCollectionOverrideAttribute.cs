@@ -6,9 +6,12 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple = false)]
-    public sealed class GlobalOptionCollectionOverrideAttribute : System.Attribute
+    public sealed class GlobalOptionCollectionOverrideAttribute :
+        System.Attribute
     {
-        public GlobalOptionCollectionOverrideAttribute(System.Type instanceType)
+        public
+        GlobalOptionCollectionOverrideAttribute(
+            System.Type instanceType)
         {
             var instance = System.Activator.CreateInstance(instanceType);
             var overrideInterface = instance as IGlobalOptionCollectionOverride;

@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class TriggerActionAttribute : System.Attribute
-    {
-    }
+    public class TriggerActionAttribute :
+        System.Attribute
+    {}
 }

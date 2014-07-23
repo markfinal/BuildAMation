@@ -6,9 +6,12 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.All)]
-    public abstract class BaseTargetFilteredAttribute : System.Attribute, ITargetFilters
+    public abstract class BaseTargetFilteredAttribute :
+        System.Attribute,
+        ITargetFilters
     {
-        public BaseTargetFilteredAttribute()
+        public
+        BaseTargetFilteredAttribute()
         {
             this.Platform = EPlatform.All;
             this.Configuration = EConfiguration.All;
@@ -33,7 +36,8 @@ namespace Opus.Core
             set;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             string message = System.String.Format("Platform='{0}' Configuration='{1}' ToolsetTypes='", this.Platform.ToString(), this.Configuration.ToString());
             if (null == this.ToolsetTypes)

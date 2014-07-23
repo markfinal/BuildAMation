@@ -6,9 +6,13 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Assembly, AllowMultiple=true)]
-    public class RegisterActionAttribute : System.Attribute, System.IComparable
+    public class RegisterActionAttribute :
+        System.Attribute,
+        System.IComparable
     {
-        public RegisterActionAttribute(System.Type classType)
+        public
+        RegisterActionAttribute(
+            System.Type classType)
         {
             if (!typeof(IAction).IsAssignableFrom(classType))
             {
@@ -24,7 +28,9 @@ namespace Opus.Core
             private set;
         }
 
-        int System.IComparable.CompareTo(object obj)
+        int
+        System.IComparable.CompareTo(
+            object obj)
         {
             var thisAs = this as RegisterActionAttribute;
             var objAs = obj as RegisterActionAttribute;
@@ -33,7 +39,8 @@ namespace Opus.Core
             return compare;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.Action.CommandLineSwitch + " (" + this.Action.Description + ")";
         }

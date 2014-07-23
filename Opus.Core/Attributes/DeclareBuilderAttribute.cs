@@ -6,9 +6,13 @@
 namespace Opus.Core
 {
     [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, AllowMultiple=true)]
-    public class DeclareBuilderAttribute : System.Attribute
+    public class DeclareBuilderAttribute :
+        System.Attribute
     {
-        public DeclareBuilderAttribute(string name, System.Type type)
+        public
+        DeclareBuilderAttribute(
+            string name,
+            System.Type type)
         {
             this.Name = name;
             this.Type = type;

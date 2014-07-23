@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public class SourceFilesAttribute : BaseTargetFilteredAttribute
-    {
-    }
+    public class SourceFilesAttribute :
+        BaseTargetFilteredAttribute
+    {}
 }

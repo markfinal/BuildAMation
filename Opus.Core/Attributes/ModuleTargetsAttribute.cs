@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
-    public sealed class ModuleTargetsAttribute : BaseTargetFilteredAttribute
-    {
-    }
+    public sealed class ModuleTargetsAttribute :
+        BaseTargetFilteredAttribute
+    {}
 }

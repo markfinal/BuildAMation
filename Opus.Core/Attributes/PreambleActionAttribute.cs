@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class PreambleActionAttribute : System.Attribute
-    {
-    }
+    public class PreambleActionAttribute :
+        System.Attribute
+    {}
 }

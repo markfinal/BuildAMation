@@ -6,7 +6,7 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class EmptyBuildFunctionAttribute : System.Attribute
-    {
-    }
+    public class EmptyBuildFunctionAttribute :
+        System.Attribute
+    {}
 }

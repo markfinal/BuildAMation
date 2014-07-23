@@ -6,9 +6,12 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public sealed class ModuleToolAssignmentAttribute : System.Attribute
+    public sealed class ModuleToolAssignmentAttribute :
+        System.Attribute
     {
-        public ModuleToolAssignmentAttribute(System.Type toolType)
+        public
+        ModuleToolAssignmentAttribute(
+            System.Type toolType)
         {
             if (null == toolType)
             {

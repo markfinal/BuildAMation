@@ -6,9 +6,12 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
-    public sealed class ModuleGroupAttribute : System.Attribute
+    public sealed class ModuleGroupAttribute :
+        System.Attribute
     {
-        public ModuleGroupAttribute(string groupName)
+        public
+        ModuleGroupAttribute(
+            string groupName)
         {
             this.GroupName = groupName;
         }

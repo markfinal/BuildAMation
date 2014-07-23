@@ -6,9 +6,13 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Interface)]
-    public sealed class LocalAndExportTypesAttribute : System.Attribute
+    public sealed class LocalAndExportTypesAttribute :
+        System.Attribute
     {
-        public LocalAndExportTypesAttribute(System.Type localType, System.Type exportType)
+        public
+        LocalAndExportTypesAttribute(
+            System.Type localType,
+            System.Type exportType)
         {
             this.LocalType = localType;
             this.ExportType = exportType;

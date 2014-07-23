@@ -6,19 +6,25 @@
 namespace Opus.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Interface, AllowMultiple = true)]
-    public class AssignToolsetProviderAttribute : System.Attribute
+    public class AssignToolsetProviderAttribute :
+        System.Attribute
     {
         private delegate string ProviderDelegate(System.Type toolType);
 
         private string toolsetName;
         private ProviderDelegate providerFn;
 
-        public AssignToolsetProviderAttribute(string toolsetName)
+        public
+        AssignToolsetProviderAttribute(
+            string toolsetName)
         {
             this.toolsetName = toolsetName;
         }
 
-        public AssignToolsetProviderAttribute(System.Type providerClass, string methodName)
+        public
+        AssignToolsetProviderAttribute(
+            System.Type providerClass,
+            string methodName)
         {
             var flags = System.Reflection.BindingFlags.Static |
                         System.Reflection.BindingFlags.Public |
@@ -36,7 +42,9 @@ namespace Opus.Core
             this.providerFn = dlg as ProviderDelegate;
         }
 
-        public string ToolsetName(System.Type toolType)
+        public string
+        ToolsetName(
+            System.Type toolType)
         {
             if (null == this.providerFn)
             {
