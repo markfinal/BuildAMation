@@ -5,8 +5,11 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public interface IActionWithArguments : IAction
+    public interface IActionWithArguments :
+        IAction
     {
-        void AssignArguments(string arguments);
+        void
+        AssignArguments(
+            string arguments);
     }
 }

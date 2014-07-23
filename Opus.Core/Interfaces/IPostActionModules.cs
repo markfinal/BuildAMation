@@ -7,6 +7,8 @@ namespace Opus.Core
 {
     public interface IPostActionModules
     {
-        TypeArray GetPostActionModuleTypes(Opus.Core.BaseTarget target);
+        TypeArray
+        GetPostActionModuleTypes(
+            Opus.Core.BaseTarget target);
     }
 }

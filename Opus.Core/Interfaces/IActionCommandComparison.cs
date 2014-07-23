@@ -7,6 +7,9 @@ namespace Opus.Core
 {
     public interface IActionCommandComparison
     {
-        bool Compare(string command1, string command2);
+        bool
+        Compare(
+            string command1,
+            string command2);
     }
 }

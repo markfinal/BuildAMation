@@ -7,10 +7,20 @@ namespace Opus.Core
 {
     public interface IInjectModules
     {
-        //ModuleCollection GetInjectedModules(Target target);
-        System.Type GetInjectedModuleType(BaseTarget baseTarget);
-        string GetInjectedModuleNameSuffix(BaseTarget baseTarget);
-        void ModuleCreationFixup(DependencyNode node);
-        DependencyNode GetInjectedParentNode(DependencyNode node);
+        System.Type
+        GetInjectedModuleType(
+            BaseTarget baseTarget);
+
+        string
+        GetInjectedModuleNameSuffix(
+            BaseTarget baseTarget);
+
+        void
+        ModuleCreationFixup(
+            DependencyNode node);
+
+        DependencyNode
+        GetInjectedParentNode(
+            DependencyNode node);
     }
 }

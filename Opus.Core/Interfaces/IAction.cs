@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public interface IAction : System.ICloneable
+    public interface IAction :
+        System.ICloneable
     {
         string CommandLineSwitch
         {
@@ -17,6 +18,7 @@ namespace Opus.Core
             get;
         }
 
-        bool Execute();
+        bool
+        Execute();
     }
 }

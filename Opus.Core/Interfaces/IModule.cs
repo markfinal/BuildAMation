@@ -5,7 +5,10 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public delegate void UpdateOptionCollectionDelegate(IModule module, Target target);
+    public delegate void
+    UpdateOptionCollectionDelegate(
+        IModule module,
+        Target target);
 
     public interface IModule
     {

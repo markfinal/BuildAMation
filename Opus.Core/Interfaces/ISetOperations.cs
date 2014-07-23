@@ -7,7 +7,12 @@ namespace Opus.Core
 {
     public interface ISetOperations<T>
     {
-        T Complement(T other);
-        T Intersect(T other);
+        T
+        Complement(
+            T other);
+
+        T
+        Intersect(
+            T other);
     }
 }

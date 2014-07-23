@@ -7,6 +7,10 @@ namespace Opus.Core
 {
     public interface IFieldAttributeProcessor
     {
-        void Execute(object sender, IModule module, Target target);
+        void
+        Execute(
+            object sender,
+            IModule module,
+            Target target);
     }
 }

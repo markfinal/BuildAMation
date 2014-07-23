@@ -7,6 +7,8 @@ namespace Opus.Core
 {
     public interface IBuilderPostExecute
     {
-        void PostExecute(Opus.Core.DependencyNodeCollection executedNodes);
+        void
+        PostExecute(
+            Opus.Core.DependencyNodeCollection executedNodes);
     }
 }

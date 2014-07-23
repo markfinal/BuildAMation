@@ -7,6 +7,8 @@ namespace Opus.Core
 {
     public interface IIdentifyExternalDependencies
     {
-        TypeArray IdentifyExternalDependencies(Core.Target target);
+        TypeArray
+        IdentifyExternalDependencies(
+            Core.Target target);
     }
 }

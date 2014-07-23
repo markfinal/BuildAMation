@@ -5,10 +5,13 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public interface IModuleCollection : INestedDependents
+    public interface IModuleCollection :
+        INestedDependents
     {
-        void RegisterUpdateOptions(UpdateOptionCollectionDelegateArray delegateArray,
-                                   Location root,
-                                   string pattern);
+        void
+        RegisterUpdateOptions(
+            UpdateOptionCollectionDelegateArray delegateArray,
+            Location root,
+            string pattern);
     }
 }

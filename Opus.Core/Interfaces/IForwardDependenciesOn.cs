@@ -6,6 +6,5 @@
 namespace Opus.Core
 {
     public interface IForwardDependenciesOn
-    {
-    }
+    {}
 }

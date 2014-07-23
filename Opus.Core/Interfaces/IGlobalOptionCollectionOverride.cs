@@ -7,6 +7,9 @@ namespace Opus.Core
 {
     public interface IGlobalOptionCollectionOverride
     {
-        void OverrideOptions(BaseOptionCollection optionCollection, Target target);
+        void
+        OverrideOptions(
+            BaseOptionCollection optionCollection,
+            Target target);
     }
 }

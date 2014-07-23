@@ -7,6 +7,7 @@ namespace Opus.Core
 {
     public interface IBuilderPreExecute
     {
-        void PreExecute();
+        void
+        PreExecute();
     }
 }

@@ -7,6 +7,8 @@ namespace Opus.Core
 {
     public interface IToolEnvironmentVariables
     {
-        System.Collections.Generic.Dictionary<string, StringArray> Variables(Opus.Core.BaseTarget baseTarget);
+        System.Collections.Generic.Dictionary<string, StringArray>
+        Variables(
+            Opus.Core.BaseTarget baseTarget);
     }
 }
