@@ -5,7 +5,9 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public abstract class BaseOptionCollection : System.Collections.IEnumerable, System.ICloneable
+    public abstract class BaseOptionCollection :
+        System.Collections.IEnumerable,
+        System.ICloneable
     {
         protected System.Collections.Generic.Dictionary<string, Option> table = new System.Collections.Generic.Dictionary<string, Option>();
 
@@ -15,7 +17,9 @@ namespace Opus.Core
             set;
         }
 
-        protected BaseOptionCollection(DependencyNode owningNode)
+        protected
+        BaseOptionCollection(
+            DependencyNode owningNode)
         {
             this.OwningNode = owningNode;
             if (null != owningNode)
@@ -24,13 +28,16 @@ namespace Opus.Core
             }
         }
 
-        public void SetupNewOptions()
+        public void
+        SetupNewOptions()
         {
             this.SetDefaultOptionValues(this.OwningNode);
             this.SetDelegates(this.OwningNode);
         }
 
-        public void CopyExistingOptions(BaseOptionCollection other)
+        public void
+        CopyExistingOptions(
+            BaseOptionCollection other)
         {
             // TODO: can I use var here? check in Mono
             foreach (System.Collections.Generic.KeyValuePair<string, Option> option in other.table)
@@ -51,10 +58,17 @@ namespace Opus.Core
             }
         }
 
-        protected abstract void SetDefaultOptionValues(DependencyNode owningNode);
-        protected abstract void SetDelegates(DependencyNode owningNode);
+        protected abstract void
+        SetDefaultOptionValues(
+            DependencyNode owningNode);
 
-        protected virtual void SetNodeSpecificData(DependencyNode node)
+        protected abstract void
+        SetDelegates(
+            DependencyNode owningNode);
+
+        protected virtual void
+        SetNodeSpecificData(
+            DependencyNode node)
         {
             // do nothing by default
         }
@@ -84,7 +98,8 @@ namespace Opus.Core
             }
         }
 
-        public virtual object Clone()
+        public virtual object
+        Clone()
         {
             var optionsType = this.GetType();
             var clonedOptions = OptionCollectionFactory.CreateOptionCollection(optionsType);
@@ -92,7 +107,10 @@ namespace Opus.Core
             return clonedOptions;
         }
 
-        private void InvokeSetHandler(System.Reflection.MethodInfo setHandler, Option option)
+        private void
+        InvokeSetHandler(
+            System.Reflection.MethodInfo setHandler,
+            Option option)
         {
             if (null != setHandler)
             {
@@ -105,7 +123,10 @@ namespace Opus.Core
             }
         }
 
-        public void ProcessNamedSetHandler(string setHandlerName, Option option)
+        public void
+        ProcessNamedSetHandler(
+            string setHandlerName,
+            Option option)
         {
             var type = this.GetType();
             var bindingFlags = System.Reflection.BindingFlags.Static |           // don't need an instance
@@ -114,17 +135,22 @@ namespace Opus.Core
             InvokeSetHandler(type.GetMethod(setHandlerName, bindingFlags), option);
         }
 
-        public virtual void FinalizeOptions(Opus.Core.DependencyNode node)
+        public virtual void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             // do nothing
         }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return this.table.GetEnumerator();
         }
 
-        public bool Contains(string key)
+        public bool
+        Contains(
+            string key)
         {
             return this.table.ContainsKey(key);
         }
@@ -137,12 +163,17 @@ namespace Opus.Core
             }
         }
 
-        protected Type GetValueTypeOption<Type>(string optionName) where Type : struct
+        protected Type
+        GetValueTypeOption<Type>(
+            string optionName) where Type : struct
         {
             return (this[optionName] as Core.ValueTypeOption<Type>).Value;
         }
 
-        protected Type GetValueTypeOption<Type>(string optionName, BaseOptionCollection superSetOptionCollection) where Type : struct
+        protected Type
+        GetValueTypeOption<Type>(
+            string optionName,
+            BaseOptionCollection superSetOptionCollection) where Type : struct
         {
             if (this.Contains(optionName))
             {
@@ -158,7 +189,10 @@ namespace Opus.Core
             }
         }
 
-        protected void SetValueTypeOption<Type>(string optionName, Type value) where Type : struct
+        protected void
+        SetValueTypeOption<Type>(
+            string optionName,
+            Type value) where Type : struct
         {
             if (this.Contains(optionName))
             {
@@ -170,12 +204,17 @@ namespace Opus.Core
             }
         }
 
-        protected Type GetReferenceTypeOption<Type>(string optionName) where Type : class
+        protected Type
+        GetReferenceTypeOption<Type>(
+            string optionName) where Type : class
         {
             return (this[optionName] as Core.ReferenceTypeOption<Type>).Value;
         }
 
-        protected Type GetReferenceTypeOption<Type>(string optionName, BaseOptionCollection superSetOptionCollection) where Type : class
+        protected Type
+        GetReferenceTypeOption<Type>(
+            string optionName,
+            BaseOptionCollection superSetOptionCollection) where Type : class
         {
             if (this.Contains(optionName))
             {
@@ -191,7 +230,10 @@ namespace Opus.Core
             }
         }
 
-        protected void SetReferenceTypeOption<Type>(string optionName, Type value) where Type : class
+        protected void
+        SetReferenceTypeOption<Type>(
+            string optionName,
+            Type value) where Type : class
         {
             if (this.Contains(optionName))
             {
@@ -203,7 +245,8 @@ namespace Opus.Core
             }
         }
 
-        public override bool Equals(object obj)
+        public override bool
+        Equals(object obj)
         {
             var other = obj as BaseOptionCollection;
             foreach (var optionKey in this.table.Keys)
@@ -229,12 +272,15 @@ namespace Opus.Core
             return true;
         }
 
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public BaseOptionCollection Complement(Opus.Core.BaseOptionCollection other)
+        public BaseOptionCollection
+        Complement(
+            Opus.Core.BaseOptionCollection other)
         {
             // TODO: essentially need to check whether the two option collections share a base class other than BaseOptionCollection
             // can this be done by going backward up the class hierarchy from BaseOptionCollection, since it's likely that the next
@@ -282,7 +328,9 @@ namespace Opus.Core
             return complement;
         }
 
-        public BaseOptionCollection Intersect(Opus.Core.BaseOptionCollection other)
+        public BaseOptionCollection
+        Intersect(
+            Opus.Core.BaseOptionCollection other)
         {
             // TODO: essentially need to check whether the two option collections share a base class other than BaseOptionCollection
             // can this be done by going backward up the class hierarchy from BaseOptionCollection, since it's likely that the next

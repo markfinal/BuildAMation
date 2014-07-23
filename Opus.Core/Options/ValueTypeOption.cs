@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class ValueTypeOption<T> : Option where T : struct
+    public class ValueTypeOption<T> :
+        Option where T : struct
     {
-        public ValueTypeOption(T value)
+        public
+        ValueTypeOption(
+            T value)
         {
             this.Value = value;
         }
@@ -18,7 +21,8 @@ namespace Opus.Core
             set;
         }
 
-        public override object Clone()
+        public override object
+        Clone()
         {
             var clonedOption = new ValueTypeOption<T>(this.Value);
 
@@ -28,12 +32,15 @@ namespace Opus.Core
             return clonedOption;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return System.String.Format("{0}", this.Value);
         }
 
-        public override bool Equals(object obj)
+        public override bool
+        Equals(
+            object obj)
         {
             var thisValue = this.Value;
             var otherValue = ((ValueTypeOption<T>)(obj)).Value;
@@ -41,18 +48,23 @@ namespace Opus.Core
             return equals;
         }
 
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public override Option Complement(Option other)
+        public override Option
+        Complement(
+            Option other)
         {
             // two value types will be singular value so if they are not equal, their complement is the first value
             return this.Clone() as Option;
         }
 
-        public override Option Intersect(Option other)
+        public override Option
+        Intersect(
+            Option other)
         {
             // two value types will be singular value so if they are not equal, they will not intersect
             return null;

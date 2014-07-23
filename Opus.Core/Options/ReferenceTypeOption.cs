@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class ReferenceTypeOption<T> : Option where T : class
+    public class ReferenceTypeOption<T> :
+        Option where T : class
     {
-        public ReferenceTypeOption(T value)
+        public
+        ReferenceTypeOption(
+            T value)
         {
             this.Value = value;
         }
@@ -18,7 +21,8 @@ namespace Opus.Core
             set;
         }
 
-        public override object Clone()
+        public override object
+        Clone()
         {
             if (null == this.Value)
             {
@@ -62,7 +66,9 @@ namespace Opus.Core
             return clonedOption;
         }
 
-        public override bool Equals(object obj)
+        public override bool
+        Equals(
+            object obj)
         {
             var thisValue = this.Value;
             var otherValue = ((ReferenceTypeOption<T>)(obj)).Value;
@@ -74,12 +80,15 @@ namespace Opus.Core
             return equals;
         }
 
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public override Option Complement(Option other)
+        public override Option
+        Complement(
+            Option other)
         {
             var thisValue = this.Value;
             var otherValue = (other as ReferenceTypeOption<T>).Value;
@@ -113,7 +122,9 @@ namespace Opus.Core
             return complementOption;
         }
 
-        public override Option Intersect(Option other)
+        public override Option
+        Intersect(
+            Option other)
         {
             var thisValue = this.Value;
             var otherValue = (other as ReferenceTypeOption<T>).Value;

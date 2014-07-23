@@ -5,11 +5,13 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class UpdateOptionCollectionDelegateArray : Array<UpdateOptionCollectionDelegate>
+    public class UpdateOptionCollectionDelegateArray :
+        Array<UpdateOptionCollectionDelegate>
     {
-        public UpdateOptionCollectionDelegateArray(params UpdateOptionCollectionDelegate[] delegates)
-            : base(delegates)
-        {
-        }
+        public
+        UpdateOptionCollectionDelegateArray(
+            params UpdateOptionCollectionDelegate[] delegates) :
+        base(delegates)
+        {}
     }
 }

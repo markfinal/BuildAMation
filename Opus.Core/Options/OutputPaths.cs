@@ -5,16 +5,20 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class OutputPaths : System.Collections.IEnumerable
+    public sealed class OutputPaths :
+        System.Collections.IEnumerable
     {
         private System.Collections.Generic.SortedDictionary<System.Enum, string> fileDictionary;
 
-        public OutputPaths()
+        public
+        OutputPaths()
         {
             this.fileDictionary = new System.Collections.Generic.SortedDictionary<System.Enum, string>();
         }
 
-        public OutputPaths(OutputPaths source)
+        public
+        OutputPaths(
+            OutputPaths source)
         {
             this.fileDictionary = new System.Collections.Generic.SortedDictionary<System.Enum, string>(source.fileDictionary);
         }
@@ -46,18 +50,23 @@ namespace Opus.Core
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.fileDictionary.GetEnumerator();
         }
 
-        public bool Has(System.Enum key)
+        public bool
+        Has(
+            System.Enum key)
         {
             bool containsKey = this.fileDictionary.ContainsKey(key);
             return containsKey;
         }
 
-        public void Remove(System.Enum key)
+        public void
+        Remove(
+            System.Enum key)
         {
             this.fileDictionary.Remove(key);
         }

@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public abstract class Option : System.ICloneable
+    public abstract class Option :
+        System.ICloneable
     {
         public object PrivateData
         {
@@ -13,9 +14,15 @@ namespace Opus.Core
             set;
         }
 
-        public abstract object Clone();
+        public abstract object
+        Clone();
 
-        public abstract Option Complement(Option other);
-        public abstract Option Intersect(Option other);
+        public abstract Option
+        Complement(
+            Option other);
+
+        public abstract Option
+        Intersect(
+            Option other);
     }
 }

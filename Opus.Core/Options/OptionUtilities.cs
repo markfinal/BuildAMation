@@ -7,7 +7,12 @@ namespace Opus.Core
 {
     public static class OptionUtilities
     {
-        public static void AttachModuleOptionUpdatesFromType<AttributeType>(IModule module, System.Type type, Target target, int depth)
+        public static void
+        AttachModuleOptionUpdatesFromType<AttributeType>(
+            IModule module,
+            System.Type type,
+            Target target,
+            int depth)
         {
             var bindingFlags = System.Reflection.BindingFlags.NonPublic |
                                System.Reflection.BindingFlags.Public |
@@ -52,7 +57,14 @@ namespace Opus.Core
             }
         }
 
-        private static void RecursivelyAttachExportUpdates<ExportAttributeType>(DependencyNode node, DependencyNode owningNode, BaseModule module, int newDepth, DependencyNodeCollection collection, string collectionType)
+        private static void
+        RecursivelyAttachExportUpdates<ExportAttributeType>(
+            DependencyNode node,
+            DependencyNode owningNode,
+            BaseModule module,
+            int newDepth,
+            DependencyNodeCollection collection,
+            string collectionType)
         {
             if (null == collection)
             {
@@ -87,7 +99,11 @@ namespace Opus.Core
         }
 
         // this version only applies the exported attribute type
-        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType>(BaseModule module, DependencyNode node, int depth)
+        private static void
+        AttachNodeOptionUpdatesToModule<ExportAttributeType>(
+            BaseModule module,
+            DependencyNode node,
+            int depth)
         {
             var nodeModuleType = node.Module.GetType();
             var target = node.Target;
@@ -109,7 +125,11 @@ namespace Opus.Core
         }
 
         // this applies both local and export, but not local to the external dependents
-        private static void AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(BaseModule module, DependencyNode node, int depth)
+        private static void
+        AttachNodeOptionUpdatesToModule<ExportAttributeType, LocalAttributeType>(
+            BaseModule module,
+            DependencyNode node,
+            int depth)
         {
             var nodeModuleType = node.Module.GetType();
             var target = node.Target;
@@ -144,7 +164,10 @@ namespace Opus.Core
             RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.RequiredDependents, "Required");
         }
 
-        private static void ProcessFieldAttributes(IModule module, Target target)
+        private static void
+        ProcessFieldAttributes(
+            IModule module,
+            Target target)
         {
             var bindingFlags = System.Reflection.BindingFlags.NonPublic |
                                System.Reflection.BindingFlags.Public |
@@ -164,7 +187,9 @@ namespace Opus.Core
             }
         }
 
-        public static void CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(DependencyNode node) where OptionCollectionType : BaseOptionCollection
+        public static void
+        CreateOptionCollection<OptionCollectionType, ExportAttributeType, LocalAttributeType>(
+            DependencyNode node) where OptionCollectionType : BaseOptionCollection
         {
             var module = node.Module;
             var target = node.Target;
