@@ -5,16 +5,20 @@
 // <author>Mark Final</author>
 namespace OpusOptionCodeGenerator
 {
-    class Exception : System.Exception
+    class Exception :
+        System.Exception
     {
-        public Exception(string message)
-            : base(message)
-        {
-        }
+        public
+        Exception(
+            string message) :
+        base(message)
+        {}
 
-        public Exception(string message, params object[] args)
-            : base(System.String.Format (message, args))
-        {
-        }
+        public
+        Exception(
+            string message,
+            params object[] args) :
+        base(System.String.Format(message, args))
+        {}
     }
 }

@@ -14,9 +14,10 @@ namespace OpusOptionCodeGenerator
             GenerateDelegates  = (1<<1)
         }
 
-        static public System.Collections.Specialized.StringCollection excludedFlagsFromHeaders = new System.Collections.Specialized.StringCollection();
+        public static System.Collections.Specialized.StringCollection excludedFlagsFromHeaders = new System.Collections.Specialized.StringCollection();
 
-        static Parameters()
+        static
+        Parameters()
         {
             excludedFlagsFromHeaders.Add("-f");
             excludedFlagsFromHeaders.Add("-uh");

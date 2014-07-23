@@ -7,12 +7,16 @@ namespace OpusOptionCodeGenerator
 {
     class Program
     {
-        static void Log(string format, params string[] args)
+        private static void
+        Log(
+            string format,
+            params string[] args)
         {
             System.Console.WriteLine(format, args);
         }
 
-        static void PrintHelp()
+        private static void
+        PrintHelp()
         {
             Log("OpusOptionCodeGenerator [options]");
             Log("Options:");
@@ -33,7 +37,9 @@ namespace OpusOptionCodeGenerator
             Log("-o=<output properties filename> [use -p]");
         }
 
-        static Parameters ProcessArgs(string[] args)
+        private static Parameters
+        ProcessArgs(
+            string[] args)
         {
             if (0 == args.Length)
             {
@@ -120,7 +126,9 @@ namespace OpusOptionCodeGenerator
             return parameters;
         }
 
-        static void Validate(Parameters parameters)
+        private static void
+        Validate(
+            Parameters parameters)
         {
             if (null == parameters.inputPathNames)
             {
@@ -141,7 +149,12 @@ namespace OpusOptionCodeGenerator
             parameters.outputDelegatesPathName = parameters.outputClassName + "Delegates.cs";
         }
 
-        static string ReadLine(System.IO.TextReader reader, bool skipComments, out int prefixSpaces, out bool stateOnly)
+        private static string
+        ReadLine(
+            System.IO.TextReader reader,
+            bool skipComments,
+            out int prefixSpaces,
+            out bool stateOnly)
         {
             int numPrefixSpaces = 0;
             bool stateOnlyProxy = false;
@@ -185,40 +198,50 @@ namespace OpusOptionCodeGenerator
             return line;
         }
 
-        static string ReadLine(System.IO.TextReader reader)
+        private static string
+        ReadLine(
+            System.IO.TextReader reader)
         {
             int prefixSpaces = 0;
             bool stateOnly = false;
             return ReadLine(reader, false, out prefixSpaces, out stateOnly);
         }
 
-        static string ReadLine(System.IO.TextReader reader, bool skipComments)
+        private static string
+        ReadLine(
+            System.IO.TextReader reader,
+            bool skipComments)
         {
             int prefixSpaces = 0;
             bool stateOnly = false;
             return ReadLine(reader, skipComments, out prefixSpaces, out stateOnly);
         }
 
-        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces)
+        private static string
+        ReadLine(
+            System.IO.TextReader reader,
+            out int prefixSpaces)
         {
             bool stateOnly = false;
             return ReadLine(reader, false, out prefixSpaces, out stateOnly);
         }
 
-        static string ReadLine(System.IO.TextReader reader, bool skipComments, out bool stateOnly)
+        private static string
+        ReadLine(
+            System.IO.TextReader reader,
+            bool skipComments,
+            out bool stateOnly)
         {
             int prefixSpaces = 0;
             return ReadLine(reader, skipComments, out prefixSpaces, out stateOnly);
         }
 
-        /* NOT USED
-        static string ReadLine(System.IO.TextReader reader, out int prefixSpaces, out bool stateOnly)
-        {
-            return ReadLine(reader, false, out prefixSpaces, out stateOnly);
-        }
-        */
-
-        static void Write(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
+        private static void
+        Write(
+            System.IO.TextWriter writer,
+            int tabCount,
+            string format,
+            params string[] args)
         {
             for (int i = 0; i < tabCount; ++i)
             {
@@ -234,25 +257,42 @@ namespace OpusOptionCodeGenerator
             }
         }
 
-        static void Write(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
+        private static void
+        Write(
+            System.Text.StringBuilder builder,
+            int tabCount,
+            string format,
+            params string[] args)
         {
             builder.Append(new string('\t', tabCount));
             builder.AppendFormat(format, args);
         }
 
-        static void WriteLine(System.IO.TextWriter writer, int tabCount, string format, params string[] args)
+        private static void
+        WriteLine(
+            System.IO.TextWriter writer,
+            int tabCount,
+            string format,
+            params string[] args)
         {
             Write(writer, tabCount, format, args);
             writer.Write(writer.NewLine);
         }
 
-        static void WriteLine(System.Text.StringBuilder builder, int tabCount, string format, params string[] args)
+        private static void
+        WriteLine(
+            System.Text.StringBuilder builder,
+            int tabCount,
+            string format,
+            params string[] args)
         {
             Write(builder, tabCount, format, args);
             builder.Append("\n");
         }
 
-        static DelegateSignature ReadDelegate(string filename)
+        private static DelegateSignature
+        ReadDelegate(
+            string filename)
         {
             if (!System.IO.File.Exists(filename))
             {
@@ -347,7 +387,9 @@ namespace OpusOptionCodeGenerator
             return signature;
         }
 
-        static void Execute(Parameters parameters)
+        private static void
+        Execute(
+            Parameters parameters)
         {
             var propertyMap = new PropertySignatureMap();
 
@@ -527,7 +569,10 @@ namespace OpusOptionCodeGenerator
             }
         }
 
-        private static void WritePropertiesFile(Parameters parameters, PropertySignatureMap propertyMap)
+        private static void
+        WritePropertiesFile(
+            Parameters parameters,
+            PropertySignatureMap propertyMap)
         {
             // write out C# file containing the properties
             if (parameters.toStdOut)
@@ -599,7 +644,10 @@ namespace OpusOptionCodeGenerator
 
         class IndentedString
         {
-            public IndentedString(int numSpaces, string line)
+            public
+            IndentedString(
+                int numSpaces,
+                string line)
             {
                 this.NumSpaces = numSpaces;
                 this.Line = line;
@@ -626,7 +674,9 @@ namespace OpusOptionCodeGenerator
             public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>> functions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>>();
         }
 
-        private static DelegateFileLayout ReadAndParseDelegatesFile(Parameters parameters)
+        private static DelegateFileLayout
+        ReadAndParseDelegatesFile(
+            Parameters parameters)
         {
             if (!System.IO.File.Exists(parameters.outputDelegatesPathName))
             {
@@ -754,7 +804,11 @@ namespace OpusOptionCodeGenerator
             return layout;
         }
 
-        private static void WriteDelegatesFile(Parameters parameters, PropertySignatureMap propertyMap, System.Collections.Generic.List<DelegateSignature> delegateSignatures)
+        private static void
+        WriteDelegatesFile(
+            Parameters parameters,
+            PropertySignatureMap propertyMap,
+            System.Collections.Generic.List<DelegateSignature> delegateSignatures)
         {
             // write out C# file containing the delegates
             if (parameters.toStdOut)
@@ -981,7 +1035,9 @@ namespace OpusOptionCodeGenerator
             }
         }
 
-        static int Main(string[] args)
+        static int
+        Main(
+            string[] args)
         {
             try
             {

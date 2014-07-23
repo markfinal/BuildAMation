@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace OpusOptionCodeGenerator
 {
-    class PropertySignatureMap : System.Collections.Generic.Dictionary<string, PropertySignatureList>
+    class PropertySignatureMap :
+        System.Collections.Generic.Dictionary<string, PropertySignatureList>
     {
     }
 }
