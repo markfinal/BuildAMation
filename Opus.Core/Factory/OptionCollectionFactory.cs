@@ -9,7 +9,9 @@ namespace Opus.Core
     {
         private readonly static System.Type optionCollectionType = typeof(BaseOptionCollection);
 
-        public static BaseOptionCollection CreateOptionCollection(System.Type requiredOptionCollectionType)
+        public static BaseOptionCollection
+        CreateOptionCollection(
+            System.Type requiredOptionCollectionType)
         {
             if (!requiredOptionCollectionType.IsSubclassOf(optionCollectionType))
             {
@@ -25,7 +27,9 @@ namespace Opus.Core
             return optionCollection;
         }
 
-        public static DerivedType CreateOptionCollection<DerivedType>(DependencyNode owningNode) where DerivedType : BaseOptionCollection
+        public static DerivedType
+        CreateOptionCollection<DerivedType>(
+            DependencyNode owningNode) where DerivedType : BaseOptionCollection
         {
             var requiredOptionCollectionType = typeof(DerivedType);
             if (!requiredOptionCollectionType.IsSubclassOf(optionCollectionType))

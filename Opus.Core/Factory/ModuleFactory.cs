@@ -7,7 +7,10 @@ namespace Opus.Core
 {
     public static class ModuleFactory
     {
-        public static BaseModule CreateModule(System.Type moduleType, Target target)
+        public static BaseModule
+        CreateModule(
+            System.Type moduleType,
+            Target target)
         {
             TypeUtilities.CheckTypeDerivesFrom(moduleType, typeof(BaseModule));
             TypeUtilities.CheckTypeIsNotAbstract(moduleType);

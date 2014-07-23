@@ -9,7 +9,9 @@ namespace Opus.Core
     {
         private static System.Collections.Generic.Dictionary<System.Type, IToolset> map = new System.Collections.Generic.Dictionary<System.Type, IToolset>();
 
-        public static IToolset GetInstance(System.Type type)
+        public static IToolset
+        GetInstance(
+            System.Type type)
         {
             if (map.ContainsKey(type))
             {

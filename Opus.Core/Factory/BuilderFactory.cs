@@ -9,7 +9,9 @@ namespace Opus.Core
     {
         private static System.Collections.Generic.Dictionary<System.Type, IBuilder> builders = new System.Collections.Generic.Dictionary<System.Type, IBuilder>();
 
-        public static IBuilder CreateBuilder(System.Type builderType)
+        public static IBuilder
+        CreateBuilder(
+            System.Type builderType)
         {
             if (builders.ContainsKey(builderType))
             {
