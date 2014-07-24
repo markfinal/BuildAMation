@@ -16,7 +16,6 @@ namespace Opus.Core
         IdentifyBuildableModules,
         PopulateGraph,
         CreateOptionCollections,
-        HandleInjectionDependents,
         GraphExecution,
         TimedTotal
     }

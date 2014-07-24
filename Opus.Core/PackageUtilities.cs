@@ -640,6 +640,9 @@ namespace Opus.Core
             //            System.Reflection.Assembly assembly = domain.Load(assemblyName);
             //            System.AppDomain.Unload(domain);
 
+            var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
+            findBuildableModulesProfile.StartProfile();
+
             var topLevelTypes = GetTopLevelModuleTypes();
 
             BuilderUtilities.CreateBuilderInstance();
@@ -671,6 +674,8 @@ namespace Opus.Core
                     }
                 }
             }
+
+            findBuildableModulesProfile.StopProfile();
 
             dependencyGraph.PopulateGraph();
 
@@ -846,9 +851,6 @@ namespace Opus.Core
         private static TypeArray
         GetTopLevelModuleTypes()
         {
-            var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
-            findBuildableModulesProfile.StartProfile();
-
             // TODO: not sure I like this; find the top level namespace another way
             // TODO: maybe add a Resource into the assembly to indicate the top level types?
             var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
@@ -955,8 +957,6 @@ namespace Opus.Core
 
                 topLevelTypes = filteredTopLevelTypes;
             }
-
-            findBuildableModulesProfile.StopProfile();
 
             return topLevelTypes;
         }
