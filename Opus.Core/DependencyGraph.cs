@@ -127,7 +127,8 @@ namespace Opus.Core
                 this.rankList.Insert(this.rankList.Count, newRank);
             }
 
-            // TODO: why can these two statements not be combined? Is there another case where they must be separate?
+            // TODO: these statements could probably be combined, if NodeCollection.set had side-effects
+            // but currently it is an automatic property
             this.rankList[rank].Add(moduleNode);
             moduleNode.NodeCollection = this.rankList[rank];
 
