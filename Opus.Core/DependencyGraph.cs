@@ -209,23 +209,13 @@ namespace Opus.Core
                 return;
             }
 
-            //Log.DebugMessage("\nTop level modules only");
-            //this.Dump();
-
             {
                 var profile = new TimeProfile(ETimingProfiles.PopulateGraph);
                 profile.StartProfile();
 
-                // TODO: while deployment modules do not satisfy normal dependency checks
-                // this will not place the top level modules into a mini-graph properly
                 this.SortTopLevelModules();
 
                 var nodesWithForwardedDependencies = new DependencyNodeCollection();
-                // TODO: this assumes that all dependencies are added up front
-                // however, some nodes are only created and added as requirements of a child node later,
-                // and these NEED to have their own dependencies to be linked up
-                // TODO: almost need to detect when a new dependency is introduced in the child adding stage
-                // and resolve it's dependencies
                 this.AddDependents(nodesWithForwardedDependencies);
                 this.PopulateChildNodes(nodesWithForwardedDependencies);
                 this.ForwardOnDependencies(nodesWithForwardedDependencies);
@@ -234,9 +224,6 @@ namespace Opus.Core
                 profile.StopProfile();
                 State.TimingProfiles[(int)ETimingProfiles.PopulateGraph] = profile;
             }
-
-            //Log.DebugMessage("\nPost normal dependencies");
-            //this.Dump();
 
             {
                 var profile = new TimeProfile(ETimingProfiles.CreateOptionCollections);
