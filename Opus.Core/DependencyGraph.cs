@@ -609,12 +609,6 @@ namespace Opus.Core
             int currentRank = 0;
             while (currentRank < this.RankCount)
             {
-                // TODO: at this stage, I kind of expect there might be empty ranks on purpose, as dependencies
-                // move around... at the end of this initial stage, the empty ranks can then be squashed
-                // this is another reason to not have ranks in the nodes themselves as it would require a double update
-                // to squash collections
-                //this.CheckForEmptyRanks();
-
                 var nodeRankOffsets = new System.Collections.Generic.Dictionary<DependencyNode, int>();
                 var rankNodeCollection = this.rankList[currentRank];
                 foreach (var node in rankNodeCollection)
