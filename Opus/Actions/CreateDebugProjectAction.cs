@@ -37,7 +37,8 @@ namespace Opus
         public bool
         Execute()
         {
-            // TODO: should be false but other work has to happen first
+            // TODO: would be nice not to have to resolve down to a single version in the debug project
+            // but there are namespace clashes if you do
             Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
 
             if (0 == Core.State.PackageInfo.Count)
