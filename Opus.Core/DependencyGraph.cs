@@ -741,7 +741,7 @@ namespace Opus.Core
         ValidateDependentRanks(
             DependencyNodeCollection nodeCollection)
         {
-            // TODO: do we want to do this in all types of build?
+            // This is quite expensive, but always better to find out these problems sooner rather than later
             foreach (var node in nodeCollection)
             {
                 var nodeRank = node.NodeCollection.Rank;
