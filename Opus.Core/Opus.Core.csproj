@@ -112,7 +112,7 @@
     <Compile Include="Interfaces\IToolForwardedEnvironmentVariables.cs" />
     <Compile Include="Interfaces\IToolset.cs" />
     <Compile Include="Interfaces\IToolSupportsResponseFile.cs" />
-    <Compile Include="Locations.cs" />
+    <Compile Include="Locations\Locations.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ModuleCollection.cs" />
     <Compile Include="ModuleUtilities.cs" />
