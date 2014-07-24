@@ -112,7 +112,15 @@
     <Compile Include="Interfaces\IToolForwardedEnvironmentVariables.cs" />
     <Compile Include="Interfaces\IToolset.cs" />
     <Compile Include="Interfaces\IToolSupportsResponseFile.cs" />
-    <Compile Include="Locations\Locations.cs" />
+    <Compile Include="Locations\DirectoryLocation.cs" />
+    <Compile Include="Locations\FileLocation.cs" />
+    <Compile Include="Locations\Location.cs" />
+    <Compile Include="Locations\LocationArray.cs" />
+    <Compile Include="Locations\LocationComparer.cs" />
+    <Compile Include="Locations\LocationKey.cs" />
+    <Compile Include="Locations\LocationMap.cs" />
+    <Compile Include="Locations\ScaffoldLocation.cs" />
+    <Compile Include="Locations\SymlinkLocation.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ModuleCollection.cs" />
     <Compile Include="ModuleUtilities.cs" />
