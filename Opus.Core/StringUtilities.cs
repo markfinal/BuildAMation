@@ -8,7 +8,9 @@ namespace Opus.Core
     public static class StringUtilities
     {
         // Pascal case
-        public static string CapitalizeFirstLetter(string word)
+        public static string
+        CapitalizeFirstLetter(
+            string word)
         {
             if (System.String.IsNullOrEmpty(word))
             {

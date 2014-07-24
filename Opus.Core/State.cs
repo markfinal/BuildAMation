@@ -10,13 +10,14 @@ namespace Opus.Core
         public static readonly LocationKey BuildRootLocationKey = new LocationKey("BuildRoot", ScaffoldLocation.ETypeHint.Directory);
         public static readonly LocationKey ModuleBuildDirLocationKey = new LocationKey("ModuleBuildDirectory", ScaffoldLocation.ETypeHint.Directory);
 
-        public class Category : System.Collections.Generic.Dictionary<string, object>
-        {
-        }
+        public class Category :
+            System.Collections.Generic.Dictionary<string, object>
+        {}
 
         private static System.Collections.Generic.Dictionary<string, Category> s = new System.Collections.Generic.Dictionary<string, Category>();
 
-        static State()
+        static
+        State()
         {
             ReadOnly = false;
 
@@ -104,7 +105,8 @@ namespace Opus.Core
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
-        public static void Print()
+        public static void
+        Print()
         {
             foreach (var category in s)
             {
@@ -122,7 +124,9 @@ namespace Opus.Core
             set;
         }
 
-        public static void AddCategory(string category)
+        public static void
+        AddCategory(
+            string category)
         {
             if (ReadOnly)
             {
@@ -131,7 +135,9 @@ namespace Opus.Core
             s.Add(category, new Category());
         }
 
-        public static bool HasCategory(string category)
+        public static bool
+        HasCategory(
+            string category)
         {
             var hasCategory = s.ContainsKey(category);
             return hasCategory;
@@ -139,7 +145,11 @@ namespace Opus.Core
 
         // TODO: is this the same as set?
         // Not quite. This will throw an exception if the entry already exists
-        public static void Add<Type>(string category, string key, Type value)
+        public static void
+        Add<Type>(
+            string category,
+            string key,
+            Type value)
         {
             if (ReadOnly)
             {
@@ -148,7 +158,10 @@ namespace Opus.Core
             s[category].Add(key, value);
         }
 
-        public static bool Has(string category, string key)
+        public static bool
+        Has(
+            string category,
+            string key)
         {
             if (!HasCategory(category))
             {
@@ -164,7 +177,10 @@ namespace Opus.Core
         }
 
         // TODO: how can I cast this correctly?
-        public static object Get(string category, string key)
+        public static object
+        Get(
+            string category,
+            string key)
         {
             object value = null;
             try
@@ -178,7 +194,11 @@ namespace Opus.Core
             return value;
         }
 
-        public static T Get<T>(string category, string key, T defaultValue) where T:struct
+        public static T
+        Get<T>(
+            string category,
+            string key,
+            T defaultValue) where T:struct
         {
             object value = null;
             try
@@ -192,7 +212,11 @@ namespace Opus.Core
             return (T)value;
         }
 
-        public static void Set(string category, string key, object value)
+        public static void
+        Set(
+            string category,
+            string key,
+            object value)
         {
             if (ReadOnly)
             {

@@ -34,7 +34,9 @@ namespace Opus.Core
             private set;
         }
 
-        public BuildManager(DependencyGraph graph)
+        public
+        BuildManager(
+            DependencyGraph graph)
         {
             this.graph = graph;
 
@@ -77,7 +79,8 @@ namespace Opus.Core
             this.AdditionalThreadCompletionEvents = new System.Collections.Generic.List<System.Threading.ManualResetEvent>();
         }
 
-        public void Cancel()
+        public void
+        Cancel()
         {
             this.cancelled = true;
         }
@@ -88,7 +91,8 @@ namespace Opus.Core
             set;
         }
 
-        private BuildAgent AvailableAgent()
+        private BuildAgent
+        AvailableAgent()
         {
             // wait indefinitely for an available agent
             int availableAgentIndex = System.Threading.WaitHandle.WaitAny(this.agentsAvailable.ToArray(), -1);
@@ -115,7 +119,8 @@ namespace Opus.Core
             }
         }
 
-        public bool Execute()
+        public bool
+        Execute()
         {
             Log.Info("Build started");
 
@@ -233,7 +238,9 @@ namespace Opus.Core
             set;
         }
 
-        private void CompletedNode(DependencyNode node)
+        private void
+        CompletedNode(
+            DependencyNode node)
         {
             this.nodesProcessing[node].Set();
 
@@ -261,7 +268,9 @@ namespace Opus.Core
             }
         }
 
-        private void OutputErrorProcessingThread(object state)
+        private void
+        OutputErrorProcessingThread(
+            object state)
         {
             var buildManager = state as BuildManager;
             var outputQueue = buildManager.outputQueue;

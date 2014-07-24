@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: move to another file
     public class PackageBuild
     {
-        public PackageBuild(PackageIdentifier id)
+        public
+        PackageBuild(
+            PackageIdentifier id)
         {
             this.Name = id.Name;
             this.Versions = new UniqueList<PackageIdentifier>();
@@ -33,7 +36,8 @@ namespace Opus.Core
             set;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}: Package '{1}' with {2} versions", base.ToString(), this.Name, this.Versions.Count);
@@ -41,9 +45,12 @@ namespace Opus.Core
         }
     }
 
-    public class PackageBuildList : UniqueList<PackageBuild>
+    public class PackageBuildList :
+        UniqueList<PackageBuild>
     {
-        public PackageBuild GetPackage(string name)
+        public PackageBuild
+        GetPackage(
+            string name)
         {
             foreach (var i in this)
             {

@@ -16,8 +16,14 @@ namespace Opus.Core
             WillExist
         }
 
-        public abstract Location SubDirectory(string subDirName);
-        public abstract Location SubDirectory(string subDirName, EExists exists);
+        public abstract Location
+        SubDirectory(
+            string subDirName);
+
+        public abstract Location
+        SubDirectory(
+            string subDirName,
+            EExists exists);
 
         public virtual string AbsolutePath
         {
@@ -25,7 +31,9 @@ namespace Opus.Core
             protected set;
         }
 
-        public abstract LocationArray GetLocations();
+        public abstract LocationArray
+        GetLocations();
+
         public abstract bool IsValid
         {
             get;
@@ -42,7 +50,8 @@ namespace Opus.Core
         /// If the path contains a space, it will be returned quoted.
         /// </summary>
         /// <returns>Single path of the resolved Location</returns>
-        public string GetSinglePath()
+        public string
+        GetSinglePath()
         {
             var path = this.GetSingleRawPath();
             if (path.Contains(" "))
@@ -57,7 +66,8 @@ namespace Opus.Core
         /// No checking whether the path contains spaces is performed.
         /// </summary>
         /// <returns>Single path of the resolved Location</returns>
-        public string GetSingleRawPath()
+        public string
+        GetSingleRawPath()
         {
             var resolvedLocations = this.GetLocations();
             if (resolvedLocations.Count != 1)
@@ -69,19 +79,27 @@ namespace Opus.Core
         }
     }
 
-    public sealed class LocationArray : Array<Location>, System.ICloneable
+    public sealed class LocationArray :
+        Array<Location>,
+        System.ICloneable
     {
-        public LocationArray(params Location[] input)
+        public
+        LocationArray(
+            params Location[] input)
         {
             this.AddRange(input);
         }
 
-        public LocationArray(Array<Location> input)
+        public
+        LocationArray(
+            Array<Location> input)
         {
             this.AddRange(input);
         }
 
-        public override string ToString(string separator)
+        public override string
+        ToString(
+            string separator)
         {
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
@@ -94,7 +112,9 @@ namespace Opus.Core
             return output;
         }
 
-        public string Stringify(string separator)
+        public string
+        Stringify(
+            string separator)
         {
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
@@ -109,7 +129,8 @@ namespace Opus.Core
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             var clone = new LocationArray();
             clone.list.AddRange(this.list);
@@ -124,11 +145,16 @@ namespace Opus.Core
     /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
     /// DirectoryLocations are cached internally, so only a single instance of a directory path exists.
     /// </summary>
-    public sealed class DirectoryLocation : Location, System.ICloneable
+    public sealed class DirectoryLocation :
+        Location,
+        System.ICloneable
     {
         private static System.Collections.Generic.Dictionary<int, DirectoryLocation> cache = new System.Collections.Generic.Dictionary<int, DirectoryLocation>();
 
-        private DirectoryLocation(string absolutePath, Location.EExists exists)
+        private
+        DirectoryLocation(
+            string absolutePath,
+            Location.EExists exists)
         {
             if (exists == EExists.Exists)
             {
@@ -141,7 +167,10 @@ namespace Opus.Core
             this.Exists = exists;
         }
 
-        public static DirectoryLocation Get(string absolutePath, Location.EExists exists)
+        public static DirectoryLocation
+        Get(
+            string absolutePath,
+            Location.EExists exists)
         {
             var hash = absolutePath.GetHashCode();
             if (cache.ContainsKey(hash))
@@ -158,28 +187,37 @@ namespace Opus.Core
             }
         }
 
-        public static DirectoryLocation Get(string absolutePath)
+        public static DirectoryLocation
+        Get(
+            string absolutePath)
         {
             return Get(absolutePath, EExists.Exists);
         }
 
-        public override Location SubDirectory(string subDirName)
+        public override Location
+        SubDirectory(
+            string subDirName)
         {
             return this.SubDirectory(subDirName, this.Exists);
         }
 
-        public override Location SubDirectory(string subDirName, EExists exists)
+        public override Location
+        SubDirectory(
+            string subDirName,
+            EExists exists)
         {
             var subDirectoryPath = System.IO.Path.Combine(this.AbsolutePath, subDirName);
             return Get(subDirectoryPath, exists) as Location;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return System.String.Format("Directory '{0}'", this.AbsolutePath);
         }
 
-        public override LocationArray GetLocations()
+        public override LocationArray
+        GetLocations()
         {
             return new LocationArray(this);
         }
@@ -194,7 +232,8 @@ namespace Opus.Core
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             // Note, this is not using the hash location, as this really needs to be a separate instance
             var clone = new DirectoryLocation(this.AbsolutePath, this.Exists);
@@ -209,11 +248,15 @@ namespace Opus.Core
     /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
     /// FileLocations are cached internally, so only a single instance of a file path exists.
     /// </summary>
-    public sealed class FileLocation : Location
+    public sealed class FileLocation :
+        Location
     {
         private static System.Collections.Generic.Dictionary<int, FileLocation> cache = new System.Collections.Generic.Dictionary<int, FileLocation>();
 
-        private FileLocation(string absolutePath, Location.EExists exists)
+        private
+        FileLocation(
+            string absolutePath,
+            Location.EExists exists)
         {
             if (exists == EExists.Exists)
             {
@@ -226,7 +269,10 @@ namespace Opus.Core
             this.Exists = exists;
         }
 
-        public static FileLocation Get(string absolutePath, Location.EExists exists)
+        public static FileLocation
+        Get(
+            string absolutePath,
+            Location.EExists exists)
         {
             var hash = absolutePath.GetHashCode();
             if (cache.ContainsKey(hash))
@@ -243,12 +289,18 @@ namespace Opus.Core
             }
         }
 
-        public static FileLocation Get(string absolutePath)
+        public static FileLocation
+        Get(
+            string absolutePath)
         {
             return Get(absolutePath, EExists.Exists);
         }
 
-        public static FileLocation Get(Location baseLocation, string nonWildcardedFilename, EExists exists)
+        public static FileLocation
+        Get(
+            Location baseLocation,
+            string nonWildcardedFilename,
+            EExists exists)
         {
             var locations = baseLocation.GetLocations();
             if (locations.Count != 1)
@@ -266,27 +318,37 @@ namespace Opus.Core
             return instance;
         }
 
-        public static FileLocation Get(Location baseLocation, string nonWildcardedFilename)
+        public static FileLocation
+        Get(
+            Location baseLocation,
+            string nonWildcardedFilename)
         {
             return Get(baseLocation, nonWildcardedFilename, EExists.Exists);
         }
 
-        public override Location SubDirectory(string subDirName)
+        public override Location
+        SubDirectory(
+            string subDirName)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Location SubDirectory(string subDirName, EExists exists)
+        public override Location
+        SubDirectory(
+            string subDirName,
+            EExists exists)
         {
             throw new System.NotImplementedException();
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return System.String.Format("File '{0}'", this.AbsolutePath);
         }
 
-        public override LocationArray GetLocations()
+        public override LocationArray
+        GetLocations()
         {
             return new LocationArray(this);
         }
@@ -305,11 +367,15 @@ namespace Opus.Core
     /// It may or may not exist, but the default behaviour is to assume that it exists and this is tested.
     /// SymlinkLocation are cached internally, so only a single instance of a symlink path exists.
     /// </summary>
-    public sealed class SymlinkLocation : Location
+    public sealed class SymlinkLocation :
+        Location
     {
         private static System.Collections.Generic.Dictionary<int, SymlinkLocation> cache = new System.Collections.Generic.Dictionary<int, SymlinkLocation>();
 
-        private SymlinkLocation(string absolutePath, Location.EExists exists)
+        private
+        SymlinkLocation(
+            string absolutePath,
+            Location.EExists exists)
         {
             if (exists == EExists.Exists)
             {
@@ -322,7 +388,10 @@ namespace Opus.Core
             this.Exists = exists;
         }
 
-        public static SymlinkLocation Get(string absolutePath, Location.EExists exists)
+        public static SymlinkLocation
+        Get(
+            string absolutePath,
+            Location.EExists exists)
         {
             var hash = absolutePath.GetHashCode();
             if (cache.ContainsKey(hash))
@@ -339,12 +408,17 @@ namespace Opus.Core
             }
         }
 
-        public static SymlinkLocation Get(string absolutePath)
+        public static SymlinkLocation
+        Get(
+            string absolutePath)
         {
             return Get(absolutePath, EExists.Exists);
         }
 
-        public static SymlinkLocation Get(Location baseLocation, string nonWildcardedFilename)
+        public static SymlinkLocation
+        Get(
+            Location baseLocation,
+            string nonWildcardedFilename)
         {
             var locations = baseLocation.GetLocations();
             if (locations.Count != 1)
@@ -362,17 +436,23 @@ namespace Opus.Core
             return instance;
         }
 
-        public override Location SubDirectory(string subDirName)
+        public override Location
+        SubDirectory(
+            string subDirName)
         {
             throw new System.NotImplementedException ();
         }
 
-        public override Location SubDirectory(string subDirName, EExists exists)
+        public override Location
+        SubDirectory(
+            string subDirName,
+            EExists exists)
         {
             throw new System.NotImplementedException ();
         }
 
-        public override LocationArray GetLocations()
+        public override LocationArray
+        GetLocations()
         {
             return new LocationArray(this);
         }
@@ -391,7 +471,8 @@ namespace Opus.Core
     /// ScaffoldLocations are constructed from a base Location, with a search pattern added to it. This pattern may be wildcarded.
     /// Calling GetLocations() on a ScaffoldLocation will resolve the pattern to a list of real Locations, be they file or directory.
     /// </summary>
-    public sealed class ScaffoldLocation : Location
+    public sealed class ScaffoldLocation :
+        Location
     {
         public enum ETypeHint
         {
@@ -400,7 +481,9 @@ namespace Opus.Core
             Symlink
         }
 
-        public ScaffoldLocation(ETypeHint typeHint)
+        public
+        ScaffoldLocation(
+            ETypeHint typeHint)
         {
             this.TypeHint = typeHint;
             this.Exists = EExists.WillExist; // make no assumptions that a stub will exist
@@ -408,28 +491,46 @@ namespace Opus.Core
             this.Resolved = false;
         }
 
-        public ScaffoldLocation(Location baseLocation, string pattern, ETypeHint typeHint)
-            : this(typeHint)
+        public
+        ScaffoldLocation(
+            Location baseLocation,
+            string pattern,
+            ETypeHint typeHint) :
+        this(typeHint)
         {
             this.Base = baseLocation;
             this.Pattern = pattern;
         }
 
-        public ScaffoldLocation(Location baseLocation, string pattern, ETypeHint typeHint, EExists exists)
-            : this(baseLocation, pattern, typeHint)
+        public
+        ScaffoldLocation(
+            Location baseLocation,
+            string pattern,
+            ETypeHint typeHint,
+            EExists exists) :
+        this(baseLocation, pattern, typeHint)
         {
             this.Exists = exists;
         }
 
-        public ScaffoldLocation(Location baseLocation, ProxyModulePath proxyPath, ETypeHint typeHint)
-            : this(typeHint)
+        public
+        ScaffoldLocation(
+            Location baseLocation,
+            ProxyModulePath proxyPath,
+            ETypeHint typeHint) :
+        this(typeHint)
         {
             this.Base = baseLocation;
             this.ProxyPath = proxyPath;
         }
 
-        public ScaffoldLocation(Location baseLocation, ProxyModulePath proxyPath, ETypeHint typeHint, EExists exists)
-            : this(baseLocation, proxyPath, typeHint)
+        public
+        ScaffoldLocation(
+            Location baseLocation,
+            ProxyModulePath proxyPath,
+            ETypeHint typeHint,
+            EExists exists) :
+        this(baseLocation, proxyPath, typeHint)
         {
             this.Exists = exists;
         }
@@ -464,7 +565,9 @@ namespace Opus.Core
             set;
         }
 
-        public void SetReference(Location reference)
+        public void
+        SetReference(
+            Location reference)
         {
             if (this.IsValid)
             {
@@ -475,7 +578,11 @@ namespace Opus.Core
             this.Exists = reference.Exists;
         }
 
-        public void SpecifyStub(Location baseLocation, string pattern, Location.EExists exists)
+        public void
+        SpecifyStub(
+            Location baseLocation,
+            string pattern,
+            Location.EExists exists)
         {
             if (!baseLocation.IsValid)
             {
@@ -487,7 +594,9 @@ namespace Opus.Core
             this.Exists  = exists;
         }
 
-        private void ResolveDirectory(Location directory)
+        private void
+        ResolveDirectory(
+            Location directory)
         {
             if (null == this.Pattern)
             {
@@ -557,7 +666,8 @@ namespace Opus.Core
             }
         }
 
-        private void Resolve()
+        private void
+        Resolve()
         {
             if (this.Resolved)
             {
@@ -613,12 +723,17 @@ namespace Opus.Core
             this.Resolved = true;
         }
 
-        public override Location SubDirectory(string subDirName)
+        public override Location
+        SubDirectory(
+            string subDirName)
         {
             return new ScaffoldLocation(this, subDirName, ETypeHint.Directory, this.Exists);
         }
 
-        public override Location SubDirectory(string subDirName, EExists exists)
+        public override Location
+        SubDirectory(
+            string subDirName,
+            EExists exists)
         {
             return new ScaffoldLocation(this, subDirName, ETypeHint.Directory, exists);
         }
@@ -641,7 +756,8 @@ namespace Opus.Core
             }
         }
 
-        public override LocationArray GetLocations()
+        public override LocationArray
+        GetLocations()
         {
             this.Resolve();
             return this.Results;
@@ -656,7 +772,8 @@ namespace Opus.Core
             }
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             if (this.Resolved)
             {
@@ -674,7 +791,10 @@ namespace Opus.Core
     /// </summary>
     public sealed class LocationKey
     {
-        public LocationKey(string identifier, ScaffoldLocation.ETypeHint type)
+        public
+        LocationKey(
+            string identifier,
+            ScaffoldLocation.ETypeHint type)
         {
             this.Identifier = identifier;
             this.Type = type;
@@ -719,7 +839,8 @@ namespace Opus.Core
             }
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.Identifier;
         }
@@ -779,12 +900,17 @@ namespace Opus.Core
             }
         }
 
-        public bool Contains(LocationKey key)
+        public bool
+        Contains(
+            LocationKey key)
         {
             return this.map.ContainsKey(key);
         }
 
-        public Array<LocationKey> Keys(ScaffoldLocation.ETypeHint type, Location.EExists exists)
+        public Array<LocationKey>
+        Keys(
+            ScaffoldLocation.ETypeHint type,
+            Location.EExists exists)
         {
             var keys = new Array<LocationKey>();
             foreach (var key in this.map.Keys)
@@ -801,7 +927,9 @@ namespace Opus.Core
             return keys;
         }
 
-        public LocationArray FilterByKey(Array<LocationKey> filterKeys)
+        public LocationArray
+        FilterByKey(
+            Array<LocationKey> filterKeys)
         {
             var filteredLocations = new LocationArray();
             foreach (var key in filterKeys)
@@ -820,7 +948,10 @@ namespace Opus.Core
             return filteredLocations;
         }
 
-        public LocationArray FilterByType(ScaffoldLocation.ETypeHint type, Location.EExists exists)
+        public LocationArray
+        FilterByType(
+            ScaffoldLocation.ETypeHint type,
+            Location.EExists exists)
         {
             var filteredLocations = new LocationArray();
             foreach (var key in this.map.Keys)
@@ -844,7 +975,8 @@ namespace Opus.Core
             return filteredLocations;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var repr = new System.Text.StringBuilder();
             foreach (var key in this.map.Keys)
@@ -855,11 +987,15 @@ namespace Opus.Core
         }
     }
 
-    public class LocationComparer : System.Collections.Generic.IEqualityComparer<Location>
+    public class LocationComparer :
+        System.Collections.Generic.IEqualityComparer<Location>
     {
         #region IEqualityComparer<Location> Members
 
-        bool System.Collections.Generic.IEqualityComparer<Location>.Equals(Location x, Location y)
+        bool
+        System.Collections.Generic.IEqualityComparer<Location>.Equals(
+            Location x,
+            Location y)
         {
             var xLocations = x.GetLocations();
             var yLocations = y.GetLocations();
@@ -878,7 +1014,9 @@ namespace Opus.Core
             return true;
         }
 
-        int System.Collections.Generic.IEqualityComparer<Location>.GetHashCode(Location obj)
+        int
+        System.Collections.Generic.IEqualityComparer<Location>.GetHashCode(
+            Location obj)
         {
             var locations = obj.GetLocations();
             var combinedPaths = new System.Text.StringBuilder();

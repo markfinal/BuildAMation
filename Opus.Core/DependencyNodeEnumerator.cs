@@ -5,14 +5,17 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class DependencyNodeEnumerator : System.Collections.IEnumerator
+    public class DependencyNodeEnumerator :
+        System.Collections.IEnumerator
     {
         private DependencyGraph graph;
         private int currentRank;
         private DependencyNodeCollection currentRankCollection;
         private int currentNodeIndex;
 
-        public DependencyNodeEnumerator(DependencyGraph graph)
+        public
+        DependencyNodeEnumerator(
+            DependencyGraph graph)
         {
             this.graph = graph;
             this.Reset();
@@ -26,7 +29,8 @@ namespace Opus.Core
             }
         }
 
-        public bool MoveNext()
+        public bool
+        MoveNext()
         {
             if (null == this.currentRankCollection)
             {
@@ -58,7 +62,8 @@ namespace Opus.Core
             return true;
         }
 
-        public void Reset()
+        public void
+        Reset()
         {
             this.currentRank = 0;
             if (this.graph.RankCount > this.currentRank)

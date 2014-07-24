@@ -7,7 +7,11 @@ namespace Opus.Core
 {
     public sealed class BuildAgent
     {
-        public BuildAgent(string name, object builder, System.Threading.ManualResetEvent reportFailure)
+        public
+        BuildAgent(
+            string name,
+            object builder,
+            System.Threading.ManualResetEvent reportFailure)
         {
             this.Name = name;
             this.Builder = builder;
@@ -45,7 +49,9 @@ namespace Opus.Core
             set;
         }
 
-        private static void Run(object obj)
+        private static void
+        Run(
+            object obj)
         {
             var agent = obj as BuildAgent;
             var node = agent.Node;
@@ -91,7 +97,9 @@ namespace Opus.Core
             agent.IsAvailable.Set();
         }
 
-        public void Execute(DependencyNode node)
+        public void
+        Execute(
+            DependencyNode node)
         {
             node.BuildState = EBuildState.Pending;
 

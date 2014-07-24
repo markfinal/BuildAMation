@@ -5,12 +5,15 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class DirectoryCollectionEnumerator : System.Collections.IEnumerator
+    public sealed class DirectoryCollectionEnumerator :
+        System.Collections.IEnumerator
     {
         private DirectoryCollection collection;
         private int enumeratorIndex;
 
-        public DirectoryCollectionEnumerator(DirectoryCollection collection)
+        public
+        DirectoryCollectionEnumerator(
+            DirectoryCollection collection)
         {
             this.collection = collection;
             this.Reset();
@@ -24,7 +27,8 @@ namespace Opus.Core
             }
         }
 
-        public bool MoveNext()
+        public bool
+        MoveNext()
         {
             ++this.enumeratorIndex;
             if (this.enumeratorIndex >= this.collection.Count)
@@ -37,7 +41,8 @@ namespace Opus.Core
             }
         }
 
-        public void Reset()
+        public void
+        Reset()
         {
             this.enumeratorIndex = -1;
         }

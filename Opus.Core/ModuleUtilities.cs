@@ -7,7 +7,9 @@ namespace Opus.Core
 {
     public static class ModuleUtilities
     {
-        public static IToolset GetToolsetForModule(System.Type moduleType)
+        public static IToolset
+        GetToolsetForModule(
+            System.Type moduleType)
         {
             var type = moduleType;
             while (type != null)
@@ -57,7 +59,10 @@ namespace Opus.Core
             throw new Exception("Unable to locate toolchain for module '{0}'", moduleType.ToString());
         }
 
-        private static TypeArray GetFieldsWithAttributeType<T>(IModule module, Target target) where T : class, ITargetFilters
+        private static TypeArray
+        GetFieldsWithAttributeType<T>(
+            IModule module,
+            Target target) where T : class, ITargetFilters
         {
             var type = module.GetType();
             var fieldInfoArray = type.GetFields(System.Reflection.BindingFlags.NonPublic |
@@ -110,19 +115,28 @@ namespace Opus.Core
 
         // TODO: should be able to roll the following functions into one
         // This will improve performance as we only have to use reflection on the fields once
-        public static TypeArray GetExternalDependents(IModule module, Target target)
+        public static TypeArray
+        GetExternalDependents(
+            IModule module,
+            Target target)
         {
             return GetFieldsWithAttributeType<Core.DependentModulesAttribute>(module, target);
         }
 
-        public static TypeArray GetRequiredDependents(IModule module, Target target)
+        public static TypeArray
+        GetRequiredDependents(
+            IModule module,
+            Target target)
         {
             return GetFieldsWithAttributeType<Core.RequiredModulesAttribute>(module, target);
         }
 
         private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>> typeBaseTargetToNodeDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>>();
 
-        public static DependencyNode GetNode(System.Type type, Core.BaseTarget baseTarget)
+        public static DependencyNode
+        GetNode(
+            System.Type type,
+            Core.BaseTarget baseTarget)
         {
             if (typeBaseTargetToNodeDictionary.ContainsKey(type) &&
                 typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
@@ -182,7 +196,10 @@ namespace Opus.Core
             return null;
         }
 
-        public static IModule GetModule(System.Type type, Core.BaseTarget baseTarget)
+        public static IModule
+        GetModule(
+            System.Type type,
+            Core.BaseTarget baseTarget)
         {
             var node = GetNode(type, baseTarget);
             if (null != node)
@@ -196,7 +213,10 @@ namespace Opus.Core
 
         private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.Target, IModule>> typeTargetToModuleDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.Target, IModule>>();
 
-        public static IModule GetModule(System.Type type, Core.Target target)
+        public static IModule
+        GetModule(
+            System.Type type,
+            Core.Target target)
         {
             if (typeTargetToModuleDictionary.ContainsKey(type) &&
                 typeTargetToModuleDictionary[type].ContainsKey(target))
@@ -256,7 +276,10 @@ namespace Opus.Core
             return null;
         }
 
-        public static IModule GetModuleNoToolchain(System.Type type, Core.Target target)
+        public static IModule
+        GetModuleNoToolchain(
+            System.Type type,
+            Core.Target target)
         {
             // Intentionally NOT using typeTargetToModuleDictionary
 
@@ -296,7 +319,9 @@ namespace Opus.Core
             return null;
         }
 
-        public static Array<System.Reflection.FieldInfo> GetSourceFilesFromModuleType(System.Type moduleType)
+        public static Array<System.Reflection.FieldInfo>
+        GetSourceFilesFromModuleType(
+            System.Type moduleType)
         {
             var sourceFilesFields = new Array<System.Reflection.FieldInfo>();
 

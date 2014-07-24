@@ -5,13 +5,21 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class PackageIdentifier : System.IComparable
+    public class PackageIdentifier :
+        System.IComparable
     {
-        public PackageIdentifier(string name, string version)
-            : this(name, version, true)
-        { }
+        public
+        PackageIdentifier(
+            string name,
+            string version) :
+        this(name, version, true)
+        {}
 
-        public PackageIdentifier(string name, string version, bool validatePackageLocation)
+        public
+        PackageIdentifier(
+            string name,
+            string version,
+            bool validatePackageLocation)
         {
             if (null == name)
             {
@@ -89,52 +97,76 @@ namespace Opus.Core
             }
         }
 
-        public bool MatchName(PackageIdentifier identifier, bool ignoreCase)
+        public bool
+        MatchName(
+            PackageIdentifier identifier,
+            bool ignoreCase)
         {
             return this.MatchName(identifier.Name, ignoreCase);
         }
 
-        public bool MatchName(string name, bool ignoreCase)
+        public bool
+        MatchName(
+            string name,
+            bool ignoreCase)
         {
             var match = (0 == System.String.Compare(this.Name, name, ignoreCase));
             return match;
         }
 
-        public int MatchVersion(PackageIdentifier identifier, bool ignoreCase)
+        public int
+        MatchVersion(
+            PackageIdentifier identifier,
+            bool ignoreCase)
         {
             return this.MatchVersion(identifier.Version, ignoreCase);
         }
 
-        public int MatchVersion(string version, bool ignoreCase)
+        public int
+        MatchVersion(
+            string version,
+            bool ignoreCase)
         {
             int compare = System.String.Compare(this.Version, version, ignoreCase);
             return compare;
         }
 
-        public bool Match(PackageIdentifier identifier, bool ignoreCase)
+        public bool
+        Match(
+            PackageIdentifier identifier,
+            bool ignoreCase)
         {
             var match = this.MatchName(identifier, ignoreCase) && (0 == this.MatchVersion(identifier, ignoreCase));
             return match;
         }
 
-        public bool Match(string name, string version, bool ignoreCase)
+        public bool
+        Match(
+            string name,
+            string version,
+            bool ignoreCase)
         {
             var match = this.MatchName(name, ignoreCase) && (0 == this.MatchVersion(version, ignoreCase));
             return match;
         }
 
-        public bool ConvertVersionToDouble(out double version)
+        public bool
+        ConvertVersionToDouble(
+            out double version)
         {
             return double.TryParse(this.Version, out version);
         }
 
-        public string ToString(string separator)
+        public string
+        ToString(
+            string separator)
         {
             var identifierString = System.String.Format("{0}{1}{2}", this.Name, separator, this.Version);
             return identifierString;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.ToString("-");
         }
@@ -155,7 +187,9 @@ namespace Opus.Core
             }
         }
 
-        int System.IComparable.CompareTo(object obj)
+        int
+        System.IComparable.CompareTo(
+            object obj)
         {
             var objAs = obj as PackageIdentifier;
             string left = this.ToString("-");
@@ -164,7 +198,8 @@ namespace Opus.Core
             return compared;
         }
 
-        private DirectoryLocation LocateRoot()
+        private DirectoryLocation
+        LocateRoot()
         {
             var rootContainingPackage = false;
             foreach (var root in State.PackageRoots)

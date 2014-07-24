@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class PackageInformationCollection : System.Collections.Generic.ICollection<PackageInformation>
+    public sealed class PackageInformationCollection :
+        System.Collections.Generic.ICollection<PackageInformation>
     {
         private System.Collections.Generic.List<PackageInformation> list = new System.Collections.Generic.List<PackageInformation>();
 
@@ -23,7 +24,10 @@ namespace Opus.Core
             }
         }
 
-        public void Add(PackageInformation item, bool allowMultipleVersions)
+        public void
+        Add(
+            PackageInformation item,
+            bool allowMultipleVersions)
         {
             if (!allowMultipleVersions && this.Contains(item))
             {
@@ -34,17 +38,22 @@ namespace Opus.Core
             State.PackageRoots.AddUnique(item.Identifier.Root);
         }
 
-        public void Add(PackageInformation item)
+        public void
+        Add(
+            PackageInformation item)
         {
             this.Add(item, false);
         }
 
-        public void Clear()
+        public void
+        Clear()
         {
             this.list.Clear();
         }
 
-        public bool Contains(PackageInformation item)
+        public bool
+        Contains(
+            PackageInformation item)
         {
             var ignoreCase = true;
 
@@ -102,7 +111,10 @@ namespace Opus.Core
             return false;
         }
 
-        public void CopyTo(PackageInformation[] array, int arrayIndex)
+        public void
+        CopyTo(
+            PackageInformation[] array,
+            int arrayIndex)
         {
             throw new System.NotImplementedException();
         }
@@ -120,7 +132,9 @@ namespace Opus.Core
             get { throw new System.NotImplementedException(); }
         }
 
-        public bool Remove(PackageInformation item)
+        public bool
+        Remove(
+            PackageInformation item)
         {
             if (this.Contains(item))
             {
@@ -132,12 +146,14 @@ namespace Opus.Core
             }
         }
 
-        public System.Collections.Generic.IEnumerator<PackageInformation> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<PackageInformation>
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
@@ -167,12 +183,16 @@ namespace Opus.Core
             }
         }
 
-        public void Sort()
+        public void
+        Sort()
         {
             this.list.Sort();
         }
 
-        public string ToString(string prefix, string suffix)
+        public string
+        ToString(
+            string prefix,
+            string suffix)
         {
             string message = null;
             foreach (var package in this.list)
@@ -182,7 +202,8 @@ namespace Opus.Core
             return message;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.ToString(null, " ");
         }

@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class PackageIdentifierCollection : Array<PackageIdentifier>
+    public sealed class PackageIdentifierCollection :
+        Array<PackageIdentifier>
     {
-        public override void Add(PackageIdentifier item)
+        public override void
+        Add(
+            PackageIdentifier item)
         {
             if (this.Contains(item))
             {
@@ -17,7 +20,9 @@ namespace Opus.Core
             base.Add(item);
         }
 
-        public override bool Contains(PackageIdentifier item)
+        public override bool
+        Contains(
+            PackageIdentifier item)
         {
             var baseContainsIt = base.Contains(item);
             if (baseContainsIt)

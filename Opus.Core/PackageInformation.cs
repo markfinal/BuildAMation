@@ -5,9 +5,13 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class PackageInformation : System.IComparable
+    public class PackageInformation :
+        System.IComparable
     {
-        private PackageInformation(string name, string version)
+        private
+        PackageInformation(
+            string name,
+            string version)
         {
             this.Identifier = new PackageIdentifier(name, version);
             this.IsBuilder = false;
@@ -15,7 +19,9 @@ namespace Opus.Core
             throw new Exception("Who calls this constructor?");
         }
 
-        public PackageInformation(PackageIdentifier id)
+        public
+        PackageInformation(
+            PackageIdentifier id)
         {
             this.Identifier = id;
             this.IsBuilder = false;
@@ -170,12 +176,15 @@ namespace Opus.Core
             }
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.FullName;
         }
 
-        int System.IComparable.CompareTo(object obj)
+        int
+        System.IComparable.CompareTo(
+            object obj)
         {
             var objAs = obj as PackageInformation;
             int compared = this.FullName.CompareTo(objAs.FullName);

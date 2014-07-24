@@ -5,19 +5,24 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    internal class OpusXmlResolver : System.Xml.XmlResolver
+    // TODO: move to another file
+    internal class OpusXmlResolver :
+        System.Xml.XmlResolver
     {
-        internal OpusXmlResolver()
-            : base()
-        {
-        }
+        internal
+        OpusXmlResolver() :
+        base()
+        {}
 
         public override System.Net.ICredentials Credentials
         {
             set { throw new System.NotImplementedException(); }
         }
 
-        public override System.Uri ResolveUri(System.Uri baseUri, string relativeUri)
+        public override System.Uri
+        ResolveUri(
+            System.Uri baseUri,
+            string relativeUri)
         {
             if (baseUri == null)
             {
@@ -51,7 +56,11 @@ namespace Opus.Core
             }
         }
 
-        public override object GetEntity(System.Uri absoluteUri, string role, System.Type ofObjectToReturn)
+        public override object
+        GetEntity(
+            System.Uri absoluteUri,
+            string role,
+            System.Type ofObjectToReturn)
         {
             if (absoluteUri.IsFile)
             {
@@ -71,9 +80,12 @@ namespace Opus.Core
         }
     }
 
+    // TODO: move to another file
     public class DotNetAssemblyDescription
     {
-        public DotNetAssemblyDescription(string name)
+        public
+        DotNetAssemblyDescription(
+            string name)
         {
             this.Name = name;
         }
@@ -96,7 +108,10 @@ namespace Opus.Core
         private string xmlFilename;
         private bool validate;
 
-        private static void ValidationCallBack(object sender, System.Xml.Schema.ValidationEventArgs args)
+        private static void
+        ValidationCallBack(
+            object sender,
+            System.Xml.Schema.ValidationEventArgs args)
         {
             if (args.Severity == System.Xml.Schema.XmlSeverityType.Warning)
             {
@@ -127,7 +142,8 @@ namespace Opus.Core
             }
         }
 
-        private void Validate()
+        private void
+        Validate()
         {
             var settings = new System.Xml.XmlReaderSettings();
             settings.ValidationType = System.Xml.ValidationType.Schema;
@@ -144,7 +160,10 @@ namespace Opus.Core
             while (reader.Read());
         }
 
-        public PackageDefinitionFile(string xmlFilename, bool validate)
+        public
+        PackageDefinitionFile(
+            string xmlFilename,
+            bool validate)
         {
             this.validate = validate;
             this.xmlFilename = xmlFilename;
@@ -156,7 +175,8 @@ namespace Opus.Core
             this.PackageRoots = new StringArray();
         }
 
-        public void Write()
+        public void
+        Write()
         {
             if (System.IO.File.Exists(this.xmlFilename))
             {
@@ -352,12 +372,17 @@ namespace Opus.Core
             }
         }
 
-        public void Read(bool validateSchemaLocation)
+        public void
+        Read(
+            bool validateSchemaLocation)
         {
             this.Read(validateSchemaLocation, true);
         }
 
-        public void Read(bool validateSchemaLocation, bool validatePackageLocations)
+        public void
+        Read(
+            bool validateSchemaLocation,
+            bool validatePackageLocations)
         {
             var xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = true;
@@ -398,7 +423,9 @@ namespace Opus.Core
             throw new Exception("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename);
         }
 
-        protected EPlatform InterpretConditionValue(string condition)
+        protected EPlatform
+        InterpretConditionValue(
+            string condition)
         {
             // unless you apply the pattern, remove the match, apply another pattern, etc.?
 
@@ -497,7 +524,10 @@ namespace Opus.Core
             return supportedPlatforms;
         }
 
-        private bool ReadRequiredPackages(System.Xml.XmlReader xmlReader, bool validatePackageLocations)
+        private bool
+        ReadRequiredPackages(
+            System.Xml.XmlReader xmlReader,
+            bool validatePackageLocations)
         {
             var requiredPackagesElementName = "Opus:RequiredPackages";
             if (requiredPackagesElementName != xmlReader.Name)
@@ -580,7 +610,9 @@ namespace Opus.Core
             return true;
         }
 
-        private bool ReadRequiredOpusAssemblies(System.Xml.XmlReader xmlReader)
+        private bool
+        ReadRequiredOpusAssemblies(
+            System.Xml.XmlReader xmlReader)
         {
             var requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
             if (requiredOpusAssembliesElementName != xmlReader.Name)
@@ -620,7 +652,9 @@ namespace Opus.Core
             return true;
         }
 
-        private bool ReadRequiredDotNetAssemblies(System.Xml.XmlReader xmlReader)
+        private bool
+        ReadRequiredDotNetAssemblies(
+            System.Xml.XmlReader xmlReader)
         {
             var requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
             if (requiredDotNetAssembliesElementName != xmlReader.Name)
@@ -668,7 +702,9 @@ namespace Opus.Core
             return true;
         }
 
-        private bool ReadSupportedPlatforms(System.Xml.XmlReader xmlReader)
+        private bool
+        ReadSupportedPlatforms(
+            System.Xml.XmlReader xmlReader)
         {
             var supportedPlatformsElementName = "Opus:SupportedPlatforms";
             if (supportedPlatformsElementName != xmlReader.Name)
@@ -720,7 +756,9 @@ namespace Opus.Core
             return true;
         }
 
-        private bool ReadDefinitions(System.Xml.XmlReader xmlReader)
+        private bool
+        ReadDefinitions(
+            System.Xml.XmlReader xmlReader)
         {
             var definitionsElementName = "Opus:Definitions";
             if (definitionsElementName != xmlReader.Name)
@@ -761,7 +799,9 @@ namespace Opus.Core
             return true;
         }
 
-        private bool ReadPackageRoots(System.Xml.XmlReader xmlReader)
+        private bool
+        ReadPackageRoots(
+            System.Xml.XmlReader xmlReader)
         {
             var packageRootsElementName = "Opus:PackageRoots";
             if (packageRootsElementName != xmlReader.Name)
@@ -804,7 +844,11 @@ namespace Opus.Core
             return true;
         }
 
-        protected bool ReadCurrent(System.Xml.XmlReaderSettings readerSettings, bool validateSchemaLocation, bool validatePackageLocations)
+        protected bool
+        ReadCurrent(
+            System.Xml.XmlReaderSettings readerSettings,
+            bool validateSchemaLocation,
+            bool validatePackageLocations)
         {
             try
             {
@@ -886,7 +930,9 @@ namespace Opus.Core
             return true;
         }
 
-        public bool ReadV1(System.Xml.XmlReaderSettings readerSettings)
+        public bool
+        ReadV1(
+            System.Xml.XmlReaderSettings readerSettings)
         {
             try
             {
@@ -989,7 +1035,9 @@ namespace Opus.Core
             return true;
         }
 
-        public void AddRequiredPackage(PackageIdentifier idToAdd)
+        public void
+        AddRequiredPackage(
+            PackageIdentifier idToAdd)
         {
             foreach (var id in this.PackageIdentifiers)
             {
@@ -1003,7 +1051,9 @@ namespace Opus.Core
             Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root.GetSingleRawPath());
         }
 
-        public bool RemovePackage(PackageIdentifier idToRemove)
+        public bool
+        RemovePackage(
+            PackageIdentifier idToRemove)
         {
             PackageIdentifier idToRemoveReally = null;
             foreach (var id in this.PackageIdentifiers)
@@ -1064,7 +1114,8 @@ namespace Opus.Core
             set;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.xmlFilename;
         }

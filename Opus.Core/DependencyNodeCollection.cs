@@ -5,24 +5,29 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class DependencyNodeCollection : System.Collections.Generic.ICollection<DependencyNode>, System.ICloneable
+    public sealed class DependencyNodeCollection :
+        System.Collections.Generic.ICollection<DependencyNode>,
+        System.ICloneable
     {
         private System.Collections.Generic.List<DependencyNode> list = new System.Collections.Generic.List<DependencyNode>();
         private int completedNodeCount = 0;
 
-        public DependencyNodeCollection()
-            : this(-1)
-        {
-        }
+        public
+        DependencyNodeCollection() : this(-1)
+        {}
 
-        public DependencyNodeCollection(int rank)
+        public
+        DependencyNodeCollection(
+            int rank)
         {
             this.Rank = rank;
             this.AllNodesCompletedEvent = new System.Threading.ManualResetEvent[1];
             this.AllNodesCompletedEvent[0] = new System.Threading.ManualResetEvent(false);
         }
 
-        private void CompletedNode(DependencyNode node)
+        private void
+        CompletedNode(
+            DependencyNode node)
         {
             if (this.list.Contains(node))
             {
@@ -35,7 +40,9 @@ namespace Opus.Core
             node.CompletedEvent -= CompletedNode;
         }
 
-        public void Add(DependencyNode item)
+        public void
+        Add(
+            DependencyNode item)
         {
             if (!this.list.Contains(item))
             {
@@ -49,7 +56,9 @@ namespace Opus.Core
             }
         }
 
-        public void AddRange(DependencyNodeCollection itemCollection)
+        public void
+        AddRange(
+            DependencyNodeCollection itemCollection)
         {
             foreach (var item in itemCollection)
             {
@@ -57,18 +66,24 @@ namespace Opus.Core
             }
         }
 
-        public void Clear()
+        public void
+        Clear()
         {
             this.list.Clear();
             this.completedNodeCount = 0;
         }
 
-        public bool Contains(DependencyNode item)
+        public bool
+        Contains(
+            DependencyNode item)
         {
             return this.list.Contains(item);
         }
 
-        public void CopyTo(DependencyNode[] array, int arrayIndex)
+        public void
+        CopyTo(
+            DependencyNode[] array,
+            int arrayIndex)
         {
             this.list.CopyTo(array, arrayIndex);
         }
@@ -89,7 +104,9 @@ namespace Opus.Core
             }
         }
 
-        public bool Remove(DependencyNode item)
+        public bool
+        Remove(
+            DependencyNode item)
         {
             lock (this.list)
             {
@@ -103,12 +120,14 @@ namespace Opus.Core
             return this.list.Remove(item);
         }
 
-        public System.Collections.Generic.IEnumerator<DependencyNode> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<DependencyNode>
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
@@ -133,7 +152,10 @@ namespace Opus.Core
             private set;
         }
 
-        public void FilterOutputLocations(Array<LocationKey> filterKeys, LocationArray filteredLocations)
+        public void
+        FilterOutputLocations(
+            Array<LocationKey> filterKeys,
+            LocationArray filteredLocations)
         {
             foreach (var node in this.list)
             {
@@ -152,7 +174,8 @@ namespace Opus.Core
             }
         }
 
-        public object Clone()
+        public object
+        Clone()
         {
             var clone = new DependencyNodeCollection();
             clone.Rank = this.Rank;
@@ -160,14 +183,17 @@ namespace Opus.Core
             return clone;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var description = new System.Text.StringBuilder();
             description.AppendFormat("DependencyNodeCollection: rank {0} with {1} nodes", this.Rank, this.list.Count);
             return description.ToString();
         }
 
-        public void ReassignRank(int newRank)
+        public void
+        ReassignRank(
+            int newRank)
         {
             // the Rank set accessor is private, so this function is to ensure that users are aware that
             // changing a collection's rank may have side-effects

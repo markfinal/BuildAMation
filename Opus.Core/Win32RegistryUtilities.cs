@@ -9,7 +9,9 @@ namespace Opus.Core
     {
         private static string Wow6432NodeString = @"Wow6432Node";
 
-        static Win32RegistryUtilities()
+        // TODO: what's the point of this? unless OSUtilities.IsWindowsHosting has side effects
+        static
+        Win32RegistryUtilities()
         {
             if (!OSUtilities.IsWindowsHosting)
             {
@@ -17,9 +19,12 @@ namespace Opus.Core
             }
         }
 
-        private static string SoftwareKeyPath(string path, bool query32Bit)
+        private static string
+        SoftwareKeyPath(
+            string path,
+            bool query32Bit)
         {
-            System.Text.StringBuilder keyPath = new System.Text.StringBuilder();
+            var keyPath = new System.Text.StringBuilder();
             if (OSUtilities.Is64BitHosting)
             {
                 if (query32Bit)
@@ -39,15 +44,19 @@ namespace Opus.Core
             return keyPath.ToString();
         }
 
-        private static bool DoesSoftwareKeyExist(string path, Microsoft.Win32.RegistryKey registryArea, bool query32Bit)
+        private static bool
+        DoesSoftwareKeyExist(
+            string path,
+            Microsoft.Win32.RegistryKey registryArea,
+            bool query32Bit)
         {
             if (!OSUtilities.IsWindowsHosting)
             {
                 return false;
             }
 
-            bool exists = true;
-            using(Microsoft.Win32.RegistryKey key = registryArea.OpenSubKey(SoftwareKeyPath(path, query32Bit)))
+            var exists = true;
+            using (var key = registryArea.OpenSubKey(SoftwareKeyPath(path, query32Bit)))
             {
                 if (null == key)
                 {
@@ -58,27 +67,35 @@ namespace Opus.Core
             return exists;
         }
 
-        public static bool DoesCUSoftwareKeyExist(string path)
+        public static bool
+        DoesCUSoftwareKeyExist(
+            string path)
         {
-            bool exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.CurrentUser, false);
+            var exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.CurrentUser, false);
             return exists;
         }
 
-        public static bool Does32BitLMSoftwareKeyExist(string path)
+        public static bool
+        Does32BitLMSoftwareKeyExist(
+            string path)
         {
-            bool exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, true);
+            var exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, true);
             return exists;
         }
 
-        private static Microsoft.Win32.RegistryKey OpenSoftwareKey(string path, Microsoft.Win32.RegistryKey registryArea, bool query32Bit)
+        private static Microsoft.Win32.RegistryKey
+        OpenSoftwareKey(
+            string path,
+            Microsoft.Win32.RegistryKey registryArea,
+            bool query32Bit)
         {
             if (!OSUtilities.IsWindowsHosting)
             {
                 return null;
             }
 
-            string keyPath = SoftwareKeyPath(path, query32Bit);
-            Microsoft.Win32.RegistryKey key = registryArea.OpenSubKey(keyPath);
+            var keyPath = SoftwareKeyPath(path, query32Bit);
+            var key = registryArea.OpenSubKey(keyPath);
             if (null == key)
             {
                 Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
@@ -86,23 +103,31 @@ namespace Opus.Core
             return key;
         }
 
-        public static Microsoft.Win32.RegistryKey Open32BitLMSoftwareKey(string path)
+        public static Microsoft.Win32.RegistryKey
+        Open32BitLMSoftwareKey(
+            string path)
         {
             return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, true);
         }
 
-        public static Microsoft.Win32.RegistryKey OpenCUSoftwareKey(string path)
+        public static Microsoft.Win32.RegistryKey
+        OpenCUSoftwareKey(
+            string path)
         {
             return OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, false);
         }
 
-        public static bool DoesLMSoftwareKeyExist(string path)
+        public static bool
+        DoesLMSoftwareKeyExist(
+            string path)
         {
-            bool exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, false);
+            var exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, false);
             return exists;
         }
 
-        public static Microsoft.Win32.RegistryKey OpenLMSoftwareKey(string path)
+        public static Microsoft.Win32.RegistryKey
+        OpenLMSoftwareKey(
+            string path)
         {
             return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, false);
         }

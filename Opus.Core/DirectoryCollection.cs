@@ -5,23 +5,31 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class DirectoryCollection : System.ICloneable, System.Collections.IEnumerable, ISetOperations<DirectoryCollection>
+    public sealed class DirectoryCollection :
+        System.ICloneable,
+        System.Collections.IEnumerable,
+        ISetOperations<DirectoryCollection>
     {
         private LocationArray directoryLocations = new LocationArray();
 
-        public object Clone()
+        public object
+        Clone()
         {
             var clone = new DirectoryCollection();
             clone.directoryLocations.AddRange(this.directoryLocations);
             return clone;
         }
 
-        public void Add(string path)
+        public void
+        Add(
+            string path)
         {
             this.directoryLocations.AddUnique(DirectoryLocation.Get(path, Location.EExists.WillExist));
         }
 
-        public void AddRange(StringArray paths)
+        public void
+        AddRange(
+            StringArray paths)
         {
             foreach (var path in paths)
             {
@@ -29,13 +37,18 @@ namespace Opus.Core
             }
         }
 
-        public void Include(Location baseLocation)
+        public void
+        Include(
+            Location baseLocation)
         {
             var locations = baseLocation.GetLocations();
             this.directoryLocations.AddRangeUnique(locations);
         }
 
-        public void Include(Location baseLocation, string pattern)
+        public void
+        Include(
+            Location baseLocation,
+            string pattern)
         {
             var locations = baseLocation.SubDirectory(pattern).GetLocations();
             this.directoryLocations.AddRangeUnique(locations);
@@ -58,12 +71,14 @@ namespace Opus.Core
             }
         }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return new DirectoryCollectionEnumerator(this);
         }
 
-        public StringArray ToStringArray()
+        public StringArray
+        ToStringArray()
         {
             var array = new StringArray();
             foreach (var location in this.directoryLocations)
@@ -73,18 +88,23 @@ namespace Opus.Core
             return array;
         }
 
-        public override bool Equals(object obj)
+        public override bool
+        Equals(
+            object obj)
         {
             var otherCollection = obj as DirectoryCollection;
             return (this.directoryLocations.Equals(otherCollection.directoryLocations));
         }
 
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        DirectoryCollection ISetOperations<DirectoryCollection>.Complement(DirectoryCollection other)
+        DirectoryCollection
+        ISetOperations<DirectoryCollection>.Complement(
+            DirectoryCollection other)
         {
             var complementPaths = this.directoryLocations.Complement(other.directoryLocations);
             if (0 == complementPaths.Count)
@@ -97,7 +117,9 @@ namespace Opus.Core
             return complementDirectoryCollection;
         }
 
-        DirectoryCollection ISetOperations<DirectoryCollection>.Intersect(DirectoryCollection other)
+        DirectoryCollection
+        ISetOperations<DirectoryCollection>.Intersect(
+            DirectoryCollection other)
         {
             var intersectPaths = this.directoryLocations.Intersect(other.directoryLocations);
             var intersectDirectoryCollection = new DirectoryCollection();

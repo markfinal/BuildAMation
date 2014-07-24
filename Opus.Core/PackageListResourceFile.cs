@@ -7,7 +7,8 @@ namespace Opus.Core
 {
     public static class PackageListResourceFile
     {
-        public static string WriteResourceFile()
+        public static string
+        WriteResourceFile()
         {
             if (0 == State.PackageInfo.Count)
             {
@@ -35,7 +36,8 @@ namespace Opus.Core
             return resourceFilePathName;
         }
 
-        public static string WriteResXFile()
+        public static string
+        WriteResXFile()
         {
             if (0 == State.PackageInfo.Count)
             {

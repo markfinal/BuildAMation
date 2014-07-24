@@ -5,15 +5,19 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class FileCollection : System.ICloneable, System.Collections.IEnumerable
+    public sealed class FileCollection :
+        System.ICloneable,
+        System.Collections.IEnumerable
     {
         private LocationArray fileLocations = new LocationArray();
 
-        public FileCollection()
-        {
-        }
+        public
+        FileCollection()
+        {}
 
-        public FileCollection(params FileCollection[] collections)
+        public
+        FileCollection(
+            params FileCollection[] collections)
         {
             foreach (var collection in collections)
             {
@@ -24,19 +28,24 @@ namespace Opus.Core
             }
         }
 
-        public object Clone()
+        public object
+        Clone()
         {
             var clone = new FileCollection();
             clone.fileLocations.AddRange(this.fileLocations);
             return clone;
         }
 
-        public void Add(string path)
+        public void
+        Add(
+            string path)
         {
             this.fileLocations.AddUnique(FileLocation.Get(path, Location.EExists.WillExist));
         }
 
-        public void AddRange(StringArray paths)
+        public void
+        AddRange(
+            StringArray paths)
         {
             foreach (var path in paths)
             {
@@ -60,12 +69,16 @@ namespace Opus.Core
             }
         }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return this.fileLocations.GetEnumerator();
         }
 
-        public void Include(Location baseLocation, string pattern)
+        public void
+        Include(
+            Location baseLocation,
+            string pattern)
         {
             var scaffold = new ScaffoldLocation(baseLocation, pattern, ScaffoldLocation.ETypeHint.File);
             // TODO: this should be deferred until much later - we should only store the scaffolds
@@ -76,7 +89,8 @@ namespace Opus.Core
             }
         }
 
-        public StringArray ToStringArray()
+        public StringArray
+        ToStringArray()
         {
             var array = new StringArray();
             foreach (var location in this.fileLocations)

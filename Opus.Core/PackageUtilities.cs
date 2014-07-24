@@ -27,7 +27,11 @@ namespace Opus.Core
             }
         }
 
-        private static void GetPackageDetailsFromPath(string path, out string name, out string version)
+        private static void
+        GetPackageDetailsFromPath(
+            string path,
+            out string name,
+            out string version)
         {
             var directories = path.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
             if (directories.Length < 2)
@@ -39,8 +43,10 @@ namespace Opus.Core
             version = directories[directories.Length - 1];
         }
 
-        public static PackageIdentifier IsPackageDirectory(string path,
-                                                           out bool isWellDefined)
+        public static PackageIdentifier
+        IsPackageDirectory(
+            string path,
+            out bool isWellDefined)
         {
             string packageName;
             string packageVersion;
@@ -88,7 +94,9 @@ namespace Opus.Core
             return id;
         }
 
-        public static string PackageDefinitionPathName(PackageIdentifier id)
+        public static string
+        PackageDefinitionPathName(
+            PackageIdentifier id)
         {
             if (id.Root != null)
             {
@@ -103,7 +111,8 @@ namespace Opus.Core
             }
         }
 
-        public static void IdentifyMainPackageOnly()
+        public static void
+        IdentifyMainPackageOnly()
         {
             // find the working directory package
             bool isWorkingPackageWellDefined;
@@ -139,7 +148,10 @@ namespace Opus.Core
             State.PackageInfo.Add(info);
         }
 
-        public static void IdentifyMainAndDependentPackages(bool resolveToSinglePackageVersion, bool allowUndefinedPackages)
+        public static void
+        IdentifyMainAndDependentPackages(
+            bool resolveToSinglePackageVersion,
+            bool allowUndefinedPackages)
         {
             var buildList = new PackageBuildList();
 
@@ -303,7 +315,11 @@ namespace Opus.Core
             Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
         }
 
-        private static string GetPackageHash(StringArray sourceCode, StringArray definitions, StringArray opusAssemblies)
+        private static string
+        GetPackageHash(
+            StringArray sourceCode,
+            StringArray definitions,
+            StringArray opusAssemblies)
         {
             int hashCode = 0;
             foreach (var source in sourceCode)
@@ -324,7 +340,8 @@ namespace Opus.Core
             return hash;
         }
 
-        public static bool CompilePackageAssembly()
+        public static bool
+        CompilePackageAssembly()
         {
             // validate build root
             if (null == State.BuildRoot)
@@ -613,7 +630,8 @@ namespace Opus.Core
             return true;
         }
 
-        public static bool ExecutePackageAssembly()
+        public static bool
+        ExecutePackageAssembly()
         {
             // let's think about a new domain
             //            System.AppDomain domain = System.AppDomain.CreateDomain("tempDomain");
@@ -669,7 +687,9 @@ namespace Opus.Core
             return success;
         }
 
-        public static PackageInformation GetOwningPackage(object obj)
+        public static PackageInformation
+        GetOwningPackage(
+            object obj)
         {
             var objType = obj.GetType();
             TypeUtilities.CheckTypeDerivesFrom(objType, typeof(BaseModule));
@@ -679,7 +699,8 @@ namespace Opus.Core
             return package;
         }
 
-        public static void LoadPackageAssembly()
+        public static void
+        LoadPackageAssembly()
         {
             var assemblyLoadProfile = new TimeProfile(ETimingProfiles.LoadAssembly);
             assemblyLoadProfile.StartProfile();
@@ -729,7 +750,9 @@ namespace Opus.Core
             assemblyLoadProfile.StopProfile();
         }
 
-        public static void ProcessLazyArguments(bool fatal)
+        public static void
+        ProcessLazyArguments(
+            bool fatal)
         {
             if (State.LazyArguments.Count > 0)
             {
@@ -797,7 +820,9 @@ namespace Opus.Core
             }
         }
 
-        public static void HandleUnprocessedArguments(bool fatal)
+        public static void
+        HandleUnprocessedArguments(
+            bool fatal)
         {
             if (State.LazyArguments.Count > 0)
             {
@@ -818,7 +843,8 @@ namespace Opus.Core
             }
         }
 
-        private static TypeArray GetTopLevelModuleTypes()
+        private static TypeArray
+        GetTopLevelModuleTypes()
         {
             var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
             findBuildableModulesProfile.StartProfile();

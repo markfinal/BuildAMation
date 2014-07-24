@@ -13,7 +13,10 @@ namespace Opus.Core
         /// <param name="target">The Target to evaluate.</param>
         /// <param name="filterInterface">The filters to look for.</param>
         /// <returns>True if the Target matches the filters, false otherwise.</returns>
-        public static bool MatchFilters(Target target, ITargetFilters filterInterface)
+        public static bool
+        MatchFilters(
+            Target target,
+            ITargetFilters filterInterface)
         {
             var baseTarget = (BaseTarget)target;
             if (!baseTarget.HasPlatform(filterInterface.Platform))
@@ -45,7 +48,9 @@ namespace Opus.Core
         /// </summary>
         /// <param name="target">Target to get the directory name for.</param>
         /// <returns>The Target's directory name.</returns>
-        public static string DirectoryName(Target target)
+        public static string
+        DirectoryName(
+            Target target)
         {
             if (null == target.Toolset)
             {

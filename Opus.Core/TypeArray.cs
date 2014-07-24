@@ -5,16 +5,18 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class TypeArray : Array<System.Type>
+    public sealed class TypeArray :
+        Array<System.Type>
     {
-        public TypeArray()
-            : base()
-        {
-        }
+        public
+        TypeArray() :
+        base()
+        {}
 
-        public TypeArray(params System.Type[] itemsToAdd)
-            : base(itemsToAdd)
-        {
-        }
+        public
+        TypeArray(
+            params System.Type[] itemsToAdd) :
+        base(itemsToAdd)
+        {}
     }
 }

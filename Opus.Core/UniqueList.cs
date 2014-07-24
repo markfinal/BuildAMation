@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class UniqueList<T> : System.Collections.Generic.List<T>
+    public class UniqueList<T> :
+        System.Collections.Generic.List<T>
     {
-        public new void Add(T obj)
+        public new void
+        Add(
+            T obj)
         {
             if (0 == this.Count)
             {
@@ -38,7 +41,8 @@ namespace Opus.Core
             }
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var text = new System.Text.StringBuilder();
             foreach (var item in this)

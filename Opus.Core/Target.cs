@@ -27,7 +27,10 @@ namespace Opus.Core
             private set;
         }
 
-        public static Target GetInstance(BaseTarget baseTarget, IToolset toolset)
+        public static Target
+        GetInstance(
+            BaseTarget baseTarget,
+            IToolset toolset)
         {
             if (null == toolset)
             {
@@ -54,7 +57,10 @@ namespace Opus.Core
             return target;
         }
 
-        private Target(BaseTarget baseTarget, IToolset toolset)
+        private
+        Target(
+            BaseTarget baseTarget,
+            IToolset toolset)
         {
             this.BaseTarget = baseTarget;
             this.Toolset = toolset;
@@ -63,22 +69,29 @@ namespace Opus.Core
             this.Key = builder.ToString();
         }
 
-        public static explicit operator BaseTarget(Target target)
+        public static explicit operator BaseTarget(
+            Target target)
         {
             return target.BaseTarget;
         }
 
-        public bool HasPlatform(EPlatform platforms)
+        public bool
+        HasPlatform(
+            EPlatform platforms)
         {
             return this.BaseTarget.HasPlatform(platforms);
         }
 
-        public bool HasConfiguration(EConfiguration configurations)
+        public bool
+        HasConfiguration(
+            EConfiguration configurations)
         {
             return this.BaseTarget.HasConfiguration(configurations);
         }
 
-        public bool HasToolsetType(System.Type toolsetType)
+        public bool
+        HasToolsetType(
+            System.Type toolsetType)
         {
             if (null == this.Toolset)
             {
@@ -97,12 +110,15 @@ namespace Opus.Core
             return hasToolset;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.Key;
         }
 
-        public string ToolsetName(char formatter)
+        public string
+        ToolsetName(
+            char formatter)
         {
             var text = this.Toolset.GetType().Namespace;
             if (formatter == 'u')

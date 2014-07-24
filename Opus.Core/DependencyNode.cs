@@ -5,6 +5,7 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
+    // TODO: move to another file
     public enum EBuildState
     {
         NotStarted,
@@ -29,7 +30,8 @@ namespace Opus.Core
             set;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var output = new System.Text.StringBuilder();
             output.AppendFormat("'{0}' from '{1}'", this.UniqueModuleName, this.ModuleName);
@@ -73,7 +75,10 @@ namespace Opus.Core
 
         private EBuildState buildState;
 
-        public delegate void CompleteEventHandler(DependencyNode node);
+        public delegate void
+        CompleteEventHandler(
+            DependencyNode node);
+
         public event CompleteEventHandler CompletedEvent;
 
         public TypeArray LocalUpdatesAdded
@@ -88,7 +93,9 @@ namespace Opus.Core
             set;
         }
 
-        private void AddChild(DependencyNode childNode)
+        private void
+        AddChild(
+            DependencyNode childNode)
         {
             if (null == this.Children)
             {
@@ -101,7 +108,8 @@ namespace Opus.Core
         /// <summary>
         /// Creating option collections are called on each node, iterated by the graph from top to bottom.
         /// </summary>
-        public void CreateOptionCollection()
+        public void
+        CreateOptionCollection()
         {
             var toolset = this.Target.Toolset;
 
@@ -160,7 +168,8 @@ namespace Opus.Core
         /// <summary>
         /// Post creation of option collections are called on each node, iterated from the graph in a bottom to top motion.
         /// </summary>
-        public void PostCreateOptionCollection()
+        public void
+        PostCreateOptionCollection()
         {
             if (null != this.Module.Options)
             {
@@ -384,7 +393,8 @@ namespace Opus.Core
             private set;
         }
 
-        private DependencyNodeCollection Ancestors()
+        private DependencyNodeCollection
+        Ancestors()
         {
             var collection = this.ExternalDependentFor;
             if (collection != null)
@@ -407,7 +417,9 @@ namespace Opus.Core
             }
         }
 
-        public void AddExternalDependent(DependencyNode dependent)
+        public void
+        AddExternalDependent(
+            DependencyNode dependent)
         {
             if (null == dependent)
             {
@@ -445,7 +457,9 @@ namespace Opus.Core
             dependent.ExternalDependentFor.Add(this);
         }
 
-        public void AddRequiredDependent(DependencyNode required)
+        public void
+        AddRequiredDependent(
+            DependencyNode required)
         {
             if (null == required)
             {
@@ -515,21 +529,27 @@ namespace Opus.Core
             private set;
         }
 
-        public string GetModuleBuildDirectory()
+        // TODO: redundant
+        public string
+        GetModuleBuildDirectory()
         {
             var packageBuildDirectory = this.Package.BuildDirectory;
             var moduleBuildDirectory = System.IO.Path.Combine(packageBuildDirectory, this.ModuleName);
             return moduleBuildDirectory;
         }
 
-        public Location GetModuleBuildDirectoryLocation()
+        public Location
+        GetModuleBuildDirectoryLocation()
         {
             var packageBuildDirectory = this.Package.BuildDirectoryLocation;
             var moduleBuildDirectory = packageBuildDirectory.SubDirectory(this.ModuleName);
             return moduleBuildDirectory;
         }
 
-        public string GetTargettedModuleBuildDirectory(string subDirectory)
+        // TODO: redundant
+        public string
+        GetTargettedModuleBuildDirectory(
+            string subDirectory)
         {
             var moduleBuildDirectory = this.GetModuleBuildDirectory();
             var targettedModuleBuildDirectory = System.IO.Path.Combine(moduleBuildDirectory, TargetUtilities.DirectoryName(this.Target));
@@ -541,21 +561,29 @@ namespace Opus.Core
             return targettedModuleBuildDirectory;
         }
 
-        private Location GetTargettedModuleBuildDirectoryLocation()
+        private Location
+        GetTargettedModuleBuildDirectoryLocation()
         {
             var moduleBuildDirectory = this.GetModuleBuildDirectoryLocation();
             var targettedModuleBuildDirectory = moduleBuildDirectory.SubDirectory(TargetUtilities.DirectoryName(this.Target));
             return targettedModuleBuildDirectory;
         }
 
-        public Location GetTargettedModuleBuildDirectoryLocation(string subDirectory)
+        public Location
+        GetTargettedModuleBuildDirectoryLocation(
+            string subDirectory)
         {
             var targettedModuleBuildDirectory = this.GetTargettedModuleBuildDirectoryLocation();
             targettedModuleBuildDirectory = targettedModuleBuildDirectory.SubDirectory(subDirectory);
             return targettedModuleBuildDirectory;
         }
 
-        public string GetTargetPathName(string subDirectory, string targetPrefix, string targetLeafName, string targetExtension)
+        public string
+        GetTargetPathName(
+            string subDirectory,
+            string targetPrefix,
+            string targetLeafName,
+            string targetExtension)
         {
             var targetFileName = System.String.Format("{0}{1}{2}", targetPrefix, targetLeafName, targetExtension);
             var moduleTargetPathName = System.IO.Path.Combine(this.GetTargettedModuleBuildDirectory(subDirectory), targetFileName);
@@ -574,7 +602,10 @@ namespace Opus.Core
             private set;
         }
 
-        public void OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        public void
+        OutputDataReceived(
+            object sender,
+            System.Diagnostics.DataReceivedEventArgs e)
         {
             if (!System.String.IsNullOrEmpty(e.Data))
             {
@@ -589,7 +620,10 @@ namespace Opus.Core
             private set;
         }
 
-        public void ErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
+        public void
+        ErrorDataReceived(
+            object sender,
+            System.Diagnostics.DataReceivedEventArgs e)
         {
             if (!System.String.IsNullOrEmpty(e.Data))
             {
@@ -604,7 +638,10 @@ namespace Opus.Core
             set;
         }
 
-        public string GetChildModuleName(System.Type childModuleType, int childIndex)
+        public string
+        GetChildModuleName(
+            System.Type childModuleType,
+            int childIndex)
         {
             string parentName = this.UniqueModuleName;
             string childName = childModuleType.Name;
@@ -612,13 +649,17 @@ namespace Opus.Core
             return childModuleName;
         }
 
-        public void FilterOutputLocations(Array<LocationKey> filterKeys, LocationArray filteredLocations)
+        public void
+        FilterOutputLocations(
+            Array<LocationKey> filterKeys,
+            LocationArray filteredLocations)
         {
             var locationMap = this.Module.Locations;
             filteredLocations.AddRange(locationMap.FilterByKey(filterKeys));
         }
 
-        public bool IsReadyToBuild()
+        public bool
+        IsReadyToBuild()
         {
             if (this.BuildState != EBuildState.NotStarted)
             {

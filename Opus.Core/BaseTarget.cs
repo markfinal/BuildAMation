@@ -7,7 +7,10 @@ namespace Opus.Core
 {
     public class BaseTarget
     {
-        public static BaseTarget GetInstance(EPlatform platform, EConfiguration configuration)
+        public static BaseTarget
+        GetInstance(
+            EPlatform platform,
+            EConfiguration configuration)
         {
             int hashKey = GenerateHashKey(platform, configuration);
 
@@ -26,7 +29,11 @@ namespace Opus.Core
 
         private static System.Collections.Generic.Dictionary<int, BaseTarget> factory = new System.Collections.Generic.Dictionary<int, BaseTarget>();
 
-        private BaseTarget(EPlatform platform, EConfiguration configuration, int hashKey)
+        private
+        BaseTarget(
+            EPlatform platform,
+            EConfiguration configuration,
+            int hashKey)
         {
             this.Platform = platform;
             this.Configuration = configuration;
@@ -57,31 +64,44 @@ namespace Opus.Core
             private set;
         }
 
-        private static string GenerateKey(EPlatform platform, EConfiguration configuration)
+        private static string
+        GenerateKey(
+            EPlatform platform,
+            EConfiguration configuration)
         {
             var keyBuilder = new System.Text.StringBuilder();
             keyBuilder.AppendFormat("{0}-{1}", platform, configuration);
             return keyBuilder.ToString();
         }
 
-        private static int GenerateHashKey(EPlatform platform, EConfiguration configuration)
+        private static int
+        GenerateHashKey(
+            EPlatform platform,
+            EConfiguration configuration)
         {
             return GenerateKey(platform, configuration).GetHashCode();
         }
 
-        public bool HasPlatform(EPlatform platforms)
+        public bool
+        HasPlatform(
+            EPlatform platforms)
         {
             var hasPlatform = (0 != (this.Platform & platforms));
             return hasPlatform;
         }
 
-        public bool HasConfiguration(EConfiguration configurations)
+        public bool
+        HasConfiguration(
+            EConfiguration configurations)
         {
             var hasConfiguration = (0 != (this.Configuration & configurations));
             return hasConfiguration;
         }
 
-        public static bool operator ==(BaseTarget lhs, BaseTarget rhs)
+        public static bool
+        operator==(
+            BaseTarget lhs,
+            BaseTarget rhs)
         {
             if (System.Object.ReferenceEquals(lhs, rhs))
             {
@@ -93,19 +113,25 @@ namespace Opus.Core
             return same;
         }
 
-        public static bool operator !=(BaseTarget lhs, BaseTarget rhs)
+        public static bool
+        operator!=(
+            BaseTarget lhs,
+            BaseTarget rhs)
         {
             return !(lhs == rhs);
         }
 
         // overridden explicitly because operator== is defined
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
         // overridden explicitly because operator== is defined
-        public override bool Equals(object obj)
+        public override bool
+        Equals(
+            object obj)
         {
             return base.Equals(obj);
         }
@@ -118,14 +144,17 @@ namespace Opus.Core
             }
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var builder = new System.Text.StringBuilder();
             builder.AppendFormat("{0}{1}{2}", this.Platform, ToStringSeparator, this.Configuration);
             return builder.ToString();
         }
 
-        public string PlatformName(char formatter)
+        public string
+        PlatformName(
+            char formatter)
         {
             var text = this.Platform.ToString();
             if (formatter == 'u')
@@ -150,7 +179,9 @@ namespace Opus.Core
             }
         }
 
-        public string ConfigurationName(char formatter)
+        public string
+        ConfigurationName(
+            char formatter)
         {
             var text = this.Configuration.ToString();
             if (formatter == 'u')

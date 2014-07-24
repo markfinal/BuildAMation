@@ -7,7 +7,10 @@ namespace Opus.Core
 {
     public static class TypeUtilities
     {
-        public static void CheckTypeDerivesFrom(System.Type type, System.Type baseClass)
+        public static void
+        CheckTypeDerivesFrom(
+            System.Type type, 
+            System.Type baseClass)
         {
             if (!baseClass.IsAssignableFrom(type))
             {
@@ -15,7 +18,10 @@ namespace Opus.Core
             }
         }
 
-        public static void CheckTypeImplementsInterface(System.Type type, System.Type interfaceType)
+        public static void
+        CheckTypeImplementsInterface(
+            System.Type type,
+            System.Type interfaceType)
         {
             if (!interfaceType.IsInterface)
             {
@@ -28,7 +34,9 @@ namespace Opus.Core
             }
         }
 
-        public static void CheckTypeIsNotAbstract(System.Type type)
+        public static void
+        CheckTypeIsNotAbstract(
+            System.Type type)
         {
             if (type.IsAbstract)
             {

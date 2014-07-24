@@ -5,9 +5,11 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class DependencyGraph : System.Collections.IEnumerable
+    public class DependencyGraph :
+        System.Collections.IEnumerable
     {
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return new DependencyNodeEnumerator(this);
         }
@@ -16,7 +18,8 @@ namespace Opus.Core
 
         private System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, DependencyNode>> uniqueNameToNodeDictionary = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, DependencyNode>>();
 
-        public DependencyGraph()
+        public
+        DependencyGraph()
         {
             if (null != State.Get("System", "Graph"))
             {
@@ -60,7 +63,10 @@ namespace Opus.Core
             private set;
         }
 
-        public void AddTopLevelModule(System.Type moduleType, BaseTarget baseTarget)
+        public void
+        AddTopLevelModule(
+            System.Type moduleType,
+            BaseTarget baseTarget)
         {
             AddModule(moduleType, 0, null, baseTarget, null, -1);
         }
@@ -137,7 +143,8 @@ namespace Opus.Core
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
-        public void Dump()
+        public void
+        Dump()
         {
             Log.DebugMessage("-------------GRAPH--------------");
             foreach (var nodeCollection in this.rankList)
@@ -155,7 +162,8 @@ namespace Opus.Core
             Log.DebugMessage("------------/GRAPH--------------");
         }
 
-        private void CreateOptionCollections()
+        private void
+        CreateOptionCollections()
         {
             Log.DebugMessage("--------------------------------");
             Log.DebugMessage("Create option collections: START");
@@ -192,7 +200,8 @@ namespace Opus.Core
             Log.DebugMessage("------------------------------");
         }
 
-        public void PopulateGraph()
+        public void
+        PopulateGraph()
         {
             if (0 == this.RankCount)
             {
@@ -261,7 +270,10 @@ namespace Opus.Core
             this.Dump();
         }
 
-        private DependencyNode FindNodeForTargettedModule(string moduleName, Target target)
+        private DependencyNode
+        FindNodeForTargettedModule(
+            string moduleName,
+            Target target)
         {
             var moduleNameExists = this.uniqueNameToNodeDictionary.ContainsKey(moduleName);
             if (!moduleNameExists)

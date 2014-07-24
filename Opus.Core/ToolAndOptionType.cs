@@ -7,7 +7,10 @@ namespace Opus.Core
 {
     public sealed class ToolAndOptionType
     {
-        public ToolAndOptionType(ITool tool, System.Type optionsType)
+        public
+        ToolAndOptionType(
+            ITool tool,
+            System.Type optionsType)
         {
             this.Tool = tool;
             this.OptionsType = optionsType;

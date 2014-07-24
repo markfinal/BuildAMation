@@ -7,7 +7,8 @@ namespace Opus.Core
 {
     public static class TimingProfileUtilities
     {
-        public static void DumpProfiles()
+        public static void
+        DumpProfiles()
         {
             var additionalDetails = false;
 

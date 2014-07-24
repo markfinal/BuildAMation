@@ -7,19 +7,28 @@ namespace Opus.Core
 {
     public static class RelativePathUtilities
     {
-        public static bool IsPathAbsolute(string path)
+        public static bool
+        IsPathAbsolute(
+            string path)
         {
             var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
             var isAbsolute = pathUri.IsAbsoluteUri;
             return isAbsolute;
         }
 
-        public static string GetPath(System.Uri pathUri, System.Uri relativeToUri)
+        public static string
+        GetPath(
+            System.Uri pathUri,
+            System.Uri relativeToUri)
         {
             return GetPath(pathUri, relativeToUri, null);
         }
 
-        public static string GetPath(System.Uri pathUri, System.Uri relativeToUri, string relativePrefix)
+        public static string
+        GetPath(
+            System.Uri pathUri,
+            System.Uri relativeToUri,
+            string relativePrefix)
         {
             var relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
             if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
@@ -43,7 +52,11 @@ namespace Opus.Core
             }
         }
 
-        public static string GetPath(string path, System.Uri relativeToUri, string relativePrefix)
+        public static string
+        GetPath(
+            string path,
+            System.Uri relativeToUri,
+            string relativePrefix)
         {
             if (null == path)
             {
@@ -83,38 +96,56 @@ namespace Opus.Core
             #endif
         }
 
-        public static string GetPath(string path, System.Uri relativeToUri)
+        public static string
+        GetPath(
+            string path,
+            System.Uri relativeToUri)
         {
             return GetPath(path, relativeToUri, null);
         }
 
-        public static string GetPath(Location location, System.Uri relativeToUri)
+        public static string
+        GetPath(
+            Location location,
+            System.Uri relativeToUri)
         {
             return GetPath(location.GetSinglePath(), relativeToUri, null);
         }
 
-        public static string GetPath(string path, string relativeToString, string relativePrefix)
+        public static string
+        GetPath(
+            string path,
+            string relativeToString,
+            string relativePrefix)
         {
             var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
             var relativePath = GetPath(path, relativeToUri, relativePrefix);
             return relativePath;
         }
 
-        public static string GetPath(string path, string relativeToString)
+        public static string
+        GetPath(
+            string path,
+            string relativeToString)
         {
             var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
             var relativePath = GetPath(path, relativeToUri);
             return relativePath;
         }
 
-        public static string GetPath(Location location, string relativeToString)
+        public static string
+        GetPath(
+            Location location,
+            string relativeToString)
         {
             var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
             var relativePath = GetPath(location, relativeToUri);
             return relativePath;
         }
 
-        public static string MakeRelativePathAbsoluteToWorkingDir(string relativePath)
+        public static string
+        MakeRelativePathAbsoluteToWorkingDir(
+            string relativePath)
         {
             var relativePathUri = new System.Uri(relativePath, System.UriKind.RelativeOrAbsolute);
             if (!relativePathUri.IsAbsoluteUri)
@@ -133,7 +164,10 @@ namespace Opus.Core
             return absolutePath;
         }
 
-        public static string GetCommonRoot(string path1, string path2)
+        public static string
+        GetCommonRoot(
+            string path1,
+            string path2)
         {
             var path1Parts = path1.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
             var path2Parts = path2.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });

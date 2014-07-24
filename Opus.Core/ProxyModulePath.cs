@@ -9,11 +9,13 @@ namespace Opus.Core
     {
         private StringArray pathSegments;
 
-        public ProxyModulePath()
-        {
-        }
+        public
+        ProxyModulePath()
+        {}
 
-        public ProxyModulePath(params string[] segments)
+        public
+        ProxyModulePath(
+            params string[] segments)
         {
             this.pathSegments = new StringArray(segments);
         }
@@ -26,12 +28,16 @@ namespace Opus.Core
             }
         }
 
-        public void Assign(params string[] segments)
+        public void
+        Assign(
+            params string[] segments)
         {
             this.pathSegments = new StringArray(segments);
         }
 
-        public void Assign(ProxyModulePath proxy)
+        public void
+        Assign(
+            ProxyModulePath proxy)
         {
             if (null == proxy.pathSegments)
             {
@@ -41,7 +47,9 @@ namespace Opus.Core
             this.pathSegments = new StringArray(proxy.pathSegments);
         }
 
-        public DirectoryLocation Combine(Location baseLocation)
+        public DirectoryLocation
+        Combine(
+            Location baseLocation)
         {
             if (null == this.pathSegments)
             {

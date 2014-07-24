@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class DefaultScheduler : IBuildScheduler
+    public class DefaultScheduler :
+        IBuildScheduler
     {
         private DependencyGraph graph;
         private int scheduledNodeCount = 0;
@@ -14,7 +15,9 @@ namespace Opus.Core
 
         public event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
 
-        public DefaultScheduler(DependencyGraph graph)
+        public
+        DefaultScheduler(
+            DependencyGraph graph)
         {
             this.graph = graph;
             this.TotalNodeCount = graph.TotalNodeCount;
@@ -75,13 +78,16 @@ namespace Opus.Core
             }
         }
 
-        static private bool RankedNodeCollectionComplete(DependencyNodeCollection rankCollection)
+        static private bool
+        RankedNodeCollectionComplete(
+            DependencyNodeCollection rankCollection)
         {
             var rankCollectionComplete = System.Threading.WaitHandle.WaitAll(rankCollection.AllNodesCompletedEvent, 0);
             return rankCollectionComplete;
         }
 
-        public DependencyNode GetNextNodeToBuild()
+        public DependencyNode
+        GetNextNodeToBuild()
         {
             for (int rank = this.highestRankToBuild; rank >= 0; --rank)
             {

@@ -13,11 +13,14 @@ namespace Opus.Core
     /// written by the package author. As such, there must always be a default constructor
     /// in BaseModule.
     /// </summary>
-    public abstract class BaseModule : IModule
+    public abstract class BaseModule :
+        IModule
     {
         private readonly LocationKey PackageDirKey = new LocationKey("PackageDirectory", ScaffoldLocation.ETypeHint.Directory);
 
-        private void StubOutputLocations(System.Type moduleType)
+        private void
+        StubOutputLocations(
+            System.Type moduleType)
         {
             this.Locations[State.ModuleBuildDirLocationKey] = new ScaffoldLocation(ScaffoldLocation.ETypeHint.Directory);
 
@@ -41,7 +44,8 @@ namespace Opus.Core
             }
         }
 
-        protected BaseModule()
+        protected
+        BaseModule()
         {
             this.ProxyPath = new ProxyModulePath();
             this.Locations = new LocationMap();
@@ -95,7 +99,9 @@ namespace Opus.Core
             private set;
         }
 
-        public void ExecuteOptionUpdate(Target target)
+        public void
+        ExecuteOptionUpdate(
+            Target target)
         {
             if (null != this.UpdateOptions)
             {

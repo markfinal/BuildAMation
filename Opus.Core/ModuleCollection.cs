@@ -5,16 +5,21 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public class ModuleCollection : System.Collections.Generic.ICollection<IModule>
+    public class ModuleCollection :
+        System.Collections.Generic.ICollection<IModule>
     {
         private System.Collections.Generic.List<IModule> list = new System.Collections.Generic.List<IModule>();
 
-        public void Add(IModule item)
+        public void
+        Add(
+            IModule item)
         {
             this.list.Add(item);
         }
 
-        public void AddRange(ModuleCollection itemCollection)
+        public void
+        AddRange(
+            ModuleCollection itemCollection)
         {
             foreach (var module in itemCollection)
             {
@@ -22,17 +27,23 @@ namespace Opus.Core
             }
         }
 
-        public void Clear()
+        public void
+        Clear()
         {
             this.list.Clear();
         }
 
-        public bool Contains(IModule item)
+        public bool
+        Contains(
+            IModule item)
         {
             return this.list.Contains(item);
         }
 
-        public void CopyTo(IModule[] array, int arrayIndex)
+        public void
+        CopyTo(
+            IModule[] array,
+            int arrayIndex)
         {
             this.list.CopyTo(array, arrayIndex);
         }
@@ -53,17 +64,21 @@ namespace Opus.Core
             }
         }
 
-        public bool Remove(IModule item)
+        public bool
+        Remove(
+            IModule item)
         {
             return this.list.Remove(item);
         }
 
-        public System.Collections.Generic.IEnumerator<IModule> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<IModule>
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.list.GetEnumerator();
         }

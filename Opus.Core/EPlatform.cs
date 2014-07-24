@@ -29,9 +29,12 @@ namespace Opus.Core
         All        = Windows | Unix | OSX
     }
 
+    // TODO: move to another file
     public static class Platform
     {
-        public static EPlatform FromString(string platformName)
+        public static EPlatform
+        FromString(
+            string platformName)
         {
             var platform = EPlatform.Invalid;
             if (0 == System.String.Compare(platformName, "Windows", true))
@@ -77,7 +80,13 @@ namespace Opus.Core
             return platform;
         }
 
-        private static void AddPlatformName(ref string platformString, string name, char separator, string prefix, bool toUpper)
+        private static void
+        AddPlatformName(
+            ref string platformString,
+            string name,
+            char separator,
+            string prefix,
+            bool toUpper)
         {
             if (null != platformString)
             {
@@ -102,25 +111,38 @@ namespace Opus.Core
             platformString += name;
         }
 
-        public static bool Contains(EPlatform flags, EPlatform specificPlatform)
+        public static bool
+        Contains(
+            EPlatform flags,
+            EPlatform specificPlatform)
         {
             var contains = (specificPlatform == (flags & specificPlatform));
             return contains;
         }
 
-        public static string ToString(EPlatform platformFlags)
+        public static string
+        ToString(
+            EPlatform platformFlags)
         {
             var value = ToString(platformFlags, '\0', null, false);
             return value;
         }
 
-        public static string ToString(EPlatform platformFlags, char separator)
+        public static string
+        ToString(
+            EPlatform platformFlags,
+            char separator)
         {
             var value = ToString(platformFlags, separator, null, false);
             return value;
         }
 
-        public static string ToString(EPlatform platformFlags, char separator, string prefix, bool toUpper)
+        public static string
+        ToString(
+            EPlatform platformFlags,
+            char separator,
+            string prefix,
+            bool toUpper)
         {
             string platformString = null;
 

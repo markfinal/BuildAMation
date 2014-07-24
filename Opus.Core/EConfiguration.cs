@@ -16,9 +16,12 @@ namespace Opus.Core
         All       = Debug | Optimized | Profile | Final
     }
 
+    // TODO :move to another file
     public static class Configuration
     {
-        public static EConfiguration FromString(string configurationName)
+        public static EConfiguration
+        FromString(
+            string configurationName)
         {
             var configuration = EConfiguration.Invalid;
             if (0 == System.String.Compare(configurationName, "Debug", true))

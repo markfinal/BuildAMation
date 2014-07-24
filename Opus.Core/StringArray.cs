@@ -5,14 +5,19 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    public sealed class StringArray : Array<string>, System.ICloneable, Opus.Core.ISetOperations<StringArray>
+    public sealed class StringArray :
+        Array<string>,
+        System.ICloneable,
+        Opus.Core.ISetOperations<StringArray>
     {
-        public StringArray()
-            : base()
-        {
-        }
+        public
+        StringArray() :
+        base()
+        {}
 
-        public StringArray(params string[] itemsToAdd)
+        public
+        StringArray(
+            params string[] itemsToAdd)
         {
             foreach (var item in itemsToAdd)
             {
@@ -23,7 +28,9 @@ namespace Opus.Core
             }
         }
 
-        public StringArray(System.Collections.ICollection collection)
+        public
+        StringArray(
+            System.Collections.ICollection collection)
         {
             foreach (string item in collection)
             {
@@ -34,7 +41,9 @@ namespace Opus.Core
             }
         }
 
-        public StringArray(StringArray array)
+        public
+        StringArray(
+            StringArray array)
         {
             foreach (var item in array)
             {
@@ -45,7 +54,9 @@ namespace Opus.Core
             }
         }
 
-        public StringArray(Opus.Core.Array<string> array)
+        public
+        StringArray(
+            Opus.Core.Array<string> array)
         {
             foreach (var item in array)
             {
@@ -56,7 +67,9 @@ namespace Opus.Core
             }
         }
 
-        public override void Add(string item)
+        public override void
+        Add(
+            string item)
         {
             if (System.String.IsNullOrEmpty(item))
             {
@@ -66,12 +79,15 @@ namespace Opus.Core
             this.list.Add(item);
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.ToString(' ');
         }
 
-        public string ToString(char separator)
+        public string
+        ToString(
+            char separator)
         {
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
@@ -83,7 +99,8 @@ namespace Opus.Core
             return output;
         }
 
-        public void RemoveDuplicates()
+        public void
+        RemoveDuplicates()
         {
             var newList = new System.Collections.Generic.List<string>();
             foreach (var item in this.list)
@@ -97,7 +114,8 @@ namespace Opus.Core
             this.list = newList;
         }
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             var clone = new StringArray();
             clone.list.AddRange(this.list);
@@ -106,12 +124,16 @@ namespace Opus.Core
 
         #region ISetOperations implementation
 
-        StringArray ISetOperations<StringArray>.Complement (StringArray other)
+        StringArray
+        ISetOperations<StringArray>.Complement(
+            StringArray other)
         {
             return new StringArray((this as Array<string>).Complement(other as Array<string>));
         }
 
-        StringArray ISetOperations<StringArray>.Intersect (StringArray other)
+        StringArray
+        ISetOperations<StringArray>.Intersect(
+            StringArray other)
         {
             return new StringArray((this as Array<string>).Intersect(other as Array<string>));
         }

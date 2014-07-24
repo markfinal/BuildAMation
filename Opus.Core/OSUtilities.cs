@@ -36,6 +36,7 @@ namespace Opus.Core
 
             static private bool mIsWindows;
             static private bool mIsMac;
+
             public enum OS
             {
                 Windows,
@@ -43,7 +44,9 @@ namespace Opus.Core
                 Unix,
                 unknown
             };
-            static public OS GetOS()
+
+            static public OS
+            GetOS()
             {
                 if (mIsWindows = (System.IO.Path.DirectorySeparatorChar == '\\'))
                 {
@@ -64,7 +67,8 @@ namespace Opus.Core
             }
 
             //From Managed.Windows.Forms/XplatUI
-            static bool IsRunningOnMac()
+            static bool
+            IsRunningOnMac()
             {
                 var buf = System.IntPtr.Zero;
                 try
@@ -95,7 +99,8 @@ namespace Opus.Core
             }
         }
 
-        public static void SetupPlatform()
+        public static void
+        SetupPlatform()
         {
             var os = Platform.GetOS();
             switch (os)
@@ -147,19 +152,25 @@ namespace Opus.Core
             State.Add<bool>("System", "IsLittleEndian", isLittleEndian);
         }
 
-        public static bool IsWindows(EPlatform platform)
+        public static bool
+        IsWindows(
+            EPlatform platform)
         {
             var isWindows = (EPlatform.Win32 == platform || EPlatform.Win64 == platform);
             return isWindows;
         }
 
-        public static bool IsWindows(BaseTarget baseTarget)
+        public static bool
+        IsWindows(
+            BaseTarget baseTarget)
         {
             var isWindows = baseTarget.HasPlatform(EPlatform.Windows);
             return isWindows;
         }
 
-        public static bool IsWindows(Target target)
+        public static bool
+        IsWindows(
+            Target target)
         {
             return IsWindows((BaseTarget)target);
         }
@@ -173,19 +184,25 @@ namespace Opus.Core
             }
         }
 
-        public static bool IsUnix(EPlatform platform)
+        public static bool
+        IsUnix(
+            EPlatform platform)
         {
             var isUnix = (EPlatform.Unix32 == platform || EPlatform.Unix64 == platform);
             return isUnix;
         }
 
-        public static bool IsUnix(BaseTarget baseTarget)
+        public static bool
+        IsUnix(
+            BaseTarget baseTarget)
         {
             var isUnix = baseTarget.HasPlatform(EPlatform.Unix);
             return isUnix;
         }
 
-        public static bool IsUnix(Target target)
+        public static bool
+        IsUnix(
+            Target target)
         {
             return IsUnix((BaseTarget)target);
         }
@@ -199,19 +216,25 @@ namespace Opus.Core
             }
         }
 
-        public static bool IsOSX(EPlatform platform)
+        public static bool
+        IsOSX(
+            EPlatform platform)
         {
             var isOSX = (EPlatform.OSX32 == platform || EPlatform.OSX64 == platform);
             return isOSX;
         }
 
-        public static bool IsOSX(BaseTarget baseTarget)
+        public static bool
+        IsOSX(
+            BaseTarget baseTarget)
         {
             var isOSX = baseTarget.HasPlatform(EPlatform.OSX);
             return isOSX;
         }
 
-        public static bool IsOSX(Target target)
+        public static bool
+        IsOSX(
+            Target target)
         {
             return IsOSX((BaseTarget)target);
         }
@@ -225,19 +248,25 @@ namespace Opus.Core
             }
         }
 
-        public static bool Is64Bit(EPlatform platform)
+        public static bool
+        Is64Bit(
+            EPlatform platform)
         {
             var is64Bit = (EPlatform.Win64 == platform || EPlatform.Unix64 == platform || EPlatform.OSX64 == platform);
             return is64Bit;
         }
 
-        public static bool Is64Bit(BaseTarget baseTarget)
+        public static bool
+        Is64Bit(
+            BaseTarget baseTarget)
         {
             var is64Bit = baseTarget.HasPlatform(EPlatform.Win64 | EPlatform.Unix64 | EPlatform.OSX64);
             return is64Bit;
         }
 
-        public static bool Is64Bit(Target target)
+        public static bool
+        Is64Bit(
+            Target target)
         {
             return Is64Bit((BaseTarget)target);
         }
@@ -251,7 +280,9 @@ namespace Opus.Core
             }
         }
 
-        public static bool IsCurrentPlatformSupported(EPlatform supportedPlatforms)
+        public static bool
+        IsCurrentPlatformSupported(
+            EPlatform supportedPlatforms)
         {
             var currentPlatform = State.Platform;
             var isSupported = (currentPlatform == (supportedPlatforms & currentPlatform));

@@ -15,7 +15,10 @@ namespace Opus.Core
         /// </summary>
         /// <param name="messageValue">Message to output.</param>
         /// <param name="isError">True if an error message, false if standard output.</param>
-        private static void Message(string messageValue, bool isError)
+        private static void
+        Message(
+            string messageValue,
+            bool isError)
         {
             if (System.Diagnostics.Debugger.IsAttached && !State.RunningMono)
             {
@@ -40,7 +43,9 @@ namespace Opus.Core
         /// </summary>
         /// <param name="incoming">Original string</param>
         /// <returns>Escaped string</returns>
-        private static string EscapeString(string incoming)
+        private static string
+        EscapeString(
+            string incoming)
         {
             var escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([^[0-9]]*)|{$", @"{{$1");
             escapedText = System.Text.RegularExpressions.Regex.Replace(escapedText, @"^}|([^[0-9]]*)}", @"$1}}");
@@ -53,7 +58,11 @@ namespace Opus.Core
         /// <param name="level">Verbose level to use</param>
         /// <param name="format">Format of message to output.</param>
         /// <param name="args">Array of objects used in the formatting.</param>
-        public static void Message(EVerboseLevel level, string format, params object[] args)
+        public static void
+        Message(
+            EVerboseLevel level,
+            string format,
+            params object[] args)
         {
             if (State.VerbosityLevel >= level)
             {
@@ -63,14 +72,20 @@ namespace Opus.Core
             }
         }
 
-        public static void MessageAll(string format, params object[] args)
+        public static void
+        MessageAll(
+            string format,
+            params object[] args)
         {
             var formattedMessage = new System.Text.StringBuilder();
             formattedMessage.AppendFormat(EscapeString(format), args);
             Message(formattedMessage.ToString(), false);
         }
 
-        public static void Info(string format, params object[] args)
+        public static void
+        Info(
+            string format,
+            params object[] args)
         {
             if (State.VerbosityLevel >= EVerboseLevel.Info)
             {
@@ -80,7 +95,10 @@ namespace Opus.Core
             }
         }
 
-        public static void Detail(string format, params object[] args)
+        public static void
+        Detail(
+            string format,
+            params object[] args)
         {
             if (State.VerbosityLevel >= EVerboseLevel.Detail)
             {
@@ -90,7 +108,10 @@ namespace Opus.Core
             }
         }
 
-        public static void Full(string format, params object[] args)
+        public static void
+        Full(
+            string format,
+            params object[] args)
         {
             if (EVerboseLevel.Full == State.VerbosityLevel)
             {
@@ -100,7 +121,10 @@ namespace Opus.Core
             }
         }
 
-        public static void ErrorMessage(string format, params object[] args)
+        public static void
+        ErrorMessage(
+            string format,
+            params object[] args)
         {
             var formattedMessage = new System.Text.StringBuilder();
             formattedMessage.AppendFormat(EscapeString("ERROR: " + format), args);
@@ -108,7 +132,10 @@ namespace Opus.Core
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
-        public static void DebugMessage(string format, params object[] args)
+        public static void
+        DebugMessage(
+            string format,
+            params object[] args)
         {
             if (State.VerbosityLevel > EVerboseLevel.Detail)
             {

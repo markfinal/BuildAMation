@@ -9,19 +9,23 @@ namespace Opus.Core
     {
         public static readonly string DateTimeFormat = "m:s.fff";
 
-        public TimeProfile(ETimingProfiles profile)
+        public
+        TimeProfile(
+            ETimingProfiles profile)
         {
             this.Profile = profile;
         }
 
-        public void StartProfile()
+        public void
+        StartProfile()
         {
             var time = System.DateTime.Now;
             this.Start = time;
             Log.DebugMessage("Profile '{0}': start {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
         }
 
-        public void StopProfile()
+        public void
+        StopProfile()
         {
             var time = System.DateTime.Now;
             this.Stop = time;

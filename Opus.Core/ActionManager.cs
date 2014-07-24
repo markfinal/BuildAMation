@@ -9,7 +9,9 @@ namespace Opus.Core
     {
         private static Array<RegisterActionAttribute> actions = null;
 
-        private static Array<RegisterActionAttribute> GetActionsFromAssembly(System.Reflection.Assembly assembly)
+        private static Array<RegisterActionAttribute>
+        GetActionsFromAssembly(
+            System.Reflection.Assembly assembly)
         {
             if (null == assembly)
             {
@@ -20,7 +22,8 @@ namespace Opus.Core
             return new Array<RegisterActionAttribute>(customAttributes);
         }
 
-        static ActionManager()
+        static
+        ActionManager()
         {
             actions = GetActionsFromAssembly(System.Reflection.Assembly.GetEntryAssembly());
         }
@@ -119,7 +122,9 @@ namespace Opus.Core
             }
         }
 
-        public static Array<IAction> FindInvokedActionsByType(System.Type actionType)
+        public static Array<IAction>
+        FindInvokedActionsByType(
+            System.Type actionType)
         {
             var array = new Array<IAction>();
             foreach (var action in State.InvokedActions)
