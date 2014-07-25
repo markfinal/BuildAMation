@@ -9,9 +9,11 @@
 namespace CommandLineProcessor
 {
     [Opus.Core.PreambleAction]
-    public sealed class NoResponseFileAction : Opus.Core.IAction
+    public sealed class NoResponseFileAction :
+        Opus.Core.IAction
     {
-        public NoResponseFileAction()
+        public
+        NoResponseFileAction()
         {
             if (!Opus.Core.State.HasCategory("Build"))
             {
@@ -36,7 +38,8 @@ namespace CommandLineProcessor
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.State.Set("Build", "DisableResponseFiles", true);
 
@@ -47,7 +50,8 @@ namespace CommandLineProcessor
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }
