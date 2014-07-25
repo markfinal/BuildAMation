@@ -113,8 +113,10 @@ namespace Opus.Core
             }
         }
 
-        // TODO: should be able to roll the following functions into one
+        // TODO: should be able to roll GetExternalDependents and GetRequiredDependents into one
+        // function, and return both results.
         // This will improve performance as we only have to use reflection on the fields once
+        // and both are always called in close proximity to each other
         public static TypeArray
         GetExternalDependents(
             IModule module,
