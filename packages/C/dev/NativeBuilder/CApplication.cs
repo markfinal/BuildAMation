@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.Application moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Application moduleToBuild,
+            out bool success)
         {
             var applicationModule = moduleToBuild as Opus.Core.BaseModule;
             var node = applicationModule.OwningNode;

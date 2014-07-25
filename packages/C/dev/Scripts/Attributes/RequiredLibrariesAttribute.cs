@@ -6,9 +6,15 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public sealed class RequiredLibrariesAttribute : Opus.Core.BaseTargetFilteredAttribute, Opus.Core.IFieldAttributeProcessor
+    public sealed class RequiredLibrariesAttribute :
+        Opus.Core.BaseTargetFilteredAttribute,
+        Opus.Core.IFieldAttributeProcessor
     {
-        void Opus.Core.IFieldAttributeProcessor.Execute(object sender, Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        Opus.Core.IFieldAttributeProcessor.Execute(
+            object sender,
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             if (!Opus.Core.TargetUtilities.MatchFilters(target, this))
             {

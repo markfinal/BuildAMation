@@ -6,7 +6,7 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple=true)]
-    public sealed class HeaderFilesAttribute : System.Attribute
-    {
-    }
+    public sealed class HeaderFilesAttribute :
+        System.Attribute
+    {}
 }

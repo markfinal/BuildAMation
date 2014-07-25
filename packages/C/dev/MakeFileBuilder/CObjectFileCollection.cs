@@ -7,7 +7,10 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFileCollectionBase moduleToBuild,
+            out bool success)
         {
             var objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
             var node = objectFileCollectionModule.OwningNode;

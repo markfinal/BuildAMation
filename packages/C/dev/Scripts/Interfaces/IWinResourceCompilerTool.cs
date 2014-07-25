@@ -8,7 +8,8 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
                                    typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetWinResourceCompilerToolset")]
-    public interface IWinResourceCompilerTool : Opus.Core.ITool
+    public interface IWinResourceCompilerTool :
+        Opus.Core.ITool
     {
         string CompiledResourceSuffix
         {

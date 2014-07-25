@@ -7,7 +7,10 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.DynamicLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.DynamicLibrary moduleToBuild,
+            out bool success)
         {
             var dynamicLibraryModule = moduleToBuild as Opus.Core.BaseModule;
             var node = dynamicLibraryModule.OwningNode;
@@ -174,7 +177,6 @@ namespace MakeFileBuilder
             var outputPath = moduleToBuild.Locations[primaryOutputKey].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
             var instanceName = MakeFile.InstanceName(node);
-#if true
             var toolOutputLocKeys = (linkerTool as Opus.Core.ITool).OutputLocationKeys(moduleToBuild);
             var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
@@ -197,32 +199,6 @@ namespace MakeFileBuilder
                 var outputLocPath = outputLoc.GetSinglePath();
                 recipe = recipe.Replace(outputLocPath, variableName);
             }
-#else
-            // TODO: due to the foreach causing this exception in Mono
-            // '(System.InvalidCastException) Cannot cast from source type to destination type.'
-            if (Opus.Core.State.RunningMono)
-            {
-                foreach (System.Enum key in dynamicLibraryOptions.OutputPaths.Types)
-                {
-                    if (!key.Equals(primaryOutput))
-                    {
-                        var variableName = System.String.Format("{0}_{1}_Variable", instanceName, key.ToString());
-                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[key], System.String.Format("$({0})", variableName));
-                    }
-                }
-            }
-            else
-            {
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in dynamicLibraryOptions.OutputPaths)
-                {
-                    if (!outputPath.Key.Equals(primaryOutput))
-                    {
-                        var variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                        recipe = recipe.Replace(dynamicLibraryOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
-                    }
-                }
-            }
-#endif
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);

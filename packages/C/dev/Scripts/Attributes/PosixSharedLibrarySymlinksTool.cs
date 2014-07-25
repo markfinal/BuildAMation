@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportPosixSharedLibrarySymlinksToolOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportPosixSharedLibrarySymlinksToolOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalPosixSharedLibrarySymlinksToolOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalPosixSharedLibrarySymlinksToolOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

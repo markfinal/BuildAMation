@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public sealed class VisualStudioToolAttributeDictionary : System.Collections.Generic.Dictionary<string, string>
+    public sealed class VisualStudioToolAttributeDictionary :
+        System.Collections.Generic.Dictionary<string, string>
     {
-        public void Merge(VisualStudioToolAttributeDictionary dictionary)
+        public void
+        Merge(
+            VisualStudioToolAttributeDictionary dictionary)
         {
             foreach (var option in dictionary)
             {

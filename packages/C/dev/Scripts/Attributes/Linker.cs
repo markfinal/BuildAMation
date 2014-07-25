@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportLinkerOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportLinkerOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalLinkerOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalLinkerOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

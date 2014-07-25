@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportArchiverOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportArchiverOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalArchiverOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalArchiverOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

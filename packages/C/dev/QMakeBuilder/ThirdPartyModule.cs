@@ -8,7 +8,10 @@ namespace QMakeBuilder
     public sealed partial class QMakeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(C.ThirdPartyModule moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ThirdPartyModule moduleToBuild,
+            out bool success)
         {
             success = true;
             return null;

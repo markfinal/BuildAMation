@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.ObjectFile moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFile moduleToBuild,
+            out bool success)
         {
             var objectFileModule = moduleToBuild as Opus.Core.BaseModule;
             var node = objectFileModule.OwningNode;
@@ -107,12 +110,7 @@ namespace VSSolutionBuilder
                     projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
                 }
 
-#if true
                 configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.OutputDir];
-#else
-                var options = objectFileOptions as C.CompilerOptionCollection;
-                configuration.IntermediateDirectory = options.OutputDirectoryPath;
-#endif
             }
 
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();

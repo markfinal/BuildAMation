@@ -8,7 +8,8 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalArchiverOptionsDelegateAttribute),
                                    typeof(ExportArchiverOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetArchiverToolset")]
-    public interface IArchiverTool : Opus.Core.ITool
+    public interface IArchiverTool :
+        Opus.Core.ITool
     {
         string StaticLibraryPrefix
         {

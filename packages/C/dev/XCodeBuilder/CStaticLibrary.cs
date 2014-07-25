@@ -7,7 +7,10 @@ namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder
     {
-        public object Build(C.StaticLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.StaticLibrary moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
@@ -15,11 +18,7 @@ namespace XcodeBuilder
             var baseTarget = (Opus.Core.BaseTarget)target;
 
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
-#if true
             var libraryLocation = moduleToBuild.Locations[C.StaticLibrary.OutputFileLocKey];
-#else
-            var outputPath = options.OutputPaths[C.OutputFileFlags.StaticLibrary];
-#endif
 
             var project = this.Workspace.GetProject(node);
 
@@ -102,11 +101,7 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
             var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
-            #if true
             var relPath = Opus.Core.RelativePathUtilities.GetPath(moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey], basePath);
-            #else
-            var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
-            #endif
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
 
             // adding the group for the target
@@ -159,90 +154,6 @@ namespace XcodeBuilder
                     data.RequiredTargets.AddUnique(reqData);
                 }
             }
-
-            #if false
-            // required dependencies need to go into scheme targets
-            if (null != node.RequiredDependents)
-            {
-                foreach (var dependency in node.RequiredDependents)
-                {
-                    var dependentData = dependency.Data as PBXNativeTarget;
-                    if (null == dependentData)
-                    {
-                        continue;
-                    }
-
-                    data.RequiredTargets.AddUnique(dependentData);
-                    data.RequiredTargets.AddRangeUnique(dependentData.RequiredTargets);
-                }
-            }
-            #endif
-#if false
-            if (null != node.RequiredDependents)
-            {
-                foreach (var dependency in node.RequiredDependents)
-                {
-                    var dependentData = dependency.Data as PBXNativeTarget;
-                    if (null == dependentData)
-                    {
-                        continue;
-                    }
-
-                    if (dependentData.Project == project)
-                    {
-                        // add a real dependency between targets in a project
-                        var targetDependency = project.TargetDependencies.Get(moduleName, dependentData);
-
-                        var containerItemProxy = project.ContainerItemProxies.Get(moduleName, dependentData, project);
-                        targetDependency.TargetProxy = containerItemProxy;
-
-                        data.Dependencies.Add(targetDependency);
-                    }
-                    else
-                    {
-                        // add a buildreference to external projects
-                        // Note that this does add a link dependency, but assume dead stripping will resolve this
-                        var type = dependentData.ProductReference.Type;
-                        if (type == PBXFileReference.EType.StaticLibrary)
-                        {
-                            type = PBXFileReference.EType.ReferencedStaticLibrary;
-                        }
-                        if (type == PBXFileReference.EType.DynamicLibrary)
-                        {
-                            type = PBXFileReference.EType.ReferencedDynamicLibrary;
-                        }
-
-                        var frameworksBuildPhase = project.FrameworksBuildPhases.Get("Frameworks", moduleName);
-                        data.BuildPhases.AddUnique(frameworksBuildPhase);
-
-                        var relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);
-                        var dependentFileRef = project.FileReferences.Get(dependency.UniqueModuleName, type, relativePath, project.RootUri);
-                        var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentFileRef, frameworksBuildPhase);
-                        if (null == buildFile)
-                        {
-                            throw new Opus.Core.Exception("Build file not available");
-                        }
-                        // make the link requirement optional, so dyld does not attempt to load it with the parent application
-                        buildFile.Settings["ATTRIBUTES"].AddUnique("(Weak, )");
-
-                        project.MainGroup.Children.AddUnique(dependentFileRef);
-
-                        // now add linker search paths
-                        buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique("$(inherited)");
-                        if (dependency.Module is C.DynamicLibrary)
-                        {
-                            var outputDir = dependency.Module.Locations[C.Application.OutputDir].GetSinglePath();
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
-                        }
-                        else if (dependency.Module is C.StaticLibrary)
-                        {
-                            var outputDir = dependency.Module.Locations[C.StaticLibrary.OutputDirLocKey].GetSinglePath();
-                            buildConfiguration.Options["LIBRARY_SEARCH_PATHS"].AddUnique(outputDir);
-                        }
-                    }
-                }
-            }
-#endif
 
             // find header files
             var fieldBindingFlags = System.Reflection.BindingFlags.Instance |

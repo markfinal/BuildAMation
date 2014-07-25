@@ -10,22 +10,24 @@ namespace C
         Opus.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport
     {
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
-        {
-            // do nothing yet
-        }
+        protected override void
+         SetDelegates(
+            Opus.Core.DependencyNode node)
+        {}
 
-        public PosixSharedLibrarySymlinksOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        PosixSharedLibrarySymlinksOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
-        {
-            // do nothing
-        }
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
+        {}
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
 
@@ -139,7 +141,9 @@ namespace C
             throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
         }
 
-        public override void FinalizeOptions (Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
 
@@ -189,7 +193,11 @@ namespace C
             }
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
+        void
+        CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
+            Opus.Core.StringArray commandLineBuilder,
+            Opus.Core.Target target,
+            Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

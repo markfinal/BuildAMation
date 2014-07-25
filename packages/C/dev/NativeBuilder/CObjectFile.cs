@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.ObjectFile moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFile moduleToBuild,
+            out bool success)
         {
             var sourceLoc = moduleToBuild.SourceFileLocation;
             var sourceFilePath = sourceLoc.GetSinglePath();

@@ -5,9 +5,13 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public abstract class LinkerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
+    public abstract class LinkerOptionCollection :
+        Opus.Core.BaseOptionCollection,
+        CommandLineProcessor.ICommandLineSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
 
@@ -52,7 +56,9 @@ namespace C
             linkerOptions.AdditionalOptions = "";
         }
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = this.OwningNode.Module.Locations;
             var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
@@ -88,10 +94,10 @@ namespace C
             base.SetNodeSpecificData(node);
         }
 
-        public LinkerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        LinkerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
         public string OutputName
         {
@@ -99,69 +105,12 @@ namespace C
             set;
         }
 
-#if true
-#else
-        public string OutputDirectoryPath
-        {
-            get;
-            set;
-        }
-#endif
-
-#if true
-#else
-        public string LibraryDirectoryPath
-        {
-            get;
-            set;
-        }
-#endif
-
-#if true
-#else
-        public string OutputFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.Executable];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.Executable] = value;
-            }
-        }
-#endif
-
-#if true
-#else
-        public string StaticImportLibraryFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.StaticImportLibrary];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.StaticImportLibrary] = value;
-            }
-        }
-#endif
-
-#if true
-#else
-        public string MapFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.MapFile];
-            }
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.MapFile] = value;
-            }
-        }
-#endif
-        private static void GetBinaryPrefixAndSuffix(ILinkerOptions options, ILinkerTool tool, out string prefix, out string suffix)
+        private static void
+        GetBinaryPrefixAndSuffix(
+            ILinkerOptions options,
+            ILinkerTool tool,
+            out string prefix,
+            out string suffix)
         {
             switch (options.OutputType)
             {
@@ -213,9 +162,10 @@ namespace C
             return filename;
         }
 
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
-#if true
             var target = node.Target;
             var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
             var options = this as ILinkerOptions;
@@ -252,73 +202,13 @@ namespace C
                     (locationMap[C.Application.MapFile] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.MapFileDir], this.OutputName + linkerTool.MapFileSuffix, Opus.Core.Location.EExists.WillExist);
                 }
             }
-
-#else
-            var target = node.Target;
-            var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
-            var options = this as ILinkerOptions;
-
-            if (!this.OutputPaths.Has(C.OutputFileFlags.Executable))
-            {
-                var outputPrefix = string.Empty;
-                var outputSuffix = string.Empty;
-                if (options.OutputType == ELinkerOutput.Executable)
-                {
-                    outputSuffix = linkerTool.ExecutableSuffix;
-                }
-                else if (options.OutputType == ELinkerOutput.DynamicLibrary)
-                {
-                    outputPrefix = linkerTool.DynamicLibraryPrefix;
-                    outputSuffix = linkerTool.DynamicLibrarySuffix;
-                }
-
-                var baseOutputPath = this.OutputDirectoryPath;
-                var osxLinkerOptions = this as ILinkerOptionsOSX;
-                if (osxLinkerOptions != null)
-                {
-                    // TODO: define more output paths for the application wrapper (.app), the Contents folder etc
-                    if (target.HasPlatform(Opus.Core.EPlatform.OSX) && osxLinkerOptions.ApplicationBundle)
-                    {
-                        baseOutputPath = System.IO.Path.Combine(baseOutputPath, this.OutputName + ".app");
-                        this.OutputPaths[OutputFileFlags.OSXBundle] = baseOutputPath;
-                        baseOutputPath = System.IO.Path.Combine(baseOutputPath, "Contents");
-                        this.OutputPaths[OutputFileFlags.OSXBundleContents] = baseOutputPath;
-                        baseOutputPath = System.IO.Path.Combine(baseOutputPath, "MacOS");
-                        this.OutputPaths[OutputFileFlags.OSXBundleMacOS] = baseOutputPath;
-                    }
-                }
-
-                var outputPathName = System.IO.Path.Combine(baseOutputPath, outputPrefix + this.OutputName) + outputSuffix;
-                this.OutputFilePath = outputPathName;
-            }
-
-            if (options.OutputType == ELinkerOutput.DynamicLibrary)
-            {
-                if (linkerTool is IWinImportLibrary)
-                {
-                    // explicit import library
-                    var importLibrary = linkerTool as IWinImportLibrary;
-                    var importLibraryPathName = System.IO.Path.Combine(this.LibraryDirectoryPath, importLibrary.ImportLibraryPrefix + this.OutputName) + importLibrary.ImportLibrarySuffix;
-                    this.StaticImportLibraryFilePath = importLibraryPathName;
-                }
-                else
-                {
-                    // shared objects
-                    this.StaticImportLibraryFilePath = this.OutputFilePath;
-                }
-            }
-
-            if (options.GenerateMapFile && !this.OutputPaths.Has(C.OutputFileFlags.MapFile))
-            {
-                var mapPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + linkerTool.MapFileSuffix;
-                this.MapFilePath = mapPathName;
-            }
-
-            base.FinalizeOptions(node);
-#endif
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
+        void
+        CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
+            Opus.Core.StringArray commandLineBuilder,
+            Opus.Core.Target target,
+            Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

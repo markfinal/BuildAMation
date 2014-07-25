@@ -9,9 +9,11 @@
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class WinResourceCompilerAction : Opus.Core.IActionWithArguments
+    public sealed class WinResourceCompilerAction :
+        Opus.Core.IActionWithArguments
     {
-        public WinResourceCompilerAction()
+        public
+        WinResourceCompilerAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -31,7 +33,9 @@ namespace C
             set;
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.WinResourceCompiler = arguments;
         }
@@ -52,7 +56,8 @@ namespace C
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.Log.DebugMessage("Windows resource compiler is '{0}'", this.WinResourceCompiler);
 
@@ -64,7 +69,8 @@ namespace C
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

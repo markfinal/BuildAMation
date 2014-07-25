@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportCompilerOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportCompilerOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalCompilerOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalCompilerOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

@@ -8,7 +8,7 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalThirdpartyToolOptionsDelegateAttribute),
                                    typeof(ExportThirdpartyToolOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetThirdPartyToolset")]
-    public interface IThirdPartyTool : Opus.Core.ITool
-    {
-    }
+    public interface IThirdPartyTool :
+        Opus.Core.ITool
+    {}
 }

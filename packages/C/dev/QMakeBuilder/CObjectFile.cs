@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.ObjectFile moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFile moduleToBuild,
+            out bool success)
         {
             var sourceLoc = moduleToBuild.SourceFileLocation;
             var sourceFilePath = sourceLoc.GetSinglePath();
@@ -44,12 +47,7 @@ namespace QMakeBuilder
                 }
                 data.Output = QMakeData.OutputType.ObjectFile;
             }
-#if true
             data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.OutputDir];
-#else
-            var options = moduleToBuild.Options as C.CompilerOptionCollection;
-            data.ObjectsDir = options.OutputDirectoryPath;
-#endif
             data.IncludePaths.AddRangeUnique(optionInterface.IncludePaths.ToStringArray());
             if (optionInterface.IgnoreStandardIncludePaths)
             {

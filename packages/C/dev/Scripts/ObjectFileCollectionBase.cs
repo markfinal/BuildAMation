@@ -5,7 +5,9 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public abstract class ObjectFileCollectionBase : Opus.Core.BaseModule, Opus.Core.IModuleCollection
+    public abstract class ObjectFileCollectionBase :
+        Opus.Core.BaseModule,
+        Opus.Core.IModuleCollection
     {
         protected Opus.Core.Array<ObjectFile> list = new Opus.Core.Array<ObjectFile>();
 
@@ -21,7 +23,10 @@ namespace C
             set;
         }
 
-        public void Include(Opus.Core.Location baseLocation, string pattern)
+        public void
+        Include(
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             if (null == this.Includes)
             {
@@ -30,7 +35,10 @@ namespace C
             this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.Exists));
         }
 
-        public void Exclude(Opus.Core.Location baseLocation, string pattern)
+        public void
+        Exclude(
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             if (null == this.Excludes)
             {
@@ -39,7 +47,8 @@ namespace C
             this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.Exists));
         }
 
-        private Opus.Core.LocationArray EvaluatePaths()
+        private Opus.Core.LocationArray
+        EvaluatePaths()
         {
             if (null == this.Includes)
             {
@@ -68,12 +77,16 @@ namespace C
             return complement;
         }
 
-        protected virtual System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.LocationArray locationList)
+        protected virtual System.Collections.Generic.List<Opus.Core.IModule>
+        MakeChildModules(
+            Opus.Core.LocationArray locationList)
         {
             throw new Opus.Core.Exception("Derived classes should implement this function");
         }
 
-        Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
+        Opus.Core.ModuleCollection
+        Opus.Core.INestedDependents.GetNestedDependents(
+            Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();
 
@@ -122,9 +135,11 @@ namespace C
             set;
         }
 
-        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
-                                          Opus.Core.Location baseLocation,
-                                          string pattern)
+        public void
+        RegisterUpdateOptions(
+            Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             if (null == this.DeferredUpdates)
             {

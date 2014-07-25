@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.Win32Resource moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Win32Resource moduleToBuild,
+            out bool success)
         {
             var resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
             var node = resourceFileModule.OwningNode;
@@ -149,12 +152,7 @@ namespace VSSolutionBuilder
                 }
 
                 // add the output file spec
-#if true
                 vcResourceCompilerTool["ResourceOutputFileName"] = moduleToBuild.Locations[C.Win32Resource.OutputFile].GetSinglePath();
-#else
-                var compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
-                vcResourceCompilerTool["ResourceOutputFileName"] = compilerOptions.CompiledResourceFilePath;
-#endif
             }
 
             success = true;

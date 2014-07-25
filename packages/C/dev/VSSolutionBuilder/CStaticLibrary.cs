@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.StaticLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.StaticLibrary moduleToBuild,
+            out bool success)
         {
             var staticLibraryModule = moduleToBuild as Opus.Core.BaseModule;
             var node = staticLibraryModule.OwningNode;
@@ -126,11 +129,7 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcCLLibrarianTool);
 
                 var archiverOptions = staticLibraryOptions as C.ArchiverOptionCollection;
-#if true
                 configuration.OutputDirectory = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey];
-#else
-                configuration.OutputDirectory = archiverOptions.OutputDirectoryPath;
-#endif
                 configuration.TargetName = archiverOptions.OutputName;
 
                 if (staticLibraryOptions is VisualStudioProcessor.IVisualStudioSupport)

@@ -21,7 +21,9 @@ namespace C
         public static readonly Opus.Core.LocationKey MapFile = new Opus.Core.LocationKey("MapFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey MapFileDir = new Opus.Core.LocationKey("MapFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
+        Opus.Core.ModuleCollection
+        Opus.Core.INestedDependents.GetNestedDependents(
+            Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();
 
@@ -54,7 +56,10 @@ namespace C
         }
 
         [LocalCompilerOptionsDelegate]
-        private static void ApplicationSetConsolePreprocessor(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void
+        ApplicationSetConsolePreprocessor(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsWindows(target))
             {
@@ -64,7 +69,10 @@ namespace C
         }
 
         [LocalLinkerOptionsDelegate]
-        private static void ApplicationSetConsoleSubSystem(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void
+        ApplicationSetConsoleSubSystem(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsWindows(target))
             {
@@ -83,6 +91,8 @@ namespace C
 
         Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
         {
+            // TODO: currently disabled - only really needs to be in versions earlier than VS2010
+            // not sure if it's needed for mingw
 #if true
             return null;
 #else

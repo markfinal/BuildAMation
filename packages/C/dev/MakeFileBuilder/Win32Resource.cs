@@ -7,7 +7,10 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.Win32Resource moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Win32Resource moduleToBuild,
+            out bool success)
         {
             var resourceFilePath = moduleToBuild.ResourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(resourceFilePath))

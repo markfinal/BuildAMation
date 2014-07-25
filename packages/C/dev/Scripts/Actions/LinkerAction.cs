@@ -9,9 +9,11 @@
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class LinkerAction : Opus.Core.IActionWithArguments
+    public sealed class LinkerAction :
+        Opus.Core.IActionWithArguments
     {
-        public LinkerAction()
+        public
+        LinkerAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -31,7 +33,9 @@ namespace C
             set;
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.Linker = arguments;
         }
@@ -52,7 +56,8 @@ namespace C
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.Log.DebugMessage("Linker is '{0}'", this.Linker);
 
@@ -64,7 +69,8 @@ namespace C
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.DynamicLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.DynamicLibrary moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
@@ -35,11 +38,7 @@ namespace QMakeBuilder
 
             data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.DynamicLibrary;
-#if true
             data.DestDir = moduleToBuild.Locations[C.Application.OutputDir];
-#else
-            data.DestDir = options.OutputDirectoryPath;
-#endif
 
             // find dependent library files
             if (null != node.ExternalDependents)

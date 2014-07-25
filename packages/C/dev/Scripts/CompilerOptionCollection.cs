@@ -5,9 +5,13 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public abstract class CompilerOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
+    public abstract class CompilerOptionCollection :
+        Opus.Core.BaseOptionCollection,
+        CommandLineProcessor.ICommandLineSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             var compilerOptions = this as ICCompilerOptions;
 
@@ -100,12 +104,14 @@ namespace C
             compilerOptions.AdditionalOptions = "";
         }
 
-        public CompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = this.OwningNode.Module.Locations;
             var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
@@ -152,97 +158,42 @@ namespace C
             set;
         }
 
-#if true
-#else
-        public string OutputDirectoryPath
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
-            get;
-            set;
-        }
-#endif
-
-#if true
-#else
-        public string ObjectFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.ObjectFile];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.ObjectFile] = value;
-            }
-        }
-#endif
-
-#if true
-#else
-        public string PreprocessedFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.PreprocessedFile];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.PreprocessedFile] = value;
-            }
-        }
-#endif
-
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
-        {
-#if true
             // don't operate on collections of modules
             var objectFileModule = node.Module as ObjectFile;
-            if (null != objectFileModule)
+            if (null == objectFileModule)
             {
-                var outputFileLocation = node.Module.Locations[C.ObjectFile.OutputFile] as Opus.Core.ScaffoldLocation;
-                if (!outputFileLocation.IsValid)
-                {
-                    if (null == this.OutputName)
-                    {
-                        // in the case of procedurally generated source, the output name may not have been set yet
-                        var sourceLoc = objectFileModule.SourceFileLocation;
-                        var sourceLocPath = sourceLoc.GetSingleRawPath();
-                        this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourceLocPath);
-                    }
-
-                    var target = node.Target;
-                    var tool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
-                    var options = this as ICCompilerOptions;
-                    var suffix = (options.OutputType == ECompilerOutput.Preprocess) ?
-                        tool.PreprocessedOutputSuffix :
-                        tool.ObjectFileSuffix;
-                    outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.OutputDir], this.OutputName + suffix, Opus.Core.Location.EExists.WillExist);
-                }
+                return;
             }
-#else
-            if (null != this.OutputName)
+            var outputFileLocation = node.Module.Locations[C.ObjectFile.OutputFile] as Opus.Core.ScaffoldLocation;
+            if (!outputFileLocation.IsValid)
             {
+                if (null == this.OutputName)
+                {
+                    // in the case of procedurally generated source, the output name may not have been set yet
+                    var sourceLoc = objectFileModule.SourceFileLocation;
+                    var sourceLocPath = sourceLoc.GetSingleRawPath();
+                    this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourceLocPath);
+                }
+
                 var target = node.Target;
-                var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
+                var tool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                 var options = this as ICCompilerOptions;
-                if ((options.OutputType == ECompilerOutput.CompileOnly) && !this.OutputPaths.Has(C.OutputFileFlags.ObjectFile))
-                {
-                    var objectPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.ObjectFileSuffix;
-                    this.ObjectFilePath = objectPathname;
-                }
-                else if ((options.OutputType == ECompilerOutput.Preprocess) && !this.OutputPaths.Has(C.OutputFileFlags.PreprocessedFile))
-                {
-                    var preprocessedPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + compilerTool.PreprocessedOutputSuffix;
-                    this.PreprocessedFilePath = preprocessedPathname;
-                }
+                var suffix = (options.OutputType == ECompilerOutput.Preprocess) ?
+                    tool.PreprocessedOutputSuffix :
+                    tool.ObjectFileSuffix;
+                outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.OutputDir], this.OutputName + suffix, Opus.Core.Location.EExists.WillExist);
             }
-
-            base.FinalizeOptions(node);
-#endif
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
+        void
+        CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
+            Opus.Core.StringArray commandLineBuilder,
+            Opus.Core.Target target,
+            Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

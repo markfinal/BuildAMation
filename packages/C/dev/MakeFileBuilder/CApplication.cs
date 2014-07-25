@@ -7,7 +7,10 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(C.Application moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Application moduleToBuild,
+            out bool success)
         {
             var applicationModule = moduleToBuild as Opus.Core.BaseModule;
             var node = applicationModule.OwningNode;
@@ -141,7 +144,6 @@ namespace MakeFileBuilder
             var outputPath = moduleToBuild.Locations[primaryOutputKey].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
             var instanceName = MakeFile.InstanceName(node);
-#if true
             var toolOutputLocKeys = (linkerTool as Opus.Core.ITool).OutputLocationKeys(moduleToBuild);
             var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
@@ -164,31 +166,6 @@ namespace MakeFileBuilder
                 var outputLocPath = outputLoc.GetSinglePath();
                 recipe = recipe.Replace(outputLocPath, variableName);
             }
-#else
-            if (Opus.Core.State.RunningMono)
-            {
-                // TODO: workaround for an invalid cast exception
-                foreach (System.Enum type in applicationOptions.OutputPaths.Types)
-                {
-                    if (!type.Equals(primaryOutput))
-                    {
-                        var variableName = System.String.Format("{0}_{1}_Variable", instanceName, type.ToString());
-                        recipe = recipe.Replace(applicationOptions.OutputPaths[type], System.String.Format("$({0})", variableName));
-                    }
-                }
-            }
-            else
-            {
-                foreach (System.Collections.Generic.KeyValuePair<System.Enum, string> outputPath in applicationOptions.OutputPaths)
-                {
-                    if (!outputPath.Key.Equals(primaryOutput))
-                    {
-                        var variableName = System.String.Format("{0}_{1}_Variable", instanceName, outputPath.Key.ToString());
-                        recipe = recipe.Replace(applicationOptions.OutputPaths[outputPath.Key], System.String.Format("$({0})", variableName));
-                    }
-                }
-            }
-#endif
 
             var recipes = new Opus.Core.StringArray();
             recipes.Add(recipe);

@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.StaticLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.StaticLibrary moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
@@ -50,11 +53,7 @@ namespace QMakeBuilder
 
             data.Target = options.OutputName;
             data.Output = QMakeData.OutputType.StaticLibrary;
-#if true
             data.DestDir = moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey];
-#else
-            data.DestDir = options.OutputDirectoryPath;
-#endif
 
             success = true;
             return data;

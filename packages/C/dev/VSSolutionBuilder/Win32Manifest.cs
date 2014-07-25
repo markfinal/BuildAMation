@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.Win32Manifest moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Win32Manifest moduleToBuild,
+            out bool success)
         {
             // TODO: not yet implemented
             success = true;

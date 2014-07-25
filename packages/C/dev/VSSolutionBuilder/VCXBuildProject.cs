@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class VCXBuildProject : ICProject
+    public class VCXBuildProject :
+        ICProject
     {
         private string ProjectName = null;
         private string PathName = null;
@@ -19,7 +20,12 @@ namespace VSSolutionBuilder
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private Opus.Core.UniqueList<string> ReferencesList = new Opus.Core.UniqueList<string>();
 
-        public VCXBuildProject(string moduleName, string projectPathName, Opus.Core.PackageIdentifier packageId, Opus.Core.ProxyModulePath proxyPath)
+        public
+        VCXBuildProject(
+            string moduleName,
+            string projectPathName,
+            Opus.Core.PackageIdentifier packageId,
+            Opus.Core.ProxyModulePath proxyPath)
         {
             this.ProjectName = moduleName;
             this.PathName = projectPathName;
@@ -136,7 +142,8 @@ namespace VSSolutionBuilder
             set;
         }
 
-        private void SerializeVCXProj()
+        private void
+        SerializeVCXProj()
         {
             System.Xml.XmlDocument xmlDocument = null;
             try
@@ -222,7 +229,8 @@ namespace VSSolutionBuilder
             }
         }
 
-        private void SerializeVCXProjFilters()
+        private void
+        SerializeVCXProjFilters()
         {
             var filtersPath = this.PathName + ".filters";
 

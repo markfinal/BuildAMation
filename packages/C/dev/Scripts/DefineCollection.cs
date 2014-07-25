@@ -5,11 +5,15 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public sealed class DefineCollection : System.ICloneable, Opus.Core.ISetOperations<DefineCollection>
+    public sealed class DefineCollection :
+        System.ICloneable,
+        Opus.Core.ISetOperations<DefineCollection>
     {
         private Opus.Core.StringArray defines = new Opus.Core.StringArray();
 
-        public void Add(object toAdd)
+        public void
+        Add(
+            object toAdd)
         {
             var define = toAdd as string;
             if (define.Contains(" "))
@@ -37,12 +41,14 @@ namespace C
             }
         }
 
-        public System.Collections.Generic.IEnumerator<string> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<string>
+        GetEnumerator()
         {
             return this.defines.GetEnumerator();
         }
 
-        public object Clone()
+        public object
+        Clone()
         {
             var clonedObject = new DefineCollection();
             foreach (var define in this.defines)
@@ -52,23 +58,29 @@ namespace C
             return clonedObject;
         }
 
-        public Opus.Core.StringArray ToStringArray()
+        public Opus.Core.StringArray
+        ToStringArray()
         {
             return this.defines;
         }
 
-        public override bool Equals(object obj)
+        public override bool
+        Equals(
+            object obj)
         {
             var otherCollection = obj as DefineCollection;
             return (this.defines.Equals(otherCollection.defines));
         }
 
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        DefineCollection Opus.Core.ISetOperations<DefineCollection>.Complement(DefineCollection other)
+        DefineCollection
+        Opus.Core.ISetOperations<DefineCollection>.Complement(
+            DefineCollection other)
         {
             var complementDefines = this.defines.Complement(other.defines);
             if (0 == complementDefines.Count)
@@ -81,7 +93,9 @@ namespace C
             return complementDefinesCollection;
         }
 
-        DefineCollection Opus.Core.ISetOperations<DefineCollection>.Intersect(DefineCollection other)
+        DefineCollection
+        Opus.Core.ISetOperations<DefineCollection>.Intersect(
+            DefineCollection other)
         {
             var intersectDefines = this.defines.Intersect(other.defines);
             var intersectDefinesCollection = new DefineCollection();

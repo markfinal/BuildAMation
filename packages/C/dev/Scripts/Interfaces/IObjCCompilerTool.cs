@@ -8,7 +8,8 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalCompilerOptionsDelegateAttribute),
                                    typeof(ExportCompilerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetObjCCompilerToolset")]
-    public interface IObjCCompilerTool : Opus.Core.ITool
+    public interface IObjCCompilerTool :
+        Opus.Core.ITool
     {
         string PreprocessedOutputSuffix
         {
@@ -25,7 +26,9 @@ namespace C
             get;
         }
 
-        Opus.Core.StringArray IncludePaths(Opus.Core.BaseTarget baseTarget);
+        Opus.Core.StringArray
+        IncludePaths(
+            Opus.Core.BaseTarget baseTarget);
 
         Opus.Core.StringArray IncludePathCompilerSwitches
         {

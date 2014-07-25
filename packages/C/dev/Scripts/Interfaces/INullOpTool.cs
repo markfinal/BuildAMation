@@ -7,7 +7,7 @@ namespace C
 {
     // Note: No Opus.Core.LocalAndExportTypes attribute required here as there is no build action
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetNullOpToolset")]
-    public interface INullOpTool : Opus.Core.ITool
-    {
-    }
+    public interface INullOpTool :
+        Opus.Core.ITool
+    {}
 }

@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportWin32ResourceCompilerOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportWin32ResourceCompilerOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalWin32ResourceCompilerOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalWin32ResourceCompilerOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

@@ -7,7 +7,10 @@ namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder
     {
-        public object Build(C.ObjectFile moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFile moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
@@ -83,13 +86,8 @@ namespace XcodeBuilder
                 XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
                 var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
-#if true
                 var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.OutputDir];
                 var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
-#else
-                var options = moduleToBuild.Options as C.CompilerOptionCollection;
-                var relPath = Opus.Core.RelativePathUtilities.GetPath(options.OutputDirectoryPath, basePath);
-#endif
                 buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
                 buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 

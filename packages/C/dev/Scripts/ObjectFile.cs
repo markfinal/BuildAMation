@@ -9,7 +9,8 @@ namespace C
     /// C object file
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
-    public class ObjectFile : Opus.Core.BaseModule
+    public class ObjectFile :
+        Opus.Core.BaseModule
     {
         private static readonly Opus.Core.LocationKey SourceFile = new Opus.Core.LocationKey("SourceFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("ObjectFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -28,7 +29,10 @@ namespace C
             }
         }
 
-        public void Include(Opus.Core.Location baseLocation, string pattern)
+        public void
+        Include(
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }

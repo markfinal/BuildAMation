@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFileCollectionBase moduleToBuild,
+            out bool success)
         {
             var objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
             var node = objectFileCollectionModule.OwningNode;
@@ -131,12 +134,7 @@ namespace VSSolutionBuilder
                     projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
                 }
 
-#if true
                 configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.OutputDir];
-#else
-                C.CompilerOptionCollection options = objectFileCollectionOptions as C.CompilerOptionCollection;
-                configuration.IntermediateDirectory = options.OutputDirectoryPath;
-#endif
             }
 
             var toolName = "VCCLCompilerTool";

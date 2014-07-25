@@ -9,7 +9,7 @@ namespace C
     /// C/C++ header only library
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(INullOpTool))]
-    public class HeaderLibrary : Opus.Core.BaseModule
-    {
-    }
+    public class HeaderLibrary :
+        Opus.Core.BaseModule
+    {}
 }

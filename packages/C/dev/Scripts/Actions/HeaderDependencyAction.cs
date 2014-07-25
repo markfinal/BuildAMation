@@ -9,9 +9,11 @@
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class HeaderDependencyAction : Opus.Core.IAction
+    public sealed class HeaderDependencyAction :
+        Opus.Core.IAction
     {
-        public HeaderDependencyAction()
+        public
+        HeaderDependencyAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -36,7 +38,8 @@ namespace C
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.State.Set("C", "HeaderDependencyGeneration", false);
 
@@ -47,7 +50,8 @@ namespace C
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

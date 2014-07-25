@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.Win32Resource moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Win32Resource moduleToBuild,
+            out bool success)
         {
             var resourceLoc = moduleToBuild.ResourceFileLocation;
             var resourceFilePath = resourceLoc.GetSinglePath();

@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.ObjectFileCollectionBase moduleToBuild, out bool success)
+        public object
+        Build(
+            C.ObjectFileCollectionBase moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
             if (null == node.Children || 0 == node.Children.Count)

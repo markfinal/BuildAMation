@@ -9,14 +9,19 @@ namespace C.Cxx
     /// C++ object file collection
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ICxxCompilerTool))]
-    public class ObjectFileCollection : ObjectFileCollectionBase
+    public class ObjectFileCollection :
+        ObjectFileCollectionBase
     {
-        public void Add(ObjectFile objectFile)
+        public void
+        Add(
+            ObjectFile objectFile)
         {
             this.list.Add(objectFile);
         }
 
-        protected override System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.LocationArray locationList)
+        protected override System.Collections.Generic.List<Opus.Core.IModule>
+        MakeChildModules(
+            Opus.Core.LocationArray locationList)
         {
             var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
 

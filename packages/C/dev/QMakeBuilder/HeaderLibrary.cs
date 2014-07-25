@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(C.HeaderLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.HeaderLibrary moduleToBuild,
+            out bool success)
         {
             var data = new QMakeData(moduleToBuild.OwningNode);
 

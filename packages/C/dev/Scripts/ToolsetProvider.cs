@@ -7,7 +7,11 @@ namespace C
 {
     public static class ToolsetProvider
     {
-        static string GenericGetToolset(System.Type toolType, string typeName, string option)
+        static string
+        GenericGetToolset(
+            System.Type toolType,
+            string typeName,
+            string option)
         {
             if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
             {
@@ -25,57 +29,79 @@ namespace C
             }
         }
 
-        static string GetCCompilerToolset(System.Type toolType)
+        static string
+        GetCCompilerToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "C compiler", "Use C.CC=<toolset>");
         }
 
-        static string GetCxxCompilerToolset(System.Type toolType)
+        static string
+        GetCxxCompilerToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "C++ compiler", "Use C.CXX=<toolset>");
         }
 
-        static string GetObjCCompilerToolset(System.Type toolType)
+        static string
+        GetObjCCompilerToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "ObjectiveC compiler", "Use C.OBJCC=<toolset>");
         }
 
-        static string GetObjCxxCompilerToolset(System.Type toolType)
+        static string
+        GetObjCxxCompilerToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "ObjectiveC++ compiler", "Use C.OBJCCXX=<toolset>");
         }
 
-        static string GetLinkerToolset(System.Type toolType)
+        static string
+        GetLinkerToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "C linker", "Use C.LINK=<toolset>");
         }
 
-        static string GetArchiverToolset(System.Type toolType)
+        static string
+        GetArchiverToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "C archiver", "Use C.AR=<toolset>");
         }
 
-        static string GetWinResourceCompilerToolset(System.Type toolType)
+        static string
+        GetWinResourceCompilerToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "Windows resource compiler", "Use C.RC=<toolset>");
         }
 
-        static string GetWinManifestToolToolset(System.Type toolType)
+        static string
+        GetWinManifestToolToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "Windows manifest tool", "Use C.MT=<toolset>");
         }
 
-        static string GetNullOpToolset(System.Type toolType)
+        static string
+        GetNullOpToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "C", "Use C.toolset=<toolset>");
         }
 
-        static string GetThirdPartyToolset(System.Type toolType)
+        static string
+        GetThirdPartyToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "C", "Use C.toolset=<toolset>");
         }
 
-        static string GetPosixSharedLibrarySymlinksToolset(System.Type toolType)
+        static string
+        GetPosixSharedLibrarySymlinksToolset(
+            System.Type toolType)
         {
             return GenericGetToolset(toolType, "Posix shared library symlinks tool", "Use C.SOSymLinks=<toolset>");
         }

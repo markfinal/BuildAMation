@@ -9,9 +9,11 @@
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class ArchiverAction : Opus.Core.IActionWithArguments
+    public sealed class ArchiverAction :
+        Opus.Core.IActionWithArguments
     {
-        public ArchiverAction()
+        public
+        ArchiverAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -31,7 +33,9 @@ namespace C
             set;
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.Archiver = arguments;
         }
@@ -52,7 +56,8 @@ namespace C
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.Log.DebugMessage("Archiver is '{0}'", this.Archiver);
 
@@ -64,7 +69,8 @@ namespace C
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

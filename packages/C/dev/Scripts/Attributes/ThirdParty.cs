@@ -6,12 +6,12 @@
 namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportThirdpartyToolOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportThirdpartyToolOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalThirdpartyToolOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalThirdpartyToolOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

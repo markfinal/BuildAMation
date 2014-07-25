@@ -5,9 +5,13 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public abstract class ArchiverOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport
+    public abstract class ArchiverOptionCollection :
+        Opus.Core.BaseOptionCollection,
+        CommandLineProcessor.ICommandLineSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
 
@@ -15,7 +19,9 @@ namespace C
             archiverOptions.AdditionalOptions = "";
         }
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = this.OwningNode.Module.Locations;
             var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
@@ -32,10 +38,10 @@ namespace C
             base.SetNodeSpecificData(node);
         }
 
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
         public string OutputName
         {
@@ -43,7 +49,9 @@ namespace C
             set;
         }
 
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             var archiveFile = node.Module.Locations[C.StaticLibrary.OutputFileLocKey] as Opus.Core.ScaffoldLocation;
             if (!archiveFile.IsValid)
@@ -57,7 +65,11 @@ namespace C
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
+        void
+        CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
+            Opus.Core.StringArray commandLineBuilder,
+            Opus.Core.Target target,
+            Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

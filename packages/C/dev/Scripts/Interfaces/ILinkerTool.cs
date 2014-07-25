@@ -8,7 +8,8 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalLinkerOptionsDelegateAttribute),
                                    typeof(ExportLinkerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetLinkerToolset")]
-    public interface ILinkerTool : Opus.Core.ITool
+    public interface ILinkerTool :
+        Opus.Core.ITool
     {
         string ExecutableSuffix
         {
@@ -45,6 +46,8 @@ namespace C
             get;
         }
 
-        Opus.Core.StringArray LibPaths(Opus.Core.BaseTarget baseTarget);
+        Opus.Core.StringArray
+        LibPaths(
+            Opus.Core.BaseTarget baseTarget);
     }
 }

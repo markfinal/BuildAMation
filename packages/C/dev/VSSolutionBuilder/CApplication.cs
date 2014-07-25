@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.Application moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Application moduleToBuild,
+            out bool success)
         {
             var applicationModule = moduleToBuild as Opus.Core.BaseModule;
             var node = applicationModule.OwningNode;
@@ -145,11 +148,7 @@ namespace VSSolutionBuilder
                 configuration.AddToolIfMissing(vcCLLinkerTool);
 
                 var linkerOptions = applicationOptions as C.LinkerOptionCollection;
-#if true
                 configuration.OutputDirectory = moduleToBuild.Locations[C.Application.OutputDir];
-#else
-                configuration.OutputDirectory = linkerOptions.OutputDirectoryPath;
-#endif
                 configuration.TargetName = linkerOptions.OutputName;
 
                 if (applicationOptions is VisualStudioProcessor.IVisualStudioSupport)

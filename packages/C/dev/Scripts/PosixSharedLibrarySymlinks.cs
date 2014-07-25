@@ -9,7 +9,8 @@ namespace C
     /// Posix shared library symlink creation
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IPosixSharedLibrarySymlinksTool))]
-    public class PosixSharedLibrarySymlinks : Opus.Core.BaseModule
+    public class PosixSharedLibrarySymlinks :
+        Opus.Core.BaseModule
     {
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("PosixSOSymlinkOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         public static readonly Opus.Core.LocationKey LinkerSymlink = new Opus.Core.LocationKey("PosixSOSymlinkLinkerSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);

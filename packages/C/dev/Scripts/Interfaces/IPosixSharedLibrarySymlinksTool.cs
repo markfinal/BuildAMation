@@ -8,7 +8,7 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalPosixSharedLibrarySymlinksToolOptionsDelegateAttribute),
                                    typeof(ExportPosixSharedLibrarySymlinksToolOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetPosixSharedLibrarySymlinksToolset")]
-    public interface IPosixSharedLibrarySymlinksTool : Opus.Core.ITool
-    {
-    }
+    public interface IPosixSharedLibrarySymlinksTool :
+        Opus.Core.ITool
+    {}
 }

@@ -9,7 +9,8 @@ namespace C
     /// Windows manifest management
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IWinManifestTool))]
-    public class Win32Manifest : Opus.Core.BaseModule
+    public class Win32Manifest :
+        Opus.Core.BaseModule
     {
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("Win32ManifestOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("Win32ManifestOutputFile", Opus.Core.ScaffoldLocation.ETypeHint.File);

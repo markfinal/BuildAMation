@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(C.Win32Manifest moduleToBuild, out bool success)
+        public object
+        Build(
+            C.Win32Manifest moduleToBuild,
+            out bool success)
         {
             var binaryLoc = moduleToBuild.BinaryFileLocation;
             var binaryLocPath = binaryLoc.GetSinglePath();

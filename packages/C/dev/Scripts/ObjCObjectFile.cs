@@ -9,7 +9,7 @@ namespace C.ObjC
     /// ObjectiveC object file
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IObjCCompilerTool))]
-    public class ObjectFile : C.ObjectFile
-    {
-    }
+    public class ObjectFile :
+        C.ObjectFile
+    {}
 }

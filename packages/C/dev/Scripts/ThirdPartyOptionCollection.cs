@@ -5,25 +5,28 @@
 // <author>Mark Final</author>
 namespace C
 {
-    public class ThirdPartyOptionCollection : Opus.Core.BaseOptionCollection
+    public class ThirdPartyOptionCollection :
+        Opus.Core.BaseOptionCollection
     {
-        public ThirdPartyOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ThirdPartyOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
-        {
-            // no defaults, as there are no options
-        }
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
+        {}
 
-        protected override void SetDelegates(Opus.Core.DependencyNode owningNode)
-        {
-            // no delegates, as there are no options
-        }
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode owningNode)
+        {}
 
         // TODO: this needs to be updated for Location
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             var thirdPartyModule = node.Module as C.ThirdPartyModule;
             if (null != thirdPartyModule)

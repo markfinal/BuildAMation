@@ -8,7 +8,7 @@ namespace C
     [Opus.Core.LocalAndExportTypes(typeof(LocalCompilerOptionsDelegateAttribute),
                                    typeof(ExportCompilerOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetCxxCompilerToolset")]
-    public interface ICxxCompilerTool : ICompilerTool
-    {
-    }
+    public interface ICxxCompilerTool :
+        ICompilerTool
+    {}
 }

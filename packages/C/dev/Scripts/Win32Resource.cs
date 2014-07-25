@@ -9,7 +9,8 @@ namespace C
     /// Windows resource to be compiled and embedded into a binary
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
-    public class Win32Resource : Opus.Core.BaseModule
+    public class Win32Resource :
+        Opus.Core.BaseModule
     {
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("Win32ResourceOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("Win32ResourceOutputFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
@@ -20,7 +21,10 @@ namespace C
             set;
         }
 
-        public void Include(Opus.Core.Location baseLocation, string pattern)
+        public void
+        Include(
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             this.ResourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
         }

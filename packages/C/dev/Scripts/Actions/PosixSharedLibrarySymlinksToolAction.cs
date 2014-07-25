@@ -9,9 +9,11 @@
 namespace C
 {
     [Opus.Core.PreambleAction]
-    public sealed class PosixSharedLibrarySymlinksToolAction : Opus.Core.IActionWithArguments
+    public sealed class PosixSharedLibrarySymlinksToolAction :
+        Opus.Core.IActionWithArguments
     {
-        public PosixSharedLibrarySymlinksToolAction()
+        public
+        PosixSharedLibrarySymlinksToolAction()
         {
             if (!Opus.Core.State.HasCategory("C"))
             {
@@ -31,7 +33,9 @@ namespace C
             set;
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.PosixSharedLibrarySymlinksTool = arguments;
         }
@@ -52,7 +56,8 @@ namespace C
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.Log.DebugMessage("Posix shared library symlinks tool is '{0}'", this.PosixSharedLibrarySymlinksTool);
 
@@ -64,7 +69,8 @@ namespace C
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

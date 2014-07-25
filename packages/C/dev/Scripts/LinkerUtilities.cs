@@ -7,7 +7,7 @@ namespace C
 {
     public static class LinkerUtilities
     {
-        // TODO: this is still used in the MakeFile builder
+        // TODO: deprecate this - it is still used in the MakeFile builder
         public static void
         AppendLibrariesToCommandLine(
             Opus.Core.StringArray commandLineBuilder,

@@ -9,7 +9,11 @@ namespace C
     /// C/C++ static library
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(IArchiverTool))]
-    public class StaticLibrary : Opus.Core.BaseModule, Opus.Core.INestedDependents, Opus.Core.IForwardDependenciesOn, Opus.Core.ICommonOptionCollection
+    public class StaticLibrary :
+        Opus.Core.BaseModule,
+        Opus.Core.INestedDependents,
+        Opus.Core.IForwardDependenciesOn,
+        Opus.Core.ICommonOptionCollection
     {
         public static readonly Opus.Core.LocationKey OutputFileLocKey = new Opus.Core.LocationKey("StaticLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDirLocKey = new Opus.Core.LocationKey("StaticLibraryOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -21,7 +25,10 @@ namespace C
         }
 
         [ExportCompilerOptionsDelegate]
-        protected void StaticLibrarySetPreprocessorDefine(Opus.Core.IModule module, Opus.Core.Target target)
+        protected void
+        StaticLibrarySetPreprocessorDefine(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             if (null == this.PreprocessorDefine)
             {
@@ -36,7 +43,9 @@ namespace C
             compilerOptions.Defines.Add(this.PreprocessorDefine);
         }
 
-        Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
+        Opus.Core.ModuleCollection
+        Opus.Core.INestedDependents.GetNestedDependents(
+            Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();
 

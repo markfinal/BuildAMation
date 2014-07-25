@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder
     {
-        public object Build(C.HeaderLibrary moduleToBuild, out bool success)
+        public object
+        Build(
+            C.HeaderLibrary moduleToBuild,
+            out bool success)
         {
             var headerLibraryModule = moduleToBuild as Opus.Core.BaseModule;
             var node = headerLibraryModule.OwningNode;

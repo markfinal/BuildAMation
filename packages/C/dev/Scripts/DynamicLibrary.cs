@@ -15,7 +15,8 @@ namespace C
         public static readonly Opus.Core.LocationKey ImportLibraryFile = new Opus.Core.LocationKey("ImportLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey ImportLibraryDir = new Opus.Core.LocationKey("ImportLibraryDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        protected DynamicLibrary()
+        protected
+        DynamicLibrary()
         {
             this.PostActionModuleTypes = new Opus.Core.TypeArray();
             if (Opus.Core.OSUtilities.IsUnixHosting)
@@ -25,14 +26,20 @@ namespace C
         }
 
         [LocalCompilerOptionsDelegate]
-        protected static void DynamicLibrarySetOpusDLLBuildPreprocessorDefine(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        DynamicLibrarySetOpusDLLBuildPreprocessorDefine(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.Defines.Add("D_OPUS_DYNAMICLIBRARY_BUILD");
         }
 
         [LocalLinkerOptionsDelegate]
-        protected static void DynamicLibraryEnableDLL(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        DynamicLibraryEnableDLL(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.DynamicLibrary;
@@ -52,7 +59,9 @@ namespace C
 
         #region IPostActionModules Members
 
-        Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
+        Opus.Core.TypeArray
+        Opus.Core.IPostActionModules.GetPostActionModuleTypes(
+            Opus.Core.BaseTarget target)
         {
             return this.PostActionModuleTypes;
         }

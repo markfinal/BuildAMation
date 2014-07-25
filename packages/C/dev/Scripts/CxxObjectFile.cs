@@ -9,7 +9,7 @@ namespace C.Cxx
     /// C++ object file
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ICxxCompilerTool))]
-    public class ObjectFile : C.ObjectFile
-    {
-    }
+    public class ObjectFile :
+        C.ObjectFile
+    {}
 }
