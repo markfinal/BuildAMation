@@ -206,7 +206,6 @@ namespace Opus.Core
             }
         }
 
-        // TODO: need a better way to figure out whether a node is nested or not than by the child index etc.
         public
         DependencyNode(
             BaseModule module,

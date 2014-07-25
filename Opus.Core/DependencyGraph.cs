@@ -109,6 +109,7 @@ namespace Opus.Core
             // this is the only place a manual construction of a module is made
             var module = ModuleFactory.CreateModule(moduleType, targetUsed);
 
+            // TODO: need a better way to figure out whether a node is nested or not than by the unique index etc.
             var isNested = (-1 != uniqueIndex);
             var moduleNode = new DependencyNode(module, parent, targetUsed, uniqueIndex, isNested, uniqueNameSuffix);
             AddDependencyNodeToCollection(moduleNode, rank);
