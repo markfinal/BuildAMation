@@ -115,6 +115,8 @@ namespace Opus.Core
 
         // TODO: should be able to roll GetExternalDependents and GetRequiredDependents into one
         // function, and return both results.
+        // Might have to make DependentModulesAttribute and RequiredModulesAttribute derive from a common
+        // interface/base class so that both can be extracted at once in reflection
         // This will improve performance as we only have to use reflection on the fields once
         // and both are always called in close proximity to each other
         public static TypeArray
