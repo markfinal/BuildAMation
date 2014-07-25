@@ -9,7 +9,7 @@ namespace Opus.Core
     {
         public static void
         CheckTypeDerivesFrom(
-            System.Type type, 
+            System.Type type,
             System.Type baseClass)
         {
             if (!baseClass.IsAssignableFrom(type))
