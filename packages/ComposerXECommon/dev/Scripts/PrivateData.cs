@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
-    public sealed class PrivateData : CommandLineProcessor.ICommandLineDelegate
+    public sealed class PrivateData :
+        CommandLineProcessor.ICommandLineDelegate
     {
-        public PrivateData(CommandLineProcessor.Delegate commandLineDelegate)
+        public
+        PrivateData(
+            CommandLineProcessor.Delegate commandLineDelegate)
         {
             this.CommandLineDelegate = commandLineDelegate;
         }

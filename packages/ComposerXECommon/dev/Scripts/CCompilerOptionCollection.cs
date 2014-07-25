@@ -6,9 +6,14 @@
 namespace ComposerXECommon
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
+    public partial class CCompilerOptionCollection :
+        C.CompilerOptionCollection,
+        C.ICCompilerOptions,
+        ICCompilerOptions
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             var compilerInterface = this as ICCompilerOptions;
             compilerInterface.AllWarnings = true;
@@ -44,9 +49,9 @@ namespace ComposerXECommon
             cOptions.TargetLanguage = C.ETargetLanguage.C;
         }
 
-        public CCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

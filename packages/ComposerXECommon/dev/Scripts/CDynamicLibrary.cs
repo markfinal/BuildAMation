@@ -8,7 +8,10 @@ namespace C
     public partial class DynamicLibrary
     {
         [LocalCompilerOptionsDelegate]
-        protected static void ComposerXECommonDynamicLibrarySetPositionIndependentCode(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        ComposerXECommonDynamicLibrarySetPositionIndependentCode(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             if (Opus.Core.OSUtilities.IsUnix(target))
             {

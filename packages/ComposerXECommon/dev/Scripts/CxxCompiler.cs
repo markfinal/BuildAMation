@@ -5,17 +5,22 @@
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
-    public class CxxCompiler : C.ICxxCompilerTool
+    public class CxxCompiler :
+        C.ICxxCompilerTool
     {
         private Opus.Core.IToolset toolset;
 
-        public CxxCompiler(Opus.Core.IToolset toolset)
+        public
+        CxxCompiler(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
 
         #region ICompilerTool implementation
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ICompilerTool.IncludePaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             // TODO: sort this out... it required a call to the InstallPath to get the right paths
             this.toolset.InstallPath(baseTarget);
@@ -56,7 +61,9 @@ namespace ComposerXECommon
         #endregion
 
         #region ITool implementation
-        string Opus.Core.ITool.Executable (Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, "icpc");
@@ -76,4 +83,3 @@ namespace ComposerXECommon
         #endregion
     }
 }
-

@@ -9,7 +9,10 @@ namespace ComposerXECommon
     {
         private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData>();
 
-        public static GccDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
+        public static GccDetailData
+        DetermineSpecs(
+            Opus.Core.BaseTarget baseTarget,
+            Opus.Core.IToolset toolset)
         {
             // get version
             string gccVersion = null;

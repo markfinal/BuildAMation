@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace ComposerXECommon
 {
-    public abstract class Toolset : Opus.Core.IToolset
+    public abstract class Toolset :
+        Opus.Core.IToolset
     {
         protected string installPath;
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
@@ -16,7 +17,9 @@ namespace ComposerXECommon
             get;
         }
 
-        private void GetInstallPath(Opus.Core.BaseTarget baseTarget)
+        private void
+        GetInstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {
@@ -48,29 +51,39 @@ namespace ComposerXECommon
         }
 
         #region IToolset implementation
-        string Opus.Core.IToolset.Version (Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.Version(
+            Opus.Core.BaseTarget baseTarget)
         {
             return this.Version;
         }
 
-        string Opus.Core.IToolset.InstallPath (Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.InstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath(baseTarget);
             return this.installPath;
         }
 
-        string Opus.Core.IToolset.BinPath (Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.BinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath(baseTarget);
             return System.IO.Path.Combine(this.installPath, "bin");
         }
 
-        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        bool
+        Opus.Core.IToolset.HasTool(
+            System.Type toolType)
         {
             return this.toolConfig.ContainsKey(toolType);
         }
 
-        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        Opus.Core.ITool
+        Opus.Core.IToolset.Tool(
+            System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
@@ -80,7 +93,9 @@ namespace ComposerXECommon
             return this.toolConfig[toolType].Tool;
         }
 
-        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        System.Type
+        Opus.Core.IToolset.ToolOptionType(
+            System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
