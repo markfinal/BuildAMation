@@ -25,7 +25,6 @@ namespace Opus.Core
 
             set
             {
-                // TODO: validate the key type is what is to be stored
                 if (value is ScaffoldLocation)
                 {
                     if ((value as ScaffoldLocation).TypeHint != key.Type)
