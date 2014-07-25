@@ -9,14 +9,12 @@ namespace Opus.Core
         Array<System.Type>
     {
         public
-        TypeArray() :
-        base()
+        TypeArray() : base()
         {}
 
         public
         TypeArray(
-            params System.Type[] itemsToAdd) :
-        base(itemsToAdd)
+            params System.Type[] itemsToAdd) : base(itemsToAdd)
         {}
     }
 }

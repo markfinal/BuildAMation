@@ -10,15 +10,13 @@ namespace OpusOptionCodeGenerator
     {
         public
         Exception(
-            string message) :
-        base(message)
+            string message) : base(message)
         {}
 
         public
         Exception(
             string message,
-            params object[] args) :
-        base(System.String.Format(message, args))
+            params object[] args) : base(System.String.Format(message, args))
         {}
     }
 }

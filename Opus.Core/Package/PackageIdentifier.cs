@@ -11,8 +11,7 @@ namespace Opus.Core
         public
         PackageIdentifier(
             string name,
-            string version) :
-        this(name, version, true)
+            string version) : this(name, version, true)
         {}
 
         public

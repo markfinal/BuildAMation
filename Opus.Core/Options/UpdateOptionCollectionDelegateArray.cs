@@ -10,8 +10,7 @@ namespace Opus.Core
     {
         public
         UpdateOptionCollectionDelegateArray(
-            params UpdateOptionCollectionDelegate[] delegates) :
-        base(delegates)
+            params UpdateOptionCollectionDelegate[] delegates) : base(delegates)
         {}
     }
 }

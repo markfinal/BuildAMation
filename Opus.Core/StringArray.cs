@@ -11,8 +11,7 @@ namespace Opus.Core
         Opus.Core.ISetOperations<StringArray>
     {
         public
-        StringArray() :
-        base()
+        StringArray() : base()
         {}
 
         public

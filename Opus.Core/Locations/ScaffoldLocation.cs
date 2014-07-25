@@ -34,8 +34,7 @@ namespace Opus.Core
         ScaffoldLocation(
             Location baseLocation,
             string pattern,
-            ETypeHint typeHint) :
-        this(typeHint)
+            ETypeHint typeHint) : this(typeHint)
         {
             this.Base = baseLocation;
             this.Pattern = pattern;
@@ -46,8 +45,7 @@ namespace Opus.Core
             Location baseLocation,
             string pattern,
             ETypeHint typeHint,
-            EExists exists) :
-        this(baseLocation, pattern, typeHint)
+            EExists exists) : this(baseLocation, pattern, typeHint)
         {
             this.Exists = exists;
         }
@@ -56,8 +54,7 @@ namespace Opus.Core
         ScaffoldLocation(
             Location baseLocation,
             ProxyModulePath proxyPath,
-            ETypeHint typeHint) :
-        this(typeHint)
+            ETypeHint typeHint) : this(typeHint)
         {
             this.Base = baseLocation;
             this.ProxyPath = proxyPath;
@@ -68,8 +65,7 @@ namespace Opus.Core
             Location baseLocation,
             ProxyModulePath proxyPath,
             ETypeHint typeHint,
-            EExists exists) :
-        this(baseLocation, proxyPath, typeHint)
+            EExists exists) : this(baseLocation, proxyPath, typeHint)
         {
             this.Exists = exists;
         }

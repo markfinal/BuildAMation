@@ -9,8 +9,7 @@ namespace Opus.Core
         System.Xml.XmlResolver
     {
         internal
-        XmlResolver() :
-        base()
+        XmlResolver() : base()
         {}
 
         public override System.Net.ICredentials Credentials
