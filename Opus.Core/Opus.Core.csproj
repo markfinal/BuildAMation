@@ -78,6 +78,7 @@
     <Compile Include="DependencyNodeCollection.cs" />
     <Compile Include="DependencyGraph.cs" />
     <Compile Include="DependencyNodeEnumerator.cs" />
+    <Compile Include="Enumerations\EBuildState.cs" />
     <Compile Include="Enumerations\EConfiguration.cs" />
     <Compile Include="Enumerations\EPlatform.cs" />
     <Compile Include="Enumerations\ETimingProfiles.cs" />

@@ -5,15 +5,6 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    // TODO: move to another file
-    public enum EBuildState
-    {
-        NotStarted,
-        Pending,
-        Succeeded,
-        Failed
-    }
-
     public sealed class DependencyNode
     {
         public bool
