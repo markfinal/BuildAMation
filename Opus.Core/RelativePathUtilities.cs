@@ -71,29 +71,7 @@ namespace Opus.Core
             }
 
             var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
-            #if true
             return GetPath(pathUri, relativeToUri, relativePrefix);
-            #else
-            var relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
-            if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
-            {
-                return path;
-            }
-            else
-            {
-                var relativePath = relativePathUri.ToString();
-                relativePath = System.Uri.UnescapeDataString(relativePath);
-                if (null != relativePrefix)
-                {
-                    relativePath = System.IO.Path.Combine(relativePrefix, relativePath);
-                }
-                if (OSUtilities.IsWindowsHosting)
-                {
-                    relativePath = relativePath.Replace('/', '\\');
-                }
-                return relativePath;
-            }
-            #endif
         }
 
         public static string
