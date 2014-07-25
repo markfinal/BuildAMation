@@ -5,9 +5,15 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
-    public partial class OptionCollection : Opus.Core.BaseOptionCollection, IOptions, CommandLineProcessor.ICommandLineSupport, VisualStudioProcessor.IVisualStudioSupport
+    public partial class OptionCollection :
+        Opus.Core.BaseOptionCollection,
+        IOptions,
+        CommandLineProcessor.ICommandLineSupport,
+        VisualStudioProcessor.IVisualStudioSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             var target = node.Target;
 
@@ -45,10 +51,10 @@ namespace CSharp
             options.Modules = new Opus.Core.FileCollection();
         }
 
-        public OptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        OptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
         public string OutputName
         {
@@ -56,50 +62,20 @@ namespace CSharp
             set;
         }
 
-#if true
-#else
-        public string OutputDirectoryPath
-        {
-            get;
-            set;
-        }
-
-        public string OutputFilePath
-        {
-            get
-            {
-                return this.OutputPaths[OutputFileFlags.AssemblyFile];
-            }
-            set
-            {
-                this.OutputPaths[OutputFileFlags.AssemblyFile] = value;
-            }
-        }
-
-        public string ProgramDatabaseFilePath
-        {
-            get
-            {
-                return this.OutputPaths[OutputFileFlags.ProgramDatabaseFile];
-            }
-            set
-            {
-                this.OutputPaths[OutputFileFlags.ProgramDatabaseFile] = value;
-            }
-        }
-#endif
-
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
             (node.Module.Locations[Assembly.OutputDir] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Opus.Core.State.ModuleBuildDirLocationKey], "bin", Opus.Core.Location.EExists.WillExist);
         }
 
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             var options = this as IOptions;
 
-#if true
             if (!node.Module.Locations[Assembly.OutputFile].IsValid)
             {
                 string outputSuffix;
@@ -124,35 +100,7 @@ namespace CSharp
 
                 (node.Module.Locations[Assembly.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Assembly.OutputDir], this.OutputName + outputSuffix, Opus.Core.Location.EExists.WillExist);
             }
-#else
-            if (!this.OutputPaths.Has(OutputFileFlags.AssemblyFile))
-            {
-                string outputSuffix;
-                switch (options.Target)
-                {
-                    case ETarget.Executable:
-                    case ETarget.WindowsExecutable:
-                        outputSuffix = ".exe";
-                        break;
 
-                    case ETarget.Library:
-                        outputSuffix = ".dll";
-                        break;
-
-                    case ETarget.Module:
-                        outputSuffix = ".netmodule";
-                        break;
-
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
-                }
-
-                string outputPathName = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + outputSuffix;
-                this.OutputFilePath = outputPathName;
-            }
-#endif
-
-#if true
             if (options.DebugInformation != EDebugInformation.Disabled)
             {
                 var locationMap = node.Module.Locations;
@@ -168,26 +116,22 @@ namespace CSharp
                     pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
                 }
             }
-#else
-            if ((options.DebugInformation != EDebugInformation.Disabled) && !this.OutputPaths.Has(OutputFileFlags.ProgramDatabaseFile))
-            {
-                if (Opus.Core.OSUtilities.IsWindowsHosting)
-                {
-                    string pdbPathname = System.IO.Path.Combine(this.OutputDirectoryPath, this.OutputName) + ".pdb";
-                    this.ProgramDatabaseFilePath = pdbPathname;
-                }
-            }
-#endif
 
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
+        void
+        CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
+            Opus.Core.StringArray commandLineBuilder,
+            Opus.Core.Target target,
+            Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
-        VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
+        VisualStudioProcessor.ToolAttributeDictionary
+        VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
+            Opus.Core.Target target)
         {
             var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, VisualStudioProcessor.EVisualStudioTarget.MSBUILD);
             return dictionary;

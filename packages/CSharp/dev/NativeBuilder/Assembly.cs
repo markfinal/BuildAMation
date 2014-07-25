@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public partial class NativeBuilder
     {
-        public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
+        public object
+        Build(
+            CSharp.Assembly moduleToBuild,
+            out System.Boolean success)
         {
             var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
             var node = assemblyModule.OwningNode;
@@ -17,7 +20,6 @@ namespace NativeBuilder
 
             if (node.ExternalDependents != null)
             {
-#if true
                 var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
                     CSharp.Assembly.OutputFile
                     );
@@ -28,11 +30,6 @@ namespace NativeBuilder
                 {
                     options.References.Add(loc.GetSinglePath());
                 }
-#else
-                Opus.Core.StringArray dependentAssemblies = new Opus.Core.StringArray();
-                node.ExternalDependents.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, dependentAssemblies);
-                options.References.AddRange(dependentAssemblies);
-#endif
             }
 
             var sourceFiles = new Opus.Core.StringArray();
@@ -196,7 +193,6 @@ namespace NativeBuilder
 
             // dependency checking
             {
-#if true
                 var inputLocations = new Opus.Core.LocationArray();
                 foreach (var source in sourceFiles)
                 {
@@ -204,10 +200,6 @@ namespace NativeBuilder
                 }
                 var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputLocations, inputLocations))
-#else
-                Opus.Core.StringArray outputFiles = assemblyOptions.OutputPaths.Paths;
-                if (!RequiresBuilding(outputFiles, sourceFiles))
-#endif
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;

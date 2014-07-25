@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public interface ICSProject : IProject
+    public interface ICSProject :
+        IProject
     {
         ProjectFile ApplicationDefinition
         {

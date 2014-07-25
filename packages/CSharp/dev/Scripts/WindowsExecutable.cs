@@ -8,10 +8,14 @@ namespace CSharp
     /// <summary>
     /// C# windows executable
     /// </summary>
-    public class WindowsExecutable : Assembly
+    public class WindowsExecutable :
+        Assembly
     {
         [CSharp.LocalCscOptionsDelegate]
-        protected static void SetType(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        SetType(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as IOptions;
             options.Target = ETarget.WindowsExecutable;

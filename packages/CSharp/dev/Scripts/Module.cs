@@ -8,10 +8,14 @@ namespace CSharp
     /// <summary>
     /// C# module
     /// </summary>
-    public class Module : Assembly
+    public class Module :
+        Assembly
     {
         [CSharp.LocalCscOptionsDelegate]
-        protected static void SetType(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        SetType(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as IOptions;
             options.Target = ETarget.Module;

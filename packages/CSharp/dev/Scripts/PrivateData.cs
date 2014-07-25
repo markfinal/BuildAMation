@@ -5,9 +5,14 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
-    public sealed class PrivateData : CommandLineProcessor.ICommandLineDelegate, VisualStudioProcessor.IVisualStudioDelegate
+    public sealed class PrivateData :
+        CommandLineProcessor.ICommandLineDelegate,
+        VisualStudioProcessor.IVisualStudioDelegate
     {
-        public PrivateData(CommandLineProcessor.Delegate commandLineDelegate, VisualStudioProcessor.Delegate visualStudioDelegate)
+        public
+        PrivateData(
+            CommandLineProcessor.Delegate commandLineDelegate,
+            VisualStudioProcessor.Delegate visualStudioDelegate)
         {
             this.CommandLineDelegate = commandLineDelegate;
             this.VisualStudioProjectDelegate = visualStudioDelegate;

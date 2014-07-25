@@ -7,7 +7,10 @@ namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
     {
-        public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
+        public object
+        Build(
+            CSharp.Assembly moduleToBuild,
+            out System.Boolean success)
         {
             var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
             var node = assemblyModule.OwningNode;
@@ -23,27 +26,20 @@ namespace MakeFileBuilder
                 {
                     if (null != dependentNode.Data)
                     {
-#if true
-                        var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
-                            CSharp.Assembly.OutputFile
-                            );
-                        var assemblyLocations = new Opus.Core.LocationArray();
-                        dependentNode.FilterOutputLocations(keyFilters, assemblyLocations);
+                        continue;
+                    }
 
-                        var csharpOptions = options as CSharp.IOptions;
-                        foreach (var loc in assemblyLocations)
-                        {
-                            csharpOptions.References.Add(loc.GetSinglePath());
-                        }
-#else
-                        Opus.Core.StringArray assemblyPaths = new Opus.Core.StringArray();
-                        dependentNode.FilterOutputPaths(CSharp.OutputFileFlags.AssemblyFile, assemblyPaths);
-                        (options as CSharp.IOptions).References.AddRange(assemblyPaths);
-
-                        MakeFileData data = dependentNode.Data as MakeFileData;
-                        inputVariables.Add(CSharp.OutputFileFlags.AssemblyFile, data.VariableDictionary[CSharp.OutputFileFlags.AssemblyFile]);
-                        dataArray.Add(data);
-#endif
+                    var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
+                        CSharp.Assembly.OutputFile
+                        );
+                    var assemblyLocations = new Opus.Core.LocationArray();
+                    dependentNode.FilterOutputLocations(keyFilters, assemblyLocations);
+                    var data = dependentNode.Data as MakeFileData;
+                    var csharpOptions = options as CSharp.IOptions;
+                    foreach (var loc in assemblyLocations)
+                    {
+                        csharpOptions.References.Add(loc.GetSinglePath());
+                        inputVariables.Add(CSharp.Assembly.OutputFile, data.VariableDictionary[CSharp.Assembly.OutputDir]);
                     }
                 }
             }
@@ -250,7 +246,6 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-#if true
             var rule = new MakeFileRule(
                 moduleToBuild,
                 CSharp.Assembly.OutputFile,
@@ -264,9 +259,6 @@ namespace MakeFileBuilder
             var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
             rule.OutputLocationKeys = outputFileLocationsOfInterest;
-#else
-            MakeFileRule rule = new MakeFileRule(assemblyOptions.OutputPaths, CSharp.OutputFileFlags.AssemblyFile, node.UniqueModuleName, directoriesToCreate, inputVariables, null, recipes);
-#endif
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

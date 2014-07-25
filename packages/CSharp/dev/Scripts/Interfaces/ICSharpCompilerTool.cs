@@ -6,19 +6,19 @@
 namespace CSharp
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportCscOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportCscOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalCscOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalCscOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [Opus.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
                                    typeof(ExportCscOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider("dotnet")]
-    public interface ICSharpCompilerTool : Opus.Core.ITool
-    {
-    }
+    public interface ICSharpCompilerTool :
+        Opus.Core.ITool
+    {}
 }

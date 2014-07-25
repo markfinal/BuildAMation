@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class CSBuildProject : ICSProject
+    public class CSBuildProject :
+        ICSProject
     {
         private string ProjectName = null;
         private string PathName = null;
@@ -19,7 +20,12 @@ namespace VSSolutionBuilder
         private ProjectFile ApplicationDefinitionFile = null;
         private ProjectFileCollection PageFiles = new ProjectFileCollection();
 
-        public CSBuildProject(string moduleName, string projectPathName, Opus.Core.PackageIdentifier packageId, Opus.Core.ProxyModulePath proxyPath)
+        public
+        CSBuildProject(
+            string moduleName,
+            string projectPathName,
+            Opus.Core.PackageIdentifier packageId,
+            Opus.Core.ProxyModulePath proxyPath)
         {
             this.ProjectName = moduleName;
             this.PathName = projectPathName;
@@ -143,7 +149,8 @@ namespace VSSolutionBuilder
             }
         }
 
-        void IProject.Serialize()
+        void
+        IProject.Serialize()
         {
             System.Xml.XmlDocument xmlDocument = null;
             try

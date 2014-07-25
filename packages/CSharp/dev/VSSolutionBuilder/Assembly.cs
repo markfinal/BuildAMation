@@ -7,7 +7,10 @@ namespace VSSolutionBuilder
 {
     public partial class VSSolutionBuilder
     {
-        public object Build(CSharp.Assembly moduleToBuild, out System.Boolean success)
+        public object
+        Build(
+            CSharp.Assembly moduleToBuild,
+            out System.Boolean success)
         {
             var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
             var node = assemblyModule.OwningNode;
@@ -82,16 +85,18 @@ namespace VSSolutionBuilder
             {
                 foreach (var dependentNode in node.ExternalDependents)
                 {
-                    if (dependentNode.ModuleName != moduleName)
+                    if (dependentNode.ModuleName == moduleName)
                     {
-                        // TODO: want to remove this
-                        lock (this.solutionFile.ProjectDictionary)
+                        continue;
+                    }
+
+                    // TODO: want to remove this
+                    lock (this.solutionFile.ProjectDictionary)
+                    {
+                        if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
                         {
-                            if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
-                            {
-                                var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
-                                projectData.DependentProjects.Add(dependentProject);
-                            }
+                            var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                            projectData.DependentProjects.Add(dependentProject);
                         }
                     }
                 }
@@ -318,13 +323,7 @@ namespace VSSolutionBuilder
             {
                 vcsCompiler = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcsCompiler);
-
-#if true
                 configuration.OutputDirectory = moduleToBuild.Locations[CSharp.Assembly.OutputDir];
-#else
-                string outputDirectory = (options as CSharp.OptionCollection).OutputDirectoryPath;
-                configuration.OutputDirectory = outputDirectory;
-#endif
 
                 if (options is VisualStudioProcessor.IVisualStudioSupport)
                 {

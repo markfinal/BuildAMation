@@ -8,10 +8,14 @@ namespace CSharp
     /// <summary>
     /// C# library
     /// </summary>
-    public class Library : Assembly
+    public class Library :
+        Assembly
     {
         [CSharp.LocalCscOptionsDelegate]
-        protected static void SetType(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        SetType(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as IOptions;
             options.Target = ETarget.Library;
