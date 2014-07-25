@@ -134,6 +134,7 @@
     <Compile Include="Options\UpdateOptionCollectionDelegateArray.cs" />
     <Compile Include="Options\ValueTypeOption.cs" />
     <Compile Include="OSUtilities.cs" />
+    <Compile Include="Package\PackageBuild.cs" />
     <Compile Include="Package\PackageBuildList.cs" />
     <Compile Include="Package\PackageDefinitionFile.cs" />
     <Compile Include="Package\PackageIdentifier.cs" />
