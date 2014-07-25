@@ -519,36 +519,12 @@ namespace Opus.Core
             private set;
         }
 
-        // TODO: redundant
-        public string
-        GetModuleBuildDirectory()
-        {
-            var packageBuildDirectory = this.Package.BuildDirectory;
-            var moduleBuildDirectory = System.IO.Path.Combine(packageBuildDirectory, this.ModuleName);
-            return moduleBuildDirectory;
-        }
-
         public Location
         GetModuleBuildDirectoryLocation()
         {
             var packageBuildDirectory = this.Package.BuildDirectoryLocation;
             var moduleBuildDirectory = packageBuildDirectory.SubDirectory(this.ModuleName);
             return moduleBuildDirectory;
-        }
-
-        // TODO: redundant
-        public string
-        GetTargettedModuleBuildDirectory(
-            string subDirectory)
-        {
-            var moduleBuildDirectory = this.GetModuleBuildDirectory();
-            var targettedModuleBuildDirectory = System.IO.Path.Combine(moduleBuildDirectory, TargetUtilities.DirectoryName(this.Target));
-            if (null != subDirectory)
-            {
-                targettedModuleBuildDirectory = System.IO.Path.Combine(targettedModuleBuildDirectory, subDirectory);
-            }
-
-            return targettedModuleBuildDirectory;
         }
 
         private Location
@@ -566,18 +542,6 @@ namespace Opus.Core
             var targettedModuleBuildDirectory = this.GetTargettedModuleBuildDirectoryLocation();
             targettedModuleBuildDirectory = targettedModuleBuildDirectory.SubDirectory(subDirectory);
             return targettedModuleBuildDirectory;
-        }
-
-        public string
-        GetTargetPathName(
-            string subDirectory,
-            string targetPrefix,
-            string targetLeafName,
-            string targetExtension)
-        {
-            var targetFileName = System.String.Format("{0}{1}{2}", targetPrefix, targetLeafName, targetExtension);
-            var moduleTargetPathName = System.IO.Path.Combine(this.GetTargettedModuleBuildDirectory(subDirectory), targetFileName);
-            return moduleTargetPathName;
         }
 
         public bool IsModuleNested

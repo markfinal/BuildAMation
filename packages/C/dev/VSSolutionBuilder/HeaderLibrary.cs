@@ -29,7 +29,8 @@ namespace VSSolutionBuilder
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
 
-                    var projectPathName = System.IO.Path.Combine(node.GetModuleBuildDirectory(), moduleName);
+                    var projectDir = node.GetModuleBuildDirectoryLocation().GetSinglePath();
+                    var projectPathName = System.IO.Path.Combine(projectDir, moduleName);
                     projectPathName += projectExtension;
 
                     var projectType = VSSolutionBuilder.GetProjectClassType();

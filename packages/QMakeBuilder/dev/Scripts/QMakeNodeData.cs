@@ -1343,7 +1343,7 @@ namespace QMakeBuilder
             }
 
             var node = array[0].OwningNode;
-            var proFileDirectory = node.GetModuleBuildDirectory();
+            var proFileDirectory = node.GetModuleBuildDirectoryLocation().GetSingleRawPath();
             var proFilePath = System.IO.Path.Combine(proFileDirectory, System.String.Format("{0}.pro", node.ModuleName));
             if (array[0].Target.Length > 0)
             {

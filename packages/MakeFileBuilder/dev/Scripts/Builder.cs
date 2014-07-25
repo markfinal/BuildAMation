@@ -9,9 +9,10 @@ namespace MakeFileBuilder
     {
         public static string GetMakeFilePathName(Opus.Core.DependencyNode node)
         {
-            var makeFileDirectory = System.IO.Path.Combine(node.GetModuleBuildDirectory(), "Makefiles");
+            var makeFileDirLoc = node.GetModuleBuildDirectoryLocation().SubDirectory("Makefiles");
             var leafname = System.String.Format("{0}_{1}.mak", node.UniqueModuleName, node.Target);
-            var makeFilePathName = System.IO.Path.Combine(makeFileDirectory, leafname);
+            var makeFileLoc = Opus.Core.FileLocation.Get(makeFileDirLoc, leafname, Opus.Core.Location.EExists.WillExist);
+            var makeFilePathName = makeFileLoc.GetSingleRawPath();
             Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePathName);
             return makeFilePathName;
         }

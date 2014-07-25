@@ -33,7 +33,7 @@ namespace CodeGenTest2
         protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
         {
             var options = this as ICodeGenOptions;
-            options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectory("src");
+            options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectoryLocation("src").GetSingleRawPath();
             options.OutputName = "function";
 
             if (!owningNode.Module.Locations[CodeGenModule.OutputDir].IsValid)
