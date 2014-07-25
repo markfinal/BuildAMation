@@ -142,6 +142,7 @@
     <Compile Include="Package\PackageInformationCollection.cs" />
     <Compile Include="Package\PackageListResourceFile.cs" />
     <Compile Include="Package\PackageUtilities.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Attributes\SourceFilesAttibute.cs" />
     <Compile Include="ProxyModulePath.cs" />
