@@ -45,7 +45,7 @@ namespace Opus.Core
                 // TODO: this conditional is only present because an option collection has an output path in it's interface
                 // this the IMocFile in QtCommon
                 // when SetNodeSpecificData is called, the output path is set
-                // when CopyExistingOPtions is called, the option is already present in the target table so that Add() will fail
+                // when CopyExistingOptions is called, the option is already present in the target table so that Add() will fail
                 // since SetDelegates has not been called on a child, the PrivateData is not set, so needs copying.
                 if (!this.table.ContainsKey(option.Key))
                 {
