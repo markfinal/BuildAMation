@@ -714,9 +714,8 @@ namespace Opus.Core
 
             try
             {
-#if true
                 // this code works from an untrusted location, and debugging IS available when
-                // the pdb resides beside the assembly
+                // the pdb (.NET)/mdb (Mono) resides beside the assembly
                 byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
                 if (State.CompileWithDebugSymbols)
                 {
@@ -734,11 +733,6 @@ namespace Opus.Core
                 {
                     scriptAssembly = System.Reflection.Assembly.Load(asmBytes);
                 }
-#else
-                // this does not work when loading from an untrusted location, e.g. a network drive, but
-                // is necessary for debugging
-                scriptAssembly = System.Reflection.Assembly.LoadFile(State.ScriptAssemblyPathname);
-#endif
             }
             catch (System.IO.FileNotFoundException exception)
             {
