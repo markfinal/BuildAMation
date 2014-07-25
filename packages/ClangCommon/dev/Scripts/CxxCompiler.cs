@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace ClangCommon
 {
-    public sealed class CxxCompiler : C.ICxxCompilerTool
+    public sealed class CxxCompiler :
+        C.ICxxCompilerTool
     {
         private Opus.Core.IToolset toolset;
 
-        public CxxCompiler(Opus.Core.IToolset toolset)
+        public
+        CxxCompiler(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -40,7 +43,9 @@ namespace ClangCommon
             }
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ICompilerTool.IncludePaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             return new Opus.Core.StringArray();
         }
@@ -57,7 +62,9 @@ namespace ClangCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var executablePath = System.IO.Path.Combine(this.toolset.InstallPath(baseTarget), "clang++");
             if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))

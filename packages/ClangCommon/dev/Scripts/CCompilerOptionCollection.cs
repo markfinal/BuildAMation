@@ -5,14 +5,19 @@
 // <author>Mark Final</author>
 namespace ClangCommon
 {
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
+    public partial class CCompilerOptionCollection :
+        C.CompilerOptionCollection,
+        C.ICCompilerOptions,
+        ICCompilerOptions
     {
-        public CCompilerOptionCollection(Opus.Core.DependencyNode owningNode)
-            : base(owningNode)
-        {
-        }
+        public
+        CCompilerOptionCollection(
+            Opus.Core.DependencyNode owningNode) : base(owningNode)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 

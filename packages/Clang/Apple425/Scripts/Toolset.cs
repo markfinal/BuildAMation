@@ -5,10 +5,11 @@
 // <author>Mark Final</author>
 namespace Clang
 {
-    public sealed class Toolset : ClangCommon.Toolset
+    public sealed class Toolset :
+        ClangCommon.Toolset
     {
-        public Toolset()
-            : base()
+        public
+        Toolset() : base()
         {
             this.toolConfig[typeof(C.ICompilerTool)]       = new Opus.Core.ToolAndOptionType(new ClangCommon.CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)]    = new Opus.Core.ToolAndOptionType(new ClangCommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
@@ -20,12 +21,16 @@ namespace Clang
                 new Opus.Core.ToolAndOptionType(new GccCommon.PosixSharedLibrarySymlinksTool(this), typeof(GccCommon.PosixSharedLibrarySymlinksOptionCollection));
         }
 
-        protected override string SpecificVersion (Opus.Core.BaseTarget baseTarget)
+        protected override string
+        SpecificVersion(
+            Opus.Core.BaseTarget baseTarget)
         {
             return "Apple425";
         }
 
-        protected override string SpecificInstallPath (Opus.Core.BaseTarget baseTarget)
+        protected override string
+        SpecificInstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             return @"/usr/bin";
         }

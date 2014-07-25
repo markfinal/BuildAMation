@@ -5,10 +5,12 @@
 // <author>Mark Final</author>
 namespace Clang
 {
-    public sealed class Linker : GccCommon.Linker
+    public sealed class Linker :
+        GccCommon.Linker
     {
-        public Linker(Opus.Core.IToolset toolset)
-            : base(toolset)
+        public
+        Linker(
+            Opus.Core.IToolset toolset) : base(toolset)
         {}
 
         #region implemented abstract members of Linker

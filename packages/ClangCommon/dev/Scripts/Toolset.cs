@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace ClangCommon
 {
-    public abstract class Toolset : Opus.Core.IToolset
+    public abstract class Toolset :
+        Opus.Core.IToolset
     {
         private string installPath;
 
@@ -13,7 +14,8 @@ namespace ClangCommon
         protected abstract string SpecificInstallPath(Opus.Core.BaseTarget baseTarget);
         protected abstract string SpecificVersion(Opus.Core.BaseTarget baseTarget);
 
-        protected Toolset()
+        protected
+        Toolset()
         {
             this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
@@ -23,7 +25,9 @@ namespace ClangCommon
 
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.BinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             return (this as Opus.Core.IToolset).InstallPath (baseTarget);
         }
@@ -33,7 +37,9 @@ namespace ClangCommon
             get { throw new System.NotImplementedException(); }
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.InstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {
@@ -59,12 +65,16 @@ namespace ClangCommon
             throw new Opus.Core.Exception("Unable to locate clang toolchain");
         }
 
-        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        bool
+        Opus.Core.IToolset.HasTool(
+            System.Type toolType)
         {
             return this.toolConfig.ContainsKey(toolType);
         }
 
-        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        Opus.Core.ITool
+        Opus.Core.IToolset.Tool(
+            System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
@@ -74,7 +84,9 @@ namespace ClangCommon
             return this.toolConfig[toolType].Tool;
         }
 
-        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        System.Type
+        Opus.Core.IToolset.ToolOptionType(
+            System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
@@ -84,7 +96,9 @@ namespace ClangCommon
             return this.toolConfig[toolType].OptionsType;
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.Version(
+            Opus.Core.BaseTarget baseTarget)
         {
             return this.SpecificVersion(baseTarget);
         }

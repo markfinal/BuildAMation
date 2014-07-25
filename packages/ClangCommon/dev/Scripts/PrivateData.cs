@@ -5,17 +5,23 @@
 // <author>Mark Final</author>
 namespace ClangCommon
 {
-    public sealed class PrivateData : CommandLineProcessor.ICommandLineDelegate, XcodeProjectProcessor.IXcodeProjectDelegate
+    public sealed class PrivateData :
+        CommandLineProcessor.ICommandLineDelegate,
+        XcodeProjectProcessor.IXcodeProjectDelegate
     {
         // this constructor is for the non-Xcode Gcc code paths
-        public PrivateData(CommandLineProcessor.Delegate commandLineDelegate)
+        public
+        PrivateData(
+            CommandLineProcessor.Delegate commandLineDelegate)
         {
             this.CommandLineDelegate = commandLineDelegate;
             this.XcodeProjectDelegate = null;
         }
 
-        public PrivateData(CommandLineProcessor.Delegate commandLineDelegate,
-                           XcodeProjectProcessor.Delegate xcodeProjectDelegate)
+        public
+        PrivateData(
+            CommandLineProcessor.Delegate commandLineDelegate,
+            XcodeProjectProcessor.Delegate xcodeProjectDelegate)
         {
             this.CommandLineDelegate = commandLineDelegate;
             this.XcodeProjectDelegate = xcodeProjectDelegate;
