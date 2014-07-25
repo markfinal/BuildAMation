@@ -5,29 +5,6 @@
 // <author>Mark Final</author>
 namespace Opus.Core
 {
-    // TODO: move to another file
-    public class DotNetAssemblyDescription
-    {
-        public
-        DotNetAssemblyDescription(
-            string name)
-        {
-            this.Name = name;
-        }
-
-        public string Name
-        {
-            get;
-            private set;
-        }
-
-        public string RequiredTargetFramework
-        {
-            get;
-            set;
-        }
-    }
-
     public class PackageDefinitionFile
     {
         private string xmlFilename;
