@@ -9,7 +9,8 @@ namespace Opus.Core
     {
         private static string Wow6432NodeString = @"Wow6432Node";
 
-        // TODO: what's the point of this? unless OSUtilities.IsWindowsHosting has side effects
+        // TODO: what's the point of this? I can see no side-effects.
+        // it could throw an exception if ever instantiated on any other platform if that was the intention?
         static
         Win32RegistryUtilities()
         {
