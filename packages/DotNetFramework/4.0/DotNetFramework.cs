@@ -12,7 +12,8 @@ namespace DotNetFramework
         private static System.Guid ProjectTypeGuid;
         private static System.Guid SolutionFolderTypeGuid;
 
-        static Solution()
+        static
+        Solution()
         {
             // TODO: this path is for VCSExpress - what about the professional version?
             using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VCSExpress\10.0\Projects"))

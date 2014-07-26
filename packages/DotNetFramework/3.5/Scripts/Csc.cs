@@ -5,18 +5,24 @@
 // <author>Mark Final</author>
 namespace DotNetFramework
 {
-    public sealed class Csc : CSharp.ICSharpCompilerTool, Opus.Core.IToolForwardedEnvironmentVariables
+    public sealed class Csc :
+        CSharp.ICSharpCompilerTool,
+        Opus.Core.IToolForwardedEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
 
-        public Csc(Opus.Core.IToolset toolset)
+        public
+        Csc(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             string CscPath = null;
 
