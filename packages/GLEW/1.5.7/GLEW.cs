@@ -6,9 +6,11 @@
 namespace GLEW
 {
     // Define module classes here
-    class GLEWStatic : C.StaticLibrary
+    class GLEWStatic :
+        C.StaticLibrary
     {
-        public GLEWStatic()
+        public
+        GLEWStatic()
         {
             var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
             var includeDir = glewDir.SubDirectory("include");
@@ -16,9 +18,11 @@ namespace GLEW
             this.headerFiles.Include(GLDir, "*.h");
         }
 
-        class SourceFiles : C.ObjectFileCollection
+        class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
                 var sourceDir = glewDir.SubDirectory("src");
@@ -31,7 +35,10 @@ namespace GLEW
                 //this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(GLEW_VCSecurity);
             }
 
-            void GLEW_VCSecurity(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            GLEW_VCSecurity(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 if (module.Options is VisualCCommon.ICCompilerOptions)
                 {
@@ -40,7 +47,10 @@ namespace GLEW
                 }
             }
 
-            void GLEW_VCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            GLEW_VCWarningLevel(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (null != compilerOptions)
@@ -50,7 +60,10 @@ namespace GLEW
             }
 
             [C.ExportCompilerOptionsDelegate]
-            void GLEW_IncludePathAndStaticDefine(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            GLEW_IncludePathAndStaticDefine(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
