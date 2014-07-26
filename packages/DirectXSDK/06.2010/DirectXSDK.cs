@@ -6,13 +6,15 @@
 namespace DirectXSDK
 {
     // TODO: need to add modules for Direct3D10, Direct3D11, and the other DX components
-    class Direct3D9 : C.ThirdPartyModule
+    class Direct3D9 :
+        C.ThirdPartyModule
     {
         private static string installLocation;
         private static string includePath;
         private static string libraryBasePath;
 
-        static Direct3D9()
+        static
+        Direct3D9()
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
@@ -34,14 +36,18 @@ namespace DirectXSDK
             libraryBasePath = System.IO.Path.Combine(installLocation, "lib");
         }
 
-        public Direct3D9()
+        public
+        Direct3D9()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_LinkerOptions);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void Direct3D9_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        Direct3D9_LinkerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
@@ -81,7 +87,10 @@ namespace DirectXSDK
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void Direct3D9_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        Direct3D9_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             if (compilerOptions == null)
