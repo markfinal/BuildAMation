@@ -5,12 +5,13 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class CxxCompiler : MingwCommon.CxxCompiler
+    public sealed class CxxCompiler :
+        MingwCommon.CxxCompiler
     {
-        public CxxCompiler(Opus.Core.IToolset toolset)
-            : base(toolset)
-        {
-        }
+        public
+        CxxCompiler(
+            Opus.Core.IToolset toolset) : base(toolset)
+        {}
 
         protected override string Filename
         {

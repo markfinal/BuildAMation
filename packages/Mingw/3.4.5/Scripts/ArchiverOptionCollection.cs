@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public class ArchiverOptionCollection : MingwCommon.ArchiverOptionCollection
+    public class ArchiverOptionCollection :
+        MingwCommon.ArchiverOptionCollection
     {
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

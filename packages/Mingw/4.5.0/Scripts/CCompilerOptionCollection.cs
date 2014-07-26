@@ -5,14 +5,18 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public partial class CCompilerOptionCollection : MingwCommon.CCompilerOptionCollection, ICCompilerOptions
+    public partial class CCompilerOptionCollection :
+        MingwCommon.CCompilerOptionCollection,
+        ICCompilerOptions
     {
-        public CCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 

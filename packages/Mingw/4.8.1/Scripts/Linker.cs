@@ -5,12 +5,13 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class Linker : MingwCommon.Linker
+    public sealed class Linker :
+        MingwCommon.Linker
     {
-        public Linker(Opus.Core.IToolset toolset)
-            : base(toolset)
-        {
-        }
+        public
+        Linker(
+            Opus.Core.IToolset toolset) : base(toolset)
+        {}
 
         protected override string Filename
         {

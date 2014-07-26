@@ -5,9 +5,11 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed class Toolset : MingwCommon.Toolset
+    public sealed class Toolset :
+        MingwCommon.Toolset
     {
-        public Toolset()
+        public
+        Toolset()
         {
             this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
@@ -16,7 +18,9 @@ namespace Mingw
             this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Opus.Core.ToolAndOptionType(new MingwCommon.Win32ResourceCompiler(this), typeof(C.Win32ResourceCompilerOptionCollection));
         }
 
-        protected override void GetInstallPath(Opus.Core.BaseTarget baseTarget)
+        protected override void
+        GetInstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {

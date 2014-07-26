@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public class LinkerOptionCollection : MingwCommon.LinkerOptionCollection
+    public class LinkerOptionCollection :
+        MingwCommon.LinkerOptionCollection
     {
-        public LinkerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        LinkerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

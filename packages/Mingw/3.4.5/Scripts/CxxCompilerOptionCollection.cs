@@ -5,14 +5,17 @@
 // <author>Mark Final</author>
 namespace Mingw
 {
-    public sealed partial class CxxCompilerOptionCollection : MingwCommon.CxxCompilerOptionCollection
+    public sealed partial class CxxCompilerOptionCollection :
+        MingwCommon.CxxCompilerOptionCollection
     {
-        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CxxCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
