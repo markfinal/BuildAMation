@@ -29,7 +29,8 @@ namespace DependencyGenerator
             }
         }
 
-        static FileHashGeneration()
+        static
+        FileHashGeneration()
         {
             FileProcessQueue = new DependencyQueue<string>();
 
@@ -50,7 +51,9 @@ namespace DependencyGenerator
             }
         }
 
-        public static bool HaveFileHashesChanged(Opus.Core.StringArray paths)
+        public static bool
+        HaveFileHashesChanged(
+            Opus.Core.StringArray paths)
         {
             if (null == loadedFileHashDictionary)
             {
@@ -83,7 +86,9 @@ namespace DependencyGenerator
             return false;
         }
 
-        private static void GenerateFileHash(string entry)
+        private static void
+        GenerateFileHash(
+            string entry)
         {
             // has the hash already  been generated?
             if (fileHashDictionary.ContainsKey(entry))
@@ -101,7 +106,9 @@ namespace DependencyGenerator
             fileHashDictionary[entry] = hash;
         }
 
-        internal static void ProcessFileQueue(object obj)
+        internal static void
+        ProcessFileQueue(
+            object obj)
         {
             // wait for the build to start
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Opus.Core.State.BuildStartedEvent }, -1);

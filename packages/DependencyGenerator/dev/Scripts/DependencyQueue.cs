@@ -10,7 +10,9 @@ namespace DependencyGenerator
         private System.Collections.Generic.Queue<Data> data = new System.Collections.Generic.Queue<Data>();
         private System.Threading.ManualResetEvent alive = new System.Threading.ManualResetEvent(false);
 
-        public DependencyQueue(bool isThreaded)
+        public
+        DependencyQueue(
+            bool isThreaded)
         {
             this.IsThreaded = isThreaded;
         }
@@ -29,7 +31,9 @@ namespace DependencyGenerator
             }
         }
 
-        public void Enqueue(Data value)
+        public void
+        Enqueue(
+            Data value)
         {
             if (this.IsThreaded)
             {
@@ -47,7 +51,9 @@ namespace DependencyGenerator
             }
         }
 
-        public void Enqueue(Opus.Core.Array<Data> values)
+        public void
+        Enqueue(
+            Opus.Core.Array<Data> values)
         {
             if (this.IsThreaded)
             {
@@ -72,7 +78,8 @@ namespace DependencyGenerator
             }
         }
 
-        public Data Dequeue()
+        public Data
+        Dequeue()
         {
             Data result = null;
             lock (this.data)

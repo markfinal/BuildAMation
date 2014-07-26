@@ -29,7 +29,8 @@ namespace DependencyGenerator
             private set;
         }
 
-        static IncludeDependencyGeneration()
+        static
+        IncludeDependencyGeneration()
         {
             // TODO: put this on an action
             var isThreaded = true;
@@ -40,20 +41,29 @@ namespace DependencyGenerator
             dependencyThread.Start(FileProcessQueue);
         }
 
-        public static string HeaderDependencyPathName(string sourceFile, string outputDirectory)
+        public static string
+        HeaderDependencyPathName(
+            string sourceFile,
+            string outputDirectory)
         {
             var depPathName = System.IO.Path.Combine(outputDirectory, System.IO.Path.GetFileNameWithoutExtension(sourceFile)) + ".d";
             return depPathName;
         }
 
-        public static string HeaderDependencyPathName(string filename, Opus.Core.Location directory)
+        public static string
+        HeaderDependencyPathName(
+            string filename,
+            Opus.Core.Location directory)
         {
             var depLeafname = System.IO.Path.GetFileNameWithoutExtension(filename) + ".d";
             var headerDependencyLocation = new Opus.Core.ScaffoldLocation(directory, depLeafname, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
             return headerDependencyLocation.GetSinglePath();
         }
 
-        public static void GenerateDepFile(Data entry, Style style)
+        public static void
+        GenerateDepFile(
+            Data entry,
+            Style style)
         {
             var filesToSearch = new System.Collections.Generic.Queue<string>();
             filesToSearch.Enqueue(entry.sourcePath);
@@ -145,7 +155,9 @@ namespace DependencyGenerator
             }
         }
 
-        internal static void ProcessFileQueue(object obj)
+        internal static void
+        ProcessFileQueue(
+            object obj)
         {
             // wait for the build to start
             System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Opus.Core.State.BuildStartedEvent }, -1);
