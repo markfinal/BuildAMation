@@ -5,18 +5,20 @@
 // <author>Mark Final</author>
 namespace OpenGLSDK
 {
-    class OpenGL : C.ThirdPartyModule
+    class OpenGL :
+        C.ThirdPartyModule
     {
-        class TargetFilter : Opus.Core.BaseTargetFilteredAttribute
-        {
-        }
+        class TargetFilter :
+            Opus.Core.BaseTargetFilteredAttribute
+        {}
 
         private static readonly TargetFilter winVCTarget;
         private static readonly TargetFilter winMingwTarget;
         private static readonly TargetFilter unixTarget;
         private static readonly TargetFilter osxTarget;
 
-        static OpenGL()
+        static
+        OpenGL()
         {
             winVCTarget = new TargetFilter();
             winVCTarget.Platform = Opus.Core.EPlatform.Windows;
@@ -33,13 +35,17 @@ namespace OpenGLSDK
             osxTarget.Platform = Opus.Core.EPlatform.OSX;
         }
 
-        public OpenGL()
+        public
+        OpenGL()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(OpenGL_LinkerOptions);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void OpenGL_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        OpenGL_LinkerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
