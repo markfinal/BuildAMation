@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace LLVMGcc
 {
-    public sealed partial class LinkerOptionCollection : GccCommon.LinkerOptionCollection
+    public sealed partial class LinkerOptionCollection :
+        GccCommon.LinkerOptionCollection
     {
-        public LinkerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        LinkerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

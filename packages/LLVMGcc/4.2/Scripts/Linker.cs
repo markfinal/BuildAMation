@@ -5,12 +5,14 @@
 // <author>Mark Final</author>
 namespace LLVMGcc
 {
-    public sealed class Linker : GccCommon.Linker, Opus.Core.IToolSupportsResponseFile
+    public sealed class Linker :
+        GccCommon.Linker,
+        Opus.Core.IToolSupportsResponseFile
     {
-        public Linker(Opus.Core.IToolset toolset)
-            : base(toolset)
-        {
-        }
+        public
+        Linker(
+            Opus.Core.IToolset toolset) : base(toolset)
+        {}
 
         protected override string Filename
         {

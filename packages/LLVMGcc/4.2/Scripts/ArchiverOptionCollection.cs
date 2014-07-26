@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace LLVMGcc
 {
-    public sealed partial class ArchiverOptionCollection : GccCommon.ArchiverOptionCollection
+    public sealed partial class ArchiverOptionCollection :
+        GccCommon.ArchiverOptionCollection
     {
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }
