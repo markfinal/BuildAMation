@@ -22,7 +22,9 @@ namespace QMakeBuilder
             HeaderLibrary  = (1 << 7)
         }
 
-        public QMakeData(Opus.Core.DependencyNode node)
+        public
+        QMakeData(
+            Opus.Core.DependencyNode node)
         {
             this.OwningNode = node;
             this.OSXApplicationBundle = false;
@@ -98,19 +100,11 @@ namespace QMakeBuilder
             private set;
         }
 
-#if true
         public Opus.Core.Location DestDir
         {
             get;
             set;
         }
-#else
-        public string DestDir
-        {
-            get;
-            set;
-        }
-#endif
 
         public Opus.Core.StringArray Headers
         {
@@ -254,12 +248,19 @@ namespace QMakeBuilder
             }
         }
 
-        private static string FormatPath(string path, string proFilePath)
+        private static string
+        FormatPath(
+            string path,
+            string proFilePath)
         {
             return FormatPath(path, proFilePath, false);
         }
 
-        private static string FormatPath(string path, string proFilePath, bool verbose)
+        private static string
+        FormatPath(
+            string path,
+            string proFilePath,
+            bool verbose)
         {
             // make the path relative to the .pro
             var newPath = (null != proFilePath) ? Opus.Core.RelativePathUtilities.GetPath(path, proFilePath) : path;
@@ -279,7 +280,10 @@ namespace QMakeBuilder
             return newPath;
         }
 
-        private static string PathListToString(Opus.Core.StringArray pathList, string proFilePath)
+        private static string
+        PathListToString(
+            Opus.Core.StringArray pathList,
+            string proFilePath)
         {
             var escapedPathList = new Opus.Core.StringArray();
             foreach (var path in pathList)
@@ -290,9 +294,11 @@ namespace QMakeBuilder
             return escapedPathList.ToString("\\\n\t");
         }
 
-        private static void WriteTemplate(Opus.Core.Array<QMakeData> array,
-                                          string proFilePath,
-                                          System.IO.StreamWriter writer)
+        private static void
+        WriteTemplate(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             switch (array[0].Output)
             {
@@ -319,9 +325,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteConfig(Opus.Core.Array<QMakeData> array,
-                                        string proFilePath,
-                                        System.IO.StreamWriter writer)
+        private static void
+        WriteConfig(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             var config = string.Empty;
             if (array.Count == 1)
@@ -373,9 +381,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteSources(Opus.Core.Array<QMakeData> array,
-                                         string proFilePath,
-                                         System.IO.StreamWriter writer)
+        private static void
+        WriteSources(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -429,9 +439,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteHeaders(Opus.Core.Array<QMakeData> array,
-                                         string proFilePath,
-                                         System.IO.StreamWriter writer)
+        private static void
+        WriteHeaders(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -456,9 +468,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteTarget(Opus.Core.Array<QMakeData> array,
-                                        string proFilePath,
-                                        System.IO.StreamWriter writer)
+        private static void
+        WriteTarget(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -483,9 +497,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteDestDir(Opus.Core.Array<QMakeData> array,
-                                         string proFilePath,
-                                         System.IO.StreamWriter writer)
+        private static void
+        WriteDestDir(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -519,9 +535,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteMocDir(Opus.Core.Array<QMakeData> array,
-                                        string proFilePath,
-                                        System.IO.StreamWriter writer)
+        private static void
+        WriteMocDir(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -546,9 +564,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteObjectsDir(Opus.Core.Array<QMakeData> array,
-                                            string proFilePath,
-                                            System.IO.StreamWriter writer)
+        private static void
+        WriteObjectsDir(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -583,7 +603,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteIncludePaths(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteIncludePaths(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -608,7 +632,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteDefines(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteDefines(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -633,7 +661,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteCCFlags(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteCCFlags(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -658,7 +690,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteCXXFlags(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteCXXFlags(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -683,12 +719,23 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteString(string value, string format, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteString(
+            string value,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             WriteString(value, format, proFilePath, false, writer);
         }
 
-        private static void WriteString(string value, string format, string proFilePath, bool verbose, System.IO.StreamWriter writer)
+        private static void
+        WriteString(
+            string value,
+            string format,
+            string proFilePath,
+            bool verbose,
+            System.IO.StreamWriter writer)
         {
             if (0 == value.Length)
             {
@@ -701,7 +748,12 @@ namespace QMakeBuilder
             writer.WriteLine(format, FormatPath(value, proFilePath, verbose));
         }
 
-        private static void WriteVerboseString(string value, string format, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteVerboseString(
+            string value,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (0 == value.Length)
             {
@@ -714,21 +766,25 @@ namespace QMakeBuilder
             writer.WriteLine(format, value);
         }
 
-        private static void WriteStringArray(Opus.Core.StringArray stringArray,
-                                             string format,
-                                             string proFilePath,
-                                             System.IO.StreamWriter writer)
+        private static void
+        WriteStringArray(
+            Opus.Core.StringArray stringArray,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             WriteStringArray(stringArray, format, proFilePath, false, true, false, writer);
         }
 
-        private static void WriteStringArray(Opus.Core.StringArray stringArray,
-                                             string format,
-                                             string proFilePath,
-                                             bool verbose,
-                                             bool useContinuation,
-                                             bool escaped,
-                                             System.IO.StreamWriter writer)
+        private static void
+        WriteStringArray(
+            Opus.Core.StringArray stringArray,
+            string format,
+            string proFilePath,
+            bool verbose,
+            bool useContinuation,
+            bool escaped,
+            System.IO.StreamWriter writer)
         {
             if (0 == stringArray.Count)
             {
@@ -769,21 +825,25 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteLocationArray(Opus.Core.LocationArray locArray,
-                                               string format,
-                                               string proFilePath,
-                                               System.IO.StreamWriter writer)
+        private static void
+        WriteLocationArray(
+            Opus.Core.LocationArray locArray,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             WriteLocationArray(locArray, format, proFilePath, false, true, false, writer);
         }
 
-        private static void WriteLocationArray(Opus.Core.LocationArray locArray,
-                                               string format,
-                                               string proFilePath,
-                                               bool verbose,
-                                               bool useContinuation,
-                                               bool escaped,
-                                               System.IO.StreamWriter writer)
+        private static void
+        WriteLocationArray(
+            Opus.Core.LocationArray locArray,
+            string format,
+            string proFilePath,
+            bool verbose,
+            bool useContinuation,
+            bool escaped,
+            System.IO.StreamWriter writer)
         {
             if (0 == locArray.Count)
             {
@@ -824,7 +884,12 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteString(Values<string> values, string format, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteString(
+            Values<string> values,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (values.Debug == values.Release)
             {
@@ -839,18 +904,25 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteStringArrays(Values<Opus.Core.StringArray> values, string format, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteStringArrays(
+            Values<Opus.Core.StringArray> values,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             WriteStringArrays(values, format, proFilePath, false, true, false, writer);
         }
 
-        private static void WriteStringArrays(Values<Opus.Core.StringArray> values,
-                                              string format,
-                                              string proFilePath,
-                                              bool verbose,
-                                              bool useContinuation,
-                                              bool escaped,
-                                              System.IO.StreamWriter writer)
+        private static void
+        WriteStringArrays(
+            Values<Opus.Core.StringArray> values,
+            string format,
+            string proFilePath,
+            bool verbose,
+            bool useContinuation,
+            bool escaped,
+            System.IO.StreamWriter writer)
         {
             var intersect = new Opus.Core.StringArray(values.Debug.Intersect(values.Release));
             WriteStringArray(intersect, format, proFilePath, verbose, useContinuation, escaped, writer);
@@ -869,18 +941,25 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteLocationArrays(Values<Opus.Core.LocationArray> values, string format, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteLocationArrays(
+            Values<Opus.Core.LocationArray> values,
+            string format,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             WriteLocationArrays(values, format, proFilePath, false, true, false, writer);
         }
 
-        private static void WriteLocationArrays(Values<Opus.Core.LocationArray> values,
-                                                string format,
-                                                string proFilePath,
-                                                bool verbose,
-                                                bool useContinuation,
-                                                bool escaped,
-                                                System.IO.StreamWriter writer)
+        private static void
+        WriteLocationArrays(
+            Values<Opus.Core.LocationArray> values,
+            string format,
+            string proFilePath,
+            bool verbose,
+            bool useContinuation,
+            bool escaped,
+            System.IO.StreamWriter writer)
         {
             var intersect = new Opus.Core.LocationArray(values.Debug.Intersect(values.Release));
             WriteLocationArray(intersect, format, proFilePath, verbose, useContinuation, escaped, writer);
@@ -899,9 +978,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WritePriPaths(Opus.Core.Array<QMakeData> array,
-                                          string proFilePath,
-                                          System.IO.StreamWriter writer)
+        private static void
+        WritePriPaths(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -926,9 +1007,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteWinRCFiles(Opus.Core.Array<QMakeData> array,
-                                            string proFilePath,
-                                            System.IO.StreamWriter writer)
+        private static void
+        WriteWinRCFiles(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -953,9 +1036,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteLibraries(Opus.Core.Array<QMakeData> array,
-                                           string proFilePath,
-                                           System.IO.StreamWriter writer)
+        private static void
+        WriteLibraries(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -980,7 +1065,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteLinkFlags(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteLinkFlags(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -1005,7 +1094,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WriteRPathDir(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WriteRPathDir(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -1030,7 +1123,11 @@ namespace QMakeBuilder
             }
         }
 
-        private static void WritePostLinkCommands(Opus.Core.Array<QMakeData> array, string proFilePath, System.IO.StreamWriter writer)
+        private static void
+        WritePostLinkCommands(
+            Opus.Core.Array<QMakeData> array,
+            string proFilePath,
+            System.IO.StreamWriter writer)
         {
             if (1 == array.Count)
             {
@@ -1072,22 +1169,6 @@ namespace QMakeBuilder
             {
                 // TODO
                 throw new System.NotImplementedException();
-#if false
-                var values = new Values<Opus.Core.StringArray>();
-                foreach (var data in array)
-                {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
-                    {
-                        values.Debug = data.Sources;
-                    }
-                    else
-                    {
-                        values.Release = data.Sources;
-                    }
-                }
-
-                WriteStringArrays(values, "SOURCES+=", proFilePath, writer);
-#endif
             }
         }
 
@@ -1244,12 +1325,17 @@ namespace QMakeBuilder
             }
         }
 
-        public void Merge(QMakeData data)
+        public void
+        Merge(
+            QMakeData data)
         {
             this.Merge(data, OutputType.None);
         }
 
-        public void Merge(QMakeData data, OutputType excludeType)
+        public void
+        Merge(
+            QMakeData data,
+            OutputType excludeType)
         {
             if (0 != (data.Output & excludeType))
             {
@@ -1319,7 +1405,9 @@ namespace QMakeBuilder
             data.Merged = true;
         }
 
-        public static void Write(Opus.Core.Array<QMakeData> array)
+        public static void
+        Write(
+            Opus.Core.Array<QMakeData> array)
         {
             var consistentMergeState = true;
             if (array.Count > 1)

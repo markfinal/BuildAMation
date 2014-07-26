@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder : Opus.Core.IBuilder
+    public sealed partial class QMakeBuilder :
+        Opus.Core.IBuilder
     {
         private string EmptyConfigPriPath
         {

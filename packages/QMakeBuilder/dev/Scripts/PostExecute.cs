@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace QMakeBuilder
 {
-    public sealed partial class QMakeBuilder : Opus.Core.IBuilderPostExecute
+    public sealed partial class QMakeBuilder :
+        Opus.Core.IBuilderPostExecute
     {
         #region IBuilderPostExecute Members
 
-        void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
+        void
+        Opus.Core.IBuilderPostExecute.PostExecute(
+            Opus.Core.DependencyNodeCollection executedNodes)
         {
             Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
