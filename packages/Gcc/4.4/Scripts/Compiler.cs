@@ -5,12 +5,14 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class CCompiler : GccCommon.CCompiler, Opus.Core.IToolSupportsResponseFile
+    public sealed class CCompiler :
+        GccCommon.CCompiler,
+        Opus.Core.IToolSupportsResponseFile
     {
-        public CCompiler(Opus.Core.IToolset toolset)
-            : base(toolset)
-        {
-        }
+        public
+        CCompiler(
+            Opus.Core.IToolset toolset)  : base(toolset)
+        {}
 
         #region implemented abstract members of GccCommon.CCompiler
         protected override string Filename

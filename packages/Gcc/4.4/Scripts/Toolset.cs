@@ -5,9 +5,11 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class Toolset : GccCommon.Toolset
+    public sealed class Toolset :
+        GccCommon.Toolset
     {
-        public Toolset()
+        public
+        Toolset()
         {
             this.toolConfig[typeof(C.ICompilerTool)]       = new Opus.Core.ToolAndOptionType(new CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)]    = new Opus.Core.ToolAndOptionType(new CxxCompiler(this), typeof(CxxCompilerOptionCollection));
