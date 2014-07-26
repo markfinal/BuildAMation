@@ -6,14 +6,18 @@
 namespace Gcc
 {
     // Not sealed since the ObjC++ compiler inherits from it
-    public partial class ObjCCompilerOptionCollection : GccCommon.ObjCCompilerOptionCollection, ICCompilerOptions
+    public partial class ObjCCompilerOptionCollection :
+        GccCommon.ObjCCompilerOptionCollection,
+        ICCompilerOptions
     {
-        public ObjCCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ObjCCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 

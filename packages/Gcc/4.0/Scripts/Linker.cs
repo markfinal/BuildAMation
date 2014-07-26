@@ -5,12 +5,13 @@
 // <author>Mark Final</author>
 namespace Gcc
 {
-    public sealed class Linker : GccCommon.Linker
+    public sealed class Linker :
+        GccCommon.Linker
     {
-        public Linker(Opus.Core.IToolset toolset)
-            : base(toolset)
-        {
-        }
+        public
+        Linker(
+            Opus.Core.IToolset toolset) : base(toolset)
+        {}
 
         protected override string Filename
         {

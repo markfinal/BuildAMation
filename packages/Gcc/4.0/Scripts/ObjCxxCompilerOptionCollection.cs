@@ -8,9 +8,13 @@ namespace Gcc
     // this implementation is here because the specific version of the Gcc compiler exposes a new interface
     // and because C# cannot derive from a generic type, this C++ option collection must derive from the specific
     // C option collection
-    public sealed partial class ObjCxxCompilerOptionCollection : ObjCCompilerOptionCollection, C.ICxxCompilerOptions
+    public sealed partial class ObjCxxCompilerOptionCollection :
+        ObjCCompilerOptionCollection,
+        C.ICxxCompilerOptions
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -37,9 +41,9 @@ namespace Gcc
             GccCommon.ObjCxxCompilerOptionCollection.ExportedDefaults(this, node);
         }
 
-        public ObjCxxCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ObjCxxCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }
