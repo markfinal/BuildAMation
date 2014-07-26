@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace Publisher
 {
-    public sealed class Toolset : Opus.Core.IToolset
+    public sealed class Toolset :
+        Opus.Core.IToolset
     {
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.BinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
@@ -19,27 +22,37 @@ namespace Publisher
             get { throw new System.NotImplementedException(); }
         }
 
-        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        bool
+        Opus.Core.IToolset.HasTool(
+            System.Type toolType)
         {
             return false;
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.InstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
 
-        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        Opus.Core.ITool
+        Opus.Core.IToolset.Tool(
+            System.Type toolType)
         {
             throw new System.NotImplementedException();
         }
 
-        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        System.Type
+        Opus.Core.IToolset.ToolOptionType(
+            System.Type toolType)
         {
             return typeof(OptionSet);
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.Version(
+            Opus.Core.BaseTarget baseTarget)
         {
             return string.Empty;
         }

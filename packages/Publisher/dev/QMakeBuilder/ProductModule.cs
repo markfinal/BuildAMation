@@ -188,7 +188,7 @@ namespace QMakeBuilder
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
 
-            // TODO: this probably won't work as it's copying an arbtirary file, but worth trying to exercise
+            // TODO: this probably won't work as it's copying an arbitrary file, but worth trying to exercise
             this.CopyFilesToDirectory(
                 plistNode.Module,
                 contentsLoc,

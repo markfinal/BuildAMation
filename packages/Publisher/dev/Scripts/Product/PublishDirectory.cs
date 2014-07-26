@@ -7,13 +7,14 @@ namespace Publisher
 {
     public class PublishDirectory
     {
-        public PublishDirectory(
+        public
+        PublishDirectory(
             Opus.Core.Location root,
-            string directory)
-            : this(root, directory, null)
+            string directory) : this(root, directory, null)
         {}
 
-        public PublishDirectory(
+        public
+        PublishDirectory(
             Opus.Core.Location root,
             string directory,
             string renamedLeaf)

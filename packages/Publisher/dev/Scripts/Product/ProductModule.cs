@@ -6,7 +6,9 @@
 namespace Publisher
 {
     [Opus.Core.ModuleToolAssignment(typeof(IPublishProductTool))]
-    public abstract class ProductModule : Opus.Core.BaseModule, Opus.Core.IIdentifyExternalDependencies
+    public abstract class ProductModule :
+        Opus.Core.BaseModule,
+        Opus.Core.IIdentifyExternalDependencies
     {
         public static readonly Opus.Core.LocationKey OSXAppBundle = new Opus.Core.LocationKey("OSXPrimaryApplicationBundle", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
         public static readonly Opus.Core.LocationKey OSXAppBundleContents = new Opus.Core.LocationKey("OSXPrimaryAppBundleContents", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -15,7 +17,9 @@ namespace Publisher
 
         #region IIdentifyExternalDependencies Members
 
-        Opus.Core.TypeArray Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(Opus.Core.Target target)
+        Opus.Core.TypeArray
+        Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(
+            Opus.Core.Target target)
         {
             var dependentModuleTypes = new Opus.Core.TypeArray();
 

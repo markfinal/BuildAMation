@@ -34,19 +34,24 @@ namespace Publisher
             }
         }
 
-        public class MetaDataCollection : System.Collections.IEnumerable
+        public class MetaDataCollection :
+            System.Collections.IEnumerable
         {
-            public MetaDataCollection()
+            public
+            MetaDataCollection()
             {
                 this.List = new Opus.Core.Array<MetaData>();
             }
 
-            public void Add(MetaData input)
+            public void
+            Add(
+                MetaData input)
             {
                 this.List.AddUnique(input);
             }
 
-            public MetaDataCollection FilterByType<T>() where T : class
+            public MetaDataCollection
+            FilterByType<T>() where T : class
             {
                 var filtered = new MetaDataCollection();
                 foreach (var item in this.List)
@@ -75,7 +80,8 @@ namespace Publisher
 
 #region IEnumerable Members
 
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            System.Collections.IEnumerator
+            System.Collections.IEnumerable.GetEnumerator()
             {
                 return this.List.GetEnumerator();
             }

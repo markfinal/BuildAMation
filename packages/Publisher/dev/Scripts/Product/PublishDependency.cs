@@ -7,13 +7,13 @@ namespace Publisher
 {
     public class PublishDependency
     {
-        public PublishDependency(
-            Opus.Core.LocationKey key) :
-            this(key, string.Empty)
-        {
-        }
+        public
+        PublishDependency(
+            Opus.Core.LocationKey key) : this(key, string.Empty)
+        {}
 
-        public PublishDependency(
+        public
+        PublishDependency(
             Opus.Core.LocationKey key,
             string subdirectory)
         {

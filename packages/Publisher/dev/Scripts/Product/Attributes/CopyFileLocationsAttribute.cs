@@ -10,10 +10,9 @@ namespace Publisher
         Opus.Core.BaseTargetFilteredAttribute,
         IPublishBaseAttribute
     {
-        public CopyFileLocationsAttribute()
-            : this(string.Empty)
-        {
-        }
+        public
+        CopyFileLocationsAttribute() : this(string.Empty)
+        {}
 
         public CopyFileLocationsAttribute(
             string commonSubDirectory)

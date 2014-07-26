@@ -9,18 +9,22 @@ namespace Publisher
         Opus.Core.BaseOptionCollection,
         IPublishOptions
     {
-        public OptionSet(Opus.Core.DependencyNode owningNode)
-            : base(owningNode)
-        {
-        }
+        public
+        OptionSet(
+            Opus.Core.DependencyNode owningNode) : base(owningNode)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
         {
             var options = this as IPublishOptions;
             options.OSXApplicationBundle = false;
         }
 
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             var options = this as IPublishOptions;
 

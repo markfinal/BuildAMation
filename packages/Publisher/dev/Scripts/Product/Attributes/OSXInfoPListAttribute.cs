@@ -9,6 +9,5 @@ namespace Publisher
     public sealed class OSXInfoPListAttribute :
         Opus.Core.BaseTargetFilteredAttribute,
         IPublishBaseAttribute
-    {
-    }
+    {}
 }

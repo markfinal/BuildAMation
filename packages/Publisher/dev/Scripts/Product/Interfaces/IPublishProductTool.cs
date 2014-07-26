@@ -13,18 +13,17 @@ namespace Publisher
         }
     }
 
-    public class ExportPublishOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportPublishOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
-    public class LocalPublishOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalPublishOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [Opus.Core.LocalAndExportTypes(typeof(LocalPublishOptionsDelegateAttribute),
                                    typeof(ExportPublishOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetToolsetName")]
     public interface IPublishProductTool
-    {
-    }
+    {}
 }

@@ -9,6 +9,5 @@ namespace Publisher
     public sealed class PrimaryTargetAttribute :
         Opus.Core.BaseTargetFilteredAttribute,
         IPublishBaseAttribute
-    {
-    }
+    {}
 }
