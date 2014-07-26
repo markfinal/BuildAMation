@@ -9,9 +9,11 @@
 namespace NativeBuilder
 {
     [Opus.Core.PreambleAction]
-    public sealed class ForceBuildAction : Opus.Core.IAction
+    public sealed class ForceBuildAction :
+        Opus.Core.IAction
     {
-        public ForceBuildAction()
+        public
+        ForceBuildAction()
         {
             if (!Opus.Core.State.HasCategory("NativeBuilder"))
             {
@@ -36,7 +38,8 @@ namespace NativeBuilder
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.State.Set("NativeBuilder", "ForceBuild", true);
 
@@ -47,7 +50,8 @@ namespace NativeBuilder
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

@@ -5,9 +5,11 @@
 // <author>Mark Final</author>
 namespace NativeBuilder
 {
-    public sealed partial class NativeBuilder : Opus.Core.IBuilder
+    public sealed partial class NativeBuilder :
+        Opus.Core.IBuilder
     {
-        static NativeBuilder()
+        static
+        NativeBuilder()
         {
             var level = Opus.Core.EVerboseLevel.Full;
             if (Opus.Core.State.HasCategory("NativeBuilder"))
@@ -26,7 +28,9 @@ namespace NativeBuilder
             set;
         }
 
-        public static void MakeDirectory(string directory)
+        public static void
+        MakeDirectory(
+            string directory)
         {
             if (!System.IO.Directory.Exists(directory))
             {
@@ -35,7 +39,10 @@ namespace NativeBuilder
             }
         }
 
-        public static bool RequiresBuilding(string outputPath, string inputPath)
+        public static bool
+        RequiresBuilding(
+            string outputPath,
+            string inputPath)
         {
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
@@ -64,7 +71,10 @@ namespace NativeBuilder
             return false;
         }
 
-        public static bool DirectoryUpToDate(string destinationDir, string sourceDir)
+        public static bool
+        DirectoryUpToDate(
+            string destinationDir,
+            string sourceDir)
         {
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
@@ -93,7 +103,10 @@ namespace NativeBuilder
             return true;
         }
 
-        public static bool DirectoryUpToDate(Opus.Core.Location destinationDir, string sourceDir)
+        public static bool
+        DirectoryUpToDate(
+            Opus.Core.Location destinationDir,
+            string sourceDir)
         {
             var destinationDirPath = destinationDir.GetSinglePath();
             return DirectoryUpToDate(destinationDirPath, sourceDir);
@@ -106,7 +119,10 @@ namespace NativeBuilder
             UpToDate
         }
 
-        public static FileRebuildStatus IsSourceTimeStampNewer(Opus.Core.StringArray outputFiles, string inputFile)
+        public static FileRebuildStatus
+        IsSourceTimeStampNewer(
+            Opus.Core.StringArray outputFiles,
+            string inputFile)
         {
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
@@ -145,7 +161,10 @@ namespace NativeBuilder
             return FileRebuildStatus.UpToDate;
         }
 
-        public static FileRebuildStatus IsSourceTimeStampNewer(Opus.Core.LocationArray outputFiles, Opus.Core.Location inputFile)
+        public static FileRebuildStatus
+        IsSourceTimeStampNewer(
+            Opus.Core.LocationArray outputFiles,
+            Opus.Core.Location inputFile)
         {
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
@@ -187,7 +206,10 @@ namespace NativeBuilder
         }
 
         // TODO: what if some of the paths passed in are directories? And what if they don't exist?
-        public static bool RequiresBuilding(Opus.Core.StringArray outputFiles, Opus.Core.StringArray inputFiles)
+        public static bool
+        RequiresBuilding(
+            Opus.Core.StringArray outputFiles,
+            Opus.Core.StringArray inputFiles)
         {
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
@@ -242,7 +264,10 @@ namespace NativeBuilder
         }
 
         // TODO: what if some of the paths passed in are directories? And what if they don't exist?
-        public static bool RequiresBuilding(Opus.Core.LocationArray outputFiles, Opus.Core.LocationArray inputFiles)
+        public static bool
+        RequiresBuilding(
+            Opus.Core.LocationArray outputFiles,
+            Opus.Core.LocationArray inputFiles)
         {
             if (Opus.Core.State.HasCategory("NativeBuilder"))
             {
