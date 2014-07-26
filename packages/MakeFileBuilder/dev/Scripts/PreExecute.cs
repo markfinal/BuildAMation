@@ -5,13 +5,15 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    public sealed partial class MakeFileBuilder : Opus.Core.IBuilderPreExecute
+    public sealed partial class MakeFileBuilder :
+        Opus.Core.IBuilderPreExecute
     {
         private string topLevelMakeFilePath;
 
         #region IBuilderPreExecute Members
 
-        void Opus.Core.IBuilderPreExecute.PreExecute()
+        void
+        Opus.Core.IBuilderPreExecute.PreExecute()
         {
             Opus.Core.Log.DebugMessage("PreExecute for MakeFiles");
 

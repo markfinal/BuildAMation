@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    public sealed class MakeFileVariableDictionary : System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
+    public sealed class MakeFileVariableDictionary :
+        System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
     {
-        public void Append(MakeFileVariableDictionary dictionary)
+        public void
+        Append(
+            MakeFileVariableDictionary dictionary)
         {
             foreach (var itemPair in dictionary)
             {
@@ -15,7 +18,10 @@ namespace MakeFileBuilder
             }
         }
 
-        public new void Add(Opus.Core.LocationKey key, Opus.Core.StringArray value)
+        public new void
+        Add(
+            Opus.Core.LocationKey key,
+            Opus.Core.StringArray value)
         {
             if (this.ContainsKey(key))
             {
@@ -41,8 +47,9 @@ namespace MakeFileBuilder
             }
         }
 
-#if true
-        public MakeFileVariableDictionary Filter(Opus.Core.Array<Opus.Core.LocationKey> filterKeys)
+        public MakeFileVariableDictionary
+        Filter(
+            Opus.Core.Array<Opus.Core.LocationKey> filterKeys)
         {
             var filteredDictionary = new MakeFileVariableDictionary();
             foreach (var key in this.Keys)
@@ -54,29 +61,5 @@ namespace MakeFileBuilder
             }
             return filteredDictionary;
         }
-#else
-        public MakeFileVariableDictionary Filter(System.Enum filterKeys)
-        {
-            int filterKeysAsInt = System.Convert.ToInt32(filterKeys);
-
-            MakeFileVariableDictionary filtered = new MakeFileVariableDictionary();
-            foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> pair in this)
-            {
-                int pairKeyAsInt = System.Convert.ToInt32(pair.Key);
-
-                if (pairKeyAsInt == (filterKeysAsInt & pairKeyAsInt))
-                {
-                    filtered.Add(pair.Key, pair.Value);
-                }
-            }
-
-            if (0 == filtered.Count)
-            {
-                throw new Opus.Core.Exception("No matching variable types were found for '{0}'", filterKeys.ToString());
-            }
-
-            return filtered;
-        }
-#endif
     }
 }

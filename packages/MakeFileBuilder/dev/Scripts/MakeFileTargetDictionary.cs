@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    public sealed class MakeFileTargetDictionary : System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
+    public sealed class MakeFileTargetDictionary :
+        System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
     {
-        public void Append(MakeFileTargetDictionary dictionary)
+        public void
+        Append(
+            MakeFileTargetDictionary dictionary)
         {
             foreach (var itemPair in dictionary)
             {
@@ -15,7 +18,10 @@ namespace MakeFileBuilder
             }
         }
 
-        public new void Add(Opus.Core.LocationKey key, Opus.Core.StringArray value)
+        public new void
+        Add(
+            Opus.Core.LocationKey key,
+            Opus.Core.StringArray value)
         {
             if (this.ContainsKey(key))
             {
@@ -27,7 +33,10 @@ namespace MakeFileBuilder
             }
         }
 
-        public void Add(Opus.Core.LocationKey key, string value)
+        public void
+        Add(
+            Opus.Core.LocationKey key,
+            string value)
         {
             if (this.ContainsKey(key))
             {

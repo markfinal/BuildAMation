@@ -7,7 +7,9 @@ namespace MakeFileBuilder
 {
     public sealed class MakeFile
     {
-        private string RelativePath(string path)
+        private string
+        RelativePath(
+            string path)
         {
             var relativeDir = Opus.Core.RelativePathUtilities.GetPath(path, this.TopLevelMakeFilePath, "$(CURDIR)");
             return relativeDir;
@@ -94,14 +96,18 @@ namespace MakeFileBuilder
             private set;
         }
 
-        public static string InstanceName(Opus.Core.DependencyNode node)
+        public static string
+        InstanceName(
+            Opus.Core.DependencyNode node)
         {
             var instanceName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
             return instanceName;
         }
 
-        public MakeFile(Opus.Core.DependencyNode node,
-                        string topLevelMakeFilePath)
+        public
+        MakeFile(
+            Opus.Core.DependencyNode node,
+            string topLevelMakeFilePath)
         {
             this.TopLevelMakeFilePath = topLevelMakeFilePath;
             this.ExportedTargets = new MakeFileTargetDictionary();
@@ -110,7 +116,9 @@ namespace MakeFileBuilder
             this.ModulePrefixName = InstanceName(node);
         }
 
-        public void Write(System.IO.TextWriter writer)
+        public void
+        Write(
+            System.IO.TextWriter writer)
         {
             if (0 == this.RuleArray.Count)
             {
@@ -151,7 +159,6 @@ namespace MakeFileBuilder
                 string mainExportVariableName = null;
                 if (rule.ExportVariable)
                 {
-#if true
                     if (rule.ModuleToBuild is Opus.Core.IModuleCollection)
                     {
                         writer.WriteLine("# Output variable (collection)");
@@ -185,16 +192,6 @@ namespace MakeFileBuilder
                     }
                     else
                     {
-#if false
-                        var outputKeys = new Opus.Core.Array<Opus.Core.LocationKey>();
-                        var fileKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
-                        var symlinkKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.Symlink, Opus.Core.Location.EExists.WillExist);
-                        // TODO: directory keys here list more locations than are needed
-                        var dirKeys = rule.ModuleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
-                        outputKeys.AddRangeUnique(fileKeys);
-                        outputKeys.AddRangeUnique(symlinkKeys);
-                        outputKeys.AddRangeUnique(dirKeys);
-#endif
                         if (null == rule.OutputLocationKeys)
                         {
                             throw new Opus.Core.Exception("No output keys have been assigned to Makefile rule for target '{1}'", rule.ModuleToBuild.OwningNode.UniqueModuleName, rule.Target);
@@ -257,92 +254,6 @@ namespace MakeFileBuilder
                             }
                         }
                     }
-#else
-                    if (null == rule.OutputPaths)
-                    {
-                        writer.WriteLine("# Output variable (collection)");
-                        string exportVariableName = System.String.Format("{0}_{1}_Variable", mainVariableName, rule.PrimaryOutputType.ToString());
-                        mainExportVariableName = exportVariableName;
-
-                        System.Text.StringBuilder variableAndValue = new System.Text.StringBuilder();
-                        variableAndValue.AppendFormat("{0} := ", exportVariableName);
-                        foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
-                        {
-                            foreach (string pre in prerequisite.Value)
-                            {
-                                variableAndValue.AppendFormat("$({0}) ", pre);
-                            }
-                        }
-                        if (null != rule.InputFiles)
-                        {
-                            foreach (string prerequisiteFile in rule.InputFiles)
-                            {
-                                string relativePrerequisiteFile = this.RelativePath(prerequisiteFile);
-                                variableAndValue.AppendFormat("{0} ", relativePrerequisiteFile);
-                            }
-                        }
-
-                        writer.WriteLine(variableAndValue.ToString());
-                        writer.WriteLine("");
-
-                        Opus.Core.StringArray exportedVariables = new Opus.Core.StringArray();
-                        exportedVariables.Add(exportVariableName);
-                        this.ExportedVariables.Add(rule.PrimaryOutputType, exportedVariables);
-                    }
-                    else
-                    {
-                        foreach (System.Enum outputType in rule.OutputPaths.Types)
-                        {
-                            string exportVariableName = System.String.Format("{0}_{1}_Variable", mainVariableName, outputType.ToString());
-                            if (outputType.Equals(rule.PrimaryOutputType))
-                            {
-                                mainExportVariableName = exportVariableName;
-                            }
-                            writer.WriteLine("# Output variable: '{0}'", outputType.ToString());
-
-                            if (rule.ExportTarget)
-                            {
-                                string relativeOutputPath = this.RelativePath(rule.OutputPaths[outputType]);
-                                writer.WriteLine(exportVariableName + " := " + relativeOutputPath);
-                                writer.WriteLine("");
-                            }
-                            else
-                            {
-                                System.Text.StringBuilder variableAndValue = new System.Text.StringBuilder();
-                                variableAndValue.AppendFormat("{0} := ", exportVariableName);
-                                foreach (System.Collections.Generic.KeyValuePair<System.Enum, Opus.Core.StringArray> prerequisite in rule.InputVariables)
-                                {
-                                    foreach (string pre in prerequisite.Value)
-                                    {
-                                        variableAndValue.AppendFormat("$({0}) ", pre);
-                                    }
-                                }
-                                if (null != rule.InputFiles)
-                                {
-                                    foreach (string prerequisiteFile in rule.InputFiles)
-                                    {
-                                        string relativePrerequisiteFile = this.RelativePath(prerequisiteFile);
-                                        variableAndValue.AppendFormat("{0} ", relativePrerequisiteFile);
-                                    }
-                                }
-
-                                writer.WriteLine(variableAndValue.ToString());
-                                writer.WriteLine("");
-                            }
-
-                            Opus.Core.StringArray exportedVariables = new Opus.Core.StringArray();
-                            exportedVariables.Add(exportVariableName);
-                            this.ExportedVariables.Add(outputType, exportedVariables);
-
-                            if (null != outputDirectoriesVariable)
-                            {
-                                writer.WriteLine("# Order-only dependencies on directories to create");
-                                writer.WriteLine("$({0}): | $({1})", exportVariableName, outputDirectoriesVariable);
-                                writer.WriteLine("");
-                            }
-                        }
-                    }
-#endif
                 }
 
                 if (rule.ExportTarget && null != mainExportVariableName)

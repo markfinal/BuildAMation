@@ -5,13 +5,16 @@
 // <author>Mark Final</author>
 namespace MakeFileBuilder
 {
-    public sealed partial class MakeFileBuilder : Opus.Core.IBuilderPostExecute
+    public sealed partial class MakeFileBuilder :
+        Opus.Core.IBuilderPostExecute
     {
         private class UniquePathCollection
         {
             private Opus.Core.StringArray pathList = new Opus.Core.StringArray();
 
-            public void Add(string path)
+            public void
+            Add(
+                string path)
             {
                 if (!System.String.IsNullOrEmpty(path) && !pathList.Contains(path))
                 {
@@ -19,12 +22,14 @@ namespace MakeFileBuilder
                 }
             }
 
-            public System.Collections.Generic.IEnumerator<string> GetEnumerator()
+            public System.Collections.Generic.IEnumerator<string>
+            GetEnumerator()
             {
                 return this.pathList.GetEnumerator();
             }
 
-            public override string ToString()
+            public override string
+            ToString()
             {
                 // TODO: check whether the separator needs to be different on Linux and OSX?
 
@@ -39,7 +44,9 @@ namespace MakeFileBuilder
 
         #region IBuilderPostExecute Members
 
-        void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
+        void
+        Opus.Core.IBuilderPostExecute.PostExecute(
+            Opus.Core.DependencyNodeCollection executedNodes)
         {
             Opus.Core.Log.DebugMessage("PostExecute for MakeFiles");
 

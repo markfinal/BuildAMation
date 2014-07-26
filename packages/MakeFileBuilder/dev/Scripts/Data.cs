@@ -7,10 +7,12 @@ namespace MakeFileBuilder
 {
     public sealed class MakeFileData
     {
-        public MakeFileData(string makeFilePath,
-                            MakeFileTargetDictionary targetDictionary,
-                            MakeFileVariableDictionary variableDictionary,
-                            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment)
+        public
+        MakeFileData(
+            string makeFilePath,
+            MakeFileTargetDictionary targetDictionary,
+            MakeFileVariableDictionary variableDictionary,
+            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment)
         {
             this.MakeFilePath = makeFilePath;
             this.TargetDictionary = targetDictionary;
