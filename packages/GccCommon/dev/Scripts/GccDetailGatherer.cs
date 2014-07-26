@@ -9,7 +9,10 @@ namespace GccCommon
     {
         private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData>();
 
-        public static GccDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
+        public static GccDetailData
+        DetermineSpecs(
+            Opus.Core.BaseTarget baseTarget,
+            Opus.Core.IToolset toolset)
         {
             var executable = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
             var isLLVMGcc = System.IO.Path.GetFileName(executable).StartsWith("llvm");

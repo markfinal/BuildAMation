@@ -5,12 +5,16 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract class Linker : C.ILinkerTool, Opus.Core.IToolEnvironmentVariables
+    public abstract class Linker :
+        C.ILinkerTool,
+        Opus.Core.IToolEnvironmentVariables
     {
         protected Opus.Core.IToolset toolset;
         private Opus.Core.StringArray environment;
 
-        protected Linker(Opus.Core.IToolset toolset)
+        protected
+        Linker(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.environment = new Opus.Core.StringArray("/usr/bin");
@@ -104,7 +108,9 @@ namespace GccCommon
             }
         }
 
-        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ILinkerTool.LibPaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
@@ -113,7 +119,9 @@ namespace GccCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, this.Filename);
@@ -141,7 +149,9 @@ namespace GccCommon
         #endregion
 
         #region IToolEnvironmentVariables implementation
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
+        Opus.Core.IToolEnvironmentVariables.Variables(
+            Opus.Core.BaseTarget baseTarget)
         {
             var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.environment;
@@ -150,4 +160,3 @@ namespace GccCommon
         #endregion
     }
 }
-

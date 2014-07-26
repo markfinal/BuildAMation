@@ -5,9 +5,14 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public partial class ObjCxxCompilerOptionCollection : ObjCCompilerOptionCollection, C.ICxxCompilerOptions
+    public partial class ObjCxxCompilerOptionCollection :
+        ObjCCompilerOptionCollection,
+        C.ICxxCompilerOptions
     {
-        public static new void ExportedDefaults(Opus.Core.BaseOptionCollection options, Opus.Core.DependencyNode node)
+        public static new void
+        ExportedDefaults(
+            Opus.Core.BaseOptionCollection options,
+            Opus.Core.DependencyNode node)
         {
             var cInterfaceOptions = options as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
@@ -15,15 +20,17 @@ namespace GccCommon
             cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
         }
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
             ExportedDefaults(this, node);
         }
 
-        public ObjCxxCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ObjCxxCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

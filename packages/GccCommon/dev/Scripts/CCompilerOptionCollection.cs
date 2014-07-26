@@ -6,9 +6,14 @@
 namespace GccCommon
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions
+    public partial class CCompilerOptionCollection :
+        C.CompilerOptionCollection,
+        C.ICCompilerOptions,
+        ICCompilerOptions
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             var localCompilerOptions = this as ICCompilerOptions;
             localCompilerOptions.AllWarnings = true;
@@ -56,9 +61,9 @@ namespace GccCommon
             }
         }
 
-        public CCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

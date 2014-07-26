@@ -9,9 +9,9 @@ namespace GccCommon
     public sealed partial class PosixSharedLibrarySymlinksOptionCollection :
         C.PosixSharedLibrarySymlinksOptionCollection
     {
-        public PosixSharedLibrarySymlinksOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        PosixSharedLibrarySymlinksOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

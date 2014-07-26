@@ -7,11 +7,13 @@ namespace GccCommon
 {
     public class GccDetailData
     {
-        public GccDetailData(string version,
-                             Opus.Core.StringArray includePaths,
-                             string gxxIncludePath,
-                             string target,
-                             string libExecDir)
+        public
+        GccDetailData(
+            string version,
+            Opus.Core.StringArray includePaths,
+            string gxxIncludePath,
+            string target,
+            string libExecDir)
         {
             if (null == version)
             {

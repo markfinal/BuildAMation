@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public abstract class CCompiler : C.ICompilerTool
+    public abstract class CCompiler :
+        C.ICompilerTool
     {
         private Opus.Core.IToolset toolset;
 
-        protected CCompiler(Opus.Core.IToolset toolset)
+        protected
+        CCompiler(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -20,7 +23,9 @@ namespace GccCommon
         }
 
         #region ICompilerTool implementation
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ICompilerTool.IncludePaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             // TODO: sort this out... it required a call to the InstallPath to get the right paths
             this.toolset.InstallPath(baseTarget);
@@ -61,7 +66,9 @@ namespace GccCommon
         #endregion
 
         #region ITool implementation
-        string Opus.Core.ITool.Executable (Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, this.Filename);
@@ -81,4 +88,3 @@ namespace GccCommon
         #endregion
     }
 }
-

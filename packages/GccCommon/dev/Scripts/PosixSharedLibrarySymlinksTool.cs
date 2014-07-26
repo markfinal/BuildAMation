@@ -8,16 +8,16 @@ namespace GccCommon
     sealed class PosixSharedLibrarySymlinksTool :
         C.IPosixSharedLibrarySymlinksTool
     {
-        //private Opus.Core.IToolset toolset;
-
-        public PosixSharedLibrarySymlinksTool(Opus.Core.IToolset toolset)
-        {
-            //this.toolset = toolset;
-        }
+        public
+        PosixSharedLibrarySymlinksTool(
+            Opus.Core.IToolset toolset)
+        {}
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             return "ln";
         }

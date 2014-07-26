@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public sealed class Archiver : C.IArchiverTool
+    public sealed class Archiver :
+        C.IArchiverTool
     {
         private Opus.Core.IToolset toolset;
 
-        public Archiver(Opus.Core.IToolset toolset)
+        public
+        Archiver(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -44,7 +47,9 @@ namespace GccCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, "ar");
@@ -65,4 +70,3 @@ namespace GccCommon
         #endregion
     }
 }
-

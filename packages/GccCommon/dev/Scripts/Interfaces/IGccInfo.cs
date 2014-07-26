@@ -7,10 +7,16 @@ namespace GccCommon
 {
     public interface IGCCInfo
     {
-        string GccVersion(Opus.Core.Target target);
+        string
+        GccVersion(
+            Opus.Core.Target target);
 
-        string MachineType(Opus.Core.Target target);
+        string
+        MachineType(
+            Opus.Core.Target target);
 
-        string GxxIncludePath(Opus.Core.Target target);
+        string
+        GxxIncludePath(
+            Opus.Core.Target target);
     }
 }

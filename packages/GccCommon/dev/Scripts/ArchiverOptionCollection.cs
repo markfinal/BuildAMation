@@ -5,9 +5,14 @@
 // <author>Mark Final</author>
 namespace GccCommon
 {
-    public partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
+    public partial class ArchiverOptionCollection :
+        C.ArchiverOptionCollection,
+        C.IArchiverOptions,
+        IArchiverOptions
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -20,9 +25,9 @@ namespace GccCommon
             cArchiverOptions.OutputType = C.EArchiverOutput.StaticLibrary;
         }
 
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

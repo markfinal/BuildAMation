@@ -8,7 +8,10 @@ namespace C
     public partial class DynamicLibrary
     {
         [LocalCompilerOptionsDelegate]
-        protected static void GccCommonDynamicLibrarySetPositionIndependentCode(Opus.Core.IModule module, Opus.Core.Target target)
+        protected static void
+        GccCommonDynamicLibrarySetPositionIndependentCode(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as GccCommon.ICCompilerOptions;
             if (null != compilerOptions)
