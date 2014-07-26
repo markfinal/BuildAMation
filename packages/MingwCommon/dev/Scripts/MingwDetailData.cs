@@ -7,11 +7,13 @@ namespace MingwCommon
 {
     public class MingwDetailData
     {
-        public MingwDetailData(string version,
-                               Opus.Core.StringArray includePaths,
-                               string gxxIncludePath,
-                               string target,
-                               string libExecDir)
+        public
+        MingwDetailData(
+            string version,
+            Opus.Core.StringArray includePaths,
+            string gxxIncludePath,
+            string target,
+            string libExecDir)
         {
             if (null == version)
             {

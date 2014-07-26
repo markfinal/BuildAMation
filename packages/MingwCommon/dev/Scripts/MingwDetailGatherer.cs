@@ -9,7 +9,10 @@ namespace MingwCommon
     {
         private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, MingwDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, MingwDetailData>();
 
-        public static MingwDetailData DetermineSpecs(Opus.Core.BaseTarget baseTarget, Opus.Core.IToolset toolset)
+        public static MingwDetailData
+        DetermineSpecs(
+            Opus.Core.BaseTarget baseTarget,
+            Opus.Core.IToolset toolset)
         {
             // get version
             string gccVersion = null;

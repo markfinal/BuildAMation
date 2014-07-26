@@ -5,9 +5,14 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions
+    public partial class ArchiverOptionCollection :
+        C.ArchiverOptionCollection,
+        C.IArchiverOptions,
+        IArchiverOptions
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -19,9 +24,9 @@ namespace MingwCommon
             (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
         }
 
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

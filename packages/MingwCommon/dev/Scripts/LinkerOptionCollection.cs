@@ -5,9 +5,14 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions
+    public partial class LinkerOptionCollection :
+        C.LinkerOptionCollection,
+        C.ILinkerOptions,
+        ILinkerOptions
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -32,9 +37,9 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
              */
         }
 
-        public LinkerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        LinkerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

@@ -5,12 +5,16 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public sealed class Win32ResourceCompiler : C.IWinResourceCompilerTool, Opus.Core.IToolEnvironmentVariables
+    public sealed class Win32ResourceCompiler :
+        C.IWinResourceCompilerTool,
+        Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray pathEnvironment = new Opus.Core.StringArray();
 
-        public Win32ResourceCompiler(Opus.Core.IToolset toolset)
+        public
+        Win32ResourceCompiler(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.pathEnvironment.Add(@"c:\windows\system32");
@@ -46,7 +50,9 @@ namespace MingwCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "windres.exe");
@@ -67,7 +73,9 @@ namespace MingwCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
+        Opus.Core.IToolEnvironmentVariables.Variables(
+            Opus.Core.BaseTarget baseTarget)
         {
             var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             var paths = new Opus.Core.StringArray();

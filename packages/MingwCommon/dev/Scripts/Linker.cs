@@ -5,12 +5,18 @@
 // <author>Mark Final</author>
 namespace MingwCommon
 {
-    public abstract class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
+    public abstract class Linker :
+        C.ILinkerTool,
+        C.IWinImportLibrary,
+        Opus.Core.IToolForwardedEnvironmentVariables,
+        Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
 
-        protected Linker(Opus.Core.IToolset toolset)
+        protected
+        Linker(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("TEMP");
@@ -79,7 +85,9 @@ namespace MingwCommon
             }
         }
 
-        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ILinkerTool.LibPaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
@@ -116,7 +124,9 @@ namespace MingwCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, this.Filename);
@@ -157,7 +167,9 @@ namespace MingwCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
+        Opus.Core.IToolEnvironmentVariables.Variables(
+            Opus.Core.BaseTarget baseTarget)
         {
             var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
