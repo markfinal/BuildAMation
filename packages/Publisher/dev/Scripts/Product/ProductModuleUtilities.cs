@@ -294,6 +294,11 @@ namespace Publisher
             var destPath = GenerateDestinationPath(sourcePath, destinationDirectory, subdirectory, renamedLeaf, module, key);
             Opus.Core.Log.Info("Copying directory {0} to {1}", sourcePath, destPath);
 
+            if (!System.IO.Directory.Exists(destPath))
+            {
+                System.IO.Directory.CreateDirectory(destPath);
+            }
+
             foreach (string dir in System.IO.Directory.GetDirectories(sourcePath, "*", System.IO.SearchOption.AllDirectories))
             {
                 var dirToCreate = destPath + dir.Substring(sourcePath.Length);
