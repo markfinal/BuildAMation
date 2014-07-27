@@ -4,6 +4,14 @@ namespace OpenCLTest1
     // Add modules here
     class OpenCLTest1 : C.Application
     {
+        public
+        OpenCLTest1()
+        {
+#if OPUSPACKAGE_PUBLISHER_DEV
+            this.dataDir = new Publisher.PublishDirectory(this.PackageLocation, "data");
+#endif
+        }
+
         class SourceFiles : C.Cxx.ObjectFileCollection
         {
             public SourceFiles()
@@ -23,11 +31,25 @@ namespace OpenCLTest1
 
         [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
+            );
+
+        [Publisher.AdditionalDirectories]
+        Publisher.PublishDirectory dataDir;
+#endif
     }
 
-#if false
-    // TODO: rework with publishing
-#if OPUSPACKAGE_FILEUTILITIES_DEV
+#if OPUSPACKAGE_PUBLISHER_DEV
+    class Publish : Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        System.Type primary = typeof(OpenCLTest1);
+    }
+#elif OPUSPACKAGE_FILEUTILITIES_DEV
     class CopyKernels : FileUtilities.CopyFileCollection
     {
         public CopyKernels()
@@ -55,6 +77,5 @@ namespace OpenCLTest1
     }
 #else
 #error Unknown FileUtilities package version
-#endif
 #endif
 }

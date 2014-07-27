@@ -1,4 +1,5 @@
 #define __NO_STD_VECTOR // Use cl::vector instead of STL version
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS // TODO: remove the need for this
 #ifdef _MSC_VER
 #pragma warning(push, 3)
 #endif
@@ -72,7 +73,7 @@ int main()
     checkErr(
         devices.size() > 0 ? CL_SUCCESS : -1, "devices.size() > 0");
 
-    std::ifstream file("lesson1_kernels.cl");
+    std::ifstream file("data/lesson1_kernels.cl");
     checkErr(file.is_open() ? CL_SUCCESS:-1, "lesson1_kernel.cl");
 
     std::string prog(
