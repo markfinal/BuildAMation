@@ -35,7 +35,7 @@ namespace AMDAPPSDK
                     }
 
                     installPath = installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
-                    Opus.Core.Log.DebugMessage("VisualStudio 2008: Installation path from registry '{0}'", installPath);
+                    Opus.Core.Log.DebugMessage("AMD APP SDK 2.5: Installation path from registry '{0}'", installPath);
                     InstallPath = installPath;
                 }
             }
