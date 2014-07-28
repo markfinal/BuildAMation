@@ -8,7 +8,7 @@ namespace XmlUtilities
     [Opus.Core.LocalAndExportTypes(typeof(LocalTextFileOptionsDelegateAttribute),
                                    typeof(ExportTextFileOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider("XmlUtilities")]
-    public interface ITextFileTool : Opus.Core.ITool
-    {
-    }
+    public interface ITextFileTool :
+        Opus.Core.ITool
+    {}
 }

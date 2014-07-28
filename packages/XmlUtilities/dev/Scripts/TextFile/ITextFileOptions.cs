@@ -6,6 +6,5 @@
 namespace XmlUtilities
 {
     public interface ITextFileOptions
-    {
-    }
+    {}
 }

@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(XmlUtilities.XmlModule moduleToBuild, out bool success)
+        public object
+        Build(
+            XmlUtilities.XmlModule moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
 

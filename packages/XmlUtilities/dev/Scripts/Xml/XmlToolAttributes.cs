@@ -7,12 +7,12 @@
 namespace XmlUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportXmlWriterOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportXmlWriterOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalXmlWriterOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalXmlWriterOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

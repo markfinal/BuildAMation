@@ -6,12 +6,14 @@
 namespace XmlUtilities
 {
     [Opus.Core.ModuleToolAssignment(typeof(ITextFileTool))]
-    public class TextFileModule : Opus.Core.BaseModule
+    public class TextFileModule :
+        Opus.Core.BaseModule
     {
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("TextFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("TextFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        public TextFileModule()
+        public
+        TextFileModule()
         {
             this.Content = new System.Text.StringBuilder();
         }

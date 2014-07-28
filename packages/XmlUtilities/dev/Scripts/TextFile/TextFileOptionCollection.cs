@@ -8,12 +8,14 @@ namespace XmlUtilities
     public partial class TextFileOptionCollection :
         Opus.Core.BaseOptionCollection
     {
-        public TextFileOptionCollection(Opus.Core.DependencyNode owningNode)
-            : base(owningNode)
-        {
-        }
+        public
+        TextFileOptionCollection(
+            Opus.Core.DependencyNode owningNode) : base(owningNode)
+        {}
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
             var outputDirLoc = locationMap[TextFileModule.OutputDir] as Opus.Core.ScaffoldLocation;
@@ -32,12 +34,14 @@ namespace XmlUtilities
         }
 
         #region implemented abstract members of BaseOptionCollection
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
-        {
-        }
-        protected override void SetDelegates(Opus.Core.DependencyNode owningNode)
-        {
-        }
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
+        {}
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode owningNode)
+        {}
         #endregion
     }
 }

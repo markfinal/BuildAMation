@@ -7,12 +7,12 @@
 namespace XmlUtilities
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class ExportTextFileOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportTextFileOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
-    public class LocalTextFileOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalTextFileOptionsDelegateAttribute :
+        System.Attribute
+    {}
 }

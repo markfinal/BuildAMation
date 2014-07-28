@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        public object Build(XmlUtilities.XmlModule moduleToBuild, out bool success)
+        public object
+        Build(
+            XmlUtilities.XmlModule moduleToBuild,
+            out bool success)
         {
             var isPlist = moduleToBuild is XmlUtilities.OSXPlistModule;
 

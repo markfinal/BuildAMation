@@ -6,10 +6,11 @@
 namespace XmlUtilities
 {
     [Opus.Core.ModuleToolAssignment(typeof(IOSXPlistWriterTool))]
-    public class OSXPlistModule : XmlModule
+    public class OSXPlistModule :
+        XmlModule
     {
-        public OSXPlistModule()
-            : base()
+        public
+        OSXPlistModule() : base()
         {
             {
                 var decl = this.Document.CreateXmlDeclaration("1.0", "UTF-8", null);

@@ -5,20 +5,24 @@
 // <author>Mark Final</author>
 namespace XmlUtilities
 {
-    public partial class XmlWriterOptionCollection: Opus.Core.BaseOptionCollection, IXmlOptions
+    public partial class XmlWriterOptionCollection :
+        Opus.Core.BaseOptionCollection,
+        IXmlOptions
     {
-        public XmlWriterOptionCollection(Opus.Core.DependencyNode owningNode)
-            : base(owningNode)
-        {
-        }
+        public
+        XmlWriterOptionCollection(
+            Opus.Core.DependencyNode owningNode) : base(owningNode)
+        {}
 
         #region implemented abstract members of BaseOptionCollection
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
-        {
-        }
-        protected override void SetDelegates (Opus.Core.DependencyNode owningNode)
-        {
-        }
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
+        {}
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode owningNode)
+        {}
         #endregion
     }
 }

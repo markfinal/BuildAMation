@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace XmlUtilities
 {
-    public class TextFileTool : ITextFileTool
+    public class TextFileTool :
+        ITextFileTool
     {
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException ();
         }

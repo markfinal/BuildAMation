@@ -5,15 +5,19 @@
 // <author>Mark Final</author>
 namespace XmlUtilities
 {
-    public sealed partial class OSXPlistWriterOptionCollection: XmlWriterOptionCollection, IOSXPlistOptions
+    public sealed partial class OSXPlistWriterOptionCollection :
+        XmlWriterOptionCollection,
+        IOSXPlistOptions
     {
-        public OSXPlistWriterOptionCollection(Opus.Core.DependencyNode owningNode)
-            : base(owningNode)
-        {
-        }
+        public
+        OSXPlistWriterOptionCollection(
+            Opus.Core.DependencyNode owningNode) : base(owningNode)
+        {}
 
         #region implemented abstract members of BaseOptionCollection
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
         {
             var options = this as IOSXPlistOptions;
             options.CFBundleName = null;
@@ -31,7 +35,11 @@ namespace XmlUtilities
         }
         #endregion
 
-        private static void AddKeyToDict(System.Xml.XmlDocument doc, System.Xml.XmlElement dict, string value)
+        private static void
+        AddKeyToDict(
+            System.Xml.XmlDocument doc,
+            System.Xml.XmlElement dict,
+            string value)
         {
             var element = doc.CreateElement("key");
             var text = doc.CreateTextNode(value);
@@ -39,7 +47,11 @@ namespace XmlUtilities
             dict.AppendChild(element);
         }
 
-        private static void AddStringToDict(System.Xml.XmlDocument doc, System.Xml.XmlElement dict, string value)
+        private static void
+        AddStringToDict(
+            System.Xml.XmlDocument doc,
+            System.Xml.XmlElement dict,
+            string value)
         {
             var element = doc.CreateElement("string");
             var text = doc.CreateTextNode(value);
@@ -47,7 +59,9 @@ namespace XmlUtilities
             dict.AppendChild(element);
         }
 
-        protected override void SetNodeSpecificData (Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
             var pListDirLoc = locationMap[XmlModule.OutputDir] as Opus.Core.ScaffoldLocation;
@@ -59,7 +73,9 @@ namespace XmlUtilities
             base.SetNodeSpecificData (node);
         }
 
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
             var pListFileLoc = locationMap[XmlModule.OutputFile] as Opus.Core.ScaffoldLocation;

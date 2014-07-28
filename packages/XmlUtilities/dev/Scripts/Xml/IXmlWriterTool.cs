@@ -8,7 +8,7 @@ namespace XmlUtilities
     [Opus.Core.LocalAndExportTypes(typeof(LocalXmlWriterOptionsDelegateAttribute),
                                    typeof(ExportXmlWriterOptionsDelegateAttribute))]
     [Opus.Core.AssignToolsetProvider("XmlUtilities")]
-    public interface IXmlWriterTool : Opus.Core.ITool
-    {
-    }
+    public interface IXmlWriterTool :
+        Opus.Core.ITool
+    {}
 }
