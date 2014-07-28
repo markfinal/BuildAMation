@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace WindowsSDK
 {
-    public sealed class WindowsSDK : C.ThirdPartyModule
+    public sealed class WindowsSDK :
+        C.ThirdPartyModule
     {
         private static string installPath;
         private static string bin32Path;
@@ -14,7 +15,9 @@ namespace WindowsSDK
         private static string lib64Path;
         private static string includePath;
 
-        public WindowsSDK(Opus.Core.Target target)
+        public
+        WindowsSDK(
+            Opus.Core.Target target)
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
@@ -48,7 +51,10 @@ namespace WindowsSDK
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        WindowsSDK_LibraryPaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (target.Platform == Opus.Core.EPlatform.Win32)
@@ -66,18 +72,25 @@ namespace WindowsSDK
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        WindowsSDK_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Add(includePath);
         }
 
-        public override Opus.Core.StringArray Libraries(Opus.Core.Target target)
+        public override Opus.Core.StringArray
+        Libraries(
+            Opus.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
-        public static string BinPath(Opus.Core.BaseTarget baseTarget)
+        public static string
+        BinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             string binPath;
             if (Opus.Core.OSUtilities.Is64Bit(baseTarget))

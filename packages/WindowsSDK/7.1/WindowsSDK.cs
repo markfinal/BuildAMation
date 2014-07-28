@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace WindowsSDK
 {
-    public sealed class WindowsSDK : C.ThirdPartyModule
+    public sealed class WindowsSDK :
+        C.ThirdPartyModule
     {
         private static string installPath;
         private static string bin32Path;
@@ -14,7 +15,8 @@ namespace WindowsSDK
         private static string lib64Path;
         private static string includePath;
 
-        static WindowsSDK()
+        static
+        WindowsSDK()
         {
             if (!Opus.Core.OSUtilities.IsWindowsHosting)
             {
@@ -41,14 +43,18 @@ namespace WindowsSDK
             }
         }
 
-        public WindowsSDK()
+        public
+        WindowsSDK()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void WindowsSDK_LibraryPaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        WindowsSDK_LibraryPaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
@@ -71,7 +77,10 @@ namespace WindowsSDK
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void WindowsSDK_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        WindowsSDK_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             if (null == compilerOptions)
@@ -82,7 +91,9 @@ namespace WindowsSDK
             compilerOptions.IncludePaths.Add(includePath);
         }
 
-        public static string BinPath(Opus.Core.BaseTarget baseTarget)
+        public static string
+        BinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             string binPath;
             if (Opus.Core.OSUtilities.Is64Bit(baseTarget))
