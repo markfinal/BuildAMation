@@ -5,14 +5,19 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class XCConfigurationListSection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class XCConfigurationListSection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public XCConfigurationListSection()
+        public
+        XCConfigurationListSection()
         {
             this.ConfigurationLists = new System.Collections.Generic.List<XCConfigurationList>();
         }
 
-        public void Add(XCConfigurationList configurationList)
+        public void
+        Add(
+            XCConfigurationList configurationList)
         {
             lock (this.ConfigurationLists)
             {
@@ -20,7 +25,9 @@ namespace XcodeBuilder
             }
         }
 
-        public XCConfigurationList Get(XCodeNodeData owner)
+        public XCConfigurationList
+        Get(
+            XCodeNodeData owner)
         {
             lock (this.ConfigurationLists)
             {
@@ -45,7 +52,9 @@ namespace XcodeBuilder
         }
 
         #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.ConfigurationLists.Count == 0)
             {
@@ -72,7 +81,8 @@ namespace XcodeBuilder
 
         #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.ConfigurationLists.GetEnumerator();
         }

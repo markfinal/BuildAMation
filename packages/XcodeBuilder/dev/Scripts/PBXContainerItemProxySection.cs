@@ -5,14 +5,21 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXContainerItemProxySection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXContainerItemProxySection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXContainerItemProxySection()
+        public
+        PBXContainerItemProxySection()
         {
             this.ContainerItemProxies = new System.Collections.Generic.List<PBXContainerItemProxy>();
         }
 
-        public PBXContainerItemProxy Get(string name, XCodeNodeData remote, XCodeNodeData portal)
+        public PBXContainerItemProxy
+        Get(
+            string name,
+            XCodeNodeData remote,
+            XCodeNodeData portal)
         {
             lock (this.ContainerItemProxies)
             {
@@ -37,7 +44,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.ContainerItemProxies.Count == 0)
             {
@@ -64,7 +73,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.ContainerItemProxies.GetEnumerator();
         }

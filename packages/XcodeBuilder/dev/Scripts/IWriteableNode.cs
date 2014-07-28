@@ -7,6 +7,8 @@ namespace XcodeBuilder
 {
     public interface IWriteableNode
     {
-        void Write(System.IO.TextWriter writer);
+        void
+        Write(
+            System.IO.TextWriter writer);
     }
 }

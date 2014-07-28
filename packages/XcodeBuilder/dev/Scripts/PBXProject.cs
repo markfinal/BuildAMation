@@ -5,10 +5,13 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXProject : XCodeNodeData, IWriteableNode
+    public sealed class PBXProject :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public PBXProject(Opus.Core.DependencyNode node)
-            : base(node.ModuleName)
+        public
+        PBXProject(
+            Opus.Core.DependencyNode node) : base(node.ModuleName)
         {
             var package = node.Package;
             var projectFilename = "project.pbxproj";
@@ -33,7 +36,8 @@ namespace XcodeBuilder
             this.InitializeGroups();
         }
 
-        private void InitializeGroups()
+        private void
+        InitializeGroups()
         {
             // create a main group
             var mainGroup = this.Groups.Get(string.Empty);
@@ -168,7 +172,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (null == this.BuildConfigurationList)
             {

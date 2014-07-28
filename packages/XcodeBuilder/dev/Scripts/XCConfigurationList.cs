@@ -5,10 +5,13 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class XCConfigurationList : XCodeNodeData, IWriteableNode
+    public sealed class XCConfigurationList :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public XCConfigurationList(XCodeNodeData owner)
-            : base(owner.Name)
+        public
+        XCConfigurationList(
+            XCodeNodeData owner) : base(owner.Name)
         {
             this.Owner = owner;
             this.BuildConfigurations = new Opus.Core.Array<XCBuildConfiguration>();
@@ -20,7 +23,9 @@ namespace XcodeBuilder
             private set;
         }
 
-        public void AddUnique(XCBuildConfiguration configuration)
+        public void
+        AddUnique(
+            XCBuildConfiguration configuration)
         {
             lock (this.BuildConfigurations)
             {
@@ -39,7 +44,8 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(System.IO.TextWriter writer)
         {
             if (null == this.Owner)
             {

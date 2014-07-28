@@ -5,7 +5,9 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXFileReference : XCodeNodeData, IWriteableNode
+    public sealed class PBXFileReference :
+        XCodeNodeData,
+        IWriteableNode
     {
         public enum EType
         {
@@ -25,8 +27,12 @@ namespace XcodeBuilder
             Text
         }
 
-        public PBXFileReference(string name, EType type, string path, System.Uri rootPath)
-            : base(name)
+        public
+        PBXFileReference(
+            string name,
+            EType type,
+            string path,
+            System.Uri rootPath) : base(name)
         {
             this.RootPath = rootPath;
             this.FullPath = path;
@@ -34,7 +40,8 @@ namespace XcodeBuilder
         }
 
         public void
-        SetType(EType type)
+        SetType(
+            EType type)
         {
             this.Type = type;
             this.ShortPath = CalculateShortPath(type, this.FullPath);
@@ -55,7 +62,10 @@ namespace XcodeBuilder
             }
         }
 
-        public static string CalculateShortPath(EType type, string path)
+        public static string
+        CalculateShortPath(
+            EType type,
+            string path)
         {
             var shortPath = System.IO.Path.GetFileName(path);
             if (EType.Framework == type)
@@ -101,7 +111,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             switch (this.Type)
             {

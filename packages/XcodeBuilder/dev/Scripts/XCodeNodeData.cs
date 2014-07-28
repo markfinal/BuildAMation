@@ -7,7 +7,9 @@ namespace XcodeBuilder
 {
     public abstract class XCodeNodeData
     {
-        protected XCodeNodeData(string name)
+        protected
+        XCodeNodeData(
+            string name)
         {
             this.Name = name;
             this.UUID = this.Generate96BitUUID();
@@ -25,7 +27,8 @@ namespace XcodeBuilder
             private set;
         }
 
-        private string Generate96BitUUID()
+        private string
+        Generate96BitUUID()
         {
             var guid = System.Guid.NewGuid();
             var toString = guid.ToString("N").ToUpper(); // this is 32 characters long

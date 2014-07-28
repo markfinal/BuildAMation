@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed partial class XcodeBuilder : Opus.Core.IBuilderPostExecute
+    public sealed partial class XcodeBuilder :
+        Opus.Core.IBuilderPostExecute
     {
 #region IBuilderPostExecute Members
 
-        void Opus.Core.IBuilderPostExecute.PostExecute(Opus.Core.DependencyNodeCollection executedNodes)
+        void
+        Opus.Core.IBuilderPostExecute.PostExecute(
+            Opus.Core.DependencyNodeCollection executedNodes)
         {
             if (0 == executedNodes.Count)
             {

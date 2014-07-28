@@ -5,14 +5,21 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXBuildFileSection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXBuildFileSection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXBuildFileSection()
+        public
+        PBXBuildFileSection()
         {
             this.BuildFiles = new Opus.Core.Array<PBXBuildFile>();
         }
 
-        public PBXBuildFile Get(string name, PBXFileReference fileRef, BuildPhase buildPhase)
+        public PBXBuildFile
+        Get(
+            string name,
+            PBXFileReference fileRef,
+            BuildPhase buildPhase)
         {
             lock (this.BuildFiles)
             {
@@ -40,7 +47,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.BuildFiles.Count == 0)
             {
@@ -67,7 +76,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.BuildFiles.GetEnumerator();
         }

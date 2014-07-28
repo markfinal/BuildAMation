@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed partial class XcodeBuilder : Opus.Core.IBuilder
+    public sealed partial class XcodeBuilder :
+        Opus.Core.IBuilder
     {
         public Workspace Workspace
         {

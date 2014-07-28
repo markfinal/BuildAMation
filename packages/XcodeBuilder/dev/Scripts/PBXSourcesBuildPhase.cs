@@ -5,16 +5,21 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXSourcesBuildPhase : BuildPhase, IWriteableNode
+    public sealed class PBXSourcesBuildPhase :
+        BuildPhase,
+        IWriteableNode
     {
-        public PBXSourcesBuildPhase(string name, string moduleName)
-            : base(name, moduleName)
-        {
-        }
+        public
+        PBXSourcesBuildPhase(
+            string name,
+            string moduleName) : base(name, moduleName)
+        {}
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (0 == this.Files.Count)
             {

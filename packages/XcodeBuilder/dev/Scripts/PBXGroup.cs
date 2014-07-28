@@ -5,10 +5,13 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXGroup : XCodeNodeData, IWriteableNode
+    public sealed class PBXGroup :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public PBXGroup(string name)
-            : base(name)
+        public
+        PBXGroup(
+            string name) : base(name)
         {
             this.Children = new Opus.Core.Array<XCodeNodeData>();
         }
@@ -33,7 +36,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (0 == this.Children.Count)
             {

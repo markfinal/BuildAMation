@@ -7,7 +7,9 @@ namespace XcodeBuilder
 {
     public sealed class ProjectSchemeCache
     {
-        public ProjectSchemeCache(PBXProject project)
+        public
+        ProjectSchemeCache(
+            PBXProject project)
         {
             if (project.NativeTargets.Count > 1)
             {
@@ -236,7 +238,9 @@ namespace XcodeBuilder
             this.SchemeDocument = doc;
         }
 
-        private void CreateManagementPlist(string schemeFilename)
+        private void
+        CreateManagementPlist(
+            string schemeFilename)
         {
             var doc = new System.Xml.XmlDocument();
 
@@ -297,7 +301,10 @@ namespace XcodeBuilder
             set;
         }
 
-        private void Write(System.Xml.XmlDocument document, string path)
+        private void
+        Write(
+            System.Xml.XmlDocument document,
+            string path)
         {
             // do not write a Byte-Ordering-Mark (BOM)
             var encoding = new System.Text.UTF8Encoding(false);
@@ -317,7 +324,8 @@ namespace XcodeBuilder
             }
         }
 
-        public void Serialize()
+        public void
+        Serialize()
         {
             this.Write(this.SchemeDocument, this.SchemePath);
             this.Write(this.ManagementDocument, this.ManagementPath);

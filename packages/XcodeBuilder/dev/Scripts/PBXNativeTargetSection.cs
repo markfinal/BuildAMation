@@ -5,14 +5,21 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXNativeTargetSection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXNativeTargetSection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXNativeTargetSection()
+        public
+        PBXNativeTargetSection()
         {
             this.NativeTargets = new System.Collections.Generic.List<PBXNativeTarget>();
         }
 
-        public PBXNativeTarget Get(string name, PBXNativeTarget.EType type, PBXProject project)
+        public PBXNativeTarget
+        Get(
+            string name,
+            PBXNativeTarget.EType type,
+            PBXProject project)
         {
             lock(this.NativeTargets)
             {
@@ -53,7 +60,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.NativeTargets.Count == 0)
             {
@@ -80,7 +89,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.NativeTargets.GetEnumerator();
         }

@@ -5,10 +5,14 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class XCBuildConfiguration : XCodeNodeData, IWriteableNode
+    public sealed class XCBuildConfiguration :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public XCBuildConfiguration(string name, string moduleName)
-            : base(name)
+        public
+        XCBuildConfiguration(
+            string name,
+            string moduleName) : base(name)
         {
             this.ModuleName = moduleName;
             this.Options = new OptionsDictionary();
@@ -37,7 +41,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = XCBuildConfiguration;");
@@ -65,4 +71,4 @@ namespace XcodeBuilder
 
 #endregion
     }
- }
+}

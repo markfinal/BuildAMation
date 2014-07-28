@@ -5,16 +5,21 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXFrameworksBuildPhase : BuildPhase, IWriteableNode
+    public sealed class PBXFrameworksBuildPhase :
+        BuildPhase,
+        IWriteableNode
     {
-        public PBXFrameworksBuildPhase(string name, string moduleName)
-            : base(name, moduleName)
-        {
-        }
+        public
+        PBXFrameworksBuildPhase(
+            string name,
+            string moduleName) : base(name, moduleName)
+        {}
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXFrameworksBuildPhase;");

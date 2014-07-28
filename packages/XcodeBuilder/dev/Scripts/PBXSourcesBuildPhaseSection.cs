@@ -5,14 +5,20 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXSourcesBuildPhaseSection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXSourcesBuildPhaseSection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXSourcesBuildPhaseSection()
+        public
+        PBXSourcesBuildPhaseSection()
         {
             this.SourcesBuildPhase = new System.Collections.Generic.List<PBXSourcesBuildPhase>();
         }
 
-        public PBXSourcesBuildPhase Get(string name, string moduleName)
+        public PBXSourcesBuildPhase
+        Get(
+            string name,
+            string moduleName)
         {
             lock (this.SourcesBuildPhase)
             {
@@ -37,7 +43,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.SourcesBuildPhase.Count == 0)
             {
@@ -64,7 +72,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.SourcesBuildPhase.GetEnumerator();
         }

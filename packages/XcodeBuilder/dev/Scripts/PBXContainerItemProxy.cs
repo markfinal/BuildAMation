@@ -5,10 +5,15 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXContainerItemProxy : XCodeNodeData, IWriteableNode
+    public sealed class PBXContainerItemProxy :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public PBXContainerItemProxy(string name, XCodeNodeData remote, XCodeNodeData portal)
-            : base(name)
+        public
+        PBXContainerItemProxy(
+            string name,
+            XCodeNodeData remote,
+            XCodeNodeData portal) : base(name)
         {
             this.Remote = remote;
             this.Portal = portal;
@@ -28,7 +33,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.Remote == null)
             {

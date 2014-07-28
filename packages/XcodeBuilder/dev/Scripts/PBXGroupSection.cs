@@ -5,14 +5,19 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXGroupSection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXGroupSection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXGroupSection()
+        public
+        PBXGroupSection()
         {
             this.Groups = new Opus.Core.Array<PBXGroup>();
         }
 
-        public PBXGroup Get(string name)
+        public PBXGroup
+        Get(
+            string name)
         {
             lock (this.Groups)
             {
@@ -37,7 +42,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.Groups.Count == 0)
             {
@@ -64,7 +71,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.Groups.GetEnumerator();
         }

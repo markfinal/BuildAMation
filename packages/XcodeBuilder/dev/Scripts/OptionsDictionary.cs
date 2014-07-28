@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class OptionsDictionary : System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
+    public sealed class OptionsDictionary :
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
     {
         private System.Collections.Generic.SortedDictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.SortedDictionary<string, Opus.Core.StringArray>();
 
@@ -30,7 +31,8 @@ namespace XcodeBuilder
             }
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var builder = new System.Text.StringBuilder();
             builder.Append("{");
@@ -42,7 +44,9 @@ namespace XcodeBuilder
             return builder.ToString();
         }
 
-        public static string SafeOptionValue(string value)
+        public static string
+        SafeOptionValue(
+            string value)
         {
             if (!value.StartsWith("(") &&
                 (value.Contains("=") ||
@@ -59,7 +63,8 @@ namespace XcodeBuilder
 
         #region IEnumerable implementation
 
-        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>.GetEnumerator ()
+        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>.GetEnumerator()
         {
             return this.dictionary.GetEnumerator();
         }
@@ -68,11 +73,12 @@ namespace XcodeBuilder
 
         #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.dictionary.GetEnumerator();
         }
 
         #endregion
     }
- }
+}

@@ -5,10 +5,15 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXBuildFile : XCodeNodeData, IWriteableNode
+    public sealed class PBXBuildFile :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public PBXBuildFile(string name, PBXFileReference fileRef, BuildPhase buildPhase)
-            : base(name)
+        public
+        PBXBuildFile(
+            string name,
+            PBXFileReference fileRef,
+            BuildPhase buildPhase) : base(name)
         {
             this.FileReference = fileRef;
             this.Settings = new OptionsDictionary();
@@ -35,7 +40,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.FileReference == null)
             {

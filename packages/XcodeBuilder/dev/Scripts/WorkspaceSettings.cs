@@ -7,7 +7,9 @@ namespace XcodeBuilder
 {
     public class WorkspaceSettings
     {
-        public WorkspaceSettings(Workspace workspace)
+        public
+        WorkspaceSettings(
+            Workspace workspace)
         {
             this.Path = workspace.BundlePath;
             this.Path = System.IO.Path.Combine(this.Path, "xcuserdata");
@@ -16,7 +18,8 @@ namespace XcodeBuilder
             this.CreatePlist();
         }
 
-        private void CreatePlist()
+        private void
+        CreatePlist()
         {
             this.Document = new System.Xml.XmlDocument();
 
@@ -57,7 +60,8 @@ namespace XcodeBuilder
             set;
         }
 
-        public void Serialize()
+        public void
+        Serialize()
         {
             // do not write a Byte-Ordering-Mark (BOM)
             var encoding = new System.Text.UTF8Encoding(false);

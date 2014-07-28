@@ -5,14 +5,20 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXTargetDependencySection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXTargetDependencySection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXTargetDependencySection()
+        public
+        PBXTargetDependencySection()
         {
             this.TargetDependencies = new System.Collections.Generic.List<PBXTargetDependency>();
         }
 
-        public PBXTargetDependency Get(string name, PBXNativeTarget nativeTarget)
+        public PBXTargetDependency
+        Get(
+            string name,
+            PBXNativeTarget nativeTarget)
         {
             lock (this.TargetDependencies)
             {
@@ -37,7 +43,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.TargetDependencies.Count == 0)
             {
@@ -64,7 +72,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.TargetDependencies.GetEnumerator();
         }

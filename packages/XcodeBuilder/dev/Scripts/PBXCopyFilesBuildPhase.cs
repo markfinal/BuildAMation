@@ -5,7 +5,9 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXCopyFilesBuildPhase : BuildPhase, IWriteableNode
+    public sealed class PBXCopyFilesBuildPhase :
+        BuildPhase,
+        IWriteableNode
     {
         public enum ESubFolder
         {
@@ -21,8 +23,10 @@ namespace XcodeBuilder
             ProductsDirectory = 16
         }
 
-        public PBXCopyFilesBuildPhase(string name, string moduleName)
-            : base(name, moduleName)
+        public
+        PBXCopyFilesBuildPhase(
+            string name,
+            string moduleName) : base(name, moduleName)
         {
             this.SubFolder = ESubFolder.Executables;
             this.CopyOnlyOnInstall = false;
@@ -49,7 +53,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXCopyFilesBuildPhase;");

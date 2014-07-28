@@ -5,14 +5,21 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXFileReferenceSection : IWriteableNode
+    public sealed class PBXFileReferenceSection :
+        IWriteableNode
     {
-        public PBXFileReferenceSection()
+        public
+        PBXFileReferenceSection()
         {
             this.FileReferences = new System.Collections.Generic.List<PBXFileReference>();
         }
 
-        public PBXFileReference Get(string name, PBXFileReference.EType type, string path, System.Uri rootPath)
+        public PBXFileReference
+        Get(
+            string name,
+            PBXFileReference.EType type,
+            string path,
+            System.Uri rootPath)
         {
             lock (this.FileReferences)
             {
@@ -31,7 +38,12 @@ namespace XcodeBuilder
             }
         }
 
-        public PBXFileReference Get(string name, PBXFileReference.EType type, Opus.Core.Location location, System.Uri rootPath)
+        public PBXFileReference
+        Get(
+            string name,
+            PBXFileReference.EType type,
+            Opus.Core.Location location,
+            System.Uri rootPath)
         {
             var path = location.GetSinglePath();
             return this.Get(name, type, path, rootPath);
@@ -44,7 +56,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.FileReferences.Count == 0)
             {

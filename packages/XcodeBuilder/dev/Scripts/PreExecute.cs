@@ -5,11 +5,13 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed partial class XcodeBuilder : Opus.Core.IBuilderPreExecute
+    public sealed partial class XcodeBuilder :
+        Opus.Core.IBuilderPreExecute
     {
 #region IBuilderPreExecute Members
 
-        void Opus.Core.IBuilderPreExecute.PreExecute()
+        void
+        Opus.Core.IBuilderPreExecute.PreExecute()
         {
             this.Workspace = new Workspace();
         }

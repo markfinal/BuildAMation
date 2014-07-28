@@ -5,9 +5,11 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public class Workspace : IWriteableNode
+    public class Workspace :
+        IWriteableNode
     {
-        public Workspace()
+        public
+        Workspace()
         {
             var mainPackage = Opus.Core.State.PackageInfo[0];
             var workspaceBundle = mainPackage.Name + ".xcworkspace";
@@ -34,7 +36,9 @@ namespace XcodeBuilder
             private set;
         }
 
-        public PBXProject GetProject(Opus.Core.DependencyNode node)
+        public PBXProject
+        GetProject(
+            Opus.Core.DependencyNode node)
         {
             lock(this.Projects)
             {
@@ -54,7 +58,9 @@ namespace XcodeBuilder
 
         #region IWriteableNode implementation
 
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             var settings = new System.Xml.XmlWriterSettings();
             settings.OmitXmlDeclaration = false;

@@ -5,10 +5,14 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXTargetDependency : XCodeNodeData, IWriteableNode
+    public sealed class PBXTargetDependency :
+        XCodeNodeData,
+        IWriteableNode
     {
-        public PBXTargetDependency(string name, PBXNativeTarget nativeTarget)
-            : base(name)
+        public
+        PBXTargetDependency(
+            string name,
+            PBXNativeTarget nativeTarget) : base(name)
         {
             this.NativeTarget = nativeTarget;
         }
@@ -27,7 +31,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.NativeTarget == null)
             {

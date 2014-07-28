@@ -5,7 +5,9 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXNativeTarget : XCodeNodeData, IWriteableNode
+    public sealed class PBXNativeTarget :
+        XCodeNodeData,
+        IWriteableNode
     {
         public enum EType
         {
@@ -15,8 +17,11 @@ namespace XcodeBuilder
             StaticLibrary
         }
 
-        public PBXNativeTarget(string name, EType type, PBXProject project)
-            : base (name)
+        public
+        PBXNativeTarget(
+            string name,
+            EType type,
+            PBXProject project) : base (name)
         {
             this.Type = type;
             this.BuildPhases = new Opus.Core.Array<BuildPhase>();
@@ -82,7 +87,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXNativeTarget;");

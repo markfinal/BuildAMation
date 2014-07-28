@@ -5,14 +5,19 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXFrameworksBuildPhaseSection : IWriteableNode, System.Collections.IEnumerable
+    public sealed class PBXFrameworksBuildPhaseSection :
+        IWriteableNode,
+        System.Collections.IEnumerable
     {
-        public PBXFrameworksBuildPhaseSection()
+        public
+        PBXFrameworksBuildPhaseSection()
         {
             this.FrameworksBuildPhases = new System.Collections.Generic.List<PBXFrameworksBuildPhase>();
         }
 
-        public void Add(PBXFrameworksBuildPhase buildPhase)
+        public void
+        Add(
+            PBXFrameworksBuildPhase buildPhase)
         {
             lock (this.FrameworksBuildPhases)
             {
@@ -20,7 +25,10 @@ namespace XcodeBuilder
             }
         }
 
-        public PBXFrameworksBuildPhase Get(string name, string moduleName)
+        public PBXFrameworksBuildPhase
+        Get(
+            string name,
+            string moduleName)
         {
             lock (this.FrameworksBuildPhases)
             {
@@ -45,7 +53,9 @@ namespace XcodeBuilder
         }
 
 #region IWriteableNode implementation
-        void IWriteableNode.Write (System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             if (this.FrameworksBuildPhases.Count == 0)
             {
@@ -72,7 +82,8 @@ namespace XcodeBuilder
 
 #region IEnumerable implementation
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.FrameworksBuildPhases.GetEnumerator();
         }

@@ -5,10 +5,13 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public abstract class BuildPhase : XCodeNodeData
+    public abstract class BuildPhase :
+        XCodeNodeData
     {
-        protected BuildPhase(string name, string moduleName)
-            : base(name)
+        protected
+        BuildPhase(
+            string name,
+            string moduleName) : base(name)
         {
             this.ModuleName = moduleName;
             this.Files = new Opus.Core.Array<PBXBuildFile>();

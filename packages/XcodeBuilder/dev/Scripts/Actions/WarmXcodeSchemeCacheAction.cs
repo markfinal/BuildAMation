@@ -9,9 +9,11 @@
 namespace XcodeBuilder
 {
     [Opus.Core.PreambleAction]
-    public sealed class WarmXcodeSchemeCacheAction : Opus.Core.IAction
+    public sealed class WarmXcodeSchemeCacheAction :
+        Opus.Core.IAction
     {
-        public WarmXcodeSchemeCacheAction()
+        public
+        WarmXcodeSchemeCacheAction()
         {
             if (!Opus.Core.State.HasCategory("XcodeBuilder"))
             {
@@ -36,7 +38,8 @@ namespace XcodeBuilder
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             Opus.Core.State.Set("XcodeBuilder", "WarmSchemeCache", true);
 
@@ -47,7 +50,8 @@ namespace XcodeBuilder
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

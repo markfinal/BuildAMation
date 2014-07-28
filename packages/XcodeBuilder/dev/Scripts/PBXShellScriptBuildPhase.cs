@@ -5,10 +5,14 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public sealed class PBXShellScriptBuildPhase : BuildPhase, IWriteableNode
+    public sealed class PBXShellScriptBuildPhase :
+        BuildPhase,
+        IWriteableNode
     {
-        public PBXShellScriptBuildPhase(string name, string moduleName)
-            : base(name, moduleName)
+        public
+        PBXShellScriptBuildPhase(
+            string name,
+            string moduleName) : base(name, moduleName)
         {
             this.InputPaths = new Opus.Core.StringArray();
             this.OutputPaths = new Opus.Core.StringArray();
@@ -49,7 +53,9 @@ namespace XcodeBuilder
 
 #region IWriteableNode implementation
 
-        void IWriteableNode.Write(System.IO.TextWriter writer)
+        void
+        IWriteableNode.Write(
+            System.IO.TextWriter writer)
         {
             writer.WriteLine("\t\t{0} /* {1} */ = {{", this.UUID, this.Name);
             writer.WriteLine("\t\t\tisa = PBXShellScriptBuildPhase;");
