@@ -9,16 +9,16 @@ namespace VisualCCommon
         C.IWinManifestTool,
         Opus.Core.IToolForwardedEnvironmentVariables
     {
-        //private Opus.Core.IToolset toolset;
-
-        public Win32ManifestTool(Opus.Core.IToolset toolset)
-        {
-            //this.toolset = toolset;
-        }
+        public
+        Win32ManifestTool(
+            Opus.Core.IToolset toolset)
+        {}
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             // TODO: would like a better way of doing this
             var platformBinFolder = WindowsSDK.WindowsSDK.BinPath(baseTarget);

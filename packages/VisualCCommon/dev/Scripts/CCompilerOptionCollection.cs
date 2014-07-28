@@ -6,9 +6,15 @@
 namespace VisualCCommon
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : C.CompilerOptionCollection, C.ICCompilerOptions, ICCompilerOptions, VisualStudioProcessor.IVisualStudioSupport
+    public partial class CCompilerOptionCollection :
+        C.CompilerOptionCollection,
+        C.ICCompilerOptions,
+        ICCompilerOptions,
+        VisualStudioProcessor.IVisualStudioSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -53,43 +59,17 @@ namespace VisualCCommon
             compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
             compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
             compilerInterface.ForcedInclude = new Opus.Core.StringArray();
-
-#if true
-#else
-            this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
-#endif
         }
 
-        public CCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        public string ProgamDatabaseDirectoryPath
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
-            get;
-            set;
-        }
-
-#if true
-#else
-        public string ProgramDatabaseFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.CompilerProgramDatabase] = value;
-            }
-        }
-#endif
-
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
-        {
-#if true
             var options = this as ICCompilerOptions;
             if (options.DebugType != EDebugType.Embedded)
             {
@@ -108,20 +88,11 @@ namespace VisualCCommon
             }
 
             base.FinalizeOptions(node);
-#else
-            var options = this as ICCompilerOptions;
-
-            if (options.DebugType != EDebugType.Embedded)
-            {
-                var pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
-                this.ProgramDatabaseFilePath = pdbPathName;
-            }
-
-            base.FinalizeOptions(node);
-#endif
         }
 
-        VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
+        VisualStudioProcessor.ToolAttributeDictionary
+        VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
+            Opus.Core.Target target)
         {
             var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)

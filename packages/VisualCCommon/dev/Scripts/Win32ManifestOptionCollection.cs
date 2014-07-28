@@ -6,14 +6,18 @@
 namespace VisualCCommon
 {
     // TODO: this does not implement any options interface
-    public sealed partial class Win32ManifestOptionCollection : C.Win32ManifestOptionCollection, VisualStudioProcessor.IVisualStudioSupport
+    public sealed partial class Win32ManifestOptionCollection :
+        C.Win32ManifestOptionCollection,
+        VisualStudioProcessor.IVisualStudioSupport
     {
-        public Win32ManifestOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        Win32ManifestOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
+        VisualStudioProcessor.ToolAttributeDictionary
+        VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
+            Opus.Core.Target target)
         {
             var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)

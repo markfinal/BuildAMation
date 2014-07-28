@@ -8,10 +8,14 @@ namespace VisualCCommon
     /// <summary>
     /// Managed C++ object file collection
     /// </summary>
-    public class ManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class ManagedCxxObjectFileCollection :
+        C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
-        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void
+        ManagedCompilerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.CLR;
@@ -21,10 +25,14 @@ namespace VisualCCommon
     /// <summary>
     /// Pure Managed C++ object file collection
     /// </summary>
-    public class PureManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class PureManagedCxxObjectFileCollection :
+        C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
-        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void
+        ManagedCompilerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.PureCLR;
@@ -34,10 +42,14 @@ namespace VisualCCommon
     /// <summary>
     /// Safe Managed C++ object file collection
     /// </summary>
-    public class SafeManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class SafeManagedCxxObjectFileCollection :
+        C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
-        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void
+        ManagedCompilerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.SafeCLR;
@@ -47,10 +59,14 @@ namespace VisualCCommon
     /// <summary>
     /// Old Syntax Managed C++ object file collection
     /// </summary>
-    public class OldSyntaxManagedCxxObjectFileCollection : C.Cxx.ObjectFileCollection
+    public class OldSyntaxManagedCxxObjectFileCollection :
+        C.Cxx.ObjectFileCollection
     {
         [C.LocalCompilerOptionsDelegate]
-        private static void ManagedCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void
+        ManagedCompilerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.CompileAsManaged = EManagedCompilation.OldSyntaxCLR;

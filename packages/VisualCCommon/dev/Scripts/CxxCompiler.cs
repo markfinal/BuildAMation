@@ -5,12 +5,18 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class CxxCompiler : C.ICxxCompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
+    public sealed class CxxCompiler :
+        C.ICxxCompilerTool,
+        Opus.Core.IToolSupportsResponseFile,
+        Opus.Core.IToolForwardedEnvironmentVariables,
+        Opus.Core.IToolEnvironmentVariables
     {
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
 
-        public CxxCompiler(Opus.Core.IToolset toolset)
+        public
+        CxxCompiler(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("SystemRoot");
@@ -45,7 +51,9 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ICompilerTool.IncludePaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.InstallPath(baseTarget);
             var includePaths = new Opus.Core.StringArray();
@@ -65,7 +73,9 @@ namespace VisualCCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "cl.exe");
@@ -112,7 +122,9 @@ namespace VisualCCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
+        Opus.Core.IToolEnvironmentVariables.Variables(
+            Opus.Core.BaseTarget baseTarget)
         {
             var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;

@@ -5,14 +5,13 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    sealed class Win32ResourceCompiler : C.IWinResourceCompilerTool
+    sealed class Win32ResourceCompiler :
+        C.IWinResourceCompilerTool
     {
-        //private Opus.Core.IToolset toolset;
-
-        public Win32ResourceCompiler(Opus.Core.IToolset toolset)
-        {
-            //this.toolset = toolset;
-        }
+        public
+        Win32ResourceCompiler(
+            Opus.Core.IToolset toolset)
+        {}
 
         #region IWinResourceCompilerTool Members
 
@@ -44,7 +43,9 @@ namespace VisualCCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             // TODO: would like a better way of doing this
             var platformBinFolder = WindowsSDK.WindowsSDK.BinPath(baseTarget);

@@ -5,7 +5,11 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class CCompiler : C.ICompilerTool, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
+    public sealed class CCompiler :
+        C.ICompilerTool,
+        Opus.Core.IToolSupportsResponseFile,
+        Opus.Core.IToolForwardedEnvironmentVariables,
+        Opus.Core.IToolEnvironmentVariables
     {
         public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("CompilerPDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("CompilerPDBDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -13,7 +17,9 @@ namespace VisualCCommon
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
 
-        public CCompiler(Opus.Core.IToolset toolset)
+        public
+        CCompiler(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("SystemRoot");
@@ -48,7 +54,9 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ICompilerTool.IncludePaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.InstallPath(baseTarget);
             var includePaths = new Opus.Core.StringArray();
@@ -68,7 +76,9 @@ namespace VisualCCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var binPath = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(binPath, "cl.exe");
@@ -115,7 +125,9 @@ namespace VisualCCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
+        Opus.Core.IToolEnvironmentVariables.Variables(
+            Opus.Core.BaseTarget baseTarget)
         {
             var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;

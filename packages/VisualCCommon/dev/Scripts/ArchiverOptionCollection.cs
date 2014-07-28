@@ -5,9 +5,15 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class ArchiverOptionCollection : C.ArchiverOptionCollection, C.IArchiverOptions, IArchiverOptions, VisualStudioProcessor.IVisualStudioSupport
+    public abstract partial class ArchiverOptionCollection :
+        C.ArchiverOptionCollection,
+        C.IArchiverOptions,
+        IArchiverOptions,
+        VisualStudioProcessor.IVisualStudioSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -16,12 +22,14 @@ namespace VisualCCommon
             (this as C.IArchiverOptions).OutputType = C.EArchiverOutput.StaticLibrary;
         }
 
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
+        VisualStudioProcessor.ToolAttributeDictionary
+        VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
+            Opus.Core.Target target)
         {
             var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)

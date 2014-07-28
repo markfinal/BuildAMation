@@ -5,9 +5,15 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract partial class LinkerOptionCollection : C.LinkerOptionCollection, C.ILinkerOptions, ILinkerOptions, VisualStudioProcessor.IVisualStudioSupport
+    public abstract partial class LinkerOptionCollection :
+        C.LinkerOptionCollection,
+        C.ILinkerOptions,
+        ILinkerOptions,
+        VisualStudioProcessor.IVisualStudioSupport
     {
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -16,10 +22,6 @@ namespace VisualCCommon
             linkerInterface.NoLogo = true;
             linkerInterface.StackReserveAndCommit = null;
             linkerInterface.IgnoredLibraries = new Opus.Core.StringArray();
-#if true
-#else
-            this.ProgamDatabaseDirectoryPath = this.OutputDirectoryPath.Clone() as string;
-#endif
 
             var target = node.Target;
             linkerInterface.IncrementalLink = target.HasConfiguration(Opus.Core.EConfiguration.Debug);
@@ -32,39 +34,15 @@ namespace VisualCCommon
             }
         }
 
-        public LinkerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        LinkerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-#if true
-#else
-        public string ProgamDatabaseDirectoryPath
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
-            get;
-            set;
-        }
-#endif
-
-#if true
-#else
-        public string ProgramDatabaseFilePath
-        {
-            get
-            {
-                return this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase];
-            }
-
-            set
-            {
-                this.OutputPaths[C.OutputFileFlags.LinkerProgramDatabase] = value;
-            }
-        }
-#endif
-
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
-        {
-#if true
             var options = this as C.ILinkerOptions;
             if (options.DebugSymbols)
             {
@@ -83,20 +61,11 @@ namespace VisualCCommon
             }
 
             base.FinalizeOptions(node);
-#else
-            var options = this as C.ILinkerOptions;
-
-            if (options.DebugSymbols && !this.OutputPaths.Has(C.OutputFileFlags.LinkerProgramDatabase))
-            {
-                string pdbPathName = System.IO.Path.Combine(this.ProgamDatabaseDirectoryPath, this.OutputName) + ".pdb";
-                this.ProgramDatabaseFilePath = pdbPathName;
-            }
-
-            base.FinalizeOptions(node);
-#endif
         }
 
-        VisualStudioProcessor.ToolAttributeDictionary VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(Opus.Core.Target target)
+        VisualStudioProcessor.ToolAttributeDictionary
+        VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
+            Opus.Core.Target target)
         {
             var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)

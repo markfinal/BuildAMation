@@ -5,7 +5,12 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public sealed class Linker : C.ILinkerTool, C.IWinImportLibrary, Opus.Core.IToolSupportsResponseFile, Opus.Core.IToolForwardedEnvironmentVariables, Opus.Core.IToolEnvironmentVariables
+    public sealed class Linker :
+        C.ILinkerTool,
+        C.IWinImportLibrary,
+        Opus.Core.IToolSupportsResponseFile,
+        Opus.Core.IToolForwardedEnvironmentVariables,
+        Opus.Core.IToolEnvironmentVariables
     {
         public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("LinkerPDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("LinkerPDBDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -13,7 +18,9 @@ namespace VisualCCommon
         private Opus.Core.IToolset toolset;
         private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
 
-        public Linker(Opus.Core.IToolset toolset)
+        public
+        Linker(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
             // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
@@ -79,7 +86,9 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray C.ILinkerTool.LibPaths(Opus.Core.BaseTarget baseTarget)
+        Opus.Core.StringArray
+        C.ILinkerTool.LibPaths(
+            Opus.Core.BaseTarget baseTarget)
         {
             if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
             {
@@ -123,7 +132,9 @@ namespace VisualCCommon
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var binPath = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(binPath, "link.exe");
@@ -178,7 +189,9 @@ namespace VisualCCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Opus.Core.IToolEnvironmentVariables.Variables(Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
+        Opus.Core.IToolEnvironmentVariables.Variables(
+            Opus.Core.BaseTarget baseTarget)
         {
             var environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(baseTarget);

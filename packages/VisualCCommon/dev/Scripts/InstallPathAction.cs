@@ -9,7 +9,8 @@
 namespace VisualCCommon
 {
     [Opus.Core.PreambleAction]
-    public sealed class InstallPathAction : Opus.Core.IActionWithArguments
+    public sealed class InstallPathAction :
+        Opus.Core.IActionWithArguments
     {
         private string InstallPath
         {
@@ -17,7 +18,9 @@ namespace VisualCCommon
             set;
         }
 
-        void Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        void
+        Opus.Core.IActionWithArguments.AssignArguments(
+            string arguments)
         {
             this.InstallPath = arguments;
         }
@@ -38,7 +41,8 @@ namespace VisualCCommon
             }
         }
 
-        bool Opus.Core.IAction.Execute()
+        bool
+        Opus.Core.IAction.Execute()
         {
             if (!System.IO.Directory.Exists(this.InstallPath))
             {
@@ -61,7 +65,8 @@ namespace VisualCCommon
 
         #region ICloneable Members
 
-        object System.ICloneable.Clone()
+        object
+        System.ICloneable.Clone()
         {
             return this.MemberwiseClone();
         }

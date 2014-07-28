@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace VisualCCommon
 {
-    public abstract class Toolset : Opus.Core.IToolset
+    public abstract class Toolset :
+        Opus.Core.IToolset
     {
         public string installPath;
         public string bin32Folder;
@@ -15,18 +16,25 @@ namespace VisualCCommon
         public Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
         protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
 
-        protected abstract void GetInstallPath();
-        protected abstract string GetVersion(Opus.Core.BaseTarget baseTarget);
+        protected abstract void
+        GetInstallPath();
+
+        protected abstract string
+        GetVersion(
+            Opus.Core.BaseTarget baseTarget);
 
         protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
 
-        protected Toolset()
+        protected
+        Toolset()
         {
             this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
             this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
-        protected virtual string GetBinPath(Opus.Core.BaseTarget baseTarget)
+        protected virtual string
+        GetBinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
 
@@ -47,13 +55,21 @@ namespace VisualCCommon
             }
         }
 
-        private static string GetVCRegistryKeyPath(string platformName, string versionNumber, string editionName, int LCID)
+        private static string
+        GetVCRegistryKeyPath(
+            string platformName,
+            string versionNumber,
+            string editionName,
+            int LCID)
         {
             var keyPath = System.String.Format(@"Microsoft\DevDiv\{0}\Servicing\{1}\{2}\{3}", platformName, versionNumber, editionName, LCID);
             return keyPath;
         }
 
-        private static string GetVersionAndEditionString(string registryKeyPath, string versionNumber)
+        private static string
+        GetVersionAndEditionString(
+            string registryKeyPath,
+            string versionNumber)
         {
             string edition = null;
             using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKeyPath))
@@ -70,7 +86,9 @@ namespace VisualCCommon
             return version;
         }
 
-        protected string GetVersionString(string versionNumber)
+        protected string
+        GetVersionString(
+            string versionNumber)
         {
             var LCID = 1033; // Culture (English - United States)
             string platformName;
@@ -130,7 +148,9 @@ namespace VisualCCommon
 
         #region IToolset Members
 
-        string Opus.Core.IToolset.BinPath(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.BinPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             return this.GetBinPath(baseTarget);
         }
@@ -144,23 +164,31 @@ namespace VisualCCommon
             }
         }
 
-        string Opus.Core.IToolset.InstallPath(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.InstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
             return this.installPath;
         }
 
-        string Opus.Core.IToolset.Version(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IToolset.Version(
+            Opus.Core.BaseTarget baseTarget)
         {
             return this.GetVersion(baseTarget);
         }
 
-        bool Opus.Core.IToolset.HasTool(System.Type toolType)
+        bool
+        Opus.Core.IToolset.HasTool(
+            System.Type toolType)
         {
             return this.toolConfig.ContainsKey(toolType);
         }
 
-        Opus.Core.ITool Opus.Core.IToolset.Tool(System.Type toolType)
+        Opus.Core.ITool
+        Opus.Core.IToolset.Tool(
+            System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
@@ -170,7 +198,9 @@ namespace VisualCCommon
             return this.toolConfig[toolType].Tool;
         }
 
-        System.Type Opus.Core.IToolset.ToolOptionType(System.Type toolType)
+        System.Type
+        Opus.Core.IToolset.ToolOptionType(
+            System.Type toolType)
         {
             if (!(this as Opus.Core.IToolset).HasTool(toolType))
             {
