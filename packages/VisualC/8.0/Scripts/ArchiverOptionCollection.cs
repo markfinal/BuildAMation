@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed partial class ArchiverOptionCollection : VisualCCommon.ArchiverOptionCollection
+    public sealed partial class ArchiverOptionCollection :
+        VisualCCommon.ArchiverOptionCollection
     {
-        public ArchiverOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        ArchiverOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }
