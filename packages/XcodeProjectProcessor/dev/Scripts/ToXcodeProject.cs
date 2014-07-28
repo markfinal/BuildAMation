@@ -7,11 +7,13 @@ namespace XcodeProjectProcessor
 {
     public static class ToXcodeProject
     {
-        public static void Execute(object sender,
-                                   XcodeBuilder.PBXProject project,
-                                   XcodeBuilder.XcodeNodeData currentObject,
-                                   XcodeBuilder.XCBuildConfiguration configuration,
-                                   Opus.Core.Target target)
+        public static void
+        Execute(
+            object sender,
+            XcodeBuilder.PBXProject project,
+            XcodeBuilder.XcodeNodeData currentObject,
+            XcodeBuilder.XCBuildConfiguration configuration,
+            Opus.Core.Target target)
         {
             var optionCollection = sender as Opus.Core.BaseOptionCollection;
             var optionNames = optionCollection.OptionNames;
