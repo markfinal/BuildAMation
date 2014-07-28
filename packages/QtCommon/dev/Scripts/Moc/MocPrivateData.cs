@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public sealed class MocPrivateData : CommandLineProcessor.ICommandLineDelegate
+    public sealed class MocPrivateData :
+        CommandLineProcessor.ICommandLineDelegate
     {
-        public MocPrivateData(CommandLineProcessor.Delegate commandLineDelegate)
+        public
+        MocPrivateData(
+            CommandLineProcessor.Delegate commandLineDelegate)
         {
             this.CommandLineDelegate = commandLineDelegate;
         }

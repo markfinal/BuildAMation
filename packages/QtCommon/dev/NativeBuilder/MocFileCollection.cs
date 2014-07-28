@@ -8,7 +8,10 @@ namespace NativeBuilder
     public sealed partial class NativeBuilder
     {
         [Opus.Core.EmptyBuildFunction]
-        public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
+        public object
+        Build(
+            QtCommon.MocFileCollection moduleToBuild,
+            out bool success)
         {
             success = true;
             return null;

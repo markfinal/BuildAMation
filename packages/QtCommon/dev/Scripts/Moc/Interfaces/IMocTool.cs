@@ -7,7 +7,9 @@ namespace QtCommon
 {
     static class ToolsetProvider
     {
-        static string GetToolsetName(System.Type toolType)
+        static string
+        GetToolsetName(
+            System.Type toolType)
         {
             return "Qt";
         }
@@ -17,7 +19,7 @@ namespace QtCommon
                                    typeof(ExportMocOptionsDelegateAttribute))]
     //[Opus.Core.AssignToolsetProvider("Qt")]
     [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetToolsetName")]
-    public interface IMocTool : Opus.Core.ITool
-    {
-    }
+    public interface IMocTool :
+        Opus.Core.ITool
+    {}
 }

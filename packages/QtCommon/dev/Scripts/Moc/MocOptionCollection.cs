@@ -5,14 +5,19 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public sealed partial class MocOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, IMocOptions
+    public sealed partial class MocOptionCollection :
+        Opus.Core.BaseOptionCollection,
+        CommandLineProcessor.ICommandLineSupport,
+        IMocOptions
     {
-        public MocOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        MocOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode node)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode node)
         {
             var options = this as IMocOptions;
             // TODO: do not set this, as it overwrites what was set in SetNodeSpecificData
@@ -36,7 +41,9 @@ namespace QtCommon
             set;
         }
 
-        protected override void SetNodeSpecificData(Opus.Core.DependencyNode node)
+        protected override void
+        SetNodeSpecificData(
+            Opus.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
             if (!locationMap[MocFile.OutputDir].IsValid)
@@ -64,9 +71,10 @@ namespace QtCommon
             (this as IMocOptions).MocOutputPath = mocPath;
         }
 
-        public override void FinalizeOptions(Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
-#if true
             var module = node.Module;
             if (module is QtCommon.MocFile)
             {
@@ -77,17 +85,15 @@ namespace QtCommon
                     mocFile.SetReference(Opus.Core.FileLocation.Get(mocOutputPath, Opus.Core.Location.EExists.WillExist));
                 }
             }
-#else
-            if (!this.OutputPaths.Has(OutputFileFlags.MocGeneratedSourceFile))
-            {
-                this.OutputPaths[OutputFileFlags.MocGeneratedSourceFile] = (this as IMocOptions).MocOutputPath;
-            }
-#endif
 
             base.FinalizeOptions(node);
         }
 
-        void CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(Opus.Core.StringArray commandLineBuilder, Opus.Core.Target target, Opus.Core.StringArray excludedOptionNames)
+        void
+        CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
+            Opus.Core.StringArray commandLineBuilder,
+            Opus.Core.Target target,
+            Opus.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

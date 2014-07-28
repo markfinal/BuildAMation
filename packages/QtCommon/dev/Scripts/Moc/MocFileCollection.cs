@@ -12,7 +12,7 @@ namespace QtCommon
     public abstract class MocFileCollection :
         Opus.Core.BaseModule,
         Opus.Core.IModuleCollection,
-    Opus.Core.ICommonOptionCollection
+        Opus.Core.ICommonOptionCollection
     {
         private Opus.Core.Array<MocFile> list = new Opus.Core.Array<MocFile>();
 
@@ -28,7 +28,10 @@ namespace QtCommon
             set;
         }
 
-        public void Include(Opus.Core.Location baseLocation, string pattern)
+        public void
+        Include(
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             if (null == this.Includes)
             {
@@ -37,7 +40,10 @@ namespace QtCommon
             this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
         }
 
-        public void Exclude(Opus.Core.Location baseLocation, string pattern)
+        public void
+        Exclude(
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             if (null == this.Excludes)
             {
@@ -46,7 +52,8 @@ namespace QtCommon
             this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
         }
 
-        private Opus.Core.LocationArray EvaluatePaths()
+        private Opus.Core.LocationArray
+        EvaluatePaths()
         {
             if (null == this.Includes)
             {
@@ -75,7 +82,9 @@ namespace QtCommon
             return complement;
         }
 
-        private System.Collections.Generic.List<Opus.Core.IModule> MakeChildModules(Opus.Core.LocationArray locationList)
+        private System.Collections.Generic.List<Opus.Core.IModule>
+        MakeChildModules(
+            Opus.Core.LocationArray locationList)
         {
             var moduleCollection = new System.Collections.Generic.List<Opus.Core.IModule>();
             foreach (var location in locationList)
@@ -87,7 +96,9 @@ namespace QtCommon
             return moduleCollection;
         }
 
-        Opus.Core.ModuleCollection Opus.Core.INestedDependents.GetNestedDependents(Opus.Core.Target target)
+        Opus.Core.ModuleCollection
+        Opus.Core.INestedDependents.GetNestedDependents(
+            Opus.Core.Target target)
         {
             var collection = new Opus.Core.ModuleCollection();
 
@@ -138,9 +149,11 @@ namespace QtCommon
             set;
         }
 
-        public void RegisterUpdateOptions(Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
-                                          Opus.Core.Location baseLocation,
-                                          string pattern)
+        public void
+        RegisterUpdateOptions(
+            Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
+            Opus.Core.Location baseLocation,
+            string pattern)
         {
             if (null == this.DeferredUpdates)
             {

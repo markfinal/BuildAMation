@@ -7,7 +7,10 @@ namespace QMakeBuilder
 {
     public partial class QMakeBuilder
     {
-        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
+        public object
+        Build(
+            QtCommon.MocFile moduleToBuild,
+            out System.Boolean success)
         {
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             var node = moduleToBuild.OwningNode;

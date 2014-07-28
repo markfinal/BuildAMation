@@ -7,7 +7,10 @@ namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder
     {
-        public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
+        public object
+        Build(
+            QtCommon.MocFileCollection moduleToBuild,
+            out bool success)
         {
             var node = moduleToBuild.OwningNode;
             var target = node.Target;

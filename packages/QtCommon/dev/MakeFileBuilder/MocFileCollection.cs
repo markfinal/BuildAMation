@@ -7,7 +7,10 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        public object Build(QtCommon.MocFileCollection moduleToBuild, out bool success)
+        public object
+        Build(
+            QtCommon.MocFileCollection moduleToBuild,
+            out bool success)
         {
             var mocFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
             var node = mocFileCollectionModule.OwningNode;
@@ -26,7 +29,6 @@ namespace MakeFileBuilder
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-#if true
             var rule = new MakeFileRule(
                 moduleToBuild,
                 QtCommon.MocFile.OutputFile,
@@ -35,10 +37,6 @@ namespace MakeFileBuilder
                 dependents,
                 null,
                 null);
-#else
-            // no output paths because this rule has no recipe
-            MakeFileRule rule = new MakeFileRule(null, QtCommon.OutputFileFlags.MocGeneratedSourceFileCollection, node.UniqueModuleName, null, dependents, null, null);
-#endif
             if (null == node.Parent)
             {
                 // phony target

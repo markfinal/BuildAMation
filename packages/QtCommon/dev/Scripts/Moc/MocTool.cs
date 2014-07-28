@@ -5,18 +5,23 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public sealed class MocTool : IMocTool
+    public sealed class MocTool :
+        IMocTool
     {
         private Opus.Core.IToolset toolset;
 
-        public MocTool(Opus.Core.IToolset toolset)
+        public
+        MocTool(
+            Opus.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
 
         #region ITool Members
 
-        string Opus.Core.ITool.Executable(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.ITool.Executable(
+            Opus.Core.BaseTarget baseTarget)
         {
             var mocExePath = System.IO.Path.Combine(this.toolset.BinPath(baseTarget), "moc");
             if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))

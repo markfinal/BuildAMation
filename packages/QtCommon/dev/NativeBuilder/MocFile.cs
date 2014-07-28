@@ -7,7 +7,10 @@ namespace NativeBuilder
 {
     public partial class NativeBuilder
     {
-        public object Build(QtCommon.MocFile moduleToBuild, out System.Boolean success)
+        public object
+        Build(
+            QtCommon.MocFile moduleToBuild,
+            out System.Boolean success)
         {
             var mocFileModule = moduleToBuild as Opus.Core.BaseModule;
             var node = mocFileModule.OwningNode;
@@ -28,16 +31,8 @@ namespace NativeBuilder
 
             // dependency checking
             {
-#if true
                 var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                 var doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputLocations, sourceLocation);
-#else
-                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-                inputFiles.Add(sourceFilePath);
-
-                Opus.Core.StringArray outputFiles = mocFileOptions.OutputPaths.Paths;
-                FileRebuildStatus doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceFilePath);
-#endif
                 if (FileRebuildStatus.UpToDate == doesSourceFileNeedRebuilding)
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
