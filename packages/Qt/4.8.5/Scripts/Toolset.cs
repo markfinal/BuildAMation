@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace Qt
 {
-    public sealed class Toolset : QtCommon.Toolset
+    public sealed class Toolset :
+        QtCommon.Toolset
     {
         private string installPath = null;
 
-        protected override string GetInstallPath(Opus.Core.BaseTarget baseTarget)
+        protected override string
+        GetInstallPath(
+            Opus.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {
@@ -59,7 +62,8 @@ namespace Qt
             return installPath;
         }
 
-        protected override string GetVersionNumber()
+        protected override string
+        GetVersionNumber()
         {
             return "4.8.5";
         }
