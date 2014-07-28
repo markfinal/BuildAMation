@@ -6,11 +6,12 @@
 namespace VisualC
 {
     // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection : VisualCCommon.CCompilerOptionCollection
+    public partial class CCompilerOptionCollection :
+        VisualCCommon.CCompilerOptionCollection
     {
-        public CCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

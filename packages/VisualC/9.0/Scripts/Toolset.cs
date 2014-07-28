@@ -5,9 +5,12 @@
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed class Toolset : VisualCCommon.Toolset, VisualStudioProcessor.IVisualStudioTargetInfo
+    public sealed class Toolset :
+        VisualCCommon.Toolset,
+        VisualStudioProcessor.IVisualStudioTargetInfo
     {
-        static Toolset()
+        static
+        Toolset()
         {
             if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
             {
@@ -20,7 +23,8 @@ namespace VisualC
             }
         }
 
-        public Toolset()
+        public
+        Toolset()
         {
             this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.CCompiler(this), typeof(CCompilerOptionCollection));
             this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
@@ -30,7 +34,8 @@ namespace VisualC
             this.toolConfig[typeof(C.IWinManifestTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ManifestTool(this), typeof(VisualCCommon.Win32ManifestOptionCollection));
         }
 
-        protected override void GetInstallPath()
+        protected override void
+        GetInstallPath()
         {
             if (null != this.installPath)
             {
@@ -77,7 +82,9 @@ namespace VisualC
             this.environment.Add(ide);
         }
 
-        protected override string GetVersion(Opus.Core.BaseTarget baseTarget)
+        protected override string
+        GetVersion(
+            Opus.Core.BaseTarget baseTarget)
         {
             return this.GetVersionString("9.0");
         }
