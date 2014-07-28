@@ -7,6 +7,8 @@ namespace VisualStudioProcessor
 {
     public interface IVisualStudioSupport
     {
-        ToolAttributeDictionary ToVisualStudioProjectAttributes(Opus.Core.Target target);
+        ToolAttributeDictionary
+        ToVisualStudioProjectAttributes(
+            Opus.Core.Target target);
     }
 }

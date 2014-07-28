@@ -20,12 +20,16 @@ namespace VisualStudioProcessor
             this.canInherit.Add(key, false);
         }
 
-        public void EnableCanInherit(string key)
+        public void
+        EnableCanInherit(
+            string key)
         {
             this.canInherit[key] = true;
         }
 
-        public bool CanInherit(string key)
+        public bool
+        CanInherit(
+            string key)
         {
             return this.canInherit[key];
         }
@@ -67,7 +71,8 @@ namespace VisualStudioProcessor
 
         #region IEnumerable<KeyValuePair<string,string>> Members
 
-        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>.GetEnumerator()
+        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>>
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>.GetEnumerator()
         {
             return this.dictionary.GetEnumerator();
         }
@@ -76,7 +81,8 @@ namespace VisualStudioProcessor
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             throw new System.NotImplementedException();
         }

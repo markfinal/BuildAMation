@@ -7,7 +7,11 @@ namespace VisualStudioProcessor
 {
     public static class ToVisualStudioAttributes
     {
-        public static VisualStudioProcessor.ToolAttributeDictionary Execute(object sender, Opus.Core.Target target, EVisualStudioTarget vsTarget)
+        public static VisualStudioProcessor.ToolAttributeDictionary
+        Execute(
+            object sender,
+            Opus.Core.Target target,
+            EVisualStudioTarget vsTarget)
         {
             var optionCollection = sender as Opus.Core.BaseOptionCollection;
 
