@@ -5,11 +5,13 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildImport : MSBuildBaseElement
+    public class MSBuildImport :
+        MSBuildBaseElement
     {
-        public MSBuildImport(System.Xml.XmlDocument document,
-                             string projectFile)
-            : base(document, "Import")
+        public
+        MSBuildImport(
+            System.Xml.XmlDocument document,
+            string projectFile) : base(document, "Import")
         {
             this.XmlElement.SetAttribute("Project", projectFile);
         }

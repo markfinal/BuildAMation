@@ -5,14 +5,16 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildItem : MSBuildBaseElement
+    public class MSBuildItem :
+        MSBuildBaseElement
     {
         private string include = null;
 
-        public MSBuildItem(System.Xml.XmlDocument document,
-                           string name,
-                           string include)
-            : base(document, name)
+        public
+        MSBuildItem(
+            System.Xml.XmlDocument document,
+            string name,
+            string include) : base(document, name)
         {
             // null is only valid when used in an item definition group
             if (null != include)
@@ -30,7 +32,10 @@ namespace VSSolutionBuilder
             }
         }
 
-        public MSBuildMetaData CreateMetaData(string name, string value)
+        public MSBuildMetaData
+        CreateMetaData(
+            string name,
+            string value)
         {
             var metaData = new MSBuildMetaData(this.XmlDocument, name, value);
             this.AppendChild(metaData);

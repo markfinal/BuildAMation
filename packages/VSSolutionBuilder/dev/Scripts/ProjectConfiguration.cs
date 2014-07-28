@@ -10,7 +10,10 @@ namespace VSSolutionBuilder
         private EProjectConfigurationType type;
         private EProjectCharacterSet characterSet = EProjectCharacterSet.Undefined;
 
-        public ProjectConfiguration(string name, IProject project)
+        public
+        ProjectConfiguration(
+            string name,
+            IProject project)
         {
             this.Name = name;
             this.type = EProjectConfigurationType.Undefined;
@@ -96,7 +99,9 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public void AddToolIfMissing(ProjectTool tool)
+        public void
+        AddToolIfMissing(
+            ProjectTool tool)
         {
             lock (this.Tools)
             {
@@ -107,13 +112,17 @@ namespace VSSolutionBuilder
             }
         }
 
-        public bool HasTool(string toolName)
+        public bool
+        HasTool(
+            string toolName)
         {
             var hasTool = this.Tools.Contains(toolName);
             return hasTool;
         }
 
-        public ProjectTool GetTool(string toolName)
+        public ProjectTool
+        GetTool(
+            string toolName)
         {
             lock (this.Tools)
             {
@@ -128,7 +137,10 @@ namespace VSSolutionBuilder
             }
         }
 
-        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, System.Uri projectUri)
+        public System.Xml.XmlElement
+        Serialize(
+            System.Xml.XmlDocument document,
+            System.Uri projectUri)
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {
@@ -181,13 +193,17 @@ namespace VSSolutionBuilder
             return configurationElement;
         }
 
-        public string[] ConfigurationPlatform()
+        public string[]
+        ConfigurationPlatform()
         {
             var split = this.Name.Split('|');
             return split;
         }
 
-        public void SerializeMSBuild(MSBuildItemGroup configurationGroup, System.Uri projectUri)
+        public void
+        SerializeMSBuild(
+            MSBuildItemGroup configurationGroup,
+            System.Uri projectUri)
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {
@@ -208,7 +224,10 @@ namespace VSSolutionBuilder
             projectConfiguration.CreateMetaData("Platform", split[1]);
         }
 
-        public void SerializeCSBuild(MSBuildProject project, System.Uri projectUri)
+        public void
+        SerializeCSBuild(
+            MSBuildProject project,
+            System.Uri projectUri)
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {

@@ -5,7 +5,8 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public interface ICProject : IProject
+    public interface ICProject :
+        IProject
     {
         ProjectFileCollection HeaderFiles
         {

@@ -7,7 +7,9 @@ namespace VSSolutionBuilder
 {
     public class DeterministicGuid
     {
-        public DeterministicGuid(string input)
+        public
+        DeterministicGuid(
+            string input)
         {
             // ref: http://geekswithblogs.net/EltonStoneman/archive/2008/06/26/generating-deterministic-guids.aspx
 

@@ -58,6 +58,7 @@ namespace VSSolutionBuilder
             set;
         }
 
-        void Serialize();
+        void
+        Serialize();
     }
 }

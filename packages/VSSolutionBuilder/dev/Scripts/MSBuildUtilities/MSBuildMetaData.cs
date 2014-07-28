@@ -5,12 +5,14 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildMetaData : MSBuildBaseElement
+    public class MSBuildMetaData :
+        MSBuildBaseElement
     {
-        public MSBuildMetaData(System.Xml.XmlDocument document,
-                               string name,
-                               string value)
-            : base(document, name)
+        public
+        MSBuildMetaData(
+            System.Xml.XmlDocument document,
+            string name,
+            string value) : base(document, name)
         {
             this.XmlElement.InnerText = value;
         }

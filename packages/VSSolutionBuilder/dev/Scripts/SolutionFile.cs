@@ -7,7 +7,9 @@ namespace VSSolutionBuilder
 {
     public sealed class SolutionFile
     {
-        public SolutionFile(string pathName)
+        public
+        SolutionFile(
+            string pathName)
         {
             this.PathName = pathName;
             this.ProjectDictionary = new System.Collections.Generic.Dictionary<string, IProject>();
@@ -33,7 +35,8 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public void ResolveSourceFileConfigurationExclusions()
+        public void
+        ResolveSourceFileConfigurationExclusions()
         {
             foreach (var project in this.ProjectDictionary)
             {
@@ -58,13 +61,16 @@ namespace VSSolutionBuilder
             }
         }
 
-        private static string WorkaroundMSBuildBug(string key)
+        private static string
+        WorkaroundMSBuildBug(
+            string key)
         {
             // http://connect.microsoft.com/VisualStudio/feedback/details/503935/msbuild-inconsistent-platform-for-any-cpu-between-solution-and-project
             return key.Replace("AnyCPU", "Any CPU");
         }
 
-        public void Serialize()
+        public void
+        Serialize()
         {
             // serialize each vcproj
             foreach (var project in this.ProjectDictionary)

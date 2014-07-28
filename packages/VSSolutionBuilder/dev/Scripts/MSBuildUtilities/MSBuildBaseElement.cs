@@ -12,8 +12,10 @@ namespace VSSolutionBuilder
         private string label;
         protected System.Collections.Generic.Dictionary<System.Xml.XmlElement, MSBuildBaseElement> childElements = new System.Collections.Generic.Dictionary<System.Xml.XmlElement, MSBuildBaseElement>();
 
-        public MSBuildBaseElement(System.Xml.XmlDocument document,
-                                  string name)
+        public
+        MSBuildBaseElement(
+            System.Xml.XmlDocument document,
+            string name)
         {
             if (System.String.IsNullOrEmpty(name))
             {
@@ -83,7 +85,9 @@ namespace VSSolutionBuilder
             }
         }
 
-        protected void AppendChild(MSBuildBaseElement child)
+        protected void
+        AppendChild(
+            MSBuildBaseElement child)
         {
             this.XmlElement.AppendChild(child.XmlElement);
             this.childElements.Add(child.XmlElement, child);

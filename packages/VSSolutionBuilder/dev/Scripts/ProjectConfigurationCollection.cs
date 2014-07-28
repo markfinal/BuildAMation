@@ -5,23 +5,31 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public sealed class ProjectConfigurationCollection : System.Collections.IEnumerable
+    public sealed class ProjectConfigurationCollection :
+        System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectConfiguration> list = new System.Collections.Generic.List<ProjectConfiguration>();
         private System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, string> targetToConfig = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, string>();
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        public void Add(Opus.Core.BaseTarget target, ProjectConfiguration configuration)
+        public void
+        Add(
+            Opus.Core.BaseTarget target,
+            ProjectConfiguration configuration)
         {
             this.list.Add(configuration);
             this.AddExistingForTarget(target, configuration);
         }
 
-        public void AddExistingForTarget(Opus.Core.BaseTarget target, ProjectConfiguration configuration)
+        public void
+        AddExistingForTarget(
+            Opus.Core.BaseTarget target,
+            ProjectConfiguration configuration)
         {
             if (!this.targetToConfig.ContainsKey(target))
             {
@@ -29,13 +37,17 @@ namespace VSSolutionBuilder
             }
         }
 
-        public string GetConfigurationNameForTarget(Opus.Core.BaseTarget target)
+        public string
+        GetConfigurationNameForTarget(
+            Opus.Core.BaseTarget target)
         {
             var configurationName = this.targetToConfig[target];
             return configurationName;
         }
 
-        public bool Contains(string configurationName)
+        public bool
+        Contains(
+            string configurationName)
         {
             foreach (var configuration in this.list)
             {
@@ -64,7 +76,10 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildProject project, System.Uri projectUri)
+        public void
+        SerializeMSBuild(
+            MSBuildProject project,
+            System.Uri projectUri)
         {
             // ProjectConfigurations item group
             {

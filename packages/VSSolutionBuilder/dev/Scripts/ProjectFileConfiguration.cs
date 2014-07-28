@@ -7,7 +7,11 @@ namespace VSSolutionBuilder
 {
     public sealed class ProjectFileConfiguration
     {
-        public ProjectFileConfiguration(ProjectConfiguration configuration, ProjectTool tool, bool excludedFromBuild)
+        public
+        ProjectFileConfiguration(
+            ProjectConfiguration configuration,
+            ProjectTool tool,
+            bool excludedFromBuild)
         {
             this.Configuration = configuration;
             this.Tool = tool;
@@ -32,7 +36,10 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, System.Uri projectUri)
+        public System.Xml.XmlElement
+        Serialize(
+            System.Xml.XmlDocument document,
+            System.Uri projectUri)
         {
             ProjectTool parentTool = null;
             // TODO: convert to var

@@ -5,14 +5,18 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildPropertyGroup : MSBuildBaseElement
+    public class MSBuildPropertyGroup :
+        MSBuildBaseElement
     {
-        public MSBuildPropertyGroup(System.Xml.XmlDocument document)
-            : base(document, "PropertyGroup")
-        {
-        }
+        public
+        MSBuildPropertyGroup(
+            System.Xml.XmlDocument document) : base(document, "PropertyGroup")
+        {}
 
-        public MSBuildProperty CreateProperty(string name, string value)
+        public MSBuildProperty
+        CreateProperty(
+            string name,
+            string value)
         {
             var property = new MSBuildProperty(this.XmlDocument, name, value);
             this.AppendChild(property);

@@ -5,11 +5,13 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public sealed partial class VSSolutionBuilder : Opus.Core.IBuilderPreExecute
+    public sealed partial class VSSolutionBuilder :
+        Opus.Core.IBuilderPreExecute
     {
         #region IBuilderPreExecute Members
 
-        void Opus.Core.IBuilderPreExecute.PreExecute()
+        void
+        Opus.Core.IBuilderPreExecute.PreExecute()
         {
             Opus.Core.Log.DebugMessage("PreExecute for VSSolutionBuilder");
 

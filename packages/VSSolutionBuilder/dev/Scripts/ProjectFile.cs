@@ -7,7 +7,9 @@ namespace VSSolutionBuilder
 {
     public sealed class ProjectFile
     {
-        public ProjectFile(string pathName)
+        public
+        ProjectFile(
+            string pathName)
         {
             this.RelativePath = pathName;
         }
@@ -24,7 +26,13 @@ namespace VSSolutionBuilder
             set;
         }
 
-        public void Serialize(System.Xml.XmlDocument document, System.Xml.XmlElement parentElement, System.Uri projectUri, string[] splitFileDirs, int index)
+        public void
+        Serialize(
+            System.Xml.XmlDocument document,
+            System.Xml.XmlElement parentElement,
+            System.Uri projectUri,
+            string[] splitFileDirs,
+            int index)
         {
             if (index == splitFileDirs.Length - 1)
             {
@@ -81,7 +89,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri, string name)
+        public void
+        SerializeMSBuild(
+            MSBuildItemGroup fileCollectionGroup,
+            System.Uri projectUri,
+            string name)
         {
             if (null == this.FileConfigurations)
             {
@@ -110,7 +122,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeCSBuild(MSBuildItemGroup fileCollectionGroup, System.Uri projectUri, System.Uri packageDirectoryUri)
+        public void
+        SerializeCSBuild(
+            MSBuildItemGroup fileCollectionGroup,
+            System.Uri projectUri,
+            System.Uri packageDirectoryUri)
         {
             var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
             var compileItem = fileCollectionGroup.CreateItem("Compile", relativePath);

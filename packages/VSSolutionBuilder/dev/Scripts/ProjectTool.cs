@@ -9,7 +9,9 @@ namespace VSSolutionBuilder
     {
         System.Collections.Generic.Dictionary<string, string> attributes = new System.Collections.Generic.Dictionary<string, string>();
 
-        public ProjectTool(string name)
+        public
+        ProjectTool(
+            string name)
         {
             this.attributes.Add("Name", name);
         }
@@ -35,12 +37,17 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void AddAttribute(string name, string value)
+        public void
+        AddAttribute(
+            string name,
+            string value)
         {
             this.attributes.Add(name, value);
         }
 
-        public bool HasAttribute(string name)
+        public bool
+        HasAttribute(
+            string name)
         {
             var hasAttribute = this.attributes.ContainsKey(name);
             return hasAttribute;
@@ -55,7 +62,9 @@ namespace VSSolutionBuilder
             }
         }
 
-        public override bool Equals(object o)
+        public override bool
+        Equals(
+            object o)
         {
             var tool = o as ProjectTool;
 
@@ -84,12 +93,17 @@ namespace VSSolutionBuilder
         }
 
         // need to override this because Equals is overridden
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, ProjectConfiguration configuration, System.Uri projectUri)
+        public System.Xml.XmlElement
+        Serialize(
+            System.Xml.XmlDocument document,
+            ProjectConfiguration configuration,
+            System.Uri projectUri)
         {
             var projectName = configuration.Project.Name;
             var outputDirectory = configuration.OutputDirectory;
@@ -117,7 +131,12 @@ namespace VSSolutionBuilder
             return toolElement;
         }
 
-        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, ProjectFileConfiguration configuration, System.Uri projectUri, ProjectTool parent)
+        public System.Xml.XmlElement
+        Serialize(
+            System.Xml.XmlDocument document,
+            ProjectFileConfiguration configuration,
+            System.Uri projectUri,
+            ProjectTool parent)
         {
             var projectName = configuration.Configuration.Project.Name;
             var outputDirectory = configuration.Configuration.OutputDirectory;
@@ -140,7 +159,11 @@ namespace VSSolutionBuilder
             return toolElement;
         }
 
-        public void SerializeMSBuild(MSBuildItemDefinitionGroup itemDefGroup, ProjectConfiguration configuration, System.Uri projectUri)
+        public void
+        SerializeMSBuild(
+            MSBuildItemDefinitionGroup itemDefGroup,
+            ProjectConfiguration configuration,
+            System.Uri projectUri)
         {
             var projectName = configuration.Project.Name;
             var outputDirectory = configuration.OutputDirectory;
@@ -196,7 +219,13 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildItemGroup itemGroup, ProjectFileConfiguration configuration, System.Uri projectUri, string relativePath, ProjectTool parentTool)
+        public void
+        SerializeMSBuild(
+            MSBuildItemGroup itemGroup,
+            ProjectFileConfiguration configuration,
+            System.Uri projectUri,
+            string relativePath,
+            ProjectTool parentTool)
         {
             var projectName = configuration.Configuration.Project.Name;
             var outputDirectory = configuration.Configuration.OutputDirectory;
@@ -283,7 +312,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeCSBuild(MSBuildPropertyGroup configurationGroup, ProjectConfiguration configuration, System.Uri projectUri)
+        public void
+        SerializeCSBuild(
+            MSBuildPropertyGroup configurationGroup,
+            ProjectConfiguration configuration,
+            System.Uri projectUri)
         {
             var projectName = configuration.Project.Name;
             var outputDirectory = configuration.OutputDirectory;

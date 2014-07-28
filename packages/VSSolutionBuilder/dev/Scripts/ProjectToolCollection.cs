@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public sealed class ProjectToolCollection : System.Collections.IEnumerable
+    public sealed class ProjectToolCollection :
+        System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectTool> list = new System.Collections.Generic.List<ProjectTool>();
 
-        public void Add(ProjectTool tool)
+        public void
+        Add(
+            ProjectTool tool)
         {
             this.list.Add(tool);
         }
@@ -23,7 +26,9 @@ namespace VSSolutionBuilder
             }
         }
 
-        public bool Contains(string toolName)
+        public bool
+        Contains(
+            string toolName)
         {
             foreach (var tool in this.list)
             {
@@ -36,7 +41,8 @@ namespace VSSolutionBuilder
             return false;
         }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
@@ -57,7 +63,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeMSBuild(MSBuildProject project, ProjectConfiguration configuration, System.Uri projectUri)
+        public void
+        SerializeMSBuild(
+            MSBuildProject project,
+            ProjectConfiguration configuration,
+            System.Uri projectUri)
         {
             var toolItemGroup = project.CreateItemDefinitionGroup();
             var split = configuration.ConfigurationPlatform();

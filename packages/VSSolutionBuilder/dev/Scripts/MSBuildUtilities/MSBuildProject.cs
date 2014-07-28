@@ -5,10 +5,14 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildProject : MSBuildBaseElement
+    public class MSBuildProject :
+        MSBuildBaseElement
     {
-        public MSBuildProject(System.Xml.XmlDocument document, string toolsVersion, string defaultTargets)
-            : base(document, "Project")
+        public
+        MSBuildProject(
+            System.Xml.XmlDocument document,
+            string toolsVersion,
+            string defaultTargets) : base(document, "Project")
         {
             if (null != defaultTargets)
             {
@@ -18,33 +22,40 @@ namespace VSSolutionBuilder
             this.XmlDocument.AppendChild(this.XmlElement);
         }
 
-        public MSBuildProject(System.Xml.XmlDocument document, string toolsVersion)
+        public
+        MSBuildProject(
+            System.Xml.XmlDocument document,
+            string toolsVersion)
             : this(document, toolsVersion, null)
-        {
-        }
+        {}
 
-        public MSBuildPropertyGroup CreatePropertyGroup()
+        public MSBuildPropertyGroup
+        CreatePropertyGroup()
         {
             var propertyGroup = new MSBuildPropertyGroup(this.XmlDocument);
             this.AppendChild(propertyGroup);
             return propertyGroup;
         }
 
-        public MSBuildItemGroup CreateItemGroup()
+        public MSBuildItemGroup
+        CreateItemGroup()
         {
             var itemGroup = new MSBuildItemGroup(this.XmlDocument);
             this.AppendChild(itemGroup);
             return itemGroup;
         }
 
-        public MSBuildItemDefinitionGroup CreateItemDefinitionGroup()
+        public MSBuildItemDefinitionGroup
+        CreateItemDefinitionGroup()
         {
             var itemDefGroup = new MSBuildItemDefinitionGroup(this.XmlDocument);
             this.AppendChild(itemDefGroup);
             return itemDefGroup;
         }
 
-        public MSBuildImport CreateImport(string projectFile)
+        public MSBuildImport
+        CreateImport(
+            string projectFile)
         {
             var import = new MSBuildImport(this.XmlDocument, projectFile);
             this.AppendChild(import);

@@ -5,11 +5,13 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public sealed class ProjectFileCollection : System.Collections.IEnumerable
+    public sealed class ProjectFileCollection :
+        System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectFile> list = new System.Collections.Generic.List<ProjectFile>();
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
@@ -22,12 +24,16 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void Add(ProjectFile projectFile)
+        public void
+        Add(
+            ProjectFile projectFile)
         {
             this.list.Add(projectFile);
         }
 
-        public bool Contains(string sourcePathName)
+        public bool
+        Contains(
+            string sourcePathName)
         {
             foreach (var projectFile in this.list)
             {
@@ -56,7 +62,12 @@ namespace VSSolutionBuilder
             }
         }
 
-        public System.Xml.XmlElement Serialize(System.Xml.XmlDocument document, string filterName, System.Uri projectUri, System.Uri packageDirectoryUri)
+        public System.Xml.XmlElement
+        Serialize(
+            System.Xml.XmlDocument document,
+            string filterName,
+            System.Uri projectUri,
+            System.Uri packageDirectoryUri)
         {
             var sourceFilesFilterElement = document.CreateElement("Filter");
             sourceFilesFilterElement.SetAttribute("Name", filterName);
@@ -71,7 +82,12 @@ namespace VSSolutionBuilder
             return sourceFilesFilterElement;
         }
 
-        public void SerializeMSBuild(MSBuildProject project, string childElementName, System.Uri projectUri, System.Uri packageDirectoryUri)
+        public void
+        SerializeMSBuild(
+            MSBuildProject project,
+            string childElementName,
+            System.Uri projectUri,
+            System.Uri packageDirectoryUri)
         {
             var fileItemGroup = project.CreateItemGroup();
             foreach (var file in this.list)
@@ -80,7 +96,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        public void SerializeCSBuild(MSBuildProject project, System.Uri projectUri, System.Uri packageDirectoryUri)
+        public void
+        SerializeCSBuild(
+            MSBuildProject project,
+            System.Uri projectUri,
+            System.Uri packageDirectoryUri)
         {
             var fileItemGroup = project.CreateItemGroup();
             foreach (var file in this.list)

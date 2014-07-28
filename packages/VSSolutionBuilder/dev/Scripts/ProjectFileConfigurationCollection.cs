@@ -5,16 +5,20 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public sealed class ProjectFileConfigurationCollection : System.Collections.IEnumerable
+    public sealed class ProjectFileConfigurationCollection :
+        System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectFileConfiguration> list = new System.Collections.Generic.List<ProjectFileConfiguration>();
 
-        public System.Collections.IEnumerator GetEnumerator()
+        public System.Collections.IEnumerator
+        GetEnumerator()
         {
             return this.list.GetEnumerator();
         }
 
-        public void Add(ProjectFileConfiguration fileConfiguration)
+        public void
+        Add(
+            ProjectFileConfiguration fileConfiguration)
         {
             this.list.Add(fileConfiguration);
         }
@@ -27,7 +31,9 @@ namespace VSSolutionBuilder
             }
         }
 
-        public bool Contains(string name)
+        public bool
+        Contains(
+            string name)
         {
             bool containsName = false;
             foreach (var fileConfiguration in this.list)

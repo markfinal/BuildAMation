@@ -5,14 +5,17 @@
 // <author>Mark Final</author>
 namespace VSSolutionBuilder
 {
-    public class MSBuildItemDefinitionGroup : MSBuildBaseElement
+    public class MSBuildItemDefinitionGroup :
+        MSBuildBaseElement
     {
-        public MSBuildItemDefinitionGroup(System.Xml.XmlDocument document)
-            : base(document, "ItemDefinitionGroup")
-        {
-        }
+        public
+        MSBuildItemDefinitionGroup(
+            System.Xml.XmlDocument document) : base(document, "ItemDefinitionGroup")
+        {}
 
-        public MSBuildItem CreateItem(string name)
+        public MSBuildItem
+        CreateItem(
+            string name)
         {
             var item = new MSBuildItem(this.XmlDocument, name, null);
             this.AppendChild(item);
