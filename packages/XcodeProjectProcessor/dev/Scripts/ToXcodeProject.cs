@@ -9,7 +9,7 @@ namespace XcodeProjectProcessor
     {
         public static void Execute(object sender,
                                    XcodeBuilder.PBXProject project,
-                                   XcodeBuilder.XCodeNodeData currentObject,
+                                   XcodeBuilder.XcodeNodeData currentObject,
                                    XcodeBuilder.XCBuildConfiguration configuration,
                                    Opus.Core.Target target)
         {

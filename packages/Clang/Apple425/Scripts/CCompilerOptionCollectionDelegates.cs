@@ -24,7 +24,7 @@ namespace Clang
                 }
             }
         }
-        private static void FrameworkSearchDirectoriesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void FrameworkSearchDirectoriesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var frameworkPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             configuration.Options["FRAMEWORK_SEARCH_PATHS"].AddRangeUnique(frameworkPathsOption.Value.ToStringArray());

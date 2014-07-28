@@ -9,7 +9,7 @@ namespace XcodeProjectProcessor
     Delegate(
         object sender,
         XcodeBuilder.PBXProject project,
-        XcodeBuilder.XCodeNodeData currentObject,
+        XcodeBuilder.XcodeNodeData currentObject,
         XcodeBuilder.XCBuildConfiguration configuration,
         Opus.Core.Option option,
         Opus.Core.Target target);

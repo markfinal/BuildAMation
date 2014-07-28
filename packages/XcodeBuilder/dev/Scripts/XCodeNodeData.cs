@@ -1,14 +1,14 @@
-// <copyright file="XCodeNodeData.cs" company="Mark Final">
+// <copyright file="XcodeNodeData.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>XcodeBuilder package</summary>
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
-    public abstract class XCodeNodeData
+    public abstract class XcodeNodeData
     {
         protected
-        XCodeNodeData(
+        XcodeNodeData(
             string name)
         {
             this.Name = name;

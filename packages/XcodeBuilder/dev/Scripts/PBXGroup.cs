@@ -6,14 +6,14 @@
 namespace XcodeBuilder
 {
     public sealed class PBXGroup :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public
         PBXGroup(
             string name) : base(name)
         {
-            this.Children = new Opus.Core.Array<XCodeNodeData>();
+            this.Children = new Opus.Core.Array<XcodeNodeData>();
         }
 
         public string Path
@@ -28,7 +28,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public Opus.Core.Array<XCodeNodeData> Children
+        public Opus.Core.Array<XcodeNodeData> Children
         {
             get;
             private set;

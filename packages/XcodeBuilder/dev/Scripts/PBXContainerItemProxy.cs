@@ -6,26 +6,26 @@
 namespace XcodeBuilder
 {
     public sealed class PBXContainerItemProxy :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public
         PBXContainerItemProxy(
             string name,
-            XCodeNodeData remote,
-            XCodeNodeData portal) : base(name)
+            XcodeNodeData remote,
+            XcodeNodeData portal) : base(name)
         {
             this.Remote = remote;
             this.Portal = portal;
         }
 
-        public XCodeNodeData Remote
+        public XcodeNodeData Remote
         {
             get;
             private set;
         }
 
-        public XCodeNodeData Portal
+        public XcodeNodeData Portal
         {
             get;
             private set;

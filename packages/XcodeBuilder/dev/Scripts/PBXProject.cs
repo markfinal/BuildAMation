@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public sealed class PBXProject :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public

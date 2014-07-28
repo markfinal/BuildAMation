@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public sealed class PBXNativeTarget :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public enum EType

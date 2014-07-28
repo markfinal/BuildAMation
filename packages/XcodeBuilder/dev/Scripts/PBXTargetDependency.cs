@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public sealed class PBXTargetDependency :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public

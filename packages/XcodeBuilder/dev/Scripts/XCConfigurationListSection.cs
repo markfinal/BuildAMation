@@ -27,7 +27,7 @@ namespace XcodeBuilder
 
         public XCConfigurationList
         Get(
-            XCodeNodeData owner)
+            XcodeNodeData owner)
         {
             lock (this.ConfigurationLists)
             {

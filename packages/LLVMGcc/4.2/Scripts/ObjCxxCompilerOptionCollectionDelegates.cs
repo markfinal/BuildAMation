@@ -11,7 +11,7 @@ namespace LLVMGcc
         {
             GccCommon.ObjCxxCompilerOptionCollection.ExceptionHandlerCommandLineProcessor(sender, commandLineBuilder, option, target);
         }
-        private static void ExceptionHandlerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ExceptionHandlerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             GccCommon.ObjCxxCompilerOptionCollection.ExceptionHandlerXcodeProjectProcessor(sender, project, currentObject, configuration, option, target);
         }

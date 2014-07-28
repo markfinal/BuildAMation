@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public abstract class BuildPhase :
-        XCodeNodeData
+        XcodeNodeData
     {
         protected
         BuildPhase(

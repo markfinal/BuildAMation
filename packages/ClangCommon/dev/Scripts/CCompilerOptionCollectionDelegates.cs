@@ -15,7 +15,7 @@ namespace ClangCommon
                 commandLineBuilder.Add(System.String.Format("-D{0}", define));
             }
         }
-        private static void DefinesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DefinesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var definesOption = option as Opus.Core.ReferenceTypeOption<C.DefineCollection>;
             configuration.Options["GCC_PREPROCESSOR_DEFINITIONS"].AddRangeUnique(definesOption.Value.ToStringArray());
@@ -39,7 +39,7 @@ namespace ClangCommon
                 }
             }
         }
-        private static void IncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var includePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             configuration.Options["HEADER_SEARCH_PATHS"].AddRangeUnique(includePathsOption.Value.ToStringArray());
@@ -48,7 +48,7 @@ namespace ClangCommon
         {
             IncludePathsCommandLineProcessor(sender, commandLineBuilder, option, target);
         }
-        private static void SystemIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void SystemIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             IncludePathsXcodeProjectProcessor(sender, project, currentObject, configuration, option, target);
         }
@@ -73,7 +73,7 @@ namespace ClangCommon
             commandLineBuilder.Add(options.ObjectFilePath);
             #endif
         }
-        private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             // TODO: not sure what this should do to preprocess files only
         }
@@ -89,7 +89,7 @@ namespace ClangCommon
                 commandLineBuilder.Add("-g0");
             }
         }
-        private static void DebugSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DebugSymbolsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var debugSymbols = option as Opus.Core.ValueTypeOption<bool>;
             var debugSymbolsOption = configuration.Options["GCC_GENERATE_DEBUGGING_SYMBOLS"];
@@ -114,7 +114,7 @@ namespace ClangCommon
                 commandLineBuilder.Add("-Werror");
             }
         }
-        private static void WarningsAsErrorsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void WarningsAsErrorsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var warningsAsErrors = option as Opus.Core.ValueTypeOption<bool>;
             var warningsAsErrorsOption = configuration.Options["GCC_TREAT_WARNINGS_AS_ERRORS"];
@@ -144,7 +144,7 @@ namespace ClangCommon
                 }
             }
         }
-        private static void IgnoreStandardIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void IgnoreStandardIncludePathsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var ignoreStandardIncludePaths = option as Opus.Core.ValueTypeOption<bool>;
             var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
@@ -182,7 +182,7 @@ namespace ClangCommon
                     throw new Opus.Core.Exception("Unrecognized optimization option");
             }
         }
-        private static void OptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var optimization = option as Opus.Core.ValueTypeOption<C.EOptimization>;
             var optimizationOption = configuration.Options["GCC_OPTIMIZATION_LEVEL"];
@@ -216,7 +216,7 @@ namespace ClangCommon
             var customOptimizationOption = option as Opus.Core.ReferenceTypeOption<string>;
             commandLineBuilder.Add(customOptimizationOption.Value);
         }
-        private static void CustomOptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CustomOptimizationXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var customOptimizations = option as Opus.Core.ReferenceTypeOption<string>;
             var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
@@ -246,7 +246,7 @@ namespace ClangCommon
                 throw new Opus.Core.Exception("Unrecognized target language option");
             }
         }
-        private static void TargetLanguageXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void TargetLanguageXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var targetLanguageOption = option as Opus.Core.ValueTypeOption<C.ETargetLanguage>;
             var inputFileType = configuration.Options["GCC_INPUT_FILETYPE"];
@@ -283,7 +283,7 @@ namespace ClangCommon
                 commandLineBuilder.Add("-H");
             }
         }
-        private static void ShowIncludesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void ShowIncludesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var showIncludes = option as Opus.Core.ValueTypeOption<bool>;
             var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
@@ -301,7 +301,7 @@ namespace ClangCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var additionalOptions = option as Opus.Core.ReferenceTypeOption<string>;
             var splitArguments = additionalOptions.Value.Split(' ');
@@ -323,7 +323,7 @@ namespace ClangCommon
                 commandLineBuilder.Add("-fno-omit-frame-pointer");
             }
         }
-        private static void OmitFramePointerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void OmitFramePointerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var omitFramePointer = option as Opus.Core.ValueTypeOption<bool>;
             var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
@@ -344,7 +344,7 @@ namespace ClangCommon
                 commandLineBuilder.Add(System.String.Format("-Wno-{0}", warning));
             }
         }
-        private static void DisableWarningsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void DisableWarningsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var disableWarnings = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             var warningCFlagsOption = configuration.Options["WARNING_CFLAGS"];
@@ -372,7 +372,7 @@ namespace ClangCommon
                     break;
             }
         }
-        private static void CharacterSetXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void CharacterSetXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var characterSet = option as Opus.Core.ValueTypeOption<C.ECharacterSet>;
             var cOptions = sender as C.ICCompilerOptions;
@@ -412,7 +412,7 @@ namespace ClangCommon
                 throw new Opus.Core.Exception("Unknown language standard");
             }
         }
-        private static void LanguageStandardXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void LanguageStandardXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var languageStandard = option as Opus.Core.ValueTypeOption<C.ELanguageStandard>;
             var languageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
@@ -444,7 +444,7 @@ namespace ClangCommon
                 commandLineBuilder.Add(System.String.Format("-U{0}", undefine));
             }
         }
-        private static void UndefinesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void UndefinesXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             // TODO
         }
@@ -458,7 +458,7 @@ namespace ClangCommon
                 commandLineBuilder.Add("-fPIC");
             }
         }
-        private static void PositionIndependentCodeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void PositionIndependentCodeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var pic = option as Opus.Core.ValueTypeOption<bool>;
             // note that the logic is reversed here
@@ -488,7 +488,7 @@ namespace ClangCommon
                 commandLineBuilder.Add("-arch i386");
             }
         }
-        private static void SixtyFourBitXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void SixtyFourBitXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var sixtyFourBit = option as Opus.Core.ValueTypeOption<bool>;
             var archOption = configuration.Options["ARCHS"];

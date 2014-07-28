@@ -18,8 +18,8 @@ namespace XcodeBuilder
         public PBXContainerItemProxy
         Get(
             string name,
-            XCodeNodeData remote,
-            XCodeNodeData portal)
+            XcodeNodeData remote,
+            XcodeNodeData portal)
         {
             lock (this.ContainerItemProxies)
             {

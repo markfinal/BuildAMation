@@ -6,18 +6,18 @@
 namespace XcodeBuilder
 {
     public sealed class XCConfigurationList :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public
         XCConfigurationList(
-            XCodeNodeData owner) : base(owner.Name)
+            XcodeNodeData owner) : base(owner.Name)
         {
             this.Owner = owner;
             this.BuildConfigurations = new Opus.Core.Array<XCBuildConfiguration>();
         }
 
-        public XCodeNodeData Owner
+        public XcodeNodeData Owner
         {
             get;
             private set;

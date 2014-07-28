@@ -23,7 +23,7 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unrecognized exception handler option");
             }
         }
-        public static void ExceptionHandlerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XCodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        public static void ExceptionHandlerXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
         {
             var exceptionHandler = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             var exceptionsOption = configuration.Options["GCC_ENABLE_CPP_EXCEPTIONS"];

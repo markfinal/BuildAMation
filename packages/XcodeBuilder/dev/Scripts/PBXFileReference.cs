@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public sealed class PBXFileReference :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public enum EType

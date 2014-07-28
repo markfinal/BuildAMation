@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public sealed class XCBuildConfiguration :
-        XCodeNodeData,
+        XcodeNodeData,
         IWriteableNode
     {
         public
