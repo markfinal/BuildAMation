@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed partial class LinkerOptionCollection : VisualCCommon.LinkerOptionCollection
+    public sealed partial class LinkerOptionCollection :
+        VisualCCommon.LinkerOptionCollection
     {
-        public LinkerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        LinkerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }

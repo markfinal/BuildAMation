@@ -5,11 +5,12 @@
 // <author>Mark Final</author>
 namespace VisualC
 {
-    public sealed partial class CxxCompilerOptionCollection : VisualCCommon.CxxCompilerOptionCollection
+    public sealed partial class CxxCompilerOptionCollection :
+        VisualCCommon.CxxCompilerOptionCollection
     {
-        public CxxCompilerOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CxxCompilerOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
     }
 }
