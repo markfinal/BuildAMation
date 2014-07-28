@@ -5,27 +5,32 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class WebKit : Base
+    public abstract class WebKit :
+        Base
     {
-        public WebKit()
+        public
+        WebKit()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtWebKit_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtWebKit_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtWebKit_LinkerOptions);
         }
 
-        public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
+        public override void
+        RegisterOutputFiles(
+            Opus.Core.BaseOptionCollection options,
+            Opus.Core.Target target,
+            string modulePath)
         {
-#if true
             this.GetModuleDynamicLibrary(target, "QtWebKit");
-#else
-            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtWebKit");
-#endif
             base.RegisterOutputFiles(options, target, modulePath);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void QtWebKit_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtWebKit_LinkerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
@@ -36,7 +41,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtWebKit_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtWebKit_VisualCWarningLevel(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -47,7 +55,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtWebKit_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtWebKit_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

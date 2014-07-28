@@ -5,27 +5,32 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class Test : Base
+    public abstract class Test :
+        Base
     {
-        public Test()
+        public
+        Test()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtTest_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtTest_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtTest_LinkerOptions);
         }
 
-        public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
+        public override void
+        RegisterOutputFiles(
+            Opus.Core.BaseOptionCollection options,
+            Opus.Core.Target target,
+            string modulePath)
         {
-#if true
             this.GetModuleDynamicLibrary(target, "QtTest");
-#else
-            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtTest");
-#endif
             base.RegisterOutputFiles(options, target, modulePath);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void QtTest_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtTest_LinkerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
@@ -36,7 +41,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtTest_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtTest_VisualCWarningLevel(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -47,7 +55,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtTest_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtTest_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

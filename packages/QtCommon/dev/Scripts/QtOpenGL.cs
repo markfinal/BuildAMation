@@ -5,27 +5,32 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class OpenGL : Base
+    public abstract class OpenGL :
+        Base
     {
-        public OpenGL()
+        public
+        OpenGL()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenGL_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenGL_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenGL_LinkerOptions);
         }
 
-        public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
+        public override void
+        RegisterOutputFiles(
+            Opus.Core.BaseOptionCollection options,
+            Opus.Core.Target target,
+            string modulePath)
         {
-#if true
             this.GetModuleDynamicLibrary(target, "QtOpenGL");
-#else
-            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtOpenGL");
-#endif
             base.RegisterOutputFiles(options, target, modulePath);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void QtOpenGL_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtOpenGL_LinkerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
@@ -36,7 +41,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtOpenGL_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtOpenGL_VisualCWarningLevel(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -47,7 +55,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtOpenGL_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtOpenGL_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

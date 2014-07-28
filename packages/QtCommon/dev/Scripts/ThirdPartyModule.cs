@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public class ThirdPartyModule : C.ThirdPartyModule
-    {
-    }
+    public class ThirdPartyModule :
+        C.ThirdPartyModule
+    {}
 }

@@ -5,16 +5,21 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class OpenVG : Base
+    public abstract class OpenVG :
+        Base
     {
-        public OpenVG()
+        public
+        OpenVG()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenVG_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtOpenVG_VisualCWarningLevel);
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtOpenVG_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtOpenVG_VisualCWarningLevel(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -25,7 +30,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtOpenVG_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtOpenVG_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

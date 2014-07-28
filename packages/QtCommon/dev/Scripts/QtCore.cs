@@ -5,27 +5,32 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class Core : Base
+    public abstract class Core :
+        Base
     {
-        public Core()
+        public
+        Core()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCore_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCore_VisualCWarningLevel);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtCore_LinkerOptions);
         }
 
-        public override void RegisterOutputFiles(Opus.Core.BaseOptionCollection options, Opus.Core.Target target, string modulePath)
+        public override void
+        RegisterOutputFiles(
+            Opus.Core.BaseOptionCollection options,
+            Opus.Core.Target target,
+            string modulePath)
         {
-#if true
             this.GetModuleDynamicLibrary(target, "QtCore");
-#else
-            options.OutputPaths[C.OutputFileFlags.Executable] = this.GetModuleDynamicLibrary(target, "QtCore");
-#endif
             base.RegisterOutputFiles(options, target, modulePath);
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void QtCore_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtCore_LinkerOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
@@ -36,7 +41,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtCore_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtCore_VisualCWarningLevel(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -47,7 +55,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtCore_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtCore_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

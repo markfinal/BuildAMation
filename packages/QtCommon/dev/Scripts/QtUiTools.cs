@@ -5,16 +5,21 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class UiTools : Base
+    public abstract class UiTools :
+        Base
     {
-        public UiTools()
+        public
+        UiTools()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtUiTools_IncludePaths);
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtUiTools_VisualCWarningLevel);
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtUiTools_VisualCWarningLevel(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtUiTools_VisualCWarningLevel(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -25,7 +30,10 @@ namespace QtCommon
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void QtUiTools_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        QtUiTools_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

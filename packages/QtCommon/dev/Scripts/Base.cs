@@ -5,11 +5,14 @@
 // <author>Mark Final</author>
 namespace QtCommon
 {
-    public abstract class Base : ThirdPartyModule
+    public abstract class Base :
+        ThirdPartyModule
     {
-        protected Base()
+        protected
+        Base()
         {
             this.QtToolset = Opus.Core.State.Get("Toolset", "Qt") as Toolset;
+
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
             if (Opus.Core.OSUtilities.IsUnixHosting)
@@ -27,9 +30,11 @@ namespace QtCommon
             set;
         }
 
-        protected void AddIncludePath(C.ICCompilerOptions options,
-                                      Opus.Core.Target target,
-                                      string moduleName)
+        protected void
+        AddIncludePath(
+            C.ICCompilerOptions options,
+            Opus.Core.Target target,
+            string moduleName)
         {
             var includePath = this.QtToolset.GetIncludePath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(includePath))
@@ -43,8 +48,10 @@ namespace QtCommon
             }
         }
 
-        protected void AddLibraryPath(C.ILinkerOptions options,
-                                      Opus.Core.Target target)
+        protected void
+        AddLibraryPath(
+            C.ILinkerOptions options,
+            Opus.Core.Target target)
         {
             var libraryPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(libraryPath))
@@ -53,9 +60,11 @@ namespace QtCommon
             }
         }
 
-        protected void AddModuleLibrary(C.ILinkerOptions options,
-                                        Opus.Core.Target target,
-                                        string moduleName)
+        protected void
+        AddModuleLibrary(
+            C.ILinkerOptions options,
+            Opus.Core.Target target,
+            string moduleName)
         {
             if (target.HasPlatform(Opus.Core.EPlatform.Windows))
             {
