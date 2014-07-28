@@ -14,7 +14,8 @@ namespace VisualC
         private static System.Guid SolutionFolderTypeGuid;
         private static string vsEdition;
 
-        static Solution()
+        static
+        Solution()
         {
             // try the VS Express version first, since it's free
             string registryKey = @"Microsoft\WDExpress\12.0_Config\Projects";
