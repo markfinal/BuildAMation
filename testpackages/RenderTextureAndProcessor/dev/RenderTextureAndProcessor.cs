@@ -2,9 +2,11 @@
 namespace RenderTextureAndProcessor
 {
     // Define module classes here
-    class RenderTexture : C.WindowsApplication
+    class RenderTexture :
+        C.WindowsApplication
     {
-        public RenderTexture()
+        public
+        RenderTexture()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             var commonDir = sourceDir.SubDirectory("common");
@@ -13,9 +15,11 @@ namespace RenderTextureAndProcessor
             this.headerFiles.Include(renderTextureDir, "*.h");
         }
 
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var commonDir = sourceDir.SubDirectory("common");
@@ -25,7 +29,10 @@ namespace RenderTextureAndProcessor
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
-            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 {
                     var options = module.Options as C.ICxxCompilerOptions;
@@ -75,18 +82,22 @@ namespace RenderTextureAndProcessor
         Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(TextureProcessor));
     }
 
-    class TextureProcessor : C.Application
+    class TextureProcessor :
+        C.Application
     {
-        public TextureProcessor()
+        public
+        TextureProcessor()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             var commonDir = sourceDir.SubDirectory("common");
             this.headerFiles.Include(commonDir, "*.h");
         }
 
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var commonDir = sourceDir.SubDirectory("common");
@@ -96,7 +107,10 @@ namespace RenderTextureAndProcessor
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
-            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 {
                     var options = module.Options as C.ICxxCompilerOptions;

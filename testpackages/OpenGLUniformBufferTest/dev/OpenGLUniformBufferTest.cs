@@ -2,17 +2,21 @@
 namespace OpenGLUniformBufferTest
 {
     // Define module classes here
-    class GLUniformBufferTest : C.WindowsApplication
+    class GLUniformBufferTest :
+        C.WindowsApplication
     {
-        public GLUniformBufferTest()
+        public
+        GLUniformBufferTest()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.headerFiles.Include(sourceDir, "*.h");
         }
 
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
@@ -21,13 +25,19 @@ namespace OpenGLUniformBufferTest
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_EnableException);
             }
 
-            void SourceFiles_EnableException(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_EnableException(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 C.ICxxCompilerOptions compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
-            void SourceFiles_VCDefines(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_VCDefines(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 if (module.Options is VisualCCommon.ICCompilerOptions)
                 {

@@ -2,9 +2,11 @@
 namespace Test11
 {
     // Define module classes here
-    class CrossPlatformApplication : C.Application
+    class CrossPlatformApplication :
+        C.Application
     {
-        public CrossPlatformApplication()
+        public
+        CrossPlatformApplication()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.commonSourceFile.Include(sourceDir, "main.c");

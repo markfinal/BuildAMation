@@ -2,7 +2,8 @@
 namespace OpenCLTest1
 {
     // Add modules here
-    class OpenCLTest1 : C.Application
+    class OpenCLTest1 :
+        C.Application
     {
         public
         OpenCLTest1()
@@ -12,9 +13,11 @@ namespace OpenCLTest1
 #endif
         }
 
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
@@ -44,38 +47,11 @@ namespace OpenCLTest1
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-    class Publish : Publisher.ProductModule
+    class Publish :
+        Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
         System.Type primary = typeof(OpenCLTest1);
     }
-#elif OPUSPACKAGE_FILEUTILITIES_DEV
-    class CopyKernels : FileUtilities.CopyFileCollection
-    {
-        public CopyKernels()
-        {
-            var dataDir = this.PackageLocation.SubDirectory("data");
-            this.Include(dataDir, "*.cl");
-        }
-
-        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
-        System.Type nextTo = typeof(OpenCLTest1);
-    }
-#elif OPUSPACKAGE_FILEUTILITIES_1_0
-    class CopyKernels : FileUtilities.CopyFiles
-    {
-        public CopyKernels(Opus.Core.Target target)
-        {
-            this.sourceFiles.Include(this, "data", "*.cl");
-        }
-
-        [Opus.Core.SourceFiles]
-        Opus.Core.FileCollection sourceFiles = new Opus.Core.FileCollection();
-
-        [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
-        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(OpenCLTest1));
-    }
-#else
-#error Unknown FileUtilities package version
 #endif
 }

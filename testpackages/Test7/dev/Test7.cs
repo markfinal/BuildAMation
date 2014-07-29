@@ -2,9 +2,11 @@
 namespace Test7
 {
     // Define module classes here
-    class ExplicitDynamicLibrary : C.DynamicLibrary
+    class ExplicitDynamicLibrary :
+        C.DynamicLibrary
     {
-        public ExplicitDynamicLibrary()
+        public
+        ExplicitDynamicLibrary()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dynamiclibrary.c");
@@ -15,7 +17,10 @@ namespace Test7
         }
 
         [C.ExportCompilerOptionsDelegate]
-        private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        private void
+        SetIncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");

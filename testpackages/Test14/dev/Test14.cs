@@ -2,9 +2,12 @@
 namespace Test14
 {
     // Define module classes here
-    class DynamicLibraryA : C.DynamicLibrary
+    class DynamicLibraryA :
+        C.DynamicLibrary
     {
-        public DynamicLibraryA(Opus.Core.Target target)
+        public
+        DynamicLibraryA(
+            Opus.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryA.c");
@@ -26,13 +29,19 @@ namespace Test14
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void DynamicLibraryA_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        DynamicLibraryA_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
-        void DynamicLibraryA_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        DynamicLibraryA_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
@@ -54,9 +63,12 @@ namespace Test14
 #endif
     }
 
-    class DynamicLibraryB : C.DynamicLibrary
+    class DynamicLibraryB :
+        C.DynamicLibrary
     {
-        public DynamicLibraryB(Opus.Core.Target target)
+        public
+        DynamicLibraryB(
+            Opus.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryB.c");
@@ -77,13 +89,19 @@ namespace Test14
 #endif
         }
 
-        void DynamicLibraryB_IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        DynamicLibraryB_IncludePaths(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
-        void DynamicLibraryB_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        DynamicLibraryB_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
@@ -108,16 +126,21 @@ namespace Test14
 #endif
     }
 
-    class Application : C.Application
+    class Application :
+        C.Application
     {
-        public Application()
+        public
+        Application()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "main.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Application_UpdateOptions);
         }
 
-        void Application_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        Application_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null != linkerOptions)
@@ -149,40 +172,11 @@ namespace Test14
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-    class Publish : Publisher.ProductModule
+    class Publish :
+        Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
         System.Type primary = typeof(Application);
     }
-#else
-#if OPUSPACKAGE_FILEUTILITIES_DEV
-    class PublishDynamicLibraries : FileUtilities.CopyFileCollection
-    {
-        public PublishDynamicLibraries(Opus.Core.Target target)
-        {
-            this.Include(target,
-                         C.OutputFileFlags.Executable,
-                         typeof(DynamicLibraryA),
-                         typeof(DynamicLibraryB));
-        }
-
-        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
-        System.Type nextTo = typeof(Application);
-    }
-#elif OPUSPACKAGE_FILEUTILITIES_1_0
-    class PublishDynamicLibraries : FileUtilities.CopyFiles
-    {
-        [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
-        Opus.Core.TypeArray destinationModule = new Opus.Core.TypeArray(typeof(Application));
-
-        [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
-        Opus.Core.TypeArray sourceModules = new Opus.Core.TypeArray(
-            typeof(DynamicLibraryA),
-            typeof(DynamicLibraryB)
-        );
-    }
-#else
-#error Unknown FileUtilities package version
-#endif
 #endif
 }

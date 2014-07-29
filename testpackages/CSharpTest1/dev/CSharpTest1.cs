@@ -2,9 +2,11 @@
 namespace CSharpTest1
 {
     // Define module classes here
-    class SimpleLibrary : CSharp.Library
+    class SimpleLibrary :
+        CSharp.Library
     {
-        public SimpleLibrary()
+        public
+        SimpleLibrary()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "simpletest.cs");
@@ -20,9 +22,11 @@ namespace CSharpTest1
 #endif
     }
 
-    class SimpleExecutable : CSharp.Executable
+    class SimpleExecutable :
+        CSharp.Executable
     {
-        public SimpleExecutable()
+        public
+        SimpleExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source = Opus.Core.FileLocation.Get(sourceDir, "simpleexecutable.cs");
@@ -32,9 +36,11 @@ namespace CSharpTest1
         Opus.Core.Location source;
     }
 
-    class SimpleWindowExecutable : CSharp.WindowsExecutable
+    class SimpleWindowExecutable :
+        CSharp.WindowsExecutable
     {
-        public SimpleWindowExecutable()
+        public
+        SimpleWindowExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source = Opus.Core.FileLocation.Get(sourceDir, "simplewindowsexecutable.cs");
@@ -47,9 +53,11 @@ namespace CSharpTest1
     // disabled on Unix builds, as it fails: CS0016
     // Could not write to file `SimpleModule', cause: fileName '<blah>' must not include a path.
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.NotUnix)]
-    class SimpleModule : CSharp.Module
+    class SimpleModule :
+        CSharp.Module
     {
-        public SimpleModule()
+        public
+        SimpleModule()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source = Opus.Core.FileLocation.Get(sourceDir, "simplemodule.cs");
@@ -59,9 +67,11 @@ namespace CSharpTest1
         Opus.Core.Location source;
     }
 
-    class Executable2 : CSharp.Executable
+    class Executable2 :
+        CSharp.Executable
     {
-        public Executable2()
+        public
+        Executable2()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source = Opus.Core.FileLocation.Get(sourceDir, "executable2.cs");
@@ -81,40 +91,19 @@ namespace CSharpTest1
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-    class Publish : Publisher.ProductModule
+    class Publish :
+        Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
         System.Type primary = typeof(Executable2);
     }
-#else
-#if OPUSPACKAGE_FILEUTILITIES_DEV
-    class PublishAssembliesForExecutable2 : FileUtilities.CopyFile
-    {
-        public PublishAssembliesForExecutable2()
-        {
-            this.Set(typeof(SimpleLibrary), CSharp.Assembly.OutputFile);
-        }
-
-        [FileUtilities.BesideModule(CSharp.OutputFileFlags.AssemblyFile)]
-        System.Type nextTo = typeof(Executable2);
-    }
-#elif OPUSPACKAGE_FILEUTILITIES_1_0
-    class PublishAssembliesForExecutable2 : FileUtilities.CopyFiles
-    {
-        [FileUtilities.SourceModules(CSharp.OutputFileFlags.AssemblyFile)]
-        Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(SimpleLibrary));
-
-        [FileUtilities.DestinationModuleDirectory(CSharp.OutputFileFlags.AssemblyFile)]
-        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(Executable2));
-    }
-#else
-#error No such FileUtilities package
-#endif
 #endif
 
-    class ExecutableReferences : CSharp.Executable
+    class ExecutableReferences :
+        CSharp.Executable
     {
-        public ExecutableReferences()
+        public
+        ExecutableReferences()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source = Opus.Core.FileLocation.Get(sourceDir, "executablexml.cs");
@@ -122,7 +111,10 @@ namespace CSharpTest1
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(ExecutableReferences_UpdateOptions);
         }
 
-        void ExecutableReferences_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        ExecutableReferences_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as CSharp.IOptions;
             options.References.Add("System.Xml.dll");

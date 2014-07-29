@@ -2,9 +2,11 @@
 namespace MixedTest
 {
     // Define module classes here
-    class CSharpTest : CSharp.Executable
+    class CSharpTest :
+        CSharp.Executable
     {
-        public CSharpTest()
+        public
+        CSharpTest()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source = Opus.Core.FileLocation.Get(sourceDir, "main.cs");
@@ -14,9 +16,11 @@ namespace MixedTest
         Opus.Core.Location source;
     }
 
-    class CApp : C.Application
+    class CApp :
+        C.Application
     {
-        public CApp()
+        public
+        CApp()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "main.c");

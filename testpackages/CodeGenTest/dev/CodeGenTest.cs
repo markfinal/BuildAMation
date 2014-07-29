@@ -2,35 +2,47 @@
 namespace CodeGenTest
 {
     // Define module classes here
-    class TestAppGeneratedSource : CodeGenModule
+    class TestAppGeneratedSource :
+        CodeGenModule
     {
-        public TestAppGeneratedSource()
+        public
+        TestAppGeneratedSource()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestAppGeneratedSource_UpdateOptions);
         }
 
-        void TestAppGeneratedSource_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        TestAppGeneratedSource_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             CodeGenOptionCollection options = module.Options as CodeGenOptionCollection;
         }
     }
 
-    class TestApp : C.Application
+    class TestApp :
+        C.Application
     {
-        public TestApp()
+        public
+        TestApp()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestApp_UpdateOptions);
         }
 
-        void TestApp_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        TestApp_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             C.ILinkerOptions options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
         }
 
-        class SourceFiles : C.ObjectFileCollection
+        class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var testAppDir = sourceDir.SubDirectory("testapp");

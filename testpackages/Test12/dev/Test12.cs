@@ -2,20 +2,25 @@
 namespace Test12
 {
     // Define module classes here
-    class MyOpenGLApplication : C.WindowsApplication
+    class MyOpenGLApplication :
+        C.WindowsApplication
     {
-        class CommonSourceFiles : C.Cxx.ObjectFileCollection
+        class CommonSourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public CommonSourceFiles()
+            public
+            CommonSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "main.cpp");
             }
         }
 
-        class WindowsSourceFiles : C.Cxx.ObjectFileCollection
+        class WindowsSourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public WindowsSourceFiles()
+            public
+            WindowsSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var winSourceDir = sourceDir.SubDirectory("win");
@@ -23,9 +28,11 @@ namespace Test12
             }
         }
 
-        class UnixSourceFiles : C.Cxx.ObjectFileCollection
+        class UnixSourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public UnixSourceFiles()
+            public
+            UnixSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var unixSourceDir = sourceDir.SubDirectory("unix");
@@ -33,9 +40,11 @@ namespace Test12
             }
         }
 
-        class OSXSourceFiles : C.Cxx.ObjectFileCollection
+        class OSXSourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public OSXSourceFiles()
+            public
+            OSXSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var osxSourceDir = sourceDir.SubDirectory("osx");

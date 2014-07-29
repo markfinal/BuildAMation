@@ -2,9 +2,11 @@
 namespace CocoaTest1
 {
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
-    class CocoaTest : C.WindowsApplication
+    class CocoaTest :
+        C.WindowsApplication
     {
-        public CocoaTest()
+        public
+        CocoaTest()
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var link = module.Options as C.ILinkerOptionsOSX;
@@ -12,9 +14,11 @@ namespace CocoaTest1
             };
         }
 
-        class Source : C.ObjC.ObjectFileCollection
+        class Source :
+            C.ObjC.ObjectFileCollection
         {
-            public Source()
+            public
+            Source()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.m");
@@ -32,9 +36,11 @@ namespace CocoaTest1
     }
 
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
-    class CocoaTestPlist : XmlUtilities.OSXPlistModule
+    class CocoaTestPlist :
+        XmlUtilities.OSXPlistModule
     {
-        public CocoaTestPlist()
+        public
+        CocoaTestPlist()
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
                 var options = module.Options as XmlUtilities.IOSXPlistOptions;
@@ -58,9 +64,11 @@ namespace CocoaTest1
 
 #if OPUSPACKAGE_PUBLISHER_DEV
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
-    class Publish : Publisher.ProductModule
+    class Publish :
+        Publisher.ProductModule
     {
-        public Publish()
+        public
+        Publish()
         {
             this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
             {

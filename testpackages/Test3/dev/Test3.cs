@@ -2,9 +2,11 @@
 namespace Test3
 {
     // Define module classes here
-    sealed class Library2 : C.StaticLibrary
+    sealed class Library2 :
+        C.StaticLibrary
     {
-        public Library2()
+        public
+        Library2()
         {
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.headerFiles.Include(includeDir, "*.h");
@@ -18,9 +20,11 @@ namespace Test3
             };
         }
 
-        sealed class SourceFiles : C.ObjectFileCollection
+        sealed class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library2.c");
@@ -28,7 +32,10 @@ namespace Test3
             }
 
             [C.ExportCompilerOptionsDelegate]
-            public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+            public void
+            SetIncludePaths(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));

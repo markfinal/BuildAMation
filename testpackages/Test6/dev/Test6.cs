@@ -2,21 +2,27 @@
 namespace Test6
 {
     // Define module classes here
-    class ConditionalApplication : C.Application
+    class ConditionalApplication :
+        C.Application
     {
         // TODO: derive C.SourceFiles from this attribute?
         [Opus.Core.SourceFiles]
         private SourceFiles sourceFiles;
 
-        public ConditionalApplication(Opus.Core.Target target)
+        public
+        ConditionalApplication(
+            Opus.Core.Target target)
         {
             this.sourceFiles = new SourceFiles(target);
             this.UpdateOptions += this.OverrideOptionCollection;
         }
 
-        class SourceFiles : C.ObjectFileCollection
+        class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles(Opus.Core.Target target)
+            public
+            SourceFiles(
+                Opus.Core.Target target)
             {
                 this.UpdateOptions += this.OverrideOptionCollection;
 
@@ -39,13 +45,19 @@ namespace Test6
                 }
             }
 
-            private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
+            private void
+            OverrideOptionCollection(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
 
-            private void MainUpdateOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
+            private void
+            MainUpdateOptionCollection(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("MAIN_C");
@@ -54,7 +66,10 @@ namespace Test6
             }
         }
 
-        private void OverrideOptionCollection(Opus.Core.IModule module, Opus.Core.Target target)
+        private void
+        OverrideOptionCollection(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             //var options = module.Options as C.ILinkerOptions;
             //options.DebugSymbols = false;

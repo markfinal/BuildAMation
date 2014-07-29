@@ -3,31 +3,40 @@ namespace MixedModeCpp
 {
     // Define module classes here
     [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-    class TestApplication : C.Application
+    class TestApplication :
+        C.Application
     {
-        public TestApplication()
+        public
+        TestApplication()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestApplication_UpdateOptions);
         }
 
-        void TestApplication_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        TestApplication_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
         }
 
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "native.cpp");
             }
         }
 
-        class ManagedSourceFiles : VisualCCommon.ManagedCxxObjectFileCollection
+        class ManagedSourceFiles :
+            VisualCCommon.ManagedCxxObjectFileCollection
         {
-            public ManagedSourceFiles()
+            public
+            ManagedSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "managed.cpp");

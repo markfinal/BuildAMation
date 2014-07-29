@@ -2,43 +2,54 @@
 namespace Test9
 {
     // Define module classes here
-    class CFile : C.ObjectFile
+    class CFile :
+        C.ObjectFile
     {
-        public CFile()
+        public
+        CFile()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_c.c");
         }
     }
 
-    class CFileCollection : C.ObjectFileCollection
+    class CFileCollection :
+        C.ObjectFileCollection
     {
-        public CFileCollection()
+        public
+        CFileCollection()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_c.c");
         }
     }
 
-    class CppFile : C.Cxx.ObjectFile
+    class CppFile :
+        C.Cxx.ObjectFile
     {
-        public CppFile()
+        public
+        CppFile()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_cpp.c");
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFile_UpdateOptions);
         }
 
-        void CppFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        CppFile_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
     }
 
-    class CppFileCollection : C.Cxx.ObjectFileCollection
+    class CppFileCollection :
+        C.Cxx.ObjectFileCollection
     {
-        public CppFileCollection()
+        public
+        CppFileCollection()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_cpp.c");
@@ -46,21 +57,29 @@ namespace Test9
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFileCollection_UpdateOptions);
         }
 
-        void CppFileCollection_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        CppFileCollection_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
     }
 
-    class MixedLanguageApplication : C.Application
+    class MixedLanguageApplication :
+        C.Application
     {
-        public MixedLanguageApplication()
+        public
+        MixedLanguageApplication()
         {
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SetSystemLibraries);
         }
 
-        static void SetSystemLibraries(Opus.Core.IModule module, Opus.Core.Target target)
+        static void
+        SetSystemLibraries(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (Opus.Core.OSUtilities.IsWindows(target))
@@ -72,25 +91,32 @@ namespace Test9
             }
         }
 
-        class CSourceFiles : C.ObjectFileCollection
+        class CSourceFiles :
+            C.ObjectFileCollection
         {
-            public CSourceFiles()
+            public
+            CSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePaths);
             }
 
-            void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            IncludePaths(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
-        class CxxSourceFiles : C.Cxx.ObjectFileCollection
+        class CxxSourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public CxxSourceFiles()
+            public
+            CxxSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
@@ -99,13 +125,19 @@ namespace Test9
                 this.UpdateOptions += IncludePaths;
             }
 
-            void IncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            IncludePaths(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
-            void CxxSourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            CxxSourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -121,16 +153,21 @@ namespace Test9
         Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 
-    class CStaticLibraryFromFile : C.StaticLibrary
+    class CStaticLibraryFromFile :
+        C.StaticLibrary
     {
-        public CStaticLibraryFromFile()
+        public
+        CStaticLibraryFromFile()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_c.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
 
-        void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        sourceFile_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -140,18 +177,24 @@ namespace Test9
         C.ObjectFile sourceFile = new C.ObjectFile();
     }
 
-    class CStaticLibraryFromCollection : C.StaticLibrary
+    class CStaticLibraryFromCollection :
+        C.StaticLibrary
     {
-        class SourceFiles : C.ObjectFileCollection
+        class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
-            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -162,9 +205,11 @@ namespace Test9
         SourceFiles sourceFiles = new SourceFiles();
     }
 
-    class CppStaticLibraryFromFile : C.StaticLibrary
+    class CppStaticLibraryFromFile :
+        C.StaticLibrary
     {
-        public CppStaticLibraryFromFile()
+        public
+        CppStaticLibraryFromFile()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_cpp.c");
@@ -172,13 +217,19 @@ namespace Test9
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
         }
 
-        void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        sourceFile_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
-        void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        sourceFile_ExceptionHandling(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -188,11 +239,14 @@ namespace Test9
         C.Cxx.ObjectFile sourceFile = new C.Cxx.ObjectFile();
     }
 
-    class CppStaticLibaryFromCollection : C.StaticLibrary
+    class CppStaticLibaryFromCollection :
+        C.StaticLibrary
     {
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
@@ -200,13 +254,19 @@ namespace Test9
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
 
-            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
-            void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_ExceptionHandling(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -217,16 +277,21 @@ namespace Test9
         SourceFiles sourceFiles = new SourceFiles();
     }
 
-    class CDynamicLibraryFromFile : C.DynamicLibrary
+    class CDynamicLibraryFromFile :
+        C.DynamicLibrary
     {
-        public CDynamicLibraryFromFile()
+        public
+        CDynamicLibraryFromFile()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_c.c");
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
 
-        void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        sourceFile_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -242,18 +307,24 @@ namespace Test9
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
-    class CDynamicLibraryFromCollection : C.DynamicLibrary
+    class CDynamicLibraryFromCollection :
+        C.DynamicLibrary
     {
-        class SourceFiles : C.ObjectFileCollection
+        class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
-            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -270,9 +341,11 @@ namespace Test9
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
-    class CppDynamicLibraryFromFile : C.DynamicLibrary
+    class CppDynamicLibraryFromFile :
+        C.DynamicLibrary
     {
-        public CppDynamicLibraryFromFile()
+        public
+        CppDynamicLibraryFromFile()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_cpp.c");
@@ -280,13 +353,19 @@ namespace Test9
             this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
         }
 
-        void sourceFile_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        sourceFile_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
-        void sourceFile_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        sourceFile_ExceptionHandling(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -302,11 +381,14 @@ namespace Test9
         Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
     }
 
-    class CppDynamicLibaryFromCollection : C.DynamicLibrary
+    class CppDynamicLibaryFromCollection :
+        C.DynamicLibrary
     {
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
@@ -314,13 +396,19 @@ namespace Test9
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
 
-            void SourceFiles_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_UpdateOptions(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
 
-            void SourceFiles_ExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_ExceptionHandling(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

@@ -3,9 +3,12 @@
 namespace Test4
 {
     // Define module classes here
-    class MyDynamicLib : C.DynamicLibrary
+    class MyDynamicLib :
+        C.DynamicLibrary
     {
-        public MyDynamicLib(Opus.Core.Target target)
+        public
+        MyDynamicLib(
+            Opus.Core.Target target)
         {
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.headerFiles.Include(includeDir, "dynamiclibrary.h");
@@ -21,9 +24,11 @@ namespace Test4
 #endif
         }
 
-        class SourceFiles : C.ObjectFileCollection
+        class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "dynamiclibrary.c");
@@ -32,14 +37,20 @@ namespace Test4
             }
 
             [C.ExportCompilerOptionsDelegate]
-            private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+            private void
+            SetIncludePaths(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
 
             [C.ExportCompilerOptionsDelegate]
-            private static void SetRuntimeLibrary(Opus.Core.IModule module, Opus.Core.Target target)
+            private static void
+            SetRuntimeLibrary(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var vcCompilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (vcCompilerOptions != null)
@@ -72,9 +83,11 @@ namespace Test4
 #endif
     }
 
-    class MyStaticLib : C.StaticLibrary
+    class MyStaticLib :
+        C.StaticLibrary
     {
-        public MyStaticLib()
+        public
+        MyStaticLib()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "staticlibrary.c");

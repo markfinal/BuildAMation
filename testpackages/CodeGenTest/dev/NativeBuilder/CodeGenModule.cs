@@ -2,29 +2,25 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        public object Build(CodeGenTest.CodeGenModule moduleToBuild, out bool success)
+        public object
+        Build(
+            CodeGenTest.CodeGenModule moduleToBuild,
+            out bool success)
         {
-            Opus.Core.BaseModule codeGenModuleModule = moduleToBuild as Opus.Core.BaseModule;
-            Opus.Core.DependencyNode node = codeGenModuleModule.OwningNode;
-            Opus.Core.Target target = node.Target;
-            Opus.Core.BaseOptionCollection codeGenModuleOptions = codeGenModuleModule.Options;
-            CodeGenTest.CodeGenOptionCollection toolOptions = codeGenModuleOptions as CodeGenTest.CodeGenOptionCollection;
-            Opus.Core.ITool tool = target.Toolset.Tool(typeof(CodeGenTest.ICodeGenTool));
+            var codeGenModuleModule = moduleToBuild as Opus.Core.BaseModule;
+            var node = codeGenModuleModule.OwningNode;
+            var target = node.Target;
+            var codeGenModuleOptions = codeGenModuleModule.Options;
+            var toolOptions = codeGenModuleOptions as CodeGenTest.CodeGenOptionCollection;
+            var tool = target.Toolset.Tool(typeof(CodeGenTest.ICodeGenTool));
 
             // dependency checking
             {
-#if true
                 var inputLocations = new Opus.Core.LocationArray(
                     Opus.Core.FileLocation.Get(tool.Executable((Opus.Core.BaseTarget)target), Opus.Core.Location.EExists.WillExist)
                     );
                 var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputLocations, inputLocations))
-#else
-                Opus.Core.StringArray inputFiles = new Opus.Core.StringArray();
-                inputFiles.Add(tool.Executable((Opus.Core.BaseTarget)target));
-                Opus.Core.StringArray outputFiles = codeGenModuleOptions.OutputPaths.Paths;
-                if (!RequiresBuilding(outputFiles, inputFiles))
-#endif
                 {
                     Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
@@ -53,7 +49,7 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("CodeGen options does not support command line translation");
             }
 
-            int exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
+            var exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);
             success = (0 == exitCode);
 
             return null;

@@ -3,7 +3,10 @@ namespace Test2
 {
     static class BuildOutputDirHelper
     {
-        public static void Change(Opus.Core.BaseModule module, Opus.Core.LocationKey key)
+        public static void
+        Change(
+            Opus.Core.BaseModule module,
+            Opus.Core.LocationKey key)
         {
             var output = module.Locations[key] as Opus.Core.ScaffoldLocation;
             var banana = module.Locations[Opus.Core.State.ModuleBuildDirLocationKey].SubDirectory("banana");
@@ -13,9 +16,11 @@ namespace Test2
     }
 
     // Define module classes here
-    sealed class Library : C.StaticLibrary
+    sealed class Library :
+        C.StaticLibrary
     {
-        public Library()
+        public
+        Library()
         {
             // TODO: want to share the LocationMap between all related modules
             var includeDir = this.PackageLocation.SubDirectory("include");
@@ -24,9 +29,11 @@ namespace Test2
             BuildOutputDirHelper.Change(this, C.StaticLibrary.OutputDirLocKey);
         }
 
-        sealed class SourceFiles : C.ObjectFileCollection
+        sealed class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library.c");
@@ -34,7 +41,10 @@ namespace Test2
             }
 
             [C.ExportCompilerOptionsDelegate]
-            public void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+            public void
+            SetIncludePaths(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
@@ -48,16 +58,20 @@ namespace Test2
         Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
     }
 
-    sealed class Application : C.Application
+    sealed class Application :
+        C.Application
     {
-        public Application()
+        public
+        Application()
         {
             BuildOutputDirHelper.Change(this, C.Application.OutputDir);
         }
 
-        sealed class SourceFiles : C.ObjectFileCollection
+        sealed class SourceFiles :
+            C.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "application.c");

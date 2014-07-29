@@ -1,20 +1,22 @@
 namespace CodeGenTest
 {
-    public class ExportCodeGenOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class ExportCodeGenOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
-    public class LocalCodeGenOptionsDelegateAttribute : System.Attribute
-    {
-    }
+    public class LocalCodeGenOptionsDelegateAttribute :
+        System.Attribute
+    {}
 
-    public sealed class PrivateData : CommandLineProcessor.ICommandLineDelegate
+    public sealed class PrivateData :
+        CommandLineProcessor.ICommandLineDelegate
     {
-        public PrivateData(CommandLineProcessor.Delegate commandLineDelegate)
+        public
+        PrivateData(
+            CommandLineProcessor.Delegate commandLineDelegate)
         {
             this.CommandLineDelegate = commandLineDelegate;
         }
-
 
         public CommandLineProcessor.Delegate CommandLineDelegate
         {
@@ -23,14 +25,19 @@ namespace CodeGenTest
         }
     }
 
-    public sealed partial class CodeGenOptionCollection : Opus.Core.BaseOptionCollection, CommandLineProcessor.ICommandLineSupport, ICodeGenOptions
+    public sealed partial class CodeGenOptionCollection :
+        Opus.Core.BaseOptionCollection,
+        CommandLineProcessor.ICommandLineSupport,
+        ICodeGenOptions
     {
-        public CodeGenOptionCollection(Opus.Core.DependencyNode node)
-            : base(node)
-        {
-        }
+        public
+        CodeGenOptionCollection(
+            Opus.Core.DependencyNode node) : base(node)
+        {}
 
-        protected override void SetDefaultOptionValues(Opus.Core.DependencyNode owningNode)
+        protected override void
+        SetDefaultOptionValues(
+            Opus.Core.DependencyNode owningNode)
         {
             var options = this as ICodeGenOptions;
             options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectoryLocation("src").GetSingleRawPath();
@@ -42,22 +49,15 @@ namespace CodeGenTest
             }
         }
 
-        public override void FinalizeOptions (Opus.Core.DependencyNode node)
+        public override void
+        FinalizeOptions(
+            Opus.Core.DependencyNode node)
         {
-#if true
             if (!node.Module.Locations[CodeGenModule.OutputFile].IsValid)
             {
                 var options = node.Module.Options as ICodeGenOptions;
                 (node.Module.Locations[CodeGenModule.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[CodeGenModule.OutputDir], options.OutputName + ".c", Opus.Core.Location.EExists.WillExist);
             }
-#else
-            if (this.Contains("OutputSourceDirectory") && this.Contains("OutputName"))
-            {
-                var options = node.Module.Options as ICodeGenOptions;
-                string outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-                this.OutputPaths[OutputFileFlags.GeneratedSourceFile] = outputPath;
-            }
-#endif
 
             base.FinalizeOptions(node);
         }
@@ -68,7 +68,8 @@ namespace CodeGenTest
         }
     }
 
-    class CodeGeneratorTool : C.Application
+    class CodeGeneratorTool :
+        C.Application
     {
         public static string VersionString
         {
@@ -78,7 +79,8 @@ namespace CodeGenTest
             }
         }
 
-        public CodeGeneratorTool()
+        public
+        CodeGeneratorTool()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             var codeGenToolSourceDir = sourceDir.SubDirectory("codegentool");
@@ -86,7 +88,10 @@ namespace CodeGenTest
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CodeGeneratorTool_UpdateOptions);
         }
 
-        void CodeGeneratorTool_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        CodeGeneratorTool_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
@@ -103,7 +108,9 @@ namespace CodeGenTest
     /// Code generation of C++ source
     /// </summary>
     [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
-    public abstract class CodeGenModule : Opus.Core.BaseModule, Opus.Core.IInjectModules
+    public abstract class CodeGenModule :
+        Opus.Core.BaseModule,
+        Opus.Core.IInjectModules
     {
         public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("GeneratedSource", Opus.Core.ScaffoldLocation.ETypeHint.File);
         public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("GeneratedSourceDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
@@ -115,40 +122,32 @@ namespace CodeGenTest
 
         #region IInjectModules Members
 
-#if false
-        Opus.Core.ModuleCollection Opus.Core.IInjectModules.GetInjectedModules(Opus.Core.Target target)
-        {
-            var module = this as Opus.Core.IModule;
-            var options = module.Options as ICodeGenOptions;
-            var outputPath = System.IO.Path.Combine(options.OutputSourceDirectory, options.OutputName) + ".c";
-            var injectedFile = new C.ObjectFile();
-            injectedFile.SourceFileLocation = Opus.Core.FileLocation.Get(outputPath, Opus.Core.Location.EExists.WillExist);
-
-            var moduleCollection = new Opus.Core.ModuleCollection();
-            moduleCollection.Add(injectedFile);
-
-            return moduleCollection;
-        }
-#endif
-
-        string Opus.Core.IInjectModules.GetInjectedModuleNameSuffix(Opus.Core.BaseTarget baseTarget)
+        string
+        Opus.Core.IInjectModules.GetInjectedModuleNameSuffix(
+            Opus.Core.BaseTarget baseTarget)
         {
             return "CodeGen";
         }
 
-        System.Type Opus.Core.IInjectModules.GetInjectedModuleType(Opus.Core.BaseTarget baseTarget)
+        System.Type
+        Opus.Core.IInjectModules.GetInjectedModuleType(
+            Opus.Core.BaseTarget baseTarget)
         {
             return typeof(C.ObjectFile);
         }
 
-        Opus.Core.DependencyNode Opus.Core.IInjectModules.GetInjectedParentNode(Opus.Core.DependencyNode node)
+        Opus.Core.DependencyNode
+        Opus.Core.IInjectModules.GetInjectedParentNode(
+            Opus.Core.DependencyNode node)
         {
             var dependentFor = node.ExternalDependentFor;
             var firstDependentFor = dependentFor[0];
             return firstDependentFor;
         }
 
-        void Opus.Core.IInjectModules.ModuleCreationFixup(Opus.Core.DependencyNode node)
+        void
+        Opus.Core.IInjectModules.ModuleCreationFixup(
+            Opus.Core.DependencyNode node)
         {
             var dependent = node.ExternalDependents;
             var firstDependent = dependent[0];

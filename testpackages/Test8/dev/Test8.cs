@@ -4,9 +4,11 @@ namespace Test8
     // Define module classes here
 
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
-    class ApplicationTest : C.Application
+    class ApplicationTest :
+        C.Application
     {
-        public ApplicationTest()
+        public
+        ApplicationTest()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "main.c");
@@ -40,36 +42,11 @@ namespace Test8
 
 #if OPUSPACKAGE_PUBLISHER_DEV
     [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
-    class Publish : Publisher.ProductModule
+    class Publish :
+        Publisher.ProductModule
     {
         [Publisher.PrimaryTarget]
         System.Type primary = typeof(ApplicationTest);
     }
-#else
-#if OPUSPACKAGE_FILEUTILITIES_DEV
-    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows)]
-    class PublishDynamicLibraries : FileUtilities.CopyFile
-    {
-        public PublishDynamicLibraries()
-        {
-            this.Set(typeof(Test7.ExplicitDynamicLibrary), C.OutputFileFlags.Executable);
-        }
-
-        [FileUtilities.BesideModule(C.OutputFileFlags.Executable)]
-        System.Type nextTo = typeof(ApplicationTest);
-    }
-#elif OPUSPACKAGE_FILEUTILITIES_1_0
-    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows)]
-    class PublishDynamicLibraries : FileUtilities.CopyFiles
-    {
-        [FileUtilities.SourceModules(C.OutputFileFlags.Executable)]
-        Opus.Core.TypeArray sourceTargets = new Opus.Core.TypeArray(typeof(Test7.ExplicitDynamicLibrary));
-
-        [FileUtilities.DestinationModuleDirectory(C.OutputFileFlags.Executable)]
-        Opus.Core.TypeArray destinationTarget = new Opus.Core.TypeArray(typeof(ApplicationTest));
-    }
-#else
-#error Unknown FileUtilities package version
-#endif
 #endif
 }

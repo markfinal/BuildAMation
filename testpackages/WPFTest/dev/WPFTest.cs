@@ -2,9 +2,11 @@
 namespace WPFTest
 {
     // Define module classes here
-    class WPFExecutable : CSharp.WindowsExecutable
+    class WPFExecutable :
+        CSharp.WindowsExecutable
     {
-        public WPFExecutable()
+        public
+        WPFExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.applicationDefinition = Opus.Core.FileLocation.Get(sourceDir, "App.xaml");
@@ -13,7 +15,10 @@ namespace WPFTest
             this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WPFExecutable_UpdateOptions);
         }
 
-        void WPFExecutable_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void
+        WPFExecutable_UpdateOptions(
+            Opus.Core.IModule module,
+            Opus.Core.Target target)
         {
             var options = module.Options as CSharp.IOptions;
             options.References.Add("System.dll");

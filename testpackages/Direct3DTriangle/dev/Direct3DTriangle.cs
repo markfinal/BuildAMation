@@ -3,17 +3,21 @@ namespace Direct3DTriangle
 {
     // Define module classes here
     [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-    class D3D9TriangleTest : C.WindowsApplication
+    class D3D9TriangleTest :
+        C.WindowsApplication
     {
-        public D3D9TriangleTest()
+        public
+        D3D9TriangleTest()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.headerFiles.Include(sourceDir, "*.h");
         }
 
-        class SourceFiles : C.Cxx.ObjectFileCollection
+        class SourceFiles :
+            C.Cxx.ObjectFileCollection
         {
-            public SourceFiles()
+            public
+            SourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
@@ -22,13 +26,19 @@ namespace Direct3DTriangle
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_EnableException);
             }
 
-            void SourceFiles_EnableException(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_EnableException(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
             }
 
-            void SourceFiles_VCDefines(Opus.Core.IModule module, Opus.Core.Target target)
+            void
+            SourceFiles_VCDefines(
+                Opus.Core.IModule module,
+                Opus.Core.Target target)
             {
                 if (module.Options is VisualCCommon.ICCompilerOptions)
                 {
