@@ -176,21 +176,11 @@ configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visu
 configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
 configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
 configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
-"""
-configs["Symlinks-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
-                                    linux={"Native":None,"MakeFile":None},
-                                    osx={"Native":None,"MakeFile":None})
-"""
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
 """
 configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
 """
 configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
-"""
-configs["CopyTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None},
-                                     linux={"Native":None,"MakeFile":None},
-                                     osx={"Native":None,"MakeFile":None})
-"""
 configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                      linux={"Native":["gcc"],"MakeFile":["gcc"]},
                                      osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"]})

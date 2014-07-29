@@ -1,3 +1,5 @@
+29-Jul-2014 Removed obsolete test packages, BundlingTest, CopyTest1, and Symlinks. These have all been replaced with Publishing.
+
 25-Jul-2014 Removed Opus.Core.Dependency.GetModuleBuildDirectory() and GetTargettedModuleBuildDirectory(). Use the *Location() replacements instead.
 
 22-Jul-2014 Large refactor of the internal dependency generation engine. Added Locations as a file/directory/symlink abstraction. Introduced Publisher-dev package to handle making a runnable bundle.
