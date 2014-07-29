@@ -55,10 +55,13 @@ namespace Opus
                 throw new Core.Exception("Working directory, '{0}', is not a valid package", Core.State.WorkingDirectory);
             }
 
+            // don't validate locations, in case packages have been deleted from disk
+            var validatePackageLocations = false;
+
             var definitionFile = new Core.PackageDefinitionFile(mainPackageId.DefinitionPathName, true);
             if (isWellDefined)
             {
-                definitionFile.Read(true);
+                definitionFile.Read(true, validatePackageLocations);
             }
 
             var success = true;
@@ -70,7 +73,7 @@ namespace Opus
                     throw new Core.Exception("Ill-formed package name-version pair, '{0}'", packageAndVersion);
                 }
 
-                var id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1]);
+                var id = new Core.PackageIdentifier(packageNameAndVersion[0], packageNameAndVersion[1], validatePackageLocations);
                 if (definitionFile.RemovePackage(id))
                 {
                     success = true;
