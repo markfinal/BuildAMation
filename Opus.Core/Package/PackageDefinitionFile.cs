@@ -970,7 +970,15 @@ namespace Opus.Core
             if (null != idToRemoveReally)
             {
                 this.PackageIdentifiers.Remove(idToRemoveReally);
-                Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), idToRemove.Root.GetSingleRawPath());
+                var root = idToRemove.Root;
+                if (root != null)
+                {
+                    Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), root.GetSingleRawPath());
+                }
+                else
+                {
+                    Log.Info("Removed dependency '{0}' from undefined root", idToRemove.ToString());
+                }
                 return true;
             }
             else
