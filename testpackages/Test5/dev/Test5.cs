@@ -48,7 +48,7 @@ namespace Test5
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
-            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
+            new Publisher.PublishDependency(C.Application.OutputFile)
             );
 #endif
     }
