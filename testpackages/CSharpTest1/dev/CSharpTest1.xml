@@ -6,9 +6,6 @@
       <Opus:Version Id="3.5" Default="true" />
       <Opus:Version Id="4.0" />
     </Opus:Package>
-    <Opus:Package Name="FileUtilities">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
     <Opus:Package Name="MakeFileBuilder">
       <Opus:Version Id="dev" />
     </Opus:Package>

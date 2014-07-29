@@ -10,9 +10,6 @@
     <Opus:Package Name="Clang">
       <Opus:Version Id="3.1" />
     </Opus:Package>
-    <Opus:Package Name="FileUtilities">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
     <Opus:Package Name="LLVMGcc">
       <Opus:Version Id="4.2" />
     </Opus:Package>

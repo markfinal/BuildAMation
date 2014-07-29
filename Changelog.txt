@@ -1,3 +1,5 @@
+29-Jul-2014 Removed FileUtilities package. This has been superceded by the Publisher package.
+
 29-Jul-2014 Removed obsolete test packages, BundlingTest, CopyTest1, and Symlinks. These have all been replaced with Publishing.
 
 25-Jul-2014 Removed Opus.Core.Dependency.GetModuleBuildDirectory() and GetTargettedModuleBuildDirectory(). Use the *Location() replacements instead.

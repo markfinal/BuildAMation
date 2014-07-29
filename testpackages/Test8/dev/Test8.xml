@@ -8,9 +8,6 @@
     <Opus:Package Name="ComposerXE">
       <Opus:Version Id="12" />
     </Opus:Package>
-    <Opus:Package Name="FileUtilities">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
     <Opus:Package Name="LLVMGcc">
       <Opus:Version Id="4.2" Default="true" />
     </Opus:Package>
