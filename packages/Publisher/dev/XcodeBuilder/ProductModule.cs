@@ -48,6 +48,10 @@ namespace XcodeBuilder
                 {
                     copiedFileType = PBXFileReference.EType.ReferencedDynamicLibrary;
                 }
+                else if (copiedFileType == PBXFileReference.EType.Executable)
+                {
+                    copiedFileType = PBXFileReference.EType.ReferencedExecutable;
+                }
 
                 pathOfFileToCopy = copySourceNativeTarget.ProductReference.FullPath;
             }
