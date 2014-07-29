@@ -5,10 +5,22 @@ namespace zeromq
         C.DynamicLibrary
     {
         public
-        ZMQSharedLibrary()
+        ZMQSharedLibrary(
+            Opus.Core.Target target)
         {
-            var includeDir = this.PackageLocation.SubDirectory("zeromq-3.2.3", "include");
-            this.headers.Include(includeDir, "*.hpp");
+            var zmqDir = this.PackageLocation.SubDirectory("zeromq-3.2.3");
+            var zmqIncludeDir = zmqDir.SubDirectory("include");
+            this.headers.Include(zmqIncludeDir, "*.h");
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+            // TODO: can this be automated?
+            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            {
+                this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
+                this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
+                this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
+            }
+#endif
         }
 
         class SourceFiles :
@@ -17,8 +29,9 @@ namespace zeromq
             public
             SourceFiles()
             {
-                var sourceDir = this.PackageLocation.SubDirectory("zeromq-3.2.3", "src");
-                this.Include(sourceDir, "*.cpp");
+                var zmqDir = this.PackageLocation.SubDirectory("zeromq-3.2.3");
+                var zmqSrcDir = zmqDir.SubDirectory("src");
+                this.Include(zmqSrcDir, "*.cpp");
 
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePath);
                 this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(InternalIncludePath);
@@ -87,7 +100,9 @@ namespace zeromq
                 {
                     if (target.HasPlatform(Opus.Core.EPlatform.Windows))
                     {
-                        options.IncludePaths.Include(this.PackageLocation, "zeromq-3.2.3", "builds", "msvc");
+                        var zmqDir = this.PackageLocation.SubDirectory("zeromq-3.2.3");
+                        var zmqBuildsDir = zmqDir.SubDirectory("builds");
+                        options.IncludePaths.Include(zmqBuildsDir, "msvc");
                     }
                 }
             }
@@ -101,7 +116,8 @@ namespace zeromq
                 var options = module.Options as C.ICCompilerOptions;
                 if (null != options)
                 {
-                    options.IncludePaths.Include(this.PackageLocation, "zeromq-3.2.3", "include");
+                    var zmqDir = this.PackageLocation.SubDirectory("zeromq-3.2.3");
+                    options.IncludePaths.Include(zmqDir, "include");
                 }
             }
         }
@@ -122,5 +138,12 @@ namespace zeromq
             "Ws2_32.lib",
             "Advapi32.lib"
             );
+
+#if OPUSPACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
+            );
+#endif
     }
 }
