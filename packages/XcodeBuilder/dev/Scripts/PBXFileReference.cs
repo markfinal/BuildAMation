@@ -13,6 +13,7 @@ namespace XcodeBuilder
         {
             ApplicationBundle,
             Executable,
+            ReferencedExecutable,
             DynamicLibrary,
             ReferencedDynamicLibrary,
             StaticLibrary,
@@ -123,6 +124,10 @@ namespace XcodeBuilder
 
             case EType.Executable:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.executable\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
+                break;
+
+            case EType.ReferencedExecutable:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = \"compiled.mach-o.executable\"; name = {1}; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
                 break;
 
             case EType.DynamicLibrary:
