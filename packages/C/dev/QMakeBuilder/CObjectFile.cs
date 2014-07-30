@@ -12,31 +12,20 @@ namespace QMakeBuilder
             C.ObjectFile moduleToBuild,
             out bool success)
         {
-            var sourceLoc = moduleToBuild.SourceFileLocation;
-            var sourceFilePath = sourceLoc.GetSinglePath();
-
-            // TODO: this needs to be done better!!!
-
-            // any source file that is derived from a moc step should not be listed
-            // explicitly, because QMake handles this via searching for Q_OBJECT classes
-            var excludedSource = false;
-            if (System.IO.Path.GetFileNameWithoutExtension(sourceFilePath).StartsWith("moc_"))
-            {
-                excludedSource = true;
-            }
-            // same with protocol buffers
-            if (sourceFilePath.EndsWith(".pb.cc") && sourceLoc.Exists == Opus.Core.Location.EExists.WillExist)
-            {
-                excludedSource = true;
-            }
-
             var node = moduleToBuild.OwningNode;
-            var optionInterface = moduleToBuild.Options as C.ICCompilerOptions;
+            var includeSourceInProject = true;
+            if (moduleToBuild is Opus.Core.IIsGeneratedSource)
+            {
+                var generatedSource = moduleToBuild as Opus.Core.IIsGeneratedSource;
+                includeSourceInProject = !generatedSource.AutomaticallyHandledByBuilder(node.Target);
+            }
 
             var data = new QMakeData(node);
             data.PriPaths.Add(this.EmptyConfigPriPath);
-            if (!excludedSource)
+            if (includeSourceInProject)
             {
+                var sourceLoc = moduleToBuild.SourceFileLocation;
+                var sourceFilePath = sourceLoc.GetSinglePath();
                 if ((moduleToBuild is C.ObjC.ObjectFile) || (moduleToBuild is C.ObjCxx.ObjectFile))
                 {
                     data.ObjectiveSources.Add(sourceFilePath);
@@ -47,6 +36,9 @@ namespace QMakeBuilder
                 }
                 data.Output = QMakeData.OutputType.ObjectFile;
             }
+
+            var optionInterface = moduleToBuild.Options as C.ICCompilerOptions;
+
             data.ObjectsDir = moduleToBuild.Locations[C.ObjectFile.OutputDir];
             data.IncludePaths.AddRangeUnique(optionInterface.IncludePaths.ToStringArray());
             if (optionInterface.IgnoreStandardIncludePaths)
