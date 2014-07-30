@@ -103,6 +103,7 @@
     <Compile Include="Interfaces\IGlobalOptionCollectionOverride.cs" />
     <Compile Include="Interfaces\IIdentifyExternalDependencies.cs" />
     <Compile Include="Interfaces\IInjectModules.cs" />
+    <Compile Include="Interfaces\IIsGeneratedSource.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IModuleCollection.cs" />
     <Compile Include="Interfaces\INestedDependents.cs" />
