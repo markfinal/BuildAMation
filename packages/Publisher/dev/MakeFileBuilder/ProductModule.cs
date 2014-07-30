@@ -75,7 +75,7 @@ namespace MakeFileBuilder
                 }
                 else
                 {
-                    recipeBuilder.AppendFormat("cd {0} && ln -sf $(shell readlink {1}) {2}/$(notdir {3})", workingDir, sourcePath, subdirectory, destPath);
+                    recipeBuilder.AppendFormat("cd {0}/{2} && ln -sf $(shell readlink {1}) $(notdir {3})", workingDir, sourcePath, subdirectory, destPath);
                 }
             }
             var recipe = recipeBuilder.ToString();
@@ -118,6 +118,13 @@ namespace MakeFileBuilder
             if (!string.IsNullOrEmpty(nodeSpecificSubdirectory))
             {
                 subDirectory = nodeSpecificSubdirectory;
+            }
+            if (!string.IsNullOrEmpty(subDirectory) &&
+                subDirectory != ".")
+            {
+                var intendedSubDir = System.IO.Path.Combine(publishDirectoryPath, subDirectory);
+                directoriesToCreate.AddUnique(
+                    Opus.Core.DirectoryLocation.Get(intendedSubDir, Opus.Core.Location.EExists.WillExist));
             }
 
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
@@ -163,7 +170,7 @@ namespace MakeFileBuilder
                     directoriesToCreate,
                     null, // depInputVariables, TODO: Might have to re-add this
                     null,
-                    MakeCopySymlinkRecipe(sourcePath, destinationPath, ".", publishDirectoryPath));
+                    MakeCopySymlinkRecipe(sourcePath, destinationPath, subDirectory, publishDirectoryPath));
                 rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(publishedKey);
                 makeFile.RuleArray.AddUnique(rule);
             }
