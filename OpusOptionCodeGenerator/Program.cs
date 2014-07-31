@@ -686,7 +686,7 @@ namespace OpusOptionCodeGenerator
         }
 
         private static DelegateFileLayout
-        ReadAndParseDelegatesFile(
+        ReadAndParseDelegatesImplementation(
             Parameters parameters)
         {
             if (!System.IO.File.Exists(parameters.outputDelegatesPathName))
@@ -763,12 +763,13 @@ namespace OpusOptionCodeGenerator
                 // find functions
                 for (;;)
                 {
-                    Log("\tDelegate source line: '{0}'", line);
                     // done reading - it's the end of the class
                     if (line.StartsWith("}"))
                     {
                         break;
                     }
+
+                    Log("\tDelegate source line: '{0}'", line);
 
                     // look for function signatures
                     if (line.EndsWith(")"))
@@ -830,7 +831,7 @@ namespace OpusOptionCodeGenerator
                 Log("Would have written file '{0}'", parameters.outputDelegatesPathName);
             }
 
-            var layout = ReadAndParseDelegatesFile(parameters);
+            var layout = ReadAndParseDelegatesImplementation(parameters);
 
             var memStream = new System.IO.MemoryStream();
             using (var writer = !parameters.toStdOut ? new System.IO.StreamWriter(memStream) : System.Console.Out)
