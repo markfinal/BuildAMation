@@ -14,6 +14,12 @@ namespace QMakeBuilder
             string subdirectory,
             QMakeData proData)
         {
+            // TODO: this is only temporary while I figure out prebuilt libraries
+            if (null == proData)
+            {
+                throw new Opus.Core.Exception("No QMake pro file to append rules to");
+            }
+
 #if true
             // TOOD: if there is only one place to write to, use this
             var targetName = (module is C.DynamicLibrary) ? "dlltarget" : "target";
@@ -62,12 +68,14 @@ namespace QMakeBuilder
             var sourceKey = nodeInfo.Key;
             if (!moduleLocations.Contains(sourceKey))
             {
+                Opus.Core.Log.DebugMessage("Location key '{0}' not in location map", sourceKey.ToString());
                 return;
             }
 
             var sourceLoc = moduleLocations[sourceKey];
             if (!sourceLoc.IsValid)
             {
+                Opus.Core.Log.DebugMessage("Location '{0} is invalid", sourceKey.ToString());
                 return;
             }
 
@@ -98,7 +106,7 @@ namespace QMakeBuilder
                     publishedKey);
                 if (destPath == sourcePath)
                 {
-                    Opus.Core.Log.DebugMessage("Ignoring files to be copied on top of themselves");
+                    Opus.Core.Log.DebugMessage("Ignoring files to be published on top of themselves");
                     return;
                 }
                 var destDir = System.IO.Path.GetDirectoryName(destPath);
@@ -107,7 +115,7 @@ namespace QMakeBuilder
                 var proData = meta.Node.Data as QMakeData;
                 if (null == proData)
                 {
-                    Opus.Core.Log.DebugMessage("Cannot handle copying prebuilt libraries");
+                    Opus.Core.Log.MessageAll("Publishing prebuilt libraries is unsupported in QMake currently");
                     return;
                 }
 
@@ -130,10 +138,19 @@ namespace QMakeBuilder
                     publishedKey);
                 if (destPath == sourcePath)
                 {
-                    Opus.Core.Log.DebugMessage("Ignoring symlinks to be copied on top of themselves");
+                    Opus.Core.Log.DebugMessage("Ignoring symlinks to be published on top of themselves");
                     return;
                 }
                 var destDir = System.IO.Path.GetDirectoryName(destPath);
+
+                // TODO: where do prebuilt copies go?
+                var proData = meta.Node.Data as QMakeData;
+                if (null == proData)
+                {
+                    Opus.Core.Log.MessageAll("Publishing prebuilt library symlinks is unsupported in QMake currently");
+                    return;
+                }
+
                 // TODO: not validated
                 this.CopyFilesToDirectory(
                     meta.Node.Module,
@@ -162,7 +179,7 @@ namespace QMakeBuilder
             string publishDirectoryPath,
             object context)
         {
-            Opus.Core.Log.MessageAll("Publishing directories is unsupported in QMake");
+            Opus.Core.Log.MessageAll("Publishing directories is unsupported in QMake currently");
         }
 
         private void
