@@ -94,6 +94,12 @@ namespace Opus.Core
             throw new System.NotImplementedException ();
         }
 
+        public override string
+        ToString()
+        {
+            return System.String.Format("Symlink '{0}':{1}", this.AbsolutePath, this.Exists.ToString());
+        }
+
         public override LocationArray
         GetLocations()
         {

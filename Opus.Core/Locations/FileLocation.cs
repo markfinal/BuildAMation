@@ -106,7 +106,7 @@ namespace Opus.Core
         public override string
         ToString()
         {
-            return System.String.Format("File '{0}'", this.AbsolutePath);
+            return System.String.Format("File '{0}':{1}", this.AbsolutePath, this.Exists.ToString());
         }
 
         public override LocationArray

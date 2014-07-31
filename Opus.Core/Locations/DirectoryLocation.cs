@@ -78,7 +78,7 @@ namespace Opus.Core
         public override string
         ToString()
         {
-            return System.String.Format("Directory '{0}'", this.AbsolutePath);
+            return System.String.Format("Directory '{0}':{1}", this.AbsolutePath, this.Exists.ToString());
         }
 
         public override LocationArray
