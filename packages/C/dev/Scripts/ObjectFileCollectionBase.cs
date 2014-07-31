@@ -141,12 +141,23 @@ namespace C
             Opus.Core.Location baseLocation,
             string pattern)
         {
+            this.RegisterUpdateOptions(delegateArray, baseLocation, pattern, Opus.Core.Location.EExists.Exists);
+        }
+
+        public void
+        RegisterUpdateOptions(
+            Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
+            Opus.Core.Location baseLocation,
+            string pattern,
+            Opus.Core.Location.EExists exists)
+        {
             if (null == this.DeferredUpdates)
             {
                 this.DeferredUpdates = new System.Collections.Generic.Dictionary<Opus.Core.Location, Opus.Core.UpdateOptionCollectionDelegateArray>(new Opus.Core.LocationComparer());
             }
 
-            this.DeferredUpdates[new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File)] = delegateArray;
+            var matchingLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, exists);
+            this.DeferredUpdates[matchingLocation] = delegateArray;
         }
     }
 }

@@ -13,5 +13,12 @@ namespace Opus.Core
             UpdateOptionCollectionDelegateArray delegateArray,
             Location root,
             string pattern);
+
+        void
+        RegisterUpdateOptions(
+            UpdateOptionCollectionDelegateArray delegateArray,
+            Location root,
+            string pattern,
+            Opus.Core.Location.EExists exists);
     }
 }
