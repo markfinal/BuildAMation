@@ -1,13 +1,25 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=ICCompilerOptions.cs -n=Gcc -c=ObjCCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=GccCommon.PrivateData -e
+// Command line arguments:
+//     -i=ICCompilerOptions.cs
+//     -n=Gcc
+//     -c=ObjCCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=GccCommon.PrivateData
+//     -e
 
 namespace Gcc
 {
     public partial class ObjCCompilerOptionCollection
     {
         #region ICCompilerOptions Option delegates
-        private static void VisibilityCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        VisibilityCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             // requires gcc 4.0
             var enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
@@ -30,7 +42,9 @@ namespace Gcc
             }
         }
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["Visibility"].PrivateData = new GccCommon.PrivateData(VisibilityCommandLineProcessor);
