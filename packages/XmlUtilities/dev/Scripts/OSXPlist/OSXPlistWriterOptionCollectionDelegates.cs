@@ -1,6 +1,11 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=IOSXPlistOptions.cs -n=XmlUtilities -c=OSXPlistWriterOptionCollection -p -d -pv=PrivateData
+// Command line arguments:
+//     -i=IOSXPlistOptions.cs
+//     -n=XmlUtilities
+//     -c=OSXPlistWriterOptionCollection
+//     -p
+//     -d
+//     -pv=PrivateData
 
 namespace XmlUtilities
 {
@@ -8,7 +13,9 @@ namespace XmlUtilities
     {
         #region IOSXPlistOptions Option delegates
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             // Property 'CFBundleName' is state only
             // Property 'CFBundleDisplayName' is state only

@@ -1,6 +1,12 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
-// Command line:
-// -i=IOSXPlistOptions.cs -n=XmlUtilities -c=OSXPlistWriterOptionCollection -p -d -pv=PrivateData
+// Command line arguments:
+//     -i=IOSXPlistOptions.cs
+//     -n=XmlUtilities
+//     -c=OSXPlistWriterOptionCollection
+//     -p
+//     -d
+//     -pv=PrivateData
+
 namespace XmlUtilities
 {
     public partial class OSXPlistWriterOptionCollection
