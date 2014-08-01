@@ -25,6 +25,6 @@ codegentest2_options = [
     "-dd=" + os.path.relpath(os.path.join(opusPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=PrivateData"
 ]
-codegentest_options2.extend(extra_args)
+codegentest2_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(codegentest2_options, True, True)
 print stdout

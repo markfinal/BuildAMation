@@ -1,6 +1,13 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
-// Command line:
-// -i=ICodeGenOptions.cs -n=CodeGenTest2 -c=CodeGenOptionCollection -p -d -dd=../../../../packages/CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// Command line arguments:
+//     -i=ICodeGenOptions.cs
+//     -n=CodeGenTest2
+//     -c=CodeGenOptionCollection
+//     -p
+//     -d
+//     -dd=../../../../packages/CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=PrivateData
+
 namespace CodeGenTest2
 {
     public partial class CodeGenOptionCollection
@@ -10,7 +17,7 @@ namespace CodeGenTest2
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("OutputSourceDirectory");
+                return this.GetReferenceTypeOption<string>("OutputSourceDirectory", this.SuperSetOptionCollection);
             }
             set
             {
@@ -22,7 +29,7 @@ namespace CodeGenTest2
         {
             get
             {
-                return this.GetReferenceTypeOption<string>("OutputName");
+                return this.GetReferenceTypeOption<string>("OutputName", this.SuperSetOptionCollection);
             }
             set
             {
