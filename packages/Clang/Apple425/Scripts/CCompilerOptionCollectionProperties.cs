@@ -1,6 +1,14 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
-// Command line:
-// -i=../../../C/dev/Scripts/ICCompilerOptionsOSX.cs -n=Clang -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=ClangCommon.PrivateData -e
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ICCompilerOptionsOSX.cs
+//     -n=Clang
+//     -c=CCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs
+//     -pv=ClangCommon.PrivateData
+//     -e
+
 namespace Clang
 {
     public partial class CCompilerOptionCollection
