@@ -1,6 +1,14 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
-// Command line:
-// -i=ICCompilerOptions.cs -n=Mingw -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
+// Command line arguments:
+//     -i=../../4.5.0/Scripts/ICCompilerOptions.cs
+//     -n=Mingw
+//     -c=CCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=MingwCommon.PrivateData
+//     -e
+
 namespace Mingw
 {
     public partial class CCompilerOptionCollection

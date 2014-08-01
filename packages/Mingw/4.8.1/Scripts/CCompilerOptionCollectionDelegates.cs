@@ -1,13 +1,25 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=ICCompilerOptions.cs -n=Mingw -c=CCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MingwCommon.PrivateData -e
+// Command line arguments:
+//     -i=../../4.5.0/Scripts/ICCompilerOptions.cs
+//     -n=Mingw
+//     -c=CCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=MingwCommon.PrivateData
+//     -e
 
 namespace Mingw
 {
     public partial class CCompilerOptionCollection
     {
         #region ICCompilerOptions Option delegates
-        private static void VisibilityCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        VisibilityCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
             switch (enumOption.Value)
@@ -29,7 +41,9 @@ namespace Mingw
             }
         }
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["Visibility"].PrivateData = new MingwCommon.PrivateData(VisibilityCommandLineProcessor);
