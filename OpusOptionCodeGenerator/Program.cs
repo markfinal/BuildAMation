@@ -10,6 +10,22 @@ namespace OpusOptionCodeGenerator
         private static readonly string MajorHorizontalRule = new string('=', 80);
         private static readonly string MinorHorizontalRule = new string('-', 80);
 
+        private static char CommandSeparator;
+        private static char HeaderReplacementCommandSeparator;
+        static Program()
+        {
+            var isWindows = System.IO.Path.DirectorySeparatorChar == '\\';
+            if (isWindows)
+            {
+                CommandSeparator = ';';
+            }
+            else
+            {
+                CommandSeparator = ':';
+            }
+            HeaderReplacementCommandSeparator = '&';
+        }
+
         private static void
         Log(
             string format,
@@ -586,17 +602,17 @@ namespace OpusOptionCodeGenerator
                 writer.NewLine = "\n";
 
                 WriteLine(writer, 0, "// Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.");
-                WriteLine(writer, 0, "// Command line:");
-                Write(writer, 0, "//");
+                WriteLine(writer, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
                     if (Parameters.excludedFlagsFromHeaders.Contains(arg))
                     {
                         continue;
                     }
-                    Write(writer, 0, " {0}", arg);
+                    WriteLine(writer, 0, "//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator));
                 }
-                Write(writer, 0, writer.NewLine);
+                // empty line to match the delegates file
+                WriteLine(writer, 0, string.Empty);
                 WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
                 WriteLine(writer, 0, "{");
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
@@ -847,17 +863,15 @@ namespace OpusOptionCodeGenerator
 
                 // write header
                 WriteLine(builder, 0, "// Automatically generated file from OpusOptionCodeGenerator.");
-                WriteLine(builder, 0, "// Command line:");
-                Write(builder, 0, "//");
+                WriteLine(builder, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
                     if (Parameters.excludedFlagsFromHeaders.Contains(arg))
                     {
                         continue;
                     }
-                    Write(builder, 0, " {0}", arg);
+                    WriteLine(builder, 0, "//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator));
                 }
-                Write(builder, 0, "\n");
                 if (null != layout && layout.header.Length != 0 && !builder.ToString().Equals(layout.header.ToString()))
                 {
                     var message = new System.Text.StringBuilder();
@@ -897,6 +911,7 @@ namespace OpusOptionCodeGenerator
                         }
                     }
                 }
+                // this causes an extra newline after the header
                 WriteLine(writer, 0, builder.ToString());
 
                 // open namespace
