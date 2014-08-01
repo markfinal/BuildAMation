@@ -1,13 +1,24 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=../../../C/dev/Scripts/IArchiverOptions.cs:IArchiverOptions.cs -n=GccCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/IArchiverOptions.cs&IArchiverOptions.cs
+//     -n=GccCommon
+//     -c=ArchiverOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs
+//     -pv=PrivateData
 
 namespace GccCommon
 {
     public partial class ArchiverOptionCollection
     {
         #region C.IArchiverOptions Option delegates
-        private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        OutputTypeCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
@@ -24,10 +35,22 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
         }
-        private static void OutputTypeXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        OutputTypeXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
         }
-        private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        AdditionalOptionsCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             var arguments = stringOption.Value.Split(' ');
@@ -36,12 +59,24 @@ namespace GccCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static void AdditionalOptionsXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        AdditionalOptionsXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
         }
         #endregion
         #region IArchiverOptions Option delegates
-        private static void CommandCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        CommandCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var commandOption = option as Opus.Core.ValueTypeOption<EArchiverCommand>;
             switch (commandOption.Value)
@@ -53,10 +88,22 @@ namespace GccCommon
                     throw new Opus.Core.Exception("Unrecognized command option");
             }
         }
-        private static void CommandXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        CommandXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
         }
-        private static void DoNotWarnIfLibraryCreatedCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        DoNotWarnIfLibraryCreatedCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
@@ -64,11 +111,20 @@ namespace GccCommon
                 commandLineBuilder.Add("-c");
             }
         }
-        private static void DoNotWarnIfLibraryCreatedXcodeProjectProcessor(object sender, XcodeBuilder.PBXProject project, XcodeBuilder.XcodeNodeData currentObject, XcodeBuilder.XCBuildConfiguration configuration, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        DoNotWarnIfLibraryCreatedXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
         }
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeXcodeProjectProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);

@@ -1,6 +1,13 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
-// Command line:
-// -i=../../../C/dev/Scripts/ILinkerOptions.cs:../../../C/dev/Scripts/ILinkerOptionsOSX.cs:ILinkerOptions.cs -n=GccCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs:../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs -pv=PrivateData
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ILinkerOptions.cs&../../../C/dev/Scripts/ILinkerOptionsOSX.cs&ILinkerOptions.cs
+//     -n=GccCommon
+//     -c=LinkerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs
+//     -pv=PrivateData
+
 namespace GccCommon
 {
     public partial class LinkerOptionCollection
