@@ -15,7 +15,16 @@ namespace OpusOptionCodeGenerator
             string format,
             params string[] args)
         {
-            System.Console.WriteLine(format, args);
+            var message = new System.Text.StringBuilder();
+            message.AppendFormat(format, args);
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                System.Diagnostics.Debug.WriteLine(message.ToString());
+            }
+            else
+            {
+                System.Console.WriteLine(message.ToString());
+            }
         }
 
         private static void
@@ -353,28 +362,10 @@ namespace OpusOptionCodeGenerator
                 int firstParenthesis = line.IndexOf('(', 0);
                 var argumentsWithoutParentheses = line.Substring(firstParenthesis + 1, line.Length - firstParenthesis - 3);
                 var argumentList = argumentsWithoutParentheses.Split(',');
-                for (int i = 0; i < argumentList.Length; ++i)
-                {
-                    argumentList[i] = argumentList[i].Trim();
-                    var argumentSplit = argumentList[i].Split(' ');
-                    if (argumentSplit[0] == "object")
-                    {
-                        // nothing needed doing
-                    }
-                    else if (argumentSplit[0].Contains("."))
-                    {
-                        // fully specified namespace
-                    }
-                    else
-                    {
-                        argumentList[i] = namespaceName + "." + argumentSplit[0] + " " + argumentSplit[1];
-                    }
-                }
-                var argumentsWithParentheses = "(" + string.Join(", ", argumentList) + ")";
 
                 signature.InNamespace = namespaceName;
                 signature.ReturnType = returnType;
-                signature.ArgumentString = argumentsWithParentheses;
+                signature.Arguments = new System.Collections.Generic.List<string>(argumentList);
                 if (signature.ReturnType == "void")
                 {
                     signature.Body = null;
@@ -721,7 +712,7 @@ namespace OpusOptionCodeGenerator
                         break;
                     }
                 }
-                while (line == string.Empty)
+                while (string.IsNullOrEmpty(line))
                 {
                     line = ReadLine(reader);
                 }
@@ -738,7 +729,7 @@ namespace OpusOptionCodeGenerator
                     throw new Exception("Expected namespace opening scope '{'; found '{0}'", line);
                 }
                 line = ReadLine(reader);
-                while (line == string.Empty)
+                while (string.IsNullOrEmpty(line))
                 {
                     line = ReadLine(reader);
                 }
@@ -755,7 +746,7 @@ namespace OpusOptionCodeGenerator
                     throw new Exception("Expected namespace opening scope '{'; found '{0}'", line);
                 }
                 line = ReadLine(reader);
-                while (line == string.Empty)
+                while (string.IsNullOrEmpty(line))
                 {
                     line = ReadLine(reader);
                 }
@@ -771,48 +762,60 @@ namespace OpusOptionCodeGenerator
 
                     Log("\tDelegate source line: '{0}'", line);
 
-                    // look for function signatures
-                    if (line.EndsWith(")"))
-                    {
-                        // use a key that will not change if the signature changes
-                        var functionName = line.Substring(0, line.IndexOf('('));
-                        functionName = functionName.Substring(functionName.LastIndexOf(' ') + 1);
-                        var body = layout.functions[functionName] = new System.Collections.Generic.List<IndentedString>();
-                        int braceCount = 0;
-                        int baselineIndentation = -1;
-                        for (;;)
-                        {
-                            int indentation;
-                            line = ReadLine(reader, out indentation);
-                            if (baselineIndentation == -1)
-                            {
-                                baselineIndentation = indentation;
-                            }
-                            int openBraces = line.Split('{').Length - 1;
-                            int closeBraces = line.Split('}').Length - 1;
-                            //Log("Found {0} open braces and {1} close braces", openBraces, closeBraces);
-
-                            braceCount += openBraces;
-                            if (braceCount > 0)
-                            {
-                                body.Add(new IndentedString(indentation - baselineIndentation, line));
-                            }
-
-                            braceCount -= closeBraces;
-                            if (0 == braceCount)
-                            {
-                                break;
-                            }
-                        }
-                        Log("\t\tRead body of function '{0}'", functionName);
-
-                        line = ReadLine(reader);
-                    }
-                    else if (line.StartsWith("#region") || line.StartsWith("#endregion"))
+                    // ignored regions
+                    if (line.StartsWith("#region") || line.StartsWith("#endregion"))
                     {
                         Log("\t\tIgnored preprocessor line");
                         line = ReadLine(reader);
+                        continue;
                     }
+
+                    // look for function signatures
+                    var functionSignature = new System.Text.StringBuilder();
+                    for (;;)
+                    {
+                        functionSignature.AppendFormat("{0} ", line);
+                        if (line.EndsWith(")"))
+                        {
+                            break;
+                        }
+                        line = ReadLine(reader);
+                    }
+
+                    // use a key that will not change if the signature changes
+                    var funcSigString = functionSignature.ToString();
+                    var functionName = funcSigString.Substring(0, funcSigString.IndexOf('('));
+                    functionName = functionName.Substring(functionName.LastIndexOf(' ') + 1);
+                    var body = layout.functions[functionName] = new System.Collections.Generic.List<IndentedString>();
+                    int braceCount = 0;
+                    int baselineIndentation = -1;
+                    for (;;)
+                    {
+                        int indentation;
+                        line = ReadLine(reader, out indentation);
+                        if (baselineIndentation == -1)
+                        {
+                            baselineIndentation = indentation;
+                        }
+                        int openBraces = line.Split('{').Length - 1;
+                        int closeBraces = line.Split('}').Length - 1;
+                        //Log("Found {0} open braces and {1} close braces", openBraces, closeBraces);
+
+                        braceCount += openBraces;
+                        if (braceCount > 0)
+                        {
+                            body.Add(new IndentedString(indentation - baselineIndentation, line));
+                        }
+
+                        braceCount -= closeBraces;
+                        if (0 == braceCount)
+                        {
+                            break;
+                        }
+                    }
+                    Log("\t\tRead body of function '{0}'", functionName);
+
+                    line = ReadLine(reader);
                 }
             }
 
@@ -937,9 +940,22 @@ namespace OpusOptionCodeGenerator
                             var delegateName = property.Name + delegateSig.InNamespace;
                             delegatesToRegister[property.Name].Add(delegateName);
 
-                            var propertyDelegate = new System.Text.StringBuilder();
-                            propertyDelegate.AppendFormat("{0} static {1} {2}{3}", parameters.isBaseClass ? "public" : "private", delegateSig.ReturnType, delegateName, delegateSig.ArgumentString);
-                            WriteLine(writer, 2, propertyDelegate.ToString());
+                            // write function declaration
+                            WriteLine(writer, 2, "{0} static {1}", parameters.isBaseClass ? "public" : "private", delegateSig.ReturnType);
+                            WriteLine(writer, 2, "{0}(", delegateName);
+                            for (int argIndex = 0; argIndex < delegateSig.Arguments.Count; ++argIndex)
+                            {
+                                if (argIndex == delegateSig.Arguments.Count - 1)
+                                {
+                                    WriteLine(writer, 3, "{0})", delegateSig.Arguments[argIndex]);
+                                }
+                                else
+                                {
+                                    WriteLine(writer, 3, "{0},", delegateSig.Arguments[argIndex]);
+                                }
+                            }
+
+                            // write function body
                             if (null != layout && layout.functions.ContainsKey(delegateName))
                             {
                                 Log("\tFunction '{0}' reusing from file", delegateName);
@@ -951,7 +967,7 @@ namespace OpusOptionCodeGenerator
                             }
                             else
                             {
-                                Log("\tFunction '{0}' generating empty code for", propertyDelegate.ToString());
+                                Log("\tFunction '{0}' generating empty code for", delegateName);
                                 WriteLine(writer, 2, "{");
                                 if (null != delegateSig.Body)
                                 {
@@ -976,12 +992,14 @@ namespace OpusOptionCodeGenerator
                 Log(MinorHorizontalRule);
 
                 // write the SetDelegates function that assigns the accumulated delegates above to their named properties
-                var setDelegatesFunctionSignature = "protected override void SetDelegates(Opus.Core.DependencyNode node)";
-                WriteLine(writer, 2, setDelegatesFunctionSignature);
-                if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionSignature))
+                var setDelegatesFunctionName = "SetDelegates";
+                WriteLine(writer, 2, "protected override void");
+                WriteLine(writer, 2, "{0}(", setDelegatesFunctionName);
+                WriteLine(writer, 3, "Opus.Core.DependencyNode node)");
+                if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionName))
                 {
-                    Log("\tReusing existing code for function: '{0}'", setDelegatesFunctionSignature);
-                    foreach (var line in layout.functions[setDelegatesFunctionSignature])
+                    Log("\tReusing existing code for function: '{0}'", setDelegatesFunctionName);
+                    foreach (var line in layout.functions[setDelegatesFunctionName])
                     {
                         // TOOD: magic number
                         WriteLine(writer, 2 + line.NumSpaces/4, line.Line);
@@ -994,11 +1012,11 @@ namespace OpusOptionCodeGenerator
                         throw new Exception("Private data class name was not provided");
                     }
 
-                    Log("\tGenerating new code for the function: '{0}'", setDelegatesFunctionSignature);
+                    Log("\tGenerating new code for the function: '{0}'", setDelegatesFunctionName);
                     WriteLine(writer, 2, "{");
                     if (parameters.extendedDelegates)
                     {
-                        WriteLine(writer, 3, "base.SetDelegates(node);");
+                        WriteLine(writer, 3, "base.{0}(node);", setDelegatesFunctionName);
                     }
                     foreach (var propertyName in delegatesToRegister.Keys)
                     {

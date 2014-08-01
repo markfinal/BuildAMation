@@ -19,7 +19,7 @@ namespace OpusOptionCodeGenerator
             set;
         }
 
-        public string ArgumentString
+        public System.Collections.Generic.List<string> Arguments
         {
             get;
             set;
