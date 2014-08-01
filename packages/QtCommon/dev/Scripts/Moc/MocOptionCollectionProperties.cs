@@ -1,6 +1,13 @@
 // Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.
-// Command line:
-// -i=IMocOptions.cs -n=QtCommon -c=MocOptionCollection -p -d -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=MocPrivateData
+// Command line arguments:
+//     -i=IMocOptions.cs
+//     -n=QtCommon
+//     -c=MocOptionCollection
+//     -p
+//     -d
+//     -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=MocPrivateData
+
 namespace QtCommon
 {
     public partial class MocOptionCollection
