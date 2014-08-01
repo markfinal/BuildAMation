@@ -1,13 +1,24 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=../../../C/dev/Scripts/IArchiverOptions.cs;IArchiverOptions.cs -n=VisualCCommon -c=ArchiverOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs;../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs -pv=PrivateData
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/IArchiverOptions.cs&IArchiverOptions.cs
+//     -n=VisualCCommon
+//     -c=ArchiverOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs
+//     -pv=PrivateData
 
 namespace VisualCCommon
 {
     public partial class ArchiverOptionCollection
     {
         #region C.IArchiverOptions Option delegates
-        private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        OutputTypeCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
@@ -22,7 +33,12 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        OutputTypeVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
@@ -38,7 +54,12 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
         }
-        private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        AdditionalOptionsCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             var arguments = stringOption.Value.Split(' ');
@@ -47,7 +68,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary AdditionalOptionsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        AdditionalOptionsVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -56,7 +82,12 @@ namespace VisualCCommon
         }
         #endregion
         #region IArchiverOptions Option delegates
-        private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        NoLogoCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
@@ -64,7 +95,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add("-NOLOGO");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        NoLogoVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -72,7 +108,9 @@ namespace VisualCCommon
             return returnVal;
         }
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeVisualStudioProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsVisualStudioProcessor);

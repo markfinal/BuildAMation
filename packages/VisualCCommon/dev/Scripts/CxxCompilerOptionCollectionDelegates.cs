@@ -1,13 +1,25 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs -n=VisualCCommon -c=CxxCompilerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs;../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs -pv=PrivateData -e
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs
+//     -n=VisualCCommon
+//     -c=CxxCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs
+//     -pv=PrivateData
+//     -e
 
 namespace VisualCCommon
 {
     public partial class CxxCompilerOptionCollection
     {
         #region C.ICxxCompilerOptions Option delegates
-        private static void ExceptionHandlerCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        ExceptionHandlerCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
@@ -28,7 +40,12 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized exception handler option");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary ExceptionHandlerVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        ExceptionHandlerVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
@@ -69,7 +86,9 @@ namespace VisualCCommon
             return returnVal;
         }
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLineProcessor,ExceptionHandlerVisualStudioProcessor);

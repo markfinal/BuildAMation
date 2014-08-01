@@ -1,13 +1,24 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=../../../C/dev/Scripts/ILinkerOptions.cs;ILinkerOptions.cs -n=VisualCCommon -c=LinkerOptionCollection -p -d -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs;../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs -pv=PrivateData
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ILinkerOptions.cs&ILinkerOptions.cs
+//     -n=VisualCCommon
+//     -c=LinkerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs
+//     -pv=PrivateData
 
 namespace VisualCCommon
 {
     public partial class LinkerOptionCollection
     {
         #region C.ILinkerOptions Option delegates
-        private static void OutputTypeCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        OutputTypeCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
             var options = sender as LinkerOptionCollection;
@@ -22,7 +33,12 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary OutputTypeVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        OutputTypeVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
             var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
@@ -57,7 +73,12 @@ namespace VisualCCommon
             }
 #endif
         }
-        private static void DoNotAutoIncludeStandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        DoNotAutoIncludeStandardLibrariesCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
@@ -65,14 +86,24 @@ namespace VisualCCommon
                 commandLineBuilder.Add("-NODEFAULTLIB");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary DoNotAutoIncludeStandardLibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        DoNotAutoIncludeStandardLibrariesVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("IgnoreAllDefaultLibraries", ignoreStandardLibrariesOption.Value.ToString().ToLower());
             return returnVal;
         }
-        private static void DebugSymbolsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        DebugSymbolsCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
@@ -96,7 +127,12 @@ namespace VisualCCommon
 #endif
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary DebugSymbolsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        DebugSymbolsVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
             var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -129,7 +165,12 @@ namespace VisualCCommon
             return returnVal;
 #endif
         }
-        private static void SubSystemCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        SubSystemCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
@@ -147,7 +188,12 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized subsystem option");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary SubSystemVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        SubSystemVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
@@ -171,7 +217,12 @@ namespace VisualCCommon
                     throw new Opus.Core.Exception("Unrecognized subsystem option");
             }
         }
-        private static void DynamicLibraryCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        DynamicLibraryCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
@@ -182,7 +233,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(System.String.Format("-IMPLIB:{0}", staticImportLibraryLoc.GetSinglePath()));
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary DynamicLibraryVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        DynamicLibraryVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -208,7 +264,12 @@ namespace VisualCCommon
             }
 #endif
         }
-        private static void LibraryPathsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        LibraryPathsCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var librarySearchPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             // TODO: change to var, and returning Locations
@@ -224,7 +285,12 @@ namespace VisualCCommon
                 }
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary LibraryPathsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        LibraryPathsVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
             var libraryPaths = new System.Text.StringBuilder();
@@ -244,7 +310,12 @@ namespace VisualCCommon
             returnVal.Add("AdditionalLibraryDirectories", libraryPaths.ToString());
             return returnVal;
         }
-        private static void StandardLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        StandardLibrariesCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             // TODO: change to var, and returning Locations
@@ -253,7 +324,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(libraryPath.GetSinglePath());
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary StandardLibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        StandardLibrariesVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var options = sender as C.ILinkerOptions;
             if (options.DoNotAutoIncludeStandardLibraries)
@@ -294,7 +370,12 @@ namespace VisualCCommon
                 return null;
             }
         }
-        private static void LibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        LibrariesCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             // TODO: change to var, and returning Locations
@@ -303,7 +384,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(libraryPath.GetSinglePath());
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary LibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        LibrariesVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
             var libraryPaths = new System.Text.StringBuilder();
@@ -338,7 +424,12 @@ namespace VisualCCommon
             returnVal.Add("AdditionalDependencies", libraryPaths.ToString());
             return returnVal;
         }
-        private static void GenerateMapFileCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        GenerateMapFileCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
 #if true
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -363,7 +454,12 @@ namespace VisualCCommon
             }
 #endif
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary GenerateMapFileVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        GenerateMapFileVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
 #if true
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -387,7 +483,12 @@ namespace VisualCCommon
             return returnVal;
 #endif
         }
-        private static void AdditionalOptionsCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        AdditionalOptionsCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             var arguments = stringOption.Value.Split(' ');
@@ -396,7 +497,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(argument);
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary AdditionalOptionsVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        AdditionalOptionsVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -405,7 +511,12 @@ namespace VisualCCommon
         }
         #endregion
         #region ILinkerOptions Option delegates
-        private static void NoLogoCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        NoLogoCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
@@ -413,14 +524,24 @@ namespace VisualCCommon
                 commandLineBuilder.Add("-NOLOGO");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary NoLogoVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        NoLogoVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("SuppressStartupBanner", noLogoOption.Value.ToString().ToLower());
             return returnVal;
         }
-        private static void StackReserveAndCommitCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        StackReserveAndCommitCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var stackSizeOption = option as Opus.Core.ReferenceTypeOption<string>;
             var stackSize = stackSizeOption.Value;
@@ -430,7 +551,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(System.String.Format("-STACK:{0}", stackSizeOption.Value));
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary StackReserveAndCommitVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        StackReserveAndCommitVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var stackSizeOption = option as Opus.Core.ReferenceTypeOption<string>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -447,7 +573,12 @@ namespace VisualCCommon
             }
             return returnVal;
         }
-        private static void IgnoredLibrariesCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        IgnoredLibrariesCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             // TODO: change to var
@@ -456,7 +587,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add(System.String.Format("-NODEFAULTLIB:{0}", library));
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary IgnoredLibrariesVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        IgnoredLibrariesVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
@@ -471,7 +607,12 @@ namespace VisualCCommon
             }
             return returnVal;
         }
-        private static void IncrementalLinkCommandLineProcessor(object sender, Opus.Core.StringArray commandLineBuilder, Opus.Core.Option option, Opus.Core.Target target)
+        private static void
+        IncrementalLinkCommandLineProcessor(
+             object sender,
+             Opus.Core.StringArray commandLineBuilder,
+             Opus.Core.Option option,
+             Opus.Core.Target target)
         {
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
@@ -483,7 +624,12 @@ namespace VisualCCommon
                 commandLineBuilder.Add("-INCREMENTAL:NO");
             }
         }
-        private static VisualStudioProcessor.ToolAttributeDictionary IncrementalLinkVisualStudioProcessor(object sender, Opus.Core.Option option, Opus.Core.Target target, VisualStudioProcessor.EVisualStudioTarget vsTarget)
+        private static VisualStudioProcessor.ToolAttributeDictionary
+        IncrementalLinkVisualStudioProcessor(
+             object sender,
+             Opus.Core.Option option,
+             Opus.Core.Target target,
+             VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
@@ -506,7 +652,9 @@ namespace VisualCCommon
             return returnVal;
         }
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeVisualStudioProcessor);
             this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor,DoNotAutoIncludeStandardLibrariesVisualStudioProcessor);
