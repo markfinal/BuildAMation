@@ -1,6 +1,12 @@
 // Automatically generated file from OpusOptionCodeGenerator.
-// Command line:
-// -i=Interfaces/IPublishOptions.cs -n=Publisher -c=OptionSet -p -d -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs -pv=PrivateData
+// Command line arguments:
+//     -i=Interfaces/IPublishOptions.cs
+//     -n=Publisher
+//     -c=OptionSet
+//     -p
+//     -d
+//     -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=PrivateData
 
 namespace Publisher
 {
@@ -8,7 +14,9 @@ namespace Publisher
     {
         #region IPublishOptions Option delegates
         #endregion
-        protected override void SetDelegates(Opus.Core.DependencyNode node)
+        protected override void
+        SetDelegates(
+            Opus.Core.DependencyNode node)
         {
             // Property 'OSXApplicationBundle' is state only
         }
