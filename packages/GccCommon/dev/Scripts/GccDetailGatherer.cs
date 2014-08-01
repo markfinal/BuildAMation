@@ -92,6 +92,7 @@ namespace GccCommon
                         const string pathPrefixKey = "--prefix=";
                         const string gxxIncludeDirKey = "--with-gxx-include-dir=";
                         const string targetKey = "--target=";
+                        const string buildKey = "--build=";
                         const string libexecKey = "--libexecdir=";
                         const string slibDirKey = "--with-slibdir=";
                         foreach (var option in splitConfigureOptions)
@@ -107,6 +108,10 @@ namespace GccCommon
                             else if (option.StartsWith(targetKey))
                             {
                                 gccTarget = option.Substring(targetKey.Length).Trim();
+                            }
+                            else if (option.StartsWith(buildKey))
+                            {
+                                gccTarget = option.Substring(buildKey.Length).Trim();
                             }
                             else if (option.StartsWith(libexecKey))
                             {
@@ -144,6 +149,12 @@ namespace GccCommon
 
                 if (!isLLVMGcc)
                 {
+                    if (string.IsNullOrEmpty(gxxIncludeDir))
+                    {
+                        // default
+                        gxxIncludeDir = System.String.Format("/usr/include/c++/{0}", gccVersion);
+                    }
+
                     if (!gxxIncludeDir.StartsWith(pathPrefix))
                     {
                         // remove any prefix directory separator so that Combine works
@@ -153,9 +164,9 @@ namespace GccCommon
                 }
 
                 // C include paths (http://gcc.gnu.org/onlinedocs/cpp/Search-Path.html)
-                if (null == libDir)
+                if (string.IsNullOrEmpty(libDir))
                 {
-                    throw new Opus.Core.Exception("Unable to locate lib dir for gcc");
+                    libDir = "/usr/lib";
                 }
 
                 includePaths.Add("/usr/local/include");
