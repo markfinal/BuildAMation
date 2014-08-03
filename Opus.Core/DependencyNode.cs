@@ -32,7 +32,6 @@ namespace Opus.Core
             }
             output.AppendFormat(" Type '{0}' (from '{1}')", this.Module.GetType().ToString(), this.Module.GetType().BaseType.ToString());
             output.AppendFormat(" in '{0}'", this.Target.Key);
-            output.AppendFormat(" {0}", this.ConsiderForBuild ? "Buildable" : "Ignored");
             if (null != this.Children)
             {
                 output.Append("\nChildren:\n");
@@ -216,7 +215,6 @@ namespace Opus.Core
             string uniqueNameSuffix)
         {
             var moduleType = module.GetType();
-            this.ConsiderForBuild = true;
             this.NodeCollection = null;
             this.Parent = parent;
             this.Target = target;
@@ -648,12 +646,6 @@ namespace Opus.Core
             }
 
             return true;
-        }
-
-        public bool ConsiderForBuild
-        {
-            get;
-            set;
         }
 
         public void
