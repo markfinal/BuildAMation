@@ -30,7 +30,7 @@ namespace Opus.Core
 
                 if (!method.IsStatic)
                 {
-                    Log.DebugMessage("{4}{2} += {1}'s instance update '{0}' (type {3})",
+                    Log.DebugMessage("{4}{2} += '{0}' from instance update of {1} (type {3})",
                                      method.Name,
                                      type.FullName,
                                      module.ToString(),
@@ -46,13 +46,37 @@ namespace Opus.Core
                 }
                 else
                 {
-                    Log.DebugMessage("{4}{2} += {1}'s static update '{0}' (type {3})",
+                    Log.DebugMessage("{4}{2} += '{0}' from static update of {1}'s (type {3})",
                                      method.Name,
                                      type.FullName,
                                      module.ToString(),
                                      typeof(AttributeType).ToString(),
                                      new string('\t', depth));
                     module.UpdateOptions += System.Delegate.CreateDelegate(typeof(UpdateOptionCollectionDelegate), method) as UpdateOptionCollectionDelegate;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Only attach attributes from the direct required node. Do not recurse into it's own tree.
+        /// This satisfies dependencies, such as explicit loading of dynamic libraries using LoadLibrary or dlopen
+        /// but does not pull in updates not required to build.
+        /// </summary>
+        /// <typeparam name="ExportAttributeType"></typeparam>
+        /// <param name="module"></param>
+        /// <param name="node"></param>
+        /// <param name="newDepth"></param>
+        private static void
+        AttachRequiredExportUpdatesOnly<ExportAttributeType>(
+            BaseModule module,
+            DependencyNode node,
+            int newDepth)
+        {
+            if (null != node.RequiredDependents)
+            {
+                foreach (var required in node.RequiredDependents)
+                {
+                    AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, required, newDepth, false);
                 }
             }
         }
@@ -75,7 +99,7 @@ namespace Opus.Core
             {
                 //Log.DebugMessage("\tAttaching {0} dependent '{1}' of '{2}' to option updates", collectionType, dependentNode.UniqueModuleName, node.UniqueModuleName);
 
-                AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth);
+                AttachNodeOptionUpdatesToModule<ExportAttributeType>(module, dependentNode, newDepth, true);
 
                 if (null == dependentNode.Children)
                 {
@@ -103,7 +127,8 @@ namespace Opus.Core
         AttachNodeOptionUpdatesToModule<ExportAttributeType>(
             BaseModule module,
             DependencyNode node,
-            int depth)
+            int depth,
+            bool recurseIntoDependencies)
         {
             var nodeModuleType = node.Module.GetType();
             var target = node.Target;
@@ -119,6 +144,11 @@ namespace Opus.Core
             {
                 AttachModuleOptionUpdatesFromType<ExportAttributeType>(module, nodeModuleType.BaseType, target, newDepth);
                 owningNode.ExportedUpdatesAdded.Add(nodeModuleType.BaseType);
+            }
+
+            if (!recurseIntoDependencies)
+            {
+                return;
             }
 
             RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.ExternalDependents, "External");
@@ -161,7 +191,7 @@ namespace Opus.Core
 
             RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.ExternalDependents, "External");
 
-            RecursivelyAttachExportUpdates<ExportAttributeType>(node, owningNode, module, newDepth, node.RequiredDependents, "Required");
+            AttachRequiredExportUpdatesOnly<ExportAttributeType>(module, node, newDepth);
         }
 
         private static void
