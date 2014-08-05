@@ -197,11 +197,13 @@ namespace QMakeBuilder
             var moduleToCopy = plistNode.Module;
             var keyToCopy = nodeInfo.Key;
 
+            /*
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
                 primaryModule,
                 moduleToCopy,
                 keyToCopy);
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            */
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
 
