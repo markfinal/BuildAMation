@@ -41,7 +41,7 @@ namespace QMakeBuilder
             this.ExternalLibraries = new Opus.Core.StringArray();
             this.LinkFlags = new Opus.Core.StringArray();
             this.Merged = false;
-            this.MocDir = string.Empty;
+            this.MocDir = null;
             this.ObjectiveSources = new Opus.Core.StringArray();
             this.ObjectsDir = null;
             this.Output = OutputType.Undefined;
@@ -142,7 +142,7 @@ namespace QMakeBuilder
             set;
         }
 
-        public string MocDir
+        public Opus.Core.Location MocDir
         {
             get;
             set;
@@ -543,7 +543,7 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
-                WriteString(array[0].MocDir, "MOC_DIR=", null, writer);
+                WriteString(array[0].MocDir.GetSinglePath(), "MOC_DIR=", null, writer);
             }
             else
             {
@@ -552,11 +552,11 @@ namespace QMakeBuilder
                 {
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                     {
-                        values.Debug = data.MocDir;
+                        values.Debug = data.MocDir.GetSinglePath();
                     }
                     else
                     {
-                        values.Release = data.MocDir;
+                        values.Release = data.MocDir.GetSinglePath();
                     }
                 }
 
@@ -1378,7 +1378,7 @@ namespace QMakeBuilder
             this.Headers.AddRangeUnique(data.Headers);
             this.IncludePaths.AddRangeUnique(data.IncludePaths);
             this.Libraries.AddRangeUnique(data.Libraries);
-            if (data.MocDir.Length > 0)
+            if ((null != data.MocDir) && data.MocDir.IsValid)
             {
                 this.MocDir = data.MocDir;
             }

@@ -21,7 +21,7 @@ namespace QMakeBuilder
             data.Output = QMakeData.OutputType.MocFile;
 
             var options = moduleToBuild.Options as QtCommon.MocOptionCollection;
-            data.MocDir = options.OutputDirectoryPath;
+            data.MocDir = moduleToBuild.Locations[QtCommon.MocFile.OutputDir];
 
             success = true;
             return data;

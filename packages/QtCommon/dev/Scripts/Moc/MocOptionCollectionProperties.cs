@@ -13,18 +13,6 @@ namespace QtCommon
     public partial class MocOptionCollection
     {
         #region IMocOptions Option properties
-        string IMocOptions.MocOutputPath
-        {
-            get
-            {
-                return this.GetReferenceTypeOption<string>("MocOutputPath", this.SuperSetOptionCollection);
-            }
-            set
-            {
-                this.SetReferenceTypeOption<string>("MocOutputPath", value);
-                this.ProcessNamedSetHandler("MocOutputPathSetHandler", this["MocOutputPath"]);
-            }
-        }
         Opus.Core.DirectoryCollection IMocOptions.IncludePaths
         {
             get

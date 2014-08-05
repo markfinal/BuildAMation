@@ -21,16 +21,14 @@ namespace XcodeBuilder
             if (mocOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = mocOptions as CommandLineProcessor.ICommandLineSupport;
-                var excludedOptionNames = new Opus.Core.StringArray();
-                excludedOptionNames.Add("MocOutputPath");
-                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptionNames);
+                commandLineOption.ToCommandLineArguments(commandLineBuilder, target, null);
             }
             else
             {
                 throw new Opus.Core.Exception("Compiler options does not support command line translation");
             }
+            commandLineBuilder.Add("-o $outputFile");
             commandLineBuilder.Add("$inputFile");
-            commandLineBuilder.Add("-o$outputFile");
 
             // script for moc'ing all files
             shellScriptBuildPhase.ShellScriptLines.Add("for ((i=0; i < SCRIPT_INPUT_FILE_COUNT ; i++))");

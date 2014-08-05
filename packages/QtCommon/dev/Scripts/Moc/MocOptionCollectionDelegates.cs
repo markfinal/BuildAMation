@@ -14,23 +14,6 @@ namespace QtCommon
     {
         #region IMocOptions Option delegates
         private static void
-        MocOutputPathCommandLineProcessor(
-             object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
-        {
-            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
-            if (stringOption.Value.Contains(" "))
-            {
-                commandLineBuilder.Add(System.String.Format("-o\"{0}\"", stringOption.Value));
-            }
-            else
-            {
-                commandLineBuilder.Add(System.String.Format("-o{0}", stringOption.Value));
-            }
-        }
-        private static void
         IncludePathsCommandLineProcessor(
              object sender,
              Opus.Core.StringArray commandLineBuilder,
@@ -108,7 +91,6 @@ namespace QtCommon
         SetDelegates(
             Opus.Core.DependencyNode node)
         {
-            this["MocOutputPath"].PrivateData = new MocPrivateData(MocOutputPathCommandLineProcessor);
             this["IncludePaths"].PrivateData = new MocPrivateData(IncludePathsCommandLineProcessor);
             this["Defines"].PrivateData = new MocPrivateData(DefinesCommandLineProcessor);
             this["DoNotGenerateIncludeStatement"].PrivateData = new MocPrivateData(DoNotGenerateIncludeStatementCommandLineProcessor);

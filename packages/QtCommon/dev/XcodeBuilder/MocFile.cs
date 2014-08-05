@@ -39,8 +39,7 @@ namespace XcodeBuilder
                     }
                 }
 
-                // > 1 because the MocOutputPath is currently in the options, hence never null
-                if (complementOptionCollection.OptionNames.Count > 1)
+                if (complementOptionCollection.OptionNames.Count > 0)
                 {
                     // use a custom moc
                     var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + node.UniqueModuleName, node.ModuleName);

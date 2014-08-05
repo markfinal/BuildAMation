@@ -74,14 +74,8 @@ namespace NativeBuilder
                 throw new Opus.Core.Exception("Moc options does not support command line translation");
             }
 
-            if (sourceFilePath.Contains(" "))
-            {
-                commandLineBuilder.Add(System.String.Format("\"{0}\"", sourceFilePath));
-            }
-            else
-            {
-                commandLineBuilder.Add(sourceFilePath);
-            }
+            commandLineBuilder.Add(System.String.Format("-o {0}", moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSinglePath()));
+            commandLineBuilder.Add(sourceFilePath);
 
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
             var exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);

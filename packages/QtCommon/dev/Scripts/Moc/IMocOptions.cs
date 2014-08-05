@@ -7,12 +7,6 @@ namespace QtCommon
 {
     public interface IMocOptions
     {
-        string MocOutputPath
-        {
-            get;
-            set;
-        }
-
         Opus.Core.DirectoryCollection IncludePaths
         {
             get;

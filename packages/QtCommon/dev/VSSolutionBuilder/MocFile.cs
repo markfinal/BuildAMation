@@ -132,8 +132,12 @@ namespace VSSolutionBuilder
 
             var customTool = new ProjectTool("VCCustomBuildTool");
 
+            // TODO: collapse these with variables for keys
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == projectData.VSTarget)
             {
+                // TODO: is there a macro to use?
+                // add output file
+                commandLineBuilder.Add(System.String.Format("-o {0}", moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSinglePath()));
                 // add source file
                 commandLineBuilder.Add(@" $(InputPath)");
 
@@ -150,6 +154,9 @@ namespace VSSolutionBuilder
             }
             else
             {
+                // TODO: is there a macro to use?
+                // add output file
+                commandLineBuilder.Add(System.String.Format("-o {0}", moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSinglePath()));
                 // add source file
                 commandLineBuilder.Add(@" %(FullPath)");
 

@@ -20,8 +20,6 @@ namespace QtCommon
             Opus.Core.DependencyNode node)
         {
             var options = this as IMocOptions;
-            // TODO: do not set this, as it overwrites what was set in SetNodeSpecificData
-            //options.MocOutputPath = null;
             options.IncludePaths = new Opus.Core.DirectoryCollection();
             options.Defines = new C.DefineCollection();
             options.DoNotGenerateIncludeStatement = false;
@@ -35,12 +33,6 @@ namespace QtCommon
             options.Defines.Add(VersionDefine);
         }
 
-        public string OutputDirectoryPath
-        {
-            get;
-            set;
-        }
-
         protected override void
         SetNodeSpecificData(
             Opus.Core.DependencyNode node)
@@ -50,25 +42,6 @@ namespace QtCommon
             {
                 (locationMap[MocFile.OutputDir] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[Opus.Core.State.ModuleBuildDirLocationKey], "src", Opus.Core.Location.EExists.WillExist);
             }
-
-            var mocDir = locationMap[MocFile.OutputDir].GetSinglePath();
-            this.OutputDirectoryPath = mocDir;
-            var mocFile = node.Module as MocFile;
-            string mocPath;
-            if (null != mocFile)
-            {
-                var sourceFilePath = mocFile.SourceFileLocation.GetSinglePath();
-                var filename = System.IO.Path.GetFileNameWithoutExtension(sourceFilePath);
-                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
-            }
-            else
-            {
-                // TODO: would like to have a null output path for a collection, but it doesn't work for cloning reference types
-                var filename = node.ModuleName;
-                mocPath = System.IO.Path.Combine(mocDir, System.String.Format("{0}{1}.cpp", MocFile.Prefix, filename));
-            }
-
-            (this as IMocOptions).MocOutputPath = mocPath;
         }
 
         public override void
@@ -76,13 +49,17 @@ namespace QtCommon
             Opus.Core.DependencyNode node)
         {
             var module = node.Module;
-            if (module is QtCommon.MocFile)
+            var mocModule = module as QtCommon.MocFile;
+            if (null != mocModule)
             {
-                var mocFile = module.Locations[MocFile.OutputFile] as Opus.Core.ScaffoldLocation;
+                var locationMap = module.Locations;
+
+                var mocFile = locationMap[MocFile.OutputFile] as Opus.Core.ScaffoldLocation;
                 if (!mocFile.IsValid)
                 {
-                    var mocOutputPath = (this as IMocOptions).MocOutputPath;
-                    mocFile.SetReference(Opus.Core.FileLocation.Get(mocOutputPath, Opus.Core.Location.EExists.WillExist));
+                    var sourceFilePath = mocModule.SourceFileLocation.GetSinglePath();
+                    var filename = MocFile.Prefix + System.IO.Path.GetFileNameWithoutExtension(sourceFilePath) + ".cpp";
+                    mocFile.SpecifyStub(locationMap[MocFile.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
                 }
             }
 
