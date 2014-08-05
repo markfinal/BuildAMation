@@ -87,31 +87,64 @@ namespace Opus
             Core.PackageUtilities.IdentifyMainPackageOnly();
             var mainPackageId = Core.State.PackageInfo[0].Identifier;
 
+            var nameToMatch = nameAndVersion[0];
+            var versionToMatch = nameAndVersion[1];
+
             Core.PackageIdentifier foundId = null;
+            Core.PackageIdentifier foundDefaultId = null;
             foreach (var id in mainPackageId.Definition.PackageIdentifiers)
             {
-                if (id.Match(nameAndVersion[0], nameAndVersion[1], false))
+                var matchNameAndVersion = id.Match(nameToMatch, versionToMatch, false);
+
+                // if we're trying to set a new default, make sure existing packages matching
+                // by name are not already marked as default
+                if (this.IsDefaultVersion && id.MatchName(nameToMatch, false))
+                {
+                    if (id.IsDefaultVersion)
+                    {
+                        if (matchNameAndVersion)
+                        {
+                            Core.Log.MessageAll("Package {0}-{1} is already the default", id.Name, id.Version);
+                            return true;
+                        }
+                        else
+                        {
+                            foundDefaultId = id;
+                        }
+                    }
+                }
+
+                if (matchNameAndVersion)
                 {
                     foundId = id;
-                    break;
                 }
             }
 
-            if (null != foundId)
-            {
-                foundId.IsDefaultVersion = this.IsDefaultVersion;
-
-                mainPackageId.Definition.Write();
-
-                Core.Log.MessageAll("Updated dependent package '{0}' so that version '{1}' {2} the default version", foundId.Name, foundId.Version, this.IsDefaultVersion ? "is" : "is not");
-
-                return true;
-            }
-            else
+            if (null == foundId)
             {
                 Core.Log.MessageAll("Could not locate package '{0}' as a dependency", setDependentAction.DependentPackageAndVersion);
                 return false;
             }
+
+            if (null != foundDefaultId)
+            {
+                Core.Log.MessageAll("Default version is currently set to {0}-{1}", foundDefaultId.Name, foundDefaultId.Version);
+                return false;
+            }
+
+            if (!this.IsDefaultVersion && !foundId.IsDefaultVersion)
+            {
+                Core.Log.MessageAll("Package {0}-{1} was not previously the default", foundId.Name, foundId.Version);
+                return false;
+            }
+
+            foundId.IsDefaultVersion = this.IsDefaultVersion;
+
+            mainPackageId.Definition.Write();
+
+            Core.Log.MessageAll("Updated dependent package '{0}' so that version '{1}' {2} the default version", foundId.Name, foundId.Version, this.IsDefaultVersion ? "is" : "is not");
+
+            return true;
         }
 
         #region ICloneable Members
