@@ -222,8 +222,8 @@ namespace XcodeBuilder
             var primaryPBXNativeTarget = primaryNode.Data as PBXNativeTarget;
             if (options.OSXApplicationBundle)
             {
-                primaryPBXNativeTarget.Type = PBXNativeTarget.EType.ApplicationBundle;
-                primaryPBXNativeTarget.ProductReference.SetType(PBXFileReference.EType.ApplicationBundle);
+                primaryPBXNativeTarget.ChangeType(PBXNativeTarget.EType.ApplicationBundle);
+                primaryPBXNativeTarget.ProductReference.ChangeType(PBXFileReference.EType.ApplicationBundle);
             }
 
             success = true;

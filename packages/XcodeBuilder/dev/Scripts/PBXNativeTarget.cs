@@ -23,7 +23,7 @@ namespace XcodeBuilder
             EType type,
             PBXProject project) : base (name)
         {
-            this.Type = type;
+            this.Type = this.OriginalType = type;
             this.BuildPhases = new Opus.Core.Array<BuildPhase>();
             this.Dependencies = new Opus.Core.Array<PBXTargetDependency>();
             this.SourceFilesToBuild = new Opus.Core.Array<PBXBuildFile>();
@@ -34,7 +34,18 @@ namespace XcodeBuilder
         public EType Type
         {
             get;
-            set;
+            private set;
+        }
+
+        /// <summary>
+        /// Gets the original type set against the native target. This is here only because the type can be changed
+        /// in some circumstances, e.g. change from Executable to ApplicationBundle
+        /// </summary>
+        /// <value>The original type of the target.</value>
+        public EType OriginalType
+        {
+            get;
+            private set;
         }
 
         public PBXFileReference ProductReference
@@ -83,6 +94,12 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        public void
+        ChangeType(EType newType)
+        {
+            this.Type = newType;
         }
 
 #region IWriteableNode implementation

@@ -25,7 +25,11 @@ namespace XcodeBuilder
             {
                 foreach (var target in this.NativeTargets)
                 {
-                    if ((target.Name == name) && (target.Type == type) && (target.Project == project))
+                    // check whether the type has been changed, which is still valid if the original type
+                    // is what is being sought
+                    if ((target.Name == name) &&
+                        ((target.Type == type) || (target.OriginalType == type)) &&
+                        (target.Project == project))
                     {
                         return target;
                     }
