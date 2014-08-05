@@ -173,7 +173,7 @@ namespace CSharp
              Opus.Core.Option option,
              Opus.Core.Target target)
         {
-            var options = sender as OptionCollection;
+            //var options = sender as OptionCollection;
             var enumOption = option as Opus.Core.ValueTypeOption<EDebugInformation>;
             switch (enumOption.Value)
             {

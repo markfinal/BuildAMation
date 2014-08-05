@@ -19,7 +19,6 @@ namespace MakeFileBuilder
             var options = assemblyOptions as CSharp.OptionCollection;
 
             var inputVariables = new MakeFileVariableDictionary();
-            var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (node.ExternalDependents != null)
             {
                 foreach (var dependentNode in node.ExternalDependents)

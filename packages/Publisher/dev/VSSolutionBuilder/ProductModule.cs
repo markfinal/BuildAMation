@@ -183,6 +183,8 @@ namespace VSSolutionBuilder
                 return;
             }
 
+            // TODO should really be using this
+            /*
             // take the common subdirectory by default, otherwise override on a per Location basis
             var attribute = meta.Attribute as Publisher.CopyFileLocationsAttribute;
             var subDirectory = attribute.CommonSubDirectory;
@@ -191,6 +193,7 @@ namespace VSSolutionBuilder
             {
                 subDirectory = nodeSpecificSubdirectory;
             }
+            */
 
             // TODO: should really be using this, in case we need to refer to published locations after this module
             /*
@@ -244,10 +247,10 @@ namespace VSSolutionBuilder
                 primaryModule,
                 directoryInfo.Directory);
             var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-            */
             var sourceLoc = directoryInfo.DirectoryLocation;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
+            */
             CopyDirectory(
                 moduleToBuild,
                 primaryModule,
