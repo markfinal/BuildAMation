@@ -13,7 +13,14 @@ namespace XcodeBuilder
         {
             if (project.NativeTargets.Count > 1)
             {
-                throw new Opus.Core.Exception("Cannot create scheme cache for projects with more than one PBXNativeTarget");
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Cannot create scheme cache for project '{0}' with more than one PBXNativeTarget:\n", project.Name);
+                // TODO: convert to var
+                foreach (PBXNativeTarget target in project.NativeTargets)
+                {
+                    message.AppendLine("\t" + target.Name);
+                }
+                throw new Opus.Core.Exception(message.ToString());
             }
 
             var nativeTarget = project.NativeTargets[0];
