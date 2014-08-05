@@ -37,11 +37,11 @@ namespace XcodeBuilder
         {
             this.RootPath = rootPath;
             this.FullPath = path;
-            this.SetType(type);
+            this.ChangeType(type);
         }
 
         public void
-        SetType(
+        ChangeType(
             EType type)
         {
             this.Type = type;
