@@ -19,8 +19,6 @@ namespace QMakeBuilder
             data.PriPaths.Add(this.EmptyConfigPriPath);
             data.Headers.Add(sourceFilePath);
             data.Output = QMakeData.OutputType.MocFile;
-
-            var options = moduleToBuild.Options as QtCommon.MocOptionCollection;
             data.MocDir = moduleToBuild.Locations[QtCommon.MocFile.OutputDir];
 
             success = true;
