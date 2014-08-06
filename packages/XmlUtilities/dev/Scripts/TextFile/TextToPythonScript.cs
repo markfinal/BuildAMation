@@ -17,7 +17,7 @@ namespace XmlUtilities
             {
                 writer.WriteLine("#!usr/bin/python");
 
-                writer.WriteLine(System.String.Format("with open('{0}', 'wt') as script:", pathToGeneratedFile));
+                writer.WriteLine(System.String.Format("with open(r'{0}', 'wt') as script:", pathToGeneratedFile));
                 foreach (var line in content.ToString().Split('\n'))
                 {
                     writer.WriteLine("\tscript.write('{0}\\n')", line);
