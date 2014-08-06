@@ -188,6 +188,10 @@ namespace VSSolutionBuilder
                     toolElementName = "CustomBuild";
                     break;
 
+                case "VCPreBuildEventTool":
+                    toolElementName = "PreBuildEvent";
+                    break;
+
                 case "VCPostBuildEventTool":
                     toolElementName = "PostBuildEvent";
                     break;
