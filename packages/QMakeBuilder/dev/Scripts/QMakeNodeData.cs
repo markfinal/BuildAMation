@@ -543,6 +543,10 @@ namespace QMakeBuilder
         {
             if (1 == array.Count)
             {
+                if (null == array[0].MocDir)
+                {
+                    return;
+                }
                 WriteString(array[0].MocDir.GetSinglePath(), "MOC_DIR=", null, writer);
             }
             else
@@ -550,6 +554,10 @@ namespace QMakeBuilder
                 var values = new Values<string>();
                 foreach (var data in array)
                 {
+                    if (null == data.MocDir)
+                    {
+                        continue;
+                    }
                     if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.MocDir.GetSinglePath();
