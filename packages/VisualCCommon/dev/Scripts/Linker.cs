@@ -196,6 +196,12 @@ namespace VisualCCommon
             var environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(baseTarget);
             environmentVariables["PATH"] = this.toolset.Environment;
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            {
+                // some DLLs exist only in the 32-bit bin folder
+                var baseTarget32 = Opus.Core.BaseTarget.GetInstance32bits(baseTarget);
+                environmentVariables["PATH"].AddUnique(this.toolset.BinPath(baseTarget32));
+            }
             return environmentVariables;
         }
 
