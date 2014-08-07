@@ -131,6 +131,12 @@ namespace VisualCCommon
         {
             var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
+            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            {
+                // some DLLs exist only in the 32-bit bin folder
+                var baseTarget32 = Opus.Core.BaseTarget.GetInstance32bits(baseTarget);
+                dictionary["PATH"].AddUnique(this.toolset.BinPath(baseTarget32));
+            }
 
             var compilerTool = this as C.ICompilerTool;
             dictionary["INCLUDE"] = compilerTool.IncludePaths(baseTarget);

@@ -27,6 +27,60 @@ namespace Opus.Core
             return target;
         }
 
+        public static BaseTarget
+        GetInstance32bits(
+            BaseTarget source)
+        {
+            if (!OSUtilities.Is64Bit(source))
+            {
+                return source;
+            }
+
+            if (OSUtilities.IsWindows(source))
+            {
+                return GetInstance(EPlatform.Win32, source.Configuration);
+            }
+            else if (OSUtilities.IsUnix(source))
+            {
+                return GetInstance(EPlatform.Unix32, source.Configuration);
+            }
+            else if (OSUtilities.IsOSX(source))
+            {
+                return GetInstance(EPlatform.OSX32, source.Configuration);
+            }
+            else
+            {
+                throw new Exception("Unrecognized platform '{0}'", source.PlatformName('='));
+            }
+        }
+
+        public static BaseTarget
+        GetInstance64bits(
+            BaseTarget source)
+        {
+            if (OSUtilities.Is64Bit(source))
+            {
+                return source;
+            }
+
+            if (OSUtilities.IsWindows(source))
+            {
+                return GetInstance(EPlatform.Win64, source.Configuration);
+            }
+            else if (OSUtilities.IsUnix(source))
+            {
+                return GetInstance(EPlatform.Unix64, source.Configuration);
+            }
+            else if (OSUtilities.IsOSX(source))
+            {
+                return GetInstance(EPlatform.OSX64, source.Configuration);
+            }
+            else
+            {
+                throw new Exception("Unrecognized platform '{0}'", source.PlatformName('='));
+            }
+        }
+
         private static System.Collections.Generic.Dictionary<int, BaseTarget> factory = new System.Collections.Generic.Dictionary<int, BaseTarget>();
 
         private
