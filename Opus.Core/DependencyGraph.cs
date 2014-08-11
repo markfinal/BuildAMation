@@ -8,6 +8,30 @@ namespace Opus.Core
     public class DependencyGraph :
         System.Collections.IEnumerable
     {
+        private class ConstructionData
+        {
+            public ConstructionData()
+            {
+                this.forwardedNodes = new DependencyNodeCollection();
+                this.postActionNodes = new System.Collections.Generic.Dictionary<DependencyNode, DependencyNodeCollection>();
+            }
+
+            public void
+            AddPostActionNode(
+                DependencyNode owner,
+                DependencyNode postAction)
+            {
+                if (!this.postActionNodes.ContainsKey(owner))
+                {
+                    this.postActionNodes.Add(owner, new DependencyNodeCollection());
+                }
+                this.postActionNodes[owner].Add(postAction);
+            }
+
+            public DependencyNodeCollection forwardedNodes;
+            public System.Collections.Generic.Dictionary<DependencyNode, DependencyNodeCollection> postActionNodes;
+        }
+
         public System.Collections.IEnumerator
         GetEnumerator()
         {
@@ -216,10 +240,14 @@ namespace Opus.Core
 
                 this.SortTopLevelModules();
 
-                var nodesWithForwardedDependencies = new DependencyNodeCollection();
-                this.AddDependents(nodesWithForwardedDependencies);
-                this.PopulateChildNodes(nodesWithForwardedDependencies);
-                this.ForwardOnDependencies(nodesWithForwardedDependencies);
+                // populate the graph
+                var constructionData = new ConstructionData();
+                this.AddDependents(constructionData);
+                this.PopulateChildNodes(constructionData);
+                // now perform fixup across the whole graph
+                this.ForwardOnDependencies(constructionData);
+                this.AddRequiredPostActionDependencies(constructionData);
+                // tidy up
                 this.SquashEmptyNodeCollections();
 
                 profile.StopProfile();
@@ -365,15 +393,15 @@ namespace Opus.Core
         ProcessNode(
             DependencyNode node,
             System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            DependencyNodeCollection nodesWithForwardedDependencies)
+            ConstructionData data)
         {
             if (node.AreDependenciesProcessed)
             {
                 return;
             }
 
-            this.ConnectExternalDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
-            this.ConnectRequiredDependencies(node, nodeRankOffsets, nodesWithForwardedDependencies);
+            this.ConnectExternalDependencies(node, nodeRankOffsets, data);
+            this.ConnectRequiredDependencies(node, nodeRankOffsets, data);
 
             var postActionInterface = node.Module as IPostActionModules;
             if (null != postActionInterface)
@@ -394,25 +422,12 @@ namespace Opus.Core
                     {
                         var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, node.ModuleName + ".PostAction", postCount);
 
-                        // ensure that those nodes with a dependent on the node with the post-action, also have
-                        // a dependency on the post-action
-                        if (null != node.ExternalDependentFor)
-                        {
-                            foreach (var dependee in node.ExternalDependentFor)
-                            {
-                                dependee.AddRequiredDependent(postNode);
-                            }
-                        }
-                        if (null != node.RequiredDependentFor)
-                        {
-                            foreach (var dependee in node.RequiredDependentFor)
-                            {
-                                dependee.AddRequiredDependent(postNode);
-                            }
-                        }
+                        // adding a requirement on the post-action node for all of its owner's dependencies
+                        // is deferred until the end, when all dependencies have been registered
+                        data.AddPostActionNode(node, postNode);
 
                         node.AddPostActionNode(postNode);
-                        this.ProcessNode(postNode, nodeRankOffsets, nodesWithForwardedDependencies);
+                        this.ProcessNode(postNode, nodeRankOffsets, data);
                         ++postCount;
                     }
                 }
@@ -425,7 +440,7 @@ namespace Opus.Core
         ConnectExternalDependencies(
             DependencyNode node,
             System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            DependencyNodeCollection nodesWithForwardedDependencies)
+            ConstructionData data)
         {
             // find all dependencies that are in the attribute metadata
             var depTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
@@ -464,7 +479,7 @@ namespace Opus.Core
                         node.AddRequiredDependent(postAction);
                     }
                 }
-                this.ProcessNode(dep, nodeRankOffsets, nodesWithForwardedDependencies);
+                this.ProcessNode(dep, nodeRankOffsets, data);
 
                 if (dep.Module is IInjectModules)
                 {
@@ -484,14 +499,14 @@ namespace Opus.Core
                     ++nodeRankOffsets[dep];
 
                     var injectedNode = this.InjectNodeAbove(dep, dep, baseTarget, childIndex, currentRank);
-                    this.ProcessNode(injectedNode, nodeRankOffsets, nodesWithForwardedDependencies);
+                    this.ProcessNode(injectedNode, nodeRankOffsets, data);
                 }
             }
 
             var hasForwardedDependencies = (node.Module is IForwardDependenciesOn);
             if (hasForwardedDependencies)
             {
-                nodesWithForwardedDependencies.Add(node);
+                data.forwardedNodes.Add(node);
             }
         }
 
@@ -499,7 +514,7 @@ namespace Opus.Core
         ConnectRequiredDependencies(
             DependencyNode node,
             System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            DependencyNodeCollection nodesWithForwardedDependencies)
+            ConstructionData data)
         {
             // find all dependencies that are in the attribute metadata
             var depTypes = ModuleUtilities.GetRequiredDependents(node.Module, node.Target);
@@ -514,7 +529,7 @@ namespace Opus.Core
                 node.AddRequiredDependent(required);
                 if (!required.AreDependenciesProcessed)
                 {
-                    this.ProcessNode(required, nodeRankOffsets, nodesWithForwardedDependencies);
+                    this.ProcessNode(required, nodeRankOffsets, data);
                 }
             }
         }
@@ -582,9 +597,9 @@ namespace Opus.Core
 
         private void
         ForwardOnDependencies(
-            DependencyNodeCollection nodesWithForwardedDependencies)
+            ConstructionData data)
         {
-            foreach (var node in nodesWithForwardedDependencies)
+            foreach (var node in data.forwardedNodes)
             {
                 if (null == node.ExternalDependentFor)
                 {
@@ -603,7 +618,44 @@ namespace Opus.Core
         }
 
         private void
-        AddDependents(DependencyNodeCollection nodesWithForwardedDependencies)
+        AddRequiredPostActionDependencies(
+            ConstructionData data)
+        {
+            foreach (var nodeWithPostAction in data.postActionNodes.Keys)
+            {
+                foreach (var postActionNode in data.postActionNodes[nodeWithPostAction])
+                {
+                    if (null != nodeWithPostAction.ExternalDependentFor)
+                    {
+                        foreach (var dependee in nodeWithPostAction.ExternalDependentFor)
+                        {
+                            // don't depend on itself - the post action node is in the list
+                            if (dependee == postActionNode)
+                            {
+                                continue;
+                            }
+                            dependee.AddRequiredDependent(postActionNode);
+                        }
+                    }
+                    if (null != nodeWithPostAction.RequiredDependentFor)
+                    {
+                        foreach (var dependee in nodeWithPostAction.RequiredDependentFor)
+                        {
+                            // don't depend on itself - the post action node is in the list
+                            if (dependee == postActionNode)
+                            {
+                                continue;
+                            }
+                            dependee.AddRequiredDependent(postActionNode);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void
+        AddDependents(
+                ConstructionData data)
         {
             // DependencyNodes have a loose connection with Rank and their DependencyNodeCollection at this stage
             // There is some need for it, in order to determine whether a node satisfies all dependencies
@@ -614,7 +666,7 @@ namespace Opus.Core
                 var rankNodeCollection = this.rankList[currentRank];
                 foreach (var node in rankNodeCollection)
                 {
-                    this.ProcessNode(node, nodeRankOffsets, nodesWithForwardedDependencies);
+                    this.ProcessNode(node, nodeRankOffsets, data);
                 }
 
                 foreach (var node in nodeRankOffsets.Keys)
@@ -784,7 +836,7 @@ namespace Opus.Core
 
         private void
         PopulateChildNodes(
-            DependencyNodeCollection nodesWithForwardedDependencies)
+            ConstructionData data)
         {
             int currentRank = 0;
             while (currentRank < this.RankCount)
@@ -832,7 +884,7 @@ namespace Opus.Core
 
                         var childNode = new DependencyNode(nestedModule as BaseModule, node, nestedTargetUsed, childIndex, true, null);
                         this.AddDependencyNodeToCollection(childNode, nestedNodeRank);
-                        this.ProcessNode(childNode, nodeRankOffsets, nodesWithForwardedDependencies);
+                        this.ProcessNode(childNode, nodeRankOffsets, data);
 
                         // all children inherit their collection's dependents
                         if (node.Module is IModuleCollection)
@@ -850,7 +902,7 @@ namespace Opus.Core
                         {
                             // add the injected node, in a rank above the nested node
                             var injectedNode = this.InjectNodeAbove(node, childNode, baseTarget, childIndex, nestedNodeRank - 1);
-                            this.ProcessNode(injectedNode, nodeRankOffsets, nodesWithForwardedDependencies);
+                            this.ProcessNode(injectedNode, nodeRankOffsets, data);
                         }
 
                         ++childIndex;
