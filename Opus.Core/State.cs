@@ -16,19 +16,39 @@ namespace Opus.Core
 
         private static System.Collections.Generic.Dictionary<string, Category> s = new System.Collections.Generic.Dictionary<string, Category>();
 
+        private static void
+        GetOpusVersionData(
+            out System.Version assemblyVersion,
+            out string productVersion)
+        {
+            var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
+            assemblyVersion = coreAssembly.GetName().Version;
+            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location);
+            var pv = versionInfo.ProductVersion.Trim();
+            if (string.IsNullOrEmpty(pv))
+            {
+                // some Mono implementations only gather the product major/minor/build strings from the assembly
+                productVersion = System.String.Format("{0}.{1}", versionInfo.ProductMajorPart, versionInfo.ProductMinorPart);
+            }
+            else
+            {
+                productVersion = pv;
+            }
+        }
+
         static
         State()
         {
             ReadOnly = false;
 
-            var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
-            var version = coreAssembly.GetName().Version;
-            var productVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location).ProductVersion;
+            System.Version assemblyVersion;
+            string productVersion;
+            GetOpusVersionData(out assemblyVersion, out productVersion);
 
             AddCategory("Opus");
             var opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Add<string>("Opus", "Directory", opusDirectory);
-            Add<System.Version>("Opus", "Version", version);
+            Add<System.Version>("Opus", "Version", assemblyVersion);
             Add<string>("Opus", "VersionString", productVersion);
             Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 

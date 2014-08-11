@@ -1,3 +1,5 @@
+11-Aug-2014 Some Mono versions do not fetch the productversion string from the assembly. Instead they fetch the major, minor, build parts. Implementing a fallback to always capture a version string for Opus.
+
 05-Aug-2014 Removed MocOutputPath from the IMocOptions in QtCommon. The locations on the module now handle this (QtCommon.MocFile.OutputFile).
 
 04-Aug-2014 Only add option updates from required dependencies themselves, not their entire dependency tree. This satisfies dependencies for explicit dynamic library loading with LoadLibrary and dlopen, but does not bring in option updates that are not required to build.
