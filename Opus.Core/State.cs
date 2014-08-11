@@ -24,7 +24,7 @@ namespace Opus.Core
             var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
             assemblyVersion = coreAssembly.GetName().Version;
             var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location);
-            var pv = versionInfo.ProductVersion;
+            var pv = versionInfo.ProductVersion.Trim();
             if (string.IsNullOrEmpty(pv))
             {
                 // some Mono implementations only gather the product major/minor/build strings from the assembly
