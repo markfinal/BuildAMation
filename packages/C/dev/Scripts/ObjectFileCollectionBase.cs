@@ -157,7 +157,11 @@ namespace C
             }
 
             var matchingLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, exists);
-            this.DeferredUpdates[matchingLocation] = delegateArray;
+            if (!this.DeferredUpdates.ContainsKey(matchingLocation))
+            {
+                this.DeferredUpdates[matchingLocation] = new Opus.Core.UpdateOptionCollectionDelegateArray();
+            }
+            this.DeferredUpdates[matchingLocation].AddRangeUnique(delegateArray);
         }
     }
 }
