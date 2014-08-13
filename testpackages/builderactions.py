@@ -12,12 +12,13 @@ class Builder(object):
         self.postAction = postAction
 
 # the version of MSBuild.exe to use, depends on which version of VisualStudio was used to build the solution and projects
-# by default, VS2008 is assumed
+# by default, VS2013 is assumed
+defaultVCVersion = "12.0"
 msBuildVersionToNetMapping = {\
-  None:"v3.5",
-  "9.0":"v3.5",
-  "10.0":"v4.0.30319",
-  "11.0":"v4.0.30319"
+    "9.0":"v3.5",
+    "10.0":"v4.0.30319",
+    "11.0":"v4.0.30319",
+    "12.0":"v4.0.30319"
 }
 
 def VSSolutionPost(package, options, outputMessages, errorMessages):
@@ -33,13 +34,17 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         vcVersion = options.visualc_version
         if vcVersion:
             vcVersion = vcVersion[0]
+        else:
+            vcVersion = defaultVCVersion
         if vcVersion:
             vcVersionSplit = vcVersion.split('.')
             vcMajorVersion = int(vcVersionSplit[0])
-        if not vcVersion or vcMajorVersion < 12:
-            msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
-        else:
+        # location of MSBuild changed in VS2013
+        if vcMajorVersion >= 12:
+            # VS2013 onwards path for MSBuild
             msBuildPath = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe"%vcVersion
+        else:
+            msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
         for config in options.configurations:
             argList = []
             argList.append(msBuildPath)
@@ -57,7 +62,8 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
             if errorStream:
                 errorMessages.write(errorStream)
     except Exception, e:
-        errorMessages.write(str(e))
+        import traceback
+        errorMessages.write(str(e) + '\n' + traceback.format_exc())
         return -1
     return exitCode
 

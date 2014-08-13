@@ -32,9 +32,9 @@
     <Opus:Package Name="VisualC">
       <Opus:Version Id="10.0" />
       <Opus:Version Id="11.0" />
-      <Opus:Version Id="12.0" />
+      <Opus:Version Id="12.0" Default="true" />
       <Opus:Version Id="8.0" />
-      <Opus:Version Id="9.0" Default="true" />
+      <Opus:Version Id="9.0" />
     </Opus:Package>
     <Opus:Package Name="VSSolutionBuilder">
       <Opus:Version Id="dev" />
