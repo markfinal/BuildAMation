@@ -19,6 +19,20 @@ namespace XcodeBuilder
         }
 
         private void
+        CreateKeyValuePair(
+            System.Xml.XmlElement parent,
+            string key,
+            string value)
+        {
+            var keyEl = this.Document.CreateElement("key");
+            keyEl.InnerText = key;
+            var valueEl = this.Document.CreateElement("string");
+            valueEl.InnerText = value;
+            parent.AppendChild(keyEl);
+            parent.AppendChild(valueEl);
+        }
+
+        private void
         CreatePlist()
         {
             this.Document = new System.Xml.XmlDocument();
@@ -38,14 +52,10 @@ namespace XcodeBuilder
             plistEl.AppendChild(dictEl);
             this.Document.AppendChild(plistEl);
 
-            {
-                var key = this.Document.CreateElement("key");
-                key.InnerText = "BuildLocationStyle";
-                var value = this.Document.CreateElement("string");
-                value.InnerText = "UseTargetSettings";
-                dictEl.AppendChild(key);
-                dictEl.AppendChild(value);
-            }
+            CreateKeyValuePair(dictEl, "BuildLocationStyle", "UseTargetSettings");
+            CreateKeyValuePair(dictEl, "CustomBuildLocationType", "RelativeToDerivedData");
+            CreateKeyValuePair(dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
+            CreateKeyValuePair(dictEl, "DerivedDataLocationStyle", "WorkspaceRelativePath");
         }
 
         private string Path
