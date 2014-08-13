@@ -52,8 +52,13 @@ namespace XcodeBuilder
             plistEl.AppendChild(dictEl);
             this.Document.AppendChild(plistEl);
 
-            CreateKeyValuePair(dictEl, "BuildLocationStyle", "UseTargetSettings");
-            CreateKeyValuePair(dictEl, "CustomBuildLocationType", "RelativeToDerivedData");
+            // build and intermediate file locations
+            CreateKeyValuePair(dictEl, "BuildLocationStyle", "CustomLocation");
+            CreateKeyValuePair(dictEl, "CustomBuildIntermediatesPath", ".");
+            CreateKeyValuePair(dictEl, "CustomBuildLocationType", "RelativeToWorkspace");
+            CreateKeyValuePair(dictEl, "CustomBuildProductsPath", ".");
+
+            // derived data
             CreateKeyValuePair(dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
             CreateKeyValuePair(dictEl, "DerivedDataLocationStyle", "WorkspaceRelativePath");
         }
