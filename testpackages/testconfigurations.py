@@ -177,9 +177,7 @@ configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["
 configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
 configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
-"""
 configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
-"""
 configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
 configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                      linux={"Native":["gcc"],"MakeFile":["gcc"]},
