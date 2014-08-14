@@ -48,13 +48,16 @@ namespace XcodeBuilder
         SafeOptionValue(
             string value)
         {
-            if (!value.StartsWith("(") &&
-                (value.Contains("=") ||
-                 value.Contains("$") ||
-                 value.Contains(",") ||
-                 value.Contains("+") ||
-                 value.Contains("-") ||
-                 value.Contains("@")))
+            if (value.StartsWith("("))
+            {
+                return value;
+            }
+            if (value.Contains("=") ||
+                value.Contains("$(") ||
+                value.Contains(",") ||
+                value.Contains("+") ||
+                value.Contains("-") ||
+                value.Contains("@"))
             {
                 return "\"" + value + "\"";
             }
