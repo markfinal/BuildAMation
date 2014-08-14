@@ -958,7 +958,9 @@ namespace GccCommon
             var validArchsOption = configuration.Options["VALID_ARCHS"];
             if (sixtyFourBit.Value)
             {
-                //archsOption.AddUnique("$(ARCHS_STANDARD)"); // implies both 32-bit and 64-bit
+                // TODO: this line only required in Xcode 4
+                archsOption.AddUnique("$(ARCHS_STANDARD)"); // implies both 32-bit and 64-bit
+
                 validArchsOption.AddUnique("x86_64");
             }
             else
