@@ -36,6 +36,8 @@ namespace XcodeBuilder
         CreatePlist()
         {
             this.Document = new System.Xml.XmlDocument();
+            // don't resolve any URLs, or if there is no internet, the process will pause for some time
+            this.Document.XmlResolver = null;
 
             {
                 var type = this.Document.CreateDocumentType("plist", "-//Apple Computer//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd", null);
