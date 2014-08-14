@@ -725,18 +725,23 @@ namespace ClangCommon
              Opus.Core.Target target)
         {
             var sixtyFourBit = option as Opus.Core.ValueTypeOption<bool>;
-            var archOption = configuration.Options["ARCHS"];
+            var validArchOption = configuration.Options["VALID_ARCHS"];
             if (sixtyFourBit.Value)
             {
-                archOption.AddUnique("$(NATIVE_ARCH_64_BIT)");
+                validArchOption.AddUnique("$(ARCHS_STANDARD)"); // implies 64-bit
             }
             else
             {
-                archOption.AddUnique("$(NATIVE_ARCH_32_BIT)");
+                validArchOption.AddUnique("$(ARCHS_STANDARD_32_BIT)");
+
+                // this does create a warning when loading in Xcode, that the ARCH should not be set
+                // as Xcode would prefer to figure it out, but since this is forcing against the default
+                // of 64-bit, it has to be set
+                configuration.Options["ARCHS"].AddUnique("$(ARCHS_STANDARD_32_BIT)");
             }
-            if (archOption.Count != 1)
+            if (validArchOption.Count != 1)
             {
-                throw new Opus.Core.Exception("More than one architecture option has been set");
+                throw new Opus.Core.Exception("More than one valid architecture option has been set");
             }
         }
         #endregion

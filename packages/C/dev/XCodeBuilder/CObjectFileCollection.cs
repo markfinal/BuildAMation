@@ -50,7 +50,6 @@ namespace XcodeBuilder
 
             // TODO: these should really be options in their own rights
 #if true
-            buildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
             buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique("10.8");
             buildConfiguration.Options["SDKROOT"].AddUnique("macosx");
 
