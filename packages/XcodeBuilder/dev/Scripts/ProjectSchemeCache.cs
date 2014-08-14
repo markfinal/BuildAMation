@@ -68,7 +68,7 @@ namespace XcodeBuilder
                 var blueprint = doc.CreateAttribute("BlueprintIdentifier");
                 blueprint.Value = target.UUID;
                 var buildableName = doc.CreateAttribute("BuildableName");
-                buildableName.Value = target.Name;
+                buildableName.Value = target.ProductReference.ShortPath;
                 var blueprintName = doc.CreateAttribute("BlueprintName");
                 blueprintName.Value = target.Name;
                 var refContainer = doc.CreateAttribute("ReferencedContainer");
