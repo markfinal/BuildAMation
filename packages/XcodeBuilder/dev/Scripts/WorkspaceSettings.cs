@@ -20,13 +20,14 @@ namespace XcodeBuilder
 
         private void
         CreateKeyValuePair(
+            System.Xml.XmlDocument doc,
             System.Xml.XmlElement parent,
             string key,
             string value)
         {
-            var keyEl = this.Document.CreateElement("key");
+            var keyEl = doc.CreateElement("key");
             keyEl.InnerText = key;
-            var valueEl = this.Document.CreateElement("string");
+            var valueEl = doc.CreateElement("string");
             valueEl.InnerText = value;
             parent.AppendChild(keyEl);
             parent.AppendChild(valueEl);
@@ -35,34 +36,36 @@ namespace XcodeBuilder
         private void
         CreatePlist()
         {
-            this.Document = new System.Xml.XmlDocument();
+            var doc = new System.Xml.XmlDocument();
             // don't resolve any URLs, or if there is no internet, the process will pause for some time
-            this.Document.XmlResolver = null;
+            doc.XmlResolver = null;
 
             {
-                var type = this.Document.CreateDocumentType("plist", "-//Apple Computer//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd", null);
-                this.Document.AppendChild(type);
+                var type = doc.CreateDocumentType("plist", "-//Apple Computer//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd", null);
+                doc.AppendChild(type);
             }
-            var plistEl = this.Document.CreateElement("plist");
+            var plistEl = doc.CreateElement("plist");
             {
-                var versionAttr = this.Document.CreateAttribute("version");
+                var versionAttr = doc.CreateAttribute("version");
                 versionAttr.Value = "1.0";
                 plistEl.Attributes.Append(versionAttr);
             }
 
-            var dictEl = this.Document.CreateElement("dict");
+            var dictEl = doc.CreateElement("dict");
             plistEl.AppendChild(dictEl);
-            this.Document.AppendChild(plistEl);
+            doc.AppendChild(plistEl);
 
             // build and intermediate file locations
-            CreateKeyValuePair(dictEl, "BuildLocationStyle", "CustomLocation");
-            CreateKeyValuePair(dictEl, "CustomBuildIntermediatesPath", ".");
-            CreateKeyValuePair(dictEl, "CustomBuildLocationType", "RelativeToWorkspace");
-            CreateKeyValuePair(dictEl, "CustomBuildProductsPath", ".");
+            CreateKeyValuePair(doc, dictEl, "BuildLocationStyle", "CustomLocation");
+            CreateKeyValuePair(doc, dictEl, "CustomBuildIntermediatesPath", ".");
+            CreateKeyValuePair(doc, dictEl, "CustomBuildLocationType", "RelativeToWorkspace");
+            CreateKeyValuePair(doc, dictEl, "CustomBuildProductsPath", ".");
 
             // derived data
-            CreateKeyValuePair(dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
-            CreateKeyValuePair(dictEl, "DerivedDataLocationStyle", "WorkspaceRelativePath");
+            CreateKeyValuePair(doc, dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
+            CreateKeyValuePair(doc, dictEl, "DerivedDataLocationStyle", "WorkspaceRelativePath");
+
+            this.Document = doc;
         }
 
         private string Path
