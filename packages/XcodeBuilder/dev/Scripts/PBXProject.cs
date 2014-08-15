@@ -20,6 +20,7 @@ namespace XcodeBuilder
             this.RootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
             this.Path = System.IO.Path.Combine(rootDirectory, projectFilename);
 
+            this.LatestXcodeVersion = EXcodeVersion.V4dot6;
             this.NativeTargets = new PBXNativeTargetSection();
             this.FileReferences = new PBXFileReferenceSection();
             this.BuildFiles = new PBXBuildFileSection();
@@ -78,6 +79,12 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        public EXcodeVersion LatestXcodeVersion
+        {
+            get;
+            set;
         }
 
         public PBXNativeTargetSection NativeTargets
@@ -170,6 +177,20 @@ namespace XcodeBuilder
             set;
         }
 
+        private string GetLastUpgradeCheckVersion()
+        {
+            switch (this.LatestXcodeVersion)
+            {
+            case EXcodeVersion.V4dot6:
+                return "0460";
+
+            case EXcodeVersion.V5dot1:
+                return "0510";
+            }
+
+            throw new Opus.Core.Exception("Unrecognized Xcode version, {0}", this.LatestXcodeVersion.ToString());
+        }
+
 #region IWriteableNode implementation
 
         void
@@ -203,7 +224,7 @@ namespace XcodeBuilder
             writer.WriteLine("\t\t{0} /* Project object */ = {{", this.UUID);
             writer.WriteLine("\t\t\tisa = PBXProject;");
             writer.WriteLine("\t\t\tattributes = {");
-            writer.WriteLine("\t\t\t\tLastUpgradeCheck = 0460;");
+            writer.WriteLine("\t\t\t\tLastUpgradeCheck = {0};", this.GetLastUpgradeCheckVersion());
             writer.WriteLine("\t\t\t\tORGANIZATIONNAME = \"Mark Final\";");
             writer.WriteLine("\t\t\t};");
             writer.WriteLine("\t\t\tbuildConfigurationList = {0} /* Build configuration list for PBXProject \"{1}\" */;", this.BuildConfigurationList.UUID, this.Name);

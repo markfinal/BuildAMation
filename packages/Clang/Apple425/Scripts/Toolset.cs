@@ -42,7 +42,7 @@ namespace Clang
         {
             get
             {
-                return XcodeBuilder.EXcodeVersion.V4;
+                return XcodeBuilder.EXcodeVersion.V4dot6;
             }
         }
 

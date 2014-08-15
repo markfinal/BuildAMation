@@ -5,9 +5,10 @@
 // <author>Mark Final</author>
 namespace XcodeBuilder
 {
+    // note: these values must be incrementing
     public enum EXcodeVersion
     {
-        V4,
-        V51
+        V4dot6 = 46,
+        V5dot1 = 51
     }
 }

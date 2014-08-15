@@ -731,7 +731,7 @@ namespace ClangCommon
             {
                 var toolset = target.Toolset;
                 var xcodeDetails = toolset as XcodeBuilder.IXcodeDetails;
-                if (null != xcodeDetails && xcodeDetails.SupportedVersion == XcodeBuilder.EXcodeVersion.V4)
+                if (null != xcodeDetails && xcodeDetails.SupportedVersion == XcodeBuilder.EXcodeVersion.V4dot6)
                 {
                     // Note; this option only required in Xcode 4 - gives a warning in Xcode 5
                     archsOption.AddUnique("$(ARCHS_STANDARD)"); // implies both 32-bit and 64-bit
