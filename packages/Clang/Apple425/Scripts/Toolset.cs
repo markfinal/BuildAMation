@@ -6,7 +6,8 @@
 namespace Clang
 {
     public sealed class Toolset :
-        ClangCommon.Toolset
+        ClangCommon.Toolset,
+        XcodeBuilder.IXcodeDetails
     {
         public
         Toolset() : base()
@@ -34,5 +35,17 @@ namespace Clang
         {
             return @"/usr/bin";
         }
+
+        #region IXcodeDetails implementation
+
+        XcodeBuilder.EXcodeVersion XcodeBuilder.IXcodeDetails.SupportedVersion
+        {
+            get
+            {
+                return XcodeBuilder.EXcodeVersion.V4;
+            }
+        }
+
+        #endregion
     }
 }
