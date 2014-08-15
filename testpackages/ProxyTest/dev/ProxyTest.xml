@@ -6,6 +6,7 @@
     </Opus:Package>
     <Opus:Package Name="Clang">
       <Opus:Version Id="Apple425" Default="true" />
+      <Opus:Version Id="Apple503" />
     </Opus:Package>
     <Opus:Package Name="Gcc">
       <Opus:Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />

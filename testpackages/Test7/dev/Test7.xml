@@ -4,6 +4,7 @@
     <Opus:Package Name="Clang">
       <Opus:Version Id="3.1" />
       <Opus:Version Id="Apple425" Default="true" />
+      <Opus:Version Id="Apple503" />
     </Opus:Package>
     <Opus:Package Name="ComposerXE">
       <Opus:Version Id="12" />
