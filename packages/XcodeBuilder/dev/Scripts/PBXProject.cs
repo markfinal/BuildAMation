@@ -20,7 +20,17 @@ namespace XcodeBuilder
             this.RootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
             this.Path = System.IO.Path.Combine(rootDirectory, projectFilename);
 
-            this.LatestXcodeVersion = EXcodeVersion.V4dot6;
+            var toolset = node.Target.Toolset;
+            var xcodeDetails = toolset as IXcodeDetails;
+            if (null != xcodeDetails)
+            {
+                this.LatestXcodeVersion = xcodeDetails.SupportedVersion;
+            }
+            else
+            {
+                this.LatestXcodeVersion = EXcodeVersion.V4dot6;
+            }
+
             this.NativeTargets = new PBXNativeTargetSection();
             this.FileReferences = new PBXFileReferenceSection();
             this.BuildFiles = new PBXBuildFileSection();
@@ -81,7 +91,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public EXcodeVersion LatestXcodeVersion
+        private EXcodeVersion LatestXcodeVersion
         {
             get;
             set;
@@ -177,7 +187,8 @@ namespace XcodeBuilder
             set;
         }
 
-        private string GetLastUpgradeCheckVersion()
+        private string
+        GetLastUpgradeCheckVersion()
         {
             switch (this.LatestXcodeVersion)
             {
