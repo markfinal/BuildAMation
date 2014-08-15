@@ -1,4 +1,4 @@
-// <copyright file="CCompiler.cs" company="Mark Final">
+// <copyright file="Clang.cs" company="Mark Final">
 //  Opus package
 // </copyright>
 // <summary>Clang package</summary>
