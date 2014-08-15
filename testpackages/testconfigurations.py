@@ -112,61 +112,61 @@ def TestOptionSetup(optParser):
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test4-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test5-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test6-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test7-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test8-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test9-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test10-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test11-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test12-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["clang"]})
 configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test15-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                   linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                       osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"]})
+                                       osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"]})
 configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                         linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                        osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"]})
+                                        osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"]})
 configs["CSharpTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None,"VSSolution":None},
                                        linux={"Native":None,"MakeFile":None},
                                        osx={"Native":None,"MakeFile":None})
@@ -177,11 +177,11 @@ configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["
 configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
 configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
 configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
-configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
-configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"Xcode":["llvm-gcc", "clang"]})
+configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
                                      linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                     osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"]})
+                                     osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"]})
 configs["HeaderLibraryTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
-                                             linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["clang-apple"]},
-                                             osx={"Native":["llvm-gcc", "clang-apple"],"MakeFile":["llvm-gcc", "clang-apple"],"QMake":["clang-apple"],"Xcode":["llvm-gcc", "clang-apple"]})
+                                             linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["clang"]},
+                                             osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
