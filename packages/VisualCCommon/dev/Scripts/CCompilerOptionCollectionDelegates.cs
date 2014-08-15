@@ -162,7 +162,6 @@ namespace VisualCCommon
              Opus.Core.Option option,
              Opus.Core.Target target)
         {
-#if true
             var outputFileLoc = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputFile];
             var enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
@@ -184,47 +183,6 @@ namespace VisualCCommon
                 default:
                     throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
             }
-#else
-            var options = sender as CCompilerOptionCollection;
-            if (null == options.ObjectFilePath)
-            {
-                return;
-            }
-            Opus.Core.ValueTypeOption<C.ECompilerOutput> enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
-            switch (enumOption.Value)
-            {
-                case C.ECompilerOutput.CompileOnly:
-                    {
-                        commandLineBuilder.Add("-c");
-                        string objPathName = options.ObjectFilePath;
-                        if (objPathName.Contains(" "))
-                        {
-                            commandLineBuilder.Add(System.String.Format("-Fo\"{0}\"", objPathName));
-                        }
-                        else
-                        {
-                            commandLineBuilder.Add(System.String.Format("-Fo{0}", objPathName));
-                        }
-                    }
-                    break;
-                case C.ECompilerOutput.Preprocess: // with line numbers
-                    {
-                        commandLineBuilder.Add("-P");
-                        string objPathName = options.PreprocessedFilePath;
-                        if (objPathName.Contains(" "))
-                        {
-                            commandLineBuilder.Add(System.String.Format("-Fo\"{0}\"", objPathName));
-                        }
-                        else
-                        {
-                            commandLineBuilder.Add(System.String.Format("-Fo{0}", objPathName));
-                        }
-                    }
-                    break;
-                default:
-                    throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
-            }
-#endif
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         OutputTypeVisualStudioProcessor(
@@ -233,7 +191,6 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var node = (sender as Opus.Core.BaseOptionCollection).OwningNode;
             if (null == node)
             {
@@ -293,57 +250,6 @@ namespace VisualCCommon
                 return returnVal;
             }
             return null;
-#else
-            var processOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
-            var options = sender as CCompilerOptionCollection;
-            if (null == options.ObjectFilePath)
-            {
-                return null;
-            }
-            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
-            {
-                VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary ();
-                returnVal.Add ("GeneratePreprocessedFile", processOption.Value.ToString ("D"));
-                switch (processOption.Value)
-                {
-                case C.ECompilerOutput.CompileOnly:
-                    {
-                        returnVal.Add ("ObjectFile", options.ObjectFilePath);
-                        return returnVal;
-                    }
-                case C.ECompilerOutput.Preprocess:
-                    {
-                        returnVal.Add ("ObjectFile", options.PreprocessedFilePath);
-                        return returnVal;
-                    }
-                default:
-                    throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
-                }
-            }
-            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
-            {
-                VisualStudioProcessor.ToolAttributeDictionary returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                switch (processOption.Value)
-                {
-                    case C.ECompilerOutput.CompileOnly:
-                        {
-                            returnVal.Add("PreprocessToFile", "false");
-                            returnVal.Add("ObjectFileName", options.ObjectFilePath);
-                        }
-                        break;
-                    case C.ECompilerOutput.Preprocess:
-                        {
-                            returnVal.Add("PreprocessToFile", "true");
-                            returnVal.Add("ObjectFileName", options.PreprocessedFilePath);
-                        }
-                        break;
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized option for C.ECompilerOutput");
-                }
-                return returnVal;
-            }
-            return null;
-#endif
         }
         private static void
         DebugSymbolsCommandLineProcessor(
@@ -925,7 +831,6 @@ namespace VisualCCommon
              Opus.Core.Option option,
              Opus.Core.Target target)
         {
-#if true
             var options = sender as C.ICCompilerOptions;
             if (options.DebugSymbols)
             {
@@ -953,56 +858,6 @@ namespace VisualCCommon
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                 }
             }
-#else
-            var options = sender as CCompilerOptionCollection;
-            if ((sender as C.ICCompilerOptions).DebugSymbols)
-            {
-                switch ((sender as ICCompilerOptions).DebugType)
-                {
-                    case EDebugType.Embedded:
-                        commandLineBuilder.Add("-Z7");
-                        break;
-                    case EDebugType.ProgramDatabase:
-                        {
-                            commandLineBuilder.Add("-Zi");
-                            string pdbPathName = options.ProgramDatabaseFilePath;
-                            if (null == pdbPathName)
-                            {
-                                throw new Opus.Core.Exception("PDB file path has not been set");
-                            }
-                            if (pdbPathName.Contains(" "))
-                            {
-                                commandLineBuilder.Add(System.String.Format("-Fd\"{0}\"", pdbPathName));
-                            }
-                            else
-                            {
-                                commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbPathName));
-                            }
-                        }
-                        break;
-                    case EDebugType.ProgramDatabaseEditAndContinue:
-                        {
-                            commandLineBuilder.Add("-ZI");
-                            string pdbPathName = options.ProgramDatabaseFilePath;
-                            if (null == pdbPathName)
-                            {
-                                throw new Opus.Core.Exception("PDB file path has not been set");
-                            }
-                            if (pdbPathName.Contains(" "))
-                            {
-                                commandLineBuilder.Add(System.String.Format("-Fd\"{0}\"", pdbPathName));
-                            }
-                            else
-                            {
-                                commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbPathName));
-                            }
-                        }
-                        break;
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
-                }
-            }
-#endif
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         DebugTypeVisualStudioProcessor(
@@ -1011,7 +866,6 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var attributeName = "DebugInformationFormat";
             if (!(sender as C.ICCompilerOptions).DebugSymbols)
             {
@@ -1033,15 +887,6 @@ namespace VisualCCommon
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
-#if true
-                        // TODO: handle PDBs
-#else
-                    case EDebugType.ProgramDatabase:
-                    case EDebugType.ProgramDatabaseEditAndContinue:
-                        returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
-                        returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                        break;
-#endif
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                 }
@@ -1053,7 +898,6 @@ namespace VisualCCommon
                     case EDebugType.Embedded:
                         returnVal.Add("DebugInformationFormat", "OldStyle");
                         break;
-#if true
                     case EDebugType.ProgramDatabase:
                         {
                             returnVal.Add("DebugInformationFormat", "ProgramDatabase");
@@ -1068,69 +912,11 @@ namespace VisualCCommon
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
-#else
-                    case EDebugType.ProgramDatabase:
-                        returnVal.Add("DebugInformationFormat", "ProgramDatabase");
-                        returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                        break;
-                    case EDebugType.ProgramDatabaseEditAndContinue:
-                        returnVal.Add("DebugInformationFormat", "EditAndContinue");
-                        returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                        break;
-#endif
                     default:
                         throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
                 }
             }
             return returnVal;
-#else
-            var options = sender as CCompilerOptionCollection;
-            var attributeName = "DebugInformationFormat";
-            if ((sender as C.ICCompilerOptions).DebugSymbols)
-            {
-                var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
-                {
-                    switch ((sender as ICCompilerOptions).DebugType)
-                    {
-                        case EDebugType.Embedded:
-                            returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
-                            break;
-                        case EDebugType.ProgramDatabase:
-                        case EDebugType.ProgramDatabaseEditAndContinue:
-                            returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
-                            returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                            break;
-                        default:
-                            throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
-                    }
-                }
-                else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
-                {
-                    switch ((sender as ICCompilerOptions).DebugType)
-                    {
-                        case EDebugType.Embedded:
-                            returnVal.Add("DebugInformationFormat", "OldStyle");
-                            break;
-                        case EDebugType.ProgramDatabase:
-                            returnVal.Add("DebugInformationFormat", "ProgramDatabase");
-                            returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                            break;
-                        case EDebugType.ProgramDatabaseEditAndContinue:
-                            returnVal.Add("DebugInformationFormat", "EditAndContinue");
-                            returnVal.Add("ProgramDataBaseFileName", options.ProgramDatabaseFilePath);
-                            break;
-                        default:
-                            throw new Opus.Core.Exception("Unrecognized value for VisualC.EDebugType");
-                    }
-                }
-                return returnVal;
-            }
-            else
-            {
-                return null;
-            }
-#endif
         }
         private static void
         BrowseInformationCommandLineProcessor(
@@ -1163,7 +949,6 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var node = (sender as Opus.Core.BaseOptionCollection).OwningNode;
             if (null == node)
             {
@@ -1197,35 +982,6 @@ namespace VisualCCommon
             }
             returnVal.Add("BrowseInformationFile", browseDir);
             return returnVal;
-#else
-            var enumOption = option as Opus.Core.ValueTypeOption<EBrowseInformation>;
-            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var options = sender as C.CompilerOptionCollection;
-            // the trailing directory separator is important, or unexpected rebuilds occur
-            var browseDir = !string.IsNullOrEmpty(options.OutputDirectoryPath) ? options.OutputDirectoryPath + "\\" : string.Empty;
-            if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
-            {
-                returnVal.Add("BrowseInformation", enumOption.Value.ToString("D"));
-            }
-            else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
-            {
-                switch (enumOption.Value)
-                {
-                    case EBrowseInformation.None:
-                        returnVal.Add("BrowseInformation", "false");
-                        break;
-                    // TODO: there does not appear to be a different set of values in MSBUILD
-                    case EBrowseInformation.Full:
-                    case EBrowseInformation.NoLocalSymbols:
-                        returnVal.Add("BrowseInformation", "true");
-                        break;
-                    default:
-                        throw new Opus.Core.Exception("Unrecognized EBrowseInformation option");
-                }
-            }
-            returnVal.Add("BrowseInformationFile", browseDir);
-            return returnVal;
-#endif
         }
         private static void
         StringPoolingCommandLineProcessor(

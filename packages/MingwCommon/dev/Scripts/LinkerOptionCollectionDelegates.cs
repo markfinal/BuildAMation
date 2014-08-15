@@ -26,20 +26,8 @@ namespace MingwCommon
             {
                 case C.ELinkerOutput.Executable:
                 case C.ELinkerOutput.DynamicLibrary:
-#if true
                     var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
-#else
-                    string outputPathName = options.OutputFilePath;
-                    if (outputPathName.Contains(" "))
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o \"{0}\"", outputPathName));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-o {0}", outputPathName));
-                    }
-#endif
                     break;
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
@@ -106,25 +94,11 @@ namespace MingwCommon
             {
                 commandLineBuilder.Add("-shared");
                 var options = sender as LinkerOptionCollection;
-#if true
                 if (options.OwningNode.Module.Locations.Contains(C.DynamicLibrary.ImportLibraryFile))
                 {
                     var outputPath = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile].GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", outputPath));
                 }
-#else
-                if (null != options.StaticImportLibraryFilePath)
-                {
-                    if (options.StaticImportLibraryFilePath.Contains(" "))
-                    {
-                        commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,\"{0}\"", options.StaticImportLibraryFilePath));
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", options.StaticImportLibraryFilePath));
-                    }
-                }
-#endif
             }
         }
         private static void
@@ -183,7 +157,6 @@ namespace MingwCommon
              Opus.Core.Option option,
              Opus.Core.Target target)
         {
-#if true
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
@@ -191,21 +164,6 @@ namespace MingwCommon
                 var mapFileLoc = locationMap[C.Application.MapFile];
                 commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", mapFileLoc.GetSinglePath()));
             }
-#else
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (boolOption.Value)
-            {
-                var options = sender as LinkerOptionCollection;
-                if (options.MapFilePath.Contains(" "))
-                {
-                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,\"{0}\"", options.MapFilePath));
-                }
-                else
-                {
-                    commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", options.MapFilePath));
-                }
-            }
-#endif
         }
         private static void
         AdditionalOptionsCommandLineProcessor(

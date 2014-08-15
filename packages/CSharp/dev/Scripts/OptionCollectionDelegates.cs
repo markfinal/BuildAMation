@@ -39,20 +39,8 @@ namespace CSharp
                 default:
                     throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
             }
-#if true
             var outputPath = options.OwningNode.Module.Locations[CSharp.Assembly.OutputFile].GetSinglePath();
             commandLineBuilder.Add(System.String.Format("/out:{0}", outputPath));
-#else
-            var outputPathName = options.OutputFilePath;
-            if (outputPathName.Contains(" "))
-            {
-                commandLineBuilder.Add(System.String.Format("/out:\"{0}\"", outputPathName));
-            }
-            else
-            {
-                commandLineBuilder.Add(System.String.Format("/out:{0}", outputPathName));
-            }
-#endif
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         TargetVisualStudioProcessor(
@@ -186,21 +174,8 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:pdbinfo");
-#if true
-                            // TODO: pdbs
                             var pdbFileLoc = (sender as OptionCollection).OwningNode.Module.Locations[Assembly.PDBFile];
                             commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbFileLoc.GetSinglePath()));
-#else
-                            string pdbPathName = options.ProgramDatabaseFilePath;
-                            if (pdbPathName.Contains(" "))
-                            {
-                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", pdbPathName));
-                            }
-                            else
-                            {
-                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbPathName));
-                            }
-#endif
                         }
                         else
                         {
@@ -214,20 +189,8 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:full");
-#if true
                             var pdbFileLoc = (sender as OptionCollection).OwningNode.Module.Locations[Assembly.PDBFile];
                             commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbFileLoc.GetSinglePath()));
-#else
-                            string pdbPathName = options.ProgramDatabaseFilePath;
-                            if (pdbPathName.Contains(" "))
-                            {
-                                commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", pdbPathName));
-                            }
-                            else
-                            {
-                                commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbPathName));
-                            }
-#endif
                         }
                         else
                         {

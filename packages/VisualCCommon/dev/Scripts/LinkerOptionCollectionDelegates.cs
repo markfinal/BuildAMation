@@ -40,7 +40,6 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
             var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
@@ -56,22 +55,6 @@ namespace VisualCCommon
                 default:
                     throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
-#else
-            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
-            var options = sender as LinkerOptionCollection;
-            switch (enumOption.Value)
-            {
-                case C.ELinkerOutput.Executable:
-                case C.ELinkerOutput.DynamicLibrary:
-                    {
-                        var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                        returnVal.Add("OutputFile", options.OutputFilePath);
-                        return returnVal;
-                    }
-                default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
-            }
-#endif
         }
         private static void
         DoNotAutoIncludeStandardLibrariesCommandLineProcessor(
@@ -109,22 +92,9 @@ namespace VisualCCommon
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-DEBUG");
-#if true
                 var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
                 var pdbPath = pdbFile.GetSinglePath();
                 commandLineBuilder.Add(System.String.Format("-PDB:{0}", pdbPath));
-#else
-                var options = sender as LinkerOptionCollection;
-                var pdbPathName = options.ProgramDatabaseFilePath;
-                if (pdbPathName.Contains(" "))
-                {
-                    commandLineBuilder.Add(System.String.Format("-PDB:\"{0}\"", pdbPathName));
-                }
-                else
-                {
-                    commandLineBuilder.Add(System.String.Format("-PDB:{0}", pdbPathName));
-                }
-#endif
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
@@ -134,36 +104,16 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("GenerateDebugInformation", debugSymbolsOption.Value.ToString().ToLower());
-#if true
             if (debugSymbolsOption.Value)
             {
                 var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
                 var pdbPath = pdbFile.GetSinglePath();
                 returnVal.Add("ProgramDatabaseFile", pdbPath);
             }
-#else
-            if (debugSymbolsOption.Value)
-            {
-                var options = sender as LinkerOptionCollection;
-                returnVal.Add("ProgramDatabaseFile", options.ProgramDatabaseFilePath);
-            }
-#endif
             return returnVal;
-#else
-            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
-            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            returnVal.Add("GenerateDebugInformation", debugSymbolsOption.Value.ToString().ToLower());
-            if (debugSymbolsOption.Value)
-            {
-                var options = sender as LinkerOptionCollection;
-                returnVal.Add("ProgramDatabaseFile", options.ProgramDatabaseFilePath);
-            }
-            return returnVal;
-#endif
         }
         private static void
         SubSystemCommandLineProcessor(
@@ -240,7 +190,6 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
@@ -250,19 +199,6 @@ namespace VisualCCommon
                 returnVal.Add("ImportLibrary", staticImportLibraryLoc.GetSinglePath());
             }
             return returnVal;
-#else
-            var options = sender as LinkerOptionCollection;
-            if (options.OutputPaths.Has(C.OutputFileFlags.StaticImportLibrary))
-            {
-                var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                returnVal.Add("ImportLibrary", options.StaticImportLibraryFilePath);
-                return returnVal;
-            }
-            else
-            {
-                return null;
-            }
-#endif
         }
         private static void
         LibraryPathsCommandLineProcessor(
@@ -431,28 +367,12 @@ namespace VisualCCommon
              Opus.Core.Option option,
              Opus.Core.Target target)
         {
-#if true
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
                 commandLineBuilder.Add(System.String.Format("-MAP:{0}", mapFileLoc.GetSinglePath()));
             }
-#else
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            if (boolOption.Value)
-            {
-                var options = sender as LinkerOptionCollection;
-                if (options.MapFilePath.Contains(" "))
-                {
-                    commandLineBuilder.Add(System.String.Format("-MAP:\"{0}\"", options.MapFilePath));
-                }
-                else
-                {
-                    commandLineBuilder.Add(System.String.Format("-MAP:{0}", options.MapFilePath));
-                }
-            }
-#endif
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         GenerateMapFileVisualStudioProcessor(
@@ -461,7 +381,6 @@ namespace VisualCCommon
              Opus.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-#if true
             var boolOption = option as Opus.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("GenerateMapFile", boolOption.Value.ToString().ToLower());
@@ -471,17 +390,6 @@ namespace VisualCCommon
                 returnVal.Add("MapFileName", mapFileLoc.GetSingleRawPath());
             }
             return returnVal;
-#else
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
-            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            returnVal.Add("GenerateMapFile", boolOption.Value.ToString().ToLower());
-            if (boolOption.Value)
-            {
-                var options = sender as LinkerOptionCollection;
-                returnVal.Add("MapFileName", options.MapFilePath);
-            }
-            return returnVal;
-#endif
         }
         private static void
         AdditionalOptionsCommandLineProcessor(

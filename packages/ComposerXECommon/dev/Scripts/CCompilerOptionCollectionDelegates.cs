@@ -85,56 +85,23 @@ namespace ComposerXECommon
              Opus.Core.Target target)
         {
             var options = sender as CCompilerOptionCollection;
-            if (null == options.OutputName)
-            {
-                // TODO: why was this done?
-                #if true
-                #else
-                options.ObjectFilePath = null;
-                #endif
-                return;
-            }
             var enumOption = option as Opus.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
                 case C.ECompilerOutput.CompileOnly:
                     {
                         commandLineBuilder.Add("-c");
-                    #if true
                         var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
                         // TODO: isn't there an option on the tool for the flag?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
-                    #else
-                        string objPathName = options.ObjectFilePath;
-                        if (objPathName.Contains(" "))
-                        {
-                            commandLineBuilder.Add(System.String.Format("-o \"{0}\"", objPathName));
-                        }
-                        else
-                        {
-                            commandLineBuilder.Add(System.String.Format("-o {0}", objPathName));
-                        }
-                    #endif
                     }
                     break;
                 case C.ECompilerOutput.Preprocess:
                     {
                         commandLineBuilder.Add("-E");
-                    #if true
                         var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
                         // TODO: isn't there an option on the tool for the flag?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
-                    #else
-                        string objPathName = options.PreprocessedFilePath;
-                        if (objPathName.Contains(" "))
-                        {
-                            commandLineBuilder.Add(System.String.Format("-o \"{0}\" ", objPathName));
-                        }
-                        else
-                        {
-                            commandLineBuilder.Add(System.String.Format("-o {0} ", objPathName));
-                        }
-                    #endif
                     }
                     break;
                 default:
