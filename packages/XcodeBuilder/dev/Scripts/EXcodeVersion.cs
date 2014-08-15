@@ -8,6 +8,6 @@ namespace XcodeBuilder
     public enum EXcodeVersion
     {
         V4,
-        V5
+        V51
     }
 }
