@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.SetConfigurationsAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.PreambleAction]
     internal class SetConfigurationsAction :

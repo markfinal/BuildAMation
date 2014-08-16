@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     /// <summary>
     /// BaseModules are the base class for all real modules in package scripts.

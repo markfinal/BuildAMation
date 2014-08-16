@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.AddDependencyAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class AddDependencyAction :

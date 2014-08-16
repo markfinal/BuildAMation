@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.RemoveDefineAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class RemoveDefineAction :

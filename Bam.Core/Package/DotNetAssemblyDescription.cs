@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus package definition XML file</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     public class DotNetAssemblyDescription
     {

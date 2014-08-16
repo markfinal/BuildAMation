@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.EnableDebugSymbolsInBuildsAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.PreambleAction]
     internal class EnableDebugSymbolsInBuildsAction :

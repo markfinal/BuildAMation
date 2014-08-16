@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.HelpAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class HelpAction :

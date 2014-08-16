@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.CreateDebugProjectAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class CreateDebugProjectAction :

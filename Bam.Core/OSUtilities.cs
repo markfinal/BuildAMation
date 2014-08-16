@@ -4,7 +4,7 @@
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
 
-namespace Opus.Core
+namespace Bam.Core
 {
     public static class OSUtilities
     {

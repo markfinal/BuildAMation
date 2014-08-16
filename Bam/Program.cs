@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
-namespace Opus
+namespace Bam
 {
     /// <summary>
     /// Opus application.

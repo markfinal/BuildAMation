@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.SetBuildRootAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.PreambleAction]
     internal class SetBuildRootAction :

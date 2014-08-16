@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.AddOpusAssemblyAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class AddOpusAssemblyAction :

@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.ShowDirectoryAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class ShowDirectoryAction :

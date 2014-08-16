@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus logging.</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     /// <summary>
     /// Opus logging static class.

@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.RemoveDependencyAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class RemoveDependencyAction : Core.IActionWithArguments

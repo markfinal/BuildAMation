@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.RemoveDotNetAssemblyAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class RemoveDotNetAssemblyAction : Core.IActionWithArguments

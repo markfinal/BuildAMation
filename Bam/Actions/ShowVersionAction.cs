@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.ShowVersionAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class ShowVersionAction :

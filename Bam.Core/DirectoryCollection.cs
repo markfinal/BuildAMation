@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     // TODO: can this be a specific case of a LocationArray? i.e. store locations, but have
     // specialized Add functions

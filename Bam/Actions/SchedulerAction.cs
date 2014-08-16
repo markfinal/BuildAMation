@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.SchedulerAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.PreambleAction]
     internal class SchedulerAction :

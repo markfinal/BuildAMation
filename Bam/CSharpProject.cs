@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus CSharp Project.</summary>
 // <author>Mark Final</author>
-namespace Opus
+namespace Bam
 {
     public enum VisualStudioVersion
     {

@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.RemovePackageRootsAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.TriggerAction]
     internal class RemovePackageRootsAction :

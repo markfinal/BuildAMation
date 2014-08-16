@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     /// <summary>
     /// SymlinkLocation represents a single symbol link on disk.

@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.ForceDefinitionFileUpdateAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.PreambleAction]
     internal class ForceDefinitionFileUpdateAction :

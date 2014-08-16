@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus Core</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     /// <summary>
     /// Location is the abstract base class that can represent any of the higher form of Locations.

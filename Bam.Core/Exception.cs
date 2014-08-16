@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus application exceptions.</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     /// <summary>
     /// Opus Exception class.

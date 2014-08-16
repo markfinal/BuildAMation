@@ -1,4 +1,4 @@
-﻿namespace Opus.Core
+﻿namespace Bam.Core
 {
     public class StringOption : Option
     {

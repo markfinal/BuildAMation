@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Opus.Core</summary>
 // <author>Mark Final</author>
-namespace Opus.Core
+namespace Bam.Core
 {
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed class ModuleGroupAttribute :

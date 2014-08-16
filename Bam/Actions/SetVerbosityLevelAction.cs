@@ -6,7 +6,7 @@
 
 [assembly: Opus.Core.RegisterAction(typeof(Opus.SetVerbosityLevelAction))]
 
-namespace Opus
+namespace Bam
 {
     [Core.ImmediateAction]
     internal class SetVerbosityLevelAction :
