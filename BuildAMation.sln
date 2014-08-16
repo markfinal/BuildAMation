@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 # SharpDevelop 4.0.0.7070
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opus", "Opus\Opus.csproj", "{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opus", "Opus\Bam.csproj", "{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Opus.Core", "Opus.Core\Bam.Core.csproj", "{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}"
 EndProject
