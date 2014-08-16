@@ -21,7 +21,7 @@ namespace Bam.Core
             out System.Version assemblyVersion,
             out string productVersion)
         {
-            var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(Opus.Core.State));
+            var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(State));
             assemblyVersion = coreAssembly.GetName().Version;
             var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location);
             var pv = versionInfo.ProductVersion.Trim();

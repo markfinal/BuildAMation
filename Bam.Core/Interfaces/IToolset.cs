@@ -9,17 +9,17 @@ namespace Bam.Core
     {
         string
         Version(
-            Opus.Core.BaseTarget baseTarget);
+            BaseTarget baseTarget);
 
         string
         InstallPath(
-            Opus.Core.BaseTarget baseTarget);
+            BaseTarget baseTarget);
 
         string
         BinPath(
-            Opus.Core.BaseTarget baseTarget);
+            BaseTarget baseTarget);
 
-        Opus.Core.StringArray Environment
+        StringArray Environment
         {
             get;
         }

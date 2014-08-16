@@ -13,6 +13,6 @@ namespace Bam.Core
 
         Array<LocationKey>
         OutputLocationKeys(
-            Opus.Core.BaseModule module);
+            BaseModule module);
     }
 }

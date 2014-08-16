@@ -8,7 +8,7 @@ namespace Bam.Core
     public sealed class StringArray :
         Array<string>,
         System.ICloneable,
-        Opus.Core.ISetOperations<StringArray>
+        ISetOperations<StringArray>
     {
         public
         StringArray() : base()
@@ -55,7 +55,7 @@ namespace Bam.Core
 
         public
         StringArray(
-            Opus.Core.Array<string> array)
+            Array<string> array)
         {
             foreach (var item in array)
             {

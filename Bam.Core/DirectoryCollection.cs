@@ -111,7 +111,7 @@ namespace Bam.Core
             var complementPaths = this.directoryLocations.Complement(other.directoryLocations);
             if (0 == complementPaths.Count)
             {
-                throw new Opus.Core.Exception("DirectoryCollection complement is empty");
+                throw new Exception("DirectoryCollection complement is empty");
             }
 
             var complementDirectoryCollection = new DirectoryCollection();

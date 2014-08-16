@@ -9,6 +9,6 @@ namespace Bam.Core
     {
         TypeArray
         GetPostActionModuleTypes(
-            Opus.Core.BaseTarget target);
+            BaseTarget target);
     }
 }

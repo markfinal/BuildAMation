@@ -9,6 +9,6 @@ namespace Bam.Core
     {
         void
         PostExecute(
-            Opus.Core.DependencyNodeCollection executedNodes);
+            DependencyNodeCollection executedNodes);
     }
 }

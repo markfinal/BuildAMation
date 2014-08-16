@@ -19,6 +19,6 @@ namespace Bam.Core
             UpdateOptionCollectionDelegateArray delegateArray,
             Location root,
             string pattern,
-            Opus.Core.Location.EExists exists);
+            Location.EExists exists);
     }
 }

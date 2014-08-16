@@ -60,7 +60,7 @@ namespace Bam.Core
         {
             if (null == path)
             {
-                Opus.Core.Log.DebugMessage("Null relative path requested");
+                Log.DebugMessage("Null relative path requested");
                 return path;
             }
 

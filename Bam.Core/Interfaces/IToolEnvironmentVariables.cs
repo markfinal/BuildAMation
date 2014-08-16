@@ -9,6 +9,6 @@ namespace Bam.Core
     {
         System.Collections.Generic.Dictionary<string, StringArray>
         Variables(
-            Opus.Core.BaseTarget baseTarget);
+            BaseTarget baseTarget);
     }
 }

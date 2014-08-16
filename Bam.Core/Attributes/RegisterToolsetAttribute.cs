@@ -18,7 +18,7 @@ namespace Bam.Core
             this.name = name;
 #endif
 
-            Opus.Core.State.Add("Toolset", name, Opus.Core.ToolsetFactory.GetInstance(toolsetType));
+            State.Add("Toolset", name, ToolsetFactory.GetInstance(toolsetType));
         }
 
         public static void RegisterAll()
@@ -34,7 +34,7 @@ true);
 #if DEBUG
             foreach (var a in array)
             {
-                Opus.Core.Log.DebugMessage("Registered toolset '{0}'", (a as RegisterToolsetAttribute).name);
+                Log.DebugMessage("Registered toolset '{0}'", (a as RegisterToolsetAttribute).name);
             }
 #endif
         }

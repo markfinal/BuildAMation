@@ -137,7 +137,7 @@ namespace Bam.Core
 
         public virtual void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            DependencyNode node)
         {
             // do nothing
         }
@@ -280,7 +280,7 @@ namespace Bam.Core
 
         public BaseOptionCollection
         Complement(
-            Opus.Core.BaseOptionCollection other)
+            BaseOptionCollection other)
         {
             // TODO: essentially need to check whether the two option collections share a base class other than BaseOptionCollection
             // can this be done by going backward up the class hierarchy from BaseOptionCollection, since it's likely that the next
@@ -330,7 +330,7 @@ namespace Bam.Core
 
         public BaseOptionCollection
         Intersect(
-            Opus.Core.BaseOptionCollection other)
+            BaseOptionCollection other)
         {
             // TODO: essentially need to check whether the two option collections share a base class other than BaseOptionCollection
             // can this be done by going backward up the class hierarchy from BaseOptionCollection, since it's likely that the next

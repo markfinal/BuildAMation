@@ -46,12 +46,12 @@ namespace Bam.Core
                 }
 
                 var toolsetName = (providers[0] as AssignToolsetProviderAttribute).ToolsetName(toolType);
-                if (!Opus.Core.State.Has("Toolset", toolsetName))
+                if (!State.Has("Toolset", toolsetName))
                 {
                     throw new Exception("Toolset '{0}' not registered", toolsetName);
                 }
 
-                var toolset = Opus.Core.State.Get("Toolset", toolsetName) as IToolset;
+                var toolset = State.Get("Toolset", toolsetName) as IToolset;
                 //Opus.Core.Log.DebugMessage("\tToolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
                 return toolset;
             }

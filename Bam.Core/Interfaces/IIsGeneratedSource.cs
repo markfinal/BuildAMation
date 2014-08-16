@@ -8,6 +8,6 @@ namespace Bam.Core
     public interface IIsGeneratedSource
     {
         bool
-        AutomaticallyHandledByBuilder(Opus.Core.Target target);
+        AutomaticallyHandledByBuilder(Target target);
     }
 }
