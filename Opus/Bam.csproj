@@ -12,7 +12,7 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <AssemblyOriginatorKeyFile>Opus.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Bam.snk</AssemblyOriginatorKeyFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -107,7 +107,7 @@
     <Compile Include="CSharpProject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Opus">
+    <None Include="bam">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
