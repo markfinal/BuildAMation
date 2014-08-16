@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OpusOptionCodeGenerator</RootNamespace>
-    <AssemblyName>OpusOptionCodeGenerator</AssemblyName>
+    <AssemblyName>BamOptionGenerator</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

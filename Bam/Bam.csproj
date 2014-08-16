@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Exe</OutputType>
     <RootNamespace>Opus</RootNamespace>
-    <AssemblyName>Opus</AssemblyName>
+    <AssemblyName>bam</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SignAssembly>true</SignAssembly>
@@ -116,9 +116,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Opus.Core\Opus.Core.csproj">
+    <ProjectReference Include="..\Bam.Core\Bam.Core.csproj">
       <Project>{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}</Project>
-      <Name>Opus.Core</Name>
+      <Name>Bam.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
