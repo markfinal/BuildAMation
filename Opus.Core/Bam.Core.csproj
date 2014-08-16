@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Opus.Core.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Bam.Core.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
