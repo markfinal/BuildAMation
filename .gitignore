@@ -9,7 +9,6 @@ testpackages/*/dev/Opus
 testpackages/*/dev/build
 testpackages/Logs
 .DS_Store
-Opus/obj
-Opus.Core/obj
-OpusOptionCodeGenerator/obj
-
+Bam/obj
+Bam.Core/obj
+BamOptionGenerator/obj
