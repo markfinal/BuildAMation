@@ -24,7 +24,7 @@ namespace Bam
         {
             get
             {
-                return "Removes an Opus assembly from the package definition (separated by " + System.IO.Path.PathSeparator + ")";
+                return "Removes an BuildAMation assembly from the package definition (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
@@ -69,13 +69,13 @@ namespace Bam
                 {
                     xmlFile.OpusAssemblies.Remove(opusAssemblyName);
 
-                    Core.Log.MessageAll("Removed Opus assembly '{0}' from package '{1}'", opusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("Removed BuildAMation assembly '{0}' from package '{1}'", opusAssemblyName, mainPackageId.ToString());
 
                     success = true;
                 }
                 else
                 {
-                    Core.Log.MessageAll("Opus assembly '{0}' was not used by package '{1}'", opusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("BuildAMation assembly '{0}' was not used by package '{1}'", opusAssemblyName, mainPackageId.ToString());
                 }
             }
 

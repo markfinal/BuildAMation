@@ -489,7 +489,7 @@ namespace OpusOptionCodeGenerator
                         var trueType = typeSplit[typeSplit.Length - 1];
                         if (property.Type == "bool" ||
                             property.Type == "int" ||
-                            (trueType.StartsWith("E") && System.Char.IsUpper(trueType[1])) // an Opus enumeration
+                            (trueType.StartsWith("E") && System.Char.IsUpper(trueType[1])) // an BuildAMation enumeration
                             )
                         {
                             property.IsValueType = true;

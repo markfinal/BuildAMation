@@ -24,7 +24,7 @@ namespace Bam
         {
             get
             {
-                return "Removes a #define from the Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
+                return "Removes a #define from the BuildAMation package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 

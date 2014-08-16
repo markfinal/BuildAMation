@@ -31,7 +31,7 @@ namespace Bam
         public bool
         Execute()
         {
-            Core.Log.MessageAll("Syntax: Opus [@<response file >] <command 0>[=<value 0>] [<command 1>[=<value 1>] .. <command N>[=<value N>]]");
+            Core.Log.MessageAll("Syntax: bam [@<response file >] <command 0>[=<value 0>] [<command 1>[=<value 1>] .. <command N>[=<value N>]]");
 
             Core.Log.MessageAll("\nCommands are processed left to right. Response file commands are inlined.");
             Core.Log.MessageAll("Repeated commands will always take the last value set.");

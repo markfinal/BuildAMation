@@ -6,7 +6,7 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Opus Exception class.
+    /// BuildAMation Exception class.
     /// </summary>
     [System.Serializable]
     public class Exception :

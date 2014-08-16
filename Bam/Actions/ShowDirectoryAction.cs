@@ -24,7 +24,7 @@ namespace Bam
         {
             get
             {
-                return "Show the Opus directory";
+                return "Show the BuildAMation directory";
             }
         }
 

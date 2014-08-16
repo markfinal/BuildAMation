@@ -24,7 +24,7 @@ namespace Bam
         {
             get
             {
-                return "Adds an Opus assembly to the package definition (separated by " + System.IO.Path.PathSeparator + ")";
+                return "Adds an BuildAMation assembly to the package definition (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
@@ -69,13 +69,13 @@ namespace Bam
                 {
                     xmlFile.OpusAssemblies.Add(OpusAssemblyName);
 
-                    Core.Log.MessageAll("Added Opus assembly '{0}' to package '{1}'", OpusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("Added BuildAMation assembly '{0}' to package '{1}'", OpusAssemblyName, mainPackageId.ToString());
 
                     success = true;
                 }
                 else
                 {
-                    Core.Log.MessageAll("Opus assembly '{0}' already used by package '{1}'", OpusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("BuildAMation assembly '{0}' already used by package '{1}'", OpusAssemblyName, mainPackageId.ToString());
                 }
             }
 

@@ -6,7 +6,7 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Opus logging static class.
+    /// BuildAMation logging static class.
     /// </summary>
     public static class Log
     {

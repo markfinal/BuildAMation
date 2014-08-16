@@ -7,7 +7,7 @@ namespace Bam.Core
 {
     /// <summary>
     /// BaseModules are the base class for all real modules in package scripts.
-    /// These are constructed by the Opus Core when they are required.
+    /// These are constructed by the Bam Core when they are required.
     /// Nested modules that appear as fields are either constructed automatically by
     /// the default constructor of their parent, or in the custom construct required to be
     /// written by the package author. As such, there must always be a default constructor

@@ -43,7 +43,7 @@ namespace Bam
 
             if (0 == Core.State.PackageInfo.Count)
             {
-                throw new Core.Exception("Package has not been specified. Run Opus from the package directory.");
+                throw new Core.Exception("Package has not been specified. Re-run from the package directory.");
             }
 
             var fatal = false;

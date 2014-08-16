@@ -24,7 +24,7 @@ namespace Bam
         {
             get
             {
-                return "Display the version of Opus";
+                return "Display the version of BuildAMation";
             }
         }
 

@@ -10,11 +10,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Opus")]
-[assembly: AssemblyDescription("Opus Command Line Tool")]
+[assembly: AssemblyTitle("bam")]
+[assembly: AssemblyDescription("BuildAMation Command Line Tool")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Opus")]
+[assembly: AssemblyProduct("Bam")]
 [assembly: AssemblyCopyright("Copyright 2011-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

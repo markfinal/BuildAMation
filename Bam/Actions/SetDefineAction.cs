@@ -24,7 +24,7 @@ namespace Bam
         {
             get
             {
-                return "Set defines on the Opus package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
+                return "Set defines on the BuildAMation package compilation step (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
