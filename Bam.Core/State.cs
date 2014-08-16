@@ -102,7 +102,7 @@ namespace Bam.Core
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
-            Add<string>("System", "SchedulerType", "Opus.Core.DefaultScheduler");
+            Add<string>("System", "SchedulerType", "Bam.Core.DefaultScheduler");
             Add<Array<BuildSchedulerProgressUpdatedDelegate>>("System", "SchedulerProgressDelegates", new Array<BuildSchedulerProgressUpdatedDelegate>());
 
             AddCategory("PackageCreation");

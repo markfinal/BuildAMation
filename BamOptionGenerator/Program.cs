@@ -1010,7 +1010,7 @@ namespace OpusOptionCodeGenerator
                 var setDelegatesFunctionName = "SetDelegates";
                 WriteLine(writer, 2, "protected override void");
                 WriteLine(writer, 2, "{0}(", setDelegatesFunctionName);
-                WriteLine(writer, 3, "Opus.Core.DependencyNode node)");
+                WriteLine(writer, 3, "Bam.Core.DependencyNode node)");
                 if (!writeToDisk && null != layout && layout.functions.ContainsKey(setDelegatesFunctionName))
                 {
                     Log("\tReusing existing code for function: '{0}'", setDelegatesFunctionName);

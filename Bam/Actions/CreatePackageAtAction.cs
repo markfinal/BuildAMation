@@ -87,7 +87,7 @@ namespace Bam
                     packageDefinition.AddRequiredPackage(idToAdd);
                 }
             }
-            packageDefinition.OpusAssemblies.Add("Opus.Core");
+            packageDefinition.OpusAssemblies.Add("Bam.Core");
             {
                 var system = new Core.DotNetAssemblyDescription("System");
                 system.RequiredTargetFramework = "2.0.50727";

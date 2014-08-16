@@ -17,7 +17,7 @@ namespace Bam.Core
             var overrideInterface = instance as IGlobalOptionCollectionOverride;
             if (null == overrideInterface)
             {
-                throw new Exception("'{0}' does not implement the Opus.Core.IGlobalOptionCollectionOverride interface", instance.ToString());
+                throw new Exception("'{0}' does not implement the Bam.Core.IGlobalOptionCollectionOverride interface", instance.ToString());
             }
 
             this.OverrideInterface = overrideInterface;

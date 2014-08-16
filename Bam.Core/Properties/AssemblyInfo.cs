@@ -14,11 +14,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Opus.Core")]
-[assembly: AssemblyDescription("Opus Core support")]
+[assembly: AssemblyTitle("Bam.Core")]
+[assembly: AssemblyDescription("BuildAMation Core support")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Opus.Core")]
+[assembly: AssemblyProduct("Bam.Core")]
 [assembly: AssemblyCopyright("Copyright 2011-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

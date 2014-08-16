@@ -915,7 +915,7 @@ namespace Bam.Core
             }
 
             // add required Opus assemblies
-            this.OpusAssemblies.Add("Opus.Core");
+            this.OpusAssemblies.Add("Bam.Core");
 
             // add required DotNet assemblies
             {

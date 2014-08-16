@@ -861,7 +861,7 @@ namespace Bam.Core
                     {
                         if (!typeof(IModule).IsAssignableFrom(assemblyType))
                         {
-                            //Log.DebugMessage("\tIgnoring type '{0}' as it does not implement Opus.IModule", assemblyType.ToString());
+                            //Log.DebugMessage("\tIgnoring type '{0}' as it does not implement Bam.Core.IModule", assemblyType.ToString());
                             continue;
                         }
 

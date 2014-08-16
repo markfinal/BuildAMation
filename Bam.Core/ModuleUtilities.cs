@@ -52,7 +52,7 @@ namespace Bam.Core
                 }
 
                 var toolset = State.Get("Toolset", toolsetName) as IToolset;
-                //Opus.Core.Log.DebugMessage("\tToolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
+                //Log.DebugMessage("\tToolset for tool type '{0}' is '{1}'", toolType.ToString(), toolset.ToString());
                 return toolset;
             }
 
@@ -95,7 +95,7 @@ namespace Bam.Core
                         }
                         else
                         {
-                            throw new Exception("{0} field in {1} is of type {2} but must be of type System.Type[], Opus.Core.TypeArray or Opus.Core.Array<System.Type>", typeof(T).ToString(), module.ToString(), fieldValue.GetType());
+                            throw new Exception("{0} field in {1} is of type {2} but must be of type System.Type[], Bam.Core.TypeArray or Bam.Core.Array<System.Type>", typeof(T).ToString(), module.ToString(), fieldValue.GetType());
                         }
 
                         dependentsList.AddRange(values);

@@ -108,7 +108,7 @@ namespace Bam.Core
                 }
                 else
                 {
-                    throw new Exception("Type {0} does not implement the Opus.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+                    throw new Exception("Type {0} does not implement the Bam.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
                 }
             }
 
@@ -144,7 +144,7 @@ namespace Bam.Core
                 }
                 else
                 {
-                    throw new Exception("Type {0} does not implement the Opus.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
+                    throw new Exception("Type {0} does not implement the Bam.Core.ISetOperations<{1}> interface", thisValue.GetType().ToString(), typeof(T).ToString());
                 }
             }
 

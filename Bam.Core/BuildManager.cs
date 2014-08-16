@@ -46,7 +46,7 @@ namespace Bam.Core
                 schedulerType = State.ScriptAssembly.GetType(State.SchedulerType);
                 if (null == schedulerType)
                 {
-                    throw new Exception("Scheduler type '{0}' not found in the Opus.Core assembly, nor the script assembly", State.SchedulerType);
+                    throw new Exception("Scheduler type '{0}' not found in the Bam.Core assembly, nor the script assembly", State.SchedulerType);
                 }
             }
             TypeUtilities.CheckTypeImplementsInterface(schedulerType, typeof(Core.IBuildScheduler));

@@ -866,7 +866,7 @@ namespace Bam.Core
                     var nestedDependentModules = nestedDependentsInterface.GetNestedDependents(node.Target);
                     if (null == nestedDependentModules)
                     {
-                        throw new Exception("Module '{0}' implements Opus.Core.INestedDependents but returns null", node.UniqueModuleName);
+                        throw new Exception("Module '{0}' implements Bam.Core.INestedDependents but returns null", node.UniqueModuleName);
                     }
 
                     int childIndex = 0;
