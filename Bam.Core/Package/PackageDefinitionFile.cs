@@ -30,10 +30,10 @@ namespace Bam.Core
                 // OLD style definition files
                 if (args.Exception.SourceUri.Contains(".xsd"))
                 {
-                    var schemaUri = new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
+                    var schemaUri = new System.Uri(State.PackageDefinitionSchemaPathV2);
                     if (schemaUri.AbsolutePath != args.Exception.SourceUri)
                     {
-                        throw new Exception("Duplicate schemas exist! From package definition file '{0}', and from the Opus build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath);
+                        throw new Exception("Duplicate schemas exist! From package definition file '{0}', and from the build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath);
                     }
                 }
 
@@ -322,7 +322,7 @@ namespace Bam.Core
                 return;
             }
 
-            throw new Exception("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the Opus schemas", this.xmlFilename);
+            throw new Exception("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the package definition schemas", this.xmlFilename);
         }
 
         protected EPlatform
@@ -845,7 +845,7 @@ namespace Bam.Core
             try
             {
                 var settings = readerSettings.Clone();
-                settings.Schemas.Add(null, State.OpusPackageDependencySchemaPathName);
+                settings.Schemas.Add(null, State.PackageDefinitionSchemaPath);
 
                 using (var xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
                 {

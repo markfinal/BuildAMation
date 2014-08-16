@@ -277,7 +277,7 @@ namespace Bam.Core
             }
         }
 
-        public static string OpusPackageDependencySchemaPathName
+        public static string PackageDefinitionSchemaPath
         {
             get
             {
@@ -285,7 +285,7 @@ namespace Bam.Core
             }
         }
 
-        public static string OpusPackageDependencySchemaPathNameV2
+        public static string PackageDefinitionSchemaPathV2
         {
             get
             {

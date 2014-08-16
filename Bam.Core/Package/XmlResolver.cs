@@ -36,7 +36,7 @@ namespace Bam.Core
             if (relativeUri == State.OpusPackageDependencySchemaRelativePathNameV2)
             {
                 // we've got a local match, so use the version of the Schema that is next to the Opus binary
-                return new System.Uri(State.OpusPackageDependencySchemaPathNameV2);
+                return new System.Uri(State.PackageDefinitionSchemaPathV2);
             }
             else
             {
@@ -69,7 +69,7 @@ namespace Bam.Core
             {
                 if ("http://code.google.com/p/opus" == absoluteUri.ToString())
                 {
-                    var reader = new System.IO.StreamReader(State.OpusPackageDependencySchemaPathNameV2);
+                    var reader = new System.IO.StreamReader(State.PackageDefinitionSchemaPathV2);
                     return reader.BaseStream;
                 }
 
