@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bam", "Bam\Bam.csproj", "{2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bam.Core", "Bam.Core\Bam.Core.csproj", "{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpusOptionCodeGenerator", "OpusOptionCodeGenerator\BamOptionGenerator.csproj", "{EF379EAD-80F7-4741-8A24-6BD3F393F41B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BamOptionGenerator", "BamOptionGenerator\BamOptionGenerator.csproj", "{EF379EAD-80F7-4741-8A24-6BD3F393F41B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
