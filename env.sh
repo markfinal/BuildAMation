@@ -3,14 +3,13 @@
 DefaultFlavour=Release
 # use the incoming argument as the sub-directory, or fall back on the default
 flavour=${1:-$DefaultFlavour}
-OpusPath=$PWD/bin/$flavour
+ExecutablePath=$PWD/bin/$flavour
 
-if [ ! -d "$OpusPath" ]
+if [ ! -d "$ExecutablePath" ]
 then
-  echo "*** ERROR: Opus directory '$OpusPath' does not exist ***"
+  echo "*** ERROR: Opus directory '$ExecutablePath' does not exist ***"
 else
-  echo "Added '$OpusPath' to the start of PATH"
-  export OPUSPATH=$OpusPath
-  export PATH=$OPUSPATH:$PATH
+  echo "Added '$ExecutablePath' to the start of PATH"
+  export PATH=$ExecutablePath:$PATH
 fi
 

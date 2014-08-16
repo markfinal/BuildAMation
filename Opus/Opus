@@ -1,8 +1,10 @@
 #!/bin/bash
 
+curPath=$(dirname ${BASH_SOURCE[0]})
+
 if [ "$OSTYPE" == "msys" ] || [ "$OSTYPE" == "cygwin" ]; then
 
-exec $OPUSPATH/Opus.exe $@
+exec $curPath/Opus.exe $@
 
 else
 
@@ -11,6 +13,6 @@ case $* in
 *-debugsymbols*) monoargs=--debug;;
 esac
 
-exec mono $monoargs $OPUSPATH/Opus.exe $@
+exec mono $monoargs $curPath/Opus.exe $@
 
 fi
