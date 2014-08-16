@@ -4,7 +4,7 @@ curPath=$(dirname ${BASH_SOURCE[0]})
 
 if [ "$OSTYPE" == "msys" ] || [ "$OSTYPE" == "cygwin" ]; then
 
-exec $curPath/Opus.exe $@
+exec $curPath/bam.exe $@
 
 else
 
@@ -13,6 +13,6 @@ case $* in
 *-debugsymbols*) monoargs=--debug;;
 esac
 
-exec mono $monoargs $curPath/Opus.exe $@
+exec mono $monoargs $curPath/bam.exe $@
 
 fi
