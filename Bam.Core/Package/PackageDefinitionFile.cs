@@ -542,6 +542,12 @@ namespace Bam.Core
                         }
                         var assemblyName = xmlReader.Value;
 
+                        // conversion from Opus to BuildAMatic
+                        if (assemblyName.StartsWith("Opus."))
+                        {
+                            assemblyName = assemblyName.Replace("Opus.", "Bam.");
+                        }
+
                         this.OpusAssemblies.Add(assemblyName);
                     }
                 }
