@@ -8,7 +8,7 @@
     <ProjectGuid>{EF379EAD-80F7-4741-8A24-6BD3F393F41B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpusOptionCodeGenerator</RootNamespace>
+    <RootNamespace>aOptionCodeGenerator</RootNamespace>
     <AssemblyName>BamOptionGenerator</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
