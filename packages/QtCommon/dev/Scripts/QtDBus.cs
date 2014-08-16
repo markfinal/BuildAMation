@@ -11,15 +11,15 @@ namespace QtCommon
         public
         DBus()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDBus_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDBus_VisualCWarningLevel);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtDBus_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtDBus_VisualCWarningLevel);
         }
 
         [C.ExportCompilerOptionsDelegate]
         void
         QtDBus_VisualCWarningLevel(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -32,8 +32,8 @@ namespace QtCommon
         [C.ExportCompilerOptionsDelegate]
         void
         QtDBus_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

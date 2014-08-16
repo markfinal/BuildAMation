@@ -7,7 +7,7 @@ namespace QtCommon
 {
     public interface IMocOptions
     {
-        Opus.Core.DirectoryCollection IncludePaths
+        Bam.Core.DirectoryCollection IncludePaths
         {
             get;
             set;

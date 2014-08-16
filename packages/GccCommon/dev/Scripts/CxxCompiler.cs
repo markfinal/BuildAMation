@@ -8,11 +8,11 @@ namespace GccCommon
     public abstract class CxxCompiler :
         C.ICxxCompilerTool
     {
-        private Opus.Core.IToolset toolset;
+        private Bam.Core.IToolset toolset;
 
         protected
         CxxCompiler(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -23,9 +23,9 @@ namespace GccCommon
         }
 
         #region ICompilerTool implementation
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         C.ICompilerTool.IncludePaths(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             // TODO: sort this out... it required a call to the InstallPath to get the right paths
             this.toolset.InstallPath(baseTarget);
@@ -56,30 +56,30 @@ namespace GccCommon
             }
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePathCompilerSwitches
+        Bam.Core.StringArray C.ICompilerTool.IncludePathCompilerSwitches
         {
             get
             {
-                return new Opus.Core.StringArray("-isystem", "-I");
+                return new Bam.Core.StringArray("-isystem", "-I");
             }
         }
         #endregion
 
         #region ITool implementation
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, this.Filename);
             return executablePath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.ObjectFile.OutputFile,
                 C.ObjectFile.OutputDir
                 );

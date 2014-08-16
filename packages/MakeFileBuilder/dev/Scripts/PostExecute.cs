@@ -6,11 +6,11 @@
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder :
-        Opus.Core.IBuilderPostExecute
+        Bam.Core.IBuilderPostExecute
     {
         private class UniquePathCollection
         {
-            private Opus.Core.StringArray pathList = new Opus.Core.StringArray();
+            private Bam.Core.StringArray pathList = new Bam.Core.StringArray();
 
             public void
             Add(
@@ -45,14 +45,14 @@ namespace MakeFileBuilder
         #region IBuilderPostExecute Members
 
         void
-        Opus.Core.IBuilderPostExecute.PostExecute(
-            Opus.Core.DependencyNodeCollection executedNodes)
+        Bam.Core.IBuilderPostExecute.PostExecute(
+            Bam.Core.DependencyNodeCollection executedNodes)
         {
-            Opus.Core.Log.DebugMessage("PostExecute for MakeFiles");
+            Bam.Core.Log.DebugMessage("PostExecute for MakeFiles");
 
             if (0 == executedNodes.Count)
             {
-                Opus.Core.Log.Info("No MakeFile written as there were no targets generated");
+                Bam.Core.Log.Info("No MakeFile written as there were no targets generated");
                 return;
             }
 
@@ -99,11 +99,11 @@ namespace MakeFileBuilder
 
             // write top level Makefile
             {
-                Opus.Core.Log.DebugMessage("Makefile : '{0}'", this.topLevelMakeFilePath);
+                Bam.Core.Log.DebugMessage("Makefile : '{0}'", this.topLevelMakeFilePath);
                 using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(this.topLevelMakeFilePath))
                 {
                     makeFileWriter.WriteLine("# Record the current directory");
-                    if (Opus.Core.OSUtilities.IsWindowsHosting)
+                    if (Bam.Core.OSUtilities.IsWindowsHosting)
                     {
                         makeFileWriter.WriteLine("CURDIR := $(subst /,\\,$(realpath .))");
                     }
@@ -147,7 +147,7 @@ namespace MakeFileBuilder
                         var data = node.Data as MakeFileData;
                         if (data != null)
                         {
-                            var relativeDataFile = Opus.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
+                            var relativeDataFile = Bam.Core.RelativePathUtilities.GetPath(data.MakeFilePath, this.topLevelMakeFilePath, "$(CURDIR)");
                             makeFileWriter.WriteLine("include {0}", relativeDataFile);
                         }
                     }
@@ -155,7 +155,7 @@ namespace MakeFileBuilder
 
                     makeFileWriter.WriteLine("# Create any directories necessary");
                     makeFileWriter.WriteLine("$(sort $(builddirs)):");
-                    if (Opus.Core.OSUtilities.IsWindowsHosting)
+                    if (Bam.Core.OSUtilities.IsWindowsHosting)
                     {
                         makeFileWriter.WriteLine("\t-mkdir $@");
                     }
@@ -168,7 +168,7 @@ namespace MakeFileBuilder
                     makeFileWriter.WriteLine("# Delete generated files");
                     makeFileWriter.WriteLine(".PHONY: clean");
                     makeFileWriter.WriteLine("clean:");
-                    if (Opus.Core.OSUtilities.IsWindowsHosting)
+                    if (Bam.Core.OSUtilities.IsWindowsHosting)
                     {
                         makeFileWriter.WriteLine("\t-rmdir /S /Q $(sort $(builddirs)) 2>nul");
                     }
@@ -180,7 +180,7 @@ namespace MakeFileBuilder
                 }
             }
 
-            Opus.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, this.topLevelMakeFilePath);
+            Bam.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, this.topLevelMakeFilePath);
         }
 
         #endregion

@@ -8,7 +8,7 @@ namespace C.ObjCxx
     /// <summary>
     /// ObjectiveC++ object file collection
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IObjCxxCompilerTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IObjCxxCompilerTool))]
     public class ObjectFileCollection :
         ObjectFileCollectionBase
     {
@@ -19,11 +19,11 @@ namespace C.ObjCxx
             this.list.Add(objectFile);
         }
 
-        protected override System.Collections.Generic.List<Opus.Core.IModule>
+        protected override System.Collections.Generic.List<Bam.Core.IModule>
         MakeChildModules(
-            Opus.Core.LocationArray locationList)
+            Bam.Core.LocationArray locationList)
         {
-            var objectFileList = new System.Collections.Generic.List<Opus.Core.IModule>();
+            var objectFileList = new System.Collections.Generic.List<Bam.Core.IModule>();
 
             foreach (var location in locationList)
             {

@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>ComposerXE package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("intel", typeof(ComposerXE.Toolset))]
+[assembly: Bam.Core.RegisterToolset("intel", typeof(ComposerXE.Toolset))]
 
 namespace ComposerXE
 {

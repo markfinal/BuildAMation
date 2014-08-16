@@ -10,7 +10,7 @@ namespace Mingw
     {
         public
         ArchiverOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

@@ -8,7 +8,7 @@ namespace VisualStudioProcessor
     public delegate ToolAttributeDictionary
     Delegate(
         object sender,
-        Opus.Core.Option option,
-        Opus.Core.Target target,
+        Bam.Core.Option option,
+        Bam.Core.Target target,
         VisualStudioProcessor.EVisualStudioTarget vsTarget);
 }

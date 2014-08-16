@@ -7,7 +7,7 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        [Opus.Core.EmptyBuildFunction]
+        [Bam.Core.EmptyBuildFunction]
         public object
         Build(
             C.ThirdPartyModule moduleToBuild,

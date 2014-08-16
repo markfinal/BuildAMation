@@ -4,25 +4,25 @@
 // <summary>NativeBuilder package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(NativeBuilder.ExplainAction))]
+[assembly: Bam.Core.RegisterAction(typeof(NativeBuilder.ExplainAction))]
 
 namespace NativeBuilder
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class ExplainAction :
-        Opus.Core.IAction
+        Bam.Core.IAction
     {
         public
         ExplainAction()
         {
-            if (!Opus.Core.State.HasCategory("NativeBuilder"))
+            if (!Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                Opus.Core.State.AddCategory("NativeBuilder");
+                Bam.Core.State.AddCategory("NativeBuilder");
             }
-            Opus.Core.State.Add<bool>("NativeBuilder", "Explain", false);
+            Bam.Core.State.Add<bool>("NativeBuilder", "Explain", false);
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -30,7 +30,7 @@ namespace NativeBuilder
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -39,11 +39,11 @@ namespace NativeBuilder
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
-            Opus.Core.State.Set("NativeBuilder", "Explain", true);
+            Bam.Core.State.Set("NativeBuilder", "Explain", true);
 
-            Opus.Core.Log.DebugMessage("Explained builds are enabled");
+            Bam.Core.Log.DebugMessage("Explained builds are enabled");
 
             return true;
         }

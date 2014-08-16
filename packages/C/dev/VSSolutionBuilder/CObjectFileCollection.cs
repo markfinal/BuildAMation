@@ -12,7 +12,7 @@ namespace VSSolutionBuilder
             C.ObjectFileCollectionBase moduleToBuild,
             out bool success)
         {
-            var objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
+            var objectFileCollectionModule = moduleToBuild as Bam.Core.BaseModule;
             var node = objectFileCollectionModule.OwningNode;
             if (null == node.Parent ||
                 (node.Parent.Module.GetType().BaseType.BaseType == typeof(C.ObjectFileCollection) &&
@@ -36,7 +36,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
@@ -123,7 +123,7 @@ namespace VSSolutionBuilder
                     configuration.CharacterSet = characterSet;
 #endif
                     configuration = new ProjectConfiguration(configurationName, projectData);
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
@@ -131,7 +131,7 @@ namespace VSSolutionBuilder
 #if false
                     configuration.CharacterSet = (EProjectCharacterSet)((objectFileCollectionOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
 #endif
-                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Bam.Core.BaseTarget)target, configuration);
                 }
 
                 configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.OutputDir];
@@ -144,11 +144,11 @@ namespace VSSolutionBuilder
                 vcCLCompilerTool = new ProjectTool(toolName);
                 configuration.AddToolIfMissing(vcCLCompilerTool);
 
-                var commonOptions = node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection;
+                var commonOptions = node.EncapsulatingNode.Module as Bam.Core.ICommonOptionCollection;
                 if ((commonOptions != null) &&
                     (commonOptions.CommonOptionCollection is VisualStudioProcessor.IVisualStudioSupport))
                 {
-                    var visualStudioProjectOption = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
+                    var visualStudioProjectOption = (node.EncapsulatingNode.Module as Bam.Core.ICommonOptionCollection).CommonOptionCollection as VisualStudioProcessor.IVisualStudioSupport;
                     var settingsDictionary = visualStudioProjectOption.ToVisualStudioProjectAttributes(target);
 
                     foreach (var setting in settingsDictionary)
@@ -168,7 +168,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                    throw new Bam.Core.Exception("Compiler options does not support VisualStudio project translation");
                 }
             }
 

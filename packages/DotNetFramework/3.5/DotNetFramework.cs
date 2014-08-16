@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>DotNetFramework package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("dotnet", typeof(DotNetFramework.Toolset))]
+[assembly: Bam.Core.RegisterToolset("dotnet", typeof(DotNetFramework.Toolset))]
 
 namespace DotNetFramework
 {
@@ -16,11 +16,11 @@ namespace DotNetFramework
         Solution()
         {
             // TODO: this path is for VCSExpress - what about the professional version?
-            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VCSExpress\9.0\Projects"))
+            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VCSExpress\9.0\Projects"))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("VisualStudio C# Express 2008 was not installed");
+                    throw new Bam.Core.Exception("VisualStudio C# Express 2008 was not installed");
                 }
 
                 var subKeyNames = key.GetSubKeyNames();
@@ -51,7 +51,7 @@ namespace DotNetFramework
 
             if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
             {
-                throw new Opus.Core.Exception("Unable to locate C# project GUID for VisualStudio 2008");
+                throw new Bam.Core.Exception("Unable to locate C# project GUID for VisualStudio 2008");
             }
 
 #if false
@@ -59,7 +59,7 @@ namespace DotNetFramework
             // see CS0472, and something about struct comparisons
             if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
             {
-                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2008");
+                throw new Bam.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2008");
             }
 #endif
         }
@@ -107,7 +107,7 @@ namespace DotNetFramework
         {
             get
             {
-                var dotNetPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
+                var dotNetPackage = Bam.Core.State.PackageInfo["DotNetFramework"];
                 var version = dotNetPackage.Version;
                 return version;
             }
@@ -117,23 +117,23 @@ namespace DotNetFramework
         {
             get
             {
-                if (Opus.Core.OSUtilities.IsWindowsHosting)
+                if (Bam.Core.OSUtilities.IsWindowsHosting)
                 {
                     string toolsPath = null;
-                    using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
+                    using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
                     {
                         toolsPath = key.GetValue("MSBuildToolsPath") as string;
                     }
 
                     return toolsPath;
                 }
-                else if (Opus.Core.OSUtilities.IsUnixHosting || Opus.Core.OSUtilities.IsOSXHosting)
+                else if (Bam.Core.OSUtilities.IsUnixHosting || Bam.Core.OSUtilities.IsOSXHosting)
                 {
                     return "/usr/bin";
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("DotNetFramework not supported on the current platform");
+                    throw new Bam.Core.Exception("DotNetFramework not supported on the current platform");
                 }
             }
         }

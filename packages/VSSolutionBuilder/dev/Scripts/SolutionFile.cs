@@ -78,7 +78,7 @@ namespace VSSolutionBuilder
                 project.Value.Serialize();
             }
 
-            var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+            var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
             var SolutionInstance = System.Activator.CreateInstance(solutionType);
 
             // serialize the sln
@@ -203,7 +203,7 @@ namespace VSSolutionBuilder
 
             SolutionInstance = null;
 
-            Opus.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, this.PathName);
+            Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, this.PathName);
         }
     }
 }

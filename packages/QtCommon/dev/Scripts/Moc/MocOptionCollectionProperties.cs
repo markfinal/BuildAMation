@@ -13,15 +13,15 @@ namespace QtCommon
     public partial class MocOptionCollection
     {
         #region IMocOptions Option properties
-        Opus.Core.DirectoryCollection IMocOptions.IncludePaths
+        Bam.Core.DirectoryCollection IMocOptions.IncludePaths
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("IncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("IncludePaths", value);
                 this.ProcessNamedSetHandler("IncludePathsSetHandler", this["IncludePaths"]);
             }
         }

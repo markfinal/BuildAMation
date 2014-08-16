@@ -17,11 +17,11 @@ namespace VisualCCommon
         private static void
         ExceptionHandlerCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionHandlerOption = option as Bam.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
             {
                 case C.Cxx.EExceptionHandler.Disabled:
@@ -37,18 +37,18 @@ namespace VisualCCommon
                     commandLineBuilder.Add("-EHs");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized exception handler option");
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         ExceptionHandlerVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionHandlerOption = option as Bam.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 switch (exceptionHandlerOption.Value)
@@ -60,7 +60,7 @@ namespace VisualCCommon
                         returnVal.Add("ExceptionHandling", System.String.Format("{0}", (int)exceptionHandlerOption.Value));
                         break;
                     default:
-                        throw new Opus.Core.Exception("Unrecognized exception handler option");
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
                 }
             }
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
@@ -80,7 +80,7 @@ namespace VisualCCommon
                         returnVal.Add("ExceptionHandling", "SyncCThrow");
                         break;
                     default:
-                        throw new Opus.Core.Exception("Unrecognized exception handler option");
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
                 }
             }
             return returnVal;
@@ -88,7 +88,7 @@ namespace VisualCCommon
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLineProcessor,ExceptionHandlerVisualStudioProcessor);

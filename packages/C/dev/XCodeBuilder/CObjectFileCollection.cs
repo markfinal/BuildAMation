@@ -15,14 +15,14 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
             var target = node.Target;
-            var baseTarget = (Opus.Core.BaseTarget)target;
+            var baseTarget = (Bam.Core.BaseTarget)target;
 
             var project = this.Workspace.GetProject(node);
 
-            Opus.Core.BaseOptionCollection commonOptions = null;
-            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+            Bam.Core.BaseOptionCollection commonOptions = null;
+            if (node.EncapsulatingNode.Module is Bam.Core.ICommonOptionCollection)
             {
-                commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                commonOptions = (node.EncapsulatingNode.Module as Bam.Core.ICommonOptionCollection).CommonOptionCollection;
                 if (null == commonOptions)
                 {
                     success = true;
@@ -33,9 +33,9 @@ namespace XcodeBuilder
             // fill out the build configuration on behalf of all of it's children
             var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
 
-            var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+            var basePath = Bam.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
             var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.OutputDir];
-            var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
+            var relPath = Bam.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
             buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
             buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 
@@ -61,7 +61,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
+                    throw new Bam.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
                 }
             }
             else if (target.HasToolsetType(typeof(Clang.Toolset)))
@@ -70,7 +70,7 @@ namespace XcodeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
+                throw new Bam.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
             }
 #endif
 

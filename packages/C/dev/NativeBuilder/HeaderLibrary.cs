@@ -7,7 +7,7 @@ namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
     {
-        [Opus.Core.EmptyBuildFunction]
+        [Bam.Core.EmptyBuildFunction]
         public object
         Build(
             C.HeaderLibrary moduleToBuild,

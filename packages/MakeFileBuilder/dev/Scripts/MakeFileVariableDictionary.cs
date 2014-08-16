@@ -6,7 +6,7 @@
 namespace MakeFileBuilder
 {
     public sealed class MakeFileVariableDictionary :
-        System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
+        System.Collections.Generic.Dictionary<Bam.Core.LocationKey, Bam.Core.StringArray>
     {
         public void
         Append(
@@ -20,8 +20,8 @@ namespace MakeFileBuilder
 
         public new void
         Add(
-            Opus.Core.LocationKey key,
-            Opus.Core.StringArray value)
+            Bam.Core.LocationKey key,
+            Bam.Core.StringArray value)
         {
             if (this.ContainsKey(key))
             {
@@ -33,11 +33,11 @@ namespace MakeFileBuilder
             }
         }
 
-        public Opus.Core.StringArray Variables
+        public Bam.Core.StringArray Variables
         {
             get
             {
-                var variables = new Opus.Core.StringArray();
+                var variables = new Bam.Core.StringArray();
                 foreach (var item in this.Values)
                 {
                     variables.AddRange(item);
@@ -49,7 +49,7 @@ namespace MakeFileBuilder
 
         public MakeFileVariableDictionary
         Filter(
-            Opus.Core.Array<Opus.Core.LocationKey> filterKeys)
+            Bam.Core.Array<Bam.Core.LocationKey> filterKeys)
         {
             var filteredDictionary = new MakeFileVariableDictionary();
             foreach (var key in this.Keys)

@@ -13,7 +13,7 @@ namespace ComposerXECommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var compilerInterface = this as ICCompilerOptions;
             compilerInterface.AllWarnings = true;
@@ -28,9 +28,9 @@ namespace ComposerXECommon
             cOptions.IgnoreStandardIncludePaths = false;
 
             var target = node.Target;
-            compilerInterface.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
+            compilerInterface.SixtyFourBit = Bam.Core.OSUtilities.Is64Bit(target);
 
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 compilerInterface.StrictAliasing = false;
                 compilerInterface.InlineFunctions = false;
@@ -44,14 +44,14 @@ namespace ComposerXECommon
             compilerInterface.PositionIndependentCode = false;
 
             var compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            cOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)target));
+            cOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Bam.Core.BaseTarget)target));
 
             cOptions.TargetLanguage = C.ETargetLanguage.C;
         }
 
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

@@ -12,7 +12,7 @@ namespace XcodeBuilder
             Publisher.ProductModule moduleToBuild,
             PBXProject project,
             PBXNativeTarget nativeTarget,
-            Opus.Core.DependencyNode toCopy,
+            Bam.Core.DependencyNode toCopy,
             string subdirectory)
         {
             var nameOfBuildPhase = System.String.Format("Copy files for {0} to {1}", nativeTarget.Name, subdirectory);
@@ -29,7 +29,7 @@ namespace XcodeBuilder
                 // and must be an empty subdirectory
                 if (toCopy.Data == nativeTarget)
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' would publish onto itself", toCopy.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' would publish onto itself", toCopy.UniqueModuleName);
                     return;
                 }
             }
@@ -63,14 +63,14 @@ namespace XcodeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported file to copy from '{0}'", toCopy.UniqueModuleName);
+                throw new Bam.Core.Exception("Unsupported file to copy from '{0}'", toCopy.UniqueModuleName);
             }
-            var relativePath = Opus.Core.RelativePathUtilities.GetPath(pathOfFileToCopy, project.RootUri);
+            var relativePath = Bam.Core.RelativePathUtilities.GetPath(pathOfFileToCopy, project.RootUri);
             var dependentFileRef = project.FileReferences.Get(toCopy.UniqueModuleName, copiedFileType, relativePath, project.RootUri);
             var buildFile = project.BuildFiles.Get(toCopy.UniqueModuleName, dependentFileRef, copyFilesBuildPhase);
             if (null == buildFile)
             {
-                throw new Opus.Core.Exception("Build file not available");
+                throw new Bam.Core.Exception("Build file not available");
             }
 
             project.MainGroup.Children.AddUnique(dependentFileRef);
@@ -80,7 +80,7 @@ namespace XcodeBuilder
         CopyAdditionalDirectory(
             Publisher.ProductModule moduleToBuild,
             Publisher.PublishDirectory additionalDirsData,
-            Opus.Core.BaseModule primaryModule,
+            Bam.Core.BaseModule primaryModule,
             string subdirectory,
             PBXProject project,
             PBXNativeTarget primaryPBXNativeTarget)
@@ -112,8 +112,8 @@ namespace XcodeBuilder
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -157,23 +157,23 @@ namespace XcodeBuilder
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                throw new Opus.Core.Exception("Copying symlinks is not supported");
+                throw new Bam.Core.Exception("Copying symlinks is not supported");
             }
             else if (sourceKey.IsDirectoryKey)
             {
-                throw new Opus.Core.Exception("Directories cannot be published yet");
+                throw new Bam.Core.Exception("Directories cannot be published yet");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported Location type");
+                throw new Bam.Core.Exception("Unsupported Location type");
             }
         }
 
         private void
         nativeCopyAdditionalDirectory(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
             string publishDirectoryPath,
@@ -195,8 +195,8 @@ namespace XcodeBuilder
         private void
         nativeCopyInfoPList(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,

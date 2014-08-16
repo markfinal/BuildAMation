@@ -11,7 +11,7 @@ namespace C
         /// List of directories the compiler searches for Frameworks
         /// </summary>
         /// <value>The OSX frameworks.</value>
-        Opus.Core.DirectoryCollection FrameworkSearchDirectories
+        Bam.Core.DirectoryCollection FrameworkSearchDirectories
         {
             get;
             set;

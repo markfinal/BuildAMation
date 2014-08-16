@@ -8,7 +8,7 @@ namespace C.ObjC
     /// <summary>
     /// ObjectiveC object file
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IObjCCompilerTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IObjCCompilerTool))]
     public class ObjectFile :
         C.ObjectFile
     {}

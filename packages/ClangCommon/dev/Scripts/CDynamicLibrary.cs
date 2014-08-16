@@ -10,8 +10,8 @@ namespace C
         [LocalCompilerOptionsDelegate]
         protected static void
         ClangCommonDynamicLibrarySetPositionIndependentCode(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as ClangCommon.ICCompilerOptions;
             if (null != compilerOptions)

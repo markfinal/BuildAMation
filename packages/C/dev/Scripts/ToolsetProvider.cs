@@ -13,19 +13,19 @@ namespace C
             string typeName,
             string option)
         {
-            if (!Opus.Core.State.HasCategory("C") || !Opus.Core.State.Has("C", "ToolToToolsetName"))
+            if (!Bam.Core.State.HasCategory("C") || !Bam.Core.State.Has("C", "ToolToToolsetName"))
             {
-                throw new Opus.Core.Exception("{0} toolset has not been specified. {1}", typeName, option);
+                throw new Bam.Core.Exception("{0} toolset has not been specified. {1}", typeName, option);
             }
 
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Bam.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             try
             {
                 return map[toolType];
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
-                throw new Opus.Core.Exception("Tool '{0}' ({1}) has not been registered", typeName, toolType.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' ({1}) has not been registered", typeName, toolType.ToString());
             }
         }
 

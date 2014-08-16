@@ -11,12 +11,12 @@ namespace Mingw
     {
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 

@@ -8,21 +8,21 @@ namespace QtCommon
     /// <summary>
     /// Create meta data from a collection of C++ header or source files
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IMocTool))]
     public abstract class MocFileCollection :
-        Opus.Core.BaseModule,
-        Opus.Core.IModuleCollection,
-        Opus.Core.ICommonOptionCollection
+        Bam.Core.BaseModule,
+        Bam.Core.IModuleCollection,
+        Bam.Core.ICommonOptionCollection
     {
-        private Opus.Core.Array<MocFile> list = new Opus.Core.Array<MocFile>();
+        private Bam.Core.Array<MocFile> list = new Bam.Core.Array<MocFile>();
 
-        protected Opus.Core.LocationArray Includes
+        protected Bam.Core.LocationArray Includes
         {
             get;
             set;
         }
 
-        protected Opus.Core.LocationArray Excludes
+        protected Bam.Core.LocationArray Excludes
         {
             get;
             set;
@@ -30,29 +30,29 @@ namespace QtCommon
 
         public void
         Include(
-            Opus.Core.Location baseLocation,
+            Bam.Core.Location baseLocation,
             string pattern)
         {
             if (null == this.Includes)
             {
-                this.Includes = new Opus.Core.LocationArray();
+                this.Includes = new Bam.Core.LocationArray();
             }
-            this.Includes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
+            this.Includes.Add(new Bam.Core.ScaffoldLocation(baseLocation, pattern, Bam.Core.ScaffoldLocation.ETypeHint.File));
         }
 
         public void
         Exclude(
-            Opus.Core.Location baseLocation,
+            Bam.Core.Location baseLocation,
             string pattern)
         {
             if (null == this.Excludes)
             {
-                this.Excludes = new Opus.Core.LocationArray();
+                this.Excludes = new Bam.Core.LocationArray();
             }
-            this.Excludes.Add(new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File));
+            this.Excludes.Add(new Bam.Core.ScaffoldLocation(baseLocation, pattern, Bam.Core.ScaffoldLocation.ETypeHint.File));
         }
 
-        private Opus.Core.LocationArray
+        private Bam.Core.LocationArray
         EvaluatePaths()
         {
             if (null == this.Includes)
@@ -60,7 +60,7 @@ namespace QtCommon
                 return null;
             }
 
-            var includePathList = new Opus.Core.LocationArray();
+            var includePathList = new Bam.Core.LocationArray();
             foreach (var include in this.Includes)
             {
                 includePathList.AddRangeUnique(include.GetLocations());
@@ -70,7 +70,7 @@ namespace QtCommon
                 return includePathList;
             }
 
-            var excludePathList = new Opus.Core.LocationArray();
+            var excludePathList = new Bam.Core.LocationArray();
             foreach (var exclude in this.Excludes)
             {
                 excludePathList.AddRangeUnique(exclude.GetLocations());
@@ -78,15 +78,15 @@ namespace QtCommon
 
             // TODO: is there a better way to handle this? an 'as' cast results in null
             var rawComplement = includePathList.Complement(excludePathList);
-            var complement = new Opus.Core.LocationArray(rawComplement);
+            var complement = new Bam.Core.LocationArray(rawComplement);
             return complement;
         }
 
-        private System.Collections.Generic.List<Opus.Core.IModule>
+        private System.Collections.Generic.List<Bam.Core.IModule>
         MakeChildModules(
-            Opus.Core.LocationArray locationList)
+            Bam.Core.LocationArray locationList)
         {
-            var moduleCollection = new System.Collections.Generic.List<Opus.Core.IModule>();
+            var moduleCollection = new System.Collections.Generic.List<Bam.Core.IModule>();
             foreach (var location in locationList)
             {
                 var mocFile = new MocFile();
@@ -96,11 +96,11 @@ namespace QtCommon
             return moduleCollection;
         }
 
-        Opus.Core.ModuleCollection
-        Opus.Core.INestedDependents.GetNestedDependents(
-            Opus.Core.Target target)
+        Bam.Core.ModuleCollection
+        Bam.Core.INestedDependents.GetNestedDependents(
+            Bam.Core.Target target)
         {
-            var collection = new Opus.Core.ModuleCollection();
+            var collection = new Bam.Core.ModuleCollection();
 
             // add in modules obtained through mechanisms other than paths
             foreach (var module in this.list)
@@ -135,7 +135,7 @@ namespace QtCommon
             {
                 foreach (var objectFile in childModules)
                 {
-                    collection.Add(objectFile as Opus.Core.IModule);
+                    collection.Add(objectFile as Bam.Core.IModule);
                 }
             }
             return collection;
@@ -143,7 +143,7 @@ namespace QtCommon
 
         #region IModuleCollection Members
 
-        private System.Collections.Generic.Dictionary<Opus.Core.Location, Opus.Core.UpdateOptionCollectionDelegateArray> DeferredUpdates
+        private System.Collections.Generic.Dictionary<Bam.Core.Location, Bam.Core.UpdateOptionCollectionDelegateArray> DeferredUpdates
         {
             get;
             set;
@@ -151,29 +151,29 @@ namespace QtCommon
 
         public void
         RegisterUpdateOptions(
-            Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
-            Opus.Core.Location baseLocation,
+            Bam.Core.UpdateOptionCollectionDelegateArray delegateArray,
+            Bam.Core.Location baseLocation,
             string pattern)
         {
-            this.RegisterUpdateOptions(delegateArray, baseLocation, pattern, Opus.Core.Location.EExists.Exists);
+            this.RegisterUpdateOptions(delegateArray, baseLocation, pattern, Bam.Core.Location.EExists.Exists);
         }
 
         public void
         RegisterUpdateOptions(
-            Opus.Core.UpdateOptionCollectionDelegateArray delegateArray,
-            Opus.Core.Location baseLocation,
+            Bam.Core.UpdateOptionCollectionDelegateArray delegateArray,
+            Bam.Core.Location baseLocation,
             string pattern,
-            Opus.Core.Location.EExists exists)
+            Bam.Core.Location.EExists exists)
         {
             if (null == this.DeferredUpdates)
             {
-                this.DeferredUpdates = new System.Collections.Generic.Dictionary<Opus.Core.Location, Opus.Core.UpdateOptionCollectionDelegateArray>(new Opus.Core.LocationComparer());
+                this.DeferredUpdates = new System.Collections.Generic.Dictionary<Bam.Core.Location, Bam.Core.UpdateOptionCollectionDelegateArray>(new Bam.Core.LocationComparer());
             }
 
-            var matchingLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, exists);
+            var matchingLocation = new Bam.Core.ScaffoldLocation(baseLocation, pattern, Bam.Core.ScaffoldLocation.ETypeHint.File, exists);
             if (!this.DeferredUpdates.ContainsKey(matchingLocation))
             {
-                this.DeferredUpdates[matchingLocation] = new Opus.Core.UpdateOptionCollectionDelegateArray();
+                this.DeferredUpdates[matchingLocation] = new Bam.Core.UpdateOptionCollectionDelegateArray();
             }
             this.DeferredUpdates[matchingLocation].AddRangeUnique(delegateArray);
         }
@@ -182,7 +182,7 @@ namespace QtCommon
 
         #region ICommonOptionCollection implementation
 
-        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        Bam.Core.BaseOptionCollection Bam.Core.ICommonOptionCollection.CommonOptionCollection
         {
             get;
             set;

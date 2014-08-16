@@ -46,7 +46,7 @@ namespace QMakeBuilder
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Bam.Core.FileCollection;
                     data.Headers.AddRangeUnique(headerFileCollection.ToStringArray());
                 }
             }

@@ -11,7 +11,7 @@ namespace C
         /// List of names of OSX frameworks to include in the link step
         /// </summary>
         /// <value>The OSX frameworks.</value>
-        Opus.Core.StringArray Frameworks
+        Bam.Core.StringArray Frameworks
         {
             get;
             set;
@@ -21,7 +21,7 @@ namespace C
         /// List of directories the linker searches for Frameworks
         /// </summary>
         /// <value>The OSX frameworks.</value>
-        Opus.Core.DirectoryCollection FrameworkSearchDirectories
+        Bam.Core.DirectoryCollection FrameworkSearchDirectories
         {
             get;
             set;

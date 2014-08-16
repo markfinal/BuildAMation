@@ -7,12 +7,12 @@ namespace MingwCommon
 {
     public class MingwDetailGatherer
     {
-        private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, MingwDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, MingwDetailData>();
+        private static System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, MingwDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, MingwDetailData>();
 
         public static MingwDetailData
         DetermineSpecs(
-            Opus.Core.BaseTarget baseTarget,
-            Opus.Core.IToolset toolset)
+            Bam.Core.BaseTarget baseTarget,
+            Bam.Core.IToolset toolset)
         {
             // get version
             string gccVersion = null;
@@ -31,12 +31,12 @@ namespace MingwCommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 gccVersion = process.StandardOutput.ReadToEnd();
@@ -49,7 +49,7 @@ namespace MingwCommon
             string gxxIncludeDir = null;
             string gccTarget = null;
             string libExecDir = null;
-            var includePaths = new Opus.Core.StringArray();
+            var includePaths = new Bam.Core.StringArray();
             {
                 var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
@@ -65,12 +65,12 @@ namespace MingwCommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 var details = process.StandardError.ReadToEnd();
@@ -148,9 +148,9 @@ namespace MingwCommon
             var gccDetails = new MingwDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libExecDir);
             gccDetailsForTarget[baseTarget] = gccDetails;
 
-            Opus.Core.Log.DebugMessage("Mingw version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
-            Opus.Core.Log.DebugMessage("Mingw machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
-            Opus.Core.Log.DebugMessage("Mingw include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
+            Bam.Core.Log.DebugMessage("Mingw version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
+            Bam.Core.Log.DebugMessage("Mingw machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
+            Bam.Core.Log.DebugMessage("Mingw include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
 
             return gccDetails;
         }

@@ -16,11 +16,11 @@ namespace VisualCCommon
         private static void
         OutputTypeCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
+            var enumOption = option as Bam.Core.ValueTypeOption<C.ELinkerOutput>;
             var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
@@ -30,17 +30,17 @@ namespace VisualCCommon
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputFileLocation.GetSinglePath()));
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
+                    throw new Bam.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         OutputTypeVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
+            var enumOption = option as Bam.Core.ValueTypeOption<C.ELinkerOutput>;
             var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
@@ -53,17 +53,17 @@ namespace VisualCCommon
                         return returnVal;
                     }
                 default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
+                    throw new Bam.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
         }
         private static void
         DoNotAutoIncludeStandardLibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
+            var ignoreStandardLibrariesOption = option as Bam.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
                 commandLineBuilder.Add("-NODEFAULTLIB");
@@ -72,11 +72,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         DoNotAutoIncludeStandardLibrariesVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
+            var ignoreStandardLibrariesOption = option as Bam.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("IgnoreAllDefaultLibraries", ignoreStandardLibrariesOption.Value.ToString().ToLower());
             return returnVal;
@@ -84,15 +84,15 @@ namespace VisualCCommon
         private static void
         DebugSymbolsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = option as Bam.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-DEBUG");
-                var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
+                var pdbFile = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
                 var pdbPath = pdbFile.GetSinglePath();
                 commandLineBuilder.Add(System.String.Format("-PDB:{0}", pdbPath));
             }
@@ -100,16 +100,16 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         DebugSymbolsVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = option as Bam.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("GenerateDebugInformation", debugSymbolsOption.Value.ToString().ToLower());
             if (debugSymbolsOption.Value)
             {
-                var pdbFile = (sender as Opus.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
+                var pdbFile = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
                 var pdbPath = pdbFile.GetSinglePath();
                 returnVal.Add("ProgramDatabaseFile", pdbPath);
             }
@@ -118,11 +118,11 @@ namespace VisualCCommon
         private static void
         SubSystemCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
+            var subSystemOption = option as Bam.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
             {
                 case C.ESubsystem.NotSet:
@@ -135,17 +135,17 @@ namespace VisualCCommon
                     commandLineBuilder.Add("-SUBSYSTEM:WINDOWS");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized subsystem option");
+                    throw new Bam.Core.Exception("Unrecognized subsystem option");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         SubSystemVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
+            var subSystemOption = option as Bam.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
             {
                 case C.ESubsystem.NotSet:
@@ -164,17 +164,17 @@ namespace VisualCCommon
                         return returnVal;
                     }
                 default:
-                    throw new Opus.Core.Exception("Unrecognized subsystem option");
+                    throw new Bam.Core.Exception("Unrecognized subsystem option");
             }
         }
         private static void
         DynamicLibraryCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
+            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
                 commandLineBuilder.Add("-DLL");
@@ -186,12 +186,12 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         DynamicLibraryVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
+            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
                 var options = sender as LinkerOptionCollection;
@@ -203,11 +203,11 @@ namespace VisualCCommon
         private static void
         LibraryPathsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var librarySearchPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var librarySearchPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
             // TODO: change to var, and returning Locations
             foreach (string librarySearchPath in librarySearchPathsOption.Value)
             {
@@ -224,11 +224,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         LibraryPathsVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var libraryPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
             var libraryPaths = new System.Text.StringBuilder();
             // TODO: change to var, returning Locations
             foreach (string libraryPath in libraryPathsOption.Value)
@@ -249,13 +249,13 @@ namespace VisualCCommon
         private static void
         StandardLibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var librariesOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.FileCollection>;
             // TODO: change to var, and returning Locations
-            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            foreach (Bam.Core.Location libraryPath in librariesOption.Value)
             {
                 commandLineBuilder.Add(libraryPath.GetSinglePath());
             }
@@ -263,14 +263,14 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         StandardLibrariesVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var options = sender as C.ILinkerOptions;
             if (options.DoNotAutoIncludeStandardLibraries)
             {
-                var standardLibraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+                var standardLibraryPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.FileCollection>;
                 var standardLibraryPaths = new System.Text.StringBuilder();
                 if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
                 {
@@ -309,13 +309,13 @@ namespace VisualCCommon
         private static void
         LibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var librariesOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.FileCollection>;
             // TODO: change to var, and returning Locations
-            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            foreach (Bam.Core.Location libraryPath in librariesOption.Value)
             {
                 commandLineBuilder.Add(libraryPath.GetSinglePath());
             }
@@ -323,18 +323,18 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         LibrariesVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var libraryPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.FileCollection>;
             var libraryPaths = new System.Text.StringBuilder();
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
             {
                 // this stops any other libraries from being inherited
                 libraryPaths.Append("$(NOINHERIT) ");
                 // TODO: change to var, returning Locations
-                foreach (Opus.Core.Location location in libraryPathsOption.Value)
+                foreach (Bam.Core.Location location in libraryPathsOption.Value)
                 {
                     var standardLibraryPath = location.GetSinglePath();
                     if (standardLibraryPath.Contains(" "))
@@ -350,7 +350,7 @@ namespace VisualCCommon
             else if (VisualStudioProcessor.EVisualStudioTarget.MSBUILD == vsTarget)
             {
                 // TODO: change to var, returning Locations
-                foreach (Opus.Core.Location location in libraryPathsOption.Value)
+                foreach (Bam.Core.Location location in libraryPathsOption.Value)
                 {
                     var standardLibraryPath = location.GetSinglePath();
                     libraryPaths.Append(System.String.Format("{0};", standardLibraryPath));
@@ -363,11 +363,11 @@ namespace VisualCCommon
         private static void
         GenerateMapFileCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
@@ -377,11 +377,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         GenerateMapFileVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("GenerateMapFile", boolOption.Value.ToString().ToLower());
             if (boolOption.Value)
@@ -394,11 +394,11 @@ namespace VisualCCommon
         private static void
         AdditionalOptionsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stringOption = option as Bam.Core.ReferenceTypeOption<string>;
             var arguments = stringOption.Value.Split(' ');
             foreach (var argument in arguments)
             {
@@ -408,11 +408,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         AdditionalOptionsVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stringOption = option as Bam.Core.ReferenceTypeOption<string>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("AdditionalOptions", stringOption.Value);
             return returnVal;
@@ -422,11 +422,11 @@ namespace VisualCCommon
         private static void
         NoLogoCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
+            var noLogoOption = option as Bam.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
                 commandLineBuilder.Add("-NOLOGO");
@@ -435,11 +435,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         NoLogoVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
+            var noLogoOption = option as Bam.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("SuppressStartupBanner", noLogoOption.Value.ToString().ToLower());
             return returnVal;
@@ -447,11 +447,11 @@ namespace VisualCCommon
         private static void
         StackReserveAndCommitCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var stackSizeOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stackSizeOption = option as Bam.Core.ReferenceTypeOption<string>;
             var stackSize = stackSizeOption.Value;
             if (stackSize != null)
             {
@@ -462,11 +462,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         StackReserveAndCommitVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var stackSizeOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stackSizeOption = option as Bam.Core.ReferenceTypeOption<string>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             var stackSize = stackSizeOption.Value;
             if (stackSize != null)
@@ -484,11 +484,11 @@ namespace VisualCCommon
         private static void
         IgnoredLibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var ignoredLibrariesOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.StringArray>;
             // TODO: change to var
             foreach (string library in ignoredLibrariesOption.Value)
             {
@@ -498,11 +498,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         IgnoredLibrariesVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var ignoredLibrariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.StringArray>;
+            var ignoredLibrariesOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.StringArray>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             var value = ignoredLibrariesOption.Value.ToString(';');
             if (VisualStudioProcessor.EVisualStudioTarget.VCPROJ == vsTarget)
@@ -518,11 +518,11 @@ namespace VisualCCommon
         private static void
         IncrementalLinkCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-INCREMENTAL");
@@ -535,12 +535,12 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         IncrementalLinkVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (vsTarget == VisualStudioProcessor.EVisualStudioTarget.VCPROJ)
             {
                 if (boolOption.Value)
@@ -562,7 +562,7 @@ namespace VisualCCommon
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeVisualStudioProcessor);
             this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor,DoNotAutoIncludeStandardLibrariesVisualStudioProcessor);

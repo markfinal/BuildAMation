@@ -9,6 +9,6 @@ namespace VisualStudioProcessor
     {
         ToolAttributeDictionary
         ToVisualStudioProjectAttributes(
-            Opus.Core.Target target);
+            Bam.Core.Target target);
     }
 }

@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             string makeFilePath,
             MakeFileTargetDictionary targetDictionary,
             MakeFileVariableDictionary variableDictionary,
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment)
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> environment)
         {
             this.MakeFilePath = makeFilePath;
             this.TargetDictionary = targetDictionary;
@@ -20,7 +20,7 @@ namespace MakeFileBuilder
             if (null != environment)
             {
                 // TODO: better way to do a copy?
-                this.Environment = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+                this.Environment = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
                 foreach (var key in environment.Keys)
                 {
                     this.Environment[key] = environment[key];
@@ -50,7 +50,7 @@ namespace MakeFileBuilder
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> Environment
+        public System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment
         {
             get;
             private set;

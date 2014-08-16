@@ -23,7 +23,7 @@ namespace DependencyGenerator
         {
             get
             {
-                string hashFile = System.IO.Path.Combine(Opus.Core.State.BuildRoot, Opus.Core.State.PackageInfo[0].FullName);
+                string hashFile = System.IO.Path.Combine(Bam.Core.State.BuildRoot, Bam.Core.State.PackageInfo[0].FullName);
                 hashFile = System.IO.Path.Combine(hashFile, "sourceFileHash");
                 return hashFile;
             }
@@ -53,11 +53,11 @@ namespace DependencyGenerator
 
         public static bool
         HaveFileHashesChanged(
-            Opus.Core.StringArray paths)
+            Bam.Core.StringArray paths)
         {
             if (null == loadedFileHashDictionary)
             {
-                Opus.Core.Log.DebugMessage("No loaded dictionary - change everything");
+                Bam.Core.Log.DebugMessage("No loaded dictionary - change everything");
                 return true;
             }
 
@@ -67,7 +67,7 @@ namespace DependencyGenerator
                 bool hasValue = loadedFileHashDictionary.TryGetValue(path, out savedHash);
                 if (!hasValue)
                 {
-                    Opus.Core.Log.DebugMessage("No hash for '{0}'", path);
+                    Bam.Core.Log.DebugMessage("No hash for '{0}'", path);
                     return true;
                 }
 
@@ -77,12 +77,12 @@ namespace DependencyGenerator
                 bool hashHasChanged = (hash != savedHash);
                 if (hashHasChanged)
                 {
-                    Opus.Core.Log.DebugMessage("Hash has changed '{0}': was {1}, now {2}", path, savedHash, hash);
+                    Bam.Core.Log.DebugMessage("Hash has changed '{0}': was {1}, now {2}", path, savedHash, hash);
                     return true;
                 }
             }
 
-            Opus.Core.Log.DebugMessage("All hashes identical");
+            Bam.Core.Log.DebugMessage("All hashes identical");
             return false;
         }
 
@@ -111,8 +111,8 @@ namespace DependencyGenerator
             object obj)
         {
             // wait for the build to start
-            System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Opus.Core.State.BuildStartedEvent }, -1);
-            Opus.Core.BuildManager buildManager = Opus.Core.State.BuildManager;
+            System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Bam.Core.State.BuildStartedEvent }, -1);
+            Bam.Core.BuildManager buildManager = Bam.Core.State.BuildManager;
             buildManager.AdditionalThreadCompletionEvents.Add(completedEvent);
 
             DependencyQueue<string> data = obj as DependencyQueue<string>;

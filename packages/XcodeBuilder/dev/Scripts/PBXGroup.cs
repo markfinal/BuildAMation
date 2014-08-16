@@ -13,7 +13,7 @@ namespace XcodeBuilder
         PBXGroup(
             string name) : base(name)
         {
-            this.Children = new Opus.Core.Array<XcodeNodeData>();
+            this.Children = new Bam.Core.Array<XcodeNodeData>();
         }
 
         public string Path
@@ -28,7 +28,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public Opus.Core.Array<XcodeNodeData> Children
+        public Bam.Core.Array<XcodeNodeData> Children
         {
             get;
             private set;
@@ -46,7 +46,7 @@ namespace XcodeBuilder
             }
             if (string.IsNullOrEmpty(this.SourceTree))
             {
-                throw new Opus.Core.Exception("Source tree not set");
+                throw new Bam.Core.Exception("Source tree not set");
             }
 
             if (string.IsNullOrEmpty(this.Name))

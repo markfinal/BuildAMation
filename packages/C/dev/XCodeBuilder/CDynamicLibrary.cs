@@ -12,7 +12,7 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
             var target = node.Target;
-            var baseTarget = (Opus.Core.BaseTarget)target;
+            var baseTarget = (Bam.Core.BaseTarget)target;
 
             var options = moduleToBuild.Options as C.LinkerOptionCollection;
             var executableLocation = moduleToBuild.Locations[C.Application.OutputFile];
@@ -55,7 +55,7 @@ namespace XcodeBuilder
             {
                 if (data.BuildConfigurationList != nativeTargetConfigurationList)
                 {
-                    throw new Opus.Core.Exception("Inconsistent build configuration lists");
+                    throw new Bam.Core.Exception("Inconsistent build configuration lists");
                 }
             }
 
@@ -75,9 +75,9 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_PREFIX"].AddUnique(outputPrefix);
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
-            var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+            var basePath = Bam.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
             var outputDirLoc = moduleToBuild.Locations[C.Application.OutputDir];
-            var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
+            var relPath = Bam.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
 
             // adding the group for the target
@@ -86,7 +86,7 @@ namespace XcodeBuilder
             group.Path = moduleName;
             foreach (var source in node.Children)
             {
-                if (source.Module is Opus.Core.IModuleCollection)
+                if (source.Module is Bam.Core.IModuleCollection)
                 {
                     foreach (var source2 in source.Children)
                     {
@@ -140,7 +140,7 @@ namespace XcodeBuilder
                         var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentData.ProductReference, frameworksBuildPhase);
                         if (null == buildFile)
                         {
-                            throw new Opus.Core.Exception("Build file not available");
+                            throw new Bam.Core.Exception("Build file not available");
                         }
 
                         // now add linker search paths
@@ -167,12 +167,12 @@ namespace XcodeBuilder
                             type = PBXFileReference.EType.ReferencedDynamicLibrary;
                         }
 
-                        var relativePath = Opus.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);
+                        var relativePath = Bam.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);
                         var dependentFileRef = project.FileReferences.Get(dependency.UniqueModuleName, type, relativePath, project.RootUri);
                         var buildFile = project.BuildFiles.Get(dependency.UniqueModuleName, dependentFileRef, frameworksBuildPhase);
                         if (null == buildFile)
                         {
-                            throw new Opus.Core.Exception("Build file not available");
+                            throw new Bam.Core.Exception("Build file not available");
                         }
 
                         project.MainGroup.Children.AddUnique(dependentFileRef);
@@ -213,8 +213,8 @@ namespace XcodeBuilder
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
-                    foreach (Opus.Core.Location location in headerFileCollection)
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Bam.Core.FileCollection;
+                    foreach (Bam.Core.Location location in headerFileCollection)
                     {
                         var headerPath = location.GetSinglePath();
                         var headerFileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, project.RootUri);

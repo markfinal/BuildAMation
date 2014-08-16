@@ -6,14 +6,14 @@
 namespace CSharp
 {
     public partial class OptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         IOptions,
         CommandLineProcessor.ICommandLineSupport,
         VisualStudioProcessor.IVisualStudioSupport
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var target = node.Target;
 
@@ -25,9 +25,9 @@ namespace CSharp
             options.Unsafe = false;
             options.WarningLevel = EWarningLevel.Level4;
             options.WarningsAsErrors = true;
-            options.Defines = new Opus.Core.StringArray();
+            options.Defines = new Bam.Core.StringArray();
 
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 options.DebugInformation = EDebugInformation.Full;
                 options.Optimize = false;
@@ -35,7 +35,7 @@ namespace CSharp
             }
             else
             {
-                if (!target.HasConfiguration(Opus.Core.EConfiguration.Profile))
+                if (!target.HasConfiguration(Bam.Core.EConfiguration.Profile))
                 {
                     options.DebugInformation = EDebugInformation.Disabled;
                 }
@@ -47,13 +47,13 @@ namespace CSharp
                 options.Optimize = true;
             }
 
-            options.References = new Opus.Core.FileCollection();
-            options.Modules = new Opus.Core.FileCollection();
+            options.References = new Bam.Core.FileCollection();
+            options.Modules = new Bam.Core.FileCollection();
         }
 
         public
         OptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         public string OutputName
@@ -64,15 +64,15 @@ namespace CSharp
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
-            (node.Module.Locations[Assembly.OutputDir] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Opus.Core.State.ModuleBuildDirLocationKey], "bin", Opus.Core.Location.EExists.WillExist);
+            (node.Module.Locations[Assembly.OutputDir] as Bam.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Bam.Core.State.ModuleBuildDirLocationKey], "bin", Bam.Core.Location.EExists.WillExist);
         }
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var options = this as IOptions;
 
@@ -95,25 +95,25 @@ namespace CSharp
                         break;
 
                     default:
-                        throw new Opus.Core.Exception("Unrecognized CSharp.ETarget value");
+                        throw new Bam.Core.Exception("Unrecognized CSharp.ETarget value");
                 }
 
-                (node.Module.Locations[Assembly.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Assembly.OutputDir], this.OutputName + outputSuffix, Opus.Core.Location.EExists.WillExist);
+                (node.Module.Locations[Assembly.OutputFile] as Bam.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[Assembly.OutputDir], this.OutputName + outputSuffix, Bam.Core.Location.EExists.WillExist);
             }
 
             if (options.DebugInformation != EDebugInformation.Disabled)
             {
                 var locationMap = node.Module.Locations;
-                var pdbDir = locationMap[Assembly.PDBDir] as Opus.Core.ScaffoldLocation;
+                var pdbDir = locationMap[Assembly.PDBDir] as Bam.Core.ScaffoldLocation;
                 if (!pdbDir.IsValid)
                 {
                     pdbDir.SetReference(locationMap[Assembly.OutputDir]);
                 }
 
-                var pdbFile = locationMap[Assembly.PDBFile] as Opus.Core.ScaffoldLocation;
+                var pdbFile = locationMap[Assembly.PDBFile] as Bam.Core.ScaffoldLocation;
                 if (!pdbFile.IsValid)
                 {
-                    pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
+                    pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Bam.Core.Location.EExists.WillExist);
                 }
             }
 
@@ -122,16 +122,16 @@ namespace CSharp
 
         void
         CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
-            Opus.Core.StringArray commandLineBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames)
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }
 
         VisualStudioProcessor.ToolAttributeDictionary
         VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, VisualStudioProcessor.EVisualStudioTarget.MSBUILD);
             return dictionary;

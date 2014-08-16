@@ -8,7 +8,7 @@ namespace CommandLineProcessor
     public delegate void
     Delegate(
         object sender,
-        Opus.Core.StringArray commandLineBuilder,
-        Opus.Core.Option option,
-        Opus.Core.Target target);
+        Bam.Core.StringArray commandLineBuilder,
+        Bam.Core.Option option,
+        Bam.Core.Target target);
 }

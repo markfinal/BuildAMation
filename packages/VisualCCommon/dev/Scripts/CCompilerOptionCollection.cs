@@ -14,7 +14,7 @@ namespace VisualCCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -23,7 +23,7 @@ namespace VisualCCommon
             var compilerInterface = this as ICCompilerOptions;
             compilerInterface.NoLogo = true;
 
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 compilerInterface.MinimalRebuild = true;
                 compilerInterface.BasicRuntimeChecks = EBasicRuntimeChecks.StackFrameAndUninitializedVariables;
@@ -41,7 +41,7 @@ namespace VisualCCommon
             }
 
             var compilerTool = target.Toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)target));
+            (this as C.ICCompilerOptions).SystemIncludePaths.AddRange(compilerTool.IncludePaths((Bam.Core.BaseTarget)target));
 
             (this as C.ICCompilerOptions).TargetLanguage = C.ETargetLanguage.C;
 
@@ -58,32 +58,32 @@ namespace VisualCCommon
             compilerInterface.UseFullPaths = true;
             compilerInterface.CompileAsManaged = EManagedCompilation.NoCLR;
             compilerInterface.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
-            compilerInterface.ForcedInclude = new Opus.Core.StringArray();
+            compilerInterface.ForcedInclude = new Bam.Core.StringArray();
         }
 
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var options = this as ICCompilerOptions;
             if (options.DebugType != EDebugType.Embedded)
             {
                 var locationMap = node.Module.Locations;
-                var pdbDirLoc = locationMap[CCompiler.PDBDir] as Opus.Core.ScaffoldLocation;
+                var pdbDirLoc = locationMap[CCompiler.PDBDir] as Bam.Core.ScaffoldLocation;
                 if (!pdbDirLoc.IsValid)
                 {
                     pdbDirLoc.SetReference(locationMap[C.Application.OutputDir]);
                 }
 
-                var pdbFileLoc = locationMap[CCompiler.PDBFile] as Opus.Core.ScaffoldLocation;
+                var pdbFileLoc = locationMap[CCompiler.PDBFile] as Bam.Core.ScaffoldLocation;
                 if (!pdbFileLoc.IsValid)
                 {
-                    pdbFileLoc.SpecifyStub(pdbDirLoc, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
+                    pdbFileLoc.SpecifyStub(pdbDirLoc, this.OutputName + ".pdb", Bam.Core.Location.EExists.WillExist);
                 }
             }
 
@@ -92,7 +92,7 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary
         VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)
@@ -102,7 +102,7 @@ namespace VisualCCommon
                     break;
 
                 default:
-                    throw new Opus.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
+                    throw new Bam.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
             }
             var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;

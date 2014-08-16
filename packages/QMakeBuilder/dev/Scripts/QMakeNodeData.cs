@@ -24,40 +24,40 @@ namespace QMakeBuilder
 
         public
         QMakeData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             this.OwningNode = node;
             this.OSXApplicationBundle = false;
 
-            this.CCFlags = new Opus.Core.StringArray();
-            this.CustomPathVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            this.CCFlags = new Bam.Core.StringArray();
+            this.CustomPathVariables = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             this.CustomRules = null;
-            this.CXXFlags = new Opus.Core.StringArray();
-            this.Defines = new Opus.Core.StringArray();
+            this.CXXFlags = new Bam.Core.StringArray();
+            this.Defines = new Bam.Core.StringArray();
             this.DestDir = null;
-            this.Headers = new Opus.Core.StringArray();
-            this.IncludePaths = new Opus.Core.StringArray();
-            this.Libraries = new Opus.Core.LocationArray();
-            this.ExternalLibraries = new Opus.Core.StringArray();
-            this.LinkFlags = new Opus.Core.StringArray();
+            this.Headers = new Bam.Core.StringArray();
+            this.IncludePaths = new Bam.Core.StringArray();
+            this.Libraries = new Bam.Core.LocationArray();
+            this.ExternalLibraries = new Bam.Core.StringArray();
+            this.LinkFlags = new Bam.Core.StringArray();
             this.Merged = false;
             this.MocDir = null;
-            this.ObjectiveSources = new Opus.Core.StringArray();
+            this.ObjectiveSources = new Bam.Core.StringArray();
             this.ObjectsDir = null;
             this.Output = OutputType.Undefined;
-            this.PostLink = new Opus.Core.StringArray();
-            this.PriPaths = new Opus.Core.StringArray();
-            this.RPathDir = new Opus.Core.StringArray();
-            this.QtModules = new Opus.Core.StringArray();
-            this.Sources = new Opus.Core.StringArray();
+            this.PostLink = new Bam.Core.StringArray();
+            this.PriPaths = new Bam.Core.StringArray();
+            this.RPathDir = new Bam.Core.StringArray();
+            this.QtModules = new Bam.Core.StringArray();
+            this.Sources = new Bam.Core.StringArray();
             this.Target = string.Empty;
             this.VersionMajor = string.Empty;
             this.VersionMinor = string.Empty;
             this.VersionPatch = string.Empty;
-            this.WinRCFiles = new Opus.Core.StringArray();
+            this.WinRCFiles = new Bam.Core.StringArray();
         }
 
-        public Opus.Core.DependencyNode OwningNode
+        public Bam.Core.DependencyNode OwningNode
         {
             get;
             private set;
@@ -70,67 +70,67 @@ namespace QMakeBuilder
             set;
         }
 
-        public Opus.Core.StringArray CCFlags
+        public Bam.Core.StringArray CCFlags
         {
             get;
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> CustomPathVariables
+        public System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> CustomPathVariables
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray CustomRules
+        public Bam.Core.StringArray CustomRules
         {
             get;
             set;
         }
 
-        public Opus.Core.StringArray CXXFlags
+        public Bam.Core.StringArray CXXFlags
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray Defines
+        public Bam.Core.StringArray Defines
         {
             get;
             private set;
         }
 
-        public Opus.Core.Location DestDir
+        public Bam.Core.Location DestDir
         {
             get;
             set;
         }
 
-        public Opus.Core.StringArray Headers
+        public Bam.Core.StringArray Headers
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray IncludePaths
+        public Bam.Core.StringArray IncludePaths
         {
             get;
             private set;
         }
 
-        public Opus.Core.LocationArray Libraries
+        public Bam.Core.LocationArray Libraries
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray ExternalLibraries
+        public Bam.Core.StringArray ExternalLibraries
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray LinkFlags
+        public Bam.Core.StringArray LinkFlags
         {
             get;
             private set;
@@ -142,19 +142,19 @@ namespace QMakeBuilder
             set;
         }
 
-        public Opus.Core.Location MocDir
+        public Bam.Core.Location MocDir
         {
             get;
             set;
         }
 
-        public Opus.Core.StringArray ObjectiveSources
+        public Bam.Core.StringArray ObjectiveSources
         {
             get;
             private set;
         }
 
-        public Opus.Core.Location ObjectsDir
+        public Bam.Core.Location ObjectsDir
         {
             get;
             set;
@@ -166,31 +166,31 @@ namespace QMakeBuilder
             private set;
         }
 
-        public Opus.Core.StringArray PostLink
+        public Bam.Core.StringArray PostLink
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray PriPaths
+        public Bam.Core.StringArray PriPaths
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray RPathDir
+        public Bam.Core.StringArray RPathDir
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray QtModules
+        public Bam.Core.StringArray QtModules
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray Sources
+        public Bam.Core.StringArray Sources
         {
             get;
             private set;
@@ -226,7 +226,7 @@ namespace QMakeBuilder
             set;
         }
 
-        public Opus.Core.StringArray WinRCFiles
+        public Bam.Core.StringArray WinRCFiles
         {
             get;
             private set;
@@ -263,7 +263,7 @@ namespace QMakeBuilder
             bool verbose)
         {
             // make the path relative to the .pro
-            var newPath = (null != proFilePath) ? Opus.Core.RelativePathUtilities.GetPath(path, proFilePath) : path;
+            var newPath = (null != proFilePath) ? Bam.Core.RelativePathUtilities.GetPath(path, proFilePath) : path;
 
             if (!verbose)
             {
@@ -282,10 +282,10 @@ namespace QMakeBuilder
 
         private static string
         PathListToString(
-            Opus.Core.StringArray pathList,
+            Bam.Core.StringArray pathList,
             string proFilePath)
         {
-            var escapedPathList = new Opus.Core.StringArray();
+            var escapedPathList = new Bam.Core.StringArray();
             foreach (var path in pathList)
             {
                 escapedPathList.Add(FormatPath(path, proFilePath));
@@ -296,7 +296,7 @@ namespace QMakeBuilder
 
         private static void
         WriteTemplate(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -321,20 +321,20 @@ namespace QMakeBuilder
                     break;
 
                 default:
-                    throw new Opus.Core.Exception("Should not be writing out .pro files for outputs of type '{0}' : {1}", array[0].Output.ToString(), proFilePath);
+                    throw new Bam.Core.Exception("Should not be writing out .pro files for outputs of type '{0}' : {1}", array[0].Output.ToString(), proFilePath);
             }
         }
 
         private static void
         WriteConfig(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
             var config = string.Empty;
             if (array.Count == 1)
             {
-                if (array[0].OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                if (array[0].OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                 {
                     config += " debug";
                 }
@@ -351,7 +351,7 @@ namespace QMakeBuilder
             var qtModules = array[0].QtModules;
             if (array.Count > 1)
             {
-                qtModules = new Opus.Core.StringArray(qtModules.Union(array[1].QtModules));
+                qtModules = new Bam.Core.StringArray(qtModules.Union(array[1].QtModules));
             }
             if (qtModules.Count > 0)
             {
@@ -372,7 +372,7 @@ namespace QMakeBuilder
             {
                 writer.WriteLine("QT = {0}", qtModules.ToString());
             }
-            if (Opus.Core.OSUtilities.IsOSXHosting)
+            if (Bam.Core.OSUtilities.IsOSXHosting)
             {
                 if (array[0].Output == OutputType.Application && !array[0].OSXApplicationBundle)
                 {
@@ -383,7 +383,7 @@ namespace QMakeBuilder
 
         private static void
         WriteSources(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -393,10 +393,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.Sources;
                     }
@@ -412,7 +412,7 @@ namespace QMakeBuilder
 
         private static void
         WriteObjectiveSources(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -422,10 +422,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.ObjectiveSources;
                     }
@@ -441,7 +441,7 @@ namespace QMakeBuilder
 
         private static void
         WriteHeaders(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -451,10 +451,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.Headers;
                     }
@@ -470,7 +470,7 @@ namespace QMakeBuilder
 
         private static void
         WriteTarget(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -483,7 +483,7 @@ namespace QMakeBuilder
                 var values = new Values<string>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.Target;
                     }
@@ -499,7 +499,7 @@ namespace QMakeBuilder
 
         private static void
         WriteDestDir(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -521,7 +521,7 @@ namespace QMakeBuilder
                         continue;
                     }
                     var destDir = data.DestDir.GetSinglePath();
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = destDir;
                     }
@@ -537,7 +537,7 @@ namespace QMakeBuilder
 
         private static void
         WriteMocDir(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -558,7 +558,7 @@ namespace QMakeBuilder
                     {
                         continue;
                     }
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.MocDir.GetSinglePath();
                     }
@@ -574,7 +574,7 @@ namespace QMakeBuilder
 
         private static void
         WriteObjectsDir(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -597,7 +597,7 @@ namespace QMakeBuilder
                         continue;
                     }
                     var objDir = data.ObjectsDir.GetSinglePath();
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = objDir;
                     }
@@ -613,7 +613,7 @@ namespace QMakeBuilder
 
         private static void
         WriteIncludePaths(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -623,10 +623,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.IncludePaths;
                     }
@@ -642,7 +642,7 @@ namespace QMakeBuilder
 
         private static void
         WriteDefines(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -652,10 +652,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.Defines;
                     }
@@ -671,7 +671,7 @@ namespace QMakeBuilder
 
         private static void
         WriteCCFlags(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -681,10 +681,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.CCFlags;
                     }
@@ -700,7 +700,7 @@ namespace QMakeBuilder
 
         private static void
         WriteCXXFlags(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -710,10 +710,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.CXXFlags;
                     }
@@ -776,7 +776,7 @@ namespace QMakeBuilder
 
         private static void
         WriteStringArray(
-            Opus.Core.StringArray stringArray,
+            Bam.Core.StringArray stringArray,
             string format,
             string proFilePath,
             System.IO.StreamWriter writer)
@@ -786,7 +786,7 @@ namespace QMakeBuilder
 
         private static void
         WriteStringArray(
-            Opus.Core.StringArray stringArray,
+            Bam.Core.StringArray stringArray,
             string format,
             string proFilePath,
             bool verbose,
@@ -835,7 +835,7 @@ namespace QMakeBuilder
 
         private static void
         WriteLocationArray(
-            Opus.Core.LocationArray locArray,
+            Bam.Core.LocationArray locArray,
             string format,
             string proFilePath,
             System.IO.StreamWriter writer)
@@ -845,7 +845,7 @@ namespace QMakeBuilder
 
         private static void
         WriteLocationArray(
-            Opus.Core.LocationArray locArray,
+            Bam.Core.LocationArray locArray,
             string format,
             string proFilePath,
             bool verbose,
@@ -914,7 +914,7 @@ namespace QMakeBuilder
 
         private static void
         WriteStringArrays(
-            Values<Opus.Core.StringArray> values,
+            Values<Bam.Core.StringArray> values,
             string format,
             string proFilePath,
             System.IO.StreamWriter writer)
@@ -924,7 +924,7 @@ namespace QMakeBuilder
 
         private static void
         WriteStringArrays(
-            Values<Opus.Core.StringArray> values,
+            Values<Bam.Core.StringArray> values,
             string format,
             string proFilePath,
             bool verbose,
@@ -932,26 +932,26 @@ namespace QMakeBuilder
             bool escaped,
             System.IO.StreamWriter writer)
         {
-            var intersect = new Opus.Core.StringArray(values.Debug.Intersect(values.Release));
+            var intersect = new Bam.Core.StringArray(values.Debug.Intersect(values.Release));
             WriteStringArray(intersect, format, proFilePath, verbose, useContinuation, escaped, writer);
 
             // see the following for an explanation of this syntax
             // http://qt-project.org/faq/answer/what_does_the_syntax_configdebugdebugrelease_mean_what_does_the_1st_argumen
             if (intersect.Count != values.Debug.Count)
             {
-                var debugOnly = new Opus.Core.StringArray(values.Debug.Complement(intersect));
+                var debugOnly = new Bam.Core.StringArray(values.Debug.Complement(intersect));
                 WriteStringArray(debugOnly, "CONFIG(debug,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
             if (intersect.Count != values.Release.Count)
             {
-                var releaseOnly = new Opus.Core.StringArray(values.Release.Complement(intersect));
+                var releaseOnly = new Bam.Core.StringArray(values.Release.Complement(intersect));
                 WriteStringArray(releaseOnly, "CONFIG(release,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
         }
 
         private static void
         WriteLocationArrays(
-            Values<Opus.Core.LocationArray> values,
+            Values<Bam.Core.LocationArray> values,
             string format,
             string proFilePath,
             System.IO.StreamWriter writer)
@@ -961,7 +961,7 @@ namespace QMakeBuilder
 
         private static void
         WriteLocationArrays(
-            Values<Opus.Core.LocationArray> values,
+            Values<Bam.Core.LocationArray> values,
             string format,
             string proFilePath,
             bool verbose,
@@ -969,26 +969,26 @@ namespace QMakeBuilder
             bool escaped,
             System.IO.StreamWriter writer)
         {
-            var intersect = new Opus.Core.LocationArray(values.Debug.Intersect(values.Release));
+            var intersect = new Bam.Core.LocationArray(values.Debug.Intersect(values.Release));
             WriteLocationArray(intersect, format, proFilePath, verbose, useContinuation, escaped, writer);
 
             // see the following for an explanation of this syntax
             // http://qt-project.org/faq/answer/what_does_the_syntax_configdebugdebugrelease_mean_what_does_the_1st_argumen
             if (intersect.Count != values.Debug.Count)
             {
-                var debugOnly = new Opus.Core.LocationArray(values.Debug.Complement(intersect));
+                var debugOnly = new Bam.Core.LocationArray(values.Debug.Complement(intersect));
                 WriteLocationArray(debugOnly, "CONFIG(debug,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
             if (intersect.Count != values.Release.Count)
             {
-                var releaseOnly = new Opus.Core.LocationArray(values.Release.Complement(intersect));
+                var releaseOnly = new Bam.Core.LocationArray(values.Release.Complement(intersect));
                 WriteLocationArray(releaseOnly, "CONFIG(release,debug|release):" + format, proFilePath, verbose, useContinuation, escaped, writer);
             }
         }
 
         private static void
         WritePriPaths(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -998,10 +998,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.PriPaths;
                     }
@@ -1017,7 +1017,7 @@ namespace QMakeBuilder
 
         private static void
         WriteWinRCFiles(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1027,10 +1027,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.WinRCFiles;
                     }
@@ -1046,7 +1046,7 @@ namespace QMakeBuilder
 
         private static void
         WriteLibraries(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1056,10 +1056,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.LocationArray>();
+                var values = new Values<Bam.Core.LocationArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.Libraries;
                     }
@@ -1075,7 +1075,7 @@ namespace QMakeBuilder
 
         private static void
         WriteLinkFlags(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1085,10 +1085,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.LinkFlags;
                     }
@@ -1104,7 +1104,7 @@ namespace QMakeBuilder
 
         private static void
         WriteRPathDir(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1114,10 +1114,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.RPathDir;
                     }
@@ -1133,7 +1133,7 @@ namespace QMakeBuilder
 
         private static void
         WritePostLinkCommands(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1143,10 +1143,10 @@ namespace QMakeBuilder
             }
             else
             {
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.PostLink;
                     }
@@ -1162,7 +1162,7 @@ namespace QMakeBuilder
 
         private static void
         WriteCustomPathVariables(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1182,7 +1182,7 @@ namespace QMakeBuilder
 
         private static void
         WriteCustomRules(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1205,7 +1205,7 @@ namespace QMakeBuilder
             else
             {
                 // TODO: how to handle this for splitting on the equals sign?
-                var values = new Values<Opus.Core.StringArray>();
+                var values = new Values<Bam.Core.StringArray>();
                 foreach (var data in array)
                 {
                     if (data.CustomRules == null)
@@ -1213,7 +1213,7 @@ namespace QMakeBuilder
                         continue;
                     }
 
-                    if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                    if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                     {
                         values.Debug = data.CustomRules;
                     }
@@ -1230,7 +1230,7 @@ namespace QMakeBuilder
 
         private static void
         WriteMajorVersionNumber(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1248,7 +1248,7 @@ namespace QMakeBuilder
                 {
                     if (!string.IsNullOrEmpty(data.VersionMajor))
                     {
-                        if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                        if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                         {
                             values.Debug = data.VersionMajor;
                         }
@@ -1265,7 +1265,7 @@ namespace QMakeBuilder
 
         private static void
         WriteMinorVersionNumber(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1283,7 +1283,7 @@ namespace QMakeBuilder
                 {
                     if (!string.IsNullOrEmpty(data.VersionMinor))
                     {
-                        if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                        if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                         {
                             values.Debug = data.VersionMinor;
                         }
@@ -1300,7 +1300,7 @@ namespace QMakeBuilder
 
         private static void
         WritePatchVersionNumber(
-            Opus.Core.Array<QMakeData> array,
+            Bam.Core.Array<QMakeData> array,
             string proFilePath,
             System.IO.StreamWriter writer)
         {
@@ -1318,7 +1318,7 @@ namespace QMakeBuilder
                 {
                     if (!string.IsNullOrEmpty(data.VersionPatch))
                     {
-                        if (data.OwningNode.Target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                        if (data.OwningNode.Target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                         {
                             values.Debug = data.VersionPatch;
                         }
@@ -1350,11 +1350,11 @@ namespace QMakeBuilder
                 return;
             }
 
-            var baseTargetLHS = (Opus.Core.BaseTarget)(this.OwningNode.Target);
-            var baseTargetRHS = (Opus.Core.BaseTarget)(data.OwningNode.Target);
+            var baseTargetLHS = (Bam.Core.BaseTarget)(this.OwningNode.Target);
+            var baseTargetRHS = (Bam.Core.BaseTarget)(data.OwningNode.Target);
             if (baseTargetLHS != baseTargetRHS)
             {
-                throw new Opus.Core.Exception("Cannot merge data from different Opus.Core.BaseTargets: {0} vs {1}", baseTargetLHS.ToString(), baseTargetRHS.ToString());
+                throw new Bam.Core.Exception("Cannot merge data from different Bam.Core.BaseTargets: {0} vs {1}", baseTargetLHS.ToString(), baseTargetRHS.ToString());
             }
 
             this.CCFlags.AddRangeUnique(data.CCFlags);
@@ -1366,14 +1366,14 @@ namespace QMakeBuilder
                 }
                 else
                 {
-                    this.CustomPathVariables[customPath.Key] = new Opus.Core.StringArray(customPath.Value);
+                    this.CustomPathVariables[customPath.Key] = new Bam.Core.StringArray(customPath.Value);
                 }
             }
             if (null != data.CustomRules)
             {
                 if (null == this.CustomRules)
                 {
-                    this.CustomRules = new Opus.Core.StringArray();
+                    this.CustomRules = new Bam.Core.StringArray();
                 }
                 this.CustomRules.AddRangeUnique(data.CustomRules);
             }
@@ -1415,7 +1415,7 @@ namespace QMakeBuilder
 
         public static void
         Write(
-            Opus.Core.Array<QMakeData> array)
+            Bam.Core.Array<QMakeData> array)
         {
             var consistentMergeState = true;
             if (array.Count > 1)
@@ -1430,11 +1430,11 @@ namespace QMakeBuilder
             }
             if (!consistentMergeState)
             {
-                throw new Opus.Core.Exception("Data is inconsistently merged");
+                throw new Bam.Core.Exception("Data is inconsistently merged");
             }
             if (array[0].Merged)
             {
-                Opus.Core.Log.DebugMessage("Not writing a pro file as qmake data is merged");
+                Bam.Core.Log.DebugMessage("Not writing a pro file as qmake data is merged");
                 return;
             }
 
@@ -1446,7 +1446,7 @@ namespace QMakeBuilder
                 proFilePath = proFilePath.Replace(node.ModuleName, array[0].Target);
                 proFileDirectory = System.IO.Path.GetDirectoryName(proFilePath);
             }
-            Opus.Core.Log.DebugMessage("QMake Pro File for node '{0}': '{1}'", node.UniqueModuleName, proFilePath);
+            Bam.Core.Log.DebugMessage("QMake Pro File for node '{0}': '{1}'", node.UniqueModuleName, proFilePath);
             foreach (var data in array)
             {
                 data.ProFilePath = proFilePath;

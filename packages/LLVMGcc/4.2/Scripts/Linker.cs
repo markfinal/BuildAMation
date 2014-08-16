@@ -7,11 +7,11 @@ namespace LLVMGcc
 {
     public sealed class Linker :
         GccCommon.Linker,
-        Opus.Core.IToolSupportsResponseFile
+        Bam.Core.IToolSupportsResponseFile
     {
         public
         Linker(
-            Opus.Core.IToolset toolset) : base(toolset)
+            Bam.Core.IToolset toolset) : base(toolset)
         {}
 
         protected override string Filename
@@ -24,7 +24,7 @@ namespace LLVMGcc
 
         #region IToolSupportsResponseFile Members
 
-        string Opus.Core.IToolSupportsResponseFile.Option
+        string Bam.Core.IToolSupportsResponseFile.Option
         {
             get
             {

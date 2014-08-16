@@ -6,7 +6,7 @@
 namespace MakeFileBuilder
 {
     public sealed class MakeFileTargetDictionary :
-        System.Collections.Generic.Dictionary<Opus.Core.LocationKey, Opus.Core.StringArray>
+        System.Collections.Generic.Dictionary<Bam.Core.LocationKey, Bam.Core.StringArray>
     {
         public void
         Append(
@@ -20,8 +20,8 @@ namespace MakeFileBuilder
 
         public new void
         Add(
-            Opus.Core.LocationKey key,
-            Opus.Core.StringArray value)
+            Bam.Core.LocationKey key,
+            Bam.Core.StringArray value)
         {
             if (this.ContainsKey(key))
             {
@@ -35,7 +35,7 @@ namespace MakeFileBuilder
 
         public void
         Add(
-            Opus.Core.LocationKey key,
+            Bam.Core.LocationKey key,
             string value)
         {
             if (this.ContainsKey(key))
@@ -44,7 +44,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                base.Add(key, new Opus.Core.StringArray(value));
+                base.Add(key, new Bam.Core.StringArray(value));
             }
         }
     }

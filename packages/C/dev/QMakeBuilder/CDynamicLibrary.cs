@@ -44,19 +44,19 @@ namespace QMakeBuilder
             if (null != node.ExternalDependents)
             {
                 var target = node.Target;
-                var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var libraryKeysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey
                     );
-                if (target.HasPlatform(Opus.Core.EPlatform.Posix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Posix))
                 {
                     libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
                 }
-                else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                else if (target.HasPlatform(Bam.Core.EPlatform.Windows))
                 {
                     libraryKeysToFilter.Add(C.DynamicLibrary.ImportLibraryFile);
                 }
 
-                var dependentLibraryFiles = new Opus.Core.LocationArray();
+                var dependentLibraryFiles = new Bam.Core.LocationArray();
                 node.ExternalDependents.FilterOutputLocations(libraryKeysToFilter, dependentLibraryFiles);
                 data.Libraries.AddRangeUnique(dependentLibraryFiles);
             }
@@ -90,23 +90,23 @@ namespace QMakeBuilder
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Bam.Core.FileCollection;
                     data.Headers.AddRangeUnique(headerFileCollection.ToStringArray());
                 }
             }
 
             if (optionsInterface is CommandLineProcessor.ICommandLineSupport)
             {
-                var commandLineBuilder = new Opus.Core.StringArray();
+                var commandLineBuilder = new Bam.Core.StringArray();
                 var target = node.Target;
                 var commandLineOption = optionsInterface as CommandLineProcessor.ICommandLineSupport;
-                var excludedOptionNames = new Opus.Core.StringArray();
+                var excludedOptionNames = new Bam.Core.StringArray();
                 excludedOptionNames.Add("OutputType");
                 excludedOptionNames.Add("LibraryPaths");
                 excludedOptionNames.Add("GenerateMapFile"); // TODO: better way of extracting the map file?, yes locations
                 excludedOptionNames.Add("DebugSymbols");
                 excludedOptionNames.Add("DynamicLibrary"); // TODO: better way of extracting the import library?, yes locations
-                if (target.HasPlatform(Opus.Core.EPlatform.NotWindows))
+                if (target.HasPlatform(Bam.Core.EPlatform.NotWindows))
                 {
                     excludedOptionNames.Add("RPath");
                 }
@@ -120,10 +120,10 @@ namespace QMakeBuilder
                     {
                         // Note: the -L prefix is for all platforms
                         // Note: this is not the best way to use a DirectoryLocation
-                        data.Libraries.AddUnique(Opus.Core.DirectoryLocation.Get(System.String.Format("-L{0}", linkerSearchPath), Opus.Core.Location.EExists.WillExist));
+                        data.Libraries.AddUnique(Bam.Core.DirectoryLocation.Get(System.String.Format("-L{0}", linkerSearchPath), Bam.Core.Location.EExists.WillExist));
                     }
                     // TODO: convert to var
-                    foreach (Opus.Core.FileLocation libraryPath in linkerOptions.Libraries)
+                    foreach (Bam.Core.FileLocation libraryPath in linkerOptions.Libraries)
                     {
                         data.Libraries.AddUnique(libraryPath);
                     }
@@ -131,12 +131,12 @@ namespace QMakeBuilder
 
                 // debug symbols
                 {
-                    var commandLine = new Opus.Core.StringArray();
-                    var optionNames = new Opus.Core.StringArray("DebugSymbols");
+                    var commandLine = new Bam.Core.StringArray();
+                    var optionNames = new Bam.Core.StringArray("DebugSymbols");
                     CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, commandLine, target, optionNames);
                     if (!data.CustomPathVariables.ContainsKey("QMAKE_LFLAGS_DEBUG"))
                     {
-                        data.CustomPathVariables["QMAKE_LFLAGS_DEBUG"] = new Opus.Core.StringArray();
+                        data.CustomPathVariables["QMAKE_LFLAGS_DEBUG"] = new Bam.Core.StringArray();
                     }
                     foreach (var option in commandLine)
                     {
@@ -145,10 +145,10 @@ namespace QMakeBuilder
                 }
 
                 // rpath
-                if (target.HasPlatform(Opus.Core.EPlatform.NotWindows))
+                if (target.HasPlatform(Bam.Core.EPlatform.NotWindows))
                 {
-                    var commandLine = new Opus.Core.StringArray();
-                    var optionNames = new Opus.Core.StringArray("RPath");
+                    var commandLine = new Bam.Core.StringArray();
+                    var optionNames = new Bam.Core.StringArray("RPath");
                     CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(options, commandLine, target, optionNames);
                     foreach (var option in commandLine)
                     {
@@ -164,10 +164,10 @@ namespace QMakeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Linker options does not support command line translation");
+                throw new Bam.Core.Exception("Linker options does not support command line translation");
             }
 
-            if (node.Target.HasPlatform(Opus.Core.EPlatform.Posix))
+            if (node.Target.HasPlatform(Bam.Core.EPlatform.Posix))
             {
                 data.VersionMajor = optionsInterface.MajorVersion.ToString();
                 data.VersionMinor = optionsInterface.MinorVersion.ToString();

@@ -15,7 +15,7 @@ namespace XmlUtilities
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             // Property 'CFBundleName' is state only
             // Property 'CFBundleDisplayName' is state only

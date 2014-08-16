@@ -10,7 +10,7 @@ namespace VisualCCommon
     {
         public
         Win32ResourceCompiler(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {}
 
         #region IWinResourceCompilerTool Members
@@ -44,19 +44,19 @@ namespace VisualCCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             // TODO: would like a better way of doing this
             var platformBinFolder = WindowsSDK.WindowsSDK.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "rc.exe");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.Win32Resource.OutputFile,
                 C.Win32Resource.OutputDir
                 );

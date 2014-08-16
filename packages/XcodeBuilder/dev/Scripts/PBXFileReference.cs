@@ -54,7 +54,7 @@ namespace XcodeBuilder
             }
             else
             {
-                var relative = Opus.Core.RelativePathUtilities.GetPath(this.FullPath, this.RootPath);
+                var relative = Bam.Core.RelativePathUtilities.GetPath(this.FullPath, this.RootPath);
                 if (relative.Contains("-"))
                 {
                     relative = System.String.Format("\"{0}\"", relative);
@@ -179,7 +179,7 @@ namespace XcodeBuilder
                 break;
 
             default:
-                throw new Opus.Core.Exception("Unknown PBXFileReference type");
+                throw new Bam.Core.Exception("Unknown PBXFileReference type");
             }
         }
 

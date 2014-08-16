@@ -17,12 +17,12 @@ namespace Clang
         private static void
         FrameworkSearchDirectoriesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
             var switchPrefix = "-F";
-            var frameworkIncludePathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var frameworkIncludePathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
             // TODO: convert to 'var'
             foreach (string includePath in frameworkIncludePathsOption.Value)
             {
@@ -42,16 +42,16 @@ namespace Clang
              XcodeBuilder.PBXProject project,
              XcodeBuilder.XcodeNodeData currentObject,
              XcodeBuilder.XCBuildConfiguration configuration,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var frameworkPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var frameworkPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
             configuration.Options["FRAMEWORK_SEARCH_PATHS"].AddRangeUnique(frameworkPathsOption.Value.ToStringArray());
         }
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["FrameworkSearchDirectories"].PrivateData = new ClangCommon.PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);

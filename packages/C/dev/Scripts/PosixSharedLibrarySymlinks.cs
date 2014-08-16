@@ -8,16 +8,16 @@ namespace C
     /// <summary>
     /// Posix shared library symlink creation
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IPosixSharedLibrarySymlinksTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IPosixSharedLibrarySymlinksTool))]
     public class PosixSharedLibrarySymlinks :
-        Opus.Core.BaseModule
+        Bam.Core.BaseModule
     {
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("PosixSOSymlinkOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey LinkerSymlink = new Opus.Core.LocationKey("PosixSOSymlinkLinkerSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-        public static readonly Opus.Core.LocationKey MajorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMajorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
-        public static readonly Opus.Core.LocationKey MinorVersionSymlink = new Opus.Core.LocationKey("PosixSOSymlinkMinorVersionSymlink", Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("PosixSOSymlinkOutputDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey LinkerSymlink = new Bam.Core.LocationKey("PosixSOSymlinkLinkerSymlink", Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
+        public static readonly Bam.Core.LocationKey MajorVersionSymlink = new Bam.Core.LocationKey("PosixSOSymlinkMajorVersionSymlink", Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
+        public static readonly Bam.Core.LocationKey MinorVersionSymlink = new Bam.Core.LocationKey("PosixSOSymlinkMinorVersionSymlink", Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
 
-        public Opus.Core.Location RealSharedLibraryFileLocation
+        public Bam.Core.Location RealSharedLibraryFileLocation
         {
             get;
             set;

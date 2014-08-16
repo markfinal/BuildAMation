@@ -18,11 +18,11 @@ namespace ComposerXECommon
         public static void
         ExceptionHandlerCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionHandlerOption = option as Bam.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
             {
                 case C.Cxx.EExceptionHandler.Disabled:
@@ -33,13 +33,13 @@ namespace ComposerXECommon
                     commandLineBuilder.Add("-fexceptions");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized exception handler option");
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
             }
         }
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLineProcessor);

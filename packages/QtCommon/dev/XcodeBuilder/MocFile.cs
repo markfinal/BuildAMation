@@ -15,8 +15,8 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
 
             var parentNode = node.Parent;
-            Opus.Core.DependencyNode targetNode;
-            if ((parentNode != null) && (parentNode.Module is Opus.Core.IModuleCollection))
+            Bam.Core.DependencyNode targetNode;
+            if ((parentNode != null) && (parentNode.Module is Bam.Core.IModuleCollection))
             {
                 targetNode = parentNode.ExternalDependentFor[0];
             }
@@ -29,10 +29,10 @@ namespace XcodeBuilder
 
             if (null != parentNode)
             {
-                Opus.Core.BaseOptionCollection complementOptionCollection = null;
-                if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+                Bam.Core.BaseOptionCollection complementOptionCollection = null;
+                if (node.EncapsulatingNode.Module is Bam.Core.ICommonOptionCollection)
                 {
-                    var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                    var commonOptions = (node.EncapsulatingNode.Module as Bam.Core.ICommonOptionCollection).CommonOptionCollection;
                     if (commonOptions is QtCommon.MocOptionCollection)
                     {
                         complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);

@@ -6,7 +6,7 @@
 namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder :
-        Opus.Core.IBuilder
+        Bam.Core.IBuilder
     {
         private string EmptyConfigPriPath
         {

@@ -10,7 +10,7 @@ namespace Gcc
     {
         public
         LinkerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

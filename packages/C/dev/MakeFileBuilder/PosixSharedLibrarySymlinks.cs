@@ -7,16 +7,16 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        private static Opus.Core.StringArray
+        private static Bam.Core.StringArray
         MakeSymlinkRecipe(
-            Opus.Core.StringArray commandLineBuilder,
+            Bam.Core.StringArray commandLineBuilder,
             C.IPosixSharedLibrarySymlinksTool tool,
             C.PosixSharedLibrarySymlinks moduleToBuild,
             string workingDirectory,
-            Opus.Core.LocationKey keyToSymlink)
+            Bam.Core.LocationKey keyToSymlink)
         {
             var recipeBuilder = new System.Text.StringBuilder();
-            recipeBuilder.AppendFormat("{0} ", tool.Executable((Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target));
+            recipeBuilder.AppendFormat("{0} ", tool.Executable((Bam.Core.BaseTarget)moduleToBuild.OwningNode.Target));
             recipeBuilder.Append(commandLineBuilder.ToString());
 
             var symlinkFile = moduleToBuild.Locations[keyToSymlink];
@@ -25,7 +25,7 @@ namespace MakeFileBuilder
 
             var recipe = recipeBuilder.ToString();
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(System.String.Format("cd {0} && {1}", workingDirectory, recipe));
             return recipes;
         }
@@ -38,7 +38,7 @@ namespace MakeFileBuilder
             var realSharedLibraryLoc = moduleToBuild.RealSharedLibraryFileLocation;
             var realSharedLibraryPath = realSharedLibraryLoc.GetSingleRawPath();
 
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
             var node = moduleToBuild.OwningNode;
 
@@ -56,7 +56,7 @@ namespace MakeFileBuilder
             var target = moduleToBuild.OwningNode.Target;
             var creationOptions = moduleToBuild.Options as C.PosixSharedLibrarySymlinksOptionCollection;
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (creationOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = creationOptions as CommandLineProcessor.ICommandLineSupport;
@@ -64,7 +64,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             var symlinkTool = target.Toolset.Tool(typeof(C.IPosixSharedLibrarySymlinksTool)) as C.IPosixSharedLibrarySymlinksTool;
@@ -85,7 +85,7 @@ namespace MakeFileBuilder
                 dependentVariables,
                 null,
                 MakeSymlinkRecipe(commandLineBuilder, symlinkTool, moduleToBuild, workingDir, C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
-            majorVersionRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
+            majorVersionRule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(C.PosixSharedLibrarySymlinks.MajorVersionSymlink);
             makeFile.RuleArray.Add(majorVersionRule);
 
             var minorVersionRule = new MakeFileRule(
@@ -96,7 +96,7 @@ namespace MakeFileBuilder
                 dependentVariables,
                 null,
                 MakeSymlinkRecipe(commandLineBuilder, symlinkTool, moduleToBuild, workingDir, C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
-            minorVersionRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
+            minorVersionRule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(C.PosixSharedLibrarySymlinks.MinorVersionSymlink);
             makeFile.RuleArray.Add(minorVersionRule);
 
             var linkerSymlinkRule = new MakeFileRule(
@@ -107,7 +107,7 @@ namespace MakeFileBuilder
                 dependentVariables,
                 null,
                 MakeSymlinkRecipe(commandLineBuilder, symlinkTool, moduleToBuild, workingDir, C.PosixSharedLibrarySymlinks.LinkerSymlink));
-            linkerSymlinkRule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(C.PosixSharedLibrarySymlinks.LinkerSymlink);
+            linkerSymlinkRule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(C.PosixSharedLibrarySymlinks.LinkerSymlink);
             makeFile.RuleArray.Add(linkerSymlinkRule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

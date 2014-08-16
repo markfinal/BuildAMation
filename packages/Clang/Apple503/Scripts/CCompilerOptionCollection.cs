@@ -11,17 +11,17 @@ namespace Clang
     {
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode owningNode) : base(owningNode)
+            Bam.Core.DependencyNode owningNode) : base(owningNode)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
             var options = this as C.ICCompilerOptionsOSX;
-            options.FrameworkSearchDirectories = new Opus.Core.DirectoryCollection();
+            options.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
         }
     }
 }

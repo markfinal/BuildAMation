@@ -8,15 +8,15 @@ namespace MingwCommon
     public abstract class Linker :
         C.ILinkerTool,
         C.IWinImportLibrary,
-        Opus.Core.IToolForwardedEnvironmentVariables,
-        Opus.Core.IToolEnvironmentVariables
+        Bam.Core.IToolForwardedEnvironmentVariables,
+        Bam.Core.IToolEnvironmentVariables
     {
-        private Opus.Core.IToolset toolset;
-        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+        private Bam.Core.IToolset toolset;
+        private Bam.Core.StringArray requiredEnvironmentVariables = new Bam.Core.StringArray();
 
         protected
         Linker(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("TEMP");
@@ -85,9 +85,9 @@ namespace MingwCommon
             }
         }
 
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         C.ILinkerTool.LibPaths(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
@@ -125,19 +125,19 @@ namespace MingwCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, this.Filename);
             return executablePath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.Application.OutputFile,
                 C.Application.OutputDir,
                 C.Application.MapFile,
@@ -155,7 +155,7 @@ namespace MingwCommon
 
         #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
+        Bam.Core.StringArray Bam.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -167,11 +167,11 @@ namespace MingwCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
-        Opus.Core.IToolEnvironmentVariables.Variables(
-            Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>
+        Bam.Core.IToolEnvironmentVariables.Variables(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
             return dictionary;
         }

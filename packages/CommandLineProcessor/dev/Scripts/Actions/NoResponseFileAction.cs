@@ -4,25 +4,25 @@
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(CommandLineProcessor.NoResponseFileAction))]
+[assembly: Bam.Core.RegisterAction(typeof(CommandLineProcessor.NoResponseFileAction))]
 
 namespace CommandLineProcessor
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class NoResponseFileAction :
-        Opus.Core.IAction
+        Bam.Core.IAction
     {
         public
         NoResponseFileAction()
         {
-            if (!Opus.Core.State.HasCategory("Build"))
+            if (!Bam.Core.State.HasCategory("Build"))
             {
-                Opus.Core.State.AddCategory("Build");
+                Bam.Core.State.AddCategory("Build");
             }
-            Opus.Core.State.Add<bool>("Build", "DisableResponseFiles", false);
+            Bam.Core.State.Add<bool>("Build", "DisableResponseFiles", false);
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -30,7 +30,7 @@ namespace CommandLineProcessor
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -39,11 +39,11 @@ namespace CommandLineProcessor
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
-            Opus.Core.State.Set("Build", "DisableResponseFiles", true);
+            Bam.Core.State.Set("Build", "DisableResponseFiles", true);
 
-            Opus.Core.Log.DebugMessage("Response files have been disabled");
+            Bam.Core.Log.DebugMessage("Response files have been disabled");
 
             return true;
         }

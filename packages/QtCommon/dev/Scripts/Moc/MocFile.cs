@@ -16,14 +16,14 @@ namespace QtCommon
     /// <summary>
     /// Create meta data from a C++ header or source file
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IMocTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IMocTool))]
     public class MocFile :
-        Opus.Core.BaseModule,
-        Opus.Core.IInjectModules,
-        Opus.Core.ICommonOptionCollection
+        Bam.Core.BaseModule,
+        Bam.Core.IInjectModules,
+        Bam.Core.ICommonOptionCollection
     {
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("MocdSource", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("MocdSourceDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("MocdSource", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("MocdSourceDir", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
         public static string Prefix
         {
@@ -35,13 +35,13 @@ namespace QtCommon
 
         public void
         Include(
-            Opus.Core.Location baseLocation,
+            Bam.Core.Location baseLocation,
             string pattern)
         {
-            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.Exists);
+            this.SourceFileLocation = new Bam.Core.ScaffoldLocation(baseLocation, pattern, Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.Exists);
         }
 
-        public Opus.Core.Location SourceFileLocation
+        public Bam.Core.Location SourceFileLocation
         {
             get;
             set;
@@ -52,13 +52,13 @@ namespace QtCommon
         /// </summary>
         public class MocObjectFile :
             C.Cxx.ObjectFile,
-            Opus.Core.IIsGeneratedSource
+            Bam.Core.IIsGeneratedSource
         {
             #region IIsGeneratedSource Members
 
-            bool Opus.Core.IIsGeneratedSource.AutomaticallyHandledByBuilder(Opus.Core.Target target)
+            bool Bam.Core.IIsGeneratedSource.AutomaticallyHandledByBuilder(Bam.Core.Target target)
             {
-                var isUsingQMake = (Opus.Core.State.BuilderName == "QMake");
+                var isUsingQMake = (Bam.Core.State.BuilderName == "QMake");
                 return isUsingQMake;
             }
 
@@ -68,22 +68,22 @@ namespace QtCommon
         #region IInjectModules Members
 
         string
-        Opus.Core.IInjectModules.GetInjectedModuleNameSuffix(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IInjectModules.GetInjectedModuleNameSuffix(
+            Bam.Core.BaseTarget baseTarget)
         {
             return "Qt4MocSourceFile";
         }
 
         System.Type
-        Opus.Core.IInjectModules.GetInjectedModuleType(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IInjectModules.GetInjectedModuleType(
+            Bam.Core.BaseTarget baseTarget)
         {
             return typeof(MocObjectFile);
         }
 
-        Opus.Core.DependencyNode
-        Opus.Core.IInjectModules.GetInjectedParentNode(
-            Opus.Core.DependencyNode node)
+        Bam.Core.DependencyNode
+        Bam.Core.IInjectModules.GetInjectedParentNode(
+            Bam.Core.DependencyNode node)
         {
             var dependentFor = node.ExternalDependentFor;
             var firstDependentFor = dependentFor[0];
@@ -91,14 +91,14 @@ namespace QtCommon
         }
 
         void
-        Opus.Core.IInjectModules.ModuleCreationFixup(
-            Opus.Core.DependencyNode node)
+        Bam.Core.IInjectModules.ModuleCreationFixup(
+            Bam.Core.DependencyNode node)
         {
             var dependent = node.ExternalDependents;
             var firstDependent = dependent[0];
             var dependentModule = firstDependent.Module;
             var module = node.Module as C.ObjectFile;
-            var sourceFile = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var sourceFile = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.File);
             sourceFile.SetReference(dependentModule.Locations[MocFile.OutputFile]);
             module.SourceFileLocation = sourceFile;
         }
@@ -107,7 +107,7 @@ namespace QtCommon
 
         #region ICommonOptionCollection implementation
 
-        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        Bam.Core.BaseOptionCollection Bam.Core.ICommonOptionCollection.CommonOptionCollection
         {
             get;
             set;

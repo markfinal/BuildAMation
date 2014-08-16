@@ -7,13 +7,13 @@ namespace DotNetFramework
 {
     public sealed class Csc :
         CSharp.ICSharpCompilerTool,
-        Opus.Core.IToolForwardedEnvironmentVariables
+        Bam.Core.IToolForwardedEnvironmentVariables
     {
-        private Opus.Core.IToolset toolset;
+        private Bam.Core.IToolset toolset;
 
         public
         Csc(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -21,21 +21,21 @@ namespace DotNetFramework
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             string CscPath = null;
 
             var installPath = this.toolset.InstallPath(baseTarget);
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 CscPath = System.IO.Path.Combine(installPath, "Csc.exe");
             }
-            else if (Opus.Core.OSUtilities.IsUnixHosting)
+            else if (Bam.Core.OSUtilities.IsUnixHosting)
             {
                 CscPath = System.IO.Path.Combine(installPath, "mono-csc");
             }
-            else if (Opus.Core.OSUtilities.IsOSXHosting)
+            else if (Bam.Core.OSUtilities.IsOSXHosting)
             {
                 CscPath = System.IO.Path.Combine(installPath, "mcs");
             }
@@ -43,11 +43,11 @@ namespace DotNetFramework
             return CscPath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 CSharp.Assembly.OutputFile,
                 CSharp.Assembly.OutputDir,
                 CSharp.Assembly.PDBFile,
@@ -60,11 +60,11 @@ namespace DotNetFramework
 
         #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
+        Bam.Core.StringArray Bam.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
-                var envVars = new Opus.Core.StringArray();
+                var envVars = new Bam.Core.StringArray();
                 envVars.Add("SystemRoot");
                 envVars.Add("TEMP"); // otherwise you get errors like this CS0016: Could not write to output file 'd:\build\CSharpTest1-dev\SimpleAssembly\win32-dotnet2.0.50727-debug\bin\SimpleAssembly.dll' -- 'Access is denied.
                 return envVars;

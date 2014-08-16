@@ -8,14 +8,14 @@ namespace C
     /// <summary>
     /// Windows resource to be compiled and embedded into a binary
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IWinResourceCompilerTool))]
     public class Win32Resource :
-        Opus.Core.BaseModule
+        Bam.Core.BaseModule
     {
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("Win32ResourceOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("Win32ResourceOutputFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("Win32ResourceOutputDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("Win32ResourceOutputFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
 
-        public Opus.Core.Location ResourceFileLocation
+        public Bam.Core.Location ResourceFileLocation
         {
             get;
             set;
@@ -23,10 +23,10 @@ namespace C
 
         public void
         Include(
-            Opus.Core.Location baseLocation,
+            Bam.Core.Location baseLocation,
             string pattern)
         {
-            this.ResourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            this.ResourceFileLocation = new Bam.Core.ScaffoldLocation(baseLocation, pattern, Bam.Core.ScaffoldLocation.ETypeHint.File);
         }
     }
 }

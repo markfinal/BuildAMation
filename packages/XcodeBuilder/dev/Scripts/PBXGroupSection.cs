@@ -12,7 +12,7 @@ namespace XcodeBuilder
         public
         PBXGroupSection()
         {
-            this.Groups = new Opus.Core.Array<PBXGroup>();
+            this.Groups = new Bam.Core.Array<PBXGroup>();
         }
 
         public PBXGroup
@@ -35,7 +35,7 @@ namespace XcodeBuilder
             }
         }
 
-        private Opus.Core.Array<PBXGroup> Groups
+        private Bam.Core.Array<PBXGroup> Groups
         {
             get;
             set;

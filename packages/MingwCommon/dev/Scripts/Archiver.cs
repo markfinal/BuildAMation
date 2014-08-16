@@ -7,15 +7,15 @@ namespace MingwCommon
 {
     public sealed class Archiver :
         C.IArchiverTool,
-        Opus.Core.IToolEnvironmentVariables,
-        Opus.Core.IToolForwardedEnvironmentVariables
+        Bam.Core.IToolEnvironmentVariables,
+        Bam.Core.IToolForwardedEnvironmentVariables
     {
-        private Opus.Core.IToolset toolset;
-        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+        private Bam.Core.IToolset toolset;
+        private Bam.Core.StringArray requiredEnvironmentVariables = new Bam.Core.StringArray();
 
         public
         Archiver(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("TEMP");
@@ -52,18 +52,18 @@ namespace MingwCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var binPath = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(binPath, "ar.exe");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.StaticLibrary.OutputFileLocKey,
                 C.StaticLibrary.OutputDirLocKey
                 );
@@ -74,11 +74,11 @@ namespace MingwCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
-        Opus.Core.IToolEnvironmentVariables.Variables(
-            Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>
+        Bam.Core.IToolEnvironmentVariables.Variables(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
             return dictionary;
         }
@@ -87,7 +87,7 @@ namespace MingwCommon
 
         #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
+        Bam.Core.StringArray Bam.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {

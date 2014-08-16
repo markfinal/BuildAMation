@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             QtCommon.MocFile moduleToBuild,
             out System.Boolean success)
         {
-            var mocFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var mocFileModule = moduleToBuild as Bam.Core.BaseModule;
             var node = mocFileModule.OwningNode;
             var target = node.Target;
             var mocFileOptions = mocFileModule.Options;
@@ -21,18 +21,18 @@ namespace MakeFileBuilder
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
-                throw new Opus.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);
+                throw new Bam.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);
             }
 
-            var inputFiles = new Opus.Core.StringArray();
+            var inputFiles = new Bam.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
@@ -40,16 +40,16 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Moc options does not support command line translation");
+                throw new Bam.Core.Exception("Moc options does not support command line translation");
             }
 
             commandLineBuilder.Add(System.String.Format("-o {0}", moduleToBuild.Locations[QtCommon.MocFile.OutputFile].GetSinglePath()));
             commandLineBuilder.Add(sourceFilePath);
 
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var toolExePath = tool.Executable((Bam.Core.BaseTarget)target);
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             if (toolExePath.Contains(" "))
             {
                 recipes.Add("\"" + toolExePath + "\" " + commandLineBuilder.ToString(' '));
@@ -61,7 +61,7 @@ namespace MakeFileBuilder
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
+            Bam.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
@@ -73,7 +73,7 @@ namespace MakeFileBuilder
                 null,
                 inputFiles,
                 recipes);
-            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(QtCommon.MocFile.OutputFile);
+            rule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(QtCommon.MocFile.OutputFile);
             makeFile.RuleArray.Add(rule);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
@@ -81,10 +81,10 @@ namespace MakeFileBuilder
                 makeFile.Write(makeFileWriter);
             }
 
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
-            if (tool is Opus.Core.IToolEnvironmentVariables)
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> environment = null;
+            if (tool is Bam.Core.IToolEnvironmentVariables)
             {
-                environment = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                environment = (tool as Bam.Core.IToolEnvironmentVariables).Variables((Bam.Core.BaseTarget)target);
             }
             var returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             success = true;

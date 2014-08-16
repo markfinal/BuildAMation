@@ -7,7 +7,7 @@ namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder
     {
-        [Opus.Core.EmptyBuildFunction]
+        [Bam.Core.EmptyBuildFunction]
         public object
         Build(
             C.PosixSharedLibrarySymlinks moduleToBuild,

@@ -61,19 +61,19 @@ namespace CSharp
             set;
         }
 
-        Opus.Core.FileCollection References
+        Bam.Core.FileCollection References
         {
             get;
             set;
         }
 
-        Opus.Core.FileCollection Modules
+        Bam.Core.FileCollection Modules
         {
             get;
             set;
         }
 
-        Opus.Core.StringArray Defines
+        Bam.Core.StringArray Defines
         {
             get;
             set;

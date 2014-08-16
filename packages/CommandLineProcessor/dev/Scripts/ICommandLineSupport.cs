@@ -9,8 +9,8 @@ namespace CommandLineProcessor
     {
         void
         ToCommandLineArguments(
-            Opus.Core.StringArray commandLineBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames);
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames);
     }
 }

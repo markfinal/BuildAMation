@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             CSharp.Assembly moduleToBuild,
             out System.Boolean success)
         {
-            var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
+            var assemblyModule = moduleToBuild as Bam.Core.BaseModule;
             var node = assemblyModule.OwningNode;
             var target = node.Target;
             var assemblyOptions = assemblyModule.Options;
@@ -28,10 +28,10 @@ namespace MakeFileBuilder
                         continue;
                     }
 
-                    var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
+                    var keyFilters = new Bam.Core.Array<Bam.Core.LocationKey>(
                         CSharp.Assembly.OutputFile
                         );
-                    var assemblyLocations = new Opus.Core.LocationArray();
+                    var assemblyLocations = new Bam.Core.LocationArray();
                     dependentNode.FilterOutputLocations(keyFilters, assemblyLocations);
                     var data = dependentNode.Data as MakeFileData;
                     var csharpOptions = options as CSharp.IOptions;
@@ -43,37 +43,37 @@ namespace MakeFileBuilder
                 }
             }
 
-            var sourceFiles = new Opus.Core.StringArray();
+            var sourceFiles = new Bam.Core.StringArray();
             var fields = moduleToBuild.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
             foreach (var field in fields)
             {
                 // C# files
                 {
-                    var sourceFileAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
+                    var sourceFileAttributes = field.GetCustomAttributes(typeof(Bam.Core.SourceFilesAttribute), false);
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Source file '{0}' does not exist", absolutePath);
                             }
 
                             sourceFiles.Add(absolutePath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             // TODO: convert to var
-                            foreach (Opus.Core.Location location in sourceCollection)
+                            foreach (Bam.Core.Location location in sourceCollection)
                             {
                                 var absolutePath = location.GetSinglePath();
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Source file '{0}' does not exist", absolutePath);
                                 }
 
                                 sourceFiles.Add(absolutePath);
@@ -81,7 +81,7 @@ namespace MakeFileBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -92,29 +92,29 @@ namespace MakeFileBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
                             var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
+                                throw new Bam.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                             }
 
                             sourceFiles.Add(csPath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one application definition");
+                                throw new Bam.Core.Exception("There can be only one application definition");
                             }
 
                             // TODO: convert to var
@@ -122,13 +122,13 @@ namespace MakeFileBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
                                 var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
+                                    throw new Bam.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 sourceFiles.Add(csPath);
@@ -136,7 +136,7 @@ namespace MakeFileBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -147,29 +147,29 @@ namespace MakeFileBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
                             var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
+                                throw new Bam.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                             }
 
                             sourceFiles.Add(csPath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one page file");
+                                throw new Bam.Core.Exception("There can be only one page file");
                             }
 
                             // TODO: convert to var
@@ -177,13 +177,13 @@ namespace MakeFileBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
                                 var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
+                                    throw new Bam.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 sourceFiles.Add(csPath);
@@ -191,7 +191,7 @@ namespace MakeFileBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -199,15 +199,15 @@ namespace MakeFileBuilder
 
             if (0 == sourceFiles.Count)
             {
-                throw new Opus.Core.Exception("There were no source files specified for the module '{0}'", node.ModuleName);
+                throw new Bam.Core.Exception("There were no source files specified for the module '{0}'", node.ModuleName);
             }
 
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
@@ -215,7 +215,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             foreach (var source in sourceFiles)
@@ -231,9 +231,9 @@ namespace MakeFileBuilder
             }
 
             var compilerInstance = target.Toolset.Tool(typeof(CSharp.ICSharpCompilerTool));
-            var executablePath = compilerInstance.Executable((Opus.Core.BaseTarget)target);
+            var executablePath = compilerInstance.Executable((Bam.Core.BaseTarget)target);
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             if (executablePath.Contains(" "))
             {
                 recipes.Add(System.String.Format("\"{0}\" {1}", executablePath, commandLineBuilder.ToString(' ')));
@@ -255,14 +255,14 @@ namespace MakeFileBuilder
                 recipes);
 
             var toolOutputLocKeys = compilerInstance.OutputLocationKeys(moduleToBuild);
-            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
             rule.OutputLocationKeys = outputFileLocationsOfInterest;
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
+            Bam.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
             using (System.IO.TextWriter makeFileWriter = new System.IO.StreamWriter(makeFilePath))
             {
@@ -270,11 +270,11 @@ namespace MakeFileBuilder
             }
 
             success = true;
-            var compilerTool = compilerInstance as Opus.Core.ITool;
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
-            if (compilerTool is Opus.Core.IToolEnvironmentVariables)
+            var compilerTool = compilerInstance as Bam.Core.ITool;
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> environment = null;
+            if (compilerTool is Bam.Core.IToolEnvironmentVariables)
             {
-                environment = (compilerTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                environment = (compilerTool as Bam.Core.IToolEnvironmentVariables).Variables((Bam.Core.BaseTarget)target);
             }
             var returnData = new MakeFileData(makeFilePath, makeFile.ExportedTargets, makeFile.ExportedVariables, environment);
             return returnData;

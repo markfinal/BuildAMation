@@ -12,24 +12,24 @@ namespace MakeFileBuilder
             C.ObjectFile moduleToBuild,
             out bool success)
         {
-            var objectFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var objectFileModule = moduleToBuild as Bam.Core.BaseModule;
             var node = objectFileModule.OwningNode;
             var target = node.Target;
-            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            var toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
+            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleToolAssignmentAttribute), true);
+            var toolType = (moduleToolAttributes[0] as Bam.Core.ModuleToolAssignmentAttribute).ToolType;
             var toolInterface = target.Toolset.Tool(toolType);
             var objectFileOptions = objectFileModule.Options;
             var compilerOptions = objectFileOptions as C.ICCompilerOptions;
 
             var sourceFilePath = moduleToBuild.SourceFileLocation.GetSinglePath();
 
-            var inputFiles = new Opus.Core.StringArray();
+            var inputFiles = new Bam.Core.StringArray();
             inputFiles.Add(sourceFilePath);
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
@@ -37,10 +37,10 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
-            var executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
+            var executable = toolInterface.Executable((Bam.Core.BaseTarget)target);
 
             string recipe = null;
             if (executable.Contains(" "))
@@ -56,7 +56,7 @@ namespace MakeFileBuilder
             var outputPath = moduleToBuild.Locations[C.ObjectFile.OutputFile].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(recipe);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
@@ -74,7 +74,7 @@ namespace MakeFileBuilder
                 recipes);
 
             var toolOutputLocKeys = toolInterface.OutputLocationKeys(moduleToBuild);
-            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
             rule.OutputLocationKeys = outputFileLocationsOfInterest;
 
@@ -87,10 +87,10 @@ namespace MakeFileBuilder
 
             var targetDictionary = makeFile.ExportedTargets;
             var variableDictionary = makeFile.ExportedVariables;
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
-            if (toolInterface is Opus.Core.IToolEnvironmentVariables)
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> environment = null;
+            if (toolInterface is Bam.Core.IToolEnvironmentVariables)
             {
-                environment = (toolInterface as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                environment = (toolInterface as Bam.Core.IToolEnvironmentVariables).Variables((Bam.Core.BaseTarget)target);
             }
             var returnData = new MakeFileData(makeFilePath, targetDictionary, variableDictionary, environment);
             success = true;

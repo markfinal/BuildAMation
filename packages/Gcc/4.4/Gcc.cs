@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Gcc package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("gcc", typeof(Gcc.Toolset))]
+[assembly: Bam.Core.RegisterToolset("gcc", typeof(Gcc.Toolset))]
 
 namespace Gcc
 {

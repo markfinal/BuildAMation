@@ -26,16 +26,16 @@ namespace MakeFileBuilder
 
             // write a script that can be invoked by the MakeFile to generate the output file
             var shellScriptLeafName = "writeTextFile.py";
-            var shellScriptLoc = Opus.Core.FileLocation.Get(outputDir, shellScriptLeafName, Opus.Core.Location.EExists.WillExist);
+            var shellScriptLoc = Bam.Core.FileLocation.Get(outputDir, shellScriptLeafName, Bam.Core.Location.EExists.WillExist);
             var shellScriptPath = shellScriptLoc.GetSingleRawPath();
             XmlUtilities.TextToPythonScript.Write(moduleToBuild.Content, shellScriptPath, outputFilePath);
 
             var node = moduleToBuild.OwningNode;
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
-            var recipe = new Opus.Core.StringArray();
+            var recipe = new Bam.Core.StringArray();
             recipe.Add(System.String.Format("$(shell python {0})", shellScriptPath));
 
             var rule = new MakeFileRule(
@@ -46,7 +46,7 @@ namespace MakeFileBuilder
                 null,
                 null,
                 recipe);
-            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(XmlUtilities.TextFileModule.OutputFile);
+            rule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(XmlUtilities.TextFileModule.OutputFile);
             makeFile.RuleArray.Add(rule);
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);

@@ -6,28 +6,28 @@
 namespace XmlUtilities
 {
     public partial class TextFileOptionCollection :
-        Opus.Core.BaseOptionCollection
+        Bam.Core.BaseOptionCollection
     {
         public
         TextFileOptionCollection(
-            Opus.Core.DependencyNode owningNode) : base(owningNode)
+            Bam.Core.DependencyNode owningNode) : base(owningNode)
         {}
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
-            var outputDirLoc = locationMap[TextFileModule.OutputDir] as Opus.Core.ScaffoldLocation;
+            var outputDirLoc = locationMap[TextFileModule.OutputDir] as Bam.Core.ScaffoldLocation;
             if (!outputDirLoc.IsValid)
             {
-                outputDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
+                outputDirLoc.SetReference(locationMap[Bam.Core.State.ModuleBuildDirLocationKey]);
             }
 
-            var outputFileLoc = locationMap[TextFileModule.OutputFile] as Opus.Core.ScaffoldLocation;
+            var outputFileLoc = locationMap[TextFileModule.OutputFile] as Bam.Core.ScaffoldLocation;
             if (!outputFileLoc.IsValid)
             {
-                outputFileLoc.SpecifyStub(outputDirLoc, "_sysconfigdata.py", Opus.Core.Location.EExists.WillExist);
+                outputFileLoc.SpecifyStub(outputDirLoc, "_sysconfigdata.py", Bam.Core.Location.EExists.WillExist);
             }
 
             base.SetNodeSpecificData(node);
@@ -36,11 +36,11 @@ namespace XmlUtilities
         #region implemented abstract members of BaseOptionCollection
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
         #endregion
     }

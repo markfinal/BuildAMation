@@ -8,24 +8,24 @@ namespace C
     /// <summary>
     /// C/C++ console application
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(ILinkerTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(ILinkerTool))]
     public class Application :
-        Opus.Core.BaseModule,
-        Opus.Core.INestedDependents,
-        Opus.Core.ICommonOptionCollection,
-        Opus.Core.IPostActionModules
+        Bam.Core.BaseModule,
+        Bam.Core.INestedDependents,
+        Bam.Core.ICommonOptionCollection,
+        Bam.Core.IPostActionModules
     {
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("ExecutableBinaryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("ExecutableBinaryDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("ExecutableBinaryFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("ExecutableBinaryDir", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        public static readonly Opus.Core.LocationKey MapFile = new Opus.Core.LocationKey("MapFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey MapFileDir = new Opus.Core.LocationKey("MapFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey MapFile = new Bam.Core.LocationKey("MapFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey MapFileDir = new Bam.Core.LocationKey("MapFileDir", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        Opus.Core.ModuleCollection
-        Opus.Core.INestedDependents.GetNestedDependents(
-            Opus.Core.Target target)
+        Bam.Core.ModuleCollection
+        Bam.Core.INestedDependents.GetNestedDependents(
+            Bam.Core.Target target)
         {
-            var collection = new Opus.Core.ModuleCollection();
+            var collection = new Bam.Core.ModuleCollection();
 
             var type = this.GetType();
             var fieldInfoArray = type.GetFields(System.Reflection.BindingFlags.NonPublic |
@@ -33,20 +33,20 @@ namespace C
                                                 System.Reflection.BindingFlags.Instance);
             foreach (var fieldInfo in fieldInfoArray)
             {
-                var attributes = fieldInfo.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
+                var attributes = fieldInfo.GetCustomAttributes(typeof(Bam.Core.SourceFilesAttribute), false);
                 if (attributes.Length > 0)
                 {
-                    var targetFilters = attributes[0] as Opus.Core.ITargetFilters;
-                    if (!Opus.Core.TargetUtilities.MatchFilters(target, targetFilters))
+                    var targetFilters = attributes[0] as Bam.Core.ITargetFilters;
+                    if (!Bam.Core.TargetUtilities.MatchFilters(target, targetFilters))
                     {
-                        Opus.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.ToString(), target.ToString());
+                        Bam.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.ToString(), target.ToString());
                         continue;
                     }
 
-                    var module = fieldInfo.GetValue(this) as Opus.Core.IModule;
+                    var module = fieldInfo.GetValue(this) as Bam.Core.IModule;
                     if (null == module)
                     {
-                        throw new Opus.Core.Exception("Field '{0}', marked with Opus.Core.SourceFiles attribute, must be derived from type Core.IModule", fieldInfo.Name);
+                        throw new Bam.Core.Exception("Field '{0}', marked with Bam.Core.SourceFiles attribute, must be derived from type Core.IModule", fieldInfo.Name);
                     }
                     collection.Add(module);
                 }
@@ -58,10 +58,10 @@ namespace C
         [LocalCompilerOptionsDelegate]
         private static void
         ApplicationSetConsolePreprocessor(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target))
+            if (Bam.Core.OSUtilities.IsWindows(target))
             {
                 var compilerOptions = module.Options as ICCompilerOptions;
                 compilerOptions.Defines.Add("_CONSOLE");
@@ -71,17 +71,17 @@ namespace C
         [LocalLinkerOptionsDelegate]
         private static void
         ApplicationSetConsoleSubSystem(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target))
+            if (Bam.Core.OSUtilities.IsWindows(target))
             {
                 var linkerOptions = module.Options as ILinkerOptions;
                 linkerOptions.SubSystem = C.ESubsystem.Console;
             }
         }
 
-        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        Bam.Core.BaseOptionCollection Bam.Core.ICommonOptionCollection.CommonOptionCollection
         {
             get;
             set;
@@ -89,16 +89,16 @@ namespace C
 
         #region IPostActionModules Members
 
-        Opus.Core.TypeArray Opus.Core.IPostActionModules.GetPostActionModuleTypes(Opus.Core.BaseTarget target)
+        Bam.Core.TypeArray Bam.Core.IPostActionModules.GetPostActionModuleTypes(Bam.Core.BaseTarget target)
         {
             // TODO: currently disabled - only really needs to be in versions earlier than VS2010
             // not sure if it's needed for mingw
 #if true
             return null;
 #else
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (target.HasPlatform(Bam.Core.EPlatform.Windows))
             {
-                var postActionModules = new Opus.Core.TypeArray(
+                var postActionModules = new Bam.Core.TypeArray(
                     typeof(Win32Manifest));
                 return postActionModules;
             }

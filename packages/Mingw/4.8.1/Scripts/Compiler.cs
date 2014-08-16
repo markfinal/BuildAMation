@@ -10,7 +10,7 @@ namespace Mingw
     {
         public
         CCompiler(
-            Opus.Core.IToolset toolset) : base(toolset)
+            Bam.Core.IToolset toolset) : base(toolset)
         {
         }
 

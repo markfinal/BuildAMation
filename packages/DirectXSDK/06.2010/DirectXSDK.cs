@@ -16,17 +16,17 @@ namespace DirectXSDK
         static
         Direct3D9()
         {
-            if (!Opus.Core.OSUtilities.IsWindowsHosting)
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                throw new Opus.Core.Exception("DirectX package only valid on Windows");
+                throw new Bam.Core.Exception("DirectX package only valid on Windows");
             }
 
             const string registryPath = @"Microsoft\DirectX\Microsoft DirectX SDK (June 2010)";
-            using (var dxInstallLocation = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryPath))
+            using (var dxInstallLocation = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryPath))
             {
                 if (null == dxInstallLocation)
                 {
-                    throw new Opus.Core.Exception("DirectX SDK has not been installed on this machine");
+                    throw new Bam.Core.Exception("DirectX SDK has not been installed on this machine");
                 }
 
                 installLocation = dxInstallLocation.GetValue("InstallPath") as string;
@@ -39,15 +39,15 @@ namespace DirectXSDK
         public
         Direct3D9()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Direct3D9_LinkerOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3D9_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3D9_LinkerOptions);
         }
 
         [C.ExportLinkerOptionsDelegate]
         void
         Direct3D9_LinkerOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
@@ -57,24 +57,24 @@ namespace DirectXSDK
 
             // add library paths
             string platformLibraryPath = null;
-            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
+            if (target.HasPlatform(Bam.Core.EPlatform.Win32))
             {
                 platformLibraryPath = System.IO.Path.Combine(libraryBasePath, "x86");
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 platformLibraryPath = System.IO.Path.Combine(libraryBasePath, "x64");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
+                throw new Bam.Core.Exception("Unsupported platform for the DirectX package");
             }
             linkerOptions.LibraryPaths.Add(platformLibraryPath);
 
             // add libraries
-            var libraries = new Opus.Core.StringArray();
+            var libraries = new Bam.Core.StringArray();
             libraries.Add("d3d9.lib");
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 libraries.Add("d3dx9d.lib");
                 libraries.Add("dxerr.lib");
@@ -89,8 +89,8 @@ namespace DirectXSDK
         [C.ExportCompilerOptionsDelegate]
         void
         Direct3D9_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             if (compilerOptions == null)

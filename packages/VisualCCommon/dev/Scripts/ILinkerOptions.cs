@@ -19,7 +19,7 @@ namespace VisualCCommon
             set;
         }
 
-        Opus.Core.StringArray IgnoredLibraries
+        Bam.Core.StringArray IgnoredLibraries
         {
             get;
             set;

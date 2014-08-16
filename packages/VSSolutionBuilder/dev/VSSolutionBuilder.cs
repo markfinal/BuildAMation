@@ -3,17 +3,17 @@
 // </copyright>
 // <summary>VSSolutionBuilder package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.DeclareBuilder("VSSolution", typeof(VSSolutionBuilder.VSSolutionBuilder))]
+[assembly: Bam.Core.DeclareBuilder("VSSolution", typeof(VSSolutionBuilder.VSSolutionBuilder))]
 
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder :
-        Opus.Core.IBuilder
+        Bam.Core.IBuilder
     {
         private static System.Type
         GetProjectClassType()
         {
-            var toolchainPackage = Opus.Core.State.PackageInfo["VisualC"];
+            var toolchainPackage = Bam.Core.State.PackageInfo["VisualC"];
             if (null != toolchainPackage)
             {
                 string projectClassTypeName = null;
@@ -31,7 +31,7 @@ namespace VSSolutionBuilder
                         break;
 
                     default:
-                        throw new Opus.Core.Exception("Unrecognized VisualStudio version: '{0}'", toolchainPackage.Version);
+                        throw new Bam.Core.Exception("Unrecognized VisualStudio version: '{0}'", toolchainPackage.Version);
                 }
 
                 var projectClassType = System.Type.GetType(projectClassTypeName);
@@ -39,7 +39,7 @@ namespace VSSolutionBuilder
             }
             else
             {
-                toolchainPackage = Opus.Core.State.PackageInfo["DotNetFramework"];
+                toolchainPackage = Bam.Core.State.PackageInfo["DotNetFramework"];
                 if (null != toolchainPackage)
                 {
                     var projectClassTypeName = "VSSolutionBuilder.CSBuildProject";
@@ -48,45 +48,45 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Unable to locate a suitable toolchain package");
+                    throw new Bam.Core.Exception("Unable to locate a suitable toolchain package");
                 }
             }
         }
 
         private static string
         GetConfigurationNameFromTarget(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var platform = GetPlatformNameFromTarget(target);
-            var configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platform);
+            var configurationName = System.String.Format("{0}|{1}", ((Bam.Core.BaseTarget)target).ConfigurationName('p'), platform);
             return configurationName;
         }
 
         private static string
         GetConfigurationNameFromTarget(
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string platformName)
         {
-            var configurationName = System.String.Format("{0}|{1}", ((Opus.Core.BaseTarget)target).ConfigurationName('p'), platformName);
+            var configurationName = System.String.Format("{0}|{1}", ((Bam.Core.BaseTarget)target).ConfigurationName('p'), platformName);
             return configurationName;
         }
 
         public static string
         GetPlatformNameFromTarget(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             string platform;
-            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
+            if (target.HasPlatform(Bam.Core.EPlatform.Win32))
             {
                 platform = "Win32";
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 platform = "x64";
             }
             else
             {
-                throw new Opus.Core.Exception("Only Win32 and Win64 are supported platforms for VisualStudio projects");
+                throw new Bam.Core.Exception("Only Win32 and Win64 are supported platforms for VisualStudio projects");
             }
 
             return platform;
@@ -129,7 +129,7 @@ namespace VSSolutionBuilder
         {
             if (path.Contains(new string(new char[] { PathSplitter })))
             {
-                throw new Opus.Core.Exception("Path should not contain splitter");
+                throw new Bam.Core.Exception("Path should not contain splitter");
             }
 
             var quote = new string(new char[] { '\"' });
@@ -155,7 +155,7 @@ namespace VSSolutionBuilder
                 return quotedPath;
             }
 
-            quotedPath = Opus.Core.RelativePathUtilities.GetPath(quotedPath, projectUri);
+            quotedPath = Bam.Core.RelativePathUtilities.GetPath(quotedPath, projectUri);
             if (quotedPath.Contains(" "))
             {
                 quotedPath = System.String.Format("\"{0}\"", quotedPath);
@@ -174,7 +174,7 @@ namespace VSSolutionBuilder
         {
             if (System.String.IsNullOrEmpty(path))
             {
-                Opus.Core.Log.DebugMessage("Cannot refactor an empty path for VisualStudio projects");
+                Bam.Core.Log.DebugMessage("Cannot refactor an empty path for VisualStudio projects");
                 return path;
             }
 
@@ -206,8 +206,8 @@ namespace VSSolutionBuilder
         internal static string
         RefactorPathForVCProj(
             string path,
-            Opus.Core.Location outputDirectory,
-            Opus.Core.Location intermediateDirectory,
+            Bam.Core.Location outputDirectory,
+            Bam.Core.Location intermediateDirectory,
             string projectName,
             System.Uri projectUri)
         {
@@ -226,7 +226,7 @@ namespace VSSolutionBuilder
         {
             if (System.String.IsNullOrEmpty(path))
             {
-                Opus.Core.Log.DebugMessage("Cannot refactor an empty path for VisualStudio projects");
+                Bam.Core.Log.DebugMessage("Cannot refactor an empty path for VisualStudio projects");
                 return path;
             }
 
@@ -250,7 +250,7 @@ namespace VSSolutionBuilder
         internal static string
         RefactorPathForVCProj(
             string path,
-            Opus.Core.Location outputDirectory,
+            Bam.Core.Location outputDirectory,
             string projectName,
             System.Uri projectUri)
         {

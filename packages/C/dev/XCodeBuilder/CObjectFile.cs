@@ -15,7 +15,7 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
             var target = node.Target;
-            var baseTarget = (Opus.Core.BaseTarget)target;
+            var baseTarget = (Bam.Core.BaseTarget)target;
 
             var sourceFile = moduleToBuild.SourceFileLocation;
 
@@ -40,13 +40,13 @@ namespace XcodeBuilder
             var data = project.BuildFiles.Get(moduleName, fileRef, sourcesBuildPhase);
             if (null == data)
             {
-                throw new Opus.Core.Exception("Build file not available");
+                throw new Bam.Core.Exception("Build file not available");
             }
 
-            Opus.Core.BaseOptionCollection complementOptionCollection = null;
-            if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+            Bam.Core.BaseOptionCollection complementOptionCollection = null;
+            if (node.EncapsulatingNode.Module is Bam.Core.ICommonOptionCollection)
             {
-                var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                var commonOptions = (node.EncapsulatingNode.Module as Bam.Core.ICommonOptionCollection).CommonOptionCollection;
                 if (commonOptions is C.ICCompilerOptions)
                 {
                     complementOptionCollection = moduleToBuild.Options.Complement(commonOptions);
@@ -56,7 +56,7 @@ namespace XcodeBuilder
             if ((complementOptionCollection != null) && !complementOptionCollection.Empty)
             {
                 // there is an option delta to write for this file
-                var commandLineBuilder = new Opus.Core.StringArray();
+                var commandLineBuilder = new Bam.Core.StringArray();
                 CommandLineProcessor.ToCommandLine.Execute(complementOptionCollection, commandLineBuilder, target, null);
 
                 if (commandLineBuilder.Count > 0)
@@ -85,9 +85,9 @@ namespace XcodeBuilder
                 var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), moduleName);
                 XcodeProjectProcessor.ToXcodeProject.Execute(moduleToBuild.Options, project, data, buildConfiguration, target);
 
-                var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+                var basePath = Bam.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
                 var outputDirLoc = moduleToBuild.Locations[C.ObjectFile.OutputDir];
-                var relPath = Opus.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
+                var relPath = Bam.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
                 buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
                 buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
 
@@ -104,7 +104,7 @@ namespace XcodeBuilder
                     }
                     else
                     {
-                        throw new Opus.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
+                        throw new Bam.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
                     }
                 }
                 else if (target.HasToolsetType(typeof(Clang.Toolset)))
@@ -113,7 +113,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
+                    throw new Bam.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
                 }
 #endif
             }

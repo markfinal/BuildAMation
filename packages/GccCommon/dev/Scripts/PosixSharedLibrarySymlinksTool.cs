@@ -10,23 +10,23 @@ namespace GccCommon
     {
         public
         PosixSharedLibrarySymlinksTool(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {}
 
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             return "ln";
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.PosixSharedLibrarySymlinks.OutputDir,
                 C.PosixSharedLibrarySymlinks.LinkerSymlink,
                 C.PosixSharedLibrarySymlinks.MajorVersionSymlink,

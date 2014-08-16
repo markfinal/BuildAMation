@@ -14,7 +14,7 @@ namespace DependencyGenerator
         {
             public string sourcePath = null;
             public string depFilePath = null;
-            public Opus.Core.StringArray includePaths = null;
+            public Bam.Core.StringArray includePaths = null;
         }
 
         public enum Style
@@ -53,10 +53,10 @@ namespace DependencyGenerator
         public static string
         HeaderDependencyPathName(
             string filename,
-            Opus.Core.Location directory)
+            Bam.Core.Location directory)
         {
             var depLeafname = System.IO.Path.GetFileNameWithoutExtension(filename) + ".d";
-            var headerDependencyLocation = new Opus.Core.ScaffoldLocation(directory, depLeafname, Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var headerDependencyLocation = new Bam.Core.ScaffoldLocation(directory, depLeafname, Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
             return headerDependencyLocation.GetSinglePath();
         }
 
@@ -68,7 +68,7 @@ namespace DependencyGenerator
             var filesToSearch = new System.Collections.Generic.Queue<string>();
             filesToSearch.Enqueue(entry.sourcePath);
 
-            var headerPathsFound = new Opus.Core.StringArray();
+            var headerPathsFound = new Bam.Core.StringArray();
 
             while (filesToSearch.Count > 0)
             {
@@ -118,13 +118,13 @@ namespace DependencyGenerator
                         }
                         catch (System.Exception ex)
                         {
-                            Opus.Core.Log.MessageAll("IncludeDependency Exception: Cannot locate '{0}' on '{1}' due to {2}", match.Groups[1].Value, includePath, ex.Message);
+                            Bam.Core.Log.MessageAll("IncludeDependency Exception: Cannot locate '{0}' on '{1}' due to {2}", match.Groups[1].Value, includePath, ex.Message);
                         }
                     }
 
                     if (!exists)
                     {
-                        Opus.Core.Log.DebugMessage("***** Could not locate '{0}' on any include search path, included from {1}:\n{2}",
+                        Bam.Core.Log.DebugMessage("***** Could not locate '{0}' on any include search path, included from {1}:\n{2}",
                                                    match.Groups[1],
                                                    fileToSearch,
                                                    entry.includePaths.ToString('\n'));
@@ -160,8 +160,8 @@ namespace DependencyGenerator
             object obj)
         {
             // wait for the build to start
-            System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Opus.Core.State.BuildStartedEvent }, -1);
-            var buildManager = Opus.Core.State.BuildManager;
+            System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { Bam.Core.State.BuildStartedEvent }, -1);
+            var buildManager = Bam.Core.State.BuildManager;
             buildManager.AdditionalThreadCompletionEvents.Add(completedEvent);
 
             var data = obj as DependencyQueue<Data>;

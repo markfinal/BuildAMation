@@ -11,14 +11,14 @@ namespace QtCommon
         public
         Gui()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtGui_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtGui_LinkerOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtGui_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtGui_LinkerOptions);
         }
 
         public override void
         RegisterOutputFiles(
-            Opus.Core.BaseOptionCollection options,
-            Opus.Core.Target target,
+            Bam.Core.BaseOptionCollection options,
+            Bam.Core.Target target,
             string modulePath)
         {
             this.GetModuleDynamicLibrary(target, "QtGui");
@@ -28,8 +28,8 @@ namespace QtCommon
         [C.ExportLinkerOptionsDelegate]
         void
         QtGui_LinkerOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
@@ -42,8 +42,8 @@ namespace QtCommon
         [C.ExportCompilerOptionsDelegate]
         void
         QtGui_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

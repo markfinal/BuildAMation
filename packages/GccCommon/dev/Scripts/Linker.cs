@@ -7,17 +7,17 @@ namespace GccCommon
 {
     public abstract class Linker :
         C.ILinkerTool,
-        Opus.Core.IToolEnvironmentVariables
+        Bam.Core.IToolEnvironmentVariables
     {
-        protected Opus.Core.IToolset toolset;
-        private Opus.Core.StringArray environment;
+        protected Bam.Core.IToolset toolset;
+        private Bam.Core.StringArray environment;
 
         protected
         Linker(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
-            this.environment = new Opus.Core.StringArray("/usr/bin");
+            this.environment = new Bam.Core.StringArray("/usr/bin");
         }
 
         protected abstract string Filename
@@ -47,7 +47,7 @@ namespace GccCommon
         {
             get
             {
-                if (Opus.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsUnixHosting)
                 {
                     return "-Wl,--start-group";
                 }
@@ -62,7 +62,7 @@ namespace GccCommon
         {
             get
             {
-                if (Opus.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsUnixHosting)
                 {
                     return "-Wl,--end-group";
                 }
@@ -85,11 +85,11 @@ namespace GccCommon
         {
             get
             {
-                if (Opus.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsUnixHosting)
                 {
                     return ".so";
                 }
-                else if (Opus.Core.OSUtilities.IsOSXHosting)
+                else if (Bam.Core.OSUtilities.IsOSXHosting)
                 {
                     return ".dylib";
                 }
@@ -108,9 +108,9 @@ namespace GccCommon
             }
         }
 
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         C.ILinkerTool.LibPaths(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
@@ -120,19 +120,19 @@ namespace GccCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, this.Filename);
             return executablePath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.Application.OutputFile,
                 C.Application.OutputDir,
                 C.Application.MapFile,
@@ -149,11 +149,11 @@ namespace GccCommon
         #endregion
 
         #region IToolEnvironmentVariables implementation
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
-        Opus.Core.IToolEnvironmentVariables.Variables(
-            Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>
+        Bam.Core.IToolEnvironmentVariables.Variables(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             dictionary["PATH"] = this.environment;
             return dictionary;
         }

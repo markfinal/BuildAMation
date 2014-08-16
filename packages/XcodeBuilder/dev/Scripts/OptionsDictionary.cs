@@ -6,17 +6,17 @@
 namespace XcodeBuilder
 {
     public sealed class OptionsDictionary :
-        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.StringArray>>
     {
-        private System.Collections.Generic.SortedDictionary<string, Opus.Core.StringArray> dictionary = new System.Collections.Generic.SortedDictionary<string, Opus.Core.StringArray>();
+        private System.Collections.Generic.SortedDictionary<string, Bam.Core.StringArray> dictionary = new System.Collections.Generic.SortedDictionary<string, Bam.Core.StringArray>();
 
-        public Opus.Core.StringArray this[string key]
+        public Bam.Core.StringArray this[string key]
         {
             get
             {
                 if (!this.dictionary.ContainsKey(key))
                 {
-                    this.dictionary[key] = new Opus.Core.StringArray();
+                    this.dictionary[key] = new Bam.Core.StringArray();
                 }
 
                 return this.dictionary[key];
@@ -66,8 +66,8 @@ namespace XcodeBuilder
 
         #region IEnumerable implementation
 
-        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>
-        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Opus.Core.StringArray>>.GetEnumerator()
+        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Bam.Core.StringArray>>
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.StringArray>>.GetEnumerator()
         {
             return this.dictionary.GetEnumerator();
         }

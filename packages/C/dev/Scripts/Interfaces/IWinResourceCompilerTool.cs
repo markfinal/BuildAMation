@@ -5,11 +5,11 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalWin32ResourceCompilerOptionsDelegateAttribute),
                                    typeof(ExportWin32ResourceCompilerOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetWinResourceCompilerToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetWinResourceCompilerToolset")]
     public interface IWinResourceCompilerTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {
         string CompiledResourceSuffix
         {

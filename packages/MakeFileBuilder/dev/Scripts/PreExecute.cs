@@ -6,17 +6,17 @@
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder :
-        Opus.Core.IBuilderPreExecute
+        Bam.Core.IBuilderPreExecute
     {
         private string topLevelMakeFilePath;
 
         #region IBuilderPreExecute Members
 
         void
-        Opus.Core.IBuilderPreExecute.PreExecute()
+        Bam.Core.IBuilderPreExecute.PreExecute()
         {
-            Opus.Core.Log.DebugMessage("PreExecute for MakeFiles");
-            this.topLevelMakeFilePath = System.IO.Path.Combine(Opus.Core.State.BuildRoot, "Makefile");
+            Bam.Core.Log.DebugMessage("PreExecute for MakeFiles");
+            this.topLevelMakeFilePath = System.IO.Path.Combine(Bam.Core.State.BuildRoot, "Makefile");
         }
 
         #endregion

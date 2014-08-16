@@ -17,11 +17,11 @@ namespace ComposerXE
         private static void
         VisibilityCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
+            var enumOption = option as Bam.Core.ValueTypeOption<EVisibility>;
             switch (enumOption.Value)
             {
                 case EVisibility.Default:
@@ -37,13 +37,13 @@ namespace ComposerXE
                     commandLineBuilder.Add("-fvisibility=protected");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized visibility option");
+                    throw new Bam.Core.Exception("Unrecognized visibility option");
             }
         }
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["Visibility"].PrivateData = new ComposerXECommon.PrivateData(VisibilityCommandLineProcessor);

@@ -36,7 +36,7 @@ namespace VSSolutionBuilder
         {
             if (index == splitFileDirs.Length - 1)
             {
-                var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                var relativePath = Bam.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
 
                 var fileElement = document.CreateElement("File");
                 fileElement.SetAttribute("RelativePath", relativePath);
@@ -97,7 +97,7 @@ namespace VSSolutionBuilder
         {
             if (null == this.FileConfigurations)
             {
-                var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                var relativePath = Bam.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
                 fileCollectionGroup.CreateItem(name, relativePath);
             }
             else
@@ -116,7 +116,7 @@ namespace VSSolutionBuilder
                         }
                     }
 
-                    var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+                    var relativePath = Bam.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
                     configuration.Tool.SerializeMSBuild(fileCollectionGroup, configuration, projectUri, relativePath, parentTool);
                 }
             }
@@ -128,10 +128,10 @@ namespace VSSolutionBuilder
             System.Uri projectUri,
             System.Uri packageDirectoryUri)
         {
-            var relativePath = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
+            var relativePath = Bam.Core.RelativePathUtilities.GetPath(this.RelativePath, projectUri);
             var compileItem = fileCollectionGroup.CreateItem("Compile", relativePath);
 
-            var relativeToPackage = Opus.Core.RelativePathUtilities.GetPath(this.RelativePath, packageDirectoryUri);
+            var relativeToPackage = Bam.Core.RelativePathUtilities.GetPath(this.RelativePath, packageDirectoryUri);
             if (relativePath != relativeToPackage)
             {
                 compileItem.CreateMetaData("Link", relativeToPackage);

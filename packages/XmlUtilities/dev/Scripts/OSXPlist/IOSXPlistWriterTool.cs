@@ -5,10 +5,10 @@
 // <author>Mark Final</author>
 namespace XmlUtilities
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalXmlWriterOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalXmlWriterOptionsDelegateAttribute),
                                    typeof(ExportXmlWriterOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider("XmlUtilities")]
+    [Bam.Core.AssignToolsetProvider("XmlUtilities")]
     public interface IOSXPlistWriterTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

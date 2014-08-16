@@ -7,14 +7,14 @@ namespace Clang
 {
     public sealed class Toolset : ClangCommon.Toolset
     {
-        protected override string SpecificVersion (Opus.Core.BaseTarget baseTarget)
+        protected override string SpecificVersion (Bam.Core.BaseTarget baseTarget)
         {
             return "3.1";
         }
 
-        protected override string SpecificInstallPath (Opus.Core.BaseTarget baseTarget)
+        protected override string SpecificInstallPath (Bam.Core.BaseTarget baseTarget)
         {
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 return @"D:\dev\Thirdparty\Clang\3.1\build\bin\Release";
             }

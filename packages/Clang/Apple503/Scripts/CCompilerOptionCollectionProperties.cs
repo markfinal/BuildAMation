@@ -14,15 +14,15 @@ namespace Clang
     public partial class CCompilerOptionCollection
     {
         #region C.ICCompilerOptionsOSX Option properties
-        Opus.Core.DirectoryCollection C.ICCompilerOptionsOSX.FrameworkSearchDirectories
+        Bam.Core.DirectoryCollection C.ICCompilerOptionsOSX.FrameworkSearchDirectories
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("FrameworkSearchDirectories", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("FrameworkSearchDirectories", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("FrameworkSearchDirectories", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("FrameworkSearchDirectories", value);
                 this.ProcessNamedSetHandler("FrameworkSearchDirectoriesSetHandler", this["FrameworkSearchDirectories"]);
             }
         }

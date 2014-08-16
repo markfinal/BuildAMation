@@ -30,13 +30,13 @@ namespace QMakeBuilder
 
             // write a script that can be invoked by QMake to generate the text file
             var shellScriptLeafName = "writeTextFile.py";
-            var shellScriptLoc = Opus.Core.FileLocation.Get(outputDir, shellScriptLeafName, Opus.Core.Location.EExists.WillExist);
+            var shellScriptLoc = Bam.Core.FileLocation.Get(outputDir, shellScriptLeafName, Bam.Core.Location.EExists.WillExist);
             var shellScriptPath = shellScriptLoc.GetSingleRawPath();
             XmlUtilities.TextToPythonScript.Write(moduleToBuild.Content, shellScriptPath, outputFilePath);
 
             if (null == targetData.CustomRules)
             {
-                targetData.CustomRules = new Opus.Core.StringArray();
+                targetData.CustomRules = new Bam.Core.StringArray();
             }
             targetData.CustomRules.Add("writeTextFileTarget.target=" + outputFilePath.Replace('\\', '/'));
             targetData.CustomRules.Add("writeTextFileTarget.depends=FORCE");

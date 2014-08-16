@@ -5,11 +5,11 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalCompilerOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalCompilerOptionsDelegateAttribute),
                                    typeof(ExportCompilerOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetObjCCompilerToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetObjCCompilerToolset")]
     public interface IObjCCompilerTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {
         string PreprocessedOutputSuffix
         {
@@ -26,11 +26,11 @@ namespace C
             get;
         }
 
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         IncludePaths(
-            Opus.Core.BaseTarget baseTarget);
+            Bam.Core.BaseTarget baseTarget);
 
-        Opus.Core.StringArray IncludePathCompilerSwitches
+        Bam.Core.StringArray IncludePathCompilerSwitches
         {
             get;
         }

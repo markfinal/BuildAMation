@@ -53,7 +53,7 @@ namespace DependencyGenerator
 
         public void
         Enqueue(
-            Opus.Core.Array<Data> values)
+            Bam.Core.Array<Data> values)
         {
             if (this.IsThreaded)
             {

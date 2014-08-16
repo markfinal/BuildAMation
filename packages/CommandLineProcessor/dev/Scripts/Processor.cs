@@ -7,22 +7,22 @@ namespace CommandLineProcessor
 {
     public static class Processor
     {
-        static bool disableResponseFiles = Opus.Core.State.Get<bool>("Build", "DisableResponseFiles", false);
+        static bool disableResponseFiles = Bam.Core.State.Get<bool>("Build", "DisableResponseFiles", false);
 
         public static int
         Execute(
-            Opus.Core.DependencyNode node,
-            Opus.Core.ITool tool,
-            Opus.Core.StringArray commandLineBuilder)
+            Bam.Core.DependencyNode node,
+            Bam.Core.ITool tool,
+            Bam.Core.StringArray commandLineBuilder)
         {
             return Execute(node, tool, commandLineBuilder, null, null);
         }
 
         public static int
         Execute(
-            Opus.Core.DependencyNode node,
-            Opus.Core.ITool tool,
-            Opus.Core.StringArray commandLineBuilder,
+            Bam.Core.DependencyNode node,
+            Bam.Core.ITool tool,
+            Bam.Core.StringArray commandLineBuilder,
             string hostApplication)
         {
             return Execute(node, tool, commandLineBuilder, hostApplication, null);
@@ -30,14 +30,14 @@ namespace CommandLineProcessor
 
         public static int
         Execute(
-            Opus.Core.DependencyNode node,
-            Opus.Core.ITool tool,
-            Opus.Core.StringArray commandLineBuilder,
+            Bam.Core.DependencyNode node,
+            Bam.Core.ITool tool,
+            Bam.Core.StringArray commandLineBuilder,
             string hostApplication,
             string workingDirectory)
         {
             var target = node.Target;
-            var executablePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var executablePath = tool.Executable((Bam.Core.BaseTarget)target);
 
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
             if (null != hostApplication)
@@ -57,12 +57,12 @@ namespace CommandLineProcessor
             }
 
             var requiredEnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
-            if (tool is Opus.Core.IToolForwardedEnvironmentVariables)
+            if (tool is Bam.Core.IToolForwardedEnvironmentVariables)
             {
-                foreach (var requiredEnvVar in (tool as Opus.Core.IToolForwardedEnvironmentVariables).VariableNames)
+                foreach (var requiredEnvVar in (tool as Bam.Core.IToolForwardedEnvironmentVariables).VariableNames)
                 {
                     requiredEnvironmentVariables[requiredEnvVar] = processStartInfo.EnvironmentVariables[requiredEnvVar];
-                    //Opus.Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);
+                    //Bam.Core.Log.DebugMessage("Saved envvar '{0}'", requiredEnvVar);
                 }
             }
 
@@ -72,16 +72,16 @@ namespace CommandLineProcessor
             foreach (System.Collections.Generic.KeyValuePair<string, string> requiredEnvVar in requiredEnvironmentVariables)
             {
                 processStartInfo.EnvironmentVariables[requiredEnvVar.Key] = requiredEnvVar.Value;
-                //Opus.Core.Log.DebugMessage("Restored envvar '{0}' as '{1}'", requiredEnvVar.Key, requiredEnvVar.Value);
+                //Bam.Core.Log.DebugMessage("Restored envvar '{0}' as '{1}'", requiredEnvVar.Key, requiredEnvVar.Value);
             }
 
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
 
-            if (tool is Opus.Core.IToolEnvironmentVariables)
+            if (tool is Bam.Core.IToolEnvironmentVariables)
             {
-                var variables = (tool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                var variables = (tool as Bam.Core.IToolEnvironmentVariables).Variables((Bam.Core.BaseTarget)target);
                 foreach (var key in variables.Keys)
                 {
                     // values - assume when there are multiple values that they are paths
@@ -89,15 +89,15 @@ namespace CommandLineProcessor
                 }
             }
 
-            if ((tool is Opus.Core.IToolSupportsResponseFile) && !disableResponseFiles)
+            if ((tool is Bam.Core.IToolSupportsResponseFile) && !disableResponseFiles)
             {
                 var module = node.Module;
-                var moduleBuildDir = module.Locations[Opus.Core.State.ModuleBuildDirLocationKey];
-                var responseFileLoc = new Opus.Core.ScaffoldLocation(
+                var moduleBuildDir = module.Locations[Bam.Core.State.ModuleBuildDirLocationKey];
+                var responseFileLoc = new Bam.Core.ScaffoldLocation(
                     moduleBuildDir,
                     node.UniqueModuleName + ".rsp",
-                    Opus.Core.ScaffoldLocation.ETypeHint.File,
-                    Opus.Core.Location.EExists.WillExist);
+                    Bam.Core.ScaffoldLocation.ETypeHint.File,
+                    Bam.Core.Location.EExists.WillExist);
                 var responseFile = responseFileLoc.GetSinglePath();
 
                 using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFile))
@@ -105,7 +105,7 @@ namespace CommandLineProcessor
                     writer.WriteLine(commandLineBuilder.ToString('\n'));
                 }
 
-                var responseFileOption = (tool as Opus.Core.IToolSupportsResponseFile).Option;
+                var responseFileOption = (tool as Bam.Core.IToolSupportsResponseFile).Option;
                 processStartInfo.Arguments += System.String.Format("{0}{1}", responseFileOption, responseFile);
             }
             else
@@ -113,16 +113,16 @@ namespace CommandLineProcessor
                 processStartInfo.Arguments += commandLineBuilder.ToString(' ');
             }
 
-            Opus.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
+            Bam.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
 
             // useful debugging of the command line processor
-            Opus.Core.Log.DebugMessage("Working directory: '{0}'", processStartInfo.WorkingDirectory);
+            Bam.Core.Log.DebugMessage("Working directory: '{0}'", processStartInfo.WorkingDirectory);
             if (processStartInfo.EnvironmentVariables.Count > 0)
             {
-                Opus.Core.Log.DebugMessage("Environment variables:");
+                Bam.Core.Log.DebugMessage("Environment variables:");
                 foreach (string envVar in processStartInfo.EnvironmentVariables.Keys)
                 {
-                    Opus.Core.Log.DebugMessage("\t{0} = {1}", envVar, processStartInfo.EnvironmentVariables[envVar]);
+                    Bam.Core.Log.DebugMessage("\t{0} = {1}", envVar, processStartInfo.EnvironmentVariables[envVar]);
                 }
             }
 
@@ -133,7 +133,7 @@ namespace CommandLineProcessor
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
-                throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
             }
             if (null != process)
             {
@@ -146,7 +146,7 @@ namespace CommandLineProcessor
                 // TODO: need to poll for an external cancel op? this currently waits forever
                 process.WaitForExit();
                 var exitCode = process.ExitCode;
-                //Opus.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
+                //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
 
                 return exitCode;
             }

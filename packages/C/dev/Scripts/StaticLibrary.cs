@@ -8,15 +8,15 @@ namespace C
     /// <summary>
     /// C/C++ static library
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IArchiverTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IArchiverTool))]
     public class StaticLibrary :
-        Opus.Core.BaseModule,
-        Opus.Core.INestedDependents,
-        Opus.Core.IForwardDependenciesOn,
-        Opus.Core.ICommonOptionCollection
+        Bam.Core.BaseModule,
+        Bam.Core.INestedDependents,
+        Bam.Core.IForwardDependenciesOn,
+        Bam.Core.ICommonOptionCollection
     {
-        public static readonly Opus.Core.LocationKey OutputFileLocKey = new Opus.Core.LocationKey("StaticLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey OutputDirLocKey = new Opus.Core.LocationKey("StaticLibraryOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFileLocKey = new Bam.Core.LocationKey("StaticLibraryFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDirLocKey = new Bam.Core.LocationKey("StaticLibraryOutputDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
         private string PreprocessorDefine
         {
@@ -27,8 +27,8 @@ namespace C
         [ExportCompilerOptionsDelegate]
         protected void
         StaticLibrarySetPreprocessorDefine(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             if (null == this.PreprocessorDefine)
             {
@@ -43,11 +43,11 @@ namespace C
             compilerOptions.Defines.Add(this.PreprocessorDefine);
         }
 
-        Opus.Core.ModuleCollection
-        Opus.Core.INestedDependents.GetNestedDependents(
-            Opus.Core.Target target)
+        Bam.Core.ModuleCollection
+        Bam.Core.INestedDependents.GetNestedDependents(
+            Bam.Core.Target target)
         {
-            var collection = new Opus.Core.ModuleCollection();
+            var collection = new Bam.Core.ModuleCollection();
 
             var type = this.GetType();
             var fieldInfoArray = type.GetFields(System.Reflection.BindingFlags.NonPublic |
@@ -55,20 +55,20 @@ namespace C
                                                 System.Reflection.BindingFlags.Instance);
             foreach (var fieldInfo in fieldInfoArray)
             {
-                var attributes = fieldInfo.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
+                var attributes = fieldInfo.GetCustomAttributes(typeof(Bam.Core.SourceFilesAttribute), false);
                 if (attributes.Length > 0)
                 {
-                    var targetFilters = attributes[0] as Opus.Core.ITargetFilters;
-                    if (!Opus.Core.TargetUtilities.MatchFilters(target, targetFilters))
+                    var targetFilters = attributes[0] as Bam.Core.ITargetFilters;
+                    if (!Bam.Core.TargetUtilities.MatchFilters(target, targetFilters))
                     {
-                        Opus.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.ToString(), target.ToString());
+                        Bam.Core.Log.DebugMessage("Source file field '{0}' of module '{1}' with filters '{2}' does not match target '{3}'", fieldInfo.Name, type.ToString(), targetFilters.ToString(), target.ToString());
                         continue;
                     }
 
-                    var module = fieldInfo.GetValue(this) as Opus.Core.IModule;
+                    var module = fieldInfo.GetValue(this) as Bam.Core.IModule;
                     if (null == module)
                     {
-                        throw new Opus.Core.Exception("Field '{0}', marked with Opus.Core.SourceFiles attribute, must be derived from type Core.IModule", fieldInfo.Name);
+                        throw new Bam.Core.Exception("Field '{0}', marked with Bam.Core.SourceFiles attribute, must be derived from type Core.IModule", fieldInfo.Name);
                     }
                     collection.Add(module);
                 }
@@ -77,7 +77,7 @@ namespace C
             return collection;
         }
 
-        Opus.Core.BaseOptionCollection Opus.Core.ICommonOptionCollection.CommonOptionCollection
+        Bam.Core.BaseOptionCollection Bam.Core.ICommonOptionCollection.CommonOptionCollection
         {
             get;
             set;

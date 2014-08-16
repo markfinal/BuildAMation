@@ -7,25 +7,25 @@ namespace C
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
     public sealed class RequiredLibrariesAttribute :
-        Opus.Core.BaseTargetFilteredAttribute,
-        Opus.Core.IFieldAttributeProcessor
+        Bam.Core.BaseTargetFilteredAttribute,
+        Bam.Core.IFieldAttributeProcessor
     {
         void
-        Opus.Core.IFieldAttributeProcessor.Execute(
+        Bam.Core.IFieldAttributeProcessor.Execute(
             object sender,
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
-            if (!Opus.Core.TargetUtilities.MatchFilters(target, this))
+            if (!Bam.Core.TargetUtilities.MatchFilters(target, this))
             {
                 return;
             }
 
             var field = sender as System.Reflection.FieldInfo;
             string[] libraries = null;
-            if (field.GetValue(module) is Opus.Core.Array<string>)
+            if (field.GetValue(module) is Bam.Core.Array<string>)
             {
-                libraries = (field.GetValue(module) as Opus.Core.Array<string>).ToArray();
+                libraries = (field.GetValue(module) as Bam.Core.Array<string>).ToArray();
             }
             else if (field.GetValue(module) is string[])
             {
@@ -33,10 +33,10 @@ namespace C
             }
             else
             {
-                throw new Opus.Core.Exception("RequiredLibrary field in {0} must be of type string[], Opus.Core.StringArray or Opus.Core.Array<string>", module.ToString());
+                throw new Bam.Core.Exception("RequiredLibrary field in {0} must be of type string[], Bam.Core.StringArray or Bam.Core.Array<string>", module.ToString());
             }
 
-            module.UpdateOptions += delegate(Opus.Core.IModule dlgModule, Opus.Core.Target dlgTarget)
+            module.UpdateOptions += delegate(Bam.Core.IModule dlgModule, Bam.Core.Target dlgTarget)
             {
                 var linkerOptions = dlgModule.Options as ILinkerOptions;
                 foreach (var library in libraries)

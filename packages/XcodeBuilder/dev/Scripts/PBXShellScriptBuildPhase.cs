@@ -14,20 +14,20 @@ namespace XcodeBuilder
             string name,
             string moduleName) : base(name, moduleName)
         {
-            this.InputPaths = new Opus.Core.StringArray();
-            this.OutputPaths = new Opus.Core.StringArray();
+            this.InputPaths = new Bam.Core.StringArray();
+            this.OutputPaths = new Bam.Core.StringArray();
             this.ShellPath = "/bin/sh";
-            this.ShellScriptLines = new Opus.Core.StringArray();
+            this.ShellScriptLines = new Bam.Core.StringArray();
             this.ShowEnvironmentVariablesInLog = true;
         }
 
-        public Opus.Core.StringArray InputPaths
+        public Bam.Core.StringArray InputPaths
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray OutputPaths
+        public Bam.Core.StringArray OutputPaths
         {
             get;
             private set;
@@ -39,7 +39,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public Opus.Core.StringArray ShellScriptLines
+        public Bam.Core.StringArray ShellScriptLines
         {
             get;
             private set;

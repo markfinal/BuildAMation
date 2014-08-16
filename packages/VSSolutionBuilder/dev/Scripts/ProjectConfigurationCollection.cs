@@ -9,7 +9,7 @@ namespace VSSolutionBuilder
         System.Collections.IEnumerable
     {
         private System.Collections.Generic.List<ProjectConfiguration> list = new System.Collections.Generic.List<ProjectConfiguration>();
-        private System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, string> targetToConfig = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, string>();
+        private System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, string> targetToConfig = new System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, string>();
 
         public System.Collections.IEnumerator
         GetEnumerator()
@@ -19,7 +19,7 @@ namespace VSSolutionBuilder
 
         public void
         Add(
-            Opus.Core.BaseTarget target,
+            Bam.Core.BaseTarget target,
             ProjectConfiguration configuration)
         {
             this.list.Add(configuration);
@@ -28,7 +28,7 @@ namespace VSSolutionBuilder
 
         public void
         AddExistingForTarget(
-            Opus.Core.BaseTarget target,
+            Bam.Core.BaseTarget target,
             ProjectConfiguration configuration)
         {
             if (!this.targetToConfig.ContainsKey(target))
@@ -39,7 +39,7 @@ namespace VSSolutionBuilder
 
         public string
         GetConfigurationNameForTarget(
-            Opus.Core.BaseTarget target)
+            Bam.Core.BaseTarget target)
         {
             var configurationName = this.targetToConfig[target];
             return configurationName;
@@ -72,7 +72,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                throw new Opus.Core.Exception("There is no ProjectConfiguration called '{0}'", configurationName);
+                throw new Bam.Core.Exception("There is no ProjectConfiguration called '{0}'", configurationName);
             }
         }
 
@@ -102,7 +102,7 @@ namespace VSSolutionBuilder
                 configurationGroup.CreateProperty("ConfigurationType", configuration.Type.ToString());
 
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var PlatformToolsetProperty = solutionType.GetProperty("PlatformToolset");
                     if (null != PlatformToolsetProperty)
@@ -129,7 +129,7 @@ namespace VSSolutionBuilder
 
                 if (null != configuration.OutputDirectory)
                 {
-                    var outputDir = Opus.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
+                    var outputDir = Bam.Core.RelativePathUtilities.GetPath(configuration.OutputDirectory, projectUri);
                     // MSBuild complains if the output directory does not end with a trailing slash
                     if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
                     {
@@ -141,7 +141,7 @@ namespace VSSolutionBuilder
 
                 if (null != configuration.IntermediateDirectory)
                 {
-                    var intermediateDir = Opus.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
+                    var intermediateDir = Bam.Core.RelativePathUtilities.GetPath(configuration.IntermediateDirectory, projectUri);
                     // MSBuild complains if the intermediate directory does not end with a trailing slash
                     if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
                     {

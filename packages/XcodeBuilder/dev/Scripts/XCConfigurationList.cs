@@ -14,7 +14,7 @@ namespace XcodeBuilder
             XcodeNodeData owner) : base(owner.Name)
         {
             this.Owner = owner;
-            this.BuildConfigurations = new Opus.Core.Array<XCBuildConfiguration>();
+            this.BuildConfigurations = new Bam.Core.Array<XCBuildConfiguration>();
         }
 
         public XcodeNodeData Owner
@@ -36,7 +36,7 @@ namespace XcodeBuilder
             }
         }
 
-        public Opus.Core.Array<XCBuildConfiguration> BuildConfigurations
+        public Bam.Core.Array<XCBuildConfiguration> BuildConfigurations
         {
             get;
             private set;
@@ -49,7 +49,7 @@ namespace XcodeBuilder
         {
             if (null == this.Owner)
             {
-                throw new Opus.Core.Exception("Owner of this configuration list has not been set");
+                throw new Bam.Core.Exception("Owner of this configuration list has not been set");
             }
 
             writer.WriteLine("\t\t{0} /* Build configuration list for {1} \"{2}\" */ = {{", this.UUID, this.Owner.GetType().Name, this.Owner.Name);

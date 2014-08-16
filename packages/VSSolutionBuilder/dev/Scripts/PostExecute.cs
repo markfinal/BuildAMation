@@ -6,15 +6,15 @@
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder :
-        Opus.Core.IBuilderPostExecute
+        Bam.Core.IBuilderPostExecute
     {
         #region IBuilderPostExecute Members
 
         void
-        Opus.Core.IBuilderPostExecute.PostExecute(
-            Opus.Core.DependencyNodeCollection executedNodes)
+        Bam.Core.IBuilderPostExecute.PostExecute(
+            Bam.Core.DependencyNodeCollection executedNodes)
         {
-            Opus.Core.Log.DebugMessage("PostExecute for VSSolutionBuilder");
+            Bam.Core.Log.DebugMessage("PostExecute for VSSolutionBuilder");
 
             this.solutionFile.ResolveSourceFileConfigurationExclusions();
             this.solutionFile.Serialize();

@@ -6,10 +6,10 @@
 namespace ComposerXECommon
 {
     public abstract class Toolset :
-        Opus.Core.IToolset
+        Bam.Core.IToolset
     {
         protected string installPath;
-        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
+        protected System.Collections.Generic.Dictionary<System.Type, Bam.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Bam.Core.ToolAndOptionType>();
         protected ComposerXECommon.GccDetailData gccDetail;
 
         protected abstract string Version
@@ -19,7 +19,7 @@ namespace ComposerXECommon
 
         private void
         GetInstallPath(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             if (null != this.installPath)
             {
@@ -27,10 +27,10 @@ namespace ComposerXECommon
             }
 
             string installPath = null;
-            if (Opus.Core.State.HasCategory("ComposerXE") && Opus.Core.State.Has("ComposerXE", "InstallPath"))
+            if (Bam.Core.State.HasCategory("ComposerXE") && Bam.Core.State.Has("ComposerXE", "InstallPath"))
             {
-                installPath = Opus.Core.State.Get("ComposerXE", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("ComposerXE install path set from command line to '{0}'", installPath);
+                installPath = Bam.Core.State.Get("ComposerXE", "InstallPath") as string;
+                Bam.Core.Log.DebugMessage("ComposerXE install path set from command line to '{0}'", installPath);
             }
 
             if (null == installPath)
@@ -52,60 +52,60 @@ namespace ComposerXECommon
 
         #region IToolset implementation
         string
-        Opus.Core.IToolset.Version(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.Version(
+            Bam.Core.BaseTarget baseTarget)
         {
             return this.Version;
         }
 
         string
-        Opus.Core.IToolset.InstallPath(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.InstallPath(
+            Bam.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath(baseTarget);
             return this.installPath;
         }
 
         string
-        Opus.Core.IToolset.BinPath(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.BinPath(
+            Bam.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath(baseTarget);
             return System.IO.Path.Combine(this.installPath, "bin");
         }
 
         bool
-        Opus.Core.IToolset.HasTool(
+        Bam.Core.IToolset.HasTool(
             System.Type toolType)
         {
             return this.toolConfig.ContainsKey(toolType);
         }
 
-        Opus.Core.ITool
-        Opus.Core.IToolset.Tool(
+        Bam.Core.ITool
+        Bam.Core.IToolset.Tool(
             System.Type toolType)
         {
-            if (!(this as Opus.Core.IToolset).HasTool(toolType))
+            if (!(this as Bam.Core.IToolset).HasTool(toolType))
             {
-                throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolConfig[toolType].Tool;
         }
 
         System.Type
-        Opus.Core.IToolset.ToolOptionType(
+        Bam.Core.IToolset.ToolOptionType(
             System.Type toolType)
         {
-            if (!(this as Opus.Core.IToolset).HasTool(toolType))
+            if (!(this as Bam.Core.IToolset).HasTool(toolType))
             {
-                throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolConfig[toolType].OptionsType;
         }
 
-        Opus.Core.StringArray Opus.Core.IToolset.Environment
+        Bam.Core.StringArray Bam.Core.IToolset.Environment
         {
             get
             {

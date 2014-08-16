@@ -5,9 +5,9 @@
 // <author>Mark Final</author>
 namespace C
 {
-    // Note: No Opus.Core.LocalAndExportTypes attribute required here as there is no build action
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetNullOpToolset")]
+    // Note: No Bam.Core.LocalAndExportTypes attribute required here as there is no build action
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetNullOpToolset")]
     public interface INullOpTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

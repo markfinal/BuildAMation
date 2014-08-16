@@ -5,23 +5,23 @@
 // <author>Mark Final</author>
 namespace Publisher
 {
-    [Opus.Core.ModuleToolAssignment(typeof(IPublishProductTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IPublishProductTool))]
     public abstract class ProductModule :
-        Opus.Core.BaseModule,
-        Opus.Core.IIdentifyExternalDependencies
+        Bam.Core.BaseModule,
+        Bam.Core.IIdentifyExternalDependencies
     {
-        public static readonly Opus.Core.LocationKey OSXAppBundle = new Opus.Core.LocationKey("OSXPrimaryApplicationBundle", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey OSXAppBundleContents = new Opus.Core.LocationKey("OSXPrimaryAppBundleContents", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey OSXAppBundleMacOS = new Opus.Core.LocationKey("OSXPrimaryAppBundleMacOS", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey PublishDir = new Opus.Core.LocationKey("PrimaryModuleDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OSXAppBundle = new Bam.Core.LocationKey("OSXPrimaryApplicationBundle", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OSXAppBundleContents = new Bam.Core.LocationKey("OSXPrimaryAppBundleContents", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OSXAppBundleMacOS = new Bam.Core.LocationKey("OSXPrimaryAppBundleMacOS", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey PublishDir = new Bam.Core.LocationKey("PrimaryModuleDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
         #region IIdentifyExternalDependencies Members
 
-        Opus.Core.TypeArray
-        Opus.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(
-            Opus.Core.Target target)
+        Bam.Core.TypeArray
+        Bam.Core.IIdentifyExternalDependencies.IdentifyExternalDependencies(
+            Bam.Core.Target target)
         {
-            var dependentModuleTypes = new Opus.Core.TypeArray();
+            var dependentModuleTypes = new Bam.Core.TypeArray();
 
             var flags = System.Reflection.BindingFlags.Instance |
                         System.Reflection.BindingFlags.NonPublic;
@@ -31,7 +31,7 @@ namespace Publisher
                 var attributes = field.GetCustomAttributes(true);
                 if (attributes.Length != 1)
                 {
-                    throw new Opus.Core.Exception("Found {0} attributes on field {1} of module {2}. Should be just one",
+                    throw new Bam.Core.Exception("Found {0} attributes on field {1} of module {2}. Should be just one",
                                                   attributes.Length, field.Name, this.OwningNode.ModuleName);
                 }
 
@@ -41,7 +41,7 @@ namespace Publisher
                     var fieldValue = field.GetValue(this) as System.Type;
                     if (null == fieldValue)
                     {
-                        throw new Opus.Core.Exception("PrimaryTarget attribute field was not of type System.Type");
+                        throw new Bam.Core.Exception("PrimaryTarget attribute field was not of type System.Type");
                     }
                     dependentModuleTypes.AddUnique(fieldValue);
                 }
@@ -50,7 +50,7 @@ namespace Publisher
                     var fieldValue = field.GetValue(this) as System.Type;
                     if (null == fieldValue)
                     {
-                        throw new Opus.Core.Exception("OSXInfoPList attribute field was not of type System.Type");
+                        throw new Bam.Core.Exception("OSXInfoPList attribute field was not of type System.Type");
                     }
                     dependentModuleTypes.AddUnique(fieldValue);
                 }
@@ -60,7 +60,7 @@ namespace Publisher
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Unrecognized attribute of type {0} on field {1} of module {2}",
+                    throw new Bam.Core.Exception("Unrecognized attribute of type {0} on field {1} of module {2}",
                                                   currentAttr.GetType().ToString(), field.Name, this.OwningNode.ModuleName);
                 }
             }

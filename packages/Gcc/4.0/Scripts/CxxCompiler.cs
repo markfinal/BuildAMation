@@ -10,7 +10,7 @@ namespace Gcc
     {
         public
         CxxCompiler(
-            Opus.Core.IToolset toolset) : base(toolset)
+            Bam.Core.IToolset toolset) : base(toolset)
         {}
 
         #region implemented abstract members of GccCommon.CxxCompiler

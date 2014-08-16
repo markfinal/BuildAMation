@@ -4,13 +4,13 @@
 // <summary>MingwCommon package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(MingwCommon.InstallPathAction))]
+[assembly: Bam.Core.RegisterAction(typeof(MingwCommon.InstallPathAction))]
 
 namespace MingwCommon
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class InstallPathAction :
-        Opus.Core.IActionWithArguments
+        Bam.Core.IActionWithArguments
     {
         private string InstallPath
         {
@@ -19,13 +19,13 @@ namespace MingwCommon
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Bam.Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             this.InstallPath = arguments;
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -33,7 +33,7 @@ namespace MingwCommon
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -42,23 +42,23 @@ namespace MingwCommon
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
             if (!System.IO.Directory.Exists(this.InstallPath))
             {
-                var absolutePath = System.IO.Path.Combine(Opus.Core.State.WorkingDirectory, this.InstallPath);
+                var absolutePath = System.IO.Path.Combine(Bam.Core.State.WorkingDirectory, this.InstallPath);
                 if (!System.IO.Directory.Exists(absolutePath))
                 {
-                    throw new Opus.Core.Exception("Path '{0}' does not exist and is not relative to the working directory '{1}", this.InstallPath, Opus.Core.State.WorkingDirectory);
+                    throw new Bam.Core.Exception("Path '{0}' does not exist and is not relative to the working directory '{1}", this.InstallPath, Bam.Core.State.WorkingDirectory);
                 }
 
                 this.InstallPath = absolutePath;
             }
 
-            Opus.Core.State.AddCategory("Mingw");
-            Opus.Core.State.Set("Mingw", "InstallPath", this.InstallPath);
+            Bam.Core.State.AddCategory("Mingw");
+            Bam.Core.State.Set("Mingw", "InstallPath", this.InstallPath);
 
-            Opus.Core.Log.DebugMessage("Mingw installation path is now '{0}'", this.InstallPath);
+            Bam.Core.Log.DebugMessage("Mingw installation path is now '{0}'", this.InstallPath);
 
             return true;
         }

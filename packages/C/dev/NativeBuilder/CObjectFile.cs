@@ -16,14 +16,14 @@ namespace NativeBuilder
             var sourceFilePath = sourceLoc.GetSinglePath();
             if (!System.IO.File.Exists(sourceFilePath))
             {
-                throw new Opus.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
+                throw new Bam.Core.Exception("Source file '{0}' does not exist", sourceFilePath);
             }
 
 #if OPUS_ENABLE_FILE_HASHING
             DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(sourceFilePath);
 #endif
 
-            var objectFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var objectFileModule = moduleToBuild as Bam.Core.BaseModule;
             var objectFileOptions = objectFileModule.Options;
             var node = objectFileModule.OwningNode;
 
@@ -31,13 +31,13 @@ namespace NativeBuilder
 
             var depFilePath = DependencyGenerator.IncludeDependencyGeneration.HeaderDependencyPathName(sourceFilePath, moduleToBuild.Locations[C.ObjectFile.OutputDir]);
 
-            var headerDependencyGeneration = (bool)Opus.Core.State.Get("C", "HeaderDependencyGeneration");
+            var headerDependencyGeneration = (bool)Bam.Core.State.Get("C", "HeaderDependencyGeneration");
 
             // dependency checking, source against output files
             {
-                var inputFiles = new Opus.Core.LocationArray();
+                var inputFiles = new Bam.Core.LocationArray();
                 inputFiles.Add(sourceLoc);
-                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                var outputFiles = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
                 var doesSourceFileNeedRebuilding = IsSourceTimeStampNewer(outputFiles, sourceLoc);
                 if (FileRebuildStatus.UpToDate == doesSourceFileNeedRebuilding)
                 {
@@ -48,17 +48,17 @@ namespace NativeBuilder
                         {
                             var deps = depFileReader.ReadToEnd();
                             var splitDeps = deps.Split(new string[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
-                            var depLocArray = new Opus.Core.LocationArray();
+                            var depLocArray = new Bam.Core.LocationArray();
                             foreach (var depPath in splitDeps)
                             {
-                                depLocArray.Add(Opus.Core.FileLocation.Get(depPath));
+                                depLocArray.Add(Bam.Core.FileLocation.Get(depPath));
                             }
 #if OPUS_ENABLE_FILE_HASHING
                             DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(depLocArray);
 #endif
                             if (!RequiresBuilding(outputFiles, depLocArray))
                             {
-                                Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                                Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                                 success = true;
                                 return null;
                             }
@@ -68,7 +68,7 @@ namespace NativeBuilder
                     }
                     else
                     {
-                        Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                        Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                         success = true;
                         return null;
                     }
@@ -79,7 +79,7 @@ namespace NativeBuilder
                 {
                     if (!DependencyGenerator.FileHashGeneration.HaveFileHashesChanged(inputFiles))
                     {
-                        Opus.Core.Log.DebugMessage("'{0}' time stamps changed but contents unchanged", node.UniqueModuleName);
+                        Bam.Core.Log.DebugMessage("'{0}' time stamps changed but contents unchanged", node.UniqueModuleName);
                         success = true;
                         return null;
                     }
@@ -88,7 +88,7 @@ namespace NativeBuilder
             }
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
@@ -97,7 +97,7 @@ namespace NativeBuilder
 
             var target = node.Target;
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
@@ -105,11 +105,11 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
-            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            var toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
+            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleToolAssignmentAttribute), true);
+            var toolType = (moduleToolAttributes[0] as Bam.Core.ModuleToolAssignmentAttribute).ToolType;
             var toolInterface = target.Toolset.Tool(toolType);
 
             if (headerDependencyGeneration)
@@ -120,7 +120,7 @@ namespace NativeBuilder
 
                 var cOptions = objectFileOptions as C.ICCompilerOptions;
                 var includePaths = cOptions.IncludePaths.ToStringArray();
-                dependencyData.includePaths = new Opus.Core.StringArray();
+                dependencyData.includePaths = new Bam.Core.StringArray();
                 foreach (var path in includePaths)
                 {
                     if (path == ".")

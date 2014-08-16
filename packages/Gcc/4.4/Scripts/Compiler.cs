@@ -7,11 +7,11 @@ namespace Gcc
 {
     public sealed class CCompiler :
         GccCommon.CCompiler,
-        Opus.Core.IToolSupportsResponseFile
+        Bam.Core.IToolSupportsResponseFile
     {
         public
         CCompiler(
-            Opus.Core.IToolset toolset)  : base(toolset)
+            Bam.Core.IToolset toolset)  : base(toolset)
         {}
 
         #region implemented abstract members of GccCommon.CCompiler
@@ -26,7 +26,7 @@ namespace Gcc
 
         #region IToolSupportsResponseFile Members
 
-        string Opus.Core.IToolSupportsResponseFile.Option
+        string Bam.Core.IToolSupportsResponseFile.Option
         {
             get
             {

@@ -32,13 +32,13 @@ namespace QMakeBuilder
 
             // write a script that can be invoked by QMake to generate the XML file
             var shellScriptLeafName = isPlist ? "writePList.py" : "writeXMLFile.py";
-            var shellScriptLoc = Opus.Core.FileLocation.Get(outputDir, shellScriptLeafName, Opus.Core.Location.EExists.WillExist);
+            var shellScriptLoc = Bam.Core.FileLocation.Get(outputDir, shellScriptLeafName, Bam.Core.Location.EExists.WillExist);
             var shellScriptPath = shellScriptLoc.GetSingleRawPath();
             XmlUtilities.XmlDocumentToPythonScript.Write(moduleToBuild.Document, shellScriptPath, outputXMLPath);
 
             if (null == targetData.CustomRules)
             {
-                targetData.CustomRules = new Opus.Core.StringArray();
+                targetData.CustomRules = new Bam.Core.StringArray();
             }
             targetData.CustomRules.Add("xmlTarget.target=" + outputXMLPath);
             targetData.CustomRules.Add("xmlTarget.depends=FORCE");
@@ -52,7 +52,7 @@ namespace QMakeBuilder
                 // TODO: I'd rather this be an explicit option
                 if (null == targetData.CustomRules)
                 {
-                    targetData.CustomRules = new Opus.Core.StringArray();
+                    targetData.CustomRules = new Bam.Core.StringArray();
                 }
 
                 targetData.CustomRules.Add("QMAKE_INFO_PLIST=" + outputXMLPath);

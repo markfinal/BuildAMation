@@ -7,14 +7,14 @@ namespace MingwCommon
 {
     public sealed class Win32ResourceCompiler :
         C.IWinResourceCompilerTool,
-        Opus.Core.IToolEnvironmentVariables
+        Bam.Core.IToolEnvironmentVariables
     {
-        private Opus.Core.IToolset toolset;
-        private Opus.Core.StringArray pathEnvironment = new Opus.Core.StringArray();
+        private Bam.Core.IToolset toolset;
+        private Bam.Core.StringArray pathEnvironment = new Bam.Core.StringArray();
 
         public
         Win32ResourceCompiler(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.pathEnvironment.Add(@"c:\windows\system32");
@@ -51,18 +51,18 @@ namespace MingwCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "windres.exe");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.Win32Resource.OutputFile,
                 C.Win32Resource.OutputDir
                 );
@@ -73,12 +73,12 @@ namespace MingwCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
-        Opus.Core.IToolEnvironmentVariables.Variables(
-            Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>
+        Bam.Core.IToolEnvironmentVariables.Variables(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
-            var paths = new Opus.Core.StringArray();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
+            var paths = new Bam.Core.StringArray();
             paths.AddRange(this.pathEnvironment);
             paths.AddRange(this.toolset.Environment);
             dictionary["PATH"] = paths;

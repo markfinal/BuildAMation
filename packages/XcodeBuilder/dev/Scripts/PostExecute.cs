@@ -6,17 +6,17 @@
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder :
-        Opus.Core.IBuilderPostExecute
+        Bam.Core.IBuilderPostExecute
     {
 #region IBuilderPostExecute Members
 
         void
-        Opus.Core.IBuilderPostExecute.PostExecute(
-            Opus.Core.DependencyNodeCollection executedNodes)
+        Bam.Core.IBuilderPostExecute.PostExecute(
+            Bam.Core.DependencyNodeCollection executedNodes)
         {
             if (0 == executedNodes.Count)
             {
-                Opus.Core.Log.Info("No Xcode project written as there were no targets generated");
+                Bam.Core.Log.Info("No Xcode project written as there were no targets generated");
                 return;
             }
 
@@ -59,16 +59,16 @@ namespace XcodeBuilder
 
                 if (project.NativeTargets.Count > 0)
                 {
-                    if ((bool)Opus.Core.State.Get("XcodeBuilder", "WarmSchemeCache") || true)
+                    if ((bool)Bam.Core.State.Get("XcodeBuilder", "WarmSchemeCache") || true)
                     {
                         var projectSchemeCache = new ProjectSchemeCache(project);
                         projectSchemeCache.Serialize();
 
-                        Opus.Core.Log.DebugMessage("Xcode project scheme caches have been warmed");
+                        Bam.Core.Log.DebugMessage("Xcode project scheme caches have been warmed");
                     }
                 }
 
-                Opus.Core.Log.DebugMessage("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
+                Bam.Core.Log.DebugMessage("Xcode project written to '{0}'", project.RootUri.AbsolutePath);
             }
 
             System.IO.Directory.CreateDirectory(this.Workspace.BundlePath);
@@ -82,7 +82,7 @@ namespace XcodeBuilder
             var workspaceSettings = new WorkspaceSettings(this.Workspace);
             workspaceSettings.Serialize();
 
-            Opus.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, this.Workspace.BundlePath);
+            Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, this.Workspace.BundlePath);
         }
 
 #endregion

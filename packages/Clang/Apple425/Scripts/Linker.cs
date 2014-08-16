@@ -10,7 +10,7 @@ namespace Clang
     {
         public
         Linker(
-            Opus.Core.IToolset toolset) : base(toolset)
+            Bam.Core.IToolset toolset) : base(toolset)
         {}
 
         #region implemented abstract members of Linker

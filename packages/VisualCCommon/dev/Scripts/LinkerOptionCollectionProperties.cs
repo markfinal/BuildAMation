@@ -73,39 +73,39 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DynamicLibrarySetHandler", this["DynamicLibrary"]);
             }
         }
-        Opus.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
+        Bam.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("LibraryPaths", value);
                 this.ProcessNamedSetHandler("LibraryPathsSetHandler", this["LibraryPaths"]);
             }
         }
-        Opus.Core.FileCollection C.ILinkerOptions.StandardLibraries
+        Bam.Core.FileCollection C.ILinkerOptions.StandardLibraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("StandardLibraries", value);
                 this.ProcessNamedSetHandler("StandardLibrariesSetHandler", this["StandardLibraries"]);
             }
         }
-        Opus.Core.FileCollection C.ILinkerOptions.Libraries
+        Bam.Core.FileCollection C.ILinkerOptions.Libraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("Libraries", value);
                 this.ProcessNamedSetHandler("LibrariesSetHandler", this["Libraries"]);
             }
         }
@@ -195,15 +195,15 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("StackReserveAndCommitSetHandler", this["StackReserveAndCommit"]);
             }
         }
-        Opus.Core.StringArray ILinkerOptions.IgnoredLibraries
+        Bam.Core.StringArray ILinkerOptions.IgnoredLibraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("IgnoredLibraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.StringArray>("IgnoredLibraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("IgnoredLibraries", value);
+                this.SetReferenceTypeOption<Bam.Core.StringArray>("IgnoredLibraries", value);
                 this.ProcessNamedSetHandler("IgnoredLibrariesSetHandler", this["IgnoredLibraries"]);
             }
         }

@@ -11,11 +11,11 @@ namespace XcodeBuilder
         public
         Workspace()
         {
-            var mainPackage = Opus.Core.State.PackageInfo[0];
+            var mainPackage = Bam.Core.State.PackageInfo[0];
             var workspaceBundle = mainPackage.Name + ".xcworkspace";
-            this.BundlePath = System.IO.Path.Combine(Opus.Core.State.BuildRoot, workspaceBundle);
+            this.BundlePath = System.IO.Path.Combine(Bam.Core.State.BuildRoot, workspaceBundle);
             this.WorkspaceDataPath = System.IO.Path.Combine(this.BundlePath, "contents.xcworkspacedata");
-            this.Projects = new Opus.Core.Array<PBXProject>();
+            this.Projects = new Bam.Core.Array<PBXProject>();
         }
 
         public string BundlePath
@@ -30,7 +30,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Opus.Core.Array<PBXProject> Projects
+        public Bam.Core.Array<PBXProject> Projects
         {
             get;
             private set;
@@ -38,7 +38,7 @@ namespace XcodeBuilder
 
         public PBXProject
         GetProject(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             lock(this.Projects)
             {
@@ -80,7 +80,7 @@ namespace XcodeBuilder
                 {
                     var fileRef = document.CreateElement("FileRef");
                     var locationAttr = document.CreateAttribute("location");
-                    var relativeProjectPath = Opus.Core.RelativePathUtilities.GetPath(project.RootUri.AbsoluteUri, this.BundlePath);
+                    var relativeProjectPath = Bam.Core.RelativePathUtilities.GetPath(project.RootUri.AbsoluteUri, this.BundlePath);
                     locationAttr.Value = "group:" + relativeProjectPath;
                     fileRef.Attributes.Append(locationAttr);
                     root.AppendChild(fileRef);

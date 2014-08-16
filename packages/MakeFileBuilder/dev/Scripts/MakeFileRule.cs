@@ -9,13 +9,13 @@ namespace MakeFileBuilder
     {
         public
         MakeFileRule(
-            Opus.Core.BaseModule moduleToBuild,
-            Opus.Core.LocationKey primaryOutputLocationKey,
+            Bam.Core.BaseModule moduleToBuild,
+            Bam.Core.LocationKey primaryOutputLocationKey,
             string target,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.LocationArray directoriesToCreate,
             MakeFileVariableDictionary inputVariables,
-            Opus.Core.StringArray inputFiles,
-            Opus.Core.StringArray recipes)
+            Bam.Core.StringArray inputFiles,
+            Bam.Core.StringArray recipes)
         {
             this.ModuleToBuild = moduleToBuild;
             this.PrimaryOutputLocationKey = primaryOutputLocationKey;
@@ -29,13 +29,13 @@ namespace MakeFileBuilder
             this.TargetIsPhony = false;
         }
 
-        public Opus.Core.BaseModule ModuleToBuild
+        public Bam.Core.BaseModule ModuleToBuild
         {
             get;
             private set;
         }
 
-        public Opus.Core.LocationKey PrimaryOutputLocationKey
+        public Bam.Core.LocationKey PrimaryOutputLocationKey
         {
             get;
             private set;
@@ -47,13 +47,13 @@ namespace MakeFileBuilder
             private set;
         }
 
-        public Opus.Core.LocationArray DirectoriesToCreate
+        public Bam.Core.LocationArray DirectoriesToCreate
         {
             get;
             private set;
         }
 
-        public Opus.Core.StringArray InputFiles
+        public Bam.Core.StringArray InputFiles
         {
             get;
             private set;
@@ -65,7 +65,7 @@ namespace MakeFileBuilder
             private set;
         }
 
-        public Opus.Core.StringArray Recipes
+        public Bam.Core.StringArray Recipes
         {
             get;
             private set;
@@ -89,7 +89,7 @@ namespace MakeFileBuilder
             set;
         }
 
-        public Opus.Core.Array<Opus.Core.LocationKey> OutputLocationKeys
+        public Bam.Core.Array<Bam.Core.LocationKey> OutputLocationKeys
         {
             get;
             set;

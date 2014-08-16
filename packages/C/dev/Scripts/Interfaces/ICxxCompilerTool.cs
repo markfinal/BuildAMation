@@ -5,9 +5,9 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalCompilerOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalCompilerOptionsDelegateAttribute),
                                    typeof(ExportCompilerOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetCxxCompilerToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetCxxCompilerToolset")]
     public interface ICxxCompilerTool :
         ICompilerTool
     {}

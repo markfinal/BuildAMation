@@ -11,15 +11,15 @@ namespace QtCommon
         public
         Declarative()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_VisualCWarningLevel);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(QtDeclarative_LinkerOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtDeclarative_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtDeclarative_VisualCWarningLevel);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(QtDeclarative_LinkerOptions);
         }
 
         public override void
         RegisterOutputFiles(
-            Opus.Core.BaseOptionCollection options,
-            Opus.Core.Target target,
+            Bam.Core.BaseOptionCollection options,
+            Bam.Core.Target target,
             string modulePath)
         {
             this.GetModuleDynamicLibrary(target, "QtDeclarative");
@@ -29,8 +29,8 @@ namespace QtCommon
         [C.ExportLinkerOptionsDelegate]
         void
         QtDeclarative_LinkerOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             if (null != options)
@@ -43,8 +43,8 @@ namespace QtCommon
         [C.ExportCompilerOptionsDelegate]
         void
         QtDeclarative_VisualCWarningLevel(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as VisualCCommon.ICCompilerOptions;
             if (null != options)
@@ -57,8 +57,8 @@ namespace QtCommon
         [C.ExportCompilerOptionsDelegate]
         void
         QtDeclarative_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as C.ICCompilerOptions;
             if (null != options)

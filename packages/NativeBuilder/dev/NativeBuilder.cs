@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>NativeBuilder package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.DeclareBuilder("Native", typeof(NativeBuilder.NativeBuilder))]
+[assembly: Bam.Core.DeclareBuilder("Native", typeof(NativeBuilder.NativeBuilder))]
 
 namespace NativeBuilder
 {

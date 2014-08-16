@@ -9,14 +9,14 @@ namespace XcodeBuilder
     {
         public static void
         WriteShellCommand(
-            Opus.Core.Target target,
-            Opus.Core.BaseOptionCollection mocOptions,
+            Bam.Core.Target target,
+            Bam.Core.BaseOptionCollection mocOptions,
             PBXShellScriptBuildPhase shellScriptBuildPhase)
         {
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var toolExePath = tool.Executable((Bam.Core.BaseTarget)target);
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             commandLineBuilder.Add(toolExePath);
             if (mocOptions is CommandLineProcessor.ICommandLineSupport)
             {
@@ -25,7 +25,7 @@ namespace XcodeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
             commandLineBuilder.Add("-o $outputFile");
             commandLineBuilder.Add("$inputFile");

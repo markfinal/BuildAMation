@@ -8,34 +8,34 @@ namespace AMDAPPSDK
         {
             InstallPath = null;
 
-            if (Opus.Core.State.HasCategory("AMDAPPSDK") && Opus.Core.State.Has("AMDAPPSDK", "InstallPath"))
+            if (Bam.Core.State.HasCategory("AMDAPPSDK") && Bam.Core.State.Has("AMDAPPSDK", "InstallPath"))
             {
-                InstallPath = Opus.Core.State.Get("AMDAPPSDK", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("AMDAPPSDK install path set from command line to '{0}'", InstallPath);
+                InstallPath = Bam.Core.State.Get("AMDAPPSDK", "InstallPath") as string;
+                Bam.Core.Log.DebugMessage("AMDAPPSDK install path set from command line to '{0}'", InstallPath);
             }
 
-            if (!Opus.Core.OSUtilities.IsWindowsHosting)
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                throw new Opus.Core.Exception("AMDAPPSDK is only supported on Windows currently");
+                throw new Bam.Core.Exception("AMDAPPSDK is only supported on Windows currently");
             }
 
             if (null == InstallPath)
             {
-                using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"ATI Technologies\Install\AMD APP SDK Developer"))
+                using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"ATI Technologies\Install\AMD APP SDK Developer"))
                 {
                     if (null == key)
                     {
-                        throw new Opus.Core.Exception("AMDAPPSDK was not installed");
+                        throw new Bam.Core.Exception("AMDAPPSDK was not installed");
                     }
 
                     var installPath = key.GetValue("InstallDir") as string;
                     if (null == installPath)
                     {
-                        throw new Opus.Core.Exception("AMDAPPSDK was not installed correctly");
+                        throw new Bam.Core.Exception("AMDAPPSDK was not installed correctly");
                     }
 
                     installPath = installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
-                    Opus.Core.Log.DebugMessage("AMD APP SDK 2.5: Installation path from registry '{0}'", installPath);
+                    Bam.Core.Log.DebugMessage("AMD APP SDK 2.5: Installation path from registry '{0}'", installPath);
                     InstallPath = installPath;
                 }
             }
@@ -46,13 +46,13 @@ namespace AMDAPPSDK
 
         public AMDAPPSDK()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_IncludePath);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_LinkerOptions);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_EnableExceptionHandling);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_IncludePath);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_LinkerOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(AMDAPPSDK_EnableExceptionHandling);
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void AMDAPPSDK_EnableExceptionHandling(Opus.Core.IModule module, Opus.Core.Target target)
+        void AMDAPPSDK_EnableExceptionHandling(Bam.Core.IModule module, Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             if (null == compilerOptions)
@@ -64,7 +64,7 @@ namespace AMDAPPSDK
         }
 
         [C.ExportCompilerOptionsDelegate]
-        void AMDAPPSDK_IncludePath(Opus.Core.IModule module, Opus.Core.Target target)
+        void AMDAPPSDK_IncludePath(Bam.Core.IModule module, Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             if (null == compilerOptions)
@@ -76,7 +76,7 @@ namespace AMDAPPSDK
         }
 
         [C.ExportLinkerOptionsDelegate]
-        void AMDAPPSDK_LinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void AMDAPPSDK_LinkerOptions(Bam.Core.IModule module, Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
@@ -86,17 +86,17 @@ namespace AMDAPPSDK
 
             // set library paths
             string platformLibraryPath = null;
-            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
+            if (target.HasPlatform(Bam.Core.EPlatform.Win32))
             {
                 platformLibraryPath = System.IO.Path.Combine(LibraryPath, "x86");
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 platformLibraryPath = System.IO.Path.Combine(LibraryPath, "x86_64");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported platform for the DirectX package");
+                throw new Bam.Core.Exception("Unsupported platform for the DirectX package");
             }
             linkerOptions.LibraryPaths.Add(platformLibraryPath);
 
@@ -104,8 +104,8 @@ namespace AMDAPPSDK
             linkerOptions.Libraries.Add("OpenCL.lib");
         }
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
-        Opus.Core.TypeArray winDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows)]
+        Bam.Core.TypeArray winDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
         public static string InstallPath
         {

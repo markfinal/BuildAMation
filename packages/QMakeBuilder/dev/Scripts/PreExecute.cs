@@ -6,16 +6,16 @@
 namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder :
-        Opus.Core.IBuilderPreExecute
+        Bam.Core.IBuilderPreExecute
     {
         #region IBuilderPreExecute Members
 
         void
-        Opus.Core.IBuilderPreExecute.PreExecute()
+        Bam.Core.IBuilderPreExecute.PreExecute()
         {
-            Opus.Core.Log.DebugMessage("PreExecute for QMakeBuilder");
+            Bam.Core.Log.DebugMessage("PreExecute for QMakeBuilder");
 
-            var mainPackage = Opus.Core.State.PackageInfo[0];
+            var mainPackage = Bam.Core.State.PackageInfo[0];
             var priFileName = "EmptyConfig.pri";
             var rootDirectory = mainPackage.BuildDirectory;
             var priFilePath = System.IO.Path.Combine(rootDirectory, priFileName);

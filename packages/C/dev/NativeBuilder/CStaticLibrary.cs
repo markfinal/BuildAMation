@@ -12,15 +12,15 @@ namespace NativeBuilder
             C.StaticLibrary moduleToBuild,
             out bool success)
         {
-            var staticLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var staticLibraryModule = moduleToBuild as Bam.Core.BaseModule;
             var node = staticLibraryModule.OwningNode;
             var target = node.Target;
 
             // find dependent object files
-            var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var keysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.ObjectFile.OutputFile
                 );
-            var dependentObjectFiles = new Opus.Core.LocationArray();
+            var dependentObjectFiles = new Bam.Core.LocationArray();
             if (null != node.Children)
             {
                 node.Children.FilterOutputLocations(keysToFilter, dependentObjectFiles);
@@ -31,7 +31,7 @@ namespace NativeBuilder
             }
             if (0 == dependentObjectFiles.Count)
             {
-                Opus.Core.Log.Detail("There were no object files to archive for module '{0}'", node.UniqueModuleName);
+                Bam.Core.Log.Detail("There were no object files to archive for module '{0}'", node.UniqueModuleName);
                 success = true;
                 return null;
             }
@@ -40,12 +40,12 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                var inputFiles = new Opus.Core.LocationArray();
+                var inputFiles = new Bam.Core.LocationArray();
                 inputFiles.AddRange(dependentObjectFiles);
-                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                var outputFiles = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
                     return null;
                 }
@@ -54,14 +54,14 @@ namespace NativeBuilder
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = staticLibraryOptions as CommandLineProcessor.ICommandLineSupport;
@@ -69,7 +69,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Archiver options does not support command line translation");
+                throw new Bam.Core.Exception("Archiver options does not support command line translation");
             }
 
             foreach (var dependentObjectFile in dependentObjectFiles)

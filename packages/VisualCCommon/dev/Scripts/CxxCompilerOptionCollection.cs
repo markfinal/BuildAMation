@@ -11,7 +11,7 @@ namespace VisualCCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -24,7 +24,7 @@ namespace VisualCCommon
 
         public
         CxxCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

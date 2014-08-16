@@ -11,11 +11,11 @@ namespace QtCommon
         protected
         Base()
         {
-            this.QtToolset = Opus.Core.State.Get("Toolset", "Qt") as Toolset;
+            this.QtToolset = Bam.Core.State.Get("Toolset", "Qt") as Toolset;
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Opus.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsUnixHosting)
             {
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -33,10 +33,10 @@ namespace QtCommon
         protected void
         AddIncludePath(
             C.ICCompilerOptions options,
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string moduleName)
         {
-            var includePath = this.QtToolset.GetIncludePath((Opus.Core.BaseTarget)target);
+            var includePath = this.QtToolset.GetIncludePath((Bam.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(includePath))
             {
                 options.IncludePaths.Add(includePath);
@@ -51,9 +51,9 @@ namespace QtCommon
         protected void
         AddLibraryPath(
             C.ILinkerOptions options,
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
-            var libraryPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
+            var libraryPath = this.QtToolset.GetLibraryPath((Bam.Core.BaseTarget)target);
             if (!string.IsNullOrEmpty(libraryPath))
             {
                 options.LibraryPaths.Add(libraryPath);
@@ -63,12 +63,12 @@ namespace QtCommon
         protected void
         AddModuleLibrary(
             C.ILinkerOptions options,
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string moduleName)
         {
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (target.HasPlatform(Bam.Core.EPlatform.Windows))
             {
-                if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                 {
                     options.Libraries.Add(System.String.Format("{0}d4.lib", moduleName));
                 }
@@ -77,11 +77,11 @@ namespace QtCommon
                     options.Libraries.Add(System.String.Format("{0}4.lib", moduleName));
                 }
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 options.Libraries.Add(System.String.Format("-l{0}", moduleName));
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
                 var osxLinkerOptions = options as C.ILinkerOptionsOSX;
                 osxLinkerOptions.Frameworks.Add(moduleName);
@@ -95,14 +95,14 @@ namespace QtCommon
 
         protected void
         GetModuleDynamicLibrary(
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string moduleName)
         {
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (target.HasPlatform(Bam.Core.EPlatform.Windows))
             {
-                var binPath = (this.QtToolset as Opus.Core.IToolset).BinPath((Opus.Core.BaseTarget)target);
+                var binPath = (this.QtToolset as Bam.Core.IToolset).BinPath((Bam.Core.BaseTarget)target);
                 string dynamicLibraryName = null;
-                if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                 {
                     dynamicLibraryName = System.String.Format("{0}d4.dll", moduleName);
                 }
@@ -111,12 +111,12 @@ namespace QtCommon
                     dynamicLibraryName = System.String.Format("{0}4.dll", moduleName);
                 }
                 var dynamicLibraryPath = System.IO.Path.Combine(binPath, dynamicLibraryName);
-                this.Locations[C.DynamicLibrary.OutputFile] = Opus.Core.FileLocation.Get(dynamicLibraryPath);
+                this.Locations[C.DynamicLibrary.OutputFile] = Bam.Core.FileLocation.Get(dynamicLibraryPath);
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
-                var libPath = this.QtToolset.GetLibraryPath((Opus.Core.BaseTarget)target);
-                var version = (this.QtToolset as Opus.Core.IToolset).Version((Opus.Core.BaseTarget)target);
+                var libPath = this.QtToolset.GetLibraryPath((Bam.Core.BaseTarget)target);
+                var version = (this.QtToolset as Bam.Core.IToolset).Version((Bam.Core.BaseTarget)target);
                 var versionSplit = version.Split('.');
                 var majorVersion = versionSplit[0];
                 var minorVersion = versionSplit[1];
@@ -125,28 +125,28 @@ namespace QtCommon
                 // real library name
                 var realDynamicLibraryLeafname = System.String.Format("lib{0}.so.{1}.{2}.{3}", moduleName, majorVersion, minorVersion, patchVersion);
                 var realDynamicLibraryPath = System.IO.Path.Combine(libPath, realDynamicLibraryLeafname);
-                this.Locations[C.DynamicLibrary.OutputFile] = Opus.Core.FileLocation.Get(realDynamicLibraryPath);
+                this.Locations[C.DynamicLibrary.OutputFile] = Bam.Core.FileLocation.Get(realDynamicLibraryPath);
 
                 // so library name (major version)
                 var soNameDynamicLibraryLeafname = System.String.Format("lib{0}.so.{1}", moduleName, majorVersion);
                 var soNameDynamicLibraryPath = System.IO.Path.Combine(libPath, soNameDynamicLibraryLeafname);
-                this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = Opus.Core.SymlinkLocation.Get(soNameDynamicLibraryPath);
+                this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = Bam.Core.SymlinkLocation.Get(soNameDynamicLibraryPath);
 
                 // minor version library name
                 var minorVersionDynamicLibraryLeafname = System.String.Format("lib{0}.so.{1}.{2}", moduleName, majorVersion, minorVersion);
                 var minorVersionDynamicLibraryPath = System.IO.Path.Combine(libPath, minorVersionDynamicLibraryLeafname);
-                this.Locations[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] = Opus.Core.SymlinkLocation.Get(minorVersionDynamicLibraryPath);
+                this.Locations[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] = Bam.Core.SymlinkLocation.Get(minorVersionDynamicLibraryPath);
 
                 // linker library name
                 var linkerDynamicLibraryLeafname = System.String.Format("lib{0}.so", moduleName);
                 var linkerDynamicLibraryPath = System.IO.Path.Combine(libPath, linkerDynamicLibraryLeafname);
-                this.Locations[C.PosixSharedLibrarySymlinks.LinkerSymlink] = Opus.Core.SymlinkLocation.Get(linkerDynamicLibraryPath);
+                this.Locations[C.PosixSharedLibrarySymlinks.LinkerSymlink] = Bam.Core.SymlinkLocation.Get(linkerDynamicLibraryPath);
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
                 // TODO: this needs some rework with publishing, as it ought to be a framework
                 #if false
-                return Opus.Core.FileLocation.Get(moduleName);
+                return Bam.Core.FileLocation.Get(moduleName);
                 #endif
             }
             else
@@ -156,8 +156,8 @@ namespace QtCommon
         }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-        [Publisher.CopyFileLocations(Platform=Opus.Core.EPlatform.NotOSX)]
-        protected Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        [Publisher.CopyFileLocations(Platform=Bam.Core.EPlatform.NotOSX)]
+        protected Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }

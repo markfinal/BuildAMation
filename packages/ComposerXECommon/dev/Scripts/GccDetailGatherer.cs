@@ -7,12 +7,12 @@ namespace ComposerXECommon
 {
     public class GccDetailGatherer
     {
-        private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData>();
+        private static System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, GccDetailData>();
 
         public static GccDetailData
         DetermineSpecs(
-            Opus.Core.BaseTarget baseTarget,
-            Opus.Core.IToolset toolset)
+            Bam.Core.BaseTarget baseTarget,
+            Bam.Core.IToolset toolset)
         {
             // get version
             string gccVersion = null;
@@ -31,12 +31,12 @@ namespace ComposerXECommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 gccVersion = process.StandardOutput.ReadToEnd();
@@ -61,12 +61,12 @@ namespace ComposerXECommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 gccTarget = process.StandardOutput.ReadToEnd();
@@ -78,7 +78,7 @@ namespace ComposerXECommon
             string pathPrefix = null;
             string gxxIncludeDir = null;
             string libDir = null;
-            var includePaths = new Opus.Core.StringArray();
+            var includePaths = new Bam.Core.StringArray();
             {
                 var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
@@ -95,12 +95,12 @@ namespace ComposerXECommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 var details = process.StandardOutput.ReadToEnd();
@@ -139,7 +139,7 @@ namespace ComposerXECommon
                             {
                                 if (null != libDir)
                                 {
-                                    throw new Opus.Core.Exception("lib dir already defined");
+                                    throw new Bam.Core.Exception("lib dir already defined");
                                 }
                                 libDir = option.Substring(libexecKey.Length).Trim();
                             }
@@ -147,7 +147,7 @@ namespace ComposerXECommon
                             {
                                 if (null != libDir)
                                 {
-                                    throw new Opus.Core.Exception("lib dir already defined");
+                                    throw new Bam.Core.Exception("lib dir already defined");
                                 }
                                 libDir = option.Substring(slibDirKey.Length).Trim();
                             }
@@ -194,9 +194,9 @@ namespace ComposerXECommon
             var gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
             gccDetailsForTarget[baseTarget] = gccDetails;
 
-            Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
-            Opus.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
-            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
+            Bam.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
+            Bam.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
+            Bam.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
 
             return gccDetails;
         }

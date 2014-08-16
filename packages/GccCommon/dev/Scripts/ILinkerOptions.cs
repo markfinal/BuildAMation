@@ -19,7 +19,7 @@ namespace GccCommon
             set;
         }
 
-        Opus.Core.StringArray RPath
+        Bam.Core.StringArray RPath
         {
             get;
             set;

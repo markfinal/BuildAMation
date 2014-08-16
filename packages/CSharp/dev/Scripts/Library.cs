@@ -14,8 +14,8 @@ namespace CSharp
         [CSharp.LocalCscOptionsDelegate]
         protected static void
         SetType(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as IOptions;
             options.Target = ETarget.Library;

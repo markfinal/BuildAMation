@@ -12,7 +12,7 @@ namespace GccCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -27,7 +27,7 @@ namespace GccCommon
 
         public
         ArchiverOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

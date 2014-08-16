@@ -4,25 +4,25 @@
 // <summary>NativeBuilder package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(NativeBuilder.ForceBuildAction))]
+[assembly: Bam.Core.RegisterAction(typeof(NativeBuilder.ForceBuildAction))]
 
 namespace NativeBuilder
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class ForceBuildAction :
-        Opus.Core.IAction
+        Bam.Core.IAction
     {
         public
         ForceBuildAction()
         {
-            if (!Opus.Core.State.HasCategory("NativeBuilder"))
+            if (!Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                Opus.Core.State.AddCategory("NativeBuilder");
+                Bam.Core.State.AddCategory("NativeBuilder");
             }
-            Opus.Core.State.Add<bool>("NativeBuilder", "ForceBuild", false);
+            Bam.Core.State.Add<bool>("NativeBuilder", "ForceBuild", false);
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -30,7 +30,7 @@ namespace NativeBuilder
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -39,11 +39,11 @@ namespace NativeBuilder
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
-            Opus.Core.State.Set("NativeBuilder", "ForceBuild", true);
+            Bam.Core.State.Set("NativeBuilder", "ForceBuild", true);
 
-            Opus.Core.Log.DebugMessage("Native builds are now forced");
+            Bam.Core.Log.DebugMessage("Native builds are now forced");
 
             return true;
         }

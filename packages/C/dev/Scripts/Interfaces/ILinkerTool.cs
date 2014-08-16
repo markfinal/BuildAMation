@@ -5,11 +5,11 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalLinkerOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalLinkerOptionsDelegateAttribute),
                                    typeof(ExportLinkerOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetLinkerToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetLinkerToolset")]
     public interface ILinkerTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {
         string ExecutableSuffix
         {
@@ -46,8 +46,8 @@ namespace C
             get;
         }
 
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         LibPaths(
-            Opus.Core.BaseTarget baseTarget);
+            Bam.Core.BaseTarget baseTarget);
     }
 }

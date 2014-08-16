@@ -9,7 +9,7 @@ namespace OpenGLSDK
         C.ThirdPartyModule
     {
         class TargetFilter :
-            Opus.Core.BaseTargetFilteredAttribute
+            Bam.Core.BaseTargetFilteredAttribute
         {}
 
         private static readonly TargetFilter winVCTarget;
@@ -21,31 +21,31 @@ namespace OpenGLSDK
         OpenGL()
         {
             winVCTarget = new TargetFilter();
-            winVCTarget.Platform = Opus.Core.EPlatform.Windows;
+            winVCTarget.Platform = Bam.Core.EPlatform.Windows;
             winVCTarget.ToolsetTypes = new[] { typeof(VisualC.Toolset) };
 
             winMingwTarget = new TargetFilter();
-            winMingwTarget.Platform = Opus.Core.EPlatform.Windows;
+            winMingwTarget.Platform = Bam.Core.EPlatform.Windows;
             winMingwTarget.ToolsetTypes = new[] { typeof(Mingw.Toolset) };
 
             unixTarget = new TargetFilter();
-            unixTarget.Platform = Opus.Core.EPlatform.Unix;
+            unixTarget.Platform = Bam.Core.EPlatform.Unix;
 
             osxTarget = new TargetFilter();
-            osxTarget.Platform = Opus.Core.EPlatform.OSX;
+            osxTarget.Platform = Bam.Core.EPlatform.OSX;
         }
 
         public
         OpenGL()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(OpenGL_LinkerOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(OpenGL_LinkerOptions);
         }
 
         [C.ExportLinkerOptionsDelegate]
         void
         OpenGL_LinkerOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
@@ -54,20 +54,20 @@ namespace OpenGLSDK
             }
 
             // add libraries
-            var libraries = new Opus.Core.StringArray();
-            if (Opus.Core.TargetUtilities.MatchFilters(target, winVCTarget))
+            var libraries = new Bam.Core.StringArray();
+            if (Bam.Core.TargetUtilities.MatchFilters(target, winVCTarget))
             {
                 libraries.Add(@"OPENGL32.lib");
             }
-            else if (Opus.Core.TargetUtilities.MatchFilters(target, winMingwTarget))
+            else if (Bam.Core.TargetUtilities.MatchFilters(target, winMingwTarget))
             {
                 libraries.Add("-lopengl32");
             }
-            else if (Opus.Core.TargetUtilities.MatchFilters(target, unixTarget))
+            else if (Bam.Core.TargetUtilities.MatchFilters(target, unixTarget))
             {
                 libraries.Add("-lGL");
             }
-            else if (Opus.Core.TargetUtilities.MatchFilters(target, osxTarget))
+            else if (Bam.Core.TargetUtilities.MatchFilters(target, osxTarget))
             {
                 var osxLinkerOptions = module.Options as C.ILinkerOptionsOSX;
                 if (null != osxLinkerOptions)
@@ -77,7 +77,7 @@ namespace OpenGLSDK
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported OpenGL platform");
+                throw new Bam.Core.Exception("Unsupported OpenGL platform");
             }
 
             if (libraries.Count > 0)
@@ -86,7 +86,7 @@ namespace OpenGLSDK
             }
         }
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependentModules = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 }

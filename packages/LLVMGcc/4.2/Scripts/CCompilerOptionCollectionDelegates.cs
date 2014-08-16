@@ -17,11 +17,11 @@ namespace LLVMGcc
         private static void
         VisibilityCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<EVisibility>;
+            var enumOption = option as Bam.Core.ValueTypeOption<EVisibility>;
             switch (enumOption.Value)
             {
                 case EVisibility.Default:
@@ -37,7 +37,7 @@ namespace LLVMGcc
                     commandLineBuilder.Add("-fvisibility=protected");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized visibility option");
+                    throw new Bam.Core.Exception("Unrecognized visibility option");
             }
         }
         private static void
@@ -46,10 +46,10 @@ namespace LLVMGcc
              XcodeBuilder.PBXProject project,
              XcodeBuilder.XcodeNodeData currentObject,
              XcodeBuilder.XCBuildConfiguration configuration,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var visibility = option as Opus.Core.ValueTypeOption<EVisibility>;
+            var visibility = option as Bam.Core.ValueTypeOption<EVisibility>;
             var visibilityOption = configuration.Options["GCC_SYMBOLS_PRIVATE_EXTERN"];
             if (visibility.Value == EVisibility.Default)
             {
@@ -61,13 +61,13 @@ namespace LLVMGcc
             }
             if (visibilityOption.Count != 1)
             {
-                throw new Opus.Core.Exception("More than one visibility option has been set");
+                throw new Bam.Core.Exception("More than one visibility option has been set");
             }
         }
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["Visibility"].PrivateData = new GccCommon.PrivateData(VisibilityCommandLineProcessor,VisibilityXcodeProjectProcessor);

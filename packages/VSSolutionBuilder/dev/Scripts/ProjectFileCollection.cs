@@ -58,7 +58,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                throw new Opus.Core.Exception("There is no ProjectFile for source path '{0}'", sourcePathName);
+                throw new Bam.Core.Exception("There is no ProjectFile for source path '{0}'", sourcePathName);
             }
         }
 
@@ -74,7 +74,7 @@ namespace VSSolutionBuilder
 
             foreach (var file in this.list)
             {
-                var fileRelativeToPackage = Opus.Core.RelativePathUtilities.GetPath(file.RelativePath, packageDirectoryUri);
+                var fileRelativeToPackage = Bam.Core.RelativePathUtilities.GetPath(file.RelativePath, packageDirectoryUri);
                 var splitFileDirs = fileRelativeToPackage.Split(System.IO.Path.DirectorySeparatorChar);
                 file.Serialize(document, sourceFilesFilterElement, projectUri, splitFileDirs, 0);
             }

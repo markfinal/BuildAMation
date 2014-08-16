@@ -4,7 +4,7 @@
 // <summary>Publisher package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterToolset("Publish", typeof(Publisher.Toolset))]
+[assembly: Bam.Core.RegisterToolset("Publish", typeof(Publisher.Toolset))]
 
 namespace Publisher
 {

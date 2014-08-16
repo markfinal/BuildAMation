@@ -11,8 +11,8 @@ namespace MingwCommon
     {
         public static void
         ExportedDefaults(
-            Opus.Core.BaseOptionCollection options,
-            Opus.Core.DependencyNode node)
+            Bam.Core.BaseOptionCollection options,
+            Bam.Core.DependencyNode node)
         {
             var cInterfaceOptions = options as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
@@ -22,7 +22,7 @@ namespace MingwCommon
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
             ExportedDefaults(this, node);
@@ -30,7 +30,7 @@ namespace MingwCommon
 
         public
         CxxCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

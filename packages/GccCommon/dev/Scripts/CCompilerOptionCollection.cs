@@ -13,7 +13,7 @@ namespace GccCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var localCompilerOptions = this as ICCompilerOptions;
             localCompilerOptions.AllWarnings = true;
@@ -22,9 +22,9 @@ namespace GccCommon
             base.SetDefaultOptionValues(node);
 
             var target = node.Target;
-            localCompilerOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
+            localCompilerOptions.SixtyFourBit = Bam.Core.OSUtilities.Is64Bit(target);
 
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 localCompilerOptions.StrictAliasing = false;
                 localCompilerOptions.InlineFunctions = false;
@@ -40,7 +40,7 @@ namespace GccCommon
             var toolset = target.Toolset;
             var compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
             var cCompilerOptions = this as C.ICCompilerOptions;
-            cCompilerOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)node.Target));
+            cCompilerOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Bam.Core.BaseTarget)node.Target));
 
             cCompilerOptions.TargetLanguage = C.ETargetLanguage.C;
 
@@ -63,7 +63,7 @@ namespace GccCommon
 
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

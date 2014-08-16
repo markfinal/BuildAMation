@@ -10,7 +10,7 @@ namespace VisualC
     {
         public
         CxxCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

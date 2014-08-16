@@ -39,11 +39,11 @@ namespace XcodeBuilder
         {
             if (this.Remote == null)
             {
-                throw new Opus.Core.Exception("Remote was not set on this container proxy");
+                throw new Bam.Core.Exception("Remote was not set on this container proxy");
             }
             if (this.Portal == null)
             {
-                throw new Opus.Core.Exception("Portal was not set on this container proxy");
+                throw new Bam.Core.Exception("Portal was not set on this container proxy");
             }
 
             writer.WriteLine("\t\t{0} /* PBXContainerItemProxy */ = {{", this.UUID);

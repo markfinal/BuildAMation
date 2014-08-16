@@ -15,7 +15,7 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
             var moduleName = node.ModuleName;
             var target = node.Target;
-            var baseTarget = (Opus.Core.BaseTarget)target;
+            var baseTarget = (Bam.Core.BaseTarget)target;
 
             var options = moduleToBuild.Options as C.ArchiverOptionCollection;
             var libraryLocation = moduleToBuild.Locations[C.StaticLibrary.OutputFileLocKey];
@@ -82,7 +82,7 @@ namespace XcodeBuilder
             {
                 if (data.BuildConfigurationList != nativeTargetConfigurationList)
                 {
-                    throw new Opus.Core.Exception("Inconsistent build configuration lists");
+                    throw new Bam.Core.Exception("Inconsistent build configuration lists");
                 }
             }
 
@@ -100,8 +100,8 @@ namespace XcodeBuilder
             buildConfiguration.Options["EXECUTABLE_PREFIX"].AddUnique(outputPrefix);
             buildConfiguration.Options["EXECUTABLE_SUFFIX"].AddUnique(outputSuffix);
 
-            var basePath = Opus.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
-            var relPath = Opus.Core.RelativePathUtilities.GetPath(moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey], basePath);
+            var basePath = Bam.Core.State.BuildRoot + System.IO.Path.DirectorySeparatorChar;
+            var relPath = Bam.Core.RelativePathUtilities.GetPath(moduleToBuild.Locations[C.StaticLibrary.OutputDirLocKey], basePath);
             buildConfiguration.Options["CONFIGURATION_BUILD_DIR"].AddUnique("$SYMROOT/" + relPath);
 
             // adding the group for the target
@@ -110,7 +110,7 @@ namespace XcodeBuilder
             group.Path = moduleName;
             foreach (var source in node.Children)
             {
-                if (source.Module is Opus.Core.IModuleCollection)
+                if (source.Module is Bam.Core.IModuleCollection)
                 {
                     foreach (var source2 in source.Children)
                     {
@@ -165,8 +165,8 @@ namespace XcodeBuilder
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
-                    foreach (Opus.Core.Location location in headerFileCollection)
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Bam.Core.FileCollection;
+                    foreach (Bam.Core.Location location in headerFileCollection)
                     {
                         var headerPath = location.GetSinglePath();
                         var headerFileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.HeaderFile, headerPath, project.RootUri);

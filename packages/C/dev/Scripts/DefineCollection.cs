@@ -7,9 +7,9 @@ namespace C
 {
     public sealed class DefineCollection :
         System.ICloneable,
-        Opus.Core.ISetOperations<DefineCollection>
+        Bam.Core.ISetOperations<DefineCollection>
     {
-        private Opus.Core.StringArray defines = new Opus.Core.StringArray();
+        private Bam.Core.StringArray defines = new Bam.Core.StringArray();
 
         public void
         Add(
@@ -18,7 +18,7 @@ namespace C
             var define = toAdd as string;
             if (define.Contains(" "))
             {
-                throw new Opus.Core.Exception("Preprocessor definitions cannot contain a space: '{0}'", define);
+                throw new Bam.Core.Exception("Preprocessor definitions cannot contain a space: '{0}'", define);
             }
             lock (this.defines)
             {
@@ -28,7 +28,7 @@ namespace C
                 }
                 else
                 {
-                    Opus.Core.Log.DebugMessage("The define '{0}' is already present", define);
+                    Bam.Core.Log.DebugMessage("The define '{0}' is already present", define);
                 }
             }
         }
@@ -58,7 +58,7 @@ namespace C
             return clonedObject;
         }
 
-        public Opus.Core.StringArray
+        public Bam.Core.StringArray
         ToStringArray()
         {
             return this.defines;
@@ -79,13 +79,13 @@ namespace C
         }
 
         DefineCollection
-        Opus.Core.ISetOperations<DefineCollection>.Complement(
+        Bam.Core.ISetOperations<DefineCollection>.Complement(
             DefineCollection other)
         {
             var complementDefines = this.defines.Complement(other.defines);
             if (0 == complementDefines.Count)
             {
-                throw new Opus.Core.Exception("DefineCollection complement is empty");
+                throw new Bam.Core.Exception("DefineCollection complement is empty");
             }
 
             var complementDefinesCollection = new DefineCollection();
@@ -94,7 +94,7 @@ namespace C
         }
 
         DefineCollection
-        Opus.Core.ISetOperations<DefineCollection>.Intersect(
+        Bam.Core.ISetOperations<DefineCollection>.Intersect(
             DefineCollection other)
         {
             var intersectDefines = this.defines.Intersect(other.defines);

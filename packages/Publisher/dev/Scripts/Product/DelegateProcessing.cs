@@ -10,8 +10,8 @@ namespace Publisher
         public delegate void
         CopyNodeLocationDelegate(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -20,8 +20,8 @@ namespace Publisher
         public delegate void
         CopyAdditionalDirectoryDelegate(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
             string publishDirectoryPath,
@@ -30,14 +30,14 @@ namespace Publisher
         public delegate void
         CopyInfoPListDelegate(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context);
 
-        public static Opus.Core.DependencyNode
+        public static Bam.Core.DependencyNode
         Process(
             ProductModule moduleToBuild,
             CopyNodeLocationDelegate copyNode,
@@ -46,7 +46,7 @@ namespace Publisher
             object context,
             bool publishBesidePrimary)
         {
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             var locationMap = moduleToBuild.Locations;
 
             // Native build publishes to a new location away from the existing module builds
@@ -56,12 +56,12 @@ namespace Publisher
             var primaryNode = Publisher.ProductModuleUtilities.GetPrimaryTarget(moduleToBuild);
             if (null == primaryNode)
             {
-                throw new Opus.Core.Exception("Unable to locate the primary target for publishing");
+                throw new Bam.Core.Exception("Unable to locate the primary target for publishing");
             }
             var primaryModule = primaryNode.Module;
 
             // gather all nodes that will be considered for publication
-            var nodesToPublish = new Opus.Core.DependencyNodeCollection();
+            var nodesToPublish = new Bam.Core.DependencyNodeCollection();
             nodesToPublish.Add(primaryNode);
             nodesToPublish.Add(moduleToBuild.OwningNode);
             if (null != primaryNode.ExternalDependents)
@@ -82,11 +82,11 @@ namespace Publisher
                 {
                     if (meta.Node == primaryNode)
                     {
-                        var data = meta.Data as Opus.Core.Array<Publisher.PublishDependency>;
+                        var data = meta.Data as Bam.Core.Array<Publisher.PublishDependency>;
                         if (null != data)
                         {
                             var mainDependency = data[0];
-                            publishDirLoc = (primaryModule.Locations[mainDependency.Key] as Opus.Core.ScaffoldLocation).Base;
+                            publishDirLoc = (primaryModule.Locations[mainDependency.Key] as Bam.Core.ScaffoldLocation).Base;
                             publishDirPath = publishDirLoc.GetSingleRawPath();
                             break;
                         }
@@ -103,11 +103,11 @@ namespace Publisher
                 var dirData = meta.Data as Publisher.PublishDirectory;
                 if (null == dirData)
                 {
-                    throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                    throw new Bam.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
                         meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Publisher.PublishDirectory).ToString());
                 }
 
-                Opus.Core.Log.DebugMessage("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
+                Bam.Core.Log.DebugMessage("Additional dir '{0}' : '{1}' -> '{2}'", meta.Node.UniqueModuleName, dirData.Directory, publishDirPath);
                 copyAdditionalDir(
                     moduleToBuild,
                     primaryModule,
@@ -123,22 +123,22 @@ namespace Publisher
             // TODO: convert to var
             foreach (Publisher.ProductModuleUtilities.MetaData meta in copyFiles)
             {
-                var nodeData = meta.Data as Opus.Core.Array<Publisher.PublishDependency>;
+                var nodeData = meta.Data as Bam.Core.Array<Publisher.PublishDependency>;
                 if (null == nodeData)
                 {
-                    throw new Opus.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
-                        meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Opus.Core.Array<Publisher.PublishDependency>).ToString());
+                    throw new Bam.Core.Exception("Meta data '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                        meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(Bam.Core.Array<Publisher.PublishDependency>).ToString());
                 }
 
                 foreach (var node in nodeData)
                 {
                     if (node.SubDirectory != null)
                     {
-                        Opus.Core.Log.DebugMessage("Copy file '{0}' : '{1}' -> {2}/{3}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath, node.SubDirectory);
+                        Bam.Core.Log.DebugMessage("Copy file '{0}' : '{1}' -> {2}/{3}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath, node.SubDirectory);
                     }
                     else
                     {
-                        Opus.Core.Log.DebugMessage("Copy file '{0}' : '{1}' -> {2}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath);
+                        Bam.Core.Log.DebugMessage("Copy file '{0}' : '{1}' -> {2}", meta.Node.UniqueModuleName, node.Key.ToString(), publishDirPath);
                     }
 
                     copyNode(
@@ -162,20 +162,20 @@ namespace Publisher
                 {
                     if (meta.Node != moduleToBuild.OwningNode)
                     {
-                        Opus.Core.Log.DebugMessage("Ignoring Info.plist from '{0}' as it is not associated with the primary target", meta.Node.UniqueModuleName);
+                        Bam.Core.Log.DebugMessage("Ignoring Info.plist from '{0}' as it is not associated with the primary target", meta.Node.UniqueModuleName);
                         continue;
                     }
 
                     var nodeData = meta.Data as System.Type;
                     if (null == nodeData)
                     {
-                        throw new Opus.Core.Exception("Meta data field called '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                        throw new Bam.Core.Exception("Meta data field called '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
                             meta.Name, meta.Node.UniqueModuleName, meta.Data.GetType().ToString(), typeof(System.Type).ToString());
                     }
 
-                    var plistNode = Opus.Core.ModuleUtilities.GetNode(nodeData, (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+                    var plistNode = Bam.Core.ModuleUtilities.GetNode(nodeData, (Bam.Core.BaseTarget)moduleToBuild.OwningNode.Target);
 
-                    var plistNodes = new Opus.Core.DependencyNodeCollection();
+                    var plistNodes = new Bam.Core.DependencyNodeCollection();
                     plistNodes.Add(plistNode);
                     var plistMetaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, plistNodes);
 
@@ -185,11 +185,11 @@ namespace Publisher
                         var plistNodeData = plistMeta.Data as Publisher.PublishDependency;
                         if (null == plistNodeData)
                         {
-                            throw new Opus.Core.Exception("Meta data field called '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
+                            throw new Bam.Core.Exception("Meta data field called '{0}' in '{1}' was of unexpected type '{2}'. Expected '{3}'",
                                 plistMeta.Name, plistMeta.Node.UniqueModuleName, plistMeta.Data.GetType().ToString(), typeof(Publisher.PublishDependency).ToString());
                         }
 
-                        Opus.Core.Log.DebugMessage("Copy Info.plist file '{0}' : '{1}' -> '{2}'", plistMeta.Node.UniqueModuleName, plistNodeData.Key, publishDirPath);
+                        Bam.Core.Log.DebugMessage("Copy Info.plist file '{0}' : '{1}' -> '{2}'", plistMeta.Node.UniqueModuleName, plistNodeData.Key, publishDirPath);
 
                         copyInfoPList(
                             moduleToBuild,

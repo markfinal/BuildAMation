@@ -10,10 +10,10 @@ namespace C
         [LocalCompilerOptionsDelegate]
         protected static void
         ComposerXECommonDynamicLibrarySetPositionIndependentCode(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsUnix(target))
+            if (Bam.Core.OSUtilities.IsUnix(target))
             {
                 var compilerOptions = module.Options as ComposerXECommon.ICCompilerOptions;
                 if (null != compilerOptions)

@@ -17,8 +17,8 @@ namespace XcodeBuilder
             var mocOptions = moduleToBuild.Options as QtCommon.MocOptionCollection;
 
             var parentNode = node.Parent;
-            Opus.Core.DependencyNode targetNode;
-            if ((null != parentNode) && (parentNode.Module is Opus.Core.IModuleCollection))
+            Bam.Core.DependencyNode targetNode;
+            if ((null != parentNode) && (parentNode.Module is Bam.Core.IModuleCollection))
             {
                 targetNode = parentNode.ExternalDependentFor[0];
             }

@@ -11,7 +11,7 @@ namespace MakeFileBuilder
         RelativePath(
             string path)
         {
-            var relativeDir = Opus.Core.RelativePathUtilities.GetPath(path, this.TopLevelMakeFilePath, "$(CURDIR)");
+            var relativeDir = Bam.Core.RelativePathUtilities.GetPath(path, this.TopLevelMakeFilePath, "$(CURDIR)");
             return relativeDir;
         }
 
@@ -27,13 +27,13 @@ namespace MakeFileBuilder
             private set;
         }
 
-        private Opus.Core.StringArray InputFiles
+        private Bam.Core.StringArray InputFiles
         {
             get;
             set;
         }
 
-        private Opus.Core.StringArray InputVariables
+        private Bam.Core.StringArray InputVariables
         {
             get;
             set;
@@ -84,13 +84,13 @@ namespace MakeFileBuilder
             set;
         }
 
-        public Opus.Core.StringArray Includes
+        public Bam.Core.StringArray Includes
         {
             get;
             private set;
         }
 
-        public Opus.Core.Array<MakeFileRule> RuleArray
+        public Bam.Core.Array<MakeFileRule> RuleArray
         {
             get;
             private set;
@@ -98,7 +98,7 @@ namespace MakeFileBuilder
 
         public static string
         InstanceName(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var instanceName = System.String.Format("{0}_{1}", node.UniqueModuleName, node.Target.ToString());
             return instanceName;
@@ -106,13 +106,13 @@ namespace MakeFileBuilder
 
         public
         MakeFile(
-            Opus.Core.DependencyNode node,
+            Bam.Core.DependencyNode node,
             string topLevelMakeFilePath)
         {
             this.TopLevelMakeFilePath = topLevelMakeFilePath;
             this.ExportedTargets = new MakeFileTargetDictionary();
             this.ExportedVariables = new MakeFileVariableDictionary();
-            this.RuleArray = new Opus.Core.Array<MakeFileRule>();
+            this.RuleArray = new Bam.Core.Array<MakeFileRule>();
             this.ModulePrefixName = InstanceName(node);
         }
 
@@ -122,7 +122,7 @@ namespace MakeFileBuilder
         {
             if (0 == this.RuleArray.Count)
             {
-                throw new Opus.Core.Exception("MakeFile '{0}' has no rules", this.ModulePrefixName);
+                throw new Bam.Core.Exception("MakeFile '{0}' has no rules", this.ModulePrefixName);
             }
 
             var ruleCount = this.RuleArray.Count;
@@ -159,7 +159,7 @@ namespace MakeFileBuilder
                 string mainExportVariableName = null;
                 if (rule.ExportVariable)
                 {
-                    if (rule.ModuleToBuild is Opus.Core.IModuleCollection)
+                    if (rule.ModuleToBuild is Bam.Core.IModuleCollection)
                     {
                         writer.WriteLine("# Output variable (collection)");
                         var exportVariableName = System.String.Format("{0}_{1}_CollectionVariable", mainVariableName, rule.PrimaryOutputLocationKey.ToString());
@@ -186,7 +186,7 @@ namespace MakeFileBuilder
                         writer.WriteLine(variableAndValue.ToString());
                         writer.WriteLine("");
 
-                        var exportedVariables = new Opus.Core.StringArray();
+                        var exportedVariables = new Bam.Core.StringArray();
                         exportedVariables.Add(exportVariableName);
                         this.ExportedVariables.Add(rule.PrimaryOutputLocationKey, exportedVariables);
                     }
@@ -194,7 +194,7 @@ namespace MakeFileBuilder
                     {
                         if (null == rule.OutputLocationKeys)
                         {
-                            throw new Opus.Core.Exception("No output keys have been assigned to Makefile rule for target '{1}'", rule.ModuleToBuild.OwningNode.UniqueModuleName, rule.Target);
+                            throw new Bam.Core.Exception("No output keys have been assigned to Makefile rule for target '{1}'", rule.ModuleToBuild.OwningNode.UniqueModuleName, rule.Target);
                         }
 
                         foreach (var outputLocKey in rule.OutputLocationKeys)
@@ -242,7 +242,7 @@ namespace MakeFileBuilder
                                 writer.WriteLine("");
                             }
 
-                            var exportedVariables = new Opus.Core.StringArray();
+                            var exportedVariables = new Bam.Core.StringArray();
                             exportedVariables.Add(exportVariableName);
                             this.ExportedVariables.Add(outputLocKey, exportedVariables);
 

@@ -6,17 +6,17 @@
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder :
-        Opus.Core.IBuilder
+        Bam.Core.IBuilder
     {
         public static string
         GetMakeFilePathName(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var makeFileDirLoc = node.GetModuleBuildDirectoryLocation().SubDirectory("Makefiles");
             var leafname = System.String.Format("{0}_{1}.mak", node.UniqueModuleName, node.Target);
-            var makeFileLoc = Opus.Core.FileLocation.Get(makeFileDirLoc, leafname, Opus.Core.Location.EExists.WillExist);
+            var makeFileLoc = Bam.Core.FileLocation.Get(makeFileDirLoc, leafname, Bam.Core.Location.EExists.WillExist);
             var makeFilePathName = makeFileLoc.GetSingleRawPath();
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePathName);
+            Bam.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePathName);
             return makeFilePathName;
         }
     }

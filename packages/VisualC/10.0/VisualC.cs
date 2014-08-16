@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>VisualC package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("visualc", typeof(VisualC.Toolset))]
+[assembly: Bam.Core.RegisterToolset("visualc", typeof(VisualC.Toolset))]
 
 namespace VisualC
 {
@@ -19,28 +19,28 @@ namespace VisualC
         {
             // try the VS Express version first, since it's free
             string registryKey = @"Microsoft\VCExpress\10.0\Projects";
-            if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
+            if (Bam.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
             {
                 vsEdition = "Express";
             }
             else
             {
                 registryKey = @"Microsoft\VisualStudio\10.0\Projects";
-                if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
+                if (Bam.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(registryKey))
                 {
                     vsEdition = "Professional";
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("VisualStudio C++ 2010 (Express or Professional) was not installed");
+                    throw new Bam.Core.Exception("VisualStudio C++ 2010 (Express or Professional) was not installed");
                 }
             }
 
-            using (Microsoft.Win32.RegistryKey key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKey))
+            using (Microsoft.Win32.RegistryKey key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKey))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("VisualStudio C++ {0} 2010 was not installed", vsEdition);
+                    throw new Bam.Core.Exception("VisualStudio C++ {0} 2010 was not installed", vsEdition);
                 }
 
                 string[] subKeyNames = key.GetSubKeyNames();
@@ -71,7 +71,7 @@ namespace VisualC
 
             if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
             {
-                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010 {0}", vsEdition);
+                throw new Bam.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010 {0}", vsEdition);
             }
 
 #if false
@@ -79,7 +79,7 @@ namespace VisualC
             // see CS0472, and something about struct comparisons
             if ((System.Nullable<System.Guid>)null == (System.Nullable<System.Guid>)ProjectTypeGuid)
             {
-                throw new Opus.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010");
+                throw new Bam.Core.Exception("Unable to locate VisualC project GUID for VisualStudio 2010");
             }
 #endif
         }

@@ -13,9 +13,9 @@ namespace XcodeProjectProcessor
             XcodeBuilder.PBXProject project,
             XcodeBuilder.XcodeNodeData currentObject,
             XcodeBuilder.XCBuildConfiguration configuration,
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
-            var optionCollection = sender as Opus.Core.BaseOptionCollection;
+            var optionCollection = sender as Bam.Core.BaseOptionCollection;
             var optionNames = optionCollection.OptionNames;
 
             foreach (var optionName in optionNames)
@@ -29,7 +29,7 @@ namespace XcodeProjectProcessor
                 var data = option.PrivateData as IXcodeProjectDelegate;
                 if (null == data)
                 {
-                    throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(IXcodeProjectDelegate).ToString(), sender.GetType().ToString());
+                    throw new Bam.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}' in '{3}'", optionName, option.PrivateData.GetType().ToString(), typeof(IXcodeProjectDelegate).ToString(), sender.GetType().ToString());
                 }
 
                 var xcodeProjectDelegate = data.XcodeProjectDelegate;
@@ -38,7 +38,7 @@ namespace XcodeProjectProcessor
                     if (null != xcodeProjectDelegate.Target)
                     {
                         // Not a requirement, but just a check
-                        throw new Opus.Core.Exception("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString());
+                        throw new Bam.Core.Exception("Delegate for '{0}' should be static in '{1}'", optionName, sender.GetType().ToString());
                     }
                     xcodeProjectDelegate(sender, project, currentObject, configuration, option, target);
                 }

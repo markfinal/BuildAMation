@@ -8,11 +8,11 @@ namespace QtCommon
     public sealed class MocTool :
         IMocTool
     {
-        private Opus.Core.IToolset toolset;
+        private Bam.Core.IToolset toolset;
 
         public
         MocTool(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -20,11 +20,11 @@ namespace QtCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var mocExePath = System.IO.Path.Combine(this.toolset.BinPath(baseTarget), "moc");
-            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (baseTarget.HasPlatform(Bam.Core.EPlatform.Windows))
             {
                 mocExePath += ".exe";
             }
@@ -32,11 +32,11 @@ namespace QtCommon
             return mocExePath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 MocFile.OutputFile,
                 MocFile.OutputDir
                 );

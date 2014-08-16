@@ -7,13 +7,13 @@ namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
     {
-        private static Opus.Core.StringArray
+        private static Bam.Core.StringArray
         MakeCopyFileRecipe(
             string sourcePath,
             string destPath)
         {
             var recipeBuilder = new System.Text.StringBuilder();
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 recipeBuilder.AppendFormat("cmd.exe /c COPY {0} {1}", sourcePath, destPath);
             }
@@ -26,18 +26,18 @@ namespace MakeFileBuilder
             recipe = recipe.Replace(destPath, "$@");
             // TODO: too many inputs for some modules (map files, pdbs, etc) to just replace source with $<
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(recipe);
             return recipes;
         }
 
-        private static Opus.Core.StringArray
+        private static Bam.Core.StringArray
         MakeCopyDirectoryRecipe(
             string sourcePath,
             string destPath)
         {
             var recipeBuilder = new System.Text.StringBuilder();
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 recipeBuilder.AppendFormat("cmd.exe /c XCOPY {0} {1} /E", sourcePath, destPath);
             }
@@ -50,12 +50,12 @@ namespace MakeFileBuilder
             recipe = recipe.Replace(destPath, "$@");
             // TODO: too many inputs for some modules (map files, pdbs, etc) to just replace source with $<
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(recipe);
             return recipes;
         }
 
-        private static Opus.Core.StringArray
+        private static Bam.Core.StringArray
         MakeCopySymlinkRecipe(
             string sourcePath,
             string destPath,
@@ -63,9 +63,9 @@ namespace MakeFileBuilder
             string workingDir)
         {
             var recipeBuilder = new System.Text.StringBuilder();
-            if (Opus.Core.OSUtilities.IsWindowsHosting)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                throw new Opus.Core.Exception("Cannot copy symlinks on Windows");
+                throw new Bam.Core.Exception("Cannot copy symlinks on Windows");
             }
             else
             {
@@ -79,7 +79,7 @@ namespace MakeFileBuilder
                 }
             }
             var recipe = recipeBuilder.ToString();
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(recipe);
             return recipes;
         }
@@ -87,8 +87,8 @@ namespace MakeFileBuilder
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -124,7 +124,7 @@ namespace MakeFileBuilder
             {
                 var intendedSubDir = System.IO.Path.Combine(publishDirectoryPath, subDirectory);
                 directoriesToCreate.AddUnique(
-                    Opus.Core.DirectoryLocation.Get(intendedSubDir, Opus.Core.Location.EExists.WillExist));
+                    Bam.Core.DirectoryLocation.Get(intendedSubDir, Bam.Core.Location.EExists.WillExist));
             }
 
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(
@@ -134,7 +134,7 @@ namespace MakeFileBuilder
 
             if (sourceKey.IsFileKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
                 var destinationPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                     sourcePath,
                     publishDirectoryPath,
@@ -150,12 +150,12 @@ namespace MakeFileBuilder
                     null, // depInputVariables, TODO: Might have to re-add this
                     null,
                     MakeCopyFileRecipe(sourcePath, destinationPath));
-                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(publishedKey);
+                rule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(publishedKey);
                 makeFile.RuleArray.AddUnique(rule);
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 var destinationPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                     sourcePath,
                     publishDirectoryPath,
@@ -171,24 +171,24 @@ namespace MakeFileBuilder
                     null, // depInputVariables, TODO: Might have to re-add this
                     null,
                     MakeCopySymlinkRecipe(sourcePath, destinationPath, subDirectory, publishDirectoryPath));
-                rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(publishedKey);
+                rule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(publishedKey);
                 makeFile.RuleArray.AddUnique(rule);
             }
             else if (sourceKey.IsDirectoryKey)
             {
-                throw new Opus.Core.Exception("Directories cannot be published yet");
+                throw new Bam.Core.Exception("Directories cannot be published yet");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported Location type");
+                throw new Bam.Core.Exception("Unsupported Location type");
             }
         }
 
         private void
         nativeCopyAdditionalDirectory(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
             string publishDirectoryPath,
@@ -198,7 +198,7 @@ namespace MakeFileBuilder
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
                 primaryModule,
                 directoryInfo.Directory);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Directory);
             var sourceLoc = directoryInfo.DirectoryLocation;
             var sourcePath = sourceLoc.GetSingleRawPath();
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
@@ -219,15 +219,15 @@ namespace MakeFileBuilder
                 null, // depInputVariables, TODO: Might have to re-add this
                 null,
                 MakeCopyDirectoryRecipe(sourcePath, destinationPath));
-            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(publishedKey);
+            rule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(publishedKey);
             makeFile.RuleArray.AddUnique(rule);
         }
 
         private void
         nativeCopyInfoPList(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -247,7 +247,7 @@ namespace MakeFileBuilder
                 primaryModule,
                 moduleToCopy,
                 keyToCopy);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
             var plistSourcePath = plistSourceLoc.GetSingleRawPath();
@@ -267,7 +267,7 @@ namespace MakeFileBuilder
                 null, // depInputVariables, TODO: Might have to re-add this
                 null,
                 MakeCopyFileRecipe(plistSourcePath, destinationPath));
-            rule.OutputLocationKeys = new Opus.Core.Array<Opus.Core.LocationKey>(publishedKey);
+            rule.OutputLocationKeys = new Bam.Core.Array<Bam.Core.LocationKey>(publishedKey);
             makeFile.RuleArray.AddUnique(rule);
         }
 

@@ -12,7 +12,7 @@ namespace XcodeBuilder
         public
         PBXBuildFileSection()
         {
-            this.BuildFiles = new Opus.Core.Array<PBXBuildFile>();
+            this.BuildFiles = new Bam.Core.Array<PBXBuildFile>();
         }
 
         public PBXBuildFile
@@ -40,7 +40,7 @@ namespace XcodeBuilder
             }
         }
 
-        private Opus.Core.Array<PBXBuildFile> BuildFiles
+        private Bam.Core.Array<PBXBuildFile> BuildFiles
         {
             get;
             set;

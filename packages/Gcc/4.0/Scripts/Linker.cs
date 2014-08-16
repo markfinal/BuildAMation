@@ -10,7 +10,7 @@ namespace Gcc
     {
         public
         Linker(
-            Opus.Core.IToolset toolset) : base(toolset)
+            Bam.Core.IToolset toolset) : base(toolset)
         {}
 
         protected override string Filename

@@ -12,7 +12,7 @@ namespace VSSolutionBuilder
             C.DynamicLibrary moduleToBuild,
             out bool success)
         {
-            var dynamicLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var dynamicLibraryModule = moduleToBuild as Bam.Core.BaseModule;
             var node = dynamicLibraryModule.OwningNode;
             var target = node.Target;
             var moduleName = node.ModuleName;
@@ -42,10 +42,10 @@ namespace VSSolutionBuilder
 
             // solution folder
             {
-                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
                 if (groups.Length > 0)
                 {
-                    projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
+                    projectData.GroupName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
                 }
             }
 
@@ -102,12 +102,12 @@ namespace VSSolutionBuilder
                     configuration.CharacterSet = characterSet;
 #endif
                     configuration = new ProjectConfiguration(configurationName, projectData);
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Bam.Core.BaseTarget)target, configuration);
                 }
             }
 
@@ -120,8 +120,8 @@ namespace VSSolutionBuilder
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
-                    foreach (Opus.Core.Location location in headerFileCollection)
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Bam.Core.FileCollection;
+                    foreach (Bam.Core.Location location in headerFileCollection)
                     {
                         var headerPath = location.GetSinglePath();
                         var cProject = projectData as ICProject;
@@ -162,7 +162,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Linker options does not support VisualStudio project translation");
+                    throw new Bam.Core.Exception("Linker options does not support VisualStudio project translation");
                 }
             }
 

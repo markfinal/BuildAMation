@@ -37,11 +37,11 @@ namespace XcodeBuilder
         {
             if (this.NativeTarget == null)
             {
-                throw new Opus.Core.Exception("Native target not set on this dependency");
+                throw new Bam.Core.Exception("Native target not set on this dependency");
             }
             if (this.TargetProxy == null)
             {
-                throw new Opus.Core.Exception("Target proxy not set on this dependency");
+                throw new Bam.Core.Exception("Target proxy not set on this dependency");
             }
 
             writer.WriteLine("\t\t{0} /* PBXTargetDependency */ = {{", this.UUID);

@@ -12,26 +12,26 @@ namespace VisualC
         static
         Toolset()
         {
-            if (!Opus.Core.State.HasCategory("VSSolutionBuilder"))
+            if (!Bam.Core.State.HasCategory("VSSolutionBuilder"))
             {
-                Opus.Core.State.AddCategory("VSSolutionBuilder");
+                Bam.Core.State.AddCategory("VSSolutionBuilder");
             }
 
-            if (!Opus.Core.State.Has("VSSolutionBuilder", "SolutionType"))
+            if (!Bam.Core.State.Has("VSSolutionBuilder", "SolutionType"))
             {
-                Opus.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(Solution));
+                Bam.Core.State.Add<System.Type>("VSSolutionBuilder", "SolutionType", typeof(Solution));
             }
         }
 
         public
         Toolset()
         {
-            this.toolConfig[typeof(C.ICompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.CCompiler(this), typeof(CCompilerOptionCollection));
-            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
-            this.toolConfig[typeof(C.ILinkerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Linker(this), typeof(LinkerOptionCollection));
-            this.toolConfig[typeof(C.IArchiverTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Archiver(this), typeof(ArchiverOptionCollection));
-            this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ResourceCompiler(this), typeof(VisualCCommon.Win32ResourceCompilerOptionCollection));
-            this.toolConfig[typeof(C.IWinManifestTool)] = new Opus.Core.ToolAndOptionType(new VisualCCommon.Win32ManifestTool(this), typeof(VisualCCommon.Win32ManifestOptionCollection));
+            this.toolConfig[typeof(C.ICompilerTool)] = new Bam.Core.ToolAndOptionType(new VisualCCommon.CCompiler(this), typeof(CCompilerOptionCollection));
+            this.toolConfig[typeof(C.ICxxCompilerTool)] = new Bam.Core.ToolAndOptionType(new VisualCCommon.CxxCompiler(this), typeof(CxxCompilerOptionCollection));
+            this.toolConfig[typeof(C.ILinkerTool)] = new Bam.Core.ToolAndOptionType(new VisualCCommon.Linker(this), typeof(LinkerOptionCollection));
+            this.toolConfig[typeof(C.IArchiverTool)] = new Bam.Core.ToolAndOptionType(new VisualCCommon.Archiver(this), typeof(ArchiverOptionCollection));
+            this.toolConfig[typeof(C.IWinResourceCompilerTool)] = new Bam.Core.ToolAndOptionType(new VisualCCommon.Win32ResourceCompiler(this), typeof(VisualCCommon.Win32ResourceCompilerOptionCollection));
+            this.toolConfig[typeof(C.IWinManifestTool)] = new Bam.Core.ToolAndOptionType(new VisualCCommon.Win32ManifestTool(this), typeof(VisualCCommon.Win32ManifestOptionCollection));
         }
 
         protected override void
@@ -42,29 +42,29 @@ namespace VisualC
                 return;
             }
 
-            if (Opus.Core.State.HasCategory("VisualC") && Opus.Core.State.Has("VisualC", "InstallPath"))
+            if (Bam.Core.State.HasCategory("VisualC") && Bam.Core.State.Has("VisualC", "InstallPath"))
             {
-                this.installPath = Opus.Core.State.Get("VisualC", "InstallPath") as string;
-                Opus.Core.Log.DebugMessage("VisualC 2008 install path set from command line to '{0}'", this.installPath);
+                this.installPath = Bam.Core.State.Get("VisualC", "InstallPath") as string;
+                Bam.Core.Log.DebugMessage("VisualC 2008 install path set from command line to '{0}'", this.installPath);
             }
 
             if (null == this.installPath)
             {
-                using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VisualStudio\SxS\VC7"))
+                using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\VisualStudio\SxS\VC7"))
                 {
                     if (null == key)
                     {
-                        throw new Opus.Core.Exception("VisualStudio was not installed");
+                        throw new Bam.Core.Exception("VisualStudio was not installed");
                     }
 
                     this.installPath = key.GetValue("9.0") as string;
                     if (null == this.installPath)
                     {
-                        throw new Opus.Core.Exception("VisualStudio 2008 was not installed");
+                        throw new Bam.Core.Exception("VisualStudio 2008 was not installed");
                     }
 
                     this.installPath = this.installPath.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
-                    Opus.Core.Log.DebugMessage("VisualStudio 2008: Installation path from registry '{0}'", this.installPath);
+                    Bam.Core.Log.DebugMessage("VisualStudio 2008: Installation path from registry '{0}'", this.installPath);
                 }
             }
 
@@ -84,7 +84,7 @@ namespace VisualC
 
         protected override string
         GetVersion(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             return this.GetVersionString("9.0");
         }

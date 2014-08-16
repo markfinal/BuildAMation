@@ -16,11 +16,11 @@ namespace MingwCommon
         private static void
         OutputTypeCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<C.ELinkerOutput>;
+            var enumOption = option as Bam.Core.ValueTypeOption<C.ELinkerOutput>;
             var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
@@ -30,17 +30,17 @@ namespace MingwCommon
                     commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.ELinkerOutput");
+                    throw new Bam.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
         }
         private static void
         DoNotAutoIncludeStandardLibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var ignoreStandardLibrariesOption = option as Opus.Core.ValueTypeOption<bool>;
+            var ignoreStandardLibrariesOption = option as Bam.Core.ValueTypeOption<bool>;
             if (ignoreStandardLibrariesOption.Value)
             {
                 commandLineBuilder.Add("-nostdlib");
@@ -49,11 +49,11 @@ namespace MingwCommon
         private static void
         DebugSymbolsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var debugSymbolsOption = option as Opus.Core.ValueTypeOption<bool>;
+            var debugSymbolsOption = option as Bam.Core.ValueTypeOption<bool>;
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-g");
@@ -62,11 +62,11 @@ namespace MingwCommon
         private static void
         SubSystemCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var subSystemOption = option as Opus.Core.ValueTypeOption<C.ESubsystem>;
+            var subSystemOption = option as Bam.Core.ValueTypeOption<C.ESubsystem>;
             switch (subSystemOption.Value)
             {
                 case C.ESubsystem.NotSet:
@@ -79,17 +79,17 @@ namespace MingwCommon
                     commandLineBuilder.Add("-Wl,--subsystem,windows");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized subsystem option");
+                    throw new Bam.Core.Exception("Unrecognized subsystem option");
             }
         }
         private static void
         DynamicLibraryCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var dynamicLibraryOption = option as Opus.Core.ValueTypeOption<bool>;
+            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
             if (dynamicLibraryOption.Value)
             {
                 commandLineBuilder.Add("-shared");
@@ -104,11 +104,11 @@ namespace MingwCommon
         private static void
         LibraryPathsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var libraryPathsOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.DirectoryCollection>;
+            var libraryPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
             // TODO: convert to var
             foreach (string libraryPath in libraryPathsOption.Value)
             {
@@ -125,13 +125,13 @@ namespace MingwCommon
         private static void
         StandardLibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var librariesOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.FileCollection>;
             // TODO: change to var, and returning Locations
-            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            foreach (Bam.Core.Location libraryPath in librariesOption.Value)
             {
                 commandLineBuilder.Add(libraryPath.GetSinglePath());
             }
@@ -139,13 +139,13 @@ namespace MingwCommon
         private static void
         LibrariesCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var librariesOption = option as Opus.Core.ReferenceTypeOption<Opus.Core.FileCollection>;
+            var librariesOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.FileCollection>;
             // TODO: change to var, and returning Locations
-            foreach (Opus.Core.Location libraryPath in librariesOption.Value)
+            foreach (Bam.Core.Location libraryPath in librariesOption.Value)
             {
                 commandLineBuilder.Add(libraryPath.GetSinglePath());
             }
@@ -153,11 +153,11 @@ namespace MingwCommon
         private static void
         GenerateMapFileCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 var locationMap = (sender as LinkerOptionCollection).OwningNode.Module.Locations;
@@ -168,11 +168,11 @@ namespace MingwCommon
         private static void
         AdditionalOptionsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stringOption = option as Bam.Core.ReferenceTypeOption<string>;
             var arguments = stringOption.Value.Split(' ');
             foreach (var argument in arguments)
             {
@@ -184,11 +184,11 @@ namespace MingwCommon
         private static void
         EnableAutoImportCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var boolOption = option as Opus.Core.ValueTypeOption<bool>;
+            var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
                 commandLineBuilder.Add("-Wl,--enable-auto-import");
@@ -197,7 +197,7 @@ namespace MingwCommon
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor);
             this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor);

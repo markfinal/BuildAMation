@@ -24,11 +24,11 @@ namespace XcodeBuilder
             PBXProject project) : base (name)
         {
             this.Type = this.OriginalType = type;
-            this.BuildPhases = new Opus.Core.Array<BuildPhase>();
-            this.Dependencies = new Opus.Core.Array<PBXTargetDependency>();
-            this.SourceFilesToBuild = new Opus.Core.Array<PBXBuildFile>();
+            this.BuildPhases = new Bam.Core.Array<BuildPhase>();
+            this.Dependencies = new Bam.Core.Array<PBXTargetDependency>();
+            this.SourceFilesToBuild = new Bam.Core.Array<PBXBuildFile>();
             this.Project = project;
-            this.RequiredTargets = new Opus.Core.Array<PBXNativeTarget>();
+            this.RequiredTargets = new Bam.Core.Array<PBXNativeTarget>();
         }
 
         public EType Type
@@ -60,19 +60,19 @@ namespace XcodeBuilder
             set;
         }
 
-        public Opus.Core.Array<BuildPhase> BuildPhases
+        public Bam.Core.Array<BuildPhase> BuildPhases
         {
             get;
             private set;
         }
 
-        public Opus.Core.Array<PBXTargetDependency> Dependencies
+        public Bam.Core.Array<PBXTargetDependency> Dependencies
         {
             get;
             private set;
         }
 
-        public Opus.Core.Array<PBXBuildFile> SourceFilesToBuild
+        public Bam.Core.Array<PBXBuildFile> SourceFilesToBuild
         {
             get;
             private set;
@@ -90,7 +90,7 @@ namespace XcodeBuilder
             set;
         }
 
-        public Opus.Core.Array<PBXNativeTarget> RequiredTargets
+        public Bam.Core.Array<PBXNativeTarget> RequiredTargets
         {
             get;
             private set;
@@ -147,7 +147,7 @@ namespace XcodeBuilder
                 break;
 
             default:
-                throw new Opus.Core.Exception("Unknown product type");
+                throw new Bam.Core.Exception("Unknown product type");
             }
             writer.WriteLine("\t\t};");
         }

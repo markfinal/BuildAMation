@@ -6,23 +6,23 @@
 namespace NativeBuilder
 {
     public sealed partial class NativeBuilder :
-        Opus.Core.IBuilder
+        Bam.Core.IBuilder
     {
         static
         NativeBuilder()
         {
-            var level = Opus.Core.EVerboseLevel.Full;
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            var level = Bam.Core.EVerboseLevel.Full;
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "Explain"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "Explain"))
                 {
-                    level = Opus.Core.State.VerbosityLevel;
+                    level = Bam.Core.State.VerbosityLevel;
                 }
             }
             Verbosity = level;
         }
 
-        private static Opus.Core.EVerboseLevel Verbosity
+        private static Bam.Core.EVerboseLevel Verbosity
         {
             get;
             set;
@@ -35,7 +35,7 @@ namespace NativeBuilder
             if (!System.IO.Directory.Exists(directory))
             {
                 System.IO.Directory.CreateDirectory(directory);
-                Opus.Core.Log.Message(Verbosity, "Created directory '{0}'", directory);
+                Bam.Core.Log.Message(Verbosity, "Created directory '{0}'", directory);
             }
         }
 
@@ -44,9 +44,9 @@ namespace NativeBuilder
             string outputPath,
             string inputPath)
         {
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
                     return true;
                 }
@@ -58,13 +58,13 @@ namespace NativeBuilder
                 var outputFileDate = System.IO.File.GetLastWriteTime(outputPath);
                 if (inputFileDate.CompareTo(outputFileDate) > 0)
                 {
-                    Opus.Core.Log.Message(Verbosity, "Building '{1}' since input file '{0}' is newer.", inputPath, outputPath);
+                    Bam.Core.Log.Message(Verbosity, "Building '{1}' since input file '{0}' is newer.", inputPath, outputPath);
                     return true;
                 }
             }
             else
             {
-                Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputPath);
+                Bam.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputPath);
                 return true;
             }
 
@@ -76,9 +76,9 @@ namespace NativeBuilder
             string destinationDir,
             string sourceDir)
         {
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
                     return false;
                 }
@@ -90,13 +90,13 @@ namespace NativeBuilder
                 var outputDirDate = System.IO.Directory.GetLastWriteTime(destinationDir);
                 if (inputDirDate.CompareTo(outputDirDate) > 0)
                 {
-                    Opus.Core.Log.Message(Verbosity, "Building directory '{1}' since source directory '{0}' is newer.", sourceDir, destinationDir);
+                    Bam.Core.Log.Message(Verbosity, "Building directory '{1}' since source directory '{0}' is newer.", sourceDir, destinationDir);
                     return false;
                 }
             }
             else
             {
-                Opus.Core.Log.Message(Verbosity, "Building directory '{0}' since it does not exist.", destinationDir);
+                Bam.Core.Log.Message(Verbosity, "Building directory '{0}' since it does not exist.", destinationDir);
                 return false;
             }
 
@@ -105,7 +105,7 @@ namespace NativeBuilder
 
         public static bool
         DirectoryUpToDate(
-            Opus.Core.Location destinationDir,
+            Bam.Core.Location destinationDir,
             string sourceDir)
         {
             var destinationDirPath = destinationDir.GetSinglePath();
@@ -121,12 +121,12 @@ namespace NativeBuilder
 
         public static FileRebuildStatus
         IsSourceTimeStampNewer(
-            Opus.Core.StringArray outputFiles,
+            Bam.Core.StringArray outputFiles,
             string inputFile)
         {
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
                     return FileRebuildStatus.AlwaysBuild;
                 }
@@ -134,7 +134,7 @@ namespace NativeBuilder
 
             if (0 == outputFiles.Count)
             {
-                Opus.Core.Log.Message(Verbosity, "No output files - always build");
+                Bam.Core.Log.Message(Verbosity, "No output files - always build");
                 return FileRebuildStatus.AlwaysBuild;
             }
 
@@ -147,13 +147,13 @@ namespace NativeBuilder
                     var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
-                        Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer.", inputFile, outputFile);
+                        Bam.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer.", inputFile, outputFile);
                         return FileRebuildStatus.TimeStampOutOfDate;
                     }
                 }
                 else
                 {
-                    Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFile);
+                    Bam.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFile);
                     return FileRebuildStatus.AlwaysBuild;
                 }
             }
@@ -163,12 +163,12 @@ namespace NativeBuilder
 
         public static FileRebuildStatus
         IsSourceTimeStampNewer(
-            Opus.Core.LocationArray outputFiles,
-            Opus.Core.Location inputFile)
+            Bam.Core.LocationArray outputFiles,
+            Bam.Core.Location inputFile)
         {
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
                     return FileRebuildStatus.AlwaysBuild;
                 }
@@ -176,7 +176,7 @@ namespace NativeBuilder
 
             if (0 == outputFiles.Count)
             {
-                Opus.Core.Log.Message(Verbosity, "No output files - always build");
+                Bam.Core.Log.Message(Verbosity, "No output files - always build");
                 return FileRebuildStatus.AlwaysBuild;
             }
 
@@ -191,13 +191,13 @@ namespace NativeBuilder
                     var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFilePath);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
-                        Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer.", inputFilePath, outputFilePath);
+                        Bam.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer.", inputFilePath, outputFilePath);
                         return FileRebuildStatus.TimeStampOutOfDate;
                     }
                 }
                 else
                 {
-                    Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFilePath);
+                    Bam.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFilePath);
                     return FileRebuildStatus.AlwaysBuild;
                 }
             }
@@ -208,12 +208,12 @@ namespace NativeBuilder
         // TODO: what if some of the paths passed in are directories? And what if they don't exist?
         public static bool
         RequiresBuilding(
-            Opus.Core.StringArray outputFiles,
-            Opus.Core.StringArray inputFiles)
+            Bam.Core.StringArray outputFiles,
+            Bam.Core.StringArray inputFiles)
         {
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
                     return true;
                 }
@@ -221,12 +221,12 @@ namespace NativeBuilder
 
             if (0 == outputFiles.Count)
             {
-                Opus.Core.Log.Message(Verbosity, "No output files - always build");
+                Bam.Core.Log.Message(Verbosity, "No output files - always build");
                 return true;
             }
             if (0 == inputFiles.Count)
             {
-                Opus.Core.Log.Message(Verbosity, "No input files - always build");
+                Bam.Core.Log.Message(Verbosity, "No input files - always build");
                 return true;
             }
 
@@ -249,13 +249,13 @@ namespace NativeBuilder
                     var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFile);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
-                        Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer", newestInputFile, outputFile);
+                        Bam.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer", newestInputFile, outputFile);
                         return true;
                     }
                 }
                 else
                 {
-                    Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFile);
+                    Bam.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFile);
                     return true;
                 }
             }
@@ -266,12 +266,12 @@ namespace NativeBuilder
         // TODO: what if some of the paths passed in are directories? And what if they don't exist?
         public static bool
         RequiresBuilding(
-            Opus.Core.LocationArray outputFiles,
-            Opus.Core.LocationArray inputFiles)
+            Bam.Core.LocationArray outputFiles,
+            Bam.Core.LocationArray inputFiles)
         {
-            if (Opus.Core.State.HasCategory("NativeBuilder"))
+            if (Bam.Core.State.HasCategory("NativeBuilder"))
             {
-                if ((bool)Opus.Core.State.Get("NativeBuilder", "ForceBuild"))
+                if ((bool)Bam.Core.State.Get("NativeBuilder", "ForceBuild"))
                 {
                     return true;
                 }
@@ -279,12 +279,12 @@ namespace NativeBuilder
 
             if (0 == outputFiles.Count)
             {
-                Opus.Core.Log.Message(Verbosity, "No output files - always build");
+                Bam.Core.Log.Message(Verbosity, "No output files - always build");
                 return true;
             }
             if (0 == inputFiles.Count)
             {
-                Opus.Core.Log.Message(Verbosity, "No input files - always build");
+                Bam.Core.Log.Message(Verbosity, "No input files - always build");
                 return true;
             }
 
@@ -309,13 +309,13 @@ namespace NativeBuilder
                     var outputFileLastWriteTime = System.IO.File.GetLastWriteTime(outputFilePath);
                     if (newestInputFileDate.CompareTo(outputFileLastWriteTime) > 0)
                     {
-                        Opus.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer", newestInputFile, outputFilePath);
+                        Bam.Core.Log.Message(Verbosity, "Building '{1}' since '{0}' is newer", newestInputFile, outputFilePath);
                         return true;
                     }
                 }
                 else
                 {
-                    Opus.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFilePath);
+                    Bam.Core.Log.Message(Verbosity, "Building '{0}' since it does not exist.", outputFilePath);
                     return true;
                 }
             }

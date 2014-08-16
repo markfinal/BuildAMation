@@ -16,7 +16,7 @@ namespace Publisher
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             // Property 'OSXApplicationBundle' is state only
         }

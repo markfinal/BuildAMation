@@ -4,26 +4,26 @@
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(C.ArchiverAction))]
+[assembly: Bam.Core.RegisterAction(typeof(C.ArchiverAction))]
 
 namespace C
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class ArchiverAction :
-        Opus.Core.IActionWithArguments
+        Bam.Core.IActionWithArguments
     {
         public
         ArchiverAction()
         {
-            if (!Opus.Core.State.HasCategory("C"))
+            if (!Bam.Core.State.HasCategory("C"))
             {
-                Opus.Core.State.AddCategory("C");
+                Bam.Core.State.AddCategory("C");
             }
 
-            if (!Opus.Core.State.Has("C", "ToolToToolsetName"))
+            if (!Bam.Core.State.Has("C", "ToolToToolsetName"))
             {
                 var map = new System.Collections.Generic.Dictionary<System.Type, string>();
-                Opus.Core.State.Add("C", "ToolToToolsetName", map);
+                Bam.Core.State.Add("C", "ToolToToolsetName", map);
             }
         }
 
@@ -34,13 +34,13 @@ namespace C
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Bam.Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             this.Archiver = arguments;
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -48,7 +48,7 @@ namespace C
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -57,11 +57,11 @@ namespace C
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
-            Opus.Core.Log.DebugMessage("Archiver is '{0}'", this.Archiver);
+            Bam.Core.Log.DebugMessage("Archiver is '{0}'", this.Archiver);
 
-            var map = Opus.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
+            var map = Bam.Core.State.Get("C", "ToolToToolsetName") as System.Collections.Generic.Dictionary<System.Type, string>;
             map[typeof(IArchiverTool)] = this.Archiver;
 
             return true;

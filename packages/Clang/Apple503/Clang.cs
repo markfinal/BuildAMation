@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Clang package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("clang", typeof(Clang.Toolset))]
+[assembly: Bam.Core.RegisterToolset("clang", typeof(Clang.Toolset))]
 
 namespace Clang
 {

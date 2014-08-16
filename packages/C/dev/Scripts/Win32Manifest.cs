@@ -8,14 +8,14 @@ namespace C
     /// <summary>
     /// Windows manifest management
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IWinManifestTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IWinManifestTool))]
     public class Win32Manifest :
-        Opus.Core.BaseModule
+        Bam.Core.BaseModule
     {
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("Win32ManifestOutputDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("Win32ManifestOutputFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("Win32ManifestOutputDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("Win32ManifestOutputFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
 
-        public Opus.Core.Location BinaryFileLocation
+        public Bam.Core.Location BinaryFileLocation
         {
             get
             {

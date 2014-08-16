@@ -20,7 +20,7 @@ namespace XcodeBuilder
                 {
                     message.AppendLine("\t" + target.Name);
                 }
-                throw new Opus.Core.Exception(message.ToString());
+                throw new Bam.Core.Exception(message.ToString());
             }
 
             var nativeTarget = project.NativeTargets[0];
@@ -43,7 +43,7 @@ namespace XcodeBuilder
             System.Xml.XmlElement buildActionEntriesEl,
             PBXNativeTarget target,
             PBXProject primaryProject,
-            Opus.Core.Array<PBXNativeTarget> buildActionsCreated)
+            Bam.Core.Array<PBXNativeTarget> buildActionsCreated)
         {
             // add all required dependencies in first (order matters)
             foreach (var required in target.RequiredTargets)
@@ -78,7 +78,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    var relative = Opus.Core.RelativePathUtilities.GetPath(target.Project.RootUri, primaryProject.RootUri);
+                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.RootUri, primaryProject.RootUri);
                     refContainer.Value = "container:" + relative;
                 }
                 buildableReference.Attributes.Append(buildable);
@@ -114,7 +114,7 @@ namespace XcodeBuilder
                 var buildActionEntries = doc.CreateElement("BuildActionEntries");
                 buildActionEl.AppendChild(buildActionEntries);
 
-                var buildActionsCreated = new Opus.Core.Array<PBXNativeTarget>();
+                var buildActionsCreated = new Bam.Core.Array<PBXNativeTarget>();
                 this.CreateBuildActionEntry(doc, buildActionEntries, target, target.Project, buildActionsCreated);
             }
         }
@@ -197,7 +197,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    var relative = Opus.Core.RelativePathUtilities.GetPath(target.Project.RootUri, primaryProject.RootUri);
+                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.RootUri, primaryProject.RootUri);
                     refContainerAttr.Value = "container:" + relative;
                 }
                 buildableRefEl.Attributes.Append(refContainerAttr);

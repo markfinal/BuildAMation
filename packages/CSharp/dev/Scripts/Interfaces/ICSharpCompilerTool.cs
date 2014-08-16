@@ -15,10 +15,10 @@ namespace CSharp
         System.Attribute
     {}
 
-    [Opus.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalCscOptionsDelegateAttribute),
                                    typeof(ExportCscOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider("dotnet")]
+    [Bam.Core.AssignToolsetProvider("dotnet")]
     public interface ICSharpCompilerTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

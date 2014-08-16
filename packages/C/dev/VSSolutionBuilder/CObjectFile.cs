@@ -12,12 +12,12 @@ namespace VSSolutionBuilder
             C.ObjectFile moduleToBuild,
             out bool success)
         {
-            var objectFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var objectFileModule = moduleToBuild as Bam.Core.BaseModule;
             var node = objectFileModule.OwningNode;
             var target = node.Target;
             var moduleName = node.ModuleName;
-            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleToolAssignmentAttribute), true);
-            var toolType = (moduleToolAttributes[0] as Opus.Core.ModuleToolAssignmentAttribute).ToolType;
+            var moduleToolAttributes = moduleToBuild.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleToolAssignmentAttribute), true);
+            var toolType = (moduleToolAttributes[0] as Bam.Core.ModuleToolAssignmentAttribute).ToolType;
             var toolInterface = target.Toolset.Tool(toolType);
 
             IProject projectData = null;
@@ -30,7 +30,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
@@ -99,7 +99,7 @@ namespace VSSolutionBuilder
 #endif
                     configuration = new ProjectConfiguration(configurationName, projectData);
 
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace VSSolutionBuilder
 #if false
                     configuration.CharacterSet = (EProjectCharacterSet)((objectFileOptions as C.ICCompilerOptions).ToolchainOptionCollection as C.IToolchainOptions).CharacterSet;
 #endif
-                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Bam.Core.BaseTarget)target, configuration);
                 }
 
                 configuration.IntermediateDirectory = moduleToBuild.Locations[C.ObjectFile.OutputDir];
@@ -136,10 +136,10 @@ namespace VSSolutionBuilder
                 // this must be a utility configuration
                 configuration.Type = EProjectConfigurationType.Utility;
 
-                var executable = toolInterface.Executable((Opus.Core.BaseTarget)target);
+                var executable = toolInterface.Executable((Bam.Core.BaseTarget)target);
                 // TODO: pdb if it exists? WHY would a PDB file be needed?
 
-                var commandLineBuilder = new Opus.Core.StringArray();
+                var commandLineBuilder = new Bam.Core.StringArray();
                 if (executable.Contains(" "))
                 {
                     commandLineBuilder.Add(System.String.Format("\"{0}\"", executable));
@@ -155,7 +155,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                    throw new Bam.Core.Exception("Compiler options does not support command line translation");
                 }
 
                 var customTool = new ProjectTool("VCCustomBuildTool");
@@ -210,10 +210,10 @@ namespace VSSolutionBuilder
                 var fileConfiguration = new ProjectFileConfiguration(configuration, vcCLCompilerTool, false);
                 sourceFile.FileConfigurations.Add(fileConfiguration);
 
-                Opus.Core.BaseOptionCollection deltaOptionCollection = null;
-                if (node.EncapsulatingNode.Module is Opus.Core.ICommonOptionCollection)
+                Bam.Core.BaseOptionCollection deltaOptionCollection = null;
+                if (node.EncapsulatingNode.Module is Bam.Core.ICommonOptionCollection)
                 {
-                    var commonOptions = (node.EncapsulatingNode.Module as Opus.Core.ICommonOptionCollection).CommonOptionCollection;
+                    var commonOptions = (node.EncapsulatingNode.Module as Bam.Core.ICommonOptionCollection).CommonOptionCollection;
                     if (commonOptions is C.ICCompilerOptions)
                     {
                         deltaOptionCollection = moduleToBuild.Options.Complement(commonOptions);
@@ -249,7 +249,7 @@ namespace VSSolutionBuilder
                     }
                     else
                     {
-                        throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                        throw new Bam.Core.Exception("Compiler options does not support VisualStudio project translation");
                     }
                 }
                 else if ((node.Parent != null) && !(node.Parent.Module is C.ObjectFileCollectionBase))
@@ -271,7 +271,7 @@ namespace VSSolutionBuilder
                     }
                     else
                     {
-                        throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                        throw new Bam.Core.Exception("Compiler options does not support VisualStudio project translation");
                     }
                 }
             }

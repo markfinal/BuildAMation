@@ -12,15 +12,15 @@ namespace VSSolutionBuilder
             C.Win32Resource moduleToBuild,
             out bool success)
         {
-            var resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var resourceFileModule = moduleToBuild as Bam.Core.BaseModule;
             var node = resourceFileModule.OwningNode;
             var target = node.Target;
 
             // do not generate a project file for this module
             // instead, find what it is used by, and add it into that project
             var parentNode = node.Parent;
-            Opus.Core.DependencyNode targetNode;
-            if ((null != parentNode) && (parentNode.Module is Opus.Core.IModuleCollection))
+            Bam.Core.DependencyNode targetNode;
+            if ((null != parentNode) && (parentNode.Module is Bam.Core.IModuleCollection))
             {
                 targetNode = parentNode.ExternalDependentFor[0];
             }
@@ -41,7 +41,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
@@ -83,12 +83,12 @@ namespace VSSolutionBuilder
                 if (!projectData.Configurations.Contains(configurationName))
                 {
                     configuration = new ProjectConfiguration(configurationName, projectData);
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Bam.Core.BaseTarget)target, configuration);
                 }
 
                 // Don't overwrite the intermediate directory
@@ -102,7 +102,7 @@ namespace VSSolutionBuilder
             var resourceFilePath = moduleToBuild.ResourceFileLocation.GetSinglePath();
             if (!System.IO.File.Exists(resourceFilePath))
             {
-                throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
+                throw new Bam.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
             ProjectFile sourceFile;
@@ -148,7 +148,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Compiler options does not support VisualStudio project translation");
+                    throw new Bam.Core.Exception("Compiler options does not support VisualStudio project translation");
                 }
 
                 // add the output file spec

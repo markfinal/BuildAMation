@@ -12,21 +12,21 @@ namespace NativeBuilder
             C.Application moduleToBuild,
             out bool success)
         {
-            var applicationModule = moduleToBuild as Opus.Core.BaseModule;
+            var applicationModule = moduleToBuild as Bam.Core.BaseModule;
             var node = applicationModule.OwningNode;
             var target = node.Target;
             var applicationOptions = applicationModule.Options;
             var linkerOptions = applicationOptions as C.ILinkerOptions;
 
             // find dependent object files
-            var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var keysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.ObjectFile.OutputFile
                 );
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (target.HasPlatform(Bam.Core.EPlatform.Windows))
             {
                 keysToFilter.Add(C.Win32Resource.OutputFile);
             }
-            var dependentObjectFiles = new Opus.Core.LocationArray();
+            var dependentObjectFiles = new Bam.Core.LocationArray();
             if (null != node.Children)
             {
                 node.Children.FilterOutputLocations(keysToFilter, dependentObjectFiles);
@@ -37,28 +37,28 @@ namespace NativeBuilder
             }
             if (0 == dependentObjectFiles.Count)
             {
-                Opus.Core.Log.Detail("There were no object files to link for module '{0}'", node.UniqueModuleName);
+                Bam.Core.Log.Detail("There were no object files to link for module '{0}'", node.UniqueModuleName);
                 success = true;
                 return null;
             }
 
             // find dependent library files
-            Opus.Core.LocationArray dependentLibraryFiles = null;
+            Bam.Core.LocationArray dependentLibraryFiles = null;
             if (null != node.ExternalDependents)
             {
-                dependentLibraryFiles = new Opus.Core.LocationArray();
+                dependentLibraryFiles = new Bam.Core.LocationArray();
 
-                var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var libraryKeysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey);
-                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Unix))
                 {
                     libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
                 }
-                else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                else if (target.HasPlatform(Bam.Core.EPlatform.Windows))
                 {
                     libraryKeysToFilter.Add(C.DynamicLibrary.ImportLibraryFile);
                 }
-                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
                 {
                     libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
                 }
@@ -68,16 +68,16 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                var inputFiles = new Opus.Core.LocationArray();
+                var inputFiles = new Bam.Core.LocationArray();
                 inputFiles.AddRange(dependentObjectFiles);
                 if (null != dependentLibraryFiles)
                 {
                     inputFiles.AddRange(dependentLibraryFiles);
                 }
-                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                var outputFiles = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
                     return null;
                 }
@@ -86,24 +86,24 @@ namespace NativeBuilder
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (linkerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = linkerOptions as CommandLineProcessor.ICommandLineSupport;
                 // libraries are manually added later
-                var excludedOptions = new Opus.Core.StringArray("Libraries", "StandardLibraries");
+                var excludedOptions = new Bam.Core.StringArray("Libraries", "StandardLibraries");
                 commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptions);
             }
             else
             {
-                throw new Opus.Core.Exception("Linker options does not support command line translation");
+                throw new Bam.Core.Exception("Linker options does not support command line translation");
             }
 
             // object files must come before everything else, for some compilers

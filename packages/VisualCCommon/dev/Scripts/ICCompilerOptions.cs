@@ -98,7 +98,7 @@ namespace VisualCCommon
             set;
         }
 
-        Opus.Core.StringArray ForcedInclude
+        Bam.Core.StringArray ForcedInclude
         {
             get;
             set;

@@ -8,11 +8,11 @@ namespace GccCommon
     public sealed class Archiver :
         C.IArchiverTool
     {
-        private Opus.Core.IToolset toolset;
+        private Bam.Core.IToolset toolset;
 
         public
         Archiver(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -48,19 +48,19 @@ namespace GccCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.BinPath(baseTarget);
             var executablePath = System.IO.Path.Combine(installPath, "ar");
             return executablePath;
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.StaticLibrary.OutputFileLocKey,
                 C.StaticLibrary.OutputDirLocKey
                 );

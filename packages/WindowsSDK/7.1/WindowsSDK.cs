@@ -18,20 +18,20 @@ namespace WindowsSDK
         static
         WindowsSDK()
         {
-            if (!Opus.Core.OSUtilities.IsWindowsHosting)
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
             }
 
-            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v7.1"))
+            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Microsoft SDKs\Windows\v7.1"))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception("WindowsSDK 7.1 was not installed");
+                    throw new Bam.Core.Exception("WindowsSDK 7.1 was not installed");
                 }
 
                 installPath = key.GetValue("InstallationFolder") as string;
-                Opus.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
+                Bam.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
 
                 bin32Path = System.IO.Path.Combine(installPath, "bin");
                 bin64Path = System.IO.Path.Combine(bin32Path, "x64");
@@ -46,15 +46,15 @@ namespace WindowsSDK
         public
         WindowsSDK()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
         }
 
         [C.ExportLinkerOptionsDelegate]
         void
         WindowsSDK_LibraryPaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null == linkerOptions)
@@ -62,25 +62,25 @@ namespace WindowsSDK
                 return;
             }
 
-            if (target.HasPlatform(Opus.Core.EPlatform.Win32))
+            if (target.HasPlatform(Bam.Core.EPlatform.Win32))
             {
                 linkerOptions.LibraryPaths.Add(lib32Path);
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Win64))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 linkerOptions.LibraryPaths.Add(lib64Path);
             }
             else
             {
-                throw new Opus.Core.Exception("Windows SDK is not supported on '{0}'; use win32 or win64", target.ToString());
+                throw new Bam.Core.Exception("Windows SDK is not supported on '{0}'; use win32 or win64", target.ToString());
             }
         }
 
         [C.ExportCompilerOptionsDelegate]
         void
         WindowsSDK_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             if (null == compilerOptions)
@@ -93,10 +93,10 @@ namespace WindowsSDK
 
         public static string
         BinPath(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             string binPath;
-            if (Opus.Core.OSUtilities.Is64Bit(baseTarget))
+            if (Bam.Core.OSUtilities.Is64Bit(baseTarget))
             {
                 binPath = bin64Path;
             }

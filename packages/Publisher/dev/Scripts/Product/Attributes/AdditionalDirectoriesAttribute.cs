@@ -7,7 +7,7 @@ namespace Publisher
 {
     [System.AttributeUsage(System.AttributeTargets.Field)]
     public sealed class AdditionalDirectoriesAttribute :
-        Opus.Core.BaseTargetFilteredAttribute,
+        Bam.Core.BaseTargetFilteredAttribute,
         IPublishBaseAttribute
     {
         public

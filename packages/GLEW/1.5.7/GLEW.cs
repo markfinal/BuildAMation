@@ -27,18 +27,18 @@ namespace GLEW
                 var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
                 var sourceDir = glewDir.SubDirectory("src");
                 this.Include(sourceDir, "glew.c");
-                //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/glewinfo.c")));
-                //this.Add(new C.ObjectFile(new Opus.Core.File(@"glew-1.5.7/src/visualinfo.c")));
+                //this.Add(new C.ObjectFile(new Bam.Core.File(@"glew-1.5.7/src/glewinfo.c")));
+                //this.Add(new C.ObjectFile(new Bam.Core.File(@"glew-1.5.7/src/visualinfo.c")));
 
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(GLEW_IncludePathAndStaticDefine);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(GLEW_VCWarningLevel);
-                //this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(GLEW_VCSecurity);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(GLEW_IncludePathAndStaticDefine);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(GLEW_VCWarningLevel);
+                //this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(GLEW_VCSecurity);
             }
 
             void
             GLEW_VCSecurity(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 if (module.Options is VisualCCommon.ICCompilerOptions)
                 {
@@ -49,8 +49,8 @@ namespace GLEW
 
             void
             GLEW_VCWarningLevel(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (null != compilerOptions)
@@ -62,8 +62,8 @@ namespace GLEW
             [C.ExportCompilerOptionsDelegate]
             void
             GLEW_IncludePathAndStaticDefine(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 var glewDir = this.PackageLocation.SubDirectory("glew-1.5.7");
@@ -72,19 +72,19 @@ namespace GLEW
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(OpenGLSDK.OpenGL)
         );
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Opus.Core.TypeArray winDependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        Bam.Core.TypeArray winDependents = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
         );
     }

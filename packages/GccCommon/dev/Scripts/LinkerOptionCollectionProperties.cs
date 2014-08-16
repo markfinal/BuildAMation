@@ -73,39 +73,39 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DynamicLibrarySetHandler", this["DynamicLibrary"]);
             }
         }
-        Opus.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
+        Bam.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("LibraryPaths", value);
                 this.ProcessNamedSetHandler("LibraryPathsSetHandler", this["LibraryPaths"]);
             }
         }
-        Opus.Core.FileCollection C.ILinkerOptions.StandardLibraries
+        Bam.Core.FileCollection C.ILinkerOptions.StandardLibraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("StandardLibraries", value);
                 this.ProcessNamedSetHandler("StandardLibrariesSetHandler", this["StandardLibraries"]);
             }
         }
-        Opus.Core.FileCollection C.ILinkerOptions.Libraries
+        Bam.Core.FileCollection C.ILinkerOptions.Libraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("Libraries", value);
                 this.ProcessNamedSetHandler("LibrariesSetHandler", this["Libraries"]);
             }
         }
@@ -171,27 +171,27 @@ namespace GccCommon
         }
         #endregion
         #region C.ILinkerOptionsOSX Option properties
-        Opus.Core.StringArray C.ILinkerOptionsOSX.Frameworks
+        Bam.Core.StringArray C.ILinkerOptionsOSX.Frameworks
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("Frameworks", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.StringArray>("Frameworks", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("Frameworks", value);
+                this.SetReferenceTypeOption<Bam.Core.StringArray>("Frameworks", value);
                 this.ProcessNamedSetHandler("FrameworksSetHandler", this["Frameworks"]);
             }
         }
-        Opus.Core.DirectoryCollection C.ILinkerOptionsOSX.FrameworkSearchDirectories
+        Bam.Core.DirectoryCollection C.ILinkerOptionsOSX.FrameworkSearchDirectories
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("FrameworkSearchDirectories", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("FrameworkSearchDirectories", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("FrameworkSearchDirectories", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("FrameworkSearchDirectories", value);
                 this.ProcessNamedSetHandler("FrameworkSearchDirectoriesSetHandler", this["FrameworkSearchDirectories"]);
             }
         }
@@ -233,15 +233,15 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("AllowUndefinedSymbolsSetHandler", this["AllowUndefinedSymbols"]);
             }
         }
-        Opus.Core.StringArray ILinkerOptions.RPath
+        Bam.Core.StringArray ILinkerOptions.RPath
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("RPath", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.StringArray>("RPath", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("RPath", value);
+                this.SetReferenceTypeOption<Bam.Core.StringArray>("RPath", value);
                 this.ProcessNamedSetHandler("RPathSetHandler", this["RPath"]);
             }
         }

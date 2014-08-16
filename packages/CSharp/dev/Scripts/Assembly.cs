@@ -5,13 +5,13 @@
 // <author>Mark Final</author>
 namespace CSharp
 {
-    [Opus.Core.ModuleToolAssignment(typeof(ICSharpCompilerTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(ICSharpCompilerTool))]
     public abstract class Assembly :
-        Opus.Core.BaseModule
+        Bam.Core.BaseModule
     {
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("OutputAssemblyFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("OutputAssemblyDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("PDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("PDBDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("OutputAssemblyFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("OutputAssemblyDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey PDBFile = new Bam.Core.LocationKey("PDBFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey PDBDir = new Bam.Core.LocationKey("PDBDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
     }
 }

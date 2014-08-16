@@ -6,41 +6,41 @@
 namespace VisualCCommon
 {
     public abstract class Toolset :
-        Opus.Core.IToolset
+        Bam.Core.IToolset
     {
         public string installPath;
         public string bin32Folder;
         public string bin64Folder;
         public string bin6432Folder;
-        public Opus.Core.StringArray lib32Folder = new Opus.Core.StringArray();
-        public Opus.Core.StringArray lib64Folder = new Opus.Core.StringArray();
-        protected Opus.Core.StringArray environment = new Opus.Core.StringArray();
+        public Bam.Core.StringArray lib32Folder = new Bam.Core.StringArray();
+        public Bam.Core.StringArray lib64Folder = new Bam.Core.StringArray();
+        protected Bam.Core.StringArray environment = new Bam.Core.StringArray();
 
         protected abstract void
         GetInstallPath();
 
         protected abstract string
         GetVersion(
-            Opus.Core.BaseTarget baseTarget);
+            Bam.Core.BaseTarget baseTarget);
 
-        protected System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
+        protected System.Collections.Generic.Dictionary<System.Type, Bam.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Bam.Core.ToolAndOptionType>();
 
         protected
         Toolset()
         {
-            this.toolConfig[typeof(C.INullOpTool)] = new Opus.Core.ToolAndOptionType(null, null);
-            this.toolConfig[typeof(C.IThirdPartyTool)] = new Opus.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
+            this.toolConfig[typeof(C.INullOpTool)] = new Bam.Core.ToolAndOptionType(null, null);
+            this.toolConfig[typeof(C.IThirdPartyTool)] = new Bam.Core.ToolAndOptionType(null, typeof(C.ThirdPartyOptionCollection));
         }
 
         protected virtual string
         GetBinPath(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
 
-            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            if (baseTarget.HasPlatform(Bam.Core.EPlatform.Win64))
             {
-                if (Opus.Core.OSUtilities.Is64BitHosting)
+                if (Bam.Core.OSUtilities.Is64BitHosting)
                 {
                     return this.bin64Folder;
                 }
@@ -72,11 +72,11 @@ namespace VisualCCommon
             string versionNumber)
         {
             string edition = null;
-            using (var key = Opus.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKeyPath))
+            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryKeyPath))
             {
                 if (null == key)
                 {
-                    throw new Opus.Core.Exception(System.String.Format("Unable to locate registry key, '{0}', for the VisualStudio service pack", registryKeyPath), false);
+                    throw new Bam.Core.Exception(System.String.Format("Unable to locate registry key, '{0}', for the VisualStudio service pack", registryKeyPath), false);
                 }
 
                 edition = key.GetValue("SPName") as string;
@@ -99,7 +99,7 @@ namespace VisualCCommon
             platformName = "VS";
             editionName = "PRO";
             vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
-            if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+            if (Bam.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
             {
                 var versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
                 return versionString;
@@ -110,7 +110,7 @@ namespace VisualCCommon
                 platformName = "VC";
                 editionName = "EXP";
                 vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
-                if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+                if (Bam.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
                 {
                     var versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
                     return versionString;
@@ -121,7 +121,7 @@ namespace VisualCCommon
                     platformName = "VC";
                     editionName = "RED";
                     vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
-                    if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+                    if (Bam.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
                     {
                         var versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
                         return versionString;
@@ -132,14 +132,14 @@ namespace VisualCCommon
                         platformName = "VC";
                         editionName = "CompilerCore";
                         vcRegistryKeyPath = GetVCRegistryKeyPath(platformName, versionNumber, editionName, LCID);
-                        if (Opus.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
+                        if (Bam.Core.Win32RegistryUtilities.Does32BitLMSoftwareKeyExist(vcRegistryKeyPath))
                         {
                             var versionString = GetVersionAndEditionString(vcRegistryKeyPath, versionNumber);
                             return versionString;
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Unable to locate registry key, '{0}', for the VisualStudio {1} service pack", vcRegistryKeyPath, versionNumber);
+                            throw new Bam.Core.Exception("Unable to locate registry key, '{0}', for the VisualStudio {1} service pack", vcRegistryKeyPath, versionNumber);
                         }
                     }
                 }
@@ -149,13 +149,13 @@ namespace VisualCCommon
         #region IToolset Members
 
         string
-        Opus.Core.IToolset.BinPath(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.BinPath(
+            Bam.Core.BaseTarget baseTarget)
         {
             return this.GetBinPath(baseTarget);
         }
 
-        Opus.Core.StringArray Opus.Core.IToolset.Environment
+        Bam.Core.StringArray Bam.Core.IToolset.Environment
         {
             get
             {
@@ -165,46 +165,46 @@ namespace VisualCCommon
         }
 
         string
-        Opus.Core.IToolset.InstallPath(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.InstallPath(
+            Bam.Core.BaseTarget baseTarget)
         {
             this.GetInstallPath();
             return this.installPath;
         }
 
         string
-        Opus.Core.IToolset.Version(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.Version(
+            Bam.Core.BaseTarget baseTarget)
         {
             return this.GetVersion(baseTarget);
         }
 
         bool
-        Opus.Core.IToolset.HasTool(
+        Bam.Core.IToolset.HasTool(
             System.Type toolType)
         {
             return this.toolConfig.ContainsKey(toolType);
         }
 
-        Opus.Core.ITool
-        Opus.Core.IToolset.Tool(
+        Bam.Core.ITool
+        Bam.Core.IToolset.Tool(
             System.Type toolType)
         {
-            if (!(this as Opus.Core.IToolset).HasTool(toolType))
+            if (!(this as Bam.Core.IToolset).HasTool(toolType))
             {
-                throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolConfig[toolType].Tool;
         }
 
         System.Type
-        Opus.Core.IToolset.ToolOptionType(
+        Bam.Core.IToolset.ToolOptionType(
             System.Type toolType)
         {
-            if (!(this as Opus.Core.IToolset).HasTool(toolType))
+            if (!(this as Bam.Core.IToolset).HasTool(toolType))
             {
-                throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolConfig[toolType].OptionsType;

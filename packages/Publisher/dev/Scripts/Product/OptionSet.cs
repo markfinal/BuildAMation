@@ -6,17 +6,17 @@
 namespace Publisher
 {
     public sealed partial class OptionSet :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         IPublishOptions
     {
         public
         OptionSet(
-            Opus.Core.DependencyNode owningNode) : base(owningNode)
+            Bam.Core.DependencyNode owningNode) : base(owningNode)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {
             var options = this as IPublishOptions;
             options.OSXApplicationBundle = false;
@@ -24,14 +24,14 @@ namespace Publisher
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var options = this as IPublishOptions;
 
             var locationMap = node.Module.Locations;
-            var exeDirLoc = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-            exeDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
-            if (node.Target.HasPlatform(Opus.Core.EPlatform.OSX) && options.OSXApplicationBundle)
+            var exeDirLoc = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+            exeDirLoc.SetReference(locationMap[Bam.Core.State.ModuleBuildDirLocationKey]);
+            if (node.Target.HasPlatform(Bam.Core.EPlatform.OSX) && options.OSXApplicationBundle)
             {
                 var dependent = node.ExternalDependents[0];
 

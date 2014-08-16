@@ -6,7 +6,7 @@
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder :
-        Opus.Core.IBuilder
+        Bam.Core.IBuilder
     {
         public Workspace Workspace
         {

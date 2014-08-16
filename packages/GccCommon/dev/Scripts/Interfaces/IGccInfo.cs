@@ -9,14 +9,14 @@ namespace GccCommon
     {
         string
         GccVersion(
-            Opus.Core.Target target);
+            Bam.Core.Target target);
 
         string
         MachineType(
-            Opus.Core.Target target);
+            Bam.Core.Target target);
 
         string
         GxxIncludePath(
-            Opus.Core.Target target);
+            Bam.Core.Target target);
     }
 }

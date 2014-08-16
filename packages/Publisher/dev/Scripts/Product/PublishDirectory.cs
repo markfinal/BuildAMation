@@ -9,23 +9,23 @@ namespace Publisher
     {
         public
         PublishDirectory(
-            Opus.Core.Location root,
+            Bam.Core.Location root,
             string directory) : this(root, directory, null)
         {}
 
         public
         PublishDirectory(
-            Opus.Core.Location root,
+            Bam.Core.Location root,
             string directory,
             string renamedLeaf)
         {
             this.Root = root;
             this.Directory = directory;
-            this.DirectoryLocation = new Opus.Core.ScaffoldLocation(root, directory, Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            this.DirectoryLocation = new Bam.Core.ScaffoldLocation(root, directory, Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             this.RenamedLeaf = renamedLeaf;
         }
 
-        public Opus.Core.Location Root
+        public Bam.Core.Location Root
         {
             get;
             private set;
@@ -37,7 +37,7 @@ namespace Publisher
             private set;
         }
 
-        public Opus.Core.Location DirectoryLocation
+        public Bam.Core.Location DirectoryLocation
         {
             get;
             private set;

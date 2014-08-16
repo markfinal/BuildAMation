@@ -4,25 +4,25 @@
 // <summary>XcodeBuilder package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(XcodeBuilder.WarmXcodeSchemeCacheAction))]
+[assembly: Bam.Core.RegisterAction(typeof(XcodeBuilder.WarmXcodeSchemeCacheAction))]
 
 namespace XcodeBuilder
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class WarmXcodeSchemeCacheAction :
-        Opus.Core.IAction
+        Bam.Core.IAction
     {
         public
         WarmXcodeSchemeCacheAction()
         {
-            if (!Opus.Core.State.HasCategory("XcodeBuilder"))
+            if (!Bam.Core.State.HasCategory("XcodeBuilder"))
             {
-                Opus.Core.State.AddCategory("XcodeBuilder");
+                Bam.Core.State.AddCategory("XcodeBuilder");
             }
-            Opus.Core.State.Add<bool>("XcodeBuilder", "WarmSchemeCache", false);
+            Bam.Core.State.Add<bool>("XcodeBuilder", "WarmSchemeCache", false);
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -30,7 +30,7 @@ namespace XcodeBuilder
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -39,11 +39,11 @@ namespace XcodeBuilder
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
-            Opus.Core.State.Set("XcodeBuilder", "WarmSchemeCache", true);
+            Bam.Core.State.Set("XcodeBuilder", "WarmSchemeCache", true);
 
-            Opus.Core.Log.DebugMessage("Xcode project scheme caches will be warmed at the end of the build");
+            Bam.Core.Log.DebugMessage("Xcode project scheme caches will be warmed at the end of the build");
 
             return true;
         }

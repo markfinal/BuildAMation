@@ -25,7 +25,7 @@ namespace XcodeBuilder
             var data = project.BuildFiles.Get(moduleName, fileRef, sourcesBuildPhase);
             if (null == data)
             {
-                throw new Opus.Core.Exception("Build file not available");
+                throw new Bam.Core.Exception("Build file not available");
             }
 
             var content = moduleToBuild.Content.ToString();

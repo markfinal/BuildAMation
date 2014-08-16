@@ -47,7 +47,7 @@ namespace VSSolutionBuilder
             get;
         }
 
-        Opus.Core.UniqueList<string> References
+        Bam.Core.UniqueList<string> References
         {
             get;
         }

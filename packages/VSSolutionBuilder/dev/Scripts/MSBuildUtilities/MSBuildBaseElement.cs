@@ -19,7 +19,7 @@ namespace VSSolutionBuilder
         {
             if (System.String.IsNullOrEmpty(name))
             {
-                throw new Opus.Core.Exception("Name of MSBuild XML element cannot be null");
+                throw new Bam.Core.Exception("Name of MSBuild XML element cannot be null");
             }
 
             this.XmlDocument = document;
@@ -58,7 +58,7 @@ namespace VSSolutionBuilder
             {
                 if (null != this.condition)
                 {
-                    throw new Opus.Core.Exception("Condition has already been set");
+                    throw new Bam.Core.Exception("Condition has already been set");
                 }
 
                 this.condition = value;
@@ -77,7 +77,7 @@ namespace VSSolutionBuilder
             {
                 if (null != this.label)
                 {
-                    throw new Opus.Core.Exception("Label has already been set");
+                    throw new Bam.Core.Exception("Label has already been set");
                 }
 
                 this.label = value;

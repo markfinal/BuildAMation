@@ -14,7 +14,7 @@ namespace Gcc
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -26,12 +26,12 @@ namespace Gcc
 
             if (!System.IO.Directory.Exists(cxxIncludePath))
             {
-                throw new Opus.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath);
+                throw new Bam.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath);
             }
             var cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
             if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
-                throw new Opus.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2);
+                throw new Bam.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2);
             }
 
             var cCompilerOptions = this as C.ICCompilerOptions;
@@ -43,7 +43,7 @@ namespace Gcc
 
         public
         ObjCxxCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

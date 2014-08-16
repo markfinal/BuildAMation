@@ -14,7 +14,7 @@ namespace ComposerXE
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
             ComposerXECommon.CxxCompilerOptionCollection.ExportedDefaults(this, node);
@@ -22,7 +22,7 @@ namespace ComposerXE
 
         public
         CxxCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

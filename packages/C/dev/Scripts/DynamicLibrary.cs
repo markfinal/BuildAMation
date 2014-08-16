@@ -10,16 +10,16 @@ namespace C
     /// </summary>
     public partial class DynamicLibrary :
         Application,
-        Opus.Core.IPostActionModules
+        Bam.Core.IPostActionModules
     {
-        public static readonly Opus.Core.LocationKey ImportLibraryFile = new Opus.Core.LocationKey("ImportLibraryFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey ImportLibraryDir = new Opus.Core.LocationKey("ImportLibraryDirectory", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey ImportLibraryFile = new Bam.Core.LocationKey("ImportLibraryFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey ImportLibraryDir = new Bam.Core.LocationKey("ImportLibraryDirectory", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
         protected
         DynamicLibrary()
         {
-            this.PostActionModuleTypes = new Opus.Core.TypeArray();
-            if (Opus.Core.OSUtilities.IsUnixHosting)
+            this.PostActionModuleTypes = new Bam.Core.TypeArray();
+            if (Bam.Core.OSUtilities.IsUnixHosting)
             {
                 this.PostActionModuleTypes.Add(typeof(PosixSharedLibrarySymlinks));
             }
@@ -28,8 +28,8 @@ namespace C
         [LocalCompilerOptionsDelegate]
         protected static void
         DynamicLibrarySetOpusDLLBuildPreprocessorDefine(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.Defines.Add("D_OPUS_DYNAMICLIBRARY_BUILD");
@@ -38,8 +38,8 @@ namespace C
         [LocalLinkerOptionsDelegate]
         protected static void
         DynamicLibraryEnableDLL(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.DynamicLibrary;
@@ -51,7 +51,7 @@ namespace C
             }
         }
 
-        public Opus.Core.TypeArray PostActionModuleTypes
+        public Bam.Core.TypeArray PostActionModuleTypes
         {
             get;
             private set;
@@ -59,9 +59,9 @@ namespace C
 
         #region IPostActionModules Members
 
-        Opus.Core.TypeArray
-        Opus.Core.IPostActionModules.GetPostActionModuleTypes(
-            Opus.Core.BaseTarget target)
+        Bam.Core.TypeArray
+        Bam.Core.IPostActionModules.GetPostActionModuleTypes(
+            Bam.Core.BaseTarget target)
         {
             return this.PostActionModuleTypes;
         }

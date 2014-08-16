@@ -121,39 +121,39 @@ namespace CSharp
                 this.ProcessNamedSetHandler("OptimizeSetHandler", this["Optimize"]);
             }
         }
-        Opus.Core.FileCollection IOptions.References
+        Bam.Core.FileCollection IOptions.References
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("References", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("References", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("References", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("References", value);
                 this.ProcessNamedSetHandler("ReferencesSetHandler", this["References"]);
             }
         }
-        Opus.Core.FileCollection IOptions.Modules
+        Bam.Core.FileCollection IOptions.Modules
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Modules", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("Modules", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("Modules", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("Modules", value);
                 this.ProcessNamedSetHandler("ModulesSetHandler", this["Modules"]);
             }
         }
-        Opus.Core.StringArray IOptions.Defines
+        Bam.Core.StringArray IOptions.Defines
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("Defines", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.StringArray>("Defines", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("Defines", value);
+                this.SetReferenceTypeOption<Bam.Core.StringArray>("Defines", value);
                 this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }

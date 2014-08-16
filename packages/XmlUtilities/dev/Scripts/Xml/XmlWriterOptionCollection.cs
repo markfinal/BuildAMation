@@ -6,22 +6,22 @@
 namespace XmlUtilities
 {
     public partial class XmlWriterOptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         IXmlOptions
     {
         public
         XmlWriterOptionCollection(
-            Opus.Core.DependencyNode owningNode) : base(owningNode)
+            Bam.Core.DependencyNode owningNode) : base(owningNode)
         {}
 
         #region implemented abstract members of BaseOptionCollection
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
         #endregion
     }

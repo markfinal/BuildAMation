@@ -8,15 +8,15 @@ namespace C
     /// <summary>
     /// C object file
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(ICompilerTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(ICompilerTool))]
     public class ObjectFile :
-        Opus.Core.BaseModule
+        Bam.Core.BaseModule
     {
-        private static readonly Opus.Core.LocationKey SourceFile = new Opus.Core.LocationKey("SourceFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("ObjectFileDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("ObjectFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
+        private static readonly Bam.Core.LocationKey SourceFile = new Bam.Core.LocationKey("SourceFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("ObjectFileDir", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("ObjectFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
 
-        public Opus.Core.Location SourceFileLocation
+        public Bam.Core.Location SourceFileLocation
         {
             get
             {
@@ -31,10 +31,10 @@ namespace C
 
         public void
         Include(
-            Opus.Core.Location baseLocation,
+            Bam.Core.Location baseLocation,
             string pattern)
         {
-            this.SourceFileLocation = new Opus.Core.ScaffoldLocation(baseLocation, pattern, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            this.SourceFileLocation = new Bam.Core.ScaffoldLocation(baseLocation, pattern, Bam.Core.ScaffoldLocation.ETypeHint.File);
         }
     }
 }

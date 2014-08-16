@@ -17,9 +17,9 @@ namespace WindowsSDK
 
         public
         WindowsSDK(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
-            if (!Opus.Core.OSUtilities.IsWindowsHosting)
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
             }
@@ -33,9 +33,9 @@ namespace WindowsSDK
             }
             else
             {
-                throw new Opus.Core.Exception("PlatformSDK with VisualStudio 8.0 was not installed");
+                throw new Bam.Core.Exception("PlatformSDK with VisualStudio 8.0 was not installed");
             }
-            Opus.Core.Log.DebugMessage("Windows SDK installation folder is from the MSVC PlatformSDK: {0}", installPath);
+            Bam.Core.Log.DebugMessage("Windows SDK installation folder is from the MSVC PlatformSDK: {0}", installPath);
 
             bin32Path = System.IO.Path.Combine(installPath, "bin");
             bin64Path = System.IO.Path.Combine(bin32Path, "win64");
@@ -46,54 +46,54 @@ namespace WindowsSDK
 
             includePath = System.IO.Path.Combine(installPath, "include");
 
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(WindowsSDK_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(WindowsSDK_LibraryPaths);
         }
 
         [C.ExportLinkerOptionsDelegate]
         void
         WindowsSDK_LibraryPaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
-            if (target.Platform == Opus.Core.EPlatform.Win32)
+            if (target.Platform == Bam.Core.EPlatform.Win32)
             {
                 linkerOptions.LibraryPaths.Add(lib32Path);
             }
-            else if (target.Platform == Opus.Core.EPlatform.Win64)
+            else if (target.Platform == Bam.Core.EPlatform.Win64)
             {
                 linkerOptions.LibraryPaths.Add(lib64Path);
             }
             else
             {
-                throw new Opus.Core.Exception("Windows SDK is not supported for platform '{0}'; use win32 or win64", target.Platform);
+                throw new Bam.Core.Exception("Windows SDK is not supported for platform '{0}'; use win32 or win64", target.Platform);
             }
         }
 
         [C.ExportCompilerOptionsDelegate]
         void
         WindowsSDK_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Add(includePath);
         }
 
-        public override Opus.Core.StringArray
+        public override Bam.Core.StringArray
         Libraries(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             throw new System.NotImplementedException();
         }
 
         public static string
         BinPath(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             string binPath;
-            if (Opus.Core.OSUtilities.Is64Bit(baseTarget))
+            if (Bam.Core.OSUtilities.Is64Bit(baseTarget))
             {
                 binPath = bin64Path;
             }

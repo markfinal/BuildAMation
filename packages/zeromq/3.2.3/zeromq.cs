@@ -6,7 +6,7 @@ namespace zeromq
     {
         public
         ZMQSharedLibrary(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var zmqDir = this.PackageLocation.SubDirectory("zeromq-3.2.3");
             var zmqIncludeDir = zmqDir.SubDirectory("include");
@@ -14,7 +14,7 @@ namespace zeromq
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -33,19 +33,19 @@ namespace zeromq
                 var zmqSrcDir = zmqDir.SubDirectory("src");
                 this.Include(zmqSrcDir, "*.cpp");
 
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePath);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(InternalIncludePath);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Exceptions);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DisableWarnings);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DllExport);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(IncludePath);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(InternalIncludePath);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Exceptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DisableWarnings);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DllExport);
             }
 
             void
             DllExport(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
-                if (target.HasPlatform(Opus.Core.EPlatform.Windows) && target.HasToolsetType(typeof(VisualC.Toolset)))
+                if (target.HasPlatform(Bam.Core.EPlatform.Windows) && target.HasToolsetType(typeof(VisualC.Toolset)))
                 {
                     var options = module.Options as C.ICCompilerOptions;
                     if (null != options)
@@ -57,8 +57,8 @@ namespace zeromq
 
             void
             DisableWarnings(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var options = module.Options as VisualCCommon.ICCompilerOptions;
                 if (null != options)
@@ -66,7 +66,7 @@ namespace zeromq
                     options.WarningLevel = VisualCCommon.EWarningLevel.Level3;
                 }
 
-                if (target.HasPlatform(Opus.Core.EPlatform.Windows) && target.HasToolsetType(typeof(VisualC.Toolset)))
+                if (target.HasPlatform(Bam.Core.EPlatform.Windows) && target.HasToolsetType(typeof(VisualC.Toolset)))
                 {
                     var cOptions = module.Options as C.ICCompilerOptions;
                     if (null != cOptions)
@@ -80,8 +80,8 @@ namespace zeromq
 
             void
             Exceptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var options = module.Options as C.ICxxCompilerOptions;
                 if (null != options)
@@ -92,13 +92,13 @@ namespace zeromq
 
             void
             InternalIncludePath(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var options = module.Options as C.ICCompilerOptions;
                 if (null != options)
                 {
-                    if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                    if (target.HasPlatform(Bam.Core.EPlatform.Windows))
                     {
                         var zmqDir = this.PackageLocation.SubDirectory("zeromq-3.2.3");
                         var zmqBuildsDir = zmqDir.SubDirectory("builds");
@@ -110,8 +110,8 @@ namespace zeromq
             [C.ExportCompilerOptionsDelegate]
             void
             IncludePath(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var options = module.Options as C.ICCompilerOptions;
                 if (null != options)
@@ -122,26 +122,26 @@ namespace zeromq
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headers = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headers = new Bam.Core.FileCollection();
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new [] { typeof(VisualC.Toolset)})]
-        Opus.Core.TypeArray winDependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new [] { typeof(VisualC.Toolset)})]
+        Bam.Core.TypeArray winDependents = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
             );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray winLibs = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray winLibs = new Bam.Core.StringArray(
             "Ws2_32.lib",
             "Advapi32.lib"
             );
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
             );
 #endif

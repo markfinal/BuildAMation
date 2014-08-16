@@ -73,39 +73,39 @@ namespace MingwCommon
                 this.ProcessNamedSetHandler("DynamicLibrarySetHandler", this["DynamicLibrary"]);
             }
         }
-        Opus.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
+        Bam.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("LibraryPaths", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("LibraryPaths", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("LibraryPaths", value);
                 this.ProcessNamedSetHandler("LibraryPathsSetHandler", this["LibraryPaths"]);
             }
         }
-        Opus.Core.FileCollection C.ILinkerOptions.StandardLibraries
+        Bam.Core.FileCollection C.ILinkerOptions.StandardLibraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("StandardLibraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("StandardLibraries", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("StandardLibraries", value);
                 this.ProcessNamedSetHandler("StandardLibrariesSetHandler", this["StandardLibraries"]);
             }
         }
-        Opus.Core.FileCollection C.ILinkerOptions.Libraries
+        Bam.Core.FileCollection C.ILinkerOptions.Libraries
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.FileCollection>("Libraries", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.FileCollection>("Libraries", value);
+                this.SetReferenceTypeOption<Bam.Core.FileCollection>("Libraries", value);
                 this.ProcessNamedSetHandler("LibrariesSetHandler", this["Libraries"]);
             }
         }

@@ -7,16 +7,16 @@ namespace VisualCCommon
 {
     public sealed class CxxCompiler :
         C.ICxxCompilerTool,
-        Opus.Core.IToolSupportsResponseFile,
-        Opus.Core.IToolForwardedEnvironmentVariables,
-        Opus.Core.IToolEnvironmentVariables
+        Bam.Core.IToolSupportsResponseFile,
+        Bam.Core.IToolForwardedEnvironmentVariables,
+        Bam.Core.IToolEnvironmentVariables
     {
-        private Opus.Core.IToolset toolset;
-        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+        private Bam.Core.IToolset toolset;
+        private Bam.Core.StringArray requiredEnvironmentVariables = new Bam.Core.StringArray();
 
         public
         CxxCompiler(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
             this.requiredEnvironmentVariables.Add("SystemRoot");
@@ -51,21 +51,21 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         C.ICompilerTool.IncludePaths(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
             var installPath = this.toolset.InstallPath(baseTarget);
-            var includePaths = new Opus.Core.StringArray();
+            var includePaths = new Bam.Core.StringArray();
             includePaths.Add(System.IO.Path.Combine(installPath, "include"));
             return includePaths;
         }
 
-        Opus.Core.StringArray C.ICompilerTool.IncludePathCompilerSwitches
+        Bam.Core.StringArray C.ICompilerTool.IncludePathCompilerSwitches
         {
             get
             {
-                return new Opus.Core.StringArray("-I");
+                return new Bam.Core.StringArray("-I");
             }
         }
 
@@ -74,18 +74,18 @@ namespace VisualCCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var platformBinFolder = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(platformBinFolder, "cl.exe");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.ObjectFile.OutputFile,
                 C.ObjectFile.OutputDir,
                 CCompiler.PDBFile,
@@ -98,7 +98,7 @@ namespace VisualCCommon
 
         #region IToolSupportsResponseFile Members
 
-        string Opus.Core.IToolSupportsResponseFile.Option
+        string Bam.Core.IToolSupportsResponseFile.Option
         {
             get
             {
@@ -110,7 +110,7 @@ namespace VisualCCommon
 
         #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
+        Bam.Core.StringArray Bam.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -122,16 +122,16 @@ namespace VisualCCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
-        Opus.Core.IToolEnvironmentVariables.Variables(
-            Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>
+        Bam.Core.IToolEnvironmentVariables.Variables(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var dictionary = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var dictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             dictionary["PATH"] = this.toolset.Environment;
-            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            if (baseTarget.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 // some DLLs exist only in the 32-bit bin folder
-                var baseTarget32 = Opus.Core.BaseTarget.GetInstance32bits(baseTarget);
+                var baseTarget32 = Bam.Core.BaseTarget.GetInstance32bits(baseTarget);
                 dictionary["PATH"].AddUnique(this.toolset.BinPath(baseTarget32));
             }
 

@@ -6,12 +6,12 @@
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder :
-        Opus.Core.IBuilderPreExecute
+        Bam.Core.IBuilderPreExecute
     {
 #region IBuilderPreExecute Members
 
         void
-        Opus.Core.IBuilderPreExecute.PreExecute()
+        Bam.Core.IBuilderPreExecute.PreExecute()
         {
             this.Workspace = new Workspace();
         }

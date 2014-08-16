@@ -10,15 +10,15 @@ namespace VisualStudioProcessor
         public static VisualStudioProcessor.ToolAttributeDictionary
         Execute(
             object sender,
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             EVisualStudioTarget vsTarget)
         {
-            var optionCollection = sender as Opus.Core.BaseOptionCollection;
+            var optionCollection = sender as Bam.Core.BaseOptionCollection;
 
             var optionsDictionary = new VisualStudioProcessor.ToolAttributeDictionary();
 
             // TODO: can I use a var here? especially on Mono
-            foreach (System.Collections.Generic.KeyValuePair<string, Opus.Core.Option> optionKeyValue in optionCollection)
+            foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.Option> optionKeyValue in optionCollection)
             {
                 var optionName = optionKeyValue.Key;
                 var option = optionKeyValue.Value;
@@ -32,7 +32,7 @@ namespace VisualStudioProcessor
                 var data = option.PrivateData as IVisualStudioDelegate;
                 if (null == data)
                 {
-                    throw new Opus.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString());
+                    throw new Bam.Core.Exception("Option data for '{0}', of type '{1}', does not implement the interface '{2}'", optionName, option.PrivateData.GetType().ToString(), typeof(IVisualStudioDelegate).ToString());
                 }
 
                 var visualStudioDelegate = data.VisualStudioProjectDelegate;
@@ -41,7 +41,7 @@ namespace VisualStudioProcessor
                     if (null != visualStudioDelegate.Target)
                     {
                         // Not a requirement, but just a check
-                        throw new Opus.Core.Exception("Delegate for '{0}' should be static", optionName);
+                        throw new Bam.Core.Exception("Delegate for '{0}' should be static", optionName);
                     }
 
                     var dictionary = data.VisualStudioProjectDelegate(optionCollection, option, target, vsTarget);

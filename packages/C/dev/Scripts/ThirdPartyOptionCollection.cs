@@ -6,33 +6,33 @@
 namespace C
 {
     public class ThirdPartyOptionCollection :
-        Opus.Core.BaseOptionCollection
+        Bam.Core.BaseOptionCollection
     {
         public
         ThirdPartyOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
 
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
 
         // TODO: this needs to be updated for Location
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var thirdPartyModule = node.Module as C.ThirdPartyModule;
             if (null != thirdPartyModule)
             {
                 var packagePath = node.Package.Identifier.Path;
-                var proxyPath = (node.Module as Opus.Core.BaseModule).ProxyPath;
+                var proxyPath = (node.Module as Bam.Core.BaseModule).ProxyPath;
                 if (null != proxyPath)
                 {
                     packagePath = proxyPath.Combine(node.Package.Identifier.Location).AbsolutePath;

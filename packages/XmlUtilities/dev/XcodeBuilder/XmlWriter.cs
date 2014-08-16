@@ -69,7 +69,7 @@ namespace XcodeBuilder
                 nativeTarget.Group.Children.AddUnique(fileRef);
 
                 // add to the build configuration
-                var baseTarget = (Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target;
+                var baseTarget = (Bam.Core.BaseTarget)moduleToBuild.OwningNode.Target;
                 var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
                 buildConfiguration.Options["INFOPLIST_FILE"].AddUnique(xmlFilePath);
             }

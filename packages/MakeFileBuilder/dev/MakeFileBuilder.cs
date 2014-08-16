@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>MakeFileBuilder package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.DeclareBuilder("MakeFile", typeof(MakeFileBuilder.MakeFileBuilder))]
+[assembly: Bam.Core.DeclareBuilder("MakeFile", typeof(MakeFileBuilder.MakeFileBuilder))]
 
 namespace MakeFileBuilder
 {

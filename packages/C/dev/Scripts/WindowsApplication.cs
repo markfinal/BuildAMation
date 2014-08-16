@@ -11,9 +11,9 @@ namespace C
     public class WindowsApplication : Application
     {
         [LocalCompilerOptionsDelegate]
-        private static void WindowsApplicationCompilerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void WindowsApplicationCompilerOptions(Bam.Core.IModule module, Bam.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target))
+            if (Bam.Core.OSUtilities.IsWindows(target))
             {
                 var compilerOptions = module.Options as ICCompilerOptions;
                 compilerOptions.Defines.Add("_WINDOWS");
@@ -21,9 +21,9 @@ namespace C
         }
 
         [LocalLinkerOptionsDelegate]
-        private static void WindowApplicationLinkerOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        private static void WindowApplicationLinkerOptions(Bam.Core.IModule module, Bam.Core.Target target)
         {
-            if (Opus.Core.OSUtilities.IsWindows(target))
+            if (Bam.Core.OSUtilities.IsWindows(target))
             {
                 var linkerOptions = module.Options as ILinkerOptions;
                 linkerOptions.SubSystem = ESubsystem.Windows;

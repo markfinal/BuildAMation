@@ -5,10 +5,10 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalThirdpartyToolOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalThirdpartyToolOptionsDelegateAttribute),
                                    typeof(ExportThirdpartyToolOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetThirdPartyToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetThirdPartyToolset")]
     public interface IThirdPartyTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

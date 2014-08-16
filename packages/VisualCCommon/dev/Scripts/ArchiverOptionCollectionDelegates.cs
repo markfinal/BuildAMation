@@ -16,11 +16,11 @@ namespace VisualCCommon
         private static void
         OutputTypeCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
+            var enumOption = option as Bam.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
@@ -30,17 +30,17 @@ namespace VisualCCommon
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", libraryFilePath));
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
+                    throw new Bam.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
         OutputTypeVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var enumOption = option as Opus.Core.ValueTypeOption<C.EArchiverOutput>;
+            var enumOption = option as Bam.Core.ValueTypeOption<C.EArchiverOutput>;
             switch (enumOption.Value)
             {
                 case C.EArchiverOutput.StaticLibrary:
@@ -51,17 +51,17 @@ namespace VisualCCommon
                         return returnVal;
                     }
                 default:
-                    throw new Opus.Core.Exception("Unrecognized value for C.EArchiverOutput");
+                    throw new Bam.Core.Exception("Unrecognized value for C.EArchiverOutput");
             }
         }
         private static void
         AdditionalOptionsCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stringOption = option as Bam.Core.ReferenceTypeOption<string>;
             var arguments = stringOption.Value.Split(' ');
             foreach (var argument in arguments)
             {
@@ -71,11 +71,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         AdditionalOptionsVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var stringOption = option as Opus.Core.ReferenceTypeOption<string>;
+            var stringOption = option as Bam.Core.ReferenceTypeOption<string>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("AdditionalOptions", stringOption.Value);
             return returnVal;
@@ -85,11 +85,11 @@ namespace VisualCCommon
         private static void
         NoLogoCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
+            var noLogoOption = option as Bam.Core.ValueTypeOption<bool>;
             if (noLogoOption.Value)
             {
                 commandLineBuilder.Add("-NOLOGO");
@@ -98,11 +98,11 @@ namespace VisualCCommon
         private static VisualStudioProcessor.ToolAttributeDictionary
         NoLogoVisualStudioProcessor(
              object sender,
-             Opus.Core.Option option,
-             Opus.Core.Target target,
+             Bam.Core.Option option,
+             Bam.Core.Target target,
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
-            var noLogoOption = option as Opus.Core.ValueTypeOption<bool>;
+            var noLogoOption = option as Bam.Core.ValueTypeOption<bool>;
             var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             returnVal.Add("SuppressStartupBanner", noLogoOption.Value.ToString().ToLower());
             return returnVal;
@@ -110,7 +110,7 @@ namespace VisualCCommon
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             this["OutputType"].PrivateData = new PrivateData(OutputTypeCommandLineProcessor,OutputTypeVisualStudioProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsVisualStudioProcessor);

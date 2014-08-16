@@ -12,14 +12,14 @@ namespace VSSolutionBuilder
             QtCommon.MocFile moduleToBuild,
             out System.Boolean success)
         {
-            var mocFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var mocFileModule = moduleToBuild as Bam.Core.BaseModule;
             var node = mocFileModule.OwningNode;
             var target = node.Target;
             var mocFileOptions = mocFileModule.Options;
 
             var parentNode = node.Parent;
-            Opus.Core.DependencyNode targetNode;
-            if ((null != parentNode) && (parentNode.Module is Opus.Core.IModuleCollection))
+            Bam.Core.DependencyNode targetNode;
+            if ((null != parentNode) && (parentNode.Module is Bam.Core.IModuleCollection))
             {
                 targetNode = parentNode.ExternalDependentFor[0];
             }
@@ -39,7 +39,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
@@ -82,7 +82,7 @@ namespace VSSolutionBuilder
                 {
                     configuration = new ProjectConfiguration(configurationName, projectData);
 
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
@@ -109,9 +109,9 @@ namespace VSSolutionBuilder
             }
 
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
-            var toolExePath = tool.Executable((Opus.Core.BaseTarget)target);
+            var toolExePath = tool.Executable((Bam.Core.BaseTarget)target);
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (toolExePath.Contains(" "))
             {
                 commandLineBuilder.Add(System.String.Format("\"{0}\"", toolExePath));
@@ -127,7 +127,7 @@ namespace VSSolutionBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             var customTool = new ProjectTool("VCCustomBuildTool");

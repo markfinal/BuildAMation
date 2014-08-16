@@ -14,9 +14,9 @@ namespace QMakeBuilder
         {
             var node = moduleToBuild.OwningNode;
             var includeSourceInProject = true;
-            if (moduleToBuild is Opus.Core.IIsGeneratedSource)
+            if (moduleToBuild is Bam.Core.IIsGeneratedSource)
             {
-                var generatedSource = moduleToBuild as Opus.Core.IIsGeneratedSource;
+                var generatedSource = moduleToBuild as Bam.Core.IIsGeneratedSource;
                 includeSourceInProject = !generatedSource.AutomaticallyHandledByBuilder(node.Target);
             }
 
@@ -49,10 +49,10 @@ namespace QMakeBuilder
 
             if (optionInterface is CommandLineProcessor.ICommandLineSupport)
             {
-                var commandLineBuilder = new Opus.Core.StringArray();
+                var commandLineBuilder = new Bam.Core.StringArray();
                 var target = node.Target;
                 var commandLineOption = optionInterface as CommandLineProcessor.ICommandLineSupport;
-                var excludedOptionNames = new Opus.Core.StringArray();
+                var excludedOptionNames = new Bam.Core.StringArray();
                 excludedOptionNames.Add("OutputType");
                 excludedOptionNames.Add("Defines");
                 excludedOptionNames.Add("IncludePaths");
@@ -72,7 +72,7 @@ namespace QMakeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             success = true;

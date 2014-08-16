@@ -4,25 +4,25 @@
 // <summary>C package</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(C.HeaderDependencyAction))]
+[assembly: Bam.Core.RegisterAction(typeof(C.HeaderDependencyAction))]
 
 namespace C
 {
-    [Opus.Core.PreambleAction]
+    [Bam.Core.PreambleAction]
     public sealed class HeaderDependencyAction :
-        Opus.Core.IAction
+        Bam.Core.IAction
     {
         public
         HeaderDependencyAction()
         {
-            if (!Opus.Core.State.HasCategory("C"))
+            if (!Bam.Core.State.HasCategory("C"))
             {
-                Opus.Core.State.AddCategory("C");
+                Bam.Core.State.AddCategory("C");
             }
-            Opus.Core.State.Add<bool>("C", "HeaderDependencyGeneration", true);
+            Bam.Core.State.Add<bool>("C", "HeaderDependencyGeneration", true);
         }
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Bam.Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -30,7 +30,7 @@ namespace C
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Bam.Core.IAction.Description
         {
             get
             {
@@ -39,11 +39,11 @@ namespace C
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Bam.Core.IAction.Execute()
         {
-            Opus.Core.State.Set("C", "HeaderDependencyGeneration", false);
+            Bam.Core.State.Set("C", "HeaderDependencyGeneration", false);
 
-            Opus.Core.Log.DebugMessage("C header dependency generation has been disabled");
+            Bam.Core.Log.DebugMessage("C header dependency generation has been disabled");
 
             return true;
         }

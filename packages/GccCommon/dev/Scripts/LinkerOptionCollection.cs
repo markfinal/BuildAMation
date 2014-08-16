@@ -13,21 +13,21 @@ namespace GccCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
             var target = node.Target;
 
             var localLinkerOptions = this as ILinkerOptions;
-            localLinkerOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
+            localLinkerOptions.SixtyFourBit = Bam.Core.OSUtilities.Is64Bit(target);
 
             var cLinkerOptions = this as C.ILinkerOptions;
             cLinkerOptions.DoNotAutoIncludeStandardLibraries = false; // TODO: fix this - requires a bunch of stuff to be added to the command line
 
             localLinkerOptions.CanUseOrigin = false;
             localLinkerOptions.AllowUndefinedSymbols = (node.Module is C.DynamicLibrary);
-            localLinkerOptions.RPath = new Opus.Core.StringArray();
+            localLinkerOptions.RPath = new Bam.Core.StringArray();
 
             if (null != node.Children)
             {
@@ -63,7 +63,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
 
         public
         LinkerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

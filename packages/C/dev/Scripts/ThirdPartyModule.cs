@@ -8,14 +8,14 @@ namespace C
     /// <summary>
     /// C third party library (externally built libraries)
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(IThirdPartyTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IThirdPartyTool))]
     public abstract class ThirdPartyModule :
-        Opus.Core.BaseModule
+        Bam.Core.BaseModule
     {
         public virtual void
         RegisterOutputFiles(
-            Opus.Core.BaseOptionCollection options,
-            Opus.Core.Target target,
+            Bam.Core.BaseOptionCollection options,
+            Bam.Core.Target target,
             string modulePath)
         {}
     }

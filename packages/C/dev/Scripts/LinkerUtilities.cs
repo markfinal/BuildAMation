@@ -10,10 +10,10 @@ namespace C
         // TODO: deprecate this - it is still used in the MakeFile builder
         public static void
         AppendLibrariesToCommandLine(
-            Opus.Core.StringArray commandLineBuilder,
+            Bam.Core.StringArray commandLineBuilder,
             ILinkerTool linkerTool,
             ILinkerOptions linkerOptions,
-            Opus.Core.StringArray otherLibraryPaths)
+            Bam.Core.StringArray otherLibraryPaths)
         {
             var includeStandardLibraries = linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0;
             var includeOtherLibraries = (null != otherLibraryPaths) && (otherLibraryPaths.Count > 0);
@@ -29,7 +29,7 @@ namespace C
                 }
 
                 // TODO: replace with 'var'
-                foreach (Opus.Core.Location library in linkerOptions.Libraries)
+                foreach (Bam.Core.Location library in linkerOptions.Libraries)
                 {
                     var libraryPath = library.AbsolutePath;
                     if (libraryPath.Contains(" "))
@@ -64,10 +64,10 @@ namespace C
 
         public static void
         AppendLibrariesToCommandLine(
-            Opus.Core.StringArray commandLineBuilder,
+            Bam.Core.StringArray commandLineBuilder,
             ILinkerTool linkerTool,
             ILinkerOptions linkerOptions,
-            Opus.Core.LocationArray otherLibraryPaths)
+            Bam.Core.LocationArray otherLibraryPaths)
         {
             var includeStandardLibraries = linkerOptions.DoNotAutoIncludeStandardLibraries && linkerOptions.StandardLibraries.Count > 0;
             var includeOtherLibraries = (null != otherLibraryPaths) && (otherLibraryPaths.Count > 0);
@@ -86,7 +86,7 @@ namespace C
                 }
 
                 // TODO: replace with 'var'
-                foreach (Opus.Core.Location library in linkerOptions.Libraries)
+                foreach (Bam.Core.Location library in linkerOptions.Libraries)
                 {
                     var libraryPath = library.AbsolutePath;
                     if (libraryPath.Contains(" "))

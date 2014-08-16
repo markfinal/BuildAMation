@@ -6,12 +6,12 @@
 namespace C
 {
     public abstract class CompilerOptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var compilerOptions = this as ICCompilerOptions;
 
@@ -25,7 +25,7 @@ namespace C
             compilerOptions.IgnoreStandardIncludePaths = true;
             compilerOptions.TargetLanguage = ETargetLanguage.Default;
 
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 compilerOptions.DebugSymbols = true;
                 compilerOptions.Optimization = EOptimization.Off;
@@ -33,7 +33,7 @@ namespace C
             }
             else
             {
-                if (!target.HasConfiguration(Opus.Core.EConfiguration.Profile))
+                if (!target.HasConfiguration(Bam.Core.EConfiguration.Profile))
                 {
                     compilerOptions.DebugSymbols = false;
                 }
@@ -51,28 +51,28 @@ namespace C
             compilerOptions.Undefines = new DefineCollection();
 
             // TODO: deprecate this in 0.60
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Opus.Core.BaseTarget)target).PlatformName('u')));
+            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Bam.Core.BaseTarget)target).PlatformName('u')));
 
-            if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+            if (target.HasPlatform(Bam.Core.EPlatform.Windows))
             {
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_WINDOWS"));
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_UNIX"));
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_OSX"));
             }
 
             {
-                var is64bit = Opus.Core.OSUtilities.Is64Bit(target);
+                var is64bit = Bam.Core.OSUtilities.Is64Bit(target);
                 var bits = (is64bit) ? 64 : 32;
                 compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_BITS={0}", bits.ToString()));
             }
             {
-                var isLittleEndian = Opus.Core.State.IsLittleEndian;
+                var isLittleEndian = Bam.Core.State.IsLittleEndian;
                 if (isLittleEndian)
                 {
                     compilerOptions.Defines.Add("D_OPUS_PLATFORM_LITTLEENDIAN");
@@ -82,15 +82,15 @@ namespace C
                     compilerOptions.Defines.Add("D_OPUS_PLATFORM_BIGENDIAN");
                 }
             }
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", ((Opus.Core.BaseTarget)target).ConfigurationName('u')));
+            compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", ((Bam.Core.BaseTarget)target).ConfigurationName('u')));
             compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.ToolsetName('u')));
 
-            compilerOptions.IncludePaths = new Opus.Core.DirectoryCollection();
+            compilerOptions.IncludePaths = new Bam.Core.DirectoryCollection();
             compilerOptions.IncludePaths.Add("."); // explicitly add the one that is assumed
 
-            compilerOptions.SystemIncludePaths = new Opus.Core.DirectoryCollection();
+            compilerOptions.SystemIncludePaths = new Bam.Core.DirectoryCollection();
 
-            compilerOptions.DisableWarnings = new Opus.Core.StringArray();
+            compilerOptions.DisableWarnings = new Bam.Core.StringArray();
 
             if (this is ICxxCompilerOptions)
             {
@@ -106,15 +106,15 @@ namespace C
 
         public
         CompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = this.OwningNode.Module.Locations;
-            var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
+            var moduleBuildDir = locationMap[Bam.Core.State.ModuleBuildDirLocationKey];
 
             var outputFileDir = locationMap[C.ObjectFile.OutputDir];
             if (!outputFileDir.IsValid)
@@ -122,7 +122,7 @@ namespace C
                 var target = node.Target;
                 var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                 var objBuildDir = moduleBuildDir.SubDirectory(compilerTool.ObjectFileOutputSubDirectory);
-                (outputFileDir as Opus.Core.ScaffoldLocation).SetReference(objBuildDir);
+                (outputFileDir as Bam.Core.ScaffoldLocation).SetReference(objBuildDir);
             }
 
             // don't operate on collections of modules
@@ -132,17 +132,17 @@ namespace C
                 // this only requires the end path - so grab it from the Location without resolving it
                 var location = objectFileModule.SourceFileLocation;
                 var sourcePathName = string.Empty;
-                if (location is Opus.Core.FileLocation)
+                if (location is Bam.Core.FileLocation)
                 {
                     sourcePathName = location.AbsolutePath;
                 }
-                else if (location is Opus.Core.DirectoryLocation)
+                else if (location is Bam.Core.DirectoryLocation)
                 {
-                    throw new Opus.Core.Exception("Cannot use a directory for compiler options");
+                    throw new Bam.Core.Exception("Cannot use a directory for compiler options");
                 }
                 else
                 {
-                    sourcePathName = (location as Opus.Core.ScaffoldLocation).Pattern;
+                    sourcePathName = (location as Bam.Core.ScaffoldLocation).Pattern;
                 }
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
@@ -160,7 +160,7 @@ namespace C
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             // don't operate on collections of modules
             var objectFileModule = node.Module as ObjectFile;
@@ -168,7 +168,7 @@ namespace C
             {
                 return;
             }
-            var outputFileLocation = node.Module.Locations[C.ObjectFile.OutputFile] as Opus.Core.ScaffoldLocation;
+            var outputFileLocation = node.Module.Locations[C.ObjectFile.OutputFile] as Bam.Core.ScaffoldLocation;
             if (!outputFileLocation.IsValid)
             {
                 if (null == this.OutputName)
@@ -185,15 +185,15 @@ namespace C
                 var suffix = (options.OutputType == ECompilerOutput.Preprocess) ?
                     tool.PreprocessedOutputSuffix :
                     tool.ObjectFileSuffix;
-                outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.OutputDir], this.OutputName + suffix, Opus.Core.Location.EExists.WillExist);
+                outputFileLocation.SpecifyStub(node.Module.Locations[C.ObjectFile.OutputDir], this.OutputName + suffix, Bam.Core.Location.EExists.WillExist);
             }
         }
 
         void
         CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
-            Opus.Core.StringArray commandLineBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames)
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

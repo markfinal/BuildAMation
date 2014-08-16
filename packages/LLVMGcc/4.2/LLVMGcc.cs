@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>LLVMGcc package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("llvm-gcc", typeof(LLVMGcc.Toolset))]
+[assembly: Bam.Core.RegisterToolset("llvm-gcc", typeof(LLVMGcc.Toolset))]
 
 namespace LLVMGcc
 {

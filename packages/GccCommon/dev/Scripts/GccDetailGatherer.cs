@@ -7,12 +7,12 @@ namespace GccCommon
 {
     public class GccDetailGatherer
     {
-        private static System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Opus.Core.BaseTarget, GccDetailData>();
+        private static System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, GccDetailData> gccDetailsForTarget = new System.Collections.Generic.Dictionary<Bam.Core.BaseTarget, GccDetailData>();
 
         public static GccDetailData
         DetermineSpecs(
-            Opus.Core.BaseTarget baseTarget,
-            Opus.Core.IToolset toolset)
+            Bam.Core.BaseTarget baseTarget,
+            Bam.Core.IToolset toolset)
         {
             var executable = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
             var isLLVMGcc = System.IO.Path.GetFileName(executable).StartsWith("llvm");
@@ -34,12 +34,12 @@ namespace GccCommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 gccVersion = process.StandardOutput.ReadToEnd();
@@ -52,7 +52,7 @@ namespace GccCommon
             string gxxIncludeDir = null;
             string gccTarget = null;
             string libDir = null;
-            var includePaths = new Opus.Core.StringArray();
+            var includePaths = new Bam.Core.StringArray();
             {
                 var processStartInfo = new System.Diagnostics.ProcessStartInfo();
                 processStartInfo.FileName = toolset.Tool(typeof(C.ICompilerTool)).Executable(baseTarget);
@@ -68,12 +68,12 @@ namespace GccCommon
                 }
                 catch (System.ComponentModel.Win32Exception ex)
                 {
-                    throw new Opus.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                    throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
                 }
 
                 if (null == process)
                 {
-                    throw new Opus.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
+                    throw new Bam.Core.Exception("Unable to execute '{0}'", processStartInfo.FileName);
                 }
 
                 var details = process.StandardError.ReadToEnd();
@@ -117,7 +117,7 @@ namespace GccCommon
                             {
                                 if (null != libDir)
                                 {
-                                    throw new Opus.Core.Exception("lib dir already defined");
+                                    throw new Bam.Core.Exception("lib dir already defined");
                                 }
                                 libDir = option.Substring(libexecKey.Length).Trim();
                             }
@@ -125,7 +125,7 @@ namespace GccCommon
                             {
                                 if (null != libDir)
                                 {
-                                    throw new Opus.Core.Exception("lib dir already defined");
+                                    throw new Bam.Core.Exception("lib dir already defined");
                                 }
                                 libDir = option.Substring(slibDirKey.Length).Trim();
                             }
@@ -178,7 +178,7 @@ namespace GccCommon
                 {
                     if (!System.IO.Directory.Exists(gccIncludeFolder))
                     {
-                        throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
+                        throw new Bam.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
                     }
                     includePaths.Add(gccIncludeFolder);
                 }
@@ -187,13 +187,13 @@ namespace GccCommon
                     gccIncludeFolder = System.String.Format("{0}/lib/gcc/{1}/{2}/include", pathPrefix, gccTarget, gccVersion);
                     if (!System.IO.Directory.Exists(gccIncludeFolder))
                     {
-                        throw new Opus.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
+                        throw new Bam.Core.Exception("Gcc include folder '{0}' does not exist", gccIncludeFolder);
                     }
                     includePaths.Add(gccIncludeFolder);
                 }
 
                 // OSX does not have this path
-                if (!baseTarget.HasPlatform(Opus.Core.EPlatform.OSX))
+                if (!baseTarget.HasPlatform(Bam.Core.EPlatform.OSX))
                 {
                     // TODO: decide whether this is necessary, as apparently it's an implementation detail (http://sourceware.org/ml/crossgcc/2008-11/msg00028.html)
                     if (System.IO.Directory.Exists(gccIncludeFixedFolder))
@@ -223,9 +223,9 @@ namespace GccCommon
             var gccDetails = new GccDetailData(gccVersion, includePaths, gxxIncludeDir, gccTarget, libDir);
             gccDetailsForTarget[baseTarget] = gccDetails;
 
-            Opus.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
-            Opus.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
-            Opus.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
+            Bam.Core.Log.DebugMessage("Gcc version for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Version);
+            Bam.Core.Log.DebugMessage("Gcc machine type for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.Target);
+            Bam.Core.Log.DebugMessage("Gxx include path for target '{0}' is '{1}'", baseTarget.ToString(), gccDetails.GxxIncludePath);
 
             return gccDetails;
         }

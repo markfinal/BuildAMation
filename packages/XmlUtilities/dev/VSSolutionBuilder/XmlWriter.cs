@@ -17,7 +17,7 @@ namespace VSSolutionBuilder
             var toProject = targetNode.Data as IProject;
 
             var configCollection = toProject.Configurations;
-            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)targetNode.Target); // TODO: not accurate
+            var configurationName = configCollection.GetConfigurationNameForTarget((Bam.Core.BaseTarget)targetNode.Target); // TODO: not accurate
             var configuration = configCollection[configurationName];
 
             var toolName = "VCPreBuildEventTool";

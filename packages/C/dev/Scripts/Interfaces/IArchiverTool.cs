@@ -5,11 +5,11 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalArchiverOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalArchiverOptionsDelegateAttribute),
                                    typeof(ExportArchiverOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetArchiverToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetArchiverToolset")]
     public interface IArchiverTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {
         string StaticLibraryPrefix
         {

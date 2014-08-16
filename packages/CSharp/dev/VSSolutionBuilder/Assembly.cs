@@ -12,7 +12,7 @@ namespace VSSolutionBuilder
             CSharp.Assembly moduleToBuild,
             out System.Boolean success)
         {
-            var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
+            var assemblyModule = moduleToBuild as Bam.Core.BaseModule;
             var node = assemblyModule.OwningNode;
             var target = node.Target;
             var options = assemblyModule.Options as CSharp.OptionCollection;
@@ -36,7 +36,7 @@ namespace VSSolutionBuilder
                     break;
 
                 default:
-                    throw new Opus.Core.Exception("Unrecognized platform");
+                    throw new Bam.Core.Exception("Unrecognized platform");
             }
 
             ICSProject projectData = null;
@@ -49,7 +49,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
@@ -74,10 +74,10 @@ namespace VSSolutionBuilder
 
             // solution folder
             {
-                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
                 if (groups.Length > 0)
                 {
-                    projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
+                    projectData.GroupName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
                 }
             }
 
@@ -104,7 +104,7 @@ namespace VSSolutionBuilder
 
             // references
             // TODO: convert to var
-            foreach (Opus.Core.Location location in (options as CSharp.IOptions).References)
+            foreach (Bam.Core.Location location in (options as CSharp.IOptions).References)
             {
                 var reference = location.GetSinglePath();
                 projectData.References.Add(reference);
@@ -120,12 +120,12 @@ namespace VSSolutionBuilder
                     // TODO: fix me?
                     configuration = new ProjectConfiguration(configurationName, projectData);
                     configuration.CharacterSet = EProjectCharacterSet.NotSet;
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Bam.Core.BaseTarget)target, configuration);
                 }
             }
 
@@ -134,17 +134,17 @@ namespace VSSolutionBuilder
             {
                 // C# files
                 {
-                    var sourceFileAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
+                    var sourceFileAttributes = field.GetCustomAttributes(typeof(Bam.Core.SourceFilesAttribute), false);
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Source file '{0}' does not exist", absolutePath);
                             }
 
                             ProjectFile sourceFile;
@@ -162,16 +162,16 @@ namespace VSSolutionBuilder
                                 }
                             }
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             // TODO: convert to var
-                            foreach (Opus.Core.Location location in sourceCollection)
+                            foreach (Bam.Core.Location location in sourceCollection)
                             {
                                 var absolutePath = location.GetSinglePath();
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Source file '{0}' does not exist", absolutePath);
                                 }
 
                                 ProjectFile sourceFile;
@@ -192,7 +192,7 @@ namespace VSSolutionBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -203,13 +203,13 @@ namespace VSSolutionBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
 #if false
@@ -217,18 +217,18 @@ namespace VSSolutionBuilder
                             string csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
+                                throw new Bam.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                             }
 #endif
 
                             projectData.ApplicationDefinition = new ProjectFile(absolutePath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one application definition");
+                                throw new Bam.Core.Exception("There can be only one application definition");
                             }
 
                             // TODO: convert to var
@@ -236,7 +236,7 @@ namespace VSSolutionBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
 #if false
@@ -244,7 +244,7 @@ namespace VSSolutionBuilder
                                 string csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath));
+                                    throw new Bam.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath));
                                 }
 #endif
 
@@ -253,7 +253,7 @@ namespace VSSolutionBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -264,13 +264,13 @@ namespace VSSolutionBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
                             lock (projectData.Pages)
@@ -281,21 +281,21 @@ namespace VSSolutionBuilder
                                 }
                             }
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             // TODO: convert to var
                             foreach (string absolutePath in sourceCollection)
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
                                 var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
+                                    throw new Bam.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 lock (projectData.Pages)
@@ -309,7 +309,7 @@ namespace VSSolutionBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -337,7 +337,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    throw new Opus.Core.Exception("Assembly options does not support VisualStudio project translation");
+                    throw new Bam.Core.Exception("Assembly options does not support VisualStudio project translation");
                 }
             }
 

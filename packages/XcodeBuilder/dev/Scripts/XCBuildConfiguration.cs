@@ -18,7 +18,7 @@ namespace XcodeBuilder
             this.Options = new OptionsDictionary();
             // http://meidell.dk/2010/05/xcode-header-map-files/
             this.Options["USE_HEADERMAP"].AddUnique("NO");
-            this.SourceFiles = new Opus.Core.Array<PBXBuildFile>();
+            this.SourceFiles = new Bam.Core.Array<PBXBuildFile>();
         }
 
         public string ModuleName
@@ -33,7 +33,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Opus.Core.Array<PBXBuildFile> SourceFiles
+        public Bam.Core.Array<PBXBuildFile> SourceFiles
         {
             get;
             private set;

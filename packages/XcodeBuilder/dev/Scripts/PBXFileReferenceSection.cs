@@ -42,7 +42,7 @@ namespace XcodeBuilder
         Get(
             string name,
             PBXFileReference.EType type,
-            Opus.Core.Location location,
+            Bam.Core.Location location,
             System.Uri rootPath)
         {
             var path = location.GetSinglePath();

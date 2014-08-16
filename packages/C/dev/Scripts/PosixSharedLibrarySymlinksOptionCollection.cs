@@ -7,27 +7,27 @@ namespace C
 {
     // TODO: this does not implement any options interface
     public class PosixSharedLibrarySymlinksOptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport
     {
         protected override void
          SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {}
 
         public
         PosixSharedLibrarySymlinksOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
 
@@ -35,7 +35,7 @@ namespace C
 
             (node.Module as PosixSharedLibrarySymlinks).RealSharedLibraryFileLocation = moduleWithPostAction.Locations[C.DynamicLibrary.OutputFile];
 
-            var outputFileDir = locationMap[C.PosixSharedLibrarySymlinks.OutputDir] as Opus.Core.ScaffoldLocation;
+            var outputFileDir = locationMap[C.PosixSharedLibrarySymlinks.OutputDir] as Bam.Core.ScaffoldLocation;
             if (!outputFileDir.IsValid)
             {
                 outputFileDir.SetReference(moduleWithPostAction.Locations[C.DynamicLibrary.OutputDir]);
@@ -44,7 +44,7 @@ namespace C
 
         private static string
         GetMajorVersionSymlinkLeafname(
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string realSharedLibraryLeafname,
             C.ILinkerOptions linkerOptions)
         {
@@ -61,23 +61,23 @@ namespace C
             // 2 = minor version
             // 3 = patch version
             // 4 = 'dylib'
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], splitName[1], linkerOptions.MajorVersion);
                 return majorSymlinkLeafname;
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], linkerOptions.MajorVersion, splitName[4]);
                 return majorSymlinkLeafname;
             }
 
-            throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
+            throw new Bam.Core.Exception("Unsupported platform for Posix shared library symlink generation");
         }
 
         private static string
         GetMinorVersionSymlinkLeafname(
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string realSharedLibraryLeafname,
             C.ILinkerOptions linkerOptions)
         {
@@ -94,23 +94,23 @@ namespace C
             // 2 = minor version
             // 3 = patch version
             // 4 = 'dylib'
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}.{3}", splitName[0], splitName[1], linkerOptions.MajorVersion, linkerOptions.MinorVersion);
                 return majorSymlinkLeafname;
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}.{3}", splitName[0], linkerOptions.MajorVersion, linkerOptions.MinorVersion, splitName[4]);
                 return majorSymlinkLeafname;
             }
 
-            throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
+            throw new Bam.Core.Exception("Unsupported platform for Posix shared library symlink generation");
         }
 
         private static string
         GetLinkerSymlinkLeafname(
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             string realSharedLibraryLeafname,
             C.ILinkerOptions linkerOptions)
         {
@@ -127,23 +127,23 @@ namespace C
             // 2 = minor version
             // 3 = patch version
             // 4 = 'dylib'
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}", splitName[0], splitName[1]);
                 return majorSymlinkLeafname;
             }
-            else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+            else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}", splitName[0], splitName[4]);
                 return majorSymlinkLeafname;
             }
 
-            throw new Opus.Core.Exception("Unsupported platform for Posix shared library symlink generation");
+            throw new Bam.Core.Exception("Unsupported platform for Posix shared library symlink generation");
         }
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
 
@@ -154,40 +154,40 @@ namespace C
             var realSharedLibraryLeafName = System.IO.Path.GetFileName(realSharedLibraryPath);
 
             // major version symlink
-            var majorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] as Opus.Core.ScaffoldLocation;
+            var majorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] as Bam.Core.ScaffoldLocation;
             if (!majorSymlinkFile.IsValid)
             {
                 var majorSymlinkLeafname = GetMajorVersionSymlinkLeafname(node.Target, realSharedLibraryLeafName, linkerOptions);
-                majorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], majorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
+                majorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], majorSymlinkLeafname, Bam.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
-                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                var copiedSymlink = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 copiedSymlink.SetReference(majorSymlinkFile);
                 moduleWithPostAction.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = copiedSymlink;
             }
 
             // minor version symlink
-            var minorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] as Opus.Core.ScaffoldLocation;
+            var minorSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] as Bam.Core.ScaffoldLocation;
             if (!minorSymlinkFile.IsValid)
             {
                 var minorSymlinkLeafname = GetMinorVersionSymlinkLeafname(node.Target, realSharedLibraryLeafName, linkerOptions);
-                minorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], minorSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
+                minorSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], minorSymlinkLeafname, Bam.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
-                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                var copiedSymlink = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 copiedSymlink.SetReference(minorSymlinkFile);
                 moduleWithPostAction.Locations[C.PosixSharedLibrarySymlinks.MinorVersionSymlink] = copiedSymlink;
             }
 
             // linker symlink
-            var linkerSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.LinkerSymlink] as Opus.Core.ScaffoldLocation;
+            var linkerSymlinkFile = locationMap[C.PosixSharedLibrarySymlinks.LinkerSymlink] as Bam.Core.ScaffoldLocation;
             if (!linkerSymlinkFile.IsValid)
             {
                 var linkerSymlinkLeafname = GetLinkerSymlinkLeafname(node.Target, realSharedLibraryLeafName, linkerOptions);
-                linkerSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], linkerSymlinkLeafname, Opus.Core.Location.EExists.WillExist);
+                linkerSymlinkFile.SpecifyStub(locationMap[C.PosixSharedLibrarySymlinks.OutputDir], linkerSymlinkLeafname, Bam.Core.Location.EExists.WillExist);
 
                 // append this location to the invoking module
-                var copiedSymlink = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                var copiedSymlink = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 copiedSymlink.SetReference(linkerSymlinkFile);
                 moduleWithPostAction.Locations[C.PosixSharedLibrarySymlinks.LinkerSymlink] = copiedSymlink;
             }
@@ -195,9 +195,9 @@ namespace C
 
         void
         CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
-            Opus.Core.StringArray commandLineBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames)
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

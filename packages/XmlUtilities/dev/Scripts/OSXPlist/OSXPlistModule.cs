@@ -5,7 +5,7 @@
 // <author>Mark Final</author>
 namespace XmlUtilities
 {
-    [Opus.Core.ModuleToolAssignment(typeof(IOSXPlistWriterTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(IOSXPlistWriterTool))]
     public class OSXPlistModule :
         XmlModule
     {

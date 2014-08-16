@@ -49,7 +49,7 @@ namespace VisualStudioProcessor
                     var splitter = attributeValue.ToString()[attributeValue.Length - 1];
                     if (System.Char.IsLetterOrDigit(splitter))
                     {
-                        throw new Opus.Core.Exception("Splitter character is a letter or digit");
+                        throw new Bam.Core.Exception("Splitter character is a letter or digit");
                     }
                     var splitNew = attributeValue.ToString().Split(splitter);
                     foreach (var split in splitNew)

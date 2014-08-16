@@ -12,12 +12,12 @@ namespace ClangCommon
     {
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode owningNode) : base(owningNode)
+            Bam.Core.DependencyNode owningNode) : base(owningNode)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -28,7 +28,7 @@ namespace ClangCommon
             clangOptions.PositionIndependentCode = false;
 
             var target = node.Target;
-            clangOptions.SixtyFourBit = Opus.Core.OSUtilities.Is64Bit(target);
+            clangOptions.SixtyFourBit = Bam.Core.OSUtilities.Is64Bit(target);
 
             // use C99 by default with clang
             if (!(this is C.ICxxCompilerOptions))

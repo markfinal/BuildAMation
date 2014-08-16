@@ -6,29 +6,29 @@
 namespace QMakeBuilder
 {
     public sealed partial class QMakeBuilder :
-        Opus.Core.IBuilderPostExecute
+        Bam.Core.IBuilderPostExecute
     {
         #region IBuilderPostExecute Members
 
         void
-        Opus.Core.IBuilderPostExecute.PostExecute(
-            Opus.Core.DependencyNodeCollection executedNodes)
+        Bam.Core.IBuilderPostExecute.PostExecute(
+            Bam.Core.DependencyNodeCollection executedNodes)
         {
-            Opus.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
+            Bam.Core.Log.DebugMessage("PostExecute for QMakeBuilder");
 
             if (0 == executedNodes.Count)
             {
-                Opus.Core.Log.Info("No QMake pro file written as there were no targets generated");
+                Bam.Core.Log.Info("No QMake pro file written as there were no targets generated");
                 return;
             }
 
             // find all nodes with the same unique name
-            var similarNodes = new System.Collections.Generic.Dictionary<string, Opus.Core.Array<QMakeData>>();
+            var similarNodes = new System.Collections.Generic.Dictionary<string, Bam.Core.Array<QMakeData>>();
             foreach (var node in executedNodes)
             {
                 if (null == node.Data)
                 {
-                    Opus.Core.Log.DebugMessage("*** Null data for node {0}", node.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("*** Null data for node {0}", node.UniqueModuleName);
                     continue;
                 }
 
@@ -38,19 +38,19 @@ namespace QMakeBuilder
                 }
                 else
                 {
-                    similarNodes[node.UniqueModuleName] = new Opus.Core.Array<QMakeData>(node.Data as QMakeData);
+                    similarNodes[node.UniqueModuleName] = new Bam.Core.Array<QMakeData>(node.Data as QMakeData);
                 }
             }
 
             foreach (var keyPair in similarNodes)
             {
-                Opus.Core.Log.DebugMessage("{0} : {1} nodes", keyPair.Key, keyPair.Value.Count);
+                Bam.Core.Log.DebugMessage("{0} : {1} nodes", keyPair.Key, keyPair.Value.Count);
                 QMakeData.Write(keyPair.Value);
             }
 
-            var mainPackage = Opus.Core.State.PackageInfo[0];
+            var mainPackage = Bam.Core.State.PackageInfo[0];
             var proFileName = mainPackage + ".pro";
-            var rootDirectory = Opus.Core.State.BuildRoot;
+            var rootDirectory = Bam.Core.State.BuildRoot;
             var proFilePath = System.IO.Path.Combine(rootDirectory, proFileName);
 
             // relative paths need a trailing slash to work
@@ -69,14 +69,14 @@ namespace QMakeBuilder
                     if (data.ProFilePath != null)
                     {
                         var subDirProjectDir = System.IO.Path.GetDirectoryName(data.ProFilePath) + System.IO.Path.DirectorySeparatorChar;
-                        var relativeDir = Opus.Core.RelativePathUtilities.GetPath(subDirProjectDir, rootDirectory);
+                        var relativeDir = Bam.Core.RelativePathUtilities.GetPath(subDirProjectDir, rootDirectory);
                         relativeDir = relativeDir.TrimEnd(System.IO.Path.DirectorySeparatorChar);
                         proWriter.WriteLine("\t{0}\\", relativeDir.Replace('\\', '/'));
                     }
                 }
             }
 
-            Opus.Core.Log.Info("Successfully created QMake .pro file for package '{0}'\n\t{1}", Opus.Core.State.PackageInfo[0].Name, proFilePath);
+            Bam.Core.Log.Info("Successfully created QMake .pro file for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, proFilePath);
         }
 
         #endregion

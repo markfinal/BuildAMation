@@ -12,7 +12,7 @@ namespace VSSolutionBuilder
             C.HeaderLibrary moduleToBuild,
             out bool success)
         {
-            var headerLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var headerLibraryModule = moduleToBuild as Bam.Core.BaseModule;
             var node = headerLibraryModule.OwningNode;
             var target = node.Target;
             var moduleName = node.ModuleName;
@@ -27,7 +27,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    var solutionType = Opus.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
+                    var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
                     var projectExtension = ProjectExtensionProperty.GetGetMethod().Invoke(SolutionInstance, null) as string;
@@ -53,10 +53,10 @@ namespace VSSolutionBuilder
 
             // solution folder
             {
-                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Opus.Core.ModuleGroupAttribute), true);
+                var groups = moduleToBuild.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
                 if (groups.Length > 0)
                 {
-                    projectData.GroupName = (groups as Opus.Core.ModuleGroupAttribute[])[0].GroupName;
+                    projectData.GroupName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
                 }
             }
 
@@ -70,12 +70,12 @@ namespace VSSolutionBuilder
                     configuration = new ProjectConfiguration(configurationName, projectData);
                     // arbitrary character set, as nothing is built
                     configuration.CharacterSet = EProjectCharacterSet.NotSet;
-                    projectData.Configurations.Add((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.Add((Bam.Core.BaseTarget)target, configuration);
                 }
                 else
                 {
                     configuration = projectData.Configurations[configurationName];
-                    projectData.Configurations.AddExistingForTarget((Opus.Core.BaseTarget)target, configuration);
+                    projectData.Configurations.AddExistingForTarget((Bam.Core.BaseTarget)target, configuration);
                 }
             }
 
@@ -90,9 +90,9 @@ namespace VSSolutionBuilder
                 var headerFileAttributes = field.GetCustomAttributes(typeof(C.HeaderFilesAttribute), false);
                 if (headerFileAttributes.Length > 0)
                 {
-                    var headerFileCollection = field.GetValue(moduleToBuild) as Opus.Core.FileCollection;
+                    var headerFileCollection = field.GetValue(moduleToBuild) as Bam.Core.FileCollection;
                     // TODO: change to var
-                    foreach (Opus.Core.Location location in headerFileCollection)
+                    foreach (Bam.Core.Location location in headerFileCollection)
                     {
                         var headerPath = location.GetSinglePath();
                         var cProject = projectData as ICProject;

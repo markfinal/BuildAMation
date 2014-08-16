@@ -11,7 +11,7 @@ namespace VisualC
     {
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

@@ -18,11 +18,11 @@ namespace ClangCommon
         public static void
         ExceptionHandlerCommandLineProcessor(
              object sender,
-             Opus.Core.StringArray commandLineBuilder,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var exceptionHandlerOption = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionHandlerOption = option as Bam.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             switch (exceptionHandlerOption.Value)
             {
                 case C.Cxx.EExceptionHandler.Disabled:
@@ -33,7 +33,7 @@ namespace ClangCommon
                     commandLineBuilder.Add("-fexceptions");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized exception handler option");
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
             }
         }
         public static void
@@ -42,10 +42,10 @@ namespace ClangCommon
              XcodeBuilder.PBXProject project,
              XcodeBuilder.XcodeNodeData currentObject,
              XcodeBuilder.XCBuildConfiguration configuration,
-             Opus.Core.Option option,
-             Opus.Core.Target target)
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
-            var exceptionHandler = option as Opus.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
+            var exceptionHandler = option as Bam.Core.ValueTypeOption<C.Cxx.EExceptionHandler>;
             var exceptionsOption = configuration.Options["GCC_ENABLE_CPP_EXCEPTIONS"];
             switch (exceptionHandler.Value)
             {
@@ -57,17 +57,17 @@ namespace ClangCommon
                     exceptionsOption.AddUnique("YES");
                     break;
                 default:
-                    throw new Opus.Core.Exception("Unrecognized exception handler option");
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
             }
             if (exceptionsOption.Count != 1)
             {
-                throw new Opus.Core.Exception("More than one exceptions option has been set");
+                throw new Bam.Core.Exception("More than one exceptions option has been set");
             }
         }
         #endregion
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["ExceptionHandler"].PrivateData = new PrivateData(ExceptionHandlerCommandLineProcessor,ExceptionHandlerXcodeProjectProcessor);

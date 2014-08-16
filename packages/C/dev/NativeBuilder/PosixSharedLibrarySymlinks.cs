@@ -9,13 +9,13 @@ namespace NativeBuilder
     {
         private static bool
         MakeSymlink(
-            Opus.Core.StringArray commandLineBuilder,
+            Bam.Core.StringArray commandLineBuilder,
             C.PosixSharedLibrarySymlinks moduleToBuild,
             C.IPosixSharedLibrarySymlinksTool symlinkTool,
             string workingDir,
-            Opus.Core.LocationKey keyToSymlink)
+            Bam.Core.LocationKey keyToSymlink)
         {
-            var symlinkCommandLineBuilder = new Opus.Core.StringArray(commandLineBuilder);
+            var symlinkCommandLineBuilder = new Bam.Core.StringArray(commandLineBuilder);
 
             var majorSymlinkFile = moduleToBuild.Locations[keyToSymlink];
             var majorSymlinkFileLeafname = System.IO.Path.GetFileName(majorSymlinkFile.GetSingleRawPath());
@@ -35,11 +35,11 @@ namespace NativeBuilder
             var realSharedLibraryPath = realSharedLibraryLoc.GetSingleRawPath();
             if (!System.IO.File.Exists(realSharedLibraryPath))
             {
-                throw new Opus.Core.Exception("Real shared library '{0}' does not exist", realSharedLibraryPath);
+                throw new Bam.Core.Exception("Real shared library '{0}' does not exist", realSharedLibraryPath);
             }
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
@@ -49,7 +49,7 @@ namespace NativeBuilder
             var target = moduleToBuild.OwningNode.Target;
             var creationOptions = moduleToBuild.Options as C.PosixSharedLibrarySymlinksOptionCollection;
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (creationOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = creationOptions as CommandLineProcessor.ICommandLineSupport;
@@ -57,7 +57,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             var symlinkTool = target.Toolset.Tool(typeof(C.IPosixSharedLibrarySymlinksTool)) as C.IPosixSharedLibrarySymlinksTool;

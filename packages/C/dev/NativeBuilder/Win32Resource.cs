@@ -16,22 +16,22 @@ namespace NativeBuilder
             var resourceFilePath = resourceLoc.GetSinglePath();
             if (!System.IO.File.Exists(resourceFilePath))
             {
-                throw new Opus.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
+                throw new Bam.Core.Exception("Resource file '{0}' does not exist", resourceFilePath);
             }
 
-            var resourceFileModule = moduleToBuild as Opus.Core.BaseModule;
+            var resourceFileModule = moduleToBuild as Bam.Core.BaseModule;
             var resourceFileOptions = resourceFileModule.Options;
 
             var compilerOptions = resourceFileOptions as C.Win32ResourceCompilerOptionCollection;
 
             // dependency checking, source against output files
             {
-                var inputFiles = new Opus.Core.LocationArray();
+                var inputFiles = new Bam.Core.LocationArray();
                 inputFiles.Add(resourceLoc);
-                var outputFiles = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                var outputFiles = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputFiles, inputFiles))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", resourceFileModule.OwningNode.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' is up-to-date", resourceFileModule.OwningNode.UniqueModuleName);
                     success = true;
                     return null;
                 }
@@ -40,7 +40,7 @@ namespace NativeBuilder
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
@@ -49,7 +49,7 @@ namespace NativeBuilder
 
             var target = resourceFileModule.OwningNode.Target;
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
@@ -57,7 +57,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             var compilerTool = target.Toolset.Tool(typeof(C.IWinResourceCompilerTool)) as C.IWinResourceCompilerTool;

@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             C.Application moduleToBuild,
             out bool success)
         {
-            var applicationModule = moduleToBuild as Opus.Core.BaseModule;
+            var applicationModule = moduleToBuild as Bam.Core.BaseModule;
             var node = applicationModule.OwningNode;
             var target = node.Target;
 
@@ -21,7 +21,7 @@ namespace MakeFileBuilder
             var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
-                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var keysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.ObjectFile.OutputFile
                 );
 
@@ -38,19 +38,19 @@ namespace MakeFileBuilder
             }
             if (null != node.ExternalDependents)
             {
-                var libraryKeysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var libraryKeysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey);
-                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Unix))
                 {
                     // TODO: why is the symlink not present?
                     //libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
                     libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
                 }
-                else if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                else if (target.HasPlatform(Bam.Core.EPlatform.Windows))
                 {
                     libraryKeysToFilter.Add(C.DynamicLibrary.ImportLibraryFile);
                 }
-                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
                 {
                     libraryKeysToFilter.Add(C.DynamicLibrary.OutputFile);
                 }
@@ -68,22 +68,22 @@ namespace MakeFileBuilder
             }
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
             var applicationOptions = applicationModule.Options;
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (applicationOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = applicationOptions as CommandLineProcessor.ICommandLineSupport;
-                if (target.HasPlatform(Opus.Core.EPlatform.Windows))
+                if (target.HasPlatform(Bam.Core.EPlatform.Windows))
                 {
                     // libraries are manually added later
-                    var excludedOptions = new Opus.Core.StringArray("Libraries", "StandardLibraries");
+                    var excludedOptions = new Bam.Core.StringArray("Libraries", "StandardLibraries");
                     commandLineOption.ToCommandLineArguments(commandLineBuilder, target, excludedOptions);
                 }
                 else
                 {
-                    var excludedOptions = new Opus.Core.StringArray();
+                    var excludedOptions = new Bam.Core.StringArray();
                     excludedOptions.Add("RPath"); // $ORIGIN is handled differently
                     excludedOptions.Add("Libraries");
                     excludedOptions.Add("StandardLibraries");
@@ -92,8 +92,8 @@ namespace MakeFileBuilder
                     // handle RPath separately
                     // what needs to happen is that the $ must be doubled, and the entire path quoted
                     // http://stackoverflow.com/questions/230364/how-to-get-rpath-with-origin-to-work-on-codeblocks-gcc
-                    var rPathCommandLine = new Opus.Core.StringArray();
-                    var optionNames = new Opus.Core.StringArray();
+                    var rPathCommandLine = new Bam.Core.StringArray();
+                    var optionNames = new Bam.Core.StringArray();
                     optionNames.Add("RPath");
                     CommandLineProcessor.ToCommandLine.ExecuteForOptionNames(applicationOptions, rPathCommandLine, target, optionNames);
                     foreach (var rpath in rPathCommandLine)
@@ -102,7 +102,7 @@ namespace MakeFileBuilder
                         var rpathDir = linkerCommand[linkerCommand.Length - 1];
                         rpathDir = rpathDir.Replace("$ORIGIN", "$$ORIGIN");
                         rpathDir = System.String.Format("'{0}'", rpathDir);
-                        var linkerCommandArray = new Opus.Core.StringArray(linkerCommand);
+                        var linkerCommandArray = new Bam.Core.StringArray(linkerCommand);
                         linkerCommandArray.Remove(linkerCommand[linkerCommand.Length - 1]);
                         linkerCommandArray.Add(rpathDir);
                         var newRPathCommand = linkerCommandArray.ToString(',');
@@ -112,12 +112,12 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Linker options does not support command line translation");
+                throw new Bam.Core.Exception("Linker options does not support command line translation");
             }
 
             var toolset = target.Toolset;
             var linkerTool = toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
-            var executable = linkerTool.Executable((Opus.Core.BaseTarget)target);
+            var executable = linkerTool.Executable((Bam.Core.BaseTarget)target);
 
             var recipeBuilder = new System.Text.StringBuilder();
             if (executable.Contains(" "))
@@ -129,11 +129,11 @@ namespace MakeFileBuilder
                 recipeBuilder.Append(executable);
             }
 
-            var dependentLibraryCommandLine = new Opus.Core.StringArray();
+            var dependentLibraryCommandLine = new Bam.Core.StringArray();
             {
                 recipeBuilder.AppendFormat(" {0} ", commandLineBuilder.ToString(' '));
 
-                var dependentLibraries = new Opus.Core.StringArray("$^");
+                var dependentLibraries = new Bam.Core.StringArray("$^");
                 C.LinkerUtilities.AppendLibrariesToCommandLine(dependentLibraryCommandLine, linkerTool, applicationOptions as C.ILinkerOptions, dependentLibraries);
             }
 
@@ -144,8 +144,8 @@ namespace MakeFileBuilder
             var outputPath = moduleToBuild.Locations[primaryOutputKey].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
             var instanceName = MakeFile.InstanceName(node);
-            var toolOutputLocKeys = (linkerTool as Opus.Core.ITool).OutputLocationKeys(moduleToBuild);
-            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var toolOutputLocKeys = (linkerTool as Bam.Core.ITool).OutputLocationKeys(moduleToBuild);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
 
             // replace non-primary outputs with their variable names
@@ -167,7 +167,7 @@ namespace MakeFileBuilder
                 recipe = recipe.Replace(outputLocPath, variableName);
             }
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(recipe);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
@@ -193,10 +193,10 @@ namespace MakeFileBuilder
 
             var exportedTargets = makeFile.ExportedTargets;
             var exportedVariables = makeFile.ExportedVariables;
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
-            if (linkerTool is Opus.Core.IToolEnvironmentVariables)
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> environment = null;
+            if (linkerTool is Bam.Core.IToolEnvironmentVariables)
             {
-                environment = (linkerTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                environment = (linkerTool as Bam.Core.IToolEnvironmentVariables).Variables((Bam.Core.BaseTarget)target);
             }
             var returnData = new MakeFileData(makeFilePath, exportedTargets, exportedVariables, environment);
             success = true;

@@ -3,7 +3,7 @@
 // </copyright>
 // <summary>Mingw package</summary>
 // <author>Mark Final</author>
-[assembly: Opus.Core.RegisterToolset("mingw", typeof(Mingw.Toolset))]
+[assembly: Bam.Core.RegisterToolset("mingw", typeof(Mingw.Toolset))]
 
 namespace Mingw
 {

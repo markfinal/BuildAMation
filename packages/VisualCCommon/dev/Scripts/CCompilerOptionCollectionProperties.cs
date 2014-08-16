@@ -25,27 +25,27 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("DefinesSetHandler", this["Defines"]);
             }
         }
-        Opus.Core.DirectoryCollection C.ICCompilerOptions.IncludePaths
+        Bam.Core.DirectoryCollection C.ICCompilerOptions.IncludePaths
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("IncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("IncludePaths", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("IncludePaths", value);
                 this.ProcessNamedSetHandler("IncludePathsSetHandler", this["IncludePaths"]);
             }
         }
-        Opus.Core.DirectoryCollection C.ICCompilerOptions.SystemIncludePaths
+        Bam.Core.DirectoryCollection C.ICCompilerOptions.SystemIncludePaths
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.DirectoryCollection>("SystemIncludePaths", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("SystemIncludePaths", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.DirectoryCollection>("SystemIncludePaths", value);
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("SystemIncludePaths", value);
                 this.ProcessNamedSetHandler("SystemIncludePathsSetHandler", this["SystemIncludePaths"]);
             }
         }
@@ -169,15 +169,15 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("OmitFramePointerSetHandler", this["OmitFramePointer"]);
             }
         }
-        Opus.Core.StringArray C.ICCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICCompilerOptions.DisableWarnings
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("DisableWarnings", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.StringArray>("DisableWarnings", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("DisableWarnings", value);
+                this.SetReferenceTypeOption<Bam.Core.StringArray>("DisableWarnings", value);
                 this.ProcessNamedSetHandler("DisableWarningsSetHandler", this["DisableWarnings"]);
             }
         }
@@ -399,15 +399,15 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("RuntimeLibrarySetHandler", this["RuntimeLibrary"]);
             }
         }
-        Opus.Core.StringArray ICCompilerOptions.ForcedInclude
+        Bam.Core.StringArray ICCompilerOptions.ForcedInclude
         {
             get
             {
-                return this.GetReferenceTypeOption<Opus.Core.StringArray>("ForcedInclude", this.SuperSetOptionCollection);
+                return this.GetReferenceTypeOption<Bam.Core.StringArray>("ForcedInclude", this.SuperSetOptionCollection);
             }
             set
             {
-                this.SetReferenceTypeOption<Opus.Core.StringArray>("ForcedInclude", value);
+                this.SetReferenceTypeOption<Bam.Core.StringArray>("ForcedInclude", value);
                 this.ProcessNamedSetHandler("ForcedIncludeSetHandler", this["ForcedInclude"]);
             }
         }

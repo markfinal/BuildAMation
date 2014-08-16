@@ -9,7 +9,7 @@ namespace QMakeBuilder
     {
         private void
         CopyFilesToDirectory(
-            Opus.Core.BaseModule module,
+            Bam.Core.BaseModule module,
             string destinationDirectory,
             string subdirectory,
             QMakeData proData)
@@ -17,13 +17,13 @@ namespace QMakeBuilder
             // TODO: this is only temporary while I figure out prebuilt libraries
             if (null == proData)
             {
-                throw new Opus.Core.Exception("No QMake pro file to append rules to");
+                throw new Bam.Core.Exception("No QMake pro file to append rules to");
             }
 
 #if true
             // TOOD: if there is only one place to write to, use this
             var targetName = (module is C.DynamicLibrary) ? "dlltarget" : "target";
-            var customRules = new Opus.Core.StringArray();
+            var customRules = new Bam.Core.StringArray();
             var destDir = destinationDirectory.Clone() as string;
             if (!System.String.IsNullOrEmpty(subdirectory))
             {
@@ -36,7 +36,7 @@ namespace QMakeBuilder
             // otherwise, if there are multiple places to install to, use this
             // Note: don't use absolute paths, unless they exist already - cannot refer to files that are to be built
             var targetName = System.String.Format("copy_{0}_for_{1}", module.OwningNode.ModuleName, primaryNode.ModuleName);
-            var customRules = new Opus.Core.StringArray();
+            var customRules = new Bam.Core.StringArray();
             customRules.Add(System.String.Format("{0}.path={1}", targetName, destinationDirectory.Replace('\\', '/')));
             // TODO: this does not resolve to the final destination path
             customRules.Add(System.String.Format("{0}.files=$${{DESTDIR}}/$${{TARGET}}.$${{TARGET_EXT})", targetName));
@@ -55,8 +55,8 @@ namespace QMakeBuilder
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -68,14 +68,14 @@ namespace QMakeBuilder
             var sourceKey = nodeInfo.Key;
             if (!moduleLocations.Contains(sourceKey))
             {
-                Opus.Core.Log.DebugMessage("Location key '{0}' not in location map", sourceKey.ToString());
+                Bam.Core.Log.DebugMessage("Location key '{0}' not in location map", sourceKey.ToString());
                 return;
             }
 
             var sourceLoc = moduleLocations[sourceKey];
             if (!sourceLoc.IsValid)
             {
-                Opus.Core.Log.DebugMessage("Location '{0} is invalid", sourceKey.ToString());
+                Bam.Core.Log.DebugMessage("Location '{0} is invalid", sourceKey.ToString());
                 return;
             }
 
@@ -96,7 +96,7 @@ namespace QMakeBuilder
             var sourcePath = sourceLoc.GetSingleRawPath();
             if (sourceKey.IsFileKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
                 var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                     sourcePath,
                     publishDirectoryPath,
@@ -106,7 +106,7 @@ namespace QMakeBuilder
                     publishedKey);
                 if (destPath == sourcePath)
                 {
-                    Opus.Core.Log.DebugMessage("Ignoring files to be published on top of themselves");
+                    Bam.Core.Log.DebugMessage("Ignoring files to be published on top of themselves");
                     return;
                 }
                 var destDir = System.IO.Path.GetDirectoryName(destPath);
@@ -115,7 +115,7 @@ namespace QMakeBuilder
                 var proData = meta.Node.Data as QMakeData;
                 if (null == proData)
                 {
-                    Opus.Core.Log.MessageAll("Publishing prebuilt libraries is unsupported in QMake currently");
+                    Bam.Core.Log.MessageAll("Publishing prebuilt libraries is unsupported in QMake currently");
                     return;
                 }
 
@@ -128,7 +128,7 @@ namespace QMakeBuilder
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                     sourcePath,
                     publishDirectoryPath,
@@ -138,7 +138,7 @@ namespace QMakeBuilder
                     publishedKey);
                 if (destPath == sourcePath)
                 {
-                    Opus.Core.Log.DebugMessage("Ignoring symlinks to be published on top of themselves");
+                    Bam.Core.Log.DebugMessage("Ignoring symlinks to be published on top of themselves");
                     return;
                 }
                 var destDir = System.IO.Path.GetDirectoryName(destPath);
@@ -147,7 +147,7 @@ namespace QMakeBuilder
                 var proData = meta.Node.Data as QMakeData;
                 if (null == proData)
                 {
-                    Opus.Core.Log.MessageAll("Publishing prebuilt library symlinks is unsupported in QMake currently");
+                    Bam.Core.Log.MessageAll("Publishing prebuilt library symlinks is unsupported in QMake currently");
                     return;
                 }
 
@@ -161,32 +161,32 @@ namespace QMakeBuilder
             }
             else if (sourceKey.IsDirectoryKey)
             {
-                throw new Opus.Core.Exception("Directories cannot be published yet");
+                throw new Bam.Core.Exception("Directories cannot be published yet");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported Location type");
+                throw new Bam.Core.Exception("Unsupported Location type");
             }
         }
 
         private void
         nativeCopyAdditionalDirectory(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
             string publishDirectoryPath,
             object context)
         {
-            Opus.Core.Log.MessageAll("Publishing directories is unsupported in QMake currently");
+            Bam.Core.Log.MessageAll("Publishing directories is unsupported in QMake currently");
         }
 
         private void
         nativeCopyInfoPList(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -202,7 +202,7 @@ namespace QMakeBuilder
                 primaryModule,
                 moduleToCopy,
                 keyToCopy);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
             */
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];

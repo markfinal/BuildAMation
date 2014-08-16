@@ -19,7 +19,7 @@ namespace C
         /// <summary>
         /// Preprocessor user header search paths: #includes of the style #include "..."
         /// </summary>
-        Opus.Core.DirectoryCollection IncludePaths
+        Bam.Core.DirectoryCollection IncludePaths
         {
             get;
             set;
@@ -28,7 +28,7 @@ namespace C
         /// <summary>
         /// Preprocessor system header search paths: #includes of the stylr #include <...>
         /// </summary>
-        Opus.Core.DirectoryCollection SystemIncludePaths
+        Bam.Core.DirectoryCollection SystemIncludePaths
         {
             get;
             set;
@@ -127,7 +127,7 @@ namespace C
         /// <summary>
         /// A list of warnings that are disabled
         /// </summary>
-        Opus.Core.StringArray DisableWarnings
+        Bam.Core.StringArray DisableWarnings
         {
             get;
             set;

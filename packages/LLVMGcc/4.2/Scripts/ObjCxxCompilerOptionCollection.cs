@@ -14,7 +14,7 @@ namespace LLVMGcc
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -25,7 +25,7 @@ namespace LLVMGcc
 
             if (!System.IO.Directory.Exists(cxxIncludePath))
             {
-                throw new Opus.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath);
+                throw new Bam.Core.Exception("llvm-g++ include path '{0}' does not exist. Is llvm-g++ installed?", cxxIncludePath);
             }
 
             var cCompilerOptions = this as C.ICCompilerOptions;
@@ -36,7 +36,7 @@ namespace LLVMGcc
 
         public
         ObjCxxCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

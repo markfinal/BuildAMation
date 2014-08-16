@@ -6,18 +6,18 @@
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder :
-        Opus.Core.IBuilderPreExecute
+        Bam.Core.IBuilderPreExecute
     {
         #region IBuilderPreExecute Members
 
         void
-        Opus.Core.IBuilderPreExecute.PreExecute()
+        Bam.Core.IBuilderPreExecute.PreExecute()
         {
-            Opus.Core.Log.DebugMessage("PreExecute for VSSolutionBuilder");
+            Bam.Core.Log.DebugMessage("PreExecute for VSSolutionBuilder");
 
-            var mainPackage = Opus.Core.State.PackageInfo[0];
+            var mainPackage = Bam.Core.State.PackageInfo[0];
             var solutionPathName = System.IO.Path.Combine(mainPackage.BuildDirectory, mainPackage.FullName + ".sln");
-            Opus.Core.Log.DebugMessage("Solution pathname is '{0}'", solutionPathName);
+            Bam.Core.Log.DebugMessage("Solution pathname is '{0}'", solutionPathName);
 
             this.solutionFile = new SolutionFile(solutionPathName);
         }

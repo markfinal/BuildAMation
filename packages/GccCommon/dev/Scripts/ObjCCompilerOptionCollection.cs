@@ -10,8 +10,8 @@ namespace GccCommon
     {
         public static void
         ExportedDefaults(
-            Opus.Core.BaseOptionCollection options,
-            Opus.Core.DependencyNode node)
+            Bam.Core.BaseOptionCollection options,
+            Bam.Core.DependencyNode node)
         {
             var cInterfaceOptions = options as C.ICCompilerOptions;
             cInterfaceOptions.TargetLanguage = C.ETargetLanguage.ObjectiveC;
@@ -21,7 +21,7 @@ namespace GccCommon
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
             ExportedDefaults(this, node);
@@ -29,7 +29,7 @@ namespace GccCommon
 
         public
         ObjCCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

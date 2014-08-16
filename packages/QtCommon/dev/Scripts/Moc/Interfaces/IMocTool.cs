@@ -15,11 +15,11 @@ namespace QtCommon
         }
     }
 
-    [Opus.Core.LocalAndExportTypes(typeof(LocalMocOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalMocOptionsDelegateAttribute),
                                    typeof(ExportMocOptionsDelegateAttribute))]
-    //[Opus.Core.AssignToolsetProvider("Qt")]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetToolsetName")]
+    //[Bam.Core.AssignToolsetProvider("Qt")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetToolsetName")]
     public interface IMocTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

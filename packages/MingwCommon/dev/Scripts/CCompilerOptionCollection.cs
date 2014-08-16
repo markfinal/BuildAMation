@@ -13,7 +13,7 @@ namespace MingwCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var localCompilerOptions = this as ICCompilerOptions;
             localCompilerOptions.AllWarnings = true;
@@ -22,9 +22,9 @@ namespace MingwCommon
             base.SetDefaultOptionValues(node);
 
             var target = node.Target;
-            localCompilerOptions.SixtyFourBit = target.HasPlatform(Opus.Core.EPlatform.Win64);
+            localCompilerOptions.SixtyFourBit = target.HasPlatform(Bam.Core.EPlatform.Win64);
 
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 localCompilerOptions.StrictAliasing = false;
                 localCompilerOptions.InlineFunctions = false;
@@ -40,14 +40,14 @@ namespace MingwCommon
 
             var toolset = target.Toolset;
             var compilerTool = toolset.Tool(typeof(C.ICompilerTool)) as C.ICompilerTool;
-            cCompilerOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Opus.Core.BaseTarget)node.Target));
+            cCompilerOptions.SystemIncludePaths.AddRange(compilerTool.IncludePaths((Bam.Core.BaseTarget)node.Target));
 
             localCompilerOptions.Pedantic = true;
         }
 
         public
         CCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

@@ -13,7 +13,7 @@ namespace VisualCCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -21,14 +21,14 @@ namespace VisualCCommon
 
             linkerInterface.NoLogo = true;
             linkerInterface.StackReserveAndCommit = null;
-            linkerInterface.IgnoredLibraries = new Opus.Core.StringArray();
+            linkerInterface.IgnoredLibraries = new Bam.Core.StringArray();
 
             var target = node.Target;
-            linkerInterface.IncrementalLink = target.HasConfiguration(Opus.Core.EConfiguration.Debug);
+            linkerInterface.IncrementalLink = target.HasConfiguration(Bam.Core.EConfiguration.Debug);
 
             var linkerTool = target.Toolset.Tool(typeof(C.ILinkerTool)) as C.ILinkerTool;
 
-            foreach (var libPath in linkerTool.LibPaths((Opus.Core.BaseTarget)target))
+            foreach (var libPath in linkerTool.LibPaths((Bam.Core.BaseTarget)target))
             {
                 (this as C.ILinkerOptions).LibraryPaths.Add(libPath);
             }
@@ -36,27 +36,27 @@ namespace VisualCCommon
 
         public
         LinkerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var options = this as C.ILinkerOptions;
             if (options.DebugSymbols)
             {
                 var locationMap = node.Module.Locations;
-                var pdbDir = locationMap[Linker.PDBDir] as Opus.Core.ScaffoldLocation;
+                var pdbDir = locationMap[Linker.PDBDir] as Bam.Core.ScaffoldLocation;
                 if (!pdbDir.IsValid)
                 {
                     pdbDir.SetReference(locationMap[C.Application.OutputDir]);
                 }
 
-                var pdbFile = locationMap[Linker.PDBFile] as Opus.Core.ScaffoldLocation;
+                var pdbFile = locationMap[Linker.PDBFile] as Bam.Core.ScaffoldLocation;
                 if (!pdbFile.IsValid)
                 {
-                    pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Opus.Core.Location.EExists.WillExist);
+                    pdbFile.SpecifyStub(pdbDir, this.OutputName + ".pdb", Bam.Core.Location.EExists.WillExist);
                 }
             }
 
@@ -65,7 +65,7 @@ namespace VisualCCommon
 
         VisualStudioProcessor.ToolAttributeDictionary
         VisualStudioProcessor.IVisualStudioSupport.ToVisualStudioProjectAttributes(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var vsTarget = (target.Toolset as VisualStudioProcessor.IVisualStudioTargetInfo).VisualStudioTarget;
             switch (vsTarget)
@@ -75,7 +75,7 @@ namespace VisualCCommon
                     break;
 
                 default:
-                    throw new Opus.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
+                    throw new Bam.Core.Exception("Unsupported VisualStudio target, '{0}'", vsTarget);
             }
             var dictionary = VisualStudioProcessor.ToVisualStudioAttributes.Execute(this, target, vsTarget);
             return dictionary;

@@ -8,19 +8,19 @@ namespace VisualCCommon
     public sealed class Linker :
         C.ILinkerTool,
         C.IWinImportLibrary,
-        Opus.Core.IToolSupportsResponseFile,
-        Opus.Core.IToolForwardedEnvironmentVariables,
-        Opus.Core.IToolEnvironmentVariables
+        Bam.Core.IToolSupportsResponseFile,
+        Bam.Core.IToolForwardedEnvironmentVariables,
+        Bam.Core.IToolEnvironmentVariables
     {
-        public static readonly Opus.Core.LocationKey PDBFile = new Opus.Core.LocationKey("LinkerPDBFile", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey PDBDir = new Opus.Core.LocationKey("LinkerPDBDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey PDBFile = new Bam.Core.LocationKey("LinkerPDBFile", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey PDBDir = new Bam.Core.LocationKey("LinkerPDBDir", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        private Opus.Core.IToolset toolset;
-        private Opus.Core.StringArray requiredEnvironmentVariables = new Opus.Core.StringArray();
+        private Bam.Core.IToolset toolset;
+        private Bam.Core.StringArray requiredEnvironmentVariables = new Bam.Core.StringArray();
 
         public
         Linker(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
             // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
@@ -86,11 +86,11 @@ namespace VisualCCommon
             }
         }
 
-        Opus.Core.StringArray
+        Bam.Core.StringArray
         C.ILinkerTool.LibPaths(
-            Opus.Core.BaseTarget baseTarget)
+            Bam.Core.BaseTarget baseTarget)
         {
-            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            if (baseTarget.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 return (this.toolset as VisualCCommon.Toolset).lib64Folder;
             }
@@ -133,18 +133,18 @@ namespace VisualCCommon
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
             var binPath = this.toolset.BinPath(baseTarget);
             return System.IO.Path.Combine(binPath, "link.exe");
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 C.Application.OutputFile,
                 C.Application.OutputDir,
                 C.Application.MapFile,
@@ -165,7 +165,7 @@ namespace VisualCCommon
 
         #region IToolSupportsResponseFile Members
 
-        string Opus.Core.IToolSupportsResponseFile.Option
+        string Bam.Core.IToolSupportsResponseFile.Option
         {
             get
             {
@@ -177,7 +177,7 @@ namespace VisualCCommon
 
         #region IToolForwardedEnvironmentVariables Members
 
-        Opus.Core.StringArray Opus.Core.IToolForwardedEnvironmentVariables.VariableNames
+        Bam.Core.StringArray Bam.Core.IToolForwardedEnvironmentVariables.VariableNames
         {
             get
             {
@@ -189,17 +189,17 @@ namespace VisualCCommon
 
         #region IToolEnvironmentVariables Members
 
-        System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>
-        Opus.Core.IToolEnvironmentVariables.Variables(
-            Opus.Core.BaseTarget baseTarget)
+        System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>
+        Bam.Core.IToolEnvironmentVariables.Variables(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var environmentVariables = new System.Collections.Generic.Dictionary<string, Opus.Core.StringArray>();
+            var environmentVariables = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             environmentVariables["LIB"] = (this as C.ILinkerTool).LibPaths(baseTarget);
             environmentVariables["PATH"] = this.toolset.Environment;
-            if (baseTarget.HasPlatform(Opus.Core.EPlatform.Win64))
+            if (baseTarget.HasPlatform(Bam.Core.EPlatform.Win64))
             {
                 // some DLLs exist only in the 32-bit bin folder
-                var baseTarget32 = Opus.Core.BaseTarget.GetInstance32bits(baseTarget);
+                var baseTarget32 = Bam.Core.BaseTarget.GetInstance32bits(baseTarget);
                 environmentVariables["PATH"].AddUnique(this.toolset.BinPath(baseTarget32));
             }
             return environmentVariables;

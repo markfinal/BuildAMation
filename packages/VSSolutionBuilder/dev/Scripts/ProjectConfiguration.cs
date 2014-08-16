@@ -34,13 +34,13 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public Opus.Core.Location OutputDirectory
+        public Bam.Core.Location OutputDirectory
         {
             get;
             set;
         }
 
-        public Opus.Core.Location IntermediateDirectory
+        public Bam.Core.Location IntermediateDirectory
         {
             get;
             set;
@@ -67,7 +67,7 @@ namespace VSSolutionBuilder
                 }
                 else if (this.type != value)
                 {
-                    throw new Opus.Core.Exception("Project configuration type already set to '{0}'; cannot change to '{1}'", this.type.ToString(), value.ToString());
+                    throw new Bam.Core.Exception("Project configuration type already set to '{0}'; cannot change to '{1}'", this.type.ToString(), value.ToString());
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace VSSolutionBuilder
                 }
                 else if (this.characterSet != value)
                 {
-                    throw new Opus.Core.Exception("Project configuration character set already set to '{0}'; cannot change to '{1}'", this.characterSet.ToString(), value.ToString());
+                    throw new Bam.Core.Exception("Project configuration character set already set to '{0}'; cannot change to '{1}'", this.characterSet.ToString(), value.ToString());
                 }
             }
         }
@@ -144,12 +144,12 @@ namespace VSSolutionBuilder
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {
-                throw new Opus.Core.Exception("Project type is undefined");
+                throw new Bam.Core.Exception("Project type is undefined");
             }
 #if false
             if (this.CharacterSet == EProjectCharacterSet.Undefined)
             {
-                throw new Opus.Core.Exception("Project character set is undefined");
+                throw new Bam.Core.Exception("Project character set is undefined");
             }
 #endif
 
@@ -158,7 +158,7 @@ namespace VSSolutionBuilder
             configurationElement.SetAttribute("Name", this.Name);
             if (null != this.OutputDirectory)
             {
-                var outputDir = Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
+                var outputDir = Bam.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri);
                 // MSBuild complains if the output directory does not end with a trailing slash - not strictly necessary here, but consistent
                 if (!outputDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
                 {
@@ -168,7 +168,7 @@ namespace VSSolutionBuilder
             }
             if (null != this.IntermediateDirectory)
             {
-                var intermediateDir = Opus.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
+                var intermediateDir = Bam.Core.RelativePathUtilities.GetPath(this.IntermediateDirectory, projectUri);
                 // MSBuild complains if the intermediate directory does not end with a trailing slash - not strictly necessary here, but consistent
                 if (!intermediateDir.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
                 {
@@ -207,12 +207,12 @@ namespace VSSolutionBuilder
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {
-                throw new Opus.Core.Exception("Project type is undefined");
+                throw new Bam.Core.Exception("Project type is undefined");
             }
 #if false
             if (this.CharacterSet == EProjectCharacterSet.Undefined)
             {
-                throw new Opus.Core.Exception("Project character set is undefined");
+                throw new Bam.Core.Exception("Project character set is undefined");
             }
 #endif
 
@@ -231,11 +231,11 @@ namespace VSSolutionBuilder
         {
             if (this.Type == EProjectConfigurationType.Undefined)
             {
-                throw new Opus.Core.Exception("Project type is undefined");
+                throw new Bam.Core.Exception("Project type is undefined");
             }
             if (this.CharacterSet == EProjectCharacterSet.Undefined)
             {
-                throw new Opus.Core.Exception("Project character set is undefined");
+                throw new Bam.Core.Exception("Project character set is undefined");
             }
 
             var configurationGroup = project.CreatePropertyGroup();
@@ -243,7 +243,7 @@ namespace VSSolutionBuilder
             var split = this.Name.Split('|');
             configurationGroup.Condition = System.String.Format(" '$(Configuration)|$(Platform)' == '{0}|{1}' ", split[0], split[1]);
 
-            configurationGroup.CreateProperty("OutputPath", Opus.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
+            configurationGroup.CreateProperty("OutputPath", Bam.Core.RelativePathUtilities.GetPath(this.OutputDirectory, projectUri));
 
             // TODO: convert to var
             foreach (ProjectTool tool in this.Tools)

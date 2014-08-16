@@ -18,25 +18,25 @@ namespace NativeBuilder
             var xmlPath = xmlLocation.GetSinglePath();
             if (null == xmlPath)
             {
-                throw new Opus.Core.Exception("XML output path was not set");
+                throw new Bam.Core.Exception("XML output path was not set");
             }
 
             // dependency checking
             {
-                var outputFiles = new Opus.Core.StringArray();
+                var outputFiles = new Bam.Core.StringArray();
                 outputFiles.Add(xmlPath);
-                if (!RequiresBuilding(outputFiles, new Opus.Core.StringArray()))
+                if (!RequiresBuilding(outputFiles, new Bam.Core.StringArray()))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
                     return null;
                 }
             }
 
-            Opus.Core.Log.Info("Writing XML file '{0}'", xmlPath);
+            Bam.Core.Log.Info("Writing XML file '{0}'", xmlPath);
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();

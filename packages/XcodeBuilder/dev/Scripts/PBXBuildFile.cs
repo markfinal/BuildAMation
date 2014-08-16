@@ -46,11 +46,11 @@ namespace XcodeBuilder
         {
             if (this.FileReference == null)
             {
-                throw new Opus.Core.Exception("File reference not set on this build file");
+                throw new Bam.Core.Exception("File reference not set on this build file");
             }
             if (this.BuildPhase == null)
             {
-                throw new Opus.Core.Exception("Build phase not set on this build file");
+                throw new Bam.Core.Exception("Build phase not set on this build file");
             }
 
             if (this.Settings.Count > 0)

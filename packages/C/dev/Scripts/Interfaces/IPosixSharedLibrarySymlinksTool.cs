@@ -5,10 +5,10 @@
 // <author>Mark Final</author>
 namespace C
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalPosixSharedLibrarySymlinksToolOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalPosixSharedLibrarySymlinksToolOptionsDelegateAttribute),
                                    typeof(ExportPosixSharedLibrarySymlinksToolOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetPosixSharedLibrarySymlinksToolset")]
+    [Bam.Core.AssignToolsetProvider(typeof(ToolsetProvider), "GetPosixSharedLibrarySymlinksToolset")]
     public interface IPosixSharedLibrarySymlinksTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

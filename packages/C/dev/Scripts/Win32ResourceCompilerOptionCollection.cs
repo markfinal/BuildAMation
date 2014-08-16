@@ -7,30 +7,30 @@ namespace C
 {
     // TODO: this does not implement any options interface
     public class Win32ResourceCompilerOptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport
     {
         protected override void
         SetDelegates(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {}
 
         public
         Win32ResourceCompilerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {}
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
-            var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
+            var moduleBuildDir = locationMap[Bam.Core.State.ModuleBuildDirLocationKey];
 
             var outputFileDir = locationMap[C.Win32Resource.OutputDir];
             if (!outputFileDir.IsValid)
@@ -38,7 +38,7 @@ namespace C
                 var target = node.Target;
                 var compilerTool = target.Toolset.Tool(typeof(ICompilerTool)) as ICompilerTool;
                 var objBuildDir = moduleBuildDir.SubDirectory(compilerTool.ObjectFileOutputSubDirectory);
-                (outputFileDir as Opus.Core.ScaffoldLocation).SetReference(objBuildDir);
+                (outputFileDir as Bam.Core.ScaffoldLocation).SetReference(objBuildDir);
             }
 
             var resourceModule = node.Module as Win32Resource;
@@ -47,17 +47,17 @@ namespace C
                 // this only requires the end path - so grab it from the Location without resolving it
                 var location = resourceModule.ResourceFileLocation;
                 var sourcePathName = string.Empty;
-                if (location is Opus.Core.FileLocation)
+                if (location is Bam.Core.FileLocation)
                 {
                     sourcePathName = location.AbsolutePath;
                 }
-                else if (location is Opus.Core.DirectoryLocation)
+                else if (location is Bam.Core.DirectoryLocation)
                 {
-                    throw new Opus.Core.Exception("Cannot use a directory for compiler options");
+                    throw new Bam.Core.Exception("Cannot use a directory for compiler options");
                 }
                 else
                 {
-                    sourcePathName = (location as Opus.Core.ScaffoldLocation).Pattern;
+                    sourcePathName = (location as Bam.Core.ScaffoldLocation).Pattern;
                 }
                 this.OutputName = System.IO.Path.GetFileNameWithoutExtension(sourcePathName);
             }
@@ -65,7 +65,7 @@ namespace C
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
             if (!locationMap[C.Win32Resource.OutputFile].IsValid)
@@ -73,7 +73,7 @@ namespace C
                 var target = node.Target;
                 var resourceCompilerTool = target.Toolset.Tool(typeof(IWinResourceCompilerTool)) as IWinResourceCompilerTool;
                 var objectFile = this.OutputName + resourceCompilerTool.CompiledResourceSuffix;
-                (locationMap[C.Win32Resource.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Win32Resource.OutputDir], objectFile, Opus.Core.Location.EExists.WillExist);
+                (locationMap[C.Win32Resource.OutputFile] as Bam.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Win32Resource.OutputDir], objectFile, Bam.Core.Location.EExists.WillExist);
             }
 
             base.FinalizeOptions(node);
@@ -87,9 +87,9 @@ namespace C
 
         void
         CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
-            Opus.Core.StringArray commandLineBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames)
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

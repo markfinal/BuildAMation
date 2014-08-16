@@ -16,10 +16,10 @@ namespace NativeBuilder
             var binaryLocPath = binaryLoc.GetSinglePath();
             if (!System.IO.File.Exists(binaryLocPath))
             {
-                throw new Opus.Core.Exception("Binary file '{0}' does not exist", binaryLocPath);
+                throw new Bam.Core.Exception("Binary file '{0}' does not exist", binaryLocPath);
             }
 
-            var asModule = moduleToBuild as Opus.Core.BaseModule;
+            var asModule = moduleToBuild as Bam.Core.BaseModule;
             var options = asModule.Options;
 
             var compilerOptions = options as C.Win32ManifestOptionCollection;
@@ -30,7 +30,7 @@ namespace NativeBuilder
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
@@ -39,7 +39,7 @@ namespace NativeBuilder
 
             var target = asModule.OwningNode.Target;
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (compilerOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = compilerOptions as CommandLineProcessor.ICommandLineSupport;
@@ -47,7 +47,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             var compilerTool = target.Toolset.Tool(typeof(C.IWinManifestTool)) as C.IWinManifestTool;

@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             QtCommon.MocFileCollection moduleToBuild,
             out bool success)
         {
-            var mocFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
+            var mocFileCollectionModule = moduleToBuild as Bam.Core.BaseModule;
             var node = mocFileCollectionModule.OwningNode;
 
             var dependents = new MakeFileVariableDictionary();
@@ -25,7 +25,7 @@ namespace MakeFileBuilder
 
             var makeFilePath = MakeFileBuilder.GetMakeFilePathName(node);
             System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(makeFilePath));
-            Opus.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
+            Bam.Core.Log.DebugMessage("Makefile : '{0}'", makeFilePath);
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
 

@@ -10,8 +10,8 @@ namespace NativeBuilder
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -54,7 +54,7 @@ namespace NativeBuilder
 
             if (sourceKey.IsFileKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
                 Publisher.ProductModuleUtilities.CopyFileToLocation(
                     sourceLoc,
                     publishDirectoryPath,
@@ -64,7 +64,7 @@ namespace NativeBuilder
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 Publisher.ProductModuleUtilities.CopySymlinkToLocation(
                     sourceLoc,
                     publishDirectoryPath,
@@ -74,19 +74,19 @@ namespace NativeBuilder
             }
             else if (sourceKey.IsDirectoryKey)
             {
-                throw new Opus.Core.Exception("Directories cannot be published yet");
+                throw new Bam.Core.Exception("Directories cannot be published yet");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported Location type");
+                throw new Bam.Core.Exception("Unsupported Location type");
             }
         }
 
         private void
         nativeCopyAdditionalDirectory(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
             string publishDirectoryPath,
@@ -101,7 +101,7 @@ namespace NativeBuilder
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
                 primaryModule,
                 directoryInfo.Directory);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Directory);
             var sourceLoc = directoryInfo.DirectoryLocation;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
@@ -117,8 +117,8 @@ namespace NativeBuilder
         private void
         nativeCopyInfoPList(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -139,7 +139,7 @@ namespace NativeBuilder
                 primaryModule,
                 moduleToCopy,
                 keyToCopy);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
             var contentsLoc = moduleToBuild.Locations[Publisher.ProductModule.OSXAppBundleContents].GetSingleRawPath();
             var plistSourceLoc = moduleToCopy.Locations[keyToCopy];
             Publisher.ProductModuleUtilities.CopyFileToLocation(

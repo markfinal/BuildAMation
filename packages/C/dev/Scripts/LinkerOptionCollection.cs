@@ -6,12 +6,12 @@
 namespace C
 {
     public abstract class LinkerOptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             this.OutputName = node.ModuleName;
 
@@ -21,13 +21,13 @@ namespace C
             linkerOptions.OutputType = ELinkerOutput.Executable;
             linkerOptions.SubSystem = ESubsystem.NotSet;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
-            if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+            if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
             {
                 linkerOptions.DebugSymbols = true;
             }
             else
             {
-                if (!target.HasConfiguration(Opus.Core.EConfiguration.Profile))
+                if (!target.HasConfiguration(Bam.Core.EConfiguration.Profile))
                 {
                     linkerOptions.DebugSymbols = false;
                 }
@@ -37,16 +37,16 @@ namespace C
                 }
             }
             linkerOptions.DynamicLibrary = false;
-            linkerOptions.LibraryPaths = new Opus.Core.DirectoryCollection();
+            linkerOptions.LibraryPaths = new Bam.Core.DirectoryCollection();
             linkerOptions.GenerateMapFile = true;
-            linkerOptions.Libraries = new Opus.Core.FileCollection();
-            linkerOptions.StandardLibraries = new Opus.Core.FileCollection();
+            linkerOptions.Libraries = new Bam.Core.FileCollection();
+            linkerOptions.StandardLibraries = new Bam.Core.FileCollection();
 
             var osxLinkerOptions = this as ILinkerOptionsOSX;
             if (osxLinkerOptions != null)
             {
-                osxLinkerOptions.Frameworks = new Opus.Core.StringArray();
-                osxLinkerOptions.FrameworkSearchDirectories = new Opus.Core.DirectoryCollection();
+                osxLinkerOptions.Frameworks = new Bam.Core.StringArray();
+                osxLinkerOptions.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
                 osxLinkerOptions.SuppressReadOnlyRelocations = false;
             }
 
@@ -58,10 +58,10 @@ namespace C
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = this.OwningNode.Module.Locations;
-            var moduleBuildDir = locationMap[Opus.Core.State.ModuleBuildDirLocationKey];
+            var moduleBuildDir = locationMap[Bam.Core.State.ModuleBuildDirLocationKey];
 
             var linkerTool = node.Target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
 
@@ -69,7 +69,7 @@ namespace C
             if (!outputDir.IsValid)
             {
                 var linkerOutputDir = moduleBuildDir.SubDirectory(linkerTool.BinaryOutputSubDirectory);
-                (outputDir as Opus.Core.ScaffoldLocation).SetReference(linkerOutputDir);
+                (outputDir as Bam.Core.ScaffoldLocation).SetReference(linkerOutputDir);
             }
 
             // special case here of the QMakeBuilder
@@ -79,14 +79,14 @@ namespace C
                 var importLibDir = node.Module.Locations[C.DynamicLibrary.ImportLibraryDir];
                 if (!importLibDir.IsValid)
                 {
-                    if (linkerTool is IWinImportLibrary && (Opus.Core.State.BuilderName != "QMake"))
+                    if (linkerTool is IWinImportLibrary && (Bam.Core.State.BuilderName != "QMake"))
                     {
                         var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
-                        (importLibDir as Opus.Core.ScaffoldLocation).SetReference(moduleDir);
+                        (importLibDir as Bam.Core.ScaffoldLocation).SetReference(moduleDir);
                     }
                     else
                     {
-                        (importLibDir as Opus.Core.ScaffoldLocation).SetReference(outputDir);
+                        (importLibDir as Bam.Core.ScaffoldLocation).SetReference(outputDir);
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace C
 
         public
         LinkerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         public string OutputName
@@ -125,13 +125,13 @@ namespace C
                     break;
 
                 default:
-                    throw new Opus.Core.Exception("Unknown output type");
+                    throw new Bam.Core.Exception("Unknown output type");
             }
         }
 
         private string
         GetExecutableFilename(
-            Opus.Core.Target target,
+            Bam.Core.Target target,
             ILinkerTool linkerTool,
             ILinkerOptions linkerOptions)
         {
@@ -142,14 +142,14 @@ namespace C
             string filename = null;
             if (linkerOptions.OutputType == ELinkerOutput.DynamicLibrary)
             {
-                if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Unix))
                 {
                     // version number postfixes the filename
                     var versionNumber = new System.Text.StringBuilder();
                     versionNumber.AppendFormat(".{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
                     filename = prefix + this.OutputName + suffix + versionNumber.ToString();
                 }
-                else if (target.HasPlatform(Opus.Core.EPlatform.OSX))
+                else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
                 {
                     // major version number is prior to the extension
                     filename = prefix + this.OutputName + "." + linkerOptions.MajorVersion.ToString() + suffix;
@@ -164,7 +164,7 @@ namespace C
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var target = node.Target;
             var linkerTool = target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
@@ -175,18 +175,18 @@ namespace C
             if (!outputFile.IsValid)
             {
                 var filename = this.GetExecutableFilename(target, linkerTool, options);
-                (outputFile as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.OutputDir], filename, Opus.Core.Location.EExists.WillExist);
+                (outputFile as Bam.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.OutputDir], filename, Bam.Core.Location.EExists.WillExist);
             }
 
             if (node.Module is C.DynamicLibrary && linkerTool is IWinImportLibrary)
             {
-                var importLibraryFile = locationMap[C.DynamicLibrary.ImportLibraryFile] as Opus.Core.ScaffoldLocation;
+                var importLibraryFile = locationMap[C.DynamicLibrary.ImportLibraryFile] as Bam.Core.ScaffoldLocation;
                 if (!importLibraryFile.IsValid)
                 {
                     // explicit import library
                     var importLibrary = linkerTool as IWinImportLibrary;
                     var filename = importLibrary.ImportLibraryPrefix + this.OutputName + importLibrary.ImportLibrarySuffix;
-                    importLibraryFile.SpecifyStub(locationMap[C.DynamicLibrary.ImportLibraryDir], filename, Opus.Core.Location.EExists.WillExist);
+                    importLibraryFile.SpecifyStub(locationMap[C.DynamicLibrary.ImportLibraryDir], filename, Bam.Core.Location.EExists.WillExist);
                 }
             }
 
@@ -194,21 +194,21 @@ namespace C
             {
                 if (!locationMap[C.Application.MapFileDir].IsValid)
                 {
-                    (locationMap[C.Application.MapFileDir] as Opus.Core.ScaffoldLocation).SetReference(locationMap[C.Application.OutputDir]);
+                    (locationMap[C.Application.MapFileDir] as Bam.Core.ScaffoldLocation).SetReference(locationMap[C.Application.OutputDir]);
                 }
 
                 if (!locationMap[C.Application.MapFile].IsValid)
                 {
-                    (locationMap[C.Application.MapFile] as Opus.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.MapFileDir], this.OutputName + linkerTool.MapFileSuffix, Opus.Core.Location.EExists.WillExist);
+                    (locationMap[C.Application.MapFile] as Bam.Core.ScaffoldLocation).SpecifyStub(locationMap[C.Application.MapFileDir], this.OutputName + linkerTool.MapFileSuffix, Bam.Core.Location.EExists.WillExist);
                 }
             }
         }
 
         void
         CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
-            Opus.Core.StringArray commandLineBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames)
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineBuilder, target, excludedOptionNames);
         }

@@ -12,7 +12,7 @@ namespace NativeBuilder
             CSharp.Assembly moduleToBuild,
             out System.Boolean success)
         {
-            var assemblyModule = moduleToBuild as Opus.Core.BaseModule;
+            var assemblyModule = moduleToBuild as Bam.Core.BaseModule;
             var node = assemblyModule.OwningNode;
             var target = node.Target;
             var assemblyOptions = assemblyModule.Options;
@@ -20,10 +20,10 @@ namespace NativeBuilder
 
             if (node.ExternalDependents != null)
             {
-                var keyFilters = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var keyFilters = new Bam.Core.Array<Bam.Core.LocationKey>(
                     CSharp.Assembly.OutputFile
                     );
-                var dependentAssemblies = new Opus.Core.LocationArray();
+                var dependentAssemblies = new Bam.Core.LocationArray();
                 node.ExternalDependents.FilterOutputLocations(keyFilters, dependentAssemblies);
 
                 foreach (var loc in dependentAssemblies)
@@ -32,37 +32,37 @@ namespace NativeBuilder
                 }
             }
 
-            var sourceFiles = new Opus.Core.StringArray();
+            var sourceFiles = new Bam.Core.StringArray();
             var fields = moduleToBuild.GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
             foreach (var field in fields)
             {
                 // C# files
                 {
-                    var sourceFileAttributes = field.GetCustomAttributes(typeof(Opus.Core.SourceFilesAttribute), false);
+                    var sourceFileAttributes = field.GetCustomAttributes(typeof(Bam.Core.SourceFilesAttribute), false);
                     if (null != sourceFileAttributes && sourceFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Source file '{0}' does not exist", absolutePath);
                             }
 
                             sourceFiles.Add(absolutePath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             // TODO: convert to var
-                            foreach (Opus.Core.Location location in sourceCollection)
+                            foreach (Bam.Core.Location location in sourceCollection)
                             {
                                 var absolutePath = location.AbsolutePath;
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Source file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Source file '{0}' does not exist", absolutePath);
                                 }
 
                                 sourceFiles.Add(absolutePath);
@@ -70,7 +70,7 @@ namespace NativeBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -81,29 +81,29 @@ namespace NativeBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                             }
 
                             var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
+                                throw new Bam.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                             }
 
                             sourceFiles.Add(csPath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one application definition");
+                                throw new Bam.Core.Exception("There can be only one application definition");
                             }
 
                             // TODO: convert to var
@@ -111,13 +111,13 @@ namespace NativeBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Application definition file '{0}' does not exist", absolutePath);
                                 }
 
                                 var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
+                                    throw new Bam.Core.Exception("Associated source file '{0}' to application definition file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 sourceFiles.Add(csPath);
@@ -125,7 +125,7 @@ namespace NativeBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -136,29 +136,29 @@ namespace NativeBuilder
                     if (null != xamlFileAttributes && xamlFileAttributes.Length > 0)
                     {
                         var sourceField = field.GetValue(moduleToBuild);
-                        if (sourceField is Opus.Core.Location)
+                        if (sourceField is Bam.Core.Location)
                         {
-                            var file = sourceField as Opus.Core.Location;
+                            var file = sourceField as Bam.Core.Location;
                             var absolutePath = file.GetSinglePath();
                             if (!System.IO.File.Exists(absolutePath))
                             {
-                                throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
+                                throw new Bam.Core.Exception("Page file '{0}' does not exist", absolutePath);
                             }
 
                             var csPath = absolutePath + ".cs";
                             if (!System.IO.File.Exists(csPath))
                             {
-                                throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
+                                throw new Bam.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                             }
 
                             sourceFiles.Add(csPath);
                         }
-                        else if (sourceField is Opus.Core.FileCollection)
+                        else if (sourceField is Bam.Core.FileCollection)
                         {
-                            var sourceCollection = sourceField as Opus.Core.FileCollection;
+                            var sourceCollection = sourceField as Bam.Core.FileCollection;
                             if (sourceCollection.Count != 1)
                             {
-                                throw new Opus.Core.Exception("There can be only one page file");
+                                throw new Bam.Core.Exception("There can be only one page file");
                             }
 
                             // TODO: convert to var
@@ -166,13 +166,13 @@ namespace NativeBuilder
                             {
                                 if (!System.IO.File.Exists(absolutePath))
                                 {
-                                    throw new Opus.Core.Exception("Page file '{0}' does not exist", absolutePath);
+                                    throw new Bam.Core.Exception("Page file '{0}' does not exist", absolutePath);
                                 }
 
                                 var csPath = absolutePath + ".cs";
                                 if (!System.IO.File.Exists(csPath))
                                 {
-                                    throw new Opus.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
+                                    throw new Bam.Core.Exception("Associated source file '{0}' to page file '{1}' does not exist", csPath, absolutePath);
                                 }
 
                                 sourceFiles.Add(csPath);
@@ -180,7 +180,7 @@ namespace NativeBuilder
                         }
                         else
                         {
-                            throw new Opus.Core.Exception("Field '{0}' of '{1}' should be of type Opus.Core.File or Opus.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
+                            throw new Bam.Core.Exception("Field '{0}' of '{1}' should be of type Bam.Core.File or Bam.Core.FileCollection, not '{2}'", field.Name, node.ModuleName, sourceField.GetType().ToString());
                         }
                     }
                 }
@@ -188,20 +188,20 @@ namespace NativeBuilder
 
             if (0 == sourceFiles.Count)
             {
-                throw new Opus.Core.Exception("There were no source files specified for the module '{0}'", node.ModuleName);
+                throw new Bam.Core.Exception("There were no source files specified for the module '{0}'", node.ModuleName);
             }
 
             // dependency checking
             {
-                var inputLocations = new Opus.Core.LocationArray();
+                var inputLocations = new Bam.Core.LocationArray();
                 foreach (var source in sourceFiles)
                 {
-                    inputLocations.Add(Opus.Core.FileLocation.Get(source));
+                    inputLocations.Add(Bam.Core.FileLocation.Get(source));
                 }
-                var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                var outputLocations = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputLocations, inputLocations))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
                     return null;
                 }
@@ -210,14 +210,14 @@ namespace NativeBuilder
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (options is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = options as CommandLineProcessor.ICommandLineSupport;
@@ -225,7 +225,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Compiler options does not support command line translation");
+                throw new Bam.Core.Exception("Compiler options does not support command line translation");
             }
 
             foreach (var source in sourceFiles)

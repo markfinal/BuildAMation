@@ -11,13 +11,13 @@ namespace XmlUtilities
     {
         public
         OSXPlistWriterOptionCollection(
-            Opus.Core.DependencyNode owningNode) : base(owningNode)
+            Bam.Core.DependencyNode owningNode) : base(owningNode)
         {}
 
         #region implemented abstract members of BaseOptionCollection
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {
             var options = this as IOSXPlistOptions;
             options.CFBundleName = null;
@@ -61,13 +61,13 @@ namespace XmlUtilities
 
         protected override void
         SetNodeSpecificData(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
-            var pListDirLoc = locationMap[XmlModule.OutputDir] as Opus.Core.ScaffoldLocation;
+            var pListDirLoc = locationMap[XmlModule.OutputDir] as Bam.Core.ScaffoldLocation;
             if (!pListDirLoc.IsValid)
             {
-                pListDirLoc.SetReference(locationMap[Opus.Core.State.ModuleBuildDirLocationKey]);
+                pListDirLoc.SetReference(locationMap[Bam.Core.State.ModuleBuildDirLocationKey]);
             }
 
             base.SetNodeSpecificData (node);
@@ -75,20 +75,20 @@ namespace XmlUtilities
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             var locationMap = node.Module.Locations;
-            var pListFileLoc = locationMap[XmlModule.OutputFile] as Opus.Core.ScaffoldLocation;
+            var pListFileLoc = locationMap[XmlModule.OutputFile] as Bam.Core.ScaffoldLocation;
             if (!pListFileLoc.IsValid)
             {
-                pListFileLoc.SpecifyStub(locationMap[XmlModule.OutputDir], "Info.plist", Opus.Core.ScaffoldLocation.EExists.WillExist);
+                pListFileLoc.SpecifyStub(locationMap[XmlModule.OutputDir], "Info.plist", Bam.Core.ScaffoldLocation.EExists.WillExist);
             }
 
             // TODO: move this into the Module itself
             // the plist file is relative to the main executable
             if (null == node.ExternalDependents)
             {
-                throw new Opus.Core.Exception("PList generation must be dependent upon the executable associated with it");
+                throw new Bam.Core.Exception("PList generation must be dependent upon the executable associated with it");
             }
 
             var dependentNode = node.ExternalDependents[0];

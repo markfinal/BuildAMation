@@ -12,7 +12,7 @@ namespace MakeFileBuilder
             C.StaticLibrary moduleToBuild,
             out bool success)
         {
-            var staticLibraryModule = moduleToBuild as Opus.Core.BaseModule;
+            var staticLibraryModule = moduleToBuild as Bam.Core.BaseModule;
             var node = staticLibraryModule.OwningNode;
             var target = node.Target;
 
@@ -21,7 +21,7 @@ namespace MakeFileBuilder
             var dataArray = new System.Collections.Generic.List<MakeFileData>();
             if (null != node.Children)
             {
-                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var keysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.ObjectFile.OutputFile
                 );
 
@@ -38,7 +38,7 @@ namespace MakeFileBuilder
             }
             if (null != node.ExternalDependents)
             {
-                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var keysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.ObjectFile.OutputFile
                 );
 
@@ -58,12 +58,12 @@ namespace MakeFileBuilder
 
             var toolset = target.Toolset;
             var archiverTool = toolset.Tool(typeof(C.IArchiverTool));
-            var executable = archiverTool.Executable((Opus.Core.BaseTarget)target);
+            var executable = archiverTool.Executable((Bam.Core.BaseTarget)target);
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (staticLibraryOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 // TODO: pass in a map of path translations, e.g. outputfile > $@
@@ -72,7 +72,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("Archiver options does not support command line translation");
+                throw new Bam.Core.Exception("Archiver options does not support command line translation");
             }
 
             var makeFile = new MakeFile(node, this.topLevelMakeFilePath);
@@ -97,7 +97,7 @@ namespace MakeFileBuilder
             var outputPath = moduleToBuild.Locations[C.StaticLibrary.OutputFileLocKey].GetSinglePath();
             recipe = recipe.Replace(outputPath, "$@");
 
-            var recipes = new Opus.Core.StringArray();
+            var recipes = new Bam.Core.StringArray();
             recipes.Add(recipe);
 
             var rule = new MakeFileRule(
@@ -109,8 +109,8 @@ namespace MakeFileBuilder
                 null,
                 recipes);
 
-            var toolOutputLocKeys = (archiverTool as Opus.Core.ITool).OutputLocationKeys(moduleToBuild);
-            var outputFileLocations = moduleToBuild.Locations.Keys(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+            var toolOutputLocKeys = (archiverTool as Bam.Core.ITool).OutputLocationKeys(moduleToBuild);
+            var outputFileLocations = moduleToBuild.Locations.Keys(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
             var outputFileLocationsOfInterest = outputFileLocations.Intersect(toolOutputLocKeys);
             rule.OutputLocationKeys = outputFileLocationsOfInterest;
 
@@ -126,10 +126,10 @@ namespace MakeFileBuilder
 
             var exportedTargetDictionary = makeFile.ExportedTargets;
             var exportedVariableDictionary = makeFile.ExportedVariables;
-            System.Collections.Generic.Dictionary<string, Opus.Core.StringArray> environment = null;
-            if (archiverTool is Opus.Core.IToolEnvironmentVariables)
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> environment = null;
+            if (archiverTool is Bam.Core.IToolEnvironmentVariables)
             {
-                environment = (archiverTool as Opus.Core.IToolEnvironmentVariables).Variables((Opus.Core.BaseTarget)target);
+                environment = (archiverTool as Bam.Core.IToolEnvironmentVariables).Variables((Bam.Core.BaseTarget)target);
             }
             var returnData = new MakeFileData(makeFilePath, exportedTargetDictionary, exportedVariableDictionary, environment);
             success = true;

@@ -12,7 +12,7 @@ namespace MingwCommon
     {
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             base.SetDefaultOptionValues(node);
 
@@ -21,7 +21,7 @@ namespace MingwCommon
             (this as ILinkerOptions).EnableAutoImport = false;
 
             // we use gcc as the linker - if there is C++ code included, link against libstdc++
-            foreach (Opus.Core.DependencyNode child in node.Children)
+            foreach (Bam.Core.DependencyNode child in node.Children)
             {
                 if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection)
                 {
@@ -39,7 +39,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
 
         public
         LinkerOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
     }
 }

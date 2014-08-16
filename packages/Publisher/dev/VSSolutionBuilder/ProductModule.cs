@@ -10,7 +10,7 @@ namespace VSSolutionBuilder
         private static void
         CopyNodes(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
+            Bam.Core.BaseModule primaryModule,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo)
         {
@@ -19,7 +19,7 @@ namespace VSSolutionBuilder
             var toProject = primaryModule.OwningNode.Data as IProject;
 
             var configCollection = toProject.Configurations;
-            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)toCopy.Target); // TODO: not accurate
+            var configurationName = configCollection.GetConfigurationNameForTarget((Bam.Core.BaseTarget)toCopy.Target); // TODO: not accurate
             var configuration = configCollection[configurationName];
 
             var toolName = "VCPostBuildEventTool";
@@ -50,7 +50,7 @@ namespace VSSolutionBuilder
             }
 
             var newKeyName = Publisher.ProductModuleUtilities.GetPublishedKeyName(toCopy.Module, toCopy.Module, keyToCopy);
-            var primaryKey = new Opus.Core.LocationKey(newKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var primaryKey = new Bam.Core.LocationKey(newKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
             var destPath = Publisher.ProductModuleUtilities.GenerateDestinationPath(
                 sourcePath,
                 destinationDirPath,
@@ -61,7 +61,7 @@ namespace VSSolutionBuilder
 
             if (sourcePath == destPath)
             {
-                Opus.Core.Log.DebugMessage("Skipping copying '{0}' as it would go to the same location", sourcePath);
+                Bam.Core.Log.DebugMessage("Skipping copying '{0}' as it would go to the same location", sourcePath);
                 return;
             }
 
@@ -98,14 +98,14 @@ namespace VSSolutionBuilder
         private static void
         CopyDirectory(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
+            Bam.Core.BaseModule primaryModule,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo)
         {
             var toProject = primaryModule.OwningNode.Data as IProject;
 
             var configCollection = toProject.Configurations;
-            var configurationName = configCollection.GetConfigurationNameForTarget((Opus.Core.BaseTarget)moduleToBuild.OwningNode.Target);
+            var configurationName = configCollection.GetConfigurationNameForTarget((Bam.Core.BaseTarget)moduleToBuild.OwningNode.Target);
             var configuration = configCollection[configurationName];
 
             var toolName = "VCPostBuildEventTool";
@@ -161,8 +161,8 @@ namespace VSSolutionBuilder
         private void
         nativeCopyNodeLocation(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
@@ -205,7 +205,7 @@ namespace VSSolutionBuilder
 
             if (sourceKey.IsFileKey)
             {
-                //var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.File);
+                //var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.File);
                 CopyNodes(
                     moduleToBuild,
                     primaryModule,
@@ -214,7 +214,7 @@ namespace VSSolutionBuilder
             }
             else if (sourceKey.IsSymlinkKey)
             {
-                //var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Symlink);
+                //var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Symlink);
                 CopyNodes(
                     moduleToBuild,
                     primaryModule,
@@ -223,19 +223,19 @@ namespace VSSolutionBuilder
             }
             else if (sourceKey.IsDirectoryKey)
             {
-                throw new Opus.Core.Exception("Directories cannot be published yet");
+                throw new Bam.Core.Exception("Directories cannot be published yet");
             }
             else
             {
-                throw new Opus.Core.Exception("Unsupported Location type");
+                throw new Bam.Core.Exception("Unsupported Location type");
             }
         }
 
         private void
         nativeCopyAdditionalDirectory(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDirectory directoryInfo,
             string publishDirectoryPath,
@@ -246,7 +246,7 @@ namespace VSSolutionBuilder
             var publishedKeyName = Publisher.ProductModuleUtilities.GetPublishedAdditionalDirectoryKeyName(
                 primaryModule,
                 directoryInfo.Directory);
-            var publishedKey = new Opus.Core.LocationKey(publishedKeyName, Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+            var publishedKey = new Bam.Core.LocationKey(publishedKeyName, Bam.Core.ScaffoldLocation.ETypeHint.Directory);
             var sourceLoc = directoryInfo.DirectoryLocation;
             var attribute = meta.Attribute as Publisher.AdditionalDirectoriesAttribute;
             var subdirectory = attribute.CommonSubDirectory;
@@ -261,14 +261,14 @@ namespace VSSolutionBuilder
         private void
         nativeCopyInfoPList(
             Publisher.ProductModule moduleToBuild,
-            Opus.Core.BaseModule primaryModule,
-            Opus.Core.LocationArray directoriesToCreate,
+            Bam.Core.BaseModule primaryModule,
+            Bam.Core.LocationArray directoriesToCreate,
             Publisher.ProductModuleUtilities.MetaData meta,
             Publisher.PublishDependency nodeInfo,
             string publishDirectoryPath,
             object context)
         {
-            throw new Opus.Core.Exception("Info.plists are OSX specific. Not supported with VisualStudio projects");
+            throw new Bam.Core.Exception("Info.plists are OSX specific. Not supported with VisualStudio projects");
         }
 
         public object

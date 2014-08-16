@@ -55,7 +55,7 @@ namespace C
         /// <summary>
         /// Specify search paths for libraries
         /// </summary>
-        Opus.Core.DirectoryCollection LibraryPaths
+        Bam.Core.DirectoryCollection LibraryPaths
         {
             get;
             set;
@@ -64,7 +64,7 @@ namespace C
         /// <summary>
         /// Specify standard libraries to link against
         /// </summary>
-        Opus.Core.FileCollection StandardLibraries
+        Bam.Core.FileCollection StandardLibraries
         {
             get;
             set;
@@ -73,7 +73,7 @@ namespace C
         /// <summary>
         /// Specify user libraries to link against
         /// </summary>
-        Opus.Core.FileCollection Libraries
+        Bam.Core.FileCollection Libraries
         {
             get;
             set;

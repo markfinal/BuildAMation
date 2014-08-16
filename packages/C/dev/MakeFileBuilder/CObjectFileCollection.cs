@@ -12,17 +12,17 @@ namespace MakeFileBuilder
             C.ObjectFileCollectionBase moduleToBuild,
             out bool success)
         {
-            var objectFileCollectionModule = moduleToBuild as Opus.Core.BaseModule;
+            var objectFileCollectionModule = moduleToBuild as Bam.Core.BaseModule;
             var node = objectFileCollectionModule.OwningNode;
 
             var dependents = new MakeFileVariableDictionary();
-            var childDataArray = new Opus.Core.Array<MakeFileData>();
+            var childDataArray = new Bam.Core.Array<MakeFileData>();
             foreach (var childNode in node.Children)
             {
                 var data = childNode.Data as MakeFileData;
                 if (!data.VariableDictionary.ContainsKey(C.ObjectFile.OutputFile))
                 {
-                    throw new Opus.Core.Exception("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName);
+                    throw new Bam.Core.Exception("MakeFile Variable for '{0}' is missing", childNode.UniqueModuleName);
                 }
 
                 childDataArray.Add(data);
@@ -30,7 +30,7 @@ namespace MakeFileBuilder
             }
             if (null != node.ExternalDependents)
             {
-                var keysToFilter = new Opus.Core.Array<Opus.Core.LocationKey>(
+                var keysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.ObjectFile.OutputFile
                 );
 

@@ -11,11 +11,11 @@ namespace XcodeBuilder
     {
         public
         PBXProject(
-            Opus.Core.DependencyNode node) : base(node.ModuleName)
+            Bam.Core.DependencyNode node) : base(node.ModuleName)
         {
             var package = node.Package;
             var projectFilename = "project.pbxproj";
-            var rootDirectory = System.IO.Path.Combine(Opus.Core.State.BuildRoot, package.FullName);
+            var rootDirectory = System.IO.Path.Combine(Bam.Core.State.BuildRoot, package.FullName);
             rootDirectory = System.IO.Path.Combine(rootDirectory, node.ModuleName) + ".xcodeproj";
             this.RootUri = new System.Uri(rootDirectory, System.UriKind.Absolute);
             this.Path = System.IO.Path.Combine(rootDirectory, projectFilename);
@@ -66,11 +66,11 @@ namespace XcodeBuilder
             // these settings are overriden by per-target build configurations
             var projectConfigurationList = this.ConfigurationLists.Get(this);
             this.BuildConfigurationList = projectConfigurationList;
-            foreach (var config in Opus.Core.State.BuildConfigurations)
+            foreach (var config in Bam.Core.State.BuildConfigurations)
             {
                 var genericBuildConfiguration = this.BuildConfigurations.Get(config.ToString(), "Generic");
-                genericBuildConfiguration.Options["SYMROOT"].AddUnique(Opus.Core.State.BuildRoot);
-                if (config == Opus.Core.EConfiguration.Debug)
+                genericBuildConfiguration.Options["SYMROOT"].AddUnique(Bam.Core.State.BuildRoot);
+                if (config == Bam.Core.EConfiguration.Debug)
                 {
                     // Xcode 5 wants this setting for build performance in debug
                     genericBuildConfiguration.Options["ONLY_ACTIVE_ARCH"].AddUnique("YES");
@@ -199,7 +199,7 @@ namespace XcodeBuilder
                 return "0510";
             }
 
-            throw new Opus.Core.Exception("Unrecognized Xcode version, {0}", this.LatestXcodeVersion.ToString());
+            throw new Bam.Core.Exception("Unrecognized Xcode version, {0}", this.LatestXcodeVersion.ToString());
         }
 
 #region IWriteableNode implementation
@@ -210,7 +210,7 @@ namespace XcodeBuilder
         {
             if (null == this.BuildConfigurationList)
             {
-                throw new Opus.Core.Exception("Project build configuration list not assigned");
+                throw new Bam.Core.Exception("Project build configuration list not assigned");
             }
 
             writer.WriteLine("// !$*UTF8*$!");

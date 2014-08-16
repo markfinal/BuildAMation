@@ -10,18 +10,18 @@ namespace GccCommon
         public
         GccDetailData(
             string version,
-            Opus.Core.StringArray includePaths,
+            Bam.Core.StringArray includePaths,
             string gxxIncludePath,
             string target,
             string libExecDir)
         {
             if (null == version)
             {
-                throw new Opus.Core.Exception("Unable to determine Gcc version");
+                throw new Bam.Core.Exception("Unable to determine Gcc version");
             }
             if (null == target)
             {
-                throw new Opus.Core.Exception("Unable to determine Gcc target");
+                throw new Bam.Core.Exception("Unable to determine Gcc target");
             }
 
             this.Version = version;
@@ -37,7 +37,7 @@ namespace GccCommon
             private set;
         }
 
-        public Opus.Core.StringArray IncludePaths
+        public Bam.Core.StringArray IncludePaths
         {
             get;
             private set;
