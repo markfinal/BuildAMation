@@ -3,7 +3,7 @@ namespace Test8
 {
     // Define module classes here
 
-    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
+    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.Windows)]
     class ApplicationTest :
         C.Application
     {
@@ -14,34 +14,34 @@ namespace Test8
             this.sourceFile.Include(sourceDir, "main.c");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.RequiredModules]
-        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(
+        [Bam.Core.RequiredModules]
+        Bam.Core.TypeArray requiredModules = new Bam.Core.TypeArray(
             typeof(Test7.ExplicitDynamicLibrary)
         );
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray(
             "KERNEL32.lib",
             "dbghelp.lib"
         );
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
 #endif
     }
 
 #if OPUSPACKAGE_PUBLISHER_DEV
-    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
+    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.Windows)]
     class Publish :
         Publisher.ProductModule
     {

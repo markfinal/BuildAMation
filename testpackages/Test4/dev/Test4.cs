@@ -8,14 +8,14 @@ namespace Test4
     {
         public
         MyDynamicLib(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.headerFiles.Include(includeDir, "dynamiclibrary.h");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Opus.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsUnixHosting)
             {
                 this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -39,8 +39,8 @@ namespace Test4
             [C.ExportCompilerOptionsDelegate]
             private void
             SetIncludePaths(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
@@ -49,8 +49,8 @@ namespace Test4
             [C.ExportCompilerOptionsDelegate]
             private static void
             SetRuntimeLibrary(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var vcCompilerOptions = module.Options as VisualCCommon.ICCompilerOptions;
                 if (vcCompilerOptions != null)
@@ -60,24 +60,24 @@ namespace Test4
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyStaticLib));
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(MyStaticLib));
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
             );
 #endif
@@ -97,14 +97,14 @@ namespace Test4
             this.headerFiles.Include(includeDir, "staticlibrary.h");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
 
         [C.ExportCompilerOptionsDelegate]
-        private void SetIncludePaths(Opus.Core.IModule module, Opus.Core.Target target)
+        private void SetIncludePaths(Bam.Core.IModule module, Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));

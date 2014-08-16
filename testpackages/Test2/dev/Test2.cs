@@ -5,13 +5,13 @@ namespace Test2
     {
         public static void
         Change(
-            Opus.Core.BaseModule module,
-            Opus.Core.LocationKey key)
+            Bam.Core.BaseModule module,
+            Bam.Core.LocationKey key)
         {
-            var output = module.Locations[key] as Opus.Core.ScaffoldLocation;
-            var banana = module.Locations[Opus.Core.State.ModuleBuildDirLocationKey].SubDirectory("banana");
+            var output = module.Locations[key] as Bam.Core.ScaffoldLocation;
+            var banana = module.Locations[Bam.Core.State.ModuleBuildDirLocationKey].SubDirectory("banana");
             output.SetReference(banana);
-            //output.SpecifyStub(module.Locations[Opus.Core.State.BuildRootLocationKey], "banana", Opus.Core.Location.EExists.WillExist);
+            //output.SpecifyStub(module.Locations[Bam.Core.State.BuildRootLocationKey], "banana", Bam.Core.Location.EExists.WillExist);
         }
     }
 
@@ -43,19 +43,19 @@ namespace Test2
             [C.ExportCompilerOptionsDelegate]
             public void
             SetIncludePaths(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
     }
 
     sealed class Application :
@@ -78,19 +78,19 @@ namespace Test2
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(Library),
             typeof(Test3.Library2)
         );
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 }

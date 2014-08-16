@@ -24,20 +24,20 @@ namespace OpenCLTest1
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
 #if USINGAMD
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(AMDAPPSDK.AMDAPPSDK));
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(AMDAPPSDK.AMDAPPSDK));
 #endif
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publish = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
             );
 

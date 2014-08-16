@@ -10,7 +10,7 @@ namespace Test3
         {
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.headerFiles.Include(includeDir, "*.h");
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target)
             {
                 var options = module.Options as C.ArchiverOptionCollection;
                 if (null != options)
@@ -34,18 +34,18 @@ namespace Test3
             [C.ExportCompilerOptionsDelegate]
             public void
             SetIncludePaths(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
     }
 }

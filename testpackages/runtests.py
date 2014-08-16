@@ -64,7 +64,7 @@ def _preExecute(builder, options):
 
 def _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages):
     argList = []
-    argList.append("Opus")
+    argList.append("bam")
     if responseFile:
         argList.append("@" + os.path.join(os.getcwd(), responseFile))
     argList.append("-buildroot=" + options.buildRoot)

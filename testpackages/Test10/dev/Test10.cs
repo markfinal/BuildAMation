@@ -11,7 +11,7 @@ namespace Test10
             this.sourceFile.Include(sourceDir, "stlib.c");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
     }
 
@@ -20,14 +20,14 @@ namespace Test10
     {
         public
         MyDynamicLibrary(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dylib.c");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -36,18 +36,18 @@ namespace Test10
 #endif
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
@@ -62,17 +62,17 @@ namespace Test10
             this.sourceFile.Include(sourceDir, "standaloneapp.c");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyStaticLibrary));
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(MyStaticLibrary));
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray windowsDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray windowsDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 
     class DllDependentApp :
@@ -84,7 +84,7 @@ namespace Test10
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dlldependentapp.c");
 
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target)
             {
                 var linkerOptions = module.Options as GccCommon.ILinkerOptions;
                 if (null != linkerOptions)
@@ -95,21 +95,21 @@ namespace Test10
             };
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(MyDynamicLibrary));
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(MyDynamicLibrary));
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray windowsDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray windowsDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
 #endif
     }

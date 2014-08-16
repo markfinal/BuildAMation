@@ -9,11 +9,11 @@ namespace MixedTest
         CSharpTest()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.source = Opus.Core.FileLocation.Get(sourceDir, "main.cs");
+            this.source = Bam.Core.FileLocation.Get(sourceDir, "main.cs");
         }
 
-        [Opus.Core.SourceFiles]
-        Opus.Core.Location source;
+        [Bam.Core.SourceFiles]
+        Bam.Core.Location source;
     }
 
     class CApp :
@@ -26,16 +26,16 @@ namespace MixedTest
             this.source.Include(sourceDir, "main.c");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
-        [Opus.Core.RequiredModules]
-        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CSharpTest));
+        [Bam.Core.RequiredModules]
+        Bam.Core.TypeArray requiredModules = new Bam.Core.TypeArray(typeof(CSharpTest));
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray dependentModules = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 }

@@ -32,13 +32,13 @@ namespace Test9
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_cpp.c");
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFile_UpdateOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(CppFile_UpdateOptions);
         }
 
         void
         CppFile_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -54,13 +54,13 @@ namespace Test9
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.Include(sourceDir, "main_cpp.c");
 
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CppFileCollection_UpdateOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(CppFileCollection_UpdateOptions);
         }
 
         void
         CppFileCollection_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -73,16 +73,16 @@ namespace Test9
         public
         MixedLanguageApplication()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SetSystemLibraries);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SetSystemLibraries);
         }
 
         static void
         SetSystemLibraries(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
-            if (Opus.Core.OSUtilities.IsWindows(target))
+            if (Bam.Core.OSUtilities.IsWindows(target))
             {
                 if (linkerOptions is VisualC.LinkerOptionCollection)
                 {
@@ -99,13 +99,13 @@ namespace Test9
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(IncludePaths);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(IncludePaths);
             }
 
             void
             IncludePaths(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -121,14 +121,14 @@ namespace Test9
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
                 this.Include(sourceDir, "appmain_cpp.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(CxxSourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(CxxSourceFiles_UpdateOptions);
                 this.UpdateOptions += IncludePaths;
             }
 
             void
             IncludePaths(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -136,21 +136,21 @@ namespace Test9
 
             void
             CxxSourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         CSourceFiles cSourceFiles = new CSourceFiles();
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         CxxSourceFiles cppSourceFiles = new CxxSourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 
     class CStaticLibraryFromFile :
@@ -161,19 +161,19 @@ namespace Test9
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_c.c");
-            this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
+            this.sourceFile.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
 
         void
         sourceFile_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
     }
 
@@ -188,20 +188,20 @@ namespace Test9
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
     }
 
@@ -213,14 +213,14 @@ namespace Test9
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_cpp.c");
-            this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
-            this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
+            this.sourceFile.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
+            this.sourceFile.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
         }
 
         void
         sourceFile_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -228,14 +228,14 @@ namespace Test9
 
         void
         sourceFile_ExceptionHandling(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.Cxx.ObjectFile sourceFile = new C.Cxx.ObjectFile();
     }
 
@@ -250,14 +250,14 @@ namespace Test9
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -265,15 +265,15 @@ namespace Test9
 
             void
             SourceFiles_ExceptionHandling(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
     }
 
@@ -285,26 +285,26 @@ namespace Test9
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_c.c");
-            this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
+            this.sourceFile.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
         }
 
         void
         sourceFile_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile sourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 
     class CDynamicLibraryFromCollection :
@@ -318,27 +318,27 @@ namespace Test9
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_c.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 
     class CppDynamicLibraryFromFile :
@@ -349,14 +349,14 @@ namespace Test9
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "library_cpp.c");
-            this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
-            this.sourceFile.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
+            this.sourceFile.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(sourceFile_UpdateOptions);
+            this.sourceFile.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(sourceFile_ExceptionHandling);
         }
 
         void
         sourceFile_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -364,21 +364,21 @@ namespace Test9
 
         void
         sourceFile_ExceptionHandling(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICxxCompilerOptions;
             compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.Cxx.ObjectFile sourceFile = new C.Cxx.ObjectFile();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 
     class CppDynamicLibaryFromCollection :
@@ -392,14 +392,14 @@ namespace Test9
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "library_cpp.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_ExceptionHandling);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -407,21 +407,21 @@ namespace Test9
 
             void
             SourceFiles_ExceptionHandling(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICxxCompilerOptions;
                 compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 }

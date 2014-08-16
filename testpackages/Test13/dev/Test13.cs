@@ -6,9 +6,9 @@ namespace Test13
     {
         public
         QtApplication(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target delTarget) {
+            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target delTarget) {
                 var gccLink = module.Options as GccCommon.ILinkerOptions;
                 if (null != gccLink)
                 {
@@ -18,7 +18,7 @@ namespace Test13
             };
         }
 
-        [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.Windows)]
+        [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.Windows)]
         class Win32ResourceFile :
             C.Win32Resource
         {
@@ -39,13 +39,13 @@ namespace Test13
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.cpp");
 
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 if (module.Options is MingwCommon.ICCompilerOptions)
                 {
@@ -69,8 +69,8 @@ namespace Test13
                 }
             }
 
-            [Opus.Core.DependentModules]
-            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFile));
+            [Bam.Core.DependentModules]
+            Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(SourceFiles.MyMocFile));
 #else
             class MyMocFiles :
                 QtCommon.MocFileCollection
@@ -81,15 +81,15 @@ namespace Test13
                     var sourceDir = this.PackageLocation.SubDirectory("source");
                     this.Include(sourceDir, "*.h");
 
-                    this.RegisterUpdateOptions(new Opus.Core.UpdateOptionCollectionDelegateArray(mocFile_UpdateOptions),
+                    this.RegisterUpdateOptions(new Bam.Core.UpdateOptionCollectionDelegateArray(mocFile_UpdateOptions),
                                                sourceDir,
                                                "myobject2.h");
                 }
 
                 void
                 mocFile_UpdateOptions(
-                    Opus.Core.IModule module,
-                    Opus.Core.Target target)
+                    Bam.Core.IModule module,
+                    Bam.Core.Target target)
                 {
                     var options = module.Options as QtCommon.IMocOptions;
                     if (null != options)
@@ -99,46 +99,46 @@ namespace Test13
                 }
             }
 
-            [Opus.Core.DependentModules]
-            Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(SourceFiles.MyMocFiles));
+            [Bam.Core.DependentModules]
+            Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(SourceFiles.MyMocFiles));
 #endif
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(Qt.Core),
             typeof(Qt.Gui)
             );
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray winVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray winVCLibraries = new Bam.Core.StringArray("KERNEL32.lib");
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows)]
-        Opus.Core.TypeArray resourceFiles = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows)]
+        Bam.Core.TypeArray resourceFiles = new Bam.Core.TypeArray(
             typeof(Win32ResourceFile)
             );
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        protected Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        protected Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
 #endif
     }
 
-    [Opus.Core.ModuleTargets(Platform=Opus.Core.EPlatform.OSX)]
+    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
     class AppInfoPList :
         XmlUtilities.OSXPlistModule
     {
         public
         AppInfoPList()
         {
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target) {
                 var options = module.Options as XmlUtilities.IOSXPlistOptions;
                 options.CFBundleName = "QtApplication";
                 options.CFBundleDisplayName = "QtApplication";
@@ -147,8 +147,8 @@ namespace Test13
             };
         }
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(QtApplication)
         );
 
@@ -165,7 +165,7 @@ namespace Test13
         public
         Publish()
         {
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target)
+            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target)
             {
                 var options = module.Options as Publisher.IPublishOptions;
                 if (null != options)
@@ -178,7 +178,7 @@ namespace Test13
         [Publisher.PrimaryTarget]
         System.Type primary = typeof(QtApplication);
 
-        [Publisher.OSXInfoPList(Platform=Opus.Core.EPlatform.OSX)]
+        [Publisher.OSXInfoPList(Platform=Bam.Core.EPlatform.OSX)]
         System.Type plistType = typeof(AppInfoPList);
     }
 #endif

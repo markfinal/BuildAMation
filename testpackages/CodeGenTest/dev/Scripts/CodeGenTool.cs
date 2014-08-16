@@ -1,15 +1,15 @@
-[assembly: Opus.Core.RegisterToolset("CodeGenTest", typeof(CodeGenTest.Toolset))]
+[assembly: Bam.Core.RegisterToolset("CodeGenTest", typeof(CodeGenTest.Toolset))]
 
 namespace CodeGenTest
 {
     public class CodeGenTool :
         ICodeGenTool
     {
-        private Opus.Core.IToolset toolset;
+        private Bam.Core.IToolset toolset;
 
         public
         CodeGenTool(
-            Opus.Core.IToolset toolset)
+            Bam.Core.IToolset toolset)
         {
             this.toolset = toolset;
         }
@@ -17,25 +17,25 @@ namespace CodeGenTest
         #region ITool Members
 
         string
-        Opus.Core.ITool.Executable(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.ITool.Executable(
+            Bam.Core.BaseTarget baseTarget)
         {
-            var module = Opus.Core.ModuleUtilities.GetModule(typeof(CodeGenTest.CodeGeneratorTool), baseTarget);
+            var module = Bam.Core.ModuleUtilities.GetModule(typeof(CodeGenTest.CodeGeneratorTool), baseTarget);
 
             if (null == module)
             {
-                throw new Opus.Core.Exception("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString());
+                throw new Bam.Core.Exception("Unable to locate CodeGeneratorTool module in Graph for basetarget '{0}", baseTarget.ToString());
             }
 
-            var outputLoc = (module as Opus.Core.BaseModule).Locations[C.Application.OutputFile];
+            var outputLoc = (module as Bam.Core.BaseModule).Locations[C.Application.OutputFile];
             return outputLoc.GetSinglePath();
         }
 
-        Opus.Core.Array<Opus.Core.LocationKey>
-        Opus.Core.ITool.OutputLocationKeys(
-            Opus.Core.BaseModule module)
+        Bam.Core.Array<Bam.Core.LocationKey>
+        Bam.Core.ITool.OutputLocationKeys(
+            Bam.Core.BaseModule module)
         {
-            var array = new Opus.Core.Array<Opus.Core.LocationKey>(
+            var array = new Bam.Core.Array<Bam.Core.LocationKey>(
                 CodeGenModule.OutputFile,
                 CodeGenModule.OutputDir
                 );

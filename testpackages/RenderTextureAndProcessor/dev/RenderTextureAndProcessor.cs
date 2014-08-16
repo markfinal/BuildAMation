@@ -26,13 +26,13 @@ namespace RenderTextureAndProcessor
                 var renderTextureDir = sourceDir.SubDirectory("rendertexture");
                 this.Include(commonDir, "*.cpp");
                 this.Include(renderTextureDir, "*.cpp");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 {
                     var options = module.Options as C.ICxxCompilerOptions;
@@ -47,14 +47,14 @@ namespace RenderTextureAndProcessor
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray requiredLibrariesVC = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray requiredLibrariesVC = new Bam.Core.StringArray(
             "KERNEL32.lib",
             "GDI32.lib",
             "USER32.lib",
@@ -62,24 +62,24 @@ namespace RenderTextureAndProcessor
             "SHELL32.lib"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
-        Opus.Core.StringArray requiredLibrariesMingw = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
+        Bam.Core.StringArray requiredLibrariesMingw = new Bam.Core.StringArray(
             "-lws2_32",
             "-lgdi32"
         );
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependentModules = new Bam.Core.TypeArray(
             typeof(OpenGLSDK.OpenGL)
         );
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependentModules = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependentModules = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
         );
 
-        [Opus.Core.RequiredModules]
-        Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(TextureProcessor));
+        [Bam.Core.RequiredModules]
+        Bam.Core.TypeArray requiredModules = new Bam.Core.TypeArray(typeof(TextureProcessor));
     }
 
     class TextureProcessor :
@@ -104,13 +104,13 @@ namespace RenderTextureAndProcessor
                 var textureProcessorDir = sourceDir.SubDirectory("textureprocessor");
                 this.Include(commonDir, "*.cpp");
                 this.Include(textureProcessorDir, "*.cpp");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 {
                     var options = module.Options as C.ICxxCompilerOptions;
@@ -125,22 +125,22 @@ namespace RenderTextureAndProcessor
             }
         }
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray requiredLibrariesVC = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray requiredLibrariesVC = new Bam.Core.StringArray(
             "KERNEL32.lib",
             "WS2_32.lib"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
-        Opus.Core.StringArray requiredLibrariesMingw = new Opus.Core.StringArray("-lws2_32");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(Mingw.Toolset) })]
+        Bam.Core.StringArray requiredLibrariesMingw = new Bam.Core.StringArray("-lws2_32");
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles sourceFiles = new SourceFiles();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headerFiles = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray dependentModules = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 }

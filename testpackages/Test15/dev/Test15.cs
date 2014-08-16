@@ -19,14 +19,14 @@ namespace Test15
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.c");
-                this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
+                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(SourceFiles_UpdateOptions);
             }
 
             [C.ExportCompilerOptionsDelegate]
             void
             SourceFiles_UpdateOptions(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var cOptions = module.Options as C.ICCompilerOptions;
                 if (null != cOptions)
@@ -37,9 +37,9 @@ namespace Test15
         }
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection headers = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection headers = new Bam.Core.FileCollection();
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
     }
 }

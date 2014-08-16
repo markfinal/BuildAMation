@@ -1,70 +1,70 @@
 namespace CodeGenTest2
 {
     public class Toolset :
-        Opus.Core.IToolset
+        Bam.Core.IToolset
     {
-        private System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Opus.Core.ToolAndOptionType>();
+        private System.Collections.Generic.Dictionary<System.Type, Bam.Core.ToolAndOptionType> toolConfig = new System.Collections.Generic.Dictionary<System.Type, Bam.Core.ToolAndOptionType>();
 
         public
         Toolset()
         {
-            this.toolConfig[typeof(ICodeGenTool)] = new Opus.Core.ToolAndOptionType(new CodeGenTool(this), typeof(CodeGenOptionCollection));
+            this.toolConfig[typeof(ICodeGenTool)] = new Bam.Core.ToolAndOptionType(new CodeGenTool(this), typeof(CodeGenOptionCollection));
         }
 
         #region IToolset Members
 
         string
-        Opus.Core.IToolset.BinPath(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.BinPath(
+            Bam.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
 
-        Opus.Core.StringArray Opus.Core.IToolset.Environment
+        Bam.Core.StringArray Bam.Core.IToolset.Environment
         {
             get { throw new System.NotImplementedException(); }
         }
 
         string
-        Opus.Core.IToolset.InstallPath(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.InstallPath(
+            Bam.Core.BaseTarget baseTarget)
         {
             throw new System.NotImplementedException();
         }
 
         string
-        Opus.Core.IToolset.Version(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IToolset.Version(
+            Bam.Core.BaseTarget baseTarget)
         {
             return "dev";
         }
 
         bool
-        Opus.Core.IToolset.HasTool(
+        Bam.Core.IToolset.HasTool(
             System.Type toolType)
         {
             return this.toolConfig.ContainsKey(toolType);
         }
 
-        Opus.Core.ITool
-        Opus.Core.IToolset.Tool(
+        Bam.Core.ITool
+        Bam.Core.IToolset.Tool(
             System.Type toolType)
         {
-            if (!(this as Opus.Core.IToolset).HasTool(toolType))
+            if (!(this as Bam.Core.IToolset).HasTool(toolType))
             {
-                throw new Opus.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' was not registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolConfig[toolType].Tool;
         }
 
         System.Type
-        Opus.Core.IToolset.ToolOptionType(
+        Bam.Core.IToolset.ToolOptionType(
             System.Type toolType)
         {
-            if (!(this as Opus.Core.IToolset).HasTool(toolType))
+            if (!(this as Bam.Core.IToolset).HasTool(toolType))
             {
-                throw new Opus.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
+                throw new Bam.Core.Exception("Tool '{0}' has no option type registered with toolset '{1}'", toolType.ToString(), this.ToString());
             }
 
             return this.toolConfig[toolType].OptionsType;

@@ -7,7 +7,7 @@ namespace NativeBuilder
             CodeGenTest.CodeGenModule moduleToBuild,
             out bool success)
         {
-            var codeGenModuleModule = moduleToBuild as Opus.Core.BaseModule;
+            var codeGenModuleModule = moduleToBuild as Bam.Core.BaseModule;
             var node = codeGenModuleModule.OwningNode;
             var target = node.Target;
             var codeGenModuleOptions = codeGenModuleModule.Options;
@@ -16,13 +16,13 @@ namespace NativeBuilder
 
             // dependency checking
             {
-                var inputLocations = new Opus.Core.LocationArray(
-                    Opus.Core.FileLocation.Get(tool.Executable((Opus.Core.BaseTarget)target), Opus.Core.Location.EExists.WillExist)
+                var inputLocations = new Bam.Core.LocationArray(
+                    Bam.Core.FileLocation.Get(tool.Executable((Bam.Core.BaseTarget)target), Bam.Core.Location.EExists.WillExist)
                     );
-                var outputLocations = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.File, Opus.Core.Location.EExists.WillExist);
+                var outputLocations = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.File, Bam.Core.Location.EExists.WillExist);
                 if (!RequiresBuilding(outputLocations, inputLocations))
                 {
-                    Opus.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
+                    Bam.Core.Log.DebugMessage("'{0}' is up-to-date", node.UniqueModuleName);
                     success = true;
                     return null;
                 }
@@ -31,14 +31,14 @@ namespace NativeBuilder
             // at this point, we know the node outputs need building
 
             // create all directories required
-            var dirsToCreate = moduleToBuild.Locations.FilterByType(Opus.Core.ScaffoldLocation.ETypeHint.Directory, Opus.Core.Location.EExists.WillExist);
+            var dirsToCreate = moduleToBuild.Locations.FilterByType(Bam.Core.ScaffoldLocation.ETypeHint.Directory, Bam.Core.Location.EExists.WillExist);
             foreach (var dir in dirsToCreate)
             {
                 var dirPath = dir.GetSinglePath();
                 NativeBuilder.MakeDirectory(dirPath);
             }
 
-            var commandLineBuilder = new Opus.Core.StringArray();
+            var commandLineBuilder = new Bam.Core.StringArray();
             if (toolOptions is CommandLineProcessor.ICommandLineSupport)
             {
                 var commandLineOption = toolOptions as CommandLineProcessor.ICommandLineSupport;
@@ -46,7 +46,7 @@ namespace NativeBuilder
             }
             else
             {
-                throw new Opus.Core.Exception("CodeGen options does not support command line translation");
+                throw new Bam.Core.Exception("CodeGen options does not support command line translation");
             }
 
             var exitCode = CommandLineProcessor.Processor.Execute(node, tool, commandLineBuilder);

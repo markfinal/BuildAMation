@@ -1,9 +1,9 @@
 namespace CodeGenTest
 {
-    [Opus.Core.LocalAndExportTypes(typeof(LocalCodeGenOptionsDelegateAttribute),
+    [Bam.Core.LocalAndExportTypes(typeof(LocalCodeGenOptionsDelegateAttribute),
                                    typeof(ExportCodeGenOptionsDelegateAttribute))]
-    [Opus.Core.AssignToolsetProvider("CodeGenTest")]
+    [Bam.Core.AssignToolsetProvider("CodeGenTest")]
     public interface ICodeGenTool :
-        Opus.Core.ITool
+        Bam.Core.ITool
     {}
 }

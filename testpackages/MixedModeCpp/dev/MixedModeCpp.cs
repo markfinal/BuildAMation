@@ -2,20 +2,20 @@
 namespace MixedModeCpp
 {
     // Define module classes here
-    [Opus.Core.ModuleTargets(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+    [Bam.Core.ModuleTargets(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
     class TestApplication :
         C.Application
     {
         public
         TestApplication()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestApplication_UpdateOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(TestApplication_UpdateOptions);
         }
 
         void
         TestApplication_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
@@ -43,19 +43,19 @@ namespace MixedModeCpp
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles nativeSourceFiles = new SourceFiles();
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         ManagedSourceFiles managedSourceFiles = new ManagedSourceFiles();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependentModules = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependentModules = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
         );
 
         [C.RequiredLibraries]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray(
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray(
             "KERNEL32.lib",
             "mscoree.lib"
         );

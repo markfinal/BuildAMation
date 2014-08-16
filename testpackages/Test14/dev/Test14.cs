@@ -7,19 +7,19 @@ namespace Test14
     {
         public
         DynamicLibraryA(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryA.c");
-            this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_UpdateOptions);
+            this.source.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DynamicLibraryA_UpdateOptions);
 
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.header.Include(includeDir, "dynamicLibraryA.h");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -31,8 +31,8 @@ namespace Test14
         [C.ExportCompilerOptionsDelegate]
         void
         DynamicLibraryA_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -40,25 +40,25 @@ namespace Test14
 
         void
         DynamicLibraryA_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection header = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection header = new Bam.Core.FileCollection();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray vcDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
@@ -68,19 +68,19 @@ namespace Test14
     {
         public
         DynamicLibraryB(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "dynamicLibraryB.c");
-            this.source.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_IncludePaths);
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_UpdateOptions);
+            this.source.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_IncludePaths);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DynamicLibraryB_UpdateOptions);
 
             var includeDir = this.PackageLocation.SubDirectory("include");
             this.header.Include(includeDir, "dynamicLibraryB.h");
 
 #if OPUSPACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -91,8 +91,8 @@ namespace Test14
 
         void
         DynamicLibraryB_IncludePaths(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var compilerOptions = module.Options as C.ICCompilerOptions;
             compilerOptions.IncludePaths.Include(this.PackageLocation, "include");
@@ -100,28 +100,28 @@ namespace Test14
 
         void
         DynamicLibraryB_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             linkerOptions.DoNotAutoIncludeStandardLibraries = false;
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
         [C.HeaderFiles]
-        Opus.Core.FileCollection header = new Opus.Core.FileCollection();
+        Bam.Core.FileCollection header = new Bam.Core.FileCollection();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(typeof(DynamicLibraryA));
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(DynamicLibraryA));
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray vcDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
 #endif
     }
@@ -134,13 +134,13 @@ namespace Test14
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.source.Include(sourceDir, "main.c");
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(Application_UpdateOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Application_UpdateOptions);
         }
 
         void
         Application_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var linkerOptions = module.Options as C.ILinkerOptions;
             if (null != linkerOptions)
@@ -155,18 +155,18 @@ namespace Test14
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile source = new C.ObjectFile();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(DynamicLibraryA),
             typeof(DynamicLibraryB)
         );
 
 #if OPUSPACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
-        Opus.Core.Array<Publisher.PublishDependency> publishKeys = new Opus.Core.Array<Publisher.PublishDependency>(
+        Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
 #endif
     }

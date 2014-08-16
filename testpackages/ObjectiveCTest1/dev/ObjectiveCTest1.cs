@@ -7,7 +7,7 @@ namespace ObjectiveCTest1
         public
         Program()
         {
-            this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target) {
                 var link = module.Options as C.ILinkerOptionsOSX;
                 if (null != link)
                 {
@@ -24,11 +24,11 @@ namespace ObjectiveCTest1
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 this.Include(sourceDir, "*.m");
-                this.UpdateOptions += delegate(Opus.Core.IModule module, Opus.Core.Target target) {
+                this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target) {
                     var compileOptions = module.Options as C.ICCompilerOptions;
                     if (null != compileOptions)
                     {
-                        if (target.HasPlatform(Opus.Core.EPlatform.Unix))
+                        if (target.HasPlatform(Bam.Core.EPlatform.Unix))
                         {
                             compileOptions.IncludePaths.Add("/usr/include/GNUstep");
                         }
@@ -37,7 +37,7 @@ namespace ObjectiveCTest1
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         Source source = new Source();
     }
 }

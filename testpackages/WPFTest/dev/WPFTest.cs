@@ -9,16 +9,16 @@ namespace WPFTest
         WPFExecutable()
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.applicationDefinition = Opus.Core.FileLocation.Get(sourceDir, "App.xaml");
-            this.page = Opus.Core.FileLocation.Get(sourceDir, "MainWindow.xaml");
+            this.applicationDefinition = Bam.Core.FileLocation.Get(sourceDir, "App.xaml");
+            this.page = Bam.Core.FileLocation.Get(sourceDir, "MainWindow.xaml");
 
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(WPFExecutable_UpdateOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(WPFExecutable_UpdateOptions);
         }
 
         void
         WPFExecutable_UpdateOptions(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             var options = module.Options as CSharp.IOptions;
             options.References.Add("System.dll");
@@ -30,9 +30,9 @@ namespace WPFTest
         }
 
         [CSharp.ApplicationDefinition]
-        Opus.Core.Location applicationDefinition;
+        Bam.Core.Location applicationDefinition;
 
         [CSharp.Pages]
-        Opus.Core.Location page;
+        Bam.Core.Location page;
     }
 }

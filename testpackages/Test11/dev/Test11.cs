@@ -18,22 +18,22 @@ namespace Test11
             this.osxSourceFile.Include(osxDir, "osx.c");
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         C.ObjectFile commonSourceFile = new C.ObjectFile();
 
-        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Windows)]
         C.ObjectFile winSourceFile = new C.ObjectFile();
 
-        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Unix)]
         C.ObjectFile unixSourceFile = new C.ObjectFile();
 
-        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.OSX)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.OSX)]
         C.ObjectFile osxSourceFile = new C.ObjectFile();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray WinVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray WinVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray WinVCLibraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray WinVCLibraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 }

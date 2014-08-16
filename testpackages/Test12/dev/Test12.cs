@@ -52,26 +52,26 @@ namespace Test12
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         CommonSourceFiles commonSourceFiles = new CommonSourceFiles();
-        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Windows)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Windows)]
         WindowsSourceFiles windowsSourceFiles = new WindowsSourceFiles();
-        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.Unix)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Unix)]
         UnixSourceFiles unixSourceFiles = new UnixSourceFiles();
-        [Opus.Core.SourceFiles(Platform=Opus.Core.EPlatform.OSX)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.OSX)]
         OSXSourceFiles osxSourceFiles = new OSXSourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray windowsVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray windowsVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray windowsVCLibraries = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray windowsVCLibraries = new Bam.Core.StringArray(
             "KERNEL32.lib",
             "USER32.lib"
         );
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Unix)]
-        Opus.Core.StringArray unixLibraries = new Opus.Core.StringArray(
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Unix)]
+        Bam.Core.StringArray unixLibraries = new Bam.Core.StringArray(
             "-lX11"
         );
     }

@@ -26,18 +26,18 @@ namespace CodeGenTest2
     }
 
     public sealed partial class CodeGenOptionCollection :
-        Opus.Core.BaseOptionCollection,
+        Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport,
         ICodeGenOptions
     {
         public
         CodeGenOptionCollection(
-            Opus.Core.DependencyNode node) : base(node)
+            Bam.Core.DependencyNode node) : base(node)
         {}
 
         protected override void
         SetDefaultOptionValues(
-            Opus.Core.DependencyNode owningNode)
+            Bam.Core.DependencyNode owningNode)
         {
             var options = this as ICodeGenOptions;
             options.OutputSourceDirectory = owningNode.GetTargettedModuleBuildDirectoryLocation("src").GetSingleRawPath();
@@ -45,18 +45,18 @@ namespace CodeGenTest2
 
             if (!owningNode.Module.Locations[CodeGenModule.OutputDir].IsValid)
             {
-                (owningNode.Module.Locations[CodeGenModule.OutputDir] as Opus.Core.ScaffoldLocation).SetReference(owningNode.GetTargettedModuleBuildDirectoryLocation("src"));
+                (owningNode.Module.Locations[CodeGenModule.OutputDir] as Bam.Core.ScaffoldLocation).SetReference(owningNode.GetTargettedModuleBuildDirectoryLocation("src"));
             }
         }
 
         public override void
         FinalizeOptions(
-            Opus.Core.DependencyNode node)
+            Bam.Core.DependencyNode node)
         {
             if (!node.Module.Locations[CodeGenModule.OutputFile].IsValid)
             {
                 var options = node.Module.Options as ICodeGenOptions;
-                (node.Module.Locations[CodeGenModule.OutputFile] as Opus.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[CodeGenModule.OutputDir], options.OutputName + ".c", Opus.Core.Location.EExists.WillExist);
+                (node.Module.Locations[CodeGenModule.OutputFile] as Bam.Core.ScaffoldLocation).SpecifyStub(node.Module.Locations[CodeGenModule.OutputDir], options.OutputName + ".c", Bam.Core.Location.EExists.WillExist);
             }
 
             base.FinalizeOptions (node);
@@ -64,9 +64,9 @@ namespace CodeGenTest2
 
         void
         CommandLineProcessor.ICommandLineSupport.ToCommandLineArguments(
-            Opus.Core.StringArray commandLineStringBuilder,
-            Opus.Core.Target target,
-            Opus.Core.StringArray excludedOptionNames)
+            Bam.Core.StringArray commandLineStringBuilder,
+            Bam.Core.Target target,
+            Bam.Core.StringArray excludedOptionNames)
         {
             CommandLineProcessor.ToCommandLine.Execute(this, commandLineStringBuilder, target, excludedOptionNames);
         }
@@ -88,46 +88,46 @@ namespace CodeGenTest2
         {
             var sourceDir = this.PackageLocation.SubDirectory("source");
             var codegentoolSourceDir = sourceDir.SubDirectory("codegentool");
-            this.source = Opus.Core.FileLocation.Get(codegentoolSourceDir, "main.cs");
+            this.source = Bam.Core.FileLocation.Get(codegentoolSourceDir, "main.cs");
         }
 
-        [Opus.Core.SourceFiles]
-        Opus.Core.Location source;
+        [Bam.Core.SourceFiles]
+        Bam.Core.Location source;
     }
 
     /// <summary>
     /// Code generation of C++ source
     /// </summary>
-    [Opus.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
+    [Bam.Core.ModuleToolAssignment(typeof(ICodeGenTool))]
     public abstract class CodeGenModule :
-        Opus.Core.BaseModule,
-        Opus.Core.IInjectModules
+        Bam.Core.BaseModule,
+        Bam.Core.IInjectModules
     {
-        public static readonly Opus.Core.LocationKey OutputFile = new Opus.Core.LocationKey("GeneratedSource", Opus.Core.ScaffoldLocation.ETypeHint.File);
-        public static readonly Opus.Core.LocationKey OutputDir = new Opus.Core.LocationKey("GeneratedSourceDir", Opus.Core.ScaffoldLocation.ETypeHint.Directory);
+        public static readonly Bam.Core.LocationKey OutputFile = new Bam.Core.LocationKey("GeneratedSource", Bam.Core.ScaffoldLocation.ETypeHint.File);
+        public static readonly Bam.Core.LocationKey OutputDir = new Bam.Core.LocationKey("GeneratedSourceDir", Bam.Core.ScaffoldLocation.ETypeHint.Directory);
 
-        [Opus.Core.RequiredModules]
-        protected Opus.Core.TypeArray requiredModules = new Opus.Core.TypeArray(typeof(CodeGeneratorTool));
+        [Bam.Core.RequiredModules]
+        protected Bam.Core.TypeArray requiredModules = new Bam.Core.TypeArray(typeof(CodeGeneratorTool));
 
         #region IInjectModules Members
 
         string
-        Opus.Core.IInjectModules.GetInjectedModuleNameSuffix(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IInjectModules.GetInjectedModuleNameSuffix(
+            Bam.Core.BaseTarget baseTarget)
         {
             return "CodeGen2";
         }
 
         System.Type
-        Opus.Core.IInjectModules.GetInjectedModuleType(
-            Opus.Core.BaseTarget baseTarget)
+        Bam.Core.IInjectModules.GetInjectedModuleType(
+            Bam.Core.BaseTarget baseTarget)
         {
             return typeof(C.ObjectFile);
         }
 
-        Opus.Core.DependencyNode
-        Opus.Core.IInjectModules.GetInjectedParentNode(
-            Opus.Core.DependencyNode node)
+        Bam.Core.DependencyNode
+        Bam.Core.IInjectModules.GetInjectedParentNode(
+            Bam.Core.DependencyNode node)
         {
             var dependentFor = node.ExternalDependentFor;
             var firstDependentFor = dependentFor[0];
@@ -135,14 +135,14 @@ namespace CodeGenTest2
         }
 
         void
-        Opus.Core.IInjectModules.ModuleCreationFixup(
-            Opus.Core.DependencyNode node)
+        Bam.Core.IInjectModules.ModuleCreationFixup(
+            Bam.Core.DependencyNode node)
         {
             var dependent = node.ExternalDependents;
             var firstDependent = dependent[0];
             var dependentModule = firstDependent.Module;
             var module = node.Module as C.ObjectFile;
-            var sourceFile = new Opus.Core.ScaffoldLocation(Opus.Core.ScaffoldLocation.ETypeHint.File);
+            var sourceFile = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.File);
             sourceFile.SetReference(dependentModule.Locations[CodeGenModule.OutputFile]);
             module.SourceFileLocation = sourceFile;
         }

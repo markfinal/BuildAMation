@@ -15,16 +15,16 @@ namespace Test17
             }
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
 
-        [Opus.Core.DependentModules]
-        Opus.Core.TypeArray dependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(Test16.StaticLibrary2)
             );
 
-        [Opus.Core.DependentModules(Platform=Opus.Core.EPlatform.Windows)]
-        Opus.Core.TypeArray winDependents = new Opus.Core.TypeArray(
+        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows)]
+        Bam.Core.TypeArray winDependents = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK)
             );
     }

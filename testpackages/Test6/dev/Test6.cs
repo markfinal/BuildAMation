@@ -6,12 +6,12 @@ namespace Test6
         C.Application
     {
         // TODO: derive C.SourceFiles from this attribute?
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         private SourceFiles sourceFiles;
 
         public
         ConditionalApplication(
-            Opus.Core.Target target)
+            Bam.Core.Target target)
         {
             this.sourceFiles = new SourceFiles(target);
             this.UpdateOptions += this.OverrideOptionCollection;
@@ -22,7 +22,7 @@ namespace Test6
         {
             public
             SourceFiles(
-                Opus.Core.Target target)
+                Bam.Core.Target target)
             {
                 this.UpdateOptions += this.OverrideOptionCollection;
 
@@ -35,7 +35,7 @@ namespace Test6
                 mainObjectFile.UpdateOptions += MainUpdateOptionCollection;
                 this.Add(mainObjectFile);
 
-                if (target.HasConfiguration(Opus.Core.EConfiguration.Debug))
+                if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
                 {
                     this.Include(debugSourceDir, "debug.c");
                 }
@@ -47,8 +47,8 @@ namespace Test6
 
             private void
             OverrideOptionCollection(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.IncludePaths.Include(this.PackageLocation.SubDirectory("include"));
@@ -56,8 +56,8 @@ namespace Test6
 
             private void
             MainUpdateOptionCollection(
-                Opus.Core.IModule module,
-                Opus.Core.Target target)
+                Bam.Core.IModule module,
+                Bam.Core.Target target)
             {
                 var compilerOptions = module.Options as C.ICCompilerOptions;
                 compilerOptions.Defines.Add("MAIN_C");
@@ -68,17 +68,17 @@ namespace Test6
 
         private void
         OverrideOptionCollection(
-            Opus.Core.IModule module,
-            Opus.Core.Target target)
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
         {
             //var options = module.Options as C.ILinkerOptions;
             //options.DebugSymbols = false;
         }
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray winVCDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray winVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
 
-        [C.RequiredLibraries(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.StringArray libraries = new Opus.Core.StringArray("KERNEL32.lib");
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 }

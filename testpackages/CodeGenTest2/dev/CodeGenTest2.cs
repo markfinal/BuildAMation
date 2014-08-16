@@ -6,11 +6,11 @@ namespace CodeGenTest2
     {
         public TestAppGeneratedSource()
         {
-            //this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestAppGeneratedSource_UpdateOptions);
+            //this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(TestAppGeneratedSource_UpdateOptions);
         }
 
 #if false
-        void TestAppGeneratedSource_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void TestAppGeneratedSource_UpdateOptions(Bam.Core.IModule module, Bam.Core.Target target)
         {
             CodeGenOptions options = module.Options as CodeGenOptions;
         }
@@ -21,10 +21,10 @@ namespace CodeGenTest2
     {
         public TestApp()
         {
-            this.UpdateOptions += new Opus.Core.UpdateOptionCollectionDelegate(TestApp_UpdateOptions);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(TestApp_UpdateOptions);
         }
 
-        void TestApp_UpdateOptions(Opus.Core.IModule module, Opus.Core.Target target)
+        void TestApp_UpdateOptions(Bam.Core.IModule module, Bam.Core.Target target)
         {
             C.ILinkerOptions options = module.Options as C.ILinkerOptions;
             options.DoNotAutoIncludeStandardLibraries = false;
@@ -39,14 +39,14 @@ namespace CodeGenTest2
                 this.Include(testAppDir, "main.c");
             }
 
-            [Opus.Core.DependentModules]
-            Opus.Core.TypeArray vcDependencies = new Opus.Core.TypeArray(typeof(TestAppGeneratedSource));
+            [Bam.Core.DependentModules]
+            Bam.Core.TypeArray vcDependencies = new Bam.Core.TypeArray(typeof(TestAppGeneratedSource));
         }
 
-        [Opus.Core.SourceFiles]
+        [Bam.Core.SourceFiles]
         SourceFiles source = new SourceFiles();
 
-        [Opus.Core.DependentModules(Platform = Opus.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Opus.Core.TypeArray vcDependents = new Opus.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.TypeArray vcDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
     }
 }
