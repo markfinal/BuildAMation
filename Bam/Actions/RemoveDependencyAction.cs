@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.RemoveDependencyAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.RemoveDependencyAction))]
 
 namespace Bam
 {
@@ -28,11 +28,11 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             var packageAndVersions = arguments.Split(System.IO.Path.PathSeparator);
-            this.PackageAndVersionArray = new Opus.Core.StringArray(packageAndVersions);
+            this.PackageAndVersionArray = new Core.StringArray(packageAndVersions);
         }
 
         private Core.StringArray PackageAndVersionArray

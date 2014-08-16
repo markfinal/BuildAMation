@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.PackageVersionAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.PackageVersionAction))]
 
 namespace Bam
 {
@@ -28,7 +28,7 @@ namespace Bam
         #region IActionWithArguments Members
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             this.VersionChosen = arguments;
@@ -38,7 +38,7 @@ namespace Bam
 
         #region IAction Members
 
-        string Opus.Core.IAction.CommandLineSwitch
+        string Core.IAction.CommandLineSwitch
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Bam
             }
         }
 
-        string Opus.Core.IAction.Description
+        string Core.IAction.Description
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Bam
         }
 
         bool
-        Opus.Core.IAction.Execute()
+        Core.IAction.Execute()
         {
             if (!Core.State.HasCategory("PackageDefaultVersions"))
             {
@@ -72,7 +72,7 @@ namespace Bam
         #region IActionCommandComparison Members
 
         bool
-        Opus.Core.IActionCommandComparison.Compare(
+        Core.IActionCommandComparison.Compare(
             string command1,
             string command2)
         {

@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.SetConfigurationsAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.SetConfigurationsAction))]
 
 namespace Bam
 {
@@ -29,10 +29,10 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
-            this.Configurations = new Opus.Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
+            this.Configurations = new Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Configurations
@@ -44,7 +44,7 @@ namespace Bam
         public bool
         Execute()
         {
-            var buildConfigurations = new Core.Array<Opus.Core.EConfiguration>();
+            var buildConfigurations = new Core.Array<Core.EConfiguration>();
 
             foreach (var configuration in this.Configurations)
             {

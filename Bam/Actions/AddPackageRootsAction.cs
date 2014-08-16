@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.AddPackageRootsAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.AddPackageRootsAction))]
 
 namespace Bam
 {
@@ -35,11 +35,11 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             var roots = arguments.Split(System.IO.Path.PathSeparator);
-            this.PackageRoots = new Opus.Core.StringArray(roots);
+            this.PackageRoots = new Core.StringArray(roots);
         }
 
         public bool

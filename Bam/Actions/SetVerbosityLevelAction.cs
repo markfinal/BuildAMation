@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.SetVerbosityLevelAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.SetVerbosityLevelAction))]
 
 namespace Bam
 {
@@ -29,7 +29,7 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             int level = System.Convert.ToInt32(arguments);

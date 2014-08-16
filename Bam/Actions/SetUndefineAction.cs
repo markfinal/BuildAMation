@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.SetUndefineAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.SetUndefineAction))]
 
 namespace Bam
 {
@@ -29,10 +29,10 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
-            this.Undefines = new Opus.Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
+            this.Undefines = new Core.StringArray(arguments.Split(System.IO.Path.PathSeparator));
         }
 
         private Core.StringArray Undefines

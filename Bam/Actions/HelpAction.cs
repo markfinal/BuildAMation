@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.HelpAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.HelpAction))]
 
 namespace Bam
 {

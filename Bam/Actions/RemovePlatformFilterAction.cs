@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.RemovePlatformFilterAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.RemovePlatformFilterAction))]
 
 namespace Bam
 {
@@ -29,11 +29,11 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(
+        Core.IActionWithArguments.AssignArguments(
             string arguments)
         {
             var platforms = arguments.Split(System.IO.Path.PathSeparator);
-            this.PlatformArray = new Opus.Core.StringArray(platforms);
+            this.PlatformArray = new Core.StringArray(platforms);
         }
 
         private Core.StringArray PlatformArray

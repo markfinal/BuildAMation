@@ -4,7 +4,7 @@
 // <summary>Opus main application.</summary>
 // <author>Mark Final</author>
 
-[assembly: Opus.Core.RegisterAction(typeof(Opus.ChangeVersionAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.ChangeVersionAction))]
 
 namespace Bam
 {
@@ -29,7 +29,7 @@ namespace Bam
         }
 
         void
-        Opus.Core.IActionWithArguments.AssignArguments(string arguments)
+        Core.IActionWithArguments.AssignArguments(string arguments)
         {
             this.NewVersion = arguments;
         }
