@@ -20,7 +20,7 @@ namespace Bam.Core
 {
     public static class PackageUtilities
     {
-        public static string OpusVersionDefineForCompiler
+        public static string VersionDefineForCompiler
         {
             get
             {
@@ -30,7 +30,7 @@ namespace Bam.Core
             }
         }
 
-        public static string OpusHostPlatformForCompiler
+        public static string HostPlatformDefineForCompiler
         {
             get
             {
@@ -466,8 +466,8 @@ namespace Bam.Core
             }
 
             // add/remove other definitions
-            definitions.Add(OpusVersionDefineForCompiler);
-            definitions.Add(OpusHostPlatformForCompiler);
+            definitions.Add(VersionDefineForCompiler);
+            definitions.Add(HostPlatformDefineForCompiler);
             // command line definitions
             definitions.AddRange(State.PackageCompilationDefines);
             definitions.RemoveAll(State.PackageCompilationUndefines);

@@ -38,10 +38,10 @@ namespace Bam
             var scriptFilename = package.Identifier.ScriptPathName;
             var packageDependencyFilename = package.Identifier.DefinitionPathName;
 
-            var OpusDirectory = package.ProjectDirectory;
-            if (!System.IO.Directory.Exists(OpusDirectory))
+            var projectDirectory = package.ProjectDirectory;
+            if (!System.IO.Directory.Exists(projectDirectory))
             {
-                System.IO.Directory.CreateDirectory(OpusDirectory);
+                System.IO.Directory.CreateDirectory(projectDirectory);
             }
 
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();
@@ -174,8 +174,8 @@ namespace Bam
                         xmlWriter.WriteStartElement("DefineConstants");
                         {
                             var allDefines = new Core.StringArray();
-                            allDefines.Add(Core.PackageUtilities.OpusVersionDefineForCompiler);
-                            allDefines.Add(Core.PackageUtilities.OpusHostPlatformForCompiler);
+                            allDefines.Add(Core.PackageUtilities.VersionDefineForCompiler);
+                            allDefines.Add(Core.PackageUtilities.HostPlatformDefineForCompiler);
                             // custom definitions from all the packages in the compilation
                             foreach (var info in Core.State.PackageInfo)
                             {
