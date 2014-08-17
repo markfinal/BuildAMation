@@ -59,7 +59,7 @@ namespace Bam.Core
 
             var mainPackage = State.PackageInfo.MainPackage;
 
-            var OpusDirectory = mainPackage.OpusDirectory;
+            var OpusDirectory = mainPackage.ProjectDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))
             {
                 System.IO.Directory.CreateDirectory(OpusDirectory);

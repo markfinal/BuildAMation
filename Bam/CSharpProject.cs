@@ -38,7 +38,7 @@ namespace Bam
             var scriptFilename = package.Identifier.ScriptPathName;
             var packageDependencyFilename = package.Identifier.DefinitionPathName;
 
-            var OpusDirectory = package.OpusDirectory;
+            var OpusDirectory = package.ProjectDirectory;
             if (!System.IO.Directory.Exists(OpusDirectory))
             {
                 System.IO.Directory.CreateDirectory(OpusDirectory);

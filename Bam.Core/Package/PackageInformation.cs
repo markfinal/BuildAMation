@@ -77,12 +77,12 @@ namespace Bam.Core
             }
         }
 
-        public string OpusDirectory
+        public string ProjectDirectory
         {
             get
             {
-                var opusDirectory = System.IO.Path.Combine(this.Identifier.Path, "Opus");
-                return opusDirectory;
+                var dir = System.IO.Path.Combine(this.Identifier.Path, "BamProject");
+                return dir;
             }
         }
 
@@ -90,7 +90,7 @@ namespace Bam.Core
         {
             get
             {
-                var debugProjectFilename = System.IO.Path.Combine(this.OpusDirectory, System.String.Format("{0}.csproj", this.FullName));
+                var debugProjectFilename = System.IO.Path.Combine(this.ProjectDirectory, System.String.Format("{0}.csproj", this.FullName));
                 return debugProjectFilename;
             }
         }
