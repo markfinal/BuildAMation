@@ -63,40 +63,37 @@ namespace C
             compilerOptions.Defines = new DefineCollection();
             compilerOptions.Undefines = new DefineCollection();
 
-            // TODO: deprecate this in 0.60
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_{0}", ((Bam.Core.BaseTarget)target).PlatformName('u')));
-
             if (target.HasPlatform(Bam.Core.EPlatform.Windows))
             {
-                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_WINDOWS"));
+                compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_WINDOWS"));
             }
             else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
-                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_UNIX"));
+                compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_UNIX"));
             }
             else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {
-                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_OSX"));
+                compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_OSX"));
             }
 
             {
                 var is64bit = Bam.Core.OSUtilities.Is64Bit(target);
                 var bits = (is64bit) ? 64 : 32;
-                compilerOptions.Defines.Add(System.String.Format("D_OPUS_PLATFORM_BITS={0}", bits.ToString()));
+                compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_BITS={0}", bits.ToString()));
             }
             {
                 var isLittleEndian = Bam.Core.State.IsLittleEndian;
                 if (isLittleEndian)
                 {
-                    compilerOptions.Defines.Add("D_OPUS_PLATFORM_LITTLEENDIAN");
+                    compilerOptions.Defines.Add("D_BAM_PLATFORM_LITTLEENDIAN");
                 }
                 else
                 {
-                    compilerOptions.Defines.Add("D_OPUS_PLATFORM_BIGENDIAN");
+                    compilerOptions.Defines.Add("D_BAM_PLATFORM_BIGENDIAN");
                 }
             }
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_CONFIGURATION_{0}", ((Bam.Core.BaseTarget)target).ConfigurationName('u')));
-            compilerOptions.Defines.Add(System.String.Format("D_OPUS_TOOLCHAIN_{0}", target.ToolsetName('u')));
+            compilerOptions.Defines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", ((Bam.Core.BaseTarget)target).ConfigurationName('u')));
+            compilerOptions.Defines.Add(System.String.Format("D_BAM_TOOLCHAIN_{0}", target.ToolsetName('u')));
 
             compilerOptions.IncludePaths = new Bam.Core.DirectoryCollection();
             compilerOptions.IncludePaths.Add("."); // explicitly add the one that is assumed
