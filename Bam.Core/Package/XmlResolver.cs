@@ -48,7 +48,7 @@ namespace Bam.Core
             // NEW style definition files (0.50 onward)
             if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2)
             {
-                // we've got a local match, so use the version of the Schema that is next to the Opus binary
+                // we've got a local match, so use the version of the Schema that is next to the application binary
                 return new System.Uri(State.PackageDefinitionSchemaPathV2);
             }
             else
@@ -62,7 +62,7 @@ namespace Bam.Core
                 else
                 {
                     // absolute pathname to a schema that doesn't exist on disk!
-                    throw new System.Xml.Schema.XmlSchemaException(System.String.Format("Schema '{0}' cannot be located. Please re-run the Opus command and force a definition file update", relativeUri));
+                    throw new System.Xml.Schema.XmlSchemaException(System.String.Format("Schema '{0}' cannot be located. Please re-run 'bam' and force a definition file update", relativeUri));
                 }
             }
         }
