@@ -59,28 +59,28 @@ namespace Bam.Core
             GetAssemblyVersionData(out assemblyVersion, out productVersion);
 
             AddCategory("BuildAMation");
-            var opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Add<string>("BuildAMation", "Directory", opusDirectory);
+            var assemblyDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Add<string>("BuildAMation", "Directory", assemblyDirectory);
             Add<System.Version>("BuildAMation", "Version", assemblyVersion);
             Add<string>("BuildAMation", "VersionString", productVersion);
             Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
-            var opusSchemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
+            var schemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
             {
-                var opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
-                if (!System.IO.File.Exists(opusSchemaPathname))
+                var schemaPath = System.IO.Path.Combine(schemaDirectory, "OpusPackageDependency.xsd");
+                if (!System.IO.File.Exists(schemaPath))
                 {
-                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory);
+                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", schemaPath, schemaDirectory);
                 }
-                Add<string>("BuildAMation", "PackageDependencySchemaPathName", opusSchemaPathname);
+                Add<string>("BuildAMation", "PackageDependencySchemaPathName", schemaPath);
             }
             {
-                var v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
-                if (!System.IO.File.Exists(v2SchemaPathName))
+                var schemaV2Path = System.IO.Path.Combine(schemaDirectory, "OpusPackageDependencyV2.xsd");
+                if (!System.IO.File.Exists(schemaV2Path))
                 {
-                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory);
+                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", schemaV2Path, schemaDirectory);
                 }
-                Add<string>("BuildAMation", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
+                Add<string>("BuildAMation", "PackageDependencySchemaPathNameV2", schemaV2Path);
 
                 // relative path for definition files
                 Add<string>("BuildAMation", "PackageDependencySchemaRelativePathNameV2", "./Schema/OpusPackageDependencyV2.xsd");
@@ -92,9 +92,9 @@ namespace Bam.Core
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
 
-            var opusPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(opusDirectory).FullName).FullName, "packages");
+            var primaryPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");
             var packageRoots = new Array<DirectoryLocation>();
-            packageRoots.Add(DirectoryLocation.Get(opusPackageRoot));
+            packageRoots.Add(DirectoryLocation.Get(primaryPackageRoot));
             Add<Array<DirectoryLocation>>("System", "PackageRoots", packageRoots);
 
             var packageInfoCollection = new PackageInformationCollection();
