@@ -1,4 +1,4 @@
-﻿// <copyright file="TriggerActionAttribute.cs" company="Mark Final">
+// <copyright file="TriggerActionAttribute.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

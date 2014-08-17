@@ -1,4 +1,4 @@
-﻿// <copyright file="Parameters.cs" company="Mark Final">
+// <copyright file="Parameters.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Option Code Generator</summary>

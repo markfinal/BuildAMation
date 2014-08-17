@@ -1,4 +1,4 @@
-﻿// <copyright file="PropertySignatureMap.cs" company="Mark Final">
+// <copyright file="PropertySignatureMap.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Option Code Generator</summary>

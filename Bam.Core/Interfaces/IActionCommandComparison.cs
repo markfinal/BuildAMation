@@ -1,4 +1,4 @@
-﻿// <copyright file="IActionCommandComparison.cs" company="Mark Final">
+// <copyright file="IActionCommandComparison.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

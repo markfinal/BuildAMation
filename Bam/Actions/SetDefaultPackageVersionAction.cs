@@ -1,4 +1,4 @@
-﻿// <copyright file="SetDefaultPackageVersionAction.cs" company="Mark Final">
+// <copyright file="SetDefaultPackageVersionAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

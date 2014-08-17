@@ -1,4 +1,4 @@
-﻿// <copyright file="EnableDebugSymbolsInBuildsAction.cs" company="Mark Final">
+// <copyright file="EnableDebugSymbolsInBuildsAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

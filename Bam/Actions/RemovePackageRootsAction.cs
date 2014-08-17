@@ -1,4 +1,4 @@
-﻿// <copyright file="RemovePackageRootsAction.cs" company="Mark Final">
+// <copyright file="RemovePackageRootsAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

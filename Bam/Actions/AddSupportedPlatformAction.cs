@@ -1,4 +1,4 @@
-﻿// <copyright file="AddSupportedPlatformAction.cs" company="Mark Final">
+// <copyright file="AddSupportedPlatformAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

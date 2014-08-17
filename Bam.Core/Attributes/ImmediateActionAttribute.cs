@@ -1,4 +1,4 @@
-﻿// <copyright file="ImmediateActionAttribute.cs" company="Mark Final">
+// <copyright file="ImmediateActionAttribute.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

@@ -1,4 +1,4 @@
-﻿// <copyright file="IIsGeneratedSource.cs" company="Mark Final">
+// <copyright file="IIsGeneratedSource.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

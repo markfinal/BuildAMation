@@ -1,4 +1,4 @@
-﻿// <copyright file="SymlinkLocation.cs" company="Mark Final">
+// <copyright file="SymlinkLocation.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

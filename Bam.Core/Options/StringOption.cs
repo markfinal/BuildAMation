@@ -1,4 +1,4 @@
-﻿namespace Bam.Core
+namespace Bam.Core
 {
     public class StringOption : Option
     {

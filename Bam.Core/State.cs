@@ -1,4 +1,4 @@
-﻿// <copyright file="State.cs" company="Mark Final">
+// <copyright file="State.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus state.</summary>

@@ -1,4 +1,4 @@
-﻿// <copyright file="UpdateOptionCollectionDelegateArray.cs" company="Mark Final">
+// <copyright file="UpdateOptionCollectionDelegateArray.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

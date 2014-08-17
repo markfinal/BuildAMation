@@ -1,4 +1,4 @@
-﻿// <copyright file="CreateDebugProjectAction.cs" company="Mark Final">
+// <copyright file="CreateDebugProjectAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

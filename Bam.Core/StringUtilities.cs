@@ -1,4 +1,4 @@
-﻿// <copyright file="StringUtilties.cs" company="Mark Final">
+// <copyright file="StringUtilties.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>

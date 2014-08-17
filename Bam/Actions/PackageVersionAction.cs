@@ -1,4 +1,4 @@
-﻿// <copyright file="PackageVesionAction.cs" company="Mark Final">
+// <copyright file="PackageVesionAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

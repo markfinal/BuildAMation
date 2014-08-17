@@ -1,4 +1,4 @@
-﻿// <copyright file="SetUndefineAction.cs" company="Mark Final">
+// <copyright file="SetUndefineAction.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus main application.</summary>

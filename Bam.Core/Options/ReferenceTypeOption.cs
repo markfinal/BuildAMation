@@ -1,4 +1,4 @@
-﻿// <copyright file="ReferenceTypeOption.cs" company="Mark Final">
+// <copyright file="ReferenceTypeOption.cs" company="Mark Final">
 //  Opus
 // </copyright>
 // <summary>Opus Core</summary>
