@@ -577,7 +577,7 @@ namespace Bam.Core
 
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
-                    // Opus assembly
+                    // Bam assembly
                     foreach (var opusAssembly in mainPackage.Identifier.Definition.BamAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);

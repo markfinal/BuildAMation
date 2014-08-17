@@ -112,7 +112,7 @@ namespace Bam.Core
             {
                 var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, State.OpusPackageDependencySchemaRelativePathNameV2);
+                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, State.PackageDefinitionSchemaRelativePathNameV2);
                 packageDefinition.Attributes.Append(schemaAttribute);
             }
             document.AppendChild(packageDefinition);

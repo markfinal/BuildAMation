@@ -306,7 +306,7 @@ namespace Bam.Core
             }
         }
 
-        public static string OpusPackageDependencySchemaRelativePathNameV2
+        public static string PackageDefinitionSchemaRelativePathNameV2
         {
             get
             {

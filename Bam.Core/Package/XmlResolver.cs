@@ -46,7 +46,7 @@ namespace Bam.Core
             }
 
             // NEW style definition files (0.50 onward)
-            if (relativeUri == State.OpusPackageDependencySchemaRelativePathNameV2)
+            if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2)
             {
                 // we've got a local match, so use the version of the Schema that is next to the Opus binary
                 return new System.Uri(State.PackageDefinitionSchemaPathV2);
