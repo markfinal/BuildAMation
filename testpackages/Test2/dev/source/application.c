@@ -42,11 +42,11 @@ GetBitSize()
 char *
 GetConfiguration()
 {
-#if defined(D_OPUS_CONFIGURATION_DEBUG)
+#if defined(D_BAM_CONFIGURATION_DEBUG)
     return "debug";
-#elif defined(D_OPUS_CONFIGURATION_OPTIMIZED)
+#elif defined(D_BAM_CONFIGURATION_OPTIMIZED)
     return "optimized";
-#elif defined(D_OPUS_CONFIGURATION_PROFILE)
+#elif defined(D_BAM_CONFIGURATION_PROFILE)
     return "profile";
 #else
     return "Unrecognized configuration";
