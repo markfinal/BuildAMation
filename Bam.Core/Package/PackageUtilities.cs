@@ -24,7 +24,7 @@ namespace Bam.Core
         {
             get
             {
-                var coreVersion = State.OpusVersion;
+                var coreVersion = State.Version;
                 var coreVersionDefine = System.String.Format("OPUS_CORE_VERSION_{0}_{1}", coreVersion.Major, coreVersion.Minor);
                 return coreVersionDefine;
             }

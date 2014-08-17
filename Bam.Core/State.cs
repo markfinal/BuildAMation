@@ -266,7 +266,7 @@ namespace Bam.Core
             }
         }
 
-        public static System.Version OpusVersion
+        public static System.Version Version
         {
             get
             {
@@ -274,7 +274,7 @@ namespace Bam.Core
             }
         }
 
-        public static string OpusVersionString
+        public static string VersionString
         {
             get
             {

@@ -44,7 +44,7 @@ namespace Bam
         public bool
         Execute()
         {
-            Core.Log.MessageAll(Core.State.OpusVersionString);
+            Core.Log.MessageAll(Core.State.VersionString);
 
             return true;
         }
