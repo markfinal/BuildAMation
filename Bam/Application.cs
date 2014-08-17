@@ -19,7 +19,7 @@
 namespace Bam
 {
     /// <summary>
-    /// Opus Application class.
+    /// Command line tool application class.
     /// </summary>
     public sealed class Application
     {

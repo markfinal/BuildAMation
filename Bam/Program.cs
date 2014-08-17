@@ -19,7 +19,7 @@
 namespace Bam
 {
     /// <summary>
-    /// Opus application.
+    /// Command line tool main entry point
     /// </summary>
     internal class Program
     {
