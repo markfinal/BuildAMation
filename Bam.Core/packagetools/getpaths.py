@@ -2,15 +2,8 @@ from executeprocess import ExecuteProcess
 import os
 import string
 
-def GetOpusPaths():
-	get_opus_dir_command = [
-		"Opus",
-		"-verbosity=0",
-		"-showdirectory"
-	]
-	(stdout,stderr) = ExecuteProcess(get_opus_dir_command)
-	opusBinDir = string.strip(stdout, os.linesep)
-	opusPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "packages"))
-	opusTestPackageDir = os.path.abspath(os.path.join(opusBinDir, os.pardir, os.pardir, "testpackages"))
-	opusCodeGeneratorExe = os.path.join(opusBinDir, "OpusOptionCodeGenerator.exe")
-	return (opusPackageDir, opusTestPackageDir, opusCodeGeneratorExe)
+def GetBuildAMationPaths(bam_dir):
+	standardPackageDir = os.path.abspath(os.path.join(bam_dir, os.pardir, os.pardir, "packages"))
+	testPackageDir = os.path.abspath(os.path.join(bam_dir, os.pardir, os.pardir, "testpackages"))
+	optionGeneratorExe = os.path.join(bam_dir, "BamOptionGenerator.exe")
+	return (standardPackageDir, testPackageDir, optionGeneratorExe)
