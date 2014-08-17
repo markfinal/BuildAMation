@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-namespace OpusOptionCodeGenerator
+namespace BamOptionGenerator
 {
     class Program
     {
@@ -59,7 +59,7 @@ namespace OpusOptionCodeGenerator
         private static void
         PrintHelp()
         {
-            Log("OpusOptionCodeGenerator [options]");
+            Log("BamOptionGenerator [options]");
             Log("Options:");
             Log("-i=<interface filenames, using path separators>");
             Log("-n=<namespace>");
@@ -614,7 +614,7 @@ namespace OpusOptionCodeGenerator
             {
                 writer.NewLine = "\n";
 
-                WriteLine(writer, 0, "// Automatically generated file from OpusOptionCodeGenerator. DO NOT EDIT.");
+                WriteLine(writer, 0, "// Automatically generated file from BamOptionGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
@@ -875,7 +875,7 @@ namespace OpusOptionCodeGenerator
                 bool writeToDisk = (null == layout);
 
                 // write header
-                WriteLine(builder, 0, "// Automatically generated file from OpusOptionCodeGenerator.");
+                WriteLine(builder, 0, "// Automatically generated file from BamOptionGenerator.");
                 WriteLine(builder, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {

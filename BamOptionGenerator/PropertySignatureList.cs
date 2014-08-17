@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-namespace OpusOptionCodeGenerator
+namespace BamOptionGenerator
 {
     class PropertySignatureList :
         System.Collections.Generic.List<PropertySignature>

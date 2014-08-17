@@ -29,7 +29,7 @@ namespace Bam.Core
             {
                 if (0 == this.list.Count)
                 {
-                    throw new Exception("No packages have been specified or identified. Please run Opus from a package directory");
+                    throw new Exception("No packages have been specified or identified. Please run 'bam' from a package directory");
                 }
 
                 var mainPackage = this.list[0];

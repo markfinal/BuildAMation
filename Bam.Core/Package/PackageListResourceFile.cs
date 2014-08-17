@@ -25,7 +25,7 @@ namespace Bam.Core
         {
             if (0 == State.PackageInfo.Count)
             {
-                throw new Exception("Package has not been specified. Run Opus from the package directory.");
+                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
             }
 
             var mainPackage = State.PackageInfo.MainPackage;
@@ -54,18 +54,18 @@ namespace Bam.Core
         {
             if (0 == State.PackageInfo.Count)
             {
-                throw new Exception("Package has not been specified. Run Opus from the package directory.");
+                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
             }
 
             var mainPackage = State.PackageInfo.MainPackage;
 
-            var OpusDirectory = mainPackage.ProjectDirectory;
-            if (!System.IO.Directory.Exists(OpusDirectory))
+            var projectDirectory = mainPackage.ProjectDirectory;
+            if (!System.IO.Directory.Exists(projectDirectory))
             {
-                System.IO.Directory.CreateDirectory(OpusDirectory);
+                System.IO.Directory.CreateDirectory(projectDirectory);
             }
 
-            var resourceFilePathName = System.IO.Path.Combine(OpusDirectory, "PackageInfoResources.resx");
+            var resourceFilePathName = System.IO.Path.Combine(projectDirectory, "PackageInfoResources.resx");
 
             var resourceFile = new System.Xml.XmlDocument();
             var root = resourceFile.CreateElement("root");

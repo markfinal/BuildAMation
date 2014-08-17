@@ -30,7 +30,7 @@ namespace Bam.Core
         private static System.Collections.Generic.Dictionary<string, Category> s = new System.Collections.Generic.Dictionary<string, Category>();
 
         private static void
-        GetOpusVersionData(
+        GetAssemblyVersionData(
             out System.Version assemblyVersion,
             out string productVersion)
         {
@@ -56,14 +56,14 @@ namespace Bam.Core
 
             System.Version assemblyVersion;
             string productVersion;
-            GetOpusVersionData(out assemblyVersion, out productVersion);
+            GetAssemblyVersionData(out assemblyVersion, out productVersion);
 
-            AddCategory("Opus");
+            AddCategory("BuildAMation");
             var opusDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Add<string>("Opus", "Directory", opusDirectory);
-            Add<System.Version>("Opus", "Version", assemblyVersion);
-            Add<string>("Opus", "VersionString", productVersion);
-            Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
+            Add<string>("BuildAMation", "Directory", opusDirectory);
+            Add<System.Version>("BuildAMation", "Version", assemblyVersion);
+            Add<string>("BuildAMation", "VersionString", productVersion);
+            Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
             var opusSchemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
             {
@@ -72,7 +72,7 @@ namespace Bam.Core
                 {
                     throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", opusSchemaPathname, opusSchemaDirectory);
                 }
-                Add<string>("Opus", "PackageDependencySchemaPathName", opusSchemaPathname);
+                Add<string>("BuildAMation", "PackageDependencySchemaPathName", opusSchemaPathname);
             }
             {
                 var v2SchemaPathName = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependencyV2.xsd");
@@ -80,10 +80,10 @@ namespace Bam.Core
                 {
                     throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", v2SchemaPathName, opusSchemaDirectory);
                 }
-                Add<string>("Opus", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
+                Add<string>("BuildAMation", "PackageDependencySchemaPathNameV2", v2SchemaPathName);
 
                 // relative path for definition files
-                Add<string>("Opus", "PackageDependencySchemaRelativePathNameV2", "./Schema/OpusPackageDependencyV2.xsd");
+                Add<string>("BuildAMation", "PackageDependencySchemaRelativePathNameV2", "./Schema/OpusPackageDependencyV2.xsd");
             }
 
             AddCategory("System");
@@ -262,7 +262,7 @@ namespace Bam.Core
         {
             get
             {
-                return Get("Opus", "Directory") as string;
+                return Get("BuildAMation", "Directory") as string;
             }
         }
 
@@ -270,7 +270,7 @@ namespace Bam.Core
         {
             get
             {
-                return Get("Opus", "Version") as System.Version;
+                return Get("BuildAMation", "Version") as System.Version;
             }
         }
 
@@ -278,7 +278,7 @@ namespace Bam.Core
         {
             get
             {
-                return Get("Opus", "VersionString") as string;
+                return Get("BuildAMation", "VersionString") as string;
             }
         }
 
@@ -286,7 +286,7 @@ namespace Bam.Core
         {
             get
             {
-                return (bool)Get("Opus", "RunningMono");
+                return (bool)Get("BuildAMation", "RunningMono");
             }
         }
 
@@ -294,7 +294,7 @@ namespace Bam.Core
         {
             get
             {
-                return Get("Opus", "PackageDependencySchemaPathName") as string;
+                return Get("BuildAMation", "PackageDependencySchemaPathName") as string;
             }
         }
 
@@ -302,7 +302,7 @@ namespace Bam.Core
         {
             get
             {
-                return Get("Opus", "PackageDependencySchemaPathNameV2") as string;
+                return Get("BuildAMation", "PackageDependencySchemaPathNameV2") as string;
             }
         }
 
@@ -310,7 +310,7 @@ namespace Bam.Core
         {
             get
             {
-                return Get("Opus", "PackageDependencySchemaRelativePathNameV2") as string;
+                return Get("BuildAMation", "PackageDependencySchemaRelativePathNameV2") as string;
             }
         }
 

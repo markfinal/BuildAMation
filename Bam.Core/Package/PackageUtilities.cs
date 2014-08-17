@@ -479,7 +479,7 @@ namespace Bam.Core
             assemblyCompileProfile.StartProfile();
 
             // assembly is written to the build root
-            var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "OpusPackageAssembly");
+            var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "CachedPackageAssembly");
             cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, mainPackage.Name) + ".dll";
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;
