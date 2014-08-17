@@ -19,7 +19,7 @@ from standardoptions import StandardOptions
 parser = OptionParser()
 (options, args, extra_args) = StandardOptions(parser)
 
-stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths()
+stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
 # OSXPlist options
 plist_options = [
