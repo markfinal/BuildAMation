@@ -17,19 +17,19 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
-[assembly: Bam.Core.RegisterAction(typeof(Bam.RemoveOpusAssemblyAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.RemoveBuildAMationAssemblyAction))]
 
 namespace Bam
 {
     [Core.TriggerAction]
-    internal class RemoveOpusAssemblyAction :
+    internal class RemoveBuildAMationAssemblyAction :
         Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
             get
             {
-                return "-removeopusassembly";
+                return "-removeassembly";
             }
         }
 
@@ -46,10 +46,10 @@ namespace Bam
             string arguments)
         {
             var assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
-            this.OpusAssemblyNameArray = new Core.StringArray(assemblyNames);
+            this.AssemblyNameArray = new Core.StringArray(assemblyNames);
         }
 
-        private Core.StringArray OpusAssemblyNameArray
+        private Core.StringArray AssemblyNameArray
         {
             get;
             set;
@@ -76,19 +76,19 @@ namespace Bam
             }
 
             var success = false;
-            foreach (var opusAssemblyName in this.OpusAssemblyNameArray)
+            foreach (var assemblyName in this.AssemblyNameArray)
             {
-                if (xmlFile.OpusAssemblies.Contains(opusAssemblyName))
+                if (xmlFile.OpusAssemblies.Contains(assemblyName))
                 {
-                    xmlFile.OpusAssemblies.Remove(opusAssemblyName);
+                    xmlFile.OpusAssemblies.Remove(assemblyName);
 
-                    Core.Log.MessageAll("Removed BuildAMation assembly '{0}' from package '{1}'", opusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("Removed BuildAMation assembly '{0}' from package '{1}'", assemblyName, mainPackageId.ToString());
 
                     success = true;
                 }
                 else
                 {
-                    Core.Log.MessageAll("BuildAMation assembly '{0}' was not used by package '{1}'", opusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("BuildAMation assembly '{0}' was not used by package '{1}'", assemblyName, mainPackageId.ToString());
                 }
             }
 

@@ -74,7 +74,7 @@ namespace Bam
             Core.Log.MessageAll("Definition of package '{0}'", mainPackageId.ToString());
             Core.Log.MessageAll(new string('-', dashLength));
             Core.Log.MessageAll("\nSupported on: {0}", Core.Platform.ToString(definitionFile.SupportedPlatforms, ' '));
-            Core.Log.MessageAll("\nOpus assemblies:");
+            Core.Log.MessageAll("\nBuildAMation assemblies:");
             foreach (var opusAssembly in definitionFile.OpusAssemblies)
             {
                 Core.Log.MessageAll("\t{0}", opusAssembly);

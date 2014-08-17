@@ -17,19 +17,19 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
-[assembly: Bam.Core.RegisterAction(typeof(Bam.AddOpusAssemblyAction))]
+[assembly: Bam.Core.RegisterAction(typeof(Bam.AddBuildAMationAssemblyAction))]
 
 namespace Bam
 {
     [Core.TriggerAction]
-    internal class AddOpusAssemblyAction :
+    internal class AddBuildAMationAssemblyAction :
         Core.IActionWithArguments
     {
         public string CommandLineSwitch
         {
             get
             {
-                return "-addopusassembly";
+                return "-addassembly";
             }
         }
 
@@ -46,10 +46,10 @@ namespace Bam
             string arguments)
         {
             var assemblyNames = arguments.Split(System.IO.Path.PathSeparator);
-            this.OpusAssemblyNameArray = new Core.StringArray(assemblyNames);
+            this.AssemblyNameArray = new Core.StringArray(assemblyNames);
         }
 
-        private Core.StringArray OpusAssemblyNameArray
+        private Core.StringArray AssemblyNameArray
         {
             get;
             set;
@@ -76,19 +76,19 @@ namespace Bam
             }
 
             bool success = false;
-            foreach (var OpusAssemblyName in this.OpusAssemblyNameArray)
+            foreach (var assemblyName in this.AssemblyNameArray)
             {
-                if (!xmlFile.OpusAssemblies.Contains(OpusAssemblyName))
+                if (!xmlFile.OpusAssemblies.Contains(assemblyName))
                 {
-                    xmlFile.OpusAssemblies.Add(OpusAssemblyName);
+                    xmlFile.OpusAssemblies.Add(assemblyName);
 
-                    Core.Log.MessageAll("Added BuildAMation assembly '{0}' to package '{1}'", OpusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("Added BuildAMation assembly '{0}' to package '{1}'", assemblyName, mainPackageId.ToString());
 
                     success = true;
                 }
                 else
                 {
-                    Core.Log.MessageAll("BuildAMation assembly '{0}' already used by package '{1}'", OpusAssemblyName, mainPackageId.ToString());
+                    Core.Log.MessageAll("BuildAMation assembly '{0}' already used by package '{1}'", assemblyName, mainPackageId.ToString());
                 }
             }
 
