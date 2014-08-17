@@ -7,6 +7,8 @@ namespace Bam.Core
 {
     public class PackageDefinitionFile
     {
+        private static readonly string xmlNamespace = "Opus";
+
         private string xmlFilename;
         private bool validate;
 
@@ -92,9 +94,8 @@ namespace Bam.Core
             this.PackageIdentifiers.Sort();
 
             var document = new System.Xml.XmlDocument();
-            var targetNamespace = "Opus";
             var namespaceURI = "http://code.google.com/p/opus";
-            var packageDefinition = document.CreateElement(targetNamespace, "PackageDefinition", namespaceURI);
+            var packageDefinition = document.CreateElement(xmlNamespace, "PackageDefinition", namespaceURI);
             {
                 var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
@@ -106,11 +107,11 @@ namespace Bam.Core
             // package roots
             if (this.PackageRoots.Count > 0)
             {
-                var packageRootsElement = document.CreateElement(targetNamespace, "PackageRoots", namespaceURI);
+                var packageRootsElement = document.CreateElement(xmlNamespace, "PackageRoots", namespaceURI);
 
                 foreach (string rootPath in this.PackageRoots)
                 {
-                    var rootElement = document.CreateElement(targetNamespace, "RootDirectory", namespaceURI);
+                    var rootElement = document.CreateElement(xmlNamespace, "RootDirectory", namespaceURI);
                     rootElement.SetAttribute("Path", rootPath);
                     packageRootsElement.AppendChild(rootElement);
                 }
@@ -120,7 +121,7 @@ namespace Bam.Core
 
             if (this.PackageIdentifiers.Count > 0)
             {
-                var requiredPackages = document.CreateElement(targetNamespace, "RequiredPackages", namespaceURI);
+                var requiredPackages = document.CreateElement(xmlNamespace, "RequiredPackages", namespaceURI);
                 foreach (var package in this.PackageIdentifiers)
                 {
                     System.Xml.XmlElement packageElement = null;
@@ -143,12 +144,12 @@ namespace Bam.Core
 
                     if (null == packageElement)
                     {
-                        packageElement = document.CreateElement(targetNamespace, "Package", namespaceURI);
+                        packageElement = document.CreateElement(xmlNamespace, "Package", namespaceURI);
                         packageElement.SetAttribute("Name", package.Name);
                         requiredPackages.AppendChild(packageElement);
                     }
                     {
-                        var packageVersionElement = document.CreateElement(targetNamespace, "Version", namespaceURI);
+                        var packageVersionElement = document.CreateElement(xmlNamespace, "Version", namespaceURI);
                         packageVersionElement.SetAttribute("Id", package.Version);
 
                         var platformFilter = package.PlatformFilter;
@@ -187,10 +188,10 @@ namespace Bam.Core
 
             if (this.OpusAssemblies.Count > 0)
             {
-                var requiredOpusAssemblies = document.CreateElement(targetNamespace, "RequiredOpusAssemblies", namespaceURI);
+                var requiredOpusAssemblies = document.CreateElement(xmlNamespace, "RequiredOpusAssemblies", namespaceURI);
                 foreach (var assemblyName in this.OpusAssemblies)
                 {
-                    var assemblyElement = document.CreateElement(targetNamespace, "OpusAssembly", namespaceURI);
+                    var assemblyElement = document.CreateElement(xmlNamespace, "OpusAssembly", namespaceURI);
                     assemblyElement.SetAttribute("Name", assemblyName);
                     requiredOpusAssemblies.AppendChild(assemblyElement);
                 }
@@ -199,10 +200,10 @@ namespace Bam.Core
 
             if (this.DotNetAssemblies.Count > 0)
             {
-                var requiredDotNetAssemblies = document.CreateElement(targetNamespace, "RequiredDotNetAssemblies", namespaceURI);
+                var requiredDotNetAssemblies = document.CreateElement(xmlNamespace, "RequiredDotNetAssemblies", namespaceURI);
                 foreach (var desc in this.DotNetAssemblies)
                 {
-                    var assemblyElement = document.CreateElement(targetNamespace, "DotNetAssembly", namespaceURI);
+                    var assemblyElement = document.CreateElement(xmlNamespace, "DotNetAssembly", namespaceURI);
                     assemblyElement.SetAttribute("Name", desc.Name);
                     if (null != desc.RequiredTargetFramework)
                     {
@@ -215,23 +216,23 @@ namespace Bam.Core
 
             // supported platforms
             {
-                var supportedPlatformsElement = document.CreateElement(targetNamespace, "SupportedPlatforms", namespaceURI);
+                var supportedPlatformsElement = document.CreateElement(xmlNamespace, "SupportedPlatforms", namespaceURI);
 
                 if (EPlatform.Windows == (this.SupportedPlatforms & EPlatform.Windows))
                 {
-                    var platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
+                    var platformElement = document.CreateElement(xmlNamespace, "Platform", namespaceURI);
                     platformElement.SetAttribute("Name", "Windows");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.Unix == (this.SupportedPlatforms & EPlatform.Unix))
                 {
-                    var platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
+                    var platformElement = document.CreateElement(xmlNamespace, "Platform", namespaceURI);
                     platformElement.SetAttribute("Name", "Unix");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.OSX == (this.SupportedPlatforms & EPlatform.OSX))
                 {
-                    var platformElement = document.CreateElement(targetNamespace, "Platform", namespaceURI);
+                    var platformElement = document.CreateElement(xmlNamespace, "Platform", namespaceURI);
                     platformElement.SetAttribute("Name", "OSX");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
@@ -242,11 +243,11 @@ namespace Bam.Core
             // definitions
             if (this.Definitions.Count > 0)
             {
-                var definitionsElement = document.CreateElement(targetNamespace, "Definitions", namespaceURI);
+                var definitionsElement = document.CreateElement(xmlNamespace, "Definitions", namespaceURI);
 
                 foreach (string define in this.Definitions)
                 {
-                    var defineElement = document.CreateElement(targetNamespace, "Definition", namespaceURI);
+                    var defineElement = document.CreateElement(xmlNamespace, "Definition", namespaceURI);
                     defineElement.SetAttribute("Name", define);
                     definitionsElement.AppendChild(defineElement);
                 }
@@ -431,13 +432,13 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader,
             bool validatePackageLocations)
         {
-            var requiredPackagesElementName = "Opus:RequiredPackages";
+            var requiredPackagesElementName = System.String.Format("{0}:RequiredPackages", xmlNamespace);
             if (requiredPackagesElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            var packageElementName = "Opus:Package";
+            var packageElementName = System.String.Format("{0}:Package", xmlNamespace);
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == requiredPackagesElementName) &&
@@ -455,7 +456,7 @@ namespace Bam.Core
                     }
                     var packageName = xmlReader.Value;
 
-                    var packageVersionElementName = "Opus:Version";
+                    var packageVersionElementName = System.String.Format("{0}:Version", xmlNamespace);
                     while (xmlReader.Read())
                     {
                         if ((xmlReader.Name == packageElementName) &&
@@ -516,13 +517,13 @@ namespace Bam.Core
         ReadRequiredOpusAssemblies(
             System.Xml.XmlReader xmlReader)
         {
-            var requiredOpusAssembliesElementName = "Opus:RequiredOpusAssemblies";
+            var requiredOpusAssembliesElementName = System.String.Format("{0}:RequiredOpusAssemblies", xmlNamespace);
             if (requiredOpusAssembliesElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            var opusAssemblyElementName = "Opus:OpusAssembly";
+            var opusAssemblyElementName = System.String.Format("{0}:OpusAssembly", xmlNamespace);
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == requiredOpusAssembliesElementName) &&
@@ -538,7 +539,7 @@ namespace Bam.Core
                         var assemblyNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:OpusAssembly' node missing");
+                            throw new Exception("Required 'Name' attribute of '{0}:OpusAssembly' node missing", xmlNamespace);
                         }
                         var assemblyName = xmlReader.Value;
 
@@ -564,13 +565,13 @@ namespace Bam.Core
         ReadRequiredDotNetAssemblies(
             System.Xml.XmlReader xmlReader)
         {
-            var requiredDotNetAssembliesElementName = "Opus:RequiredDotNetAssemblies";
+            var requiredDotNetAssembliesElementName = System.String.Format("{0}:RequiredDotNetAssemblies", xmlNamespace);
             if (requiredDotNetAssembliesElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            var dotNetAssemblyElementName = "Opus:DotNetAssembly";
+            var dotNetAssemblyElementName = System.String.Format("{0}:DotNetAssembly", xmlNamespace);
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
@@ -586,7 +587,7 @@ namespace Bam.Core
                         var assemblyNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:DotNetAssembly' node missing");
+                            throw new Exception("Required 'Name' attribute of '{0}:DotNetAssembly' node missing", xmlNamespace);
                         }
                         var assemblyName = xmlReader.Value;
 
@@ -614,14 +615,14 @@ namespace Bam.Core
         ReadSupportedPlatforms(
             System.Xml.XmlReader xmlReader)
         {
-            var supportedPlatformsElementName = "Opus:SupportedPlatforms";
+            var supportedPlatformsElementName = System.String.Format("{0}:SupportedPlatforms", xmlNamespace);
             if (supportedPlatformsElementName != xmlReader.Name)
             {
                 return false;
             }
 
             this.SupportedPlatforms = EPlatform.Invalid;
-            var platformElementName = "Opus:Platform";
+            var platformElementName = System.String.Format("{0}:Platform", xmlNamespace);
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == supportedPlatformsElementName) &&
@@ -637,7 +638,7 @@ namespace Bam.Core
                         var platformNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(platformNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:Platform' node missing");
+                            throw new Exception("Required 'Name' attribute of '{0}:Platform' node missing", xmlNamespace);
                         }
 
                         var platformName = xmlReader.Value;
@@ -668,13 +669,13 @@ namespace Bam.Core
         ReadDefinitions(
             System.Xml.XmlReader xmlReader)
         {
-            var definitionsElementName = "Opus:Definitions";
+            var definitionsElementName = System.String.Format("{0}:Definitions", xmlNamespace);
             if (definitionsElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            var defineElementName = "Opus:Definition";
+            var defineElementName = System.String.Format("{0}:Definition", xmlNamespace);
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == definitionsElementName) &&
@@ -690,7 +691,7 @@ namespace Bam.Core
                         var defineNameAttribute = "Name";
                         if (!xmlReader.MoveToAttribute(defineNameAttribute))
                         {
-                            throw new Exception("Required 'Name' attribute of 'Opus:Definition' node missing");
+                            throw new Exception("Required 'Name' attribute of '{0}:Definition' node missing", xmlNamespace);
                         }
 
                         var definition = xmlReader.Value;
@@ -711,13 +712,13 @@ namespace Bam.Core
         ReadPackageRoots(
             System.Xml.XmlReader xmlReader)
         {
-            var packageRootsElementName = "Opus:PackageRoots";
+            var packageRootsElementName = System.String.Format("{0}:PackageRoots", xmlNamespace);
             if (packageRootsElementName != xmlReader.Name)
             {
                 return false;
             }
 
-            var rootDirElementName = "Opus:RootDirectory";
+            var rootDirElementName = System.String.Format("{0}:RootDirectory", xmlNamespace);
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == packageRootsElementName) &&
@@ -773,10 +774,10 @@ namespace Bam.Core
 
                 using (var xmlReader = System.Xml.XmlReader.Create(this.xmlFilename, settings))
                 {
-                    string rootElementName = "Opus:PackageDefinition";
+                    string rootElementName = System.String.Format("{0}:PackageDefinition", xmlNamespace);
                     if (!xmlReader.ReadToFollowing(rootElementName))
                     {
-                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old Opus schema. This file will now be upgraded to the latest schema.", rootElementName, this.xmlFilename);
+                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old {2} schema. This file will now be upgraded to the latest schema.", rootElementName, this.xmlFilename, xmlNamespace);
                         return false;
                     }
 
@@ -920,7 +921,7 @@ namespace Bam.Core
                 return false;
             }
 
-            // add required Opus assemblies
+            // add required BuildAMation assemblies
             this.OpusAssemblies.Add("Bam.Core");
 
             // add required DotNet assemblies
