@@ -581,7 +581,7 @@ namespace Bam.Core
                     foreach (var opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
-                        var assemblyPathName = System.IO.Path.Combine(State.OpusDirectory, assemblyFileName);
+                        var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
 

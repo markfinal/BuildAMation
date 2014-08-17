@@ -31,7 +31,7 @@ namespace Bam
             Core.EVerboseLevel level,
             System.Collections.Generic.Dictionary<string,string> argDict)
         {
-            Core.Log.Message(level, "Bam location: '{0}'", Core.State.OpusDirectory);
+            Core.Log.Message(level, "Bam location: '{0}'", Core.State.ExecutableDirectory);
             Core.Log.Message(level, "Bam version : '{0}'", Core.State.OpusVersionString);
             Core.Log.Message(level, "Working dir  : '{0}'", Core.State.WorkingDirectory);
             var arguments = new System.Text.StringBuilder();

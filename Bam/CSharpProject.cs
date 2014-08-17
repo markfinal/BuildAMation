@@ -387,7 +387,7 @@ namespace Bam
                                 xmlWriter.WriteStartElement("HintPath");
                                 {
                                     var assemblyFileName = opusAssembly + ".dll";
-                                    var assemblyPathName = System.IO.Path.Combine(Core.State.OpusDirectory, assemblyFileName);
+                                    var assemblyPathName = System.IO.Path.Combine(Core.State.ExecutableDirectory, assemblyFileName);
                                     var assemblyLocationUri = new System.Uri(assemblyPathName);
                                     var relativeAssemblyLocationUri = projectFilenameUri.MakeRelativeUri(assemblyLocationUri);
 

@@ -44,7 +44,7 @@ namespace Bam
         public bool
         Execute()
         {
-            Core.Log.MessageAll(Core.State.OpusDirectory);
+            Core.Log.MessageAll(Core.State.ExecutableDirectory);
 
             return true;
         }

@@ -65,7 +65,7 @@ namespace Bam.Core
             Add<string>("Opus", "VersionString", productVersion);
             Add<bool>("Opus", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
-            var opusSchemaDirectory = System.IO.Path.Combine(State.OpusDirectory, "Schema");
+            var opusSchemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
             {
                 var opusSchemaPathname = System.IO.Path.Combine(opusSchemaDirectory, "OpusPackageDependency.xsd");
                 if (!System.IO.File.Exists(opusSchemaPathname))
@@ -258,7 +258,7 @@ namespace Bam.Core
             s[category][key] = value;
         }
 
-        public static string OpusDirectory
+        public static string ExecutableDirectory
         {
             get
             {
