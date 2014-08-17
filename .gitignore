@@ -5,7 +5,7 @@
 *.pidb
 *.suo
 bin
-testpackages/*/dev/Opus
+testpackages/*/dev/BamProject
 testpackages/*/dev/build
 testpackages/Logs
 .DS_Store
