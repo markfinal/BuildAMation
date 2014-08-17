@@ -34,12 +34,17 @@ def write_license_text(outfile, file):
       else:
         outfile.write('// %s\n' % line)
     outfile.write('#endregion\n')
-  elif ext == '.c' or ext == '.h' or ext == '.cpp' or ext == '.m' or ext == '.mm':
+  elif ext == '.cpp' or ext == '.mm':
     for line in licenseText:
       if not line:
         outfile.write('//\n')
       else:
         outfile.write('// %s\n' % line)
+  elif ext == '.c' or ext == '.h' or ext == '.m':
+    outfile.write('/*\n')
+    for line in licenseText:
+      outfile.write('%s\n' % line)
+    outfile.write('*/\n')
   else:
     raise RuntimeError('Unsupported file extension for appending license, %s' % file)
 
