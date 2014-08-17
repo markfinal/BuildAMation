@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion
-#if OPUS_ENABLE_FILE_HASHING
+#if BAM_ENABLE_FILE_HASHING
 namespace DependencyGenerator
 {
     public class FileHashGeneration
@@ -183,4 +183,4 @@ namespace DependencyGenerator
         }
     }
 }
-#endif // OPUS_ENABLE_FILE_HASHING
+#endif // BAM_ENABLE_FILE_HASHING

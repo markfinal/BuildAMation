@@ -38,7 +38,7 @@ namespace NativeBuilder
                 throw new Bam.Core.Exception("Moc source file '{0}' does not exist", sourceFilePath);
             }
 
-#if OPUS_ENABLE_FILE_HASHING
+#if BAM_ENABLE_FILE_HASHING
             DependencyGenerator.FileHashGeneration.FileProcessQueue.Enqueue(sourceFilePath);
 #endif
 
@@ -53,7 +53,7 @@ namespace NativeBuilder
                     return null;
                 }
 
-#if OPUS_ENABLE_FILE_HASHING
+#if BAM_ENABLE_FILE_HASHING
                 if (FileRebuildStatus.AlwaysBuild != doesSourceFileNeedRebuilding)
                 {
                     if (!DependencyGenerator.FileHashGeneration.HaveFileHashesChanged(inputFiles))

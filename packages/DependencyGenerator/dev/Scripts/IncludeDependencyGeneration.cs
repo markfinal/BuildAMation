@@ -32,7 +32,7 @@ namespace DependencyGenerator
 
         public enum Style
         {
-            Opus,
+            Bam,
             Makefile
         }
 
@@ -86,7 +86,7 @@ namespace DependencyGenerator
             while (filesToSearch.Count > 0)
             {
                 var fileToSearch = filesToSearch.Dequeue();
-#if OPUS_ENABLE_FILE_HASHING
+#if BAM_ENABLE_FILE_HASHING
                 FileHashGeneration.FileProcessQueue.Enqueue(fileToSearch);
 #endif
 
@@ -149,7 +149,7 @@ namespace DependencyGenerator
             {
                 using (System.IO.TextWriter depWriter = new System.IO.StreamWriter(entry.depFilePath))
                 {
-                    if (Style.Opus == style)
+                    if (Style.Bam == style)
                     {
                         foreach (var headerPath in headerPathsFound)
                         {
@@ -191,7 +191,7 @@ namespace DependencyGenerator
                 do
                 {
                     var entry = data.Dequeue();
-                    GenerateDepFile(entry, Style.Opus);
+                    GenerateDepFile(entry, Style.Bam);
                 }
                 while (System.Threading.WaitHandle.WaitAll(new System.Threading.WaitHandle[] { data.IsAlive }, 0));
             }

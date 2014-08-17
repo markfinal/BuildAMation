@@ -60,7 +60,7 @@ namespace DependencyGenerator
             {
                 // do the work now!
                 var cast = value as IncludeDependencyGeneration.Data;
-                IncludeDependencyGeneration.GenerateDepFile(cast, IncludeDependencyGeneration.Style.Opus);
+                IncludeDependencyGeneration.GenerateDepFile(cast, IncludeDependencyGeneration.Style.Bam);
             }
         }
 
@@ -86,7 +86,7 @@ namespace DependencyGenerator
                 foreach (var value in values)
                 {
                     var cast = value as IncludeDependencyGeneration.Data;
-                    IncludeDependencyGeneration.GenerateDepFile(cast, IncludeDependencyGeneration.Style.Opus);
+                    IncludeDependencyGeneration.GenerateDepFile(cast, IncludeDependencyGeneration.Style.Bam);
                 }
             }
         }

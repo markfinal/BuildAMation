@@ -40,7 +40,7 @@ namespace C
 
         [LocalCompilerOptionsDelegate]
         protected static void
-        DynamicLibrarySetOpusDLLBuildPreprocessorDefine(
+        DynamicLibrarySetDLLBuildPreprocessorDefine(
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {

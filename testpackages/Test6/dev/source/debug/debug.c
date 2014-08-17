@@ -20,8 +20,8 @@ along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #error MAIN_C has been defined
 #endif
 
-#ifndef D_OPUS_CONFIGURATION_DEBUG
-#error This file can only be compiled in Opus debug configuration builds
+#ifndef D_BAM_CONFIGURATION_DEBUG
+#error This file can only be compiled in BuildAMation debug configuration builds
 #endif
 
 #include "header.h"
