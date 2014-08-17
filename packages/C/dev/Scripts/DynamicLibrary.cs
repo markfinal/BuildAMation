@@ -45,7 +45,7 @@ namespace C
             Bam.Core.Target target)
         {
             var compilerOptions = module.Options as ICCompilerOptions;
-            compilerOptions.Defines.Add("D_OPUS_DYNAMICLIBRARY_BUILD");
+            compilerOptions.Defines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
         }
 
         [LocalLinkerOptionsDelegate]

@@ -37,11 +37,11 @@ along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 
 /* now define the library API based on whether it is built as static or not
    the D_<package>_<module>_STATICAPI #define is populated in all uses, including the library build itself
-   the D_OPUS_DYNAMICLIBRARY_BUILD is only present for the library build when it is a dynamic library */
+   the D_BAM_DYNAMICLIBRARY_BUILD is only present for the library build when it is a dynamic library */
 #if defined(D_TEST14_DYNAMICLIBRARYA_STATICAPI)
 #define DYNAMICLIBRARYA_API /* empty */
 #else
-#if defined(D_OPUS_DYNAMICLIBRARY_BUILD)
+#if defined(D_BAM_DYNAMICLIBRARY_BUILD)
 #define DYNAMICLIBRARYA_API API_EXPORT
 #else
 #define DYNAMICLIBRARYA_API API_IMPORT
