@@ -332,7 +332,7 @@ namespace Bam.Core
         GetPackageHash(
             StringArray sourceCode,
             StringArray definitions,
-            StringArray opusAssemblies)
+            StringArray bamAssemblies)
         {
             int hashCode = 0;
             foreach (var source in sourceCode)
@@ -343,7 +343,7 @@ namespace Bam.Core
             {
                 hashCode ^= define.GetHashCode();
             }
-            foreach (var assemblyPath in opusAssemblies)
+            foreach (var assemblyPath in bamAssemblies)
             {
                 var assembly = System.Reflection.Assembly.Load(assemblyPath);
                 var version = assembly.GetName().Version.ToString();
@@ -578,9 +578,9 @@ namespace Bam.Core
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
                     // Bam assembly
-                    foreach (var opusAssembly in mainPackage.Identifier.Definition.BamAssemblies)
+                    foreach (var assembly in mainPackage.Identifier.Definition.BamAssemblies)
                     {
-                        var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
+                        var assemblyFileName = System.String.Format("{0}.dll", assembly);
                         var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
