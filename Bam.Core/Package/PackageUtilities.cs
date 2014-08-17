@@ -487,7 +487,7 @@ namespace Bam.Core
             if (!State.CompileWithDebugSymbols)
             {
                 // can an existing assembly be reused?
-                thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.OpusAssemblies);
+                thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.BamAssemblies);
                 if (State.CacheAssembly)
                 {
                     if (System.IO.File.Exists(hashPathName))
@@ -578,7 +578,7 @@ namespace Bam.Core
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
                     // Opus assembly
-                    foreach (var opusAssembly in mainPackage.Identifier.Definition.OpusAssemblies)
+                    foreach (var opusAssembly in mainPackage.Identifier.Definition.BamAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", opusAssembly);
                         var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);

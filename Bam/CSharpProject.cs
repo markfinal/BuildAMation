@@ -373,10 +373,10 @@ namespace Bam
                     xmlWriter.WriteStartElement("ItemGroup");
                     {
                         // required BuildAMation assemblies
-                        foreach (var opusAssembly in package.Identifier.Definition.OpusAssemblies)
+                        foreach (var assembly in package.Identifier.Definition.BamAssemblies)
                         {
                             xmlWriter.WriteStartElement("Reference");
-                            xmlWriter.WriteAttributeString("Include", opusAssembly);
+                            xmlWriter.WriteAttributeString("Include", assembly);
                             {
                                 xmlWriter.WriteStartElement("SpecificVersion");
                                 {
@@ -386,7 +386,7 @@ namespace Bam
 
                                 xmlWriter.WriteStartElement("HintPath");
                                 {
-                                    var assemblyFileName = opusAssembly + ".dll";
+                                    var assemblyFileName = assembly + ".dll";
                                     var assemblyPathName = System.IO.Path.Combine(Core.State.ExecutableDirectory, assemblyFileName);
                                     var assemblyLocationUri = new System.Uri(assemblyPathName);
                                     var relativeAssemblyLocationUri = projectFilenameUri.MakeRelativeUri(assemblyLocationUri);

@@ -85,7 +85,7 @@ namespace Bam.Core
             this.validate = validate;
             this.xmlFilename = xmlFilename;
             this.PackageIdentifiers = new PackageIdentifierCollection();
-            this.OpusAssemblies = new StringArray();
+            this.BamAssemblies = new StringArray();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
@@ -199,10 +199,10 @@ namespace Bam.Core
                 packageDefinition.AppendChild(requiredPackages);
             }
 
-            if (this.OpusAssemblies.Count > 0)
+            if (this.BamAssemblies.Count > 0)
             {
                 var requiredOpusAssemblies = document.CreateElement(xmlNamespace, "RequiredOpusAssemblies", namespaceURI);
-                foreach (var assemblyName in this.OpusAssemblies)
+                foreach (var assemblyName in this.BamAssemblies)
                 {
                     var assemblyElement = document.CreateElement(xmlNamespace, "OpusAssembly", namespaceURI);
                     assemblyElement.SetAttribute("Name", assemblyName);
@@ -562,7 +562,7 @@ namespace Bam.Core
                             assemblyName = assemblyName.Replace("Opus.", "Bam.");
                         }
 
-                        this.OpusAssemblies.Add(assemblyName);
+                        this.BamAssemblies.Add(assemblyName);
                     }
                 }
                 else
@@ -935,7 +935,7 @@ namespace Bam.Core
             }
 
             // add required BuildAMation assemblies
-            this.OpusAssemblies.Add("Bam.Core");
+            this.BamAssemblies.Add("Bam.Core");
 
             // add required DotNet assemblies
             {
@@ -1014,7 +1014,7 @@ namespace Bam.Core
             private set;
         }
 
-        public StringArray OpusAssemblies
+        public StringArray BamAssemblies
         {
             get;
             private set;

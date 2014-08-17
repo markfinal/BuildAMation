@@ -78,9 +78,9 @@ namespace Bam
             bool success = false;
             foreach (var assemblyName in this.AssemblyNameArray)
             {
-                if (!xmlFile.OpusAssemblies.Contains(assemblyName))
+                if (!xmlFile.BamAssemblies.Contains(assemblyName))
                 {
-                    xmlFile.OpusAssemblies.Add(assemblyName);
+                    xmlFile.BamAssemblies.Add(assemblyName);
 
                     Core.Log.MessageAll("Added BuildAMation assembly '{0}' to package '{1}'", assemblyName, mainPackageId.ToString());
 

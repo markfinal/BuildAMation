@@ -78,9 +78,9 @@ namespace Bam
             var success = false;
             foreach (var assemblyName in this.AssemblyNameArray)
             {
-                if (xmlFile.OpusAssemblies.Contains(assemblyName))
+                if (xmlFile.BamAssemblies.Contains(assemblyName))
                 {
-                    xmlFile.OpusAssemblies.Remove(assemblyName);
+                    xmlFile.BamAssemblies.Remove(assemblyName);
 
                     Core.Log.MessageAll("Removed BuildAMation assembly '{0}' from package '{1}'", assemblyName, mainPackageId.ToString());
 
