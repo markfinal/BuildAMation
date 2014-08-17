@@ -48,7 +48,7 @@ def assign_license(file):
     lines = infile.readlines()
   first_code_line = 0
   has_region = False
-  is_python = os.path.splitexit(file)[1] == '*.py'
+  is_python = os.path.splitext(file)[1] == '*.py'
   shebang = ''
   for line in lines:
     if not line:
