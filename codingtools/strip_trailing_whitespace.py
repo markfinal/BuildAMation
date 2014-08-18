@@ -15,10 +15,11 @@ def strip_trailing_whitespace(file):
   if sys.platform.startswith("win"):
     convert_line_endings(file)
 
-def processPath(dirPath, ext):
+def processPath(dirPath, extensionList):
   for dirpath, dirnames, filenames in os.walk(dirPath):
     for file in filenames:
-      if os.path.splitext(file)[1] == ext:
+      fileExt = os.path.splitext(file)[1]
+      if fileExt in extensionList:
         csPath = os.path.join(dirpath, file)
         strip_trailing_whitespace(csPath)
 
@@ -26,9 +27,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         strip_trailing_whitespace(sys.argv[1])
     else:
-        processPath('.', '.cs')
-        processPath('testpackages', '.h')
-        processPath('testpackages', '.c')
-        processPath('testpackages', '.cpp')
-        processPath('testpackages', '.m')
-        processPath('testpackages', '.mm')
+        processPath('.', ['.cs'])
+        processPath('testpackages', ['.h', '.c', '.cpp', '.m', '.mm'])
