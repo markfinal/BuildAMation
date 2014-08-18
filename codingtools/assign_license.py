@@ -25,73 +25,73 @@ licenseText = [\
 ]
 
 def write_license_text(outfile, file):
-  ext = os.path.splitext(file)[1]
-  if ext == '.cs':
-    outfile.write('#region License\n')
-    for line in licenseText:
-      if not line:
-        outfile.write('//\n')
-      else:
-        outfile.write('// %s\n' % line)
-    outfile.write('#endregion\n')
-  elif ext == '.cpp' or ext == '.mm':
-    for line in licenseText:
-      if not line:
-        outfile.write('//\n')
-      else:
-        outfile.write('// %s\n' % line)
-  elif ext == '.c' or ext == '.h' or ext == '.m':
-    outfile.write('/*\n')
-    for line in licenseText:
-      outfile.write('%s\n' % line)
-    outfile.write('*/\n')
-  else:
-    raise RuntimeError('Unsupported file extension for appending license, %s' % file)
+    ext = os.path.splitext(file)[1]
+    if ext == '.cs':
+        outfile.write('#region License\n')
+        for line in licenseText:
+            if not line:
+                outfile.write('//\n')
+            else:
+                outfile.write('// %s\n' % line)
+        outfile.write('#endregion\n')
+    elif ext == '.cpp' or ext == '.mm':
+        for line in licenseText:
+            if not line:
+                outfile.write('//\n')
+            else:
+                outfile.write('// %s\n' % line)
+    elif ext == '.c' or ext == '.h' or ext == '.m':
+        outfile.write('/*\n')
+        for line in licenseText:
+            outfile.write('%s\n' % line)
+        outfile.write('*/\n')
+    else:
+        raise RuntimeError('Unsupported file extension for appending license, %s' % file)
 
 def assign_license(file):
-  with open(file, mode='rt') as infile:
-    lines = infile.readlines()
-  first_code_line = 0
-  has_region = False
-  is_python = os.path.splitext(file)[1] == '*.py'
-  shebang = ''
-  for line in lines:
-    if not line:
-      first_code_line += 1
-      continue
-    if is_python and line.startswith('#!'):
-      shebang = line
-      first_code_line += 1
-      continue
-    if line.startswith('#region License'):
-      has_region = True
-    if has_region:
-      if line.startswith('#endregion'):
+    with open(file, mode='rt') as infile:
+        lines = infile.readlines()
+    first_code_line = 0
+    has_region = False
+    is_python = os.path.splitext(file)[1] == '*.py'
+    shebang = ''
+    for line in lines:
+        if not line:
+            first_code_line += 1
+            continue
+        if is_python and line.startswith('#!'):
+            shebang = line
+            first_code_line += 1
+            continue
+        if line.startswith('#region License'):
+            has_region = True
+        if has_region:
+            if line.startswith('#endregion'):
+                first_code_line += 1
+                break
+        else:
+            if not line.startswith('//'):
+                break
+        if has_region and line.startswith('#endregion'):
+            break
         first_code_line += 1
-        break
-    else:
-      if not line.startswith('//'):
-        break
-    if has_region and line.startswith('#endregion'):
-      break
-    first_code_line += 1
-  code_lines = lines[first_code_line:]
-  with open(file, mode='wt') as outfile:
-    if is_python and shebang:
-      outfile.write(shebang)
-    write_license_text(outfile, file)
-    for line in code_lines:
-      outfile.write(line)
-  if sys.platform.startswith("win"):
-    convert_line_endings(file)
+    code_lines = lines[first_code_line:]
+    with open(file, mode='wt') as outfile:
+        if is_python and shebang:
+            outfile.write(shebang)
+        write_license_text(outfile, file)
+        for line in code_lines:
+            outfile.write(line)
+    if sys.platform.startswith("win"):
+        convert_line_endings(file)
 
 def processPath(dirPath, extensionList):
-  for dirpath, dirnames, filenames in os.walk(dirPath):
-    for file in filenames:
-      fileExt = os.path.splitext(file)[1]
-      if fileExt in extensionList:
-        csPath = os.path.join(dirpath, file)
-        assign_license(csPath)
+    for dirpath, dirnames, filenames in os.walk(dirPath):
+        for file in filenames:
+            fileExt = os.path.splitext(file)[1]
+            if fileExt in extensionList:
+                csPath = os.path.join(dirpath, file)
+                assign_license(csPath)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
