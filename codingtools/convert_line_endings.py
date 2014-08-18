@@ -21,8 +21,8 @@ def processPath(dirPath, extensionList):
                 convert_line_endings(csPath)
 
 if __name__ == "__main__":
-  if len(sys.argv) > 1:
-    convert_line_endings(sys.argv[1])
-  else:
-    processPath('.', ['.cs'])
-    processPath('testpackages', ['.h', '.c', '.cpp', '.m', '.mm'])
+    if len(sys.argv) > 1:
+        convert_line_endings(sys.argv[1])
+    else:
+        processPath('.', ['.cs'])
+        processPath('testpackages', ['.h', '.c', '.cpp', '.m', '.mm'])
