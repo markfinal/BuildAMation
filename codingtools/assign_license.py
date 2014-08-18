@@ -53,28 +53,31 @@ def assign_license(file):
         lines = infile.readlines()
     first_code_line = 0
     has_region = False
+    has_c_style_comment = False
     is_python = os.path.splitext(file)[1] == '*.py'
     shebang = ''
-    for line in lines:
+    for index,line in enumerate(lines):
         if not line:
-            first_code_line += 1
             continue
         if is_python and line.startswith('#!'):
             shebang = line
-            first_code_line += 1
             continue
         if line.startswith('#region License'):
             has_region = True
+        if line.startswith('/*'):
+            has_c_style_comment = True
         if has_region:
             if line.startswith('#endregion'):
-                first_code_line += 1
+                first_code_line = index + 1
+                break
+        elif has_c_style_comment:
+            if line.strip().endswith('*/'):
+                first_code_line = index + 1
                 break
         else:
             if not line.startswith('//'):
+                first_code_line = index
                 break
-        if has_region and line.startswith('#endregion'):
-            break
-        first_code_line += 1
     code_lines = lines[first_code_line:]
     with open(file, mode='wt') as outfile:
         if is_python and shebang:
