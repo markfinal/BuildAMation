@@ -141,7 +141,7 @@ namespace Test13
             typeof(Win32ResourceFile)
             );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         protected Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
@@ -169,13 +169,13 @@ namespace Test13
             typeof(QtApplication)
         );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Publisher.PublishDependency publishKey = new Publisher.PublishDependency(XmlUtilities.OSXPlistModule.OutputFile);
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     class Publish :
         Publisher.ProductModule
     {

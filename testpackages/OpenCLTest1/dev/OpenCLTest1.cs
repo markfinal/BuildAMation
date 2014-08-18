@@ -25,7 +25,7 @@ namespace OpenCLTest1
         public
         OpenCLTest1()
         {
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
             this.dataDir = new Publisher.PublishDirectory(this.PackageLocation, "data");
 #endif
         }
@@ -52,7 +52,7 @@ namespace OpenCLTest1
         [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)
@@ -63,7 +63,7 @@ namespace OpenCLTest1
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     class Publish :
         Publisher.ProductModule
     {

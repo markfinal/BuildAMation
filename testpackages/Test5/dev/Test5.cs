@@ -62,7 +62,7 @@ namespace Test5
         [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile)
@@ -70,7 +70,7 @@ namespace Test5
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     class Publish :
         Publisher.ProductModule
     {

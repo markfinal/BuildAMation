@@ -26,7 +26,7 @@ namespace QtCommon
         {
             this.QtToolset = Bam.Core.State.Get("Toolset", "Qt") as Toolset;
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
             if (Bam.Core.OSUtilities.IsUnixHosting)
             {
@@ -168,7 +168,7 @@ namespace QtCommon
             }
         }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations(Platform=Bam.Core.EPlatform.NotOSX)]
         protected Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));

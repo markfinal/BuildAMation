@@ -104,7 +104,7 @@ namespace Bam.Core
         {
             get
             {
-                var compilationDefine = System.String.Format("OPUSPACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
+                var compilationDefine = System.String.Format("D_PACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
                 return compilationDefine;
             }
         }

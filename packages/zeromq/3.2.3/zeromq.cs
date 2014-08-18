@@ -29,7 +29,7 @@ namespace zeromq
             var zmqIncludeDir = zmqDir.SubDirectory("include");
             this.headers.Include(zmqIncludeDir, "*.h");
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
             if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
@@ -156,7 +156,7 @@ namespace zeromq
             "Advapi32.lib"
             );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile)

@@ -40,7 +40,7 @@ namespace zeromqtest
             typeof(zeromq.ZMQSharedLibrary)
             );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile)
@@ -48,7 +48,7 @@ namespace zeromqtest
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     class Publish :
         Publisher.ProductModule
     {

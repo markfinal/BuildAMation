@@ -45,7 +45,7 @@ namespace CocoaTest1
         [Bam.Core.SourceFiles]
         Source source = new Source();
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
@@ -73,13 +73,13 @@ namespace CocoaTest1
             typeof(CocoaTest)
             );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Publisher.PublishDependency publishKey = new Publisher.PublishDependency(XmlUtilities.OSXPlistModule.OutputFile);
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
     class Publish :
         Publisher.ProductModule

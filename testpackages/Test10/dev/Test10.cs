@@ -42,7 +42,7 @@ namespace Test10
             var sourceDir = this.PackageLocation.SubDirectory("source");
             this.sourceFile.Include(sourceDir, "dylib.c");
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
             if (target.HasPlatform(Bam.Core.EPlatform.Unix))
             {
@@ -62,7 +62,7 @@ namespace Test10
         [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
@@ -124,14 +124,14 @@ namespace Test10
         [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
         Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     class Publish :
         Publisher.ProductModule
     {

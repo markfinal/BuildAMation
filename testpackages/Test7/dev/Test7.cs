@@ -59,7 +59,7 @@ namespace Test7
             "KERNEL32.lib"
         );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));

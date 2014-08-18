@@ -50,14 +50,14 @@ namespace Test8
             "dbghelp.lib"
         );
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(C.Application.OutputFile));
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.Windows)]
     class Publish :
         Publisher.ProductModule

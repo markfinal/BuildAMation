@@ -32,7 +32,7 @@ namespace CSharpTest1
         [Bam.Core.SourceFiles]
         Bam.Core.FileCollection source = new Bam.Core.FileCollection();
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(CSharp.Assembly.OutputFile));
@@ -100,14 +100,14 @@ namespace CSharpTest1
         [Bam.Core.DependentModules]
         Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(typeof(SimpleLibrary));
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]
         Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
             new Publisher.PublishDependency(CSharp.Assembly.OutputFile));
 #endif
     }
 
-#if OPUSPACKAGE_PUBLISHER_DEV
+#if D_PACKAGE_PUBLISHER_DEV
     class Publish :
         Publisher.ProductModule
     {
