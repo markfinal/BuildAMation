@@ -37,7 +37,7 @@ namespace Bam
         {
             get
             {
-                return "Adds a DotNet assembly to the package definition (separated by " + System.IO.Path.PathSeparator + ")";
+                return "Adds a DotNet assembly to the package definition (format: assembly-frameworkversion) (separated by " + System.IO.Path.PathSeparator + ")";
             }
         }
 
