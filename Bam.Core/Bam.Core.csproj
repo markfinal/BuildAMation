@@ -164,6 +164,9 @@
     <Compile Include="UniqueList.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
     <None Include="app.config" />
+    <None Include="Schema\BamPackageDefinitionV1.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Schema\OpusPackageDependency.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

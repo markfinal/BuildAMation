@@ -45,8 +45,13 @@ namespace Bam.Core
                 throw new System.Xml.XmlException(System.String.Format("Don't know how to resolve URIs such as '{0}'", relativeUri));
             }
 
-            // NEW style definition files (0.50 onward)
-            if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2)
+            if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV3)
+            {
+                // we've got a relative path match, so build an absolute path from the executable directory
+                var absolutePath = System.IO.Path.Combine(State.ExecutableDirectory, relativeUri);
+                return new System.Uri(absolutePath);
+            }
+            else if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2) // NEW style definition files (0.50 onward)
             {
                 // we've got a local match, so use the version of the Schema that is next to the application binary
                 return new System.Uri(State.PackageDefinitionSchemaPathV2);
@@ -78,16 +83,8 @@ namespace Bam.Core
                 var reader = new System.IO.StreamReader(absoluteUri.LocalPath);
                 return reader.BaseStream;
             }
-            else
-            {
-                if ("http://code.google.com/p/opus" == absoluteUri.ToString())
-                {
-                    var reader = new System.IO.StreamReader(State.PackageDefinitionSchemaPathV2);
-                    return reader.BaseStream;
-                }
 
-                throw new System.Xml.XmlException(System.String.Format("Did not understand non-file URI '{0}'", absoluteUri.ToString()));
-            }
+            throw new System.Xml.XmlException(System.String.Format("Did not understand non-file URI '{0}'", absoluteUri.ToString()));
         }
     }
 }

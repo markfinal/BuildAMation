@@ -70,6 +70,9 @@ namespace Bam.Core
                 var schemaPath = System.IO.Path.Combine(schemaDirectory, "OpusPackageDependency.xsd");
                 if (!System.IO.File.Exists(schemaPath))
                 {
+                    // TODO: this is quite dangerous, as the exception will try to log a message
+                    // but the logger depends on the State object, so an unhandled exception occurs
+                    // might be better to just exit here
                     throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", schemaPath, schemaDirectory);
                 }
                 Add<string>("BuildAMation", "PackageDependencySchemaPathName", schemaPath);
@@ -78,12 +81,19 @@ namespace Bam.Core
                 var schemaV2Path = System.IO.Path.Combine(schemaDirectory, "OpusPackageDependencyV2.xsd");
                 if (!System.IO.File.Exists(schemaV2Path))
                 {
+                    // TODO: this is quite dangerous, as the exception will try to log a message
+                    // but the logger depends on the State object, so an unhandled exception occurs
+                    // might be better to just exit here
                     throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", schemaV2Path, schemaDirectory);
                 }
                 Add<string>("BuildAMation", "PackageDependencySchemaPathNameV2", schemaV2Path);
 
                 // relative path for definition files
                 Add<string>("BuildAMation", "PackageDependencySchemaRelativePathNameV2", "./Schema/OpusPackageDependencyV2.xsd");
+            }
+            {
+                // relative path for definition files
+                Add<string>("BuildAMation", "PackageDefinitionSchemaRelativePathNameV3", "./Schema/BamPackageDefinitionV1.xsd");
             }
 
             AddCategory("System");
@@ -311,6 +321,14 @@ namespace Bam.Core
             get
             {
                 return Get("BuildAMation", "PackageDependencySchemaRelativePathNameV2") as string;
+            }
+        }
+
+        public static string PackageDefinitionSchemaRelativePathNameV3
+        {
+            get
+            {
+                return Get("BuildAMation", "PackageDefinitionSchemaRelativePathNameV3") as string;
             }
         }
 
