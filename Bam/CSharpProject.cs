@@ -448,6 +448,7 @@ namespace Bam
 
                     xmlWriter.WriteEndElement();
                 }
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
                 xmlWriter.Close();
             }
         }
