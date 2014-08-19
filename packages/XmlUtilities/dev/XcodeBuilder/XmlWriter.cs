@@ -48,10 +48,10 @@ namespace XcodeBuilder
             settings.Encoding = new System.Text.UTF8Encoding(false); // do not write BOM
 
             var xmlString = new System.Text.StringBuilder();
-            using (var xmlStream = System.Xml.XmlWriter.Create(xmlString, settings))
+            using (var xmlWriter = System.Xml.XmlWriter.Create(xmlString, settings))
             {
-                moduleToBuild.Document.WriteTo(xmlStream);
-                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
+                moduleToBuild.Document.WriteTo(xmlWriter);
+                xmlWriter.WriteWhitespace(settings.NewLineChars);
             }
 
             string shellScriptName;

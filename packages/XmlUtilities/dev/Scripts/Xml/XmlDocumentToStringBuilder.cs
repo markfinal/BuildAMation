@@ -37,10 +37,10 @@ namespace XmlUtilities
             settings.Encoding = new System.Text.UTF8Encoding(false); // do not write BOM
 
             var xmlString = new System.Text.StringBuilder();
-            using (var xmlStream = System.Xml.XmlWriter.Create(xmlString, settings))
+            using (var xmlWriter = System.Xml.XmlWriter.Create(xmlString, settings))
             {
-                document.WriteTo(xmlStream);
-                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
+                document.WriteTo(xmlWriter);
+                xmlWriter.WriteWhitespace(settings.NewLineChars);
             }
 
             return xmlString;

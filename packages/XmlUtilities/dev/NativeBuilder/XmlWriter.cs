@@ -69,10 +69,10 @@ namespace NativeBuilder
             settings.OmitXmlDeclaration = false;
             settings.Encoding = new System.Text.UTF8Encoding(false); // do not write BOM
 
-            using (var writer = System.Xml.XmlWriter.Create(xmlPath, settings))
+            using (var xmlWriter = System.Xml.XmlWriter.Create(xmlPath, settings))
             {
-                moduleToBuild.Document.WriteTo(writer);
-                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
+                moduleToBuild.Document.WriteTo(xmlWriter);
+                xmlWriter.WriteWhitespace(settings.NewLineChars);
             }
 
             success = true;
