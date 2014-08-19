@@ -83,10 +83,7 @@ namespace Bam
                 if (!Core.Platform.Contains(xmlFile.SupportedPlatforms, platform))
                 {
                     xmlFile.SupportedPlatforms |= platform;
-                    xmlFile.Write();
-
                     Core.Log.MessageAll("Added supported platform '{0}' to package '{1}'", supportedPlatform, mainPackageId.ToString());
-
                     success = true;
                 }
                 else
