@@ -100,6 +100,7 @@ namespace XcodeBuilder
                 }
 
                 document.WriteTo(xmlWriter);
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
             }
         }
 

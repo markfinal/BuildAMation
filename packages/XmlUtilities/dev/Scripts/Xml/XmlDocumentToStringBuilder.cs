@@ -29,7 +29,7 @@ namespace XmlUtilities
             settings.CloseOutput = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
             settings.Indent = true;
-            settings.IndentChars = "    ";
+            settings.IndentChars = new string(' ', 4);
             settings.NewLineChars = "\n";
             settings.NewLineHandling = System.Xml.NewLineHandling.None;
             settings.NewLineOnAttributes = false;
@@ -40,6 +40,7 @@ namespace XmlUtilities
             using (var xmlStream = System.Xml.XmlWriter.Create(xmlString, settings))
             {
                 document.WriteTo(xmlStream);
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
             }
 
             return xmlString;

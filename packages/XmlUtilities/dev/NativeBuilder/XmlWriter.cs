@@ -62,7 +62,7 @@ namespace NativeBuilder
             settings.CloseOutput = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
             settings.Indent = true;
-            settings.IndentChars = "    ";
+            settings.IndentChars = new string(' ', 4);
             settings.NewLineChars = "\n";
             settings.NewLineHandling = System.Xml.NewLineHandling.None;
             settings.NewLineOnAttributes = false;
@@ -72,6 +72,7 @@ namespace NativeBuilder
             using (var writer = System.Xml.XmlWriter.Create(xmlPath, settings))
             {
                 moduleToBuild.Document.WriteTo(writer);
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
             }
 
             success = true;

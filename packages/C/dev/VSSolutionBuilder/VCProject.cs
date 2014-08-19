@@ -240,6 +240,7 @@ namespace VSSolutionBuilder
                 using (var xmlWriter = System.Xml.XmlWriter.Create(this.PathName, xmlWriterSettings))
                 {
                     xmlDocument.Save(xmlWriter);
+                    xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
                 }
             }
             catch (Bam.Core.Exception exception)

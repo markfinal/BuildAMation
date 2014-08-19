@@ -342,6 +342,7 @@ namespace XcodeBuilder
                 using (var xmlWriter = System.Xml.XmlWriter.Create(writer, settings))
                 {
                     document.WriteTo(xmlWriter);
+                    xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
                 }
             }
         }

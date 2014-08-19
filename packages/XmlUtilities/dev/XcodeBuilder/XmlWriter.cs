@@ -40,7 +40,7 @@ namespace XcodeBuilder
             settings.CloseOutput = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
             settings.Indent = true;
-            settings.IndentChars = "    ";
+            settings.IndentChars = new string(' ', 4);
             settings.NewLineChars = "\n";
             settings.NewLineHandling = System.Xml.NewLineHandling.None;
             settings.NewLineOnAttributes = false;
@@ -51,6 +51,7 @@ namespace XcodeBuilder
             using (var xmlStream = System.Xml.XmlWriter.Create(xmlString, settings))
             {
                 moduleToBuild.Document.WriteTo(xmlStream);
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
             }
 
             string shellScriptName;
