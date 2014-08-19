@@ -118,6 +118,7 @@ namespace Bam.Core
             using (var xmlWriter = System.Xml.XmlWriter.Create(resourceFilePathName, xmlWriterSettings))
             {
                 resourceFile.WriteTo(xmlWriter);
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
             }
 
             return resourceFilePathName;
