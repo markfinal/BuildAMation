@@ -339,9 +339,7 @@ namespace Bam.Core
             {
                 // now write the file out using the current schema
                 this.Write();
-
-                Log.DebugMessage("Converted package definition file '{0}' to the current schema", this.xmlFilename);
-
+                Log.MessageAll("Package definition file '{0}' converted to use the latest schema", this.xmlFilename);
                 return;
             }
 
@@ -349,9 +347,7 @@ namespace Bam.Core
             {
                 // now write the file out using the current schema
                 this.Write();
-
-                Log.DebugMessage("Converted package definition file '{0}' to the current schema", this.xmlFilename);
-
+                Log.MessageAll("Package definition file '{0}' converted to use the latest schema", this.xmlFilename);
                 return;
             }
 
