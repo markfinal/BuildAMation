@@ -51,14 +51,14 @@ namespace Bam.Core
                 var absolutePath = System.IO.Path.Combine(State.ExecutableDirectory, relativeUri);
                 return new System.Uri(absolutePath);
             }
-            else if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2) // NEW style definition files (0.50 onward)
+            else if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2) // Last Opus style definition files (v0.50)
             {
                 // we've got a local match, so use the version of the Schema that is next to the application binary
                 return new System.Uri(State.PackageDefinitionSchemaPathV2);
             }
             else
             {
-                // OLD style definition files (pre 0.50)
+                // OLD style Opus definition files (pre 0.50)
                 if (System.IO.File.Exists(relativeUri))
                 {
                     // absolute pathname to a schema that exists on disk!
