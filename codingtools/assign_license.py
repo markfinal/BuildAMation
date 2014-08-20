@@ -2,7 +2,6 @@
 
 from convert_line_endings import convert_line_endings
 import os
-import re
 import sys
 
 licenseText = [\
