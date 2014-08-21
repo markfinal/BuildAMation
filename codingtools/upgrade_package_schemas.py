@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 
-def upgradeSchema(packageDir):
+def upgradeSchema(packageDir, failed_packages):
     current_dir = os.getcwd()
     try:
         print "Update '%s'" % packageDir
@@ -14,7 +14,7 @@ def upgradeSchema(packageDir):
         process = subprocess.Popen(args)
         process.wait()
         if process.returncode:
-            raise RuntimeError("Failed to upgrade package '%s' with exit status %d" % (packageDir, process.returncode))
+            failed_packages.append((packageDir, process.returncode))
     finally:
         os.chdir(current_dir)
 
@@ -24,13 +24,18 @@ def getPackagePathsFromRoot(packageRoot):
     return dirs
 
 def processPath(packageRootList):
+    failed_packages = []
     for packageRoot in packageRootList:
         packagePaths = getPackagePathsFromRoot(packageRoot)
         for package in packagePaths:
-            upgradeSchema(package)
+            upgradeSchema(package, failed_packages)
+    if failed_packages:
+        print "Failed to upgrade some packages:"
+        for packageDir,exitCode in failed_packages:
+            print packageDir
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        upgradeSchema(sys.argv[1])
+        processPath([sys.argv[1]])
     else:
         processPath(['packages', 'testpackages'])
