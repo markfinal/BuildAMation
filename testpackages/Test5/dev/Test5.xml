@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Opus:PackageDefinition xsi:schemaLocation="http://code.google.com/p/opus ./Schema/OpusPackageDependencyV2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Opus="http://code.google.com/p/opus">
-  <Opus:RequiredPackages>
-    <Opus:Package Name="C">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
-    <Opus:Package Name="Clang">
-      <Opus:Version Id="3.1" />
-      <Opus:Version Id="Apple425" Default="true" />
-      <Opus:Version Id="Apple503" />
-    </Opus:Package>
-    <Opus:Package Name="ComposerXE">
-      <Opus:Version Id="12" />
-    </Opus:Package>
-    <Opus:Package Name="LLVMGcc">
-      <Opus:Version Id="4.2" Default="true" />
-    </Opus:Package>
-    <Opus:Package Name="Mingw">
-      <Opus:Version Id="3.4.5" />
-      <Opus:Version Id="4.5.0" />
-      <Opus:Version Id="4.8.1" Default="true" />
-    </Opus:Package>
-    <Opus:Package Name="Publisher">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
-    <Opus:Package Name="QMakeBuilder">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
-    <Opus:Package Name="Test4">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
-    <Opus:Package Name="VisualC">
-      <Opus:Version Id="10.0" />
-      <Opus:Version Id="11.0" />
-      <Opus:Version Id="12.0" Default="true" />
-      <Opus:Version Id="8.0" />
-      <Opus:Version Id="9.0" />
-    </Opus:Package>
-    <Opus:Package Name="XcodeBuilder">
-      <Opus:Version Id="dev" />
-    </Opus:Package>
-  </Opus:RequiredPackages>
-  <Opus:RequiredOpusAssemblies>
-    <Opus:OpusAssembly Name="Opus.Core" />
-  </Opus:RequiredOpusAssemblies>
-  <Opus:RequiredDotNetAssemblies>
-    <Opus:DotNetAssembly Name="System" RequiredTargetFramework="2.0.50727" />
-    <Opus:DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
-  </Opus:RequiredDotNetAssemblies>
-  <Opus:SupportedPlatforms>
-    <Opus:Platform Name="Windows" />
-    <Opus:Platform Name="Unix" />
-    <Opus:Platform Name="OSX" />
-  </Opus:SupportedPlatforms>
-</Opus:PackageDefinition>
+<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <RequiredPackages>
+    <Package Name="C">
+      <Version Id="dev" />
+    </Package>
+    <Package Name="Clang">
+      <Version Id="3.1" />
+      <Version Id="Apple425" Default="true" />
+      <Version Id="Apple503" />
+    </Package>
+    <Package Name="ComposerXE">
+      <Version Id="12" />
+    </Package>
+    <Package Name="LLVMGcc">
+      <Version Id="4.2" Default="true" />
+    </Package>
+    <Package Name="Mingw">
+      <Version Id="3.4.5" />
+      <Version Id="4.5.0" />
+      <Version Id="4.8.1" Default="true" />
+    </Package>
+    <Package Name="Publisher">
+      <Version Id="dev" />
+    </Package>
+    <Package Name="QMakeBuilder">
+      <Version Id="dev" />
+    </Package>
+    <Package Name="Test4">
+      <Version Id="dev" />
+    </Package>
+    <Package Name="VisualC">
+      <Version Id="10.0" />
+      <Version Id="11.0" />
+      <Version Id="12.0" Default="true" />
+      <Version Id="8.0" />
+      <Version Id="9.0" />
+    </Package>
+    <Package Name="XcodeBuilder">
+      <Version Id="dev" />
+    </Package>
+  </RequiredPackages>
+  <RequiredBamAssemblies>
+    <BamAssembly Name="Bam.Core" />
+  </RequiredBamAssemblies>
+  <RequiredDotNetAssemblies>
+    <DotNetAssembly Name="System" RequiredTargetFramework="2.0.50727" />
+    <DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
+  </RequiredDotNetAssemblies>
+  <SupportedPlatforms>
+    <Platform Name="Windows" />
+    <Platform Name="Unix" />
+    <Platform Name="OSX" />
+  </SupportedPlatforms>
+</PackageDefinition>
