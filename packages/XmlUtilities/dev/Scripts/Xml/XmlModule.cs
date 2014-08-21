@@ -29,6 +29,7 @@ namespace XmlUtilities
         XmlModule()
         {
             this.Document = new System.Xml.XmlDocument();
+            this.Document.XmlResolver = null; // do not attempt to resolve any URLs
         }
 
         public System.Xml.XmlDocument Document
