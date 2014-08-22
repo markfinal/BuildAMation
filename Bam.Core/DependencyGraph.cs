@@ -259,7 +259,9 @@ namespace Bam.Core
                 this.PopulateChildNodes(constructionData);
                 // now perform fixup across the whole graph
                 this.ForwardOnDependencies(constructionData);
+                this.ValidateAllDependents();
                 this.AddRequiredPostActionDependencies(constructionData);
+                this.ValidateAllDependents();
                 // tidy up
                 this.SquashEmptyNodeCollections();
 
@@ -804,7 +806,7 @@ namespace Bam.Core
         }
 
         private void
-        ValidateDependentRanks(
+        ValidateDependentsInRank(
             DependencyNodeCollection nodeCollection)
         {
             // This is quite expensive, but always better to find out these problems sooner rather than later
@@ -844,6 +846,15 @@ namespace Bam.Core
                         }
                     }
                 }
+            }
+        }
+
+        private void
+        ValidateAllDependents()
+        {
+            foreach (var rank in this.rankList)
+            {
+                this.ValidateDependentsInRank(rank);
             }
         }
 
@@ -976,7 +987,7 @@ namespace Bam.Core
                 }
 
                 // validate that ranks obey dependency rules
-                this.ValidateDependentRanks(rankCollection);
+                this.ValidateDependentsInRank(rankCollection);
 
                 ++currentRank;
             }
