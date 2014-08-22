@@ -28,6 +28,8 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
             var targetNode = node.ExternalDependents[0];
             var project = this.Workspace.GetProject(targetNode);
+            var baseTarget = (Bam.Core.BaseTarget)targetNode.Target;
+            var configuration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
 
             var outputFileLoc = moduleToBuild.Locations[XmlUtilities.TextFileModule.OutputFile];
             var outputFilePath = outputFileLoc.GetSingleRawPath();
@@ -45,11 +47,13 @@ namespace XcodeBuilder
             string shellScriptName = "Writing text file for " + targetNode.UniqueModuleName;
             var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get(shellScriptName, node.ModuleName);
             shellScriptBuildPhase.OutputPaths.Add(outputFilePath);
+            shellScriptBuildPhase.ShellScriptLines.Add(System.String.Format("if [ \\\"${{CONFIGURATION}}\\\" = \\\"{0}\\\" ]; then", configuration.Name));
             foreach (var line in content.Split('\n'))
             {
                 var escapedLine = line.Replace("\"", "\\\"");
                 shellScriptBuildPhase.ShellScriptLines.Add(System.String.Format("echo \\\"{0}\\\" >> $SCRIPT_OUTPUT_FILE_0", escapedLine));
             }
+            shellScriptBuildPhase.ShellScriptLines.Add("fi");
 
             // is this a post action?
             {

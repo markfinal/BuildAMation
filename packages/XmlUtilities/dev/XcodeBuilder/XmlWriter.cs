@@ -30,6 +30,8 @@ namespace XcodeBuilder
             var node = moduleToBuild.OwningNode;
             var targetNode = node.ExternalDependents[0];
             var project = this.Workspace.GetProject(targetNode);
+            var baseTarget = (Bam.Core.BaseTarget)targetNode.Target;
+            var configuration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
 
             var xmlFileLoc = moduleToBuild.Locations[XmlUtilities.XmlModule.OutputFile];
             var xmlFilePath = xmlFileLoc.GetSingleRawPath();
@@ -66,11 +68,13 @@ namespace XcodeBuilder
 
             var writeXMLShellScriptBuildPhase = project.ShellScriptBuildPhases.Get(shellScriptName, node.ModuleName);
             writeXMLShellScriptBuildPhase.OutputPaths.Add(xmlFilePath);
+            writeXMLShellScriptBuildPhase.ShellScriptLines.Add(System.String.Format("if [ \\\"${{CONFIGURATION}}\\\" = \\\"{0}\\\" ]; then", configuration.Name));
             foreach (var line in xmlString.ToString().Split('\n'))
             {
                 var escapedLine = line.Replace("\"", "\\\"");
                 writeXMLShellScriptBuildPhase.ShellScriptLines.Add(System.String.Format("echo \\\"{0}\\\" >> $SCRIPT_OUTPUT_FILE_0", escapedLine));
             }
+            writeXMLShellScriptBuildPhase.ShellScriptLines.Add("fi");
 
             if (isPList)
             {
@@ -83,8 +87,8 @@ namespace XcodeBuilder
                 nativeTarget.Group.Children.AddUnique(fileRef);
 
                 // add to the build configuration
-                var baseTarget = (Bam.Core.BaseTarget)moduleToBuild.OwningNode.Target;
-                var buildConfiguration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
+                var baseTarget2 = (Bam.Core.BaseTarget)moduleToBuild.OwningNode.Target;
+                var buildConfiguration = project.BuildConfigurations.Get(baseTarget2.ConfigurationName('='), targetNode.ModuleName);
                 buildConfiguration.Options["INFOPLIST_FILE"].AddUnique(xmlFilePath);
             }
 

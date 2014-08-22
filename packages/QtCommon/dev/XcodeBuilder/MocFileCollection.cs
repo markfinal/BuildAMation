@@ -42,10 +42,13 @@ namespace XcodeBuilder
             }
 
             var project = this.Workspace.GetProject(targetNode);
+            var baseTarget = (Bam.Core.BaseTarget)targetNode.Target;
+            var configuration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
+
             var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("MOCing files for " + node.ModuleName, moduleToBuild.OwningNode.ModuleName);
             // cannot add to the nativeTarget's build phases, so delay this til later
 
-            ShellScriptHelper.WriteShellCommand(target, mocOptions, shellScriptBuildPhase);
+            ShellScriptHelper.WriteShellCommand(target, mocOptions, shellScriptBuildPhase, configuration);
 
             success = true;
             return null;

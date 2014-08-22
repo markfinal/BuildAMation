@@ -115,7 +115,13 @@ namespace XcodeBuilder
 
             var shellScriptBuildPhase = project.ShellScriptBuildPhases.Get("Copy Directories", moduleToBuild.OwningNode.ModuleName);
 
+            var targetNode = moduleToBuild.OwningNode;
+            var baseTarget = (Bam.Core.BaseTarget)targetNode.Target;
+            var configuration = project.BuildConfigurations.Get(baseTarget.ConfigurationName('='), targetNode.ModuleName);
+
+            shellScriptBuildPhase.ShellScriptLines.Add(System.String.Format("if [ \\\"${{CONFIGURATION}}\\\" = \\\"{0}\\\" ]; then", configuration.Name));
             shellScriptBuildPhase.ShellScriptLines.Add("cp -Rf $SCRIPT_INPUT_FILE_0 $SCRIPT_OUTPUT_FILE_0");
+            shellScriptBuildPhase.ShellScriptLines.Add("fi");
             shellScriptBuildPhase.InputPaths.Add(sourcePath);
             shellScriptBuildPhase.OutputPaths.Add(dest);
 

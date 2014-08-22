@@ -24,7 +24,8 @@ namespace XcodeBuilder
         WriteShellCommand(
             Bam.Core.Target target,
             Bam.Core.BaseOptionCollection mocOptions,
-            PBXShellScriptBuildPhase shellScriptBuildPhase)
+            PBXShellScriptBuildPhase shellScriptBuildPhase,
+            XCBuildConfiguration configuration)
         {
             var tool = target.Toolset.Tool(typeof(QtCommon.IMocTool));
             var toolExePath = tool.Executable((Bam.Core.BaseTarget)target);
@@ -44,6 +45,7 @@ namespace XcodeBuilder
             commandLineBuilder.Add("$inputFile");
 
             // script for moc'ing all files
+            shellScriptBuildPhase.ShellScriptLines.Add(System.String.Format("if [ \\\"${{CONFIGURATION}}\\\" = \\\"{0}\\\" ]; then", configuration.Name));
             shellScriptBuildPhase.ShellScriptLines.Add("for ((i=0; i < SCRIPT_INPUT_FILE_COUNT ; i++))");
             shellScriptBuildPhase.ShellScriptLines.Add("do");
             shellScriptBuildPhase.ShellScriptLines.Add("inputFile=`eval echo '$SCRIPT_INPUT_FILE_'$i`");
@@ -51,6 +53,7 @@ namespace XcodeBuilder
             shellScriptBuildPhase.ShellScriptLines.Add("echo \\\"Moc'ing $inputFile\\\"");
             shellScriptBuildPhase.ShellScriptLines.Add(commandLineBuilder.ToString());
             shellScriptBuildPhase.ShellScriptLines.Add("done");
+            shellScriptBuildPhase.ShellScriptLines.Add("fi");
         }
     }
 }
