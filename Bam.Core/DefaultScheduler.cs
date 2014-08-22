@@ -24,7 +24,7 @@ namespace Bam.Core
         private DependencyGraph graph;
         private int scheduledNodeCount = 0;
         private int percentComplete = 0;
-        private int highestRankToBuild;
+        private int rankHighWaterMark;
 
         public event BuildSchedulerProgressUpdatedDelegate ProgressUpdated;
 
@@ -35,9 +35,9 @@ namespace Bam.Core
             this.graph = graph;
             this.TotalNodeCount = graph.TotalNodeCount;
             this.ScheduledNodeCount = 0;
-            this.highestRankToBuild = this.graph.RankCount - 1;
+            this.rankHighWaterMark = this.graph.RankCount - 1;
 
-            for (int rank = this.highestRankToBuild; rank >= 0; --rank)
+            for (int rank = this.rankHighWaterMark; rank >= 0; --rank)
             {
                 var rankCollection = this.graph[rank];
                 if (0 == rankCollection.Count)
@@ -102,15 +102,15 @@ namespace Bam.Core
         public DependencyNode
         GetNextNodeToBuild()
         {
-            for (int rank = this.highestRankToBuild; rank >= 0; --rank)
+            for (int rank = this.rankHighWaterMark; rank >= 0; --rank)
             {
                 var rankCollection = this.graph[rank];
 
                 if (RankedNodeCollectionComplete(rankCollection))
                 {
-                    if (rankCollection.Rank == this.highestRankToBuild)
+                    if (rankCollection.Rank == this.rankHighWaterMark)
                     {
-                        --this.highestRankToBuild;
+                        --this.rankHighWaterMark;
                     }
 
                     continue;
