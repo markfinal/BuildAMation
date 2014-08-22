@@ -638,14 +638,15 @@ namespace Bam.Core
         {
             foreach (var nodeWithPostAction in data.postActionNodes.Keys)
             {
-                foreach (var postActionNode in data.postActionNodes[nodeWithPostAction])
+                var postActionNodes = data.postActionNodes[nodeWithPostAction];
+                foreach (var postActionNode in postActionNodes)
                 {
                     if (null != nodeWithPostAction.ExternalDependentFor)
                     {
                         foreach (var dependee in nodeWithPostAction.ExternalDependentFor)
                         {
-                            // don't depend on itself - the post action node is in the list
-                            if (dependee == postActionNode)
+                            // don't depend on any of the post actions added, including itself
+                            if (postActionNodes.Contains(dependee))
                             {
                                 continue;
                             }
@@ -656,8 +657,8 @@ namespace Bam.Core
                     {
                         foreach (var dependee in nodeWithPostAction.RequiredDependentFor)
                         {
-                            // don't depend on itself - the post action node is in the list
-                            if (dependee == postActionNode)
+                            // don't depend on any of the post actions added, including itself
+                            if (postActionNodes.Contains(dependee))
                             {
                                 continue;
                             }
@@ -670,7 +671,7 @@ namespace Bam.Core
 
         private void
         AddDependents(
-                ConstructionData data)
+            ConstructionData data)
         {
             // DependencyNodes have a loose connection with Rank and their DependencyNodeCollection at this stage
             // There is some need for it, in order to determine whether a node satisfies all dependencies
@@ -820,7 +821,10 @@ namespace Bam.Core
                         var childRank = child.NodeCollection.Rank;
                         if (childRank <= nodeRank)
                         {
-                            throw new Exception("Child '{0}' of '{1}' is at an insufficient rank", child.UniqueModuleName, node.UniqueModuleName);
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Child '{0}' of '{1}' is at an insufficient rank\n", child.UniqueModuleName, node.UniqueModuleName);
+                            message.AppendFormat("Current rank:    {0}\n", nodeRank);
+                            message.AppendFormat("Dependency rank: {0}\n", childRank);
                         }
                     }
                 }
@@ -831,7 +835,11 @@ namespace Bam.Core
                         var depRank = dep.NodeCollection.Rank;
                         if (depRank <= nodeRank)
                         {
-                            throw new Exception("Dependency '{0}' of '{1}' is at an insufficient rank", dep.UniqueModuleName, node.UniqueModuleName);
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Dependency '{0}' of '{1}' is at an insufficient rank\n", dep.UniqueModuleName, node.UniqueModuleName);
+                            message.AppendFormat("Current rank:    {0}\n", nodeRank);
+                            message.AppendFormat("Dependency rank: {0}\n", depRank);
+                            throw new Exception(message.ToString());
                         }
                     }
                 }
@@ -842,7 +850,11 @@ namespace Bam.Core
                         var depRank = dep.NodeCollection.Rank;
                         if (depRank <= nodeRank)
                         {
-                            throw new Exception("Required dependency '{0}' of '{1}' is at an insufficient rank", dep.UniqueModuleName, node.UniqueModuleName);
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Required dependency '{0}' of '{1}' is at an insufficient rank\n", dep.UniqueModuleName, node.UniqueModuleName);
+                            message.AppendFormat("Current rank:    {0}\n", nodeRank);
+                            message.AppendFormat("Dependency rank: {0}\n", depRank);
+                            throw new Exception(message.ToString());
                         }
                     }
                 }
